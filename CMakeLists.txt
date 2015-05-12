@@ -3,12 +3,23 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT("TEC")
 
 # Set the directory of cmake modules
-# If using MSVC you must change the 'Debugging->Working Directory' property in
-# the project properties window to "$(SolutionDir)..\" for assets to load correctly.
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules")
 
 # Put the executable in the bin folder
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
+IF ( MSVC )
+	# If using MSVC you must change the 'Debugging->Working Directory' property in
+	# the project properties window to "$(SolutionDir)..\" for assets to load correctly.
+	SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib )
+	SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib )
+	# Second, for multi-config builds (e.g. msvc)
+	foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+		STRING( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+		SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
+		SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
+	endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+ENDIF ( MSVC )
 
 # find all source files in the src directory
 FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
@@ -34,8 +45,11 @@ FIND_PACKAGE(OpenGL REQUIRED)
 
 ADD_SUBDIRECTORY("modules/glfw3")
 INCLUDE_DIRECTORIES("modules/glfw3/include")
-ADD_SUBDIRECTORY("modules/glm" "lib/")
+ADD_SUBDIRECTORY("modules/glm")
 INCLUDE_DIRECTORIES("modules/glm")
+ADD_SUBDIRECTORY("modules/bullet3")
+INCLUDE_DIRECTORIES("modules/bullet3/src")
+FIND_PACKAGE(Bullet)
 
 # Give these some dummy values and if the platform is LINUX or OSX they will be set accordingly.
 SET(X11_LIBRARIES "")
@@ -74,12 +88,15 @@ IF (APPLE) # Mac OSX
 ENDIF (APPLE)
 
 # define all required external libraries
-set(TEC_ALL_LIBS
+SET(TEC_ALL_LIBS
 	${OPENGL_LIBRARIES}
 	${X11_LIBRARIES}
 	${OSX_LIBRARIES}
 	${GLEW_LIBRARIES}
 	glfw ${GLFW_LIBRARIES}
+	${BULLET_DYNAMICS_LIBRARY}
+	${BULLET_COLLISION_LIBRARY}
+	${BULLET_MATH_LIBRARY}
 )
 
 ADD_EXECUTABLE("TEC"

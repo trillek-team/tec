@@ -7,3 +7,6 @@
 [submodule "assets"]
 	path = assets
 	url = https://github.com/adam4813/tec-assets
+[submodule "modules/bullet3"]
+	path = modules/bullet3
+	url = https://github.com/bulletphysics/bullet3
