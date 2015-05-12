@@ -13,7 +13,8 @@ Building takes a few steps to get everything set up for the first build.
  2. Windows
     1. Run the cmake-gui setting the source line to the root directory and the build line to the build directory.
     2. Configure and Generate using non-x64 as the target with natrive compiles selected.
-    3. Build everything (an error about missing bullet libs, for `TEC`, is ok at this point).
-    4. Return to cmake-gui and rerun configure and generate so Bullet can now find the libraries you just built.
-    5. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
+    3. Make sure Grouped and Advanced are checked and expand `Build, GLFW, and USE` uncheck everything, and check `USE_DOUBLE_PRECISION` [What it should look like](http://i.imgur.com/njVBANf.png)
+    4. Build everything (an error about missing bullet libs, for `TEC`, is ok at this point).
+    5. Return to cmake-gui and rerun configure and generate so Bullet can now find the libraries you just built.
+    6. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
 5. Run it
