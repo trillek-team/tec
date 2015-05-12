@@ -4,3 +4,6 @@
 [submodule "modules/glfw3"]
 	path = modules/glfw3
 	url = https://github.com/glfw/glfw/
+[submodule "assets"]
+	path = assets
+	url = https://github.com/adam4813/tec-assets
