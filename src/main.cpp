@@ -15,7 +15,7 @@
 
 std::list<std::function<void(vv::frame_id_t)>> vv::ComponentUpdateSystemList::update_funcs;
 
-int main(int argc, void* argv) {
+int main(int argc, char* argv[]) {
 	vv::OS os;
 
 	os.InitializeWindow(800, 600, "TEC 0.1", 3, 2);

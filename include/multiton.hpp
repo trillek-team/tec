@@ -62,7 +62,7 @@ namespace vv {
 		}
 
 
-		static bool Has() {
+		static bool Has(const ID id) {
 			return instances.find(id) != instances.end();
 		}
 
