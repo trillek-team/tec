@@ -24,19 +24,6 @@ namespace vv {
 		if (err) {
 			return;
 		}
-		// Use the GL3 way to get the version number.
-		int gl_version[3];
-		glGetIntegerv(GL_MAJOR_VERSION, &gl_version[0]);
-		glGetIntegerv(GL_MINOR_VERSION, &gl_version[1]);
-		if (err) {
-			return;
-		}
-		int opengl_version = gl_version[0] * 100 + gl_version[1] * 10;
-
-		if (opengl_version < 300) {
-			std::cerr << "OpenGL version " << opengl_version << std::endl;
-			assert(opengl_version >= 300);
-		}
 
 		SetViewportSize(800, 600);
 		glEnable(GL_DEPTH_TEST);
