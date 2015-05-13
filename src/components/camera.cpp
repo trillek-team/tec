@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "os.hpp"
 #include "render-system.hpp"
-#include "transform.hpp"
+#include "components/transforms.hpp"
 
 namespace tec {
 	void CameraMover::Update(double delta) {
@@ -36,10 +36,10 @@ namespace tec {
 						orientation->OrientedRotate(glm::vec3(0.0, glm::radians(-10.0f), 0.0));
 						break;
 					case GLFW_KEY_W:
-						position->OrientedTranslate(orientation->value, glm::vec3(0.0, 0.0, -1.0));
+						position->Translate(glm::vec3(0.0, 0.0, -1.0), orientation->value);
 						break;
 					case GLFW_KEY_S:
-						position->OrientedTranslate(orientation->value, glm::vec3(0.0, 0.0, 1.0));
+						position->Translate(glm::vec3(0.0, 0.0, 1.0), orientation->value);
 						break;
 					case GLFW_KEY_SPACE:
 						camera->MakeActive();

@@ -1,33 +1,21 @@
-#pragma once
-
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include "components/transforms.hpp"
 
 namespace tec {
-	static glm::vec3 FORWARD_VECTOR(0.0f, 0.0f, -1.0f);
-	static glm::vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
-	static glm::vec3 RIGHT_VECTOR(1.0f, 0.0f, 0.0f);
-
-	struct Position {
-		void Translate(const glm::vec3 amount) {
+		void Position::Translate(const glm::vec3 amount) {
 			this->value += amount;
 		}
 
-		void OrientedTranslate(glm::quat orientation, const glm::vec3 amount) {
+		void Position::Translate(const glm::vec3 amount, const glm::quat orientation) {
 			this->value += orientation * amount;
 		}
-
-		glm::vec3 value;
-	};
-
-	struct Orientation {
-		void Rotate(const glm::vec3 amount) {
+		
+		void Orientation::Rotate(const glm::vec3 amount) {
 			this->rotation += amount;
 			this->value = glm::normalize(glm::quat(this->rotation));
 		}
+
 		// Adds the rotation amount based on the current orientation.
-		void OrientedRotate(const glm::vec3 amount) {
+		void Orientation::OrientedRotate(const glm::vec3 amount) {
 			this->rotation += amount;
 
 			glm::quat qX = glm::angleAxis(amount.x, this->value * RIGHT_VECTOR);
@@ -37,8 +25,4 @@ namespace tec {
 
 			this->value = glm::normalize(change * this->value);
 		}
-
-		glm::quat value;
-		glm::vec3 rotation;
-	};
 }

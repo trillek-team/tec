@@ -5,7 +5,7 @@
 #include "vertexbuffer.hpp"
 #include "shader.hpp"
 #include "voxelvolume.hpp"
-#include "transform.hpp"
+#include "components/transforms.hpp"
 #include "material.hpp"
 #include "entity.hpp"
 #include "components/camera.hpp"
@@ -27,13 +27,13 @@ int main(int argc, char* argv[]) {
 	auto voxvol = tec::VoxelVolume::Create(100, "bob", 0);
 	auto voxvol_shared = voxvol.lock();
 	auto shader_files = std::list < std::pair<tec::Shader::ShaderType, std::string> > {
-		std::make_pair(tec::Shader::VERTEX, "assets\\basic.vert"), std::make_pair(tec::Shader::FRAGMENT, "assets\\basic.frag"),
+		std::make_pair(tec::Shader::VERTEX, "assets/basic.vert"), std::make_pair(tec::Shader::FRAGMENT, "assets/basic.frag"),
 	};
 	auto s = tec::Shader::CreateFromFile("shader1", shader_files);
 	auto basic_fill = tec::Material::Create("material_basic", s);
 
 	shader_files = std::list < std::pair<tec::Shader::ShaderType, std::string> > {
-		std::make_pair(tec::Shader::VERTEX, "assets\\basic.vert"), std::make_pair(tec::Shader::FRAGMENT, "assets\\overlay.frag"),
+		std::make_pair(tec::Shader::VERTEX, "assets/basic.vert"), std::make_pair(tec::Shader::FRAGMENT, "assets/overlay.frag"),
 	};
 	auto s_overlay = tec::Shader::CreateFromFile("shader_overlay", shader_files);
 	auto overlay = tec::Material::Create("material_overlay", s_overlay);
