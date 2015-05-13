@@ -4,7 +4,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-namespace vv {
+namespace tec {
 	static glm::vec3 FORWARD_VECTOR(0.0f, 0.0f, -1.0f);
 	static glm::vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
 	static glm::vec3 RIGHT_VECTOR(1.0f, 0.0f, 0.0f);

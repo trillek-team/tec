@@ -5,12 +5,12 @@
 #include "render-system.hpp"
 #include "transform.hpp"
 
-namespace vv {
+namespace tec {
 	void CameraMover::Update(double delta) {
 		ProcessEventQueue();
 	}
 
-	void CameraMover::On(std::shared_ptr<vv::KeyboardEvent> data) {
+	void CameraMover::On(std::shared_ptr<KeyboardEvent> data) {
 		auto camera = this->cam.lock();
 		if (!camera) {
 			this->cam = e.Get<Camera>();
@@ -27,7 +27,7 @@ namespace vv {
 		auto orientation = std::make_shared<Orientation>(*std::get<1>(transforms).lock().get());
 
 		switch (data->action) {
-			case vv::KeyboardEvent::KEY_UP:
+			case KeyboardEvent::KEY_UP:
 				switch (data->key) {
 					case GLFW_KEY_A:
 						orientation->OrientedRotate(glm::vec3(0.0, glm::radians(10.0f), 0.0));

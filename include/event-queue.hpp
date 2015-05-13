@@ -5,7 +5,7 @@
 #include <atomic>
 #include "types.hpp"
 
-namespace vv {
+namespace tec {
 	// Container to hold event data. This is stored in the queue rather than raw event data.
 	template <class T>
 	struct Event {

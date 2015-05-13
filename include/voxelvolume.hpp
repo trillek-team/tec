@@ -10,7 +10,7 @@
 #include "multiton.hpp"
 #include "command-queue.hpp"
 
-namespace vv {
+namespace tec {
 	struct Vertex;
 	class PolygonMeshData;
 

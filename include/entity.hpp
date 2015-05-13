@@ -8,7 +8,7 @@
 #include "component-update-system.hpp"
 #include "types.hpp"
 
-namespace vv {
+namespace tec {
 	class Entity {
 	public:
 		Entity(eid id) : id(id) { }

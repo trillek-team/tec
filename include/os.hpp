@@ -11,7 +11,7 @@
 #include <string>
 #include <chrono>
 
-namespace vv {
+namespace tec {
 	struct KeyboardEvent {
 		enum KEY_ACTION { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR };
 		int key;

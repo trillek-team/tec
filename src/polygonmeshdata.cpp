@@ -1,6 +1,6 @@
 #include "polygonmeshdata.hpp"
 
-namespace vv {
+namespace tec {
 	void PolygonMeshData::AddVertex(Vertex v, size_t submesh) {
 		this->verts[submesh].push_back(v);
 	}

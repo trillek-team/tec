@@ -8,7 +8,7 @@
 #include "types.hpp"
 #include "event-queue.hpp"
 
-namespace vv {
+namespace tec {
 	template <typename T>
 	class EventSystem final {
 	private:

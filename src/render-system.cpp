@@ -10,7 +10,7 @@
 #include "material.hpp"
 #include "entity.hpp"
 
-namespace vv {
+namespace tec {
 	class Texture {
 	public:
 		GLuint name;

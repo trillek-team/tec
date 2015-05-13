@@ -12,7 +12,7 @@
 #include <OpenGL/gl3.h>
 #endif
 
-namespace vv {
+namespace tec {
 	struct VertexBuffer;
 	typedef Multiton<eid, std::shared_ptr<VertexBuffer>> VertexBufferMap;
 

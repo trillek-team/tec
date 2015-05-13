@@ -4,7 +4,7 @@
 #include "entity.hpp"
 #include "event-system.hpp"
 
-namespace vv {
+namespace tec {
 	class Camera {
 	public:
 		Camera(eid entity_id);

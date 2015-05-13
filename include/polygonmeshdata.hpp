@@ -5,7 +5,7 @@
 #include <map>
 #include "vertexbuffer.hpp"
 
-namespace vv {
+namespace tec {
 	class PolygonMeshData;
 	typedef Multiton<std::string, std::shared_ptr<PolygonMeshData>> PolygonMeshMap;
 

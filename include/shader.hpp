@@ -16,7 +16,7 @@
 
 #include "multiton.hpp"
 
-namespace vv {
+namespace tec {
 	class Shader;
 
 	typedef Multiton<std::string, std::shared_ptr<Shader>> ShaderMap;
@@ -47,16 +47,16 @@ namespace vv {
 
 		// Creates a Shader from files on disk and stores it in ShaderMap under name.
 		// filenames should be something like:
-		// auto shader_files = std::list < std::pair<vv::Shader::ShaderType, std::string> > {
-		//	std::make_pair(vv::Shader::VERTEX, "basic.vert"), std::make_pair(vv::Shader::FRAGMENT, "basic.frag"),
+		// auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+		//	std::make_pair(Shader::VERTEX, "basic.vert"), std::make_pair(Shader::FRAGMENT, "basic.frag"),
 		// };
 		// return is a weak_ptr to the created Shader.
 		static std::weak_ptr<Shader> CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> filenames);
 
 		// Creates a Shader from the provide source code stores it in ShaderMap under name.
 		// source_code should be something like:
-		// auto shader_files = std::list < std::pair<vv::Shader::ShaderType, std::string> > {
-		//	std::make_pair(vv::Shader::VERTEX, "shader source code\nversion 330\n{}"), std::make_pair(vv::Shader::FRAGMENT, "shader source code\nversion 330\n{}"),
+		// auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+		//	std::make_pair(Shader::VERTEX, "shader source code\nversion 330\n{}"), std::make_pair(Shader::FRAGMENT, "shader source code\nversion 330\n{}"),
 		// };
 		// return is a weak_ptr to the created Shader.
 		static std::weak_ptr<Shader> CreateFromString(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code);

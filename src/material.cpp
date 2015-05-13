@@ -1,7 +1,7 @@
 #include "material.hpp"
 #include "shader.hpp"
 
-namespace vv {
+namespace tec {
 	GLenum Material::GetFillMode() {
 		return this->fill_mode;
 	}

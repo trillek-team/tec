@@ -3,7 +3,7 @@
 #include <map>
 #include "types.hpp"
 
-namespace vv {
+namespace tec {
 	/* Based class to be used for instance or state storage.
 	*
 	* This is useful in place of static instances or globals. Derived classes

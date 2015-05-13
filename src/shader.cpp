@@ -2,7 +2,7 @@
 
 #include <iterator>
 
-namespace vv {
+namespace tec {
 	Shader::Shader() : program(0) { }
 
 	Shader::~Shader() {

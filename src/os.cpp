@@ -14,7 +14,7 @@ extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char *str);
 #endif
 
-namespace vv {
+namespace tec {
 
 	// Error helper function used by GLFW for error messaging.
 	// Currently outputs to std::cout.

@@ -10,7 +10,7 @@
 #include <OpenGL/gl3.h>
 #endif
 
-namespace vv {
+namespace tec {
 	class Shader;
 	class Material;
 

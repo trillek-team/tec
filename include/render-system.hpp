@@ -16,7 +16,7 @@
 #include "event-system.hpp"
 #include "command-queue.hpp"
 
-namespace vv {
+namespace tec {
 	struct VertexBuffer;
 	class Material;
 
