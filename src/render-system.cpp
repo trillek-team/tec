@@ -51,7 +51,7 @@ namespace tec {
 		ProcessCommandQueue();
 
 		// Loop through each renderbale and update its model matrix.
-		for (auto itr = RenderableMap::Begin(); itr != RenderableMap::End(); ++itr) {
+		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			glm::vec3 position;
 			glm::quat orientation;
@@ -65,17 +65,19 @@ namespace tec {
 			auto camera_translation = position;
 			auto camera_orientation = orientation;
 
-			itr->second->model_matrix = glm::translate(glm::mat4(1.0), camera_translation) *
+			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
 				glm::mat4_cast(camera_orientation);
 
 			// Check if there is a view associated with the entity_id and update it as well.
 			if (e.Has<View>()) {
 				auto view = e.Get<View>().lock();
-				view->view_matrix = glm::inverse(itr->second->model_matrix);
+				view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
 				if (view->active) {
 					this->current_view = view;
 				}
 			}
+
+			this->render_list[itr->second->material][itr->second->buffer].push_back(entity_id);
 		}
 
 		static float red = 0.3f, blue = 0.3f, green = 0.3f;
@@ -89,14 +91,13 @@ namespace tec {
 		if (view) {
 			camera_matrix = view->view_matrix;
 		}
-		for (auto material_group : this->buffers) {
-			auto material = material_group.first.lock();
-			if (!material) {
-				continue;
-			}
+
+		for (auto material_list : this->render_list) {
+			auto material = material_list.first;
 			glPolygonMode(GL_FRONT_AND_BACK, material->GetFillMode());
+
 			auto shader = material->GetShader().lock();
-			if (!material) {
+			if (!shader) {
 				continue;
 			}
 			shader->Use();
@@ -105,61 +106,21 @@ namespace tec {
 			glUniformMatrix4fv(shader->GetUniform("projection"), 1, GL_FALSE, &this->projection[0][0]);
 			GLint model_index = shader->GetUniform("model");
 
-			auto vb = material_group.second.first.lock();
-			if (!vb) {
-				continue;
+			for (auto buffer_list : material_list.second) {
+				auto buffer = buffer_list.first;
+				glBindVertexArray(buffer->vao);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->ibo);
+				for (auto entity : buffer_list.second) {
+					glm::mat4 model_matrix = glm::mat4(1.0);
+					if (this->model_matricies.find(entity) != this->model_matricies.end()) {
+						model_matrix = this->model_matricies.at(entity);
+					}
+					glUniformMatrix4fv(model_index, 1, GL_FALSE, &model_matrix[0][0]);
+					glDrawElements(GL_TRIANGLES, buffer->index_count, GL_UNSIGNED_INT, 0);
+				}
 			}
-			glBindVertexArray(vb->vao);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vb->ibo);
-			/*for (size_t i = 0; i < mesh_group.second.textures.size(); ++i) {
-				auto tex = mesh_group.second.textures[i].lock();
-				GLuint name = 0;
-				if (tex) {
-				name = tex->name;
-				}
-				shader->ActivateTextureUnit(i, name);
-				}*/
-
-			for (eid entity_id : material_group.second.second) {
-				glm::mat4 model_matrix = glm::mat4(1.0);
-				auto mm = RenderableMap::Get(entity_id);
-				if (mm != nullptr) {
-					model_matrix = mm->model_matrix;
-				}
-				glUniformMatrix4fv(model_index, 1, GL_FALSE, &model_matrix[0][0]);
-				/*auto renanim = ren_group.animations.find(entity_id);
-				if (renanim != ren_group.animations.end()) {
-				glUniform1i(u_animate_loc, 1);
-				auto &animmatricies = renanim->second->matrices;
-				glUniformMatrix4fv(u_animatrix_loc, animmatricies.size(), GL_FALSE, &animmatricies[0][0][0]);
-				}
-				else {
-				glUniform1i(u_animate_loc, 0);
-				}*/
-				glDrawElements(GL_TRIANGLES, vb->index_count, GL_UNSIGNED_INT, 0);
-			}
-
 			shader->UnUse();
 		}
-	}
-
-	void RenderSystem::AddVertexBuffer(const std::weak_ptr<Material> mat,
-		const std::weak_ptr<VertexBuffer> buffer, const eid entity_id) {
-		auto mat1 = mat.lock();
-		for (auto material_group : this->buffers) {
-			auto mat2 = material_group.first.lock();
-			if ((mat1 && mat2) && (mat1 == mat2)) {
-				auto vb1 = buffer.lock();
-				auto vb2 = material_group.second.first.lock();
-				if ((vb1 && vb2) && (vb1 == vb2)) {
-					material_group.second.second.push_back(entity_id);
-					return;
-				}
-			}
-		}
-		std::list<eid> entity_list;
-		entity_list.push_back(entity_id);
-		this->buffers[mat] = std::make_pair(buffer, std::move(entity_list));
 	}
 
 	bool RenderSystem::ActivateView(const eid entity_id) {

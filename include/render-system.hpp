@@ -26,7 +26,8 @@ namespace tec {
 	struct KeyboardEvent;
 
 	struct Renderable {
-		glm::mat4 model_matrix;
+		std::shared_ptr<Material> material;
+		std::shared_ptr<VertexBuffer> buffer;
 	};
 
 	struct View {
@@ -34,7 +35,6 @@ namespace tec {
 		bool active = false;
 	};
 
-	typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableMap;
 
 	class RenderSystem : public CommandQueue < RenderSystem >, public EventQueue < KeyboardEvent > {
 	public:
@@ -44,17 +44,14 @@ namespace tec {
 
 		void Update(const double delta);
 
-		void AddVertexBuffer(const std::weak_ptr<Material> mat, const std::weak_ptr<VertexBuffer> buffer, const eid entity_id);
-
-		// Checks if there is a view associated entity_id and sets it as the current view.
 		bool ActivateView(const eid entity_id);
-	protected:
-		//void CreateVertexBuffer(eid entity_id, const std::vector<Vertex>& verts, const std::vector<GLuint>& indices);
 	private:
+		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
+
 		glm::mat4 projection;
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
-		std::map < std::weak_ptr<Material>, std::pair < std::weak_ptr<VertexBuffer>,
-			std::list<eid >> , std::owner_less<std::weak_ptr<Material>>> buffers;
+		std::map<eid, glm::mat4> model_matricies;
+		std::map<std::shared_ptr<Material>, std::map<std::shared_ptr<VertexBuffer>, std::list<eid>>> render_list;
 	};
 }

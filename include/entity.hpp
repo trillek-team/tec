@@ -15,11 +15,15 @@ namespace tec {
 
 		template <typename T, typename... U>
 		void Add(U&&... args) {
-			if (!Multiton<eid, std::shared_ptr<T>>::Get(this->id)) {
+			if (!Multiton<eid, std::shared_ptr<T>>::Has(this->id)) {
 				auto comp = std::make_shared<T>(std::forward<U>(args)...);
 
-				ComponentUpdateSystem<T>::SubmitUpdate(this->id, comp);
+				Update(comp);
 			}
+		}
+		template <typename T>
+		void Add(std::shared_ptr<T> comp) {
+			Update(comp);
 		}
 
 		template <typename T>
@@ -29,7 +33,7 @@ namespace tec {
 
 		template <typename T>
 		bool Has() {
-			return Multiton<eid, std::shared_ptr<T>>::Get(this->id) != nullptr;
+			return Multiton<eid, std::shared_ptr<T>>::Has(this->id);
 		}
 
 		template <typename T>

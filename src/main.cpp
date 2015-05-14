@@ -48,7 +48,6 @@ int main(int argc, char* argv[]) {
 	tec::Entity voxel1(100);
 	voxel1.Add<tec::Position>();
 	voxel1.Add<tec::Orientation>();
-	voxel1.Add<tec::Renderable>();
 
 	tec::VoxelCommand add_voxel(
 		[ ] (tec::VoxelVolume* vox_vol) {
@@ -61,39 +60,36 @@ int main(int argc, char* argv[]) {
 	tec::VoxelVolume::QueueCommand(std::move(add_voxel));
 	voxvol_shared->Update(0.0);
 
-	tec::RenderCommand add_vb(
-		[voxvol_shared, basic_fill, overlay] (tec::RenderSystem* ren_sys) {
+
+	auto voxvol_vert_buffer = std::make_shared<tec::VertexBuffer>();
+	{
 		auto mesh = voxvol_shared->GetMesh().lock();
-		if (mesh) {
-			auto vb = std::make_shared<tec::VertexBuffer>();
-			tec::VertexBufferMap::Set(100, vb);
-			vb->Buffer(*mesh->GetVertexBuffer(), *mesh->GetIndexBuffer());
+		voxvol_vert_buffer->Buffer(*mesh->GetVertexBuffer(), *mesh->GetIndexBuffer());
+		auto voxel1_renderable = std::make_shared<tec::Renderable>();
+		voxel1_renderable->buffer = voxvol_vert_buffer;
+		voxel1_renderable->material = overlay.lock();
+		voxel1.Add<tec::Renderable>(voxel1_renderable);
+	}
 
-			ren_sys->AddVertexBuffer(basic_fill, vb, 100);
-			ren_sys->AddVertexBuffer(overlay, vb, 100);
-
-			auto vb2 = std::make_shared<tec::VertexBuffer>();
-			tec::VertexBufferMap::Set(1, vb2);
-			vb2->Buffer(*mesh->GetVertexBuffer(), *mesh->GetIndexBuffer());
-
-			ren_sys->AddVertexBuffer(basic_fill, vb2, 1);
-		}
-	});
-	tec::RenderSystem::QueueCommand(std::move(add_vb));
 
 	tec::Entity camera(1);
 	camera.Add<tec::Position>();
 	camera.Add<tec::Orientation>();
 	camera.Add<tec::Camera>(1);
-	camera.Add<tec::Renderable>();
+	{
+		auto cam_renderable = std::make_shared<tec::Renderable>();
+		cam_renderable->buffer = voxvol_vert_buffer;
+		cam_renderable->material = basic_fill.lock();
+		camera.Add<tec::Renderable>(cam_renderable);
+	}
 	tec::Entity camera2(2);
 	camera2.Add<tec::Position>();
 	camera2.Add<tec::Orientation>();
 	camera2.Add<tec::Camera>(2);
 
 	tec::CameraMover cam_mover(1);
-	
-    std::int64_t frame_id = 1;
+
+	std::int64_t frame_id = 1;
 
 	while (!os.Closing()) {
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
