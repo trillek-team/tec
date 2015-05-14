@@ -131,6 +131,8 @@ namespace tec {
 
 		glfwGetCursorPos(this->window, &this->old_mouse_x, &this->old_mouse_y);
 
+		UpdateWindowSize(width, height);
+
 		return true;
 	}
 
@@ -231,6 +233,10 @@ namespace tec {
 	}
 
 	void OS::UpdateWindowSize(const int width, const int height) {
+		std::shared_ptr<WindowResizedEvent> resize_event = std::make_shared<WindowResizedEvent>(
+			WindowResizedEvent {this->client_width, this->client_height, width, height});
+		EventSystem<WindowResizedEvent>::Get()->Emit(resize_event);
+
 		this->client_width = width;
 		this->client_height = height;
 	}

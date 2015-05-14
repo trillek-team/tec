@@ -33,6 +33,11 @@ namespace tec {
 		int new_x, new_y; // Client space new x, y.
 	};
 
+	struct WindowResizedEvent {
+		int old_width, old_height; // Client space old width, height.
+		int new_width, new_height; // Client space new width, height.
+	};
+
 	class OS {
 	public:
 		OS() : mouse_lock(false) { }

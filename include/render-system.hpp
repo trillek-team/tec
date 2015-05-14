@@ -24,6 +24,7 @@ namespace tec {
 	typedef Command<RenderSystem> RenderCommand;
 
 	struct KeyboardEvent;
+	struct WindowResizedEvent;
 
 	struct Renderable {
 		std::shared_ptr<Material> material;
@@ -35,8 +36,9 @@ namespace tec {
 		bool active = false;
 	};
 
-
-	class RenderSystem : public CommandQueue < RenderSystem >, public EventQueue < KeyboardEvent > {
+	class RenderSystem : public CommandQueue < RenderSystem >,
+		public EventQueue < KeyboardEvent >,
+		public EventQueue < WindowResizedEvent > {
 	public:
 		RenderSystem();
 
@@ -47,6 +49,8 @@ namespace tec {
 		bool ActivateView(const eid entity_id);
 	private:
 		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
+		
+		void On(std::shared_ptr<WindowResizedEvent> data);
 
 		glm::mat4 projection;
 		std::weak_ptr<View> current_view;

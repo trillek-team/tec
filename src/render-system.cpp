@@ -9,6 +9,7 @@
 #include "components/transforms.hpp"
 #include "material.hpp"
 #include "entity.hpp"
+#include "os.hpp"
 
 namespace tec {
 	class Texture {
@@ -18,14 +19,13 @@ namespace tec {
 
 	typedef Multiton<std::string, std::shared_ptr<Texture>> TextureMap;
 
-	RenderSystem::RenderSystem() {
+	RenderSystem::RenderSystem() : window_width(800), window_height(600) {
 		auto err = glGetError();
 		// If there is an error that means something went wrong when creating the context.
 		if (err) {
 			return;
 		}
 
-		SetViewportSize(800, 600);
 		glEnable(GL_DEPTH_TEST);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
@@ -49,6 +49,7 @@ namespace tec {
 
 	void RenderSystem::Update(const double delta) {
 		ProcessCommandQueue();
+		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 
 		// Loop through each renderbale and update its model matrix.
 		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
@@ -129,5 +130,9 @@ namespace tec {
 			return true;
 		}
 		return false;
+	}
+
+	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
+		SetViewportSize(data->new_width, data->new_height);
 	}
 }
