@@ -4,10 +4,10 @@
 #include <iostream>
 #include <thread>
 
-#include "shader.hpp"
-#include "vertexbuffer.hpp"
+#include "graphics/shader.hpp"
+#include "graphics/vertexbuffer.hpp"
 #include "components/transforms.hpp"
-#include "material.hpp"
+#include "graphics/material.hpp"
 #include "entity.hpp"
 #include "os.hpp"
 

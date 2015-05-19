@@ -2,11 +2,11 @@
 #include "event-system.hpp"
 #include "event-queue.hpp"
 #include "render-system.hpp"
-#include "vertexbuffer.hpp"
-#include "shader.hpp"
+#include "graphics/vertexbuffer.hpp"
+#include "graphics/shader.hpp"
 #include "voxelvolume.hpp"
 #include "components/transforms.hpp"
-#include "material.hpp"
+#include "graphics/material.hpp"
 #include "entity.hpp"
 #include "components/camera.hpp"
 #include "polygonmeshdata.hpp"
@@ -24,8 +24,6 @@ int main(int argc, char* argv[]) {
 
 	rs.SetViewportSize(800, 600);
 
-	auto voxvol = tec::VoxelVolume::Create(100, "bob", 0);
-	auto voxvol_shared = voxvol.lock();
 	auto shader_files = std::list < std::pair<tec::Shader::ShaderType, std::string> > {
 		std::make_pair(tec::Shader::VERTEX, "assets/basic.vert"), std::make_pair(tec::Shader::FRAGMENT, "assets/basic.frag"),
 	};
@@ -45,6 +43,8 @@ int main(int argc, char* argv[]) {
 	tec::ComponentUpdateSystem<tec::Renderable>::Initialize();
 	tec::ComponentUpdateSystem<tec::View>::Initialize();
 
+	auto voxvol = tec::VoxelVolume::Create(100, "bob", 0);
+	auto voxvol_shared = voxvol.lock();
 	tec::Entity voxel1(100);
 	voxel1.Add<tec::Position>();
 	voxel1.Add<tec::Orientation>();
@@ -59,29 +59,21 @@ int main(int argc, char* argv[]) {
 	});
 	tec::VoxelVolume::QueueCommand(std::move(add_voxel));
 	voxvol_shared->Update(0.0);
-
-
 	auto voxvol_vert_buffer = std::make_shared<tec::VertexBuffer>();
-	{
+	voxel1.Add<tec::Renderable>(voxvol_vert_buffer, overlay.lock());
+
+	tec::RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared](tec::RenderSystem* sys) {
 		auto mesh = voxvol_shared->GetMesh().lock();
 		voxvol_vert_buffer->Buffer(*mesh->GetVertexBuffer(), *mesh->GetIndexBuffer());
-		auto voxel1_renderable = std::make_shared<tec::Renderable>();
-		voxel1_renderable->buffer = voxvol_vert_buffer;
-		voxel1_renderable->material = overlay.lock();
-		voxel1.Add<tec::Renderable>(voxel1_renderable);
-	}
+	});
+	tec::RenderSystem::QueueCommand(std::move(buffer_func));
 
 
 	tec::Entity camera(1);
 	camera.Add<tec::Position>();
 	camera.Add<tec::Orientation>();
 	camera.Add<tec::Camera>(1);
-	{
-		auto cam_renderable = std::make_shared<tec::Renderable>();
-		cam_renderable->buffer = voxvol_vert_buffer;
-		cam_renderable->material = basic_fill.lock();
-		camera.Add<tec::Renderable>(cam_renderable);
-	}
+	camera.Add<tec::Renderable>(voxvol_vert_buffer, basic_fill.lock());
 	tec::Entity camera2(2);
 	camera2.Add<tec::Position>();
 	camera2.Add<tec::Orientation>();

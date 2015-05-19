@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 #include <map>
-#include "vertexbuffer.hpp"
+#include "graphics/vertexbuffer.hpp"
 
 namespace tec {
 	class PolygonMeshData;

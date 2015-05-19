@@ -1,5 +1,5 @@
-#include "material.hpp"
-#include "shader.hpp"
+#include "graphics/material.hpp"
+#include "graphics/shader.hpp"
 
 namespace tec {
 	GLenum Material::GetFillMode() {

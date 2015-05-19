@@ -27,6 +27,13 @@ namespace tec {
 	struct WindowResizedEvent;
 
 	struct Renderable {
+		Renderable(std::shared_ptr<VertexBuffer> buf, std::shared_ptr<Material> mat) :
+			buffer(buf), material(mat) {
+
+		}
+		Renderable() {
+
+		}
 		std::shared_ptr<Material> material;
 		std::shared_ptr<VertexBuffer> buffer;
 	};
@@ -49,7 +56,7 @@ namespace tec {
 		bool ActivateView(const eid entity_id);
 	private:
 		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
-		
+
 		void On(std::shared_ptr<WindowResizedEvent> data);
 
 		glm::mat4 projection;

@@ -1,5 +1,5 @@
 #include "voxelvolume.hpp"
-#include "vertexbuffer.hpp"
+#include "graphics/vertexbuffer.hpp"
 #include "polygonmeshdata.hpp"
 
 namespace tec {
