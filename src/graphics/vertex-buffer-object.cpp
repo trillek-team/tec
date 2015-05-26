@@ -39,10 +39,35 @@ namespace tec {
 	}
 
 	void VertexBufferObject::Load(std::weak_ptr<Mesh> mesh) {
-		std::shared_ptr<Mesh> locked_ptr = this->source_ptr.lock();
+		std::shared_ptr<Mesh> locked_ptr = mesh.lock();
 		if (locked_ptr) {
-			// TODO: Iterate over all mesh groups and add them to the vertex buffer.
-			Load(*locked_ptr->GetVertexBuffer(), *locked_ptr->GetIndexBuffer());
+			// TODO: Make a load method that takes offset and count to sub_buffer.
+			size_t mesh_goup_count = locked_ptr->GetMeshGroupCount();
+			size_t total_verts = 0;
+			size_t total_indices = 0;
+			for (size_t i = 0; i < mesh_goup_count; ++i) {
+				auto submesh = locked_ptr->GetMeshGroup(i).lock();
+				if (submesh) {
+					total_verts += submesh->verts.size();
+					total_indices += submesh->indicies.size();
+				}
+			}
+			std::vector<VertexData> all_verts;
+			all_verts.reserve(total_verts);
+			std::vector<GLuint> all_indices;
+			all_indices.reserve(total_indices);
+			size_t vert_offset = 0;
+			for (size_t i = 0; i < mesh_goup_count; ++i) {
+				auto submesh = locked_ptr->GetMeshGroup(i).lock();
+				if (submesh) {
+					vert_offset = all_verts.size();
+					all_verts.insert(all_verts.end(), submesh->verts.begin(), submesh->verts.end());
+					for (auto index : submesh->indicies) {
+						all_indices.push_back(index + vert_offset);
+					}
+				}
+			}
+			Load(all_verts, all_indices);
 		}
 	}
 

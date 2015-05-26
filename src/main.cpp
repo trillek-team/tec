@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
 
 	tec::RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared] (tec::RenderSystem* sys) {
 		auto mesh = voxvol_shared->GetMesh().lock();
-		voxvol_vert_buffer->Load(*mesh->GetVertexBuffer(), *mesh->GetIndexBuffer());
+		voxvol_vert_buffer->Load(mesh);
 	});
 	tec::RenderSystem::QueueCommand(std::move(buffer_func));
 
