@@ -5,19 +5,19 @@
 #include <thread>
 
 #include "graphics/shader.hpp"
-#include "graphics/vertexbuffer.hpp"
+#include "graphics/vertex-buffer-object.hpp"
 #include "components/transforms.hpp"
 #include "graphics/material.hpp"
 #include "entity.hpp"
 #include "os.hpp"
 
 namespace tec {
-	class Texture {
+	class TextureObject {
 	public:
 		GLuint name;
 	};
 
-	typedef Multiton<std::string, std::shared_ptr<Texture>> TextureMap;
+	typedef Multiton<std::string, std::shared_ptr<TextureObject>> TextureMap;
 
 	RenderSystem::RenderSystem() : window_width(800), window_height(600) {
 		auto err = glGetError();
@@ -109,15 +109,15 @@ namespace tec {
 
 			for (auto buffer_list : material_list.second) {
 				auto buffer = buffer_list.first;
-				glBindVertexArray(buffer->vao);
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->ibo);
+				glBindVertexArray(buffer->GetVAO());
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->GetIBO());
 				for (auto entity : buffer_list.second) {
 					glm::mat4 model_matrix = glm::mat4(1.0);
 					if (this->model_matricies.find(entity) != this->model_matricies.end()) {
 						model_matrix = this->model_matricies.at(entity);
 					}
 					glUniformMatrix4fv(model_index, 1, GL_FALSE, &model_matrix[0][0]);
-					glDrawElements(GL_TRIANGLES, buffer->index_count, GL_UNSIGNED_INT, 0);
+					glDrawElements(GL_TRIANGLES, buffer->GetIndexCount(), GL_UNSIGNED_INT, 0);
 				}
 			}
 			shader->UnUse();

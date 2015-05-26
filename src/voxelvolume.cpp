@@ -1,9 +1,9 @@
 #include "voxelvolume.hpp"
-#include "graphics/vertexbuffer.hpp"
-#include "polygonmeshdata.hpp"
+#include "graphics/vertex-buffer-object.hpp"
+#include "resources/mesh.hpp"
 
 namespace tec {
-	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<PolygonMeshData> mesh, const size_t submesh) :
+	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<Mesh> mesh, const size_t submesh) :
 		entity_id(entity_id), mesh(mesh), submesh(submesh) { }
 
 	VoxelVolume::~VoxelVolume() { }
@@ -74,20 +74,20 @@ namespace tec {
 	}
 
 	void VoxelVolume::UpdateMesh() {
-		std::vector<Vertex> verts;
+		std::vector<VertexData> verts;
 		std::vector<unsigned int> indicies;
 		std::map<std::tuple<float, float, float>, unsigned int> index_list;
-		static std::vector<Vertex> IdentityVerts({
+		static std::vector<VertexData> IdentityVerts({
 			// Front
-			Vertex(-1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Bottom left
-			Vertex(1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f),	// Bottom right
-			Vertex(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f),		// Top right
-			Vertex(-1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Top Left
+			VertexData(-1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Bottom left
+			VertexData(1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f),	// Bottom right
+			VertexData(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f),		// Top right
+			VertexData(-1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Top Left
 			// Back
-			Vertex(-1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f),	// Bottom left
-			Vertex(1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f),	// Bottom right
-			Vertex(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f),	// Top right
-			Vertex(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f)	// Top left
+			VertexData(-1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f),	// Bottom left
+			VertexData(1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f),	// Bottom right
+			VertexData(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f),	// Top right
+			VertexData(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f)	// Top left
 		});
 
 		for (auto v : this->voxels) {
@@ -101,7 +101,7 @@ namespace tec {
 					IdentityVerts[i].position[1] + row * 2, IdentityVerts[i].position[2] + slice * 2);
 
 				if (index_list.find(vert_position) == index_list.end()) {
-					verts.push_back(Vertex(IdentityVerts[i].position[0] + column * 2,
+					verts.push_back(VertexData(IdentityVerts[i].position[0] + column * 2,
 						IdentityVerts[i].position[1] + row * 2, IdentityVerts[i].position[2] + slice * 2,
 						IdentityVerts[i].color[0], IdentityVerts[i].color[1], IdentityVerts[i].color[2]));
 					//v.second.color[0], v.second.color[1], v.second.color[2]));
@@ -137,15 +137,16 @@ namespace tec {
 		}
 	}
 
-	std::weak_ptr<PolygonMeshData> VoxelVolume::GetMesh() {
+	std::weak_ptr<Mesh> VoxelVolume::GetMesh() {
 		return this->mesh;
 	}
 
 	std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id,
 		const std::string name, const size_t submesh) {
-		std::weak_ptr<PolygonMeshData> mesh = PolygonMeshMap::Get(name);
+		std::weak_ptr<Mesh> mesh = MeshMap::Get(name);
 		if (!mesh.lock()) {
-			mesh = PolygonMeshData::Create(name);
+			MeshMap::Set(name, std::make_shared<Mesh>());
+			mesh = MeshMap::Get(name);
 		}
 		auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh, submesh);
 		VoxelVoumeMap::Set(entity_id, voxvol);
@@ -153,7 +154,7 @@ namespace tec {
 	}
 
 	std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id,
-		std::weak_ptr<PolygonMeshData> mesh, const size_t submesh) {
+		std::weak_ptr<Mesh> mesh, const size_t submesh) {
 		auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh, submesh);
 		VoxelVoumeMap::Set(entity_id, voxvol);
 		return voxvol;

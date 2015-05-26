@@ -17,7 +17,7 @@
 #include "command-queue.hpp"
 
 namespace tec {
-	struct VertexBuffer;
+	class VertexBufferObject;
 	class Material;
 
 	class RenderSystem;
@@ -27,7 +27,7 @@ namespace tec {
 	struct WindowResizedEvent;
 
 	struct Renderable {
-		Renderable(std::shared_ptr<VertexBuffer> buf, std::shared_ptr<Material> mat) :
+		Renderable(std::shared_ptr<VertexBufferObject> buf, std::shared_ptr<Material> mat) :
 			buffer(buf), material(mat) {
 
 		}
@@ -35,7 +35,7 @@ namespace tec {
 
 		}
 		std::shared_ptr<Material> material;
-		std::shared_ptr<VertexBuffer> buffer;
+		std::shared_ptr<VertexBufferObject> buffer;
 	};
 
 	struct View {
@@ -63,6 +63,6 @@ namespace tec {
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
-		std::map<std::shared_ptr<Material>, std::map<std::shared_ptr<VertexBuffer>, std::list<eid>>> render_list;
+		std::map<std::shared_ptr<Material>, std::map<std::shared_ptr<VertexBufferObject>, std::list<eid>>> render_list;
 	};
 }

@@ -2,14 +2,13 @@
 #include "event-system.hpp"
 #include "event-queue.hpp"
 #include "render-system.hpp"
-#include "graphics/vertexbuffer.hpp"
+#include "graphics/vertex-buffer-object.hpp"
 #include "graphics/shader.hpp"
 #include "voxelvolume.hpp"
 #include "components/transforms.hpp"
 #include "graphics/material.hpp"
 #include "entity.hpp"
 #include "components/camera.hpp"
-#include "polygonmeshdata.hpp"
 #include "component-update-system.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -59,12 +58,12 @@ int main(int argc, char* argv[]) {
 	});
 	tec::VoxelVolume::QueueCommand(std::move(add_voxel));
 	voxvol_shared->Update(0.0);
-	auto voxvol_vert_buffer = std::make_shared<tec::VertexBuffer>();
+	auto voxvol_vert_buffer = std::make_shared<tec::VertexBufferObject>();
 	voxel1.Add<tec::Renderable>(voxvol_vert_buffer, overlay.lock());
 
-	tec::RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared](tec::RenderSystem* sys) {
+	tec::RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared] (tec::RenderSystem* sys) {
 		auto mesh = voxvol_shared->GetMesh().lock();
-		voxvol_vert_buffer->Buffer(*mesh->GetVertexBuffer(), *mesh->GetIndexBuffer());
+		voxvol_vert_buffer->Load(*mesh->GetVertexBuffer(), *mesh->GetIndexBuffer());
 	});
 	tec::RenderSystem::QueueCommand(std::move(buffer_func));
 
