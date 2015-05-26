@@ -11,6 +11,8 @@
 #include "components/camera.hpp"
 #include "component-update-system.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "resources/pixel-buffer.hpp"
+#include "graphics/texture-object.hpp"
 
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
@@ -81,6 +83,10 @@ int main(int argc, char* argv[]) {
 	tec::CameraMover cam_mover(1);
 
 	std::int64_t frame_id = 1;
+
+	auto pixbuf = tec::PixelBuffer();
+	pixbuf.Load("assets/bob/bob_head.png");
+	auto tex = tec::TextureObject(pixbuf);
 
 	while (!os.Closing()) {
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
