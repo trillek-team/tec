@@ -11,6 +11,7 @@
 #include "components/camera.hpp"
 #include "component-update-system.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "resources/md5mesh.hpp"
 #include "resources/pixel-buffer.hpp"
 #include "graphics/texture-object.hpp"
 
@@ -69,6 +70,15 @@ int main(int argc, char* argv[]) {
 	});
 	tec::RenderSystem::QueueCommand(std::move(buffer_func));
 
+	std::shared_ptr<tec::MD5Mesh> mesh1 = std::make_shared<tec::MD5Mesh>();
+	mesh1->Load("assets/bob/bob.md5mesh");
+	{
+		auto renderable = std::make_shared<tec::Renderable>();
+		renderable->buffer = std::make_shared<tec::VertexBufferObject>();
+		renderable->material = basic_fill.lock();
+		renderable->buffer->Load(mesh1);
+		tec::Entity(99).Add<tec::Renderable>(renderable);
+	}
 
 	tec::Entity camera(1);
 	camera.Add<tec::Position>();
