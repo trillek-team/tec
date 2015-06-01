@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 	};
 	auto s_overlay = tec::Shader::CreateFromFile("shader_overlay", shader_files);
 	auto overlay = tec::Material::Create("material_overlay", s_overlay);
-	overlay.lock()->SetFillMode(GL_LINE);
+	overlay->SetPolygonMode(GL_LINE);
 
 	tec::ComponentUpdateSystem<tec::Position>::Initialize();
 	tec::ComponentUpdateSystem<tec::Orientation>::Initialize();

@@ -15,9 +15,15 @@ namespace tec {
 
 	class VertexBufferObject {
 	public:
+		struct VertexGroup {
+			size_t mesh_group_number;
+			size_t index_count;
+			size_t starting_offset;
+		};
+
 		VertexBufferObject();
 
-		VertexBufferObject(std::weak_ptr<Mesh> mesh);
+		VertexBufferObject(std::shared_ptr<Mesh> mesh);
 
 		~VertexBufferObject();
 
@@ -41,10 +47,17 @@ namespace tec {
 		GLuint GetIBO();
 
 		/**
-		 * \brief Gets the count of indices in the index buffer object.
-		 * \return size_t The number of indices.
+		 * \brief Gets the specified VertexGroup.
+		 * \param size_t vertex_group_number Number of the vertex group to get.
+		 * \return VertexGroup& The specified VertexGroup.
 		 */
-		size_t GetIndexCount();
+		VertexGroup* GetVertexGroup(const size_t vertex_group_number);
+
+		/**
+		 * \brief Gets the number of vertex groups store in the buffer.
+		 * \return size_t The number of vertex groups.
+		 */
+		size_t GetVertexGroupCount() const;
 
 		/**
 		 * \return true If the vertex buffer object was created dynamic
@@ -60,7 +73,7 @@ namespace tec {
 		 * Loads a mesh into a vertex buffer object.
 		 * note: calls Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices).
 		 */
-		void Load(std::weak_ptr<Mesh> mesh);
+		void Load(std::shared_ptr<Mesh> mesh);
 
 		/**
 		 * Loads a set of vertex and index data into a vertex buffer object.
@@ -68,8 +81,9 @@ namespace tec {
 		void Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices);
 	private:
 		GLuint vao, vbo, ibo;
-		size_t vertex_count;
-		size_t index_count;
-		std::weak_ptr<Mesh> source_ptr;
+		size_t vertex_count; // Total vertex count.
+		size_t index_count; // Total index count.
+		std::vector<VertexGroup> vertex_groups;
+		std::weak_ptr<Mesh> source_mesh;
 	};
 }
