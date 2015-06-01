@@ -1,8 +1,9 @@
 #include "graphics/material.hpp"
+#include "graphics/texture-object.hpp"
 #include "graphics/shader.hpp"
 
 namespace tec {
-	GLenum Material::GetPolygonMode() {
+	const GLenum Material::GetPolygonMode() {
 		return this->polygon_mode;
 	}
 
@@ -26,13 +27,38 @@ namespace tec {
 		this->shader = s;
 	}
 
-	void Material::SetShader(std::string name) {
+	void Material::SetShader(const std::string name) {
 		this->shader = ShaderMap::Get(name);
 	}
 
-	std::weak_ptr<Material> Material::Create(const std::string name, std::weak_ptr<Shader> shader) {
+	void Material::AddTexture(std::shared_ptr<TextureObject> tex) {
+		this->textures.push_back(tex);
+	}
+
+	void Material::RemoveTexture(std::shared_ptr<TextureObject> tex) {
+		for (auto texture : this->textures) {
+			if (texture == tex) {
+				texture.reset();
+			}
+		}
+	}
+
+	std::shared_ptr<Material> Material::Create(const std::string name, std::shared_ptr<Shader> shader) {
 		auto m = std::make_shared<Material>(shader);
 		MaterialMap::Set(name, m);
 		return m;
 	}
+
+	void Material::Activate() {
+		for (GLuint i = 0; i < this->textures.size(); ++ i) {
+			this->shader->ActivateTextureUnit(i, this->textures[i]->GetID());
+		}
+	}
+
+	void Material::Deactivate() {
+		for (GLuint i = 0; i < this->textures.size(); ++i) {
+			this->shader->DeactivateTextureUnit(i);
+		}
+	}
+
 }

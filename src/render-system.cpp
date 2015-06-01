@@ -12,13 +12,6 @@
 #include "os.hpp"
 
 namespace tec {
-	class TextureObject {
-	public:
-		GLuint name;
-	};
-
-	typedef Multiton<std::string, std::shared_ptr<TextureObject>> TextureMap;
-
 	RenderSystem::RenderSystem() : window_width(800), window_height(600) {
 		auto err = glGetError();
 		// If there is an error that means something went wrong when creating the context.
@@ -95,17 +88,20 @@ namespace tec {
 
 		for (auto material_list : this->render_list) {
 			auto material = material_list.first;
-			glPolygonMode(GL_FRONT_AND_BACK, material->GetFillMode());
+			if (!material) {
+				continue;
+			}
+			glPolygonMode(GL_FRONT_AND_BACK, material->GetPolygonMode());
 
-			auto shader = material->GetShader().lock();
+			auto shader = material->GetShader();
 			if (!shader) {
 				continue;
 			}
 			shader->Use();
 
-			glUniformMatrix4fv(shader->GetUniform("view"), 1, GL_FALSE, &camera_matrix[0][0]);
-			glUniformMatrix4fv(shader->GetUniform("projection"), 1, GL_FALSE, &this->projection[0][0]);
-			GLint model_index = shader->GetUniform("model");
+			glUniformMatrix4fv(shader->GetUniformLocation("view"), 1, GL_FALSE, &camera_matrix[0][0]);
+			glUniformMatrix4fv(shader->GetUniformLocation("projection"), 1, GL_FALSE, &this->projection[0][0]);
+			GLint model_index = shader->GetUniformLocation("model");
 
 			for (auto buffer_list : material_list.second) {
 				auto buffer = buffer_list.first;

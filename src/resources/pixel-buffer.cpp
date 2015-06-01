@@ -207,7 +207,7 @@ namespace tec {
 					this->imagemode = ImageColorMode::MONOCHROME_A;
 					break;
 				default:
-					this->imagemode =  ImageColorMode::UNKNOWN_MODE;
+					this->imagemode = ImageColorMode::UNKNOWN_MODE;
 					break;
 			}
 			this->imagepixelsize = num_components;

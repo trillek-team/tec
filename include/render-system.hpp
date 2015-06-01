@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <list>
+#include <set>
 #include <map>
 #include <glm/mat4x4.hpp>
 
@@ -63,6 +63,6 @@ namespace tec {
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
-		std::map<std::shared_ptr<Material>, std::map<std::shared_ptr<VertexBufferObject>, std::list<eid>>> render_list;
+		std::map<std::shared_ptr<Material>, std::map<std::shared_ptr<VertexBufferObject>, std::set<eid>>> render_list;
 	};
 }

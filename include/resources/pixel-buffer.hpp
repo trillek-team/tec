@@ -67,14 +67,14 @@ namespace tec {
 		 * \return true on success
 		 */
 		bool Create(uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode);
-		
+
 		/**
-		 * \brief Factory method that creates a PixelBuffer and stores it in
+		 * \brief Factory method that creates a PixelBuffer and stores it in the
 		 * PixelBufferMap under name.  It will optionally load a texture file
 		 * with the given filename.
 		 * \param const std::string name The name to store the PixelBuffer under.
 		 * \param const std::string filename The optional filename of the image to load.
-		 * \return std::shared_ptr<PixelBuffer> The created PixelBuffer
+		 * \return std::shared_ptr<PixelBuffer> The created PixelBuffer.
 		 */
 		static std::shared_ptr<PixelBuffer> Create(const std::string name, const std::string filename = "");
 
