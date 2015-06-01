@@ -4,7 +4,12 @@
 #include <memory>
 #include <cstdint>
 
+#include "multiton.hpp"
+
 namespace tec {
+	class PixelBuffer;
+	typedef Multiton<std::string, std::shared_ptr<PixelBuffer>> PixelBufferMap;
+
 	enum class ImageColorMode : std::uint32_t {
 		UNKNOWN_MODE = 0xffffffffu,
 		MONOCHROME = 0,
@@ -62,6 +67,16 @@ namespace tec {
 		 * \return true on success
 		 */
 		bool Create(uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode);
+		
+		/**
+		 * \brief Factory method that creates a PixelBuffer and stores it in
+		 * PixelBufferMap under name.  It will optionally load a texture file
+		 * with the given filename.
+		 * \param const std::string name The name to store the PixelBuffer under.
+		 * \param const std::string filename The optional filename of the image to load.
+		 * \return std::shared_ptr<PixelBuffer> The created PixelBuffer
+		 */
+		static std::shared_ptr<PixelBuffer> Create(const std::string name, const std::string filename = "");
 
 		bool IsDirty() const;
 		/** \brief Mark dirty */

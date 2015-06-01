@@ -22,7 +22,7 @@ namespace tec {
 		~VertexBufferObject();
 
 		/**
-		 * \brief Delete the underlaying GL buffers
+		 * \brief Delete the underlying GL buffers
 		 */
 		void Destroy();
 

@@ -147,6 +147,15 @@ namespace tec {
 		return true;
 	}
 
+	std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string name, const std::string filename) {
+		auto pbuf = std::make_shared<PixelBuffer>();
+		PixelBufferMap::Set(name, pbuf);
+		if (filename != "") {
+			pbuf->Load(filename);
+		}
+		return pbuf;
+	}
+
 	bool PixelBuffer::IsDirty() const {
 		return dirty;
 	}
@@ -182,14 +191,36 @@ namespace tec {
 	bool PixelBuffer::Load(const std::string filename) {
 		int num_components;
 		unsigned char *data;
-		data = stbi_load(filename.c_str(), &this->imagewidth, &this->imagewidth, &num_components, 0);
+		data = stbi_load(filename.c_str(), &this->imagewidth, &this->imageheight, &num_components, 0);
 		if (data) {
-			Create(this->imagewidth, this->imagewidth, 8, ImageColorMode::COLOR_RGBA);
-			if (this->blockptr) {
-				writelock.lock();
-				std::memcpy(this->blockptr.get(), data, this->imagewidth * this->imagewidth * num_components);
-				writelock.unlock();
+			switch (num_components) {
+				case 3:
+					this->imagemode = ImageColorMode::COLOR_RGB;
+					break;
+				case 4:
+					this->imagemode = ImageColorMode::COLOR_RGBA;
+					break;
+				case 1:
+					this->imagemode = ImageColorMode::MONOCHROME;
+					break;
+				case 2:
+					this->imagemode = ImageColorMode::MONOCHROME_A;
+					break;
+				default:
+					this->imagemode =  ImageColorMode::UNKNOWN_MODE;
+					break;
 			}
+			this->imagepixelsize = num_components;
+			this->imagebitdepth = 8;
+			this->image_x = 0;
+			this->image_y = 0;
+			this->dirty = true;
+			this->bufferpitch = (8 * imagepixelsize);
+			this->bufferpitch = this->imagewidth * ((this->bufferpitch >> 3) +
+				((this->bufferpitch & 0x7) ? 1 : 0));
+			this->writelock.lock();
+			this->blockptr.reset(data);
+			this->writelock.unlock();
 
 			return true;
 		}

@@ -41,7 +41,7 @@ namespace tec {
 		 * \param[in] const unsigned int& meshGroup The index of the mesh group to retrieve.
 		 * \return std::weak_ptr<MeshGroup> The mesh group requested
 		 */
-		std::weak_ptr<MeshGroup> GetMeshGroup(const unsigned int& meshGroup);
+		std::weak_ptr<MeshGroup> GetMeshGroup(const size_t mesh_group);
 
 		/**
 		 * \brief Returns the number of sub-mesh groups.

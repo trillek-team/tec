@@ -100,15 +100,18 @@ namespace tec {
 		glUseProgram(0);
 	}
 
-	void Shader::ActivateTextureUnit(const GLuint unit, const GLuint name) {
+	void Shader::ActivateTextureUnit(const GLuint unit, const GLuint texture_name) {
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, texture_name);
 
 	}
 
 	void Shader::DeactivateTextureUnit(const GLuint unit) {
-
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	GLint Shader::GetUniform(const std::string name) {
+	GLint Shader::GetUniformLocation(const std::string name) {
 		if (this->uniforms.find(name) != this->uniforms.end()) {
 			return this->uniforms.at(name);
 		}
@@ -122,7 +125,7 @@ namespace tec {
 		return 0;
 	}
 
-	GLint Shader::GetAttribute(const std::string name) {
+	GLint Shader::GetAttributeLocation(const std::string name) {
 		if (this->attributes.find(name) != this->attributes.end()) {
 			return this->attributes.at(name);
 		}
@@ -136,7 +139,7 @@ namespace tec {
 		return 0;
 	}
 
-	std::weak_ptr<Shader> Shader::CreateFromFile(const std::string name,
+	std::shared_ptr<Shader> Shader::CreateFromFile(const std::string name,
 		std::list<std::pair<Shader::ShaderType, std::string>> filenames) {
 		auto s = std::make_shared<Shader>();
 		for (auto pair : filenames) {
@@ -147,7 +150,7 @@ namespace tec {
 		return s;
 	}
 
-	std::weak_ptr<Shader> Shader::CreateFromString(const std::string name,
+	std::shared_ptr<Shader> Shader::CreateFromString(const std::string name,
 		std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
 		auto s = std::make_shared<Shader>();
 		for (auto pair : source_code) {

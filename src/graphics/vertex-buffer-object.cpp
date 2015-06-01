@@ -104,7 +104,7 @@ namespace tec {
 		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData),
 			(GLvoid*)offsetof(VertexData, position));
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer((GLuint)1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData),
+		glVertexAttribPointer((GLuint)1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData),
 			(GLvoid*)offsetof(VertexData, color));
 		glEnableVertexAttribArray(1);
 

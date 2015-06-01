@@ -1,9 +1,9 @@
 #include "resources/mesh.hpp"
 
 namespace tec {
-	std::weak_ptr<MeshGroup> Mesh::GetMeshGroup(const unsigned int& meshIndex) {
-		if (meshIndex < this->mesh_groups.size()) {
-			return this->mesh_groups[meshIndex];
+	std::weak_ptr<MeshGroup> Mesh::GetMeshGroup(const size_t mesh_group) {
+		if (mesh_group < this->mesh_groups.size()) {
+			return this->mesh_groups[mesh_group];
 		}
 
 		return std::weak_ptr<MeshGroup>();
