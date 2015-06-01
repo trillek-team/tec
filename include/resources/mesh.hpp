@@ -28,6 +28,7 @@ namespace tec {
 		std::vector<VertexData> verts;
 		std::vector<unsigned int> indicies;
 		std::list<std::string> textures;
+		std::string material_name;
 	};
 
 	class Mesh {

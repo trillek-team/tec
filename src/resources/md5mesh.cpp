@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "graphics/texture-object.hpp"
+
 namespace tec {
 	/**
 	 * \brief Cleans an input string by removing certain grouping characters.
@@ -201,6 +203,11 @@ namespace tec {
 					if (identifier == "shader") {
 						ss >> mesh.shader;
 						mesh.shader = file_path + mesh.shader;
+						if (!TextureMap::Has(mesh.shader)) {
+							auto pixbuf = PixelBuffer::Create(mesh.shader, mesh.shader);
+							auto tex = std::make_shared<TextureObject>(pixbuf);
+							TextureMap::Set(mesh.shader, tex);
+						}
 					}
 					else if (identifier == "numverts") {
 						int nverts;
@@ -254,6 +261,12 @@ namespace tec {
 				this->mesh_groups[i]->verts.resize(this->meshes[i].verts.size());
 			}
 			this->mesh_groups[i]->textures.push_back(this->meshes[i].shader);
+			auto material_name = this->meshes[i].shader;
+			this->mesh_groups[i]->material_name = material_name.substr(
+				material_name.find_last_of("/") + 1,
+				material_name.find_last_of(".") -
+				material_name.find_last_of("/") - 1)
+				+ "_material";
 			for (size_t j = 0; j < this->meshes[i].verts.size(); ++j) {
 				VertexData vdata;
 
