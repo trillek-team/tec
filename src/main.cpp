@@ -62,11 +62,15 @@ int main(int argc, char* argv[]) {
 	tec::VoxelVolume::QueueCommand(std::move(add_voxel));
 	voxvol_shared->Update(0.0);
 	auto voxvol_vert_buffer = std::make_shared<tec::VertexBufferObject>();
-	voxel1.Add<tec::Renderable>(voxvol_vert_buffer, overlay.lock());
+	voxel1.Add<tec::Renderable>(voxvol_vert_buffer);
 
-	tec::RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared] (tec::RenderSystem* sys) {
+	tec::RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared, s] (tec::RenderSystem* sys) {
 		auto mesh = voxvol_shared->GetMesh().lock();
-		voxvol_vert_buffer->Load(mesh);
+		voxvol_vert_buffer->Load(mesh, s);
+		auto voxel1Renderable = tec::Entity(100).Get<tec::Renderable>().lock();
+		for (size_t i = 0; i < voxvol_vert_buffer->GetVertexGroupCount(); ++i) {
+			voxel1Renderable->vertex_groups.insert(i);
+		}
 	});
 	tec::RenderSystem::QueueCommand(std::move(buffer_func));
 
@@ -75,8 +79,11 @@ int main(int argc, char* argv[]) {
 	{
 		auto renderable = std::make_shared<tec::Renderable>();
 		renderable->buffer = std::make_shared<tec::VertexBufferObject>();
-		renderable->material = basic_fill.lock();
-		renderable->buffer->Load(mesh1);
+		renderable->buffer->Load(mesh1, s);
+		for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
+			renderable->vertex_groups.insert(i);
+		}
+		//renderable->material = tec::Material::Create("bob_material", s);
 		tec::Entity(99).Add<tec::Renderable>(renderable);
 	}
 
@@ -84,7 +91,7 @@ int main(int argc, char* argv[]) {
 	camera.Add<tec::Position>();
 	camera.Add<tec::Orientation>();
 	camera.Add<tec::Camera>(1);
-	camera.Add<tec::Renderable>(voxvol_vert_buffer, basic_fill.lock());
+	camera.Add<tec::Renderable>(voxvol_vert_buffer);
 	tec::Entity camera2(2);
 	camera2.Add<tec::Position>();
 	camera2.Add<tec::Orientation>();

@@ -18,7 +18,7 @@
 
 namespace tec {
 	class VertexBufferObject;
-	class Material;
+	class Shader;
 
 	class RenderSystem;
 	typedef Command<RenderSystem> RenderCommand;
@@ -27,15 +27,17 @@ namespace tec {
 	struct WindowResizedEvent;
 
 	struct Renderable {
-		Renderable(std::shared_ptr<VertexBufferObject> buf, std::shared_ptr<Material> mat) :
-			buffer(buf), material(mat) {
+		Renderable(std::shared_ptr<VertexBufferObject> buf) :
+			buffer(buf) {
 
 		}
 		Renderable() {
 
 		}
-		std::shared_ptr<Material> material;
+		bool hidden = false;
+		std::set<size_t> vertex_groups;
 		std::shared_ptr<VertexBufferObject> buffer;
+
 	};
 
 	struct View {
@@ -63,6 +65,7 @@ namespace tec {
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
-		std::map<std::shared_ptr<Material>, std::map<std::shared_ptr<VertexBufferObject>, std::set<eid>>> render_list;
+		// TODO: Make this into a data structure or organized better?
+		std::map<std::shared_ptr<Shader>, std::map<std::shared_ptr<VertexBufferObject>, std::set<eid>>> render_list;
 	};
 }

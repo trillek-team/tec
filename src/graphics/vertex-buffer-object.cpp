@@ -1,13 +1,16 @@
 #include "graphics/vertex-buffer-object.hpp"
 
 #include "resources/mesh.hpp"
+#include "graphics/material.hpp"
+#include "graphics/shader.hpp"
+#include "graphics/texture-object.hpp"
 
 namespace tec {
 	VertexBufferObject::VertexBufferObject() : vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0) { }
 
 	VertexBufferObject::VertexBufferObject(std::shared_ptr<Mesh> mesh) :
 		vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0), source_mesh(mesh) {
-		Load(mesh);
+		Load(mesh, nullptr);
 	}
 
 	VertexBufferObject::~VertexBufferObject() {
@@ -20,9 +23,9 @@ namespace tec {
 		glDeleteBuffers(1, &this->ibo);
 	}
 
-	GLuint VertexBufferObject::GetVAO() { return this->vao; }
+	const GLuint VertexBufferObject::GetVAO() { return this->vao; }
 
-	GLuint VertexBufferObject::GetIBO() { return this->ibo; }
+	const GLuint VertexBufferObject::GetIBO() { return this->ibo; }
 
 	VertexBufferObject::VertexGroup* VertexBufferObject::GetVertexGroup(const size_t vertex_group_number) {
 		if (vertex_group_number < this->vertex_groups.size()) {
@@ -35,7 +38,7 @@ namespace tec {
 		return this->vertex_groups.size();
 	}
 
-	bool VertexBufferObject::IsDynamic() { return !this->source_mesh.expired(); }
+	bool VertexBufferObject::IsDynamic() const { return !this->source_mesh.expired(); }
 
 	void VertexBufferObject::Update() {
 		std::shared_ptr<Mesh> locked_ptr = this->source_mesh.lock();
@@ -44,7 +47,7 @@ namespace tec {
 		}
 	}
 
-	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh) {
+	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader) {
 		if (mesh) {
 			this->source_mesh = mesh;
 			// TODO: Make a load method that takes offset and count to sub_buffer.
@@ -58,6 +61,17 @@ namespace tec {
 					group.index_count = submesh->indicies.size();
 					group.starting_offset = total_indices;
 					group.mesh_group_number = i;
+					if (MaterialMap::Has(submesh->material_name)) {
+						group.material = MaterialMap::Get(submesh->material_name);
+					}
+					else {
+						group.material = Material::Create(submesh->material_name, shader);
+						for (auto texture : submesh->textures) {
+							if (TextureMap::Has(texture)) {
+								group.material->AddTexture(TextureMap::Get(texture));
+							}
+						}
+					}
 					this->vertex_groups.push_back(std::move(group));
 					total_verts += submesh->verts.size();
 					total_indices += submesh->indicies.size();
@@ -118,6 +132,9 @@ namespace tec {
 		glVertexAttribPointer((GLuint)1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData),
 			(GLvoid*)offsetof(VertexData, color));
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer((GLuint)2, 2, GL_FLOAT, GL_TRUE, sizeof(VertexData),
+			(GLvoid*)offsetof(VertexData, uv));
+		glEnableVertexAttribArray(2);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 		if (this->index_count >= indices.size()) {
