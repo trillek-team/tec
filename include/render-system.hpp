@@ -18,6 +18,7 @@
 
 namespace tec {
 	class VertexBufferObject;
+	struct VertexGroup;
 	class Shader;
 
 	class RenderSystem;
@@ -35,9 +36,8 @@ namespace tec {
 
 		}
 		bool hidden = false;
-		std::set<size_t> vertex_groups;
+		std::set<VertexGroup*> vertex_groups;
 		std::shared_ptr<VertexBufferObject> buffer;
-
 	};
 
 	struct View {
@@ -65,7 +65,16 @@ namespace tec {
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
-		// TODO: Make this into a data structure or organized better?
-		std::map<std::shared_ptr<Shader>, std::map<std::shared_ptr<VertexBufferObject>, std::set<eid>>> render_list;
+
+		struct RenderItem {
+			glm::mat4* model_matrix;
+			std::set<VertexGroup*>* vertex_groups;
+			GLuint vao, ibo;
+
+			friend bool operator<(const RenderItem& a, const RenderItem& b) {
+				return a.vao < b.vao;
+			}
+		};
+		std::map<std::shared_ptr<Shader>, std::set<RenderItem>> render_item_list;
 	};
 }

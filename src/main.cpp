@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 		voxvol_vert_buffer->Load(mesh, s);
 		auto voxel1Renderable = tec::Entity(100).Get<tec::Renderable>().lock();
 		for (size_t i = 0; i < voxvol_vert_buffer->GetVertexGroupCount(); ++i) {
-			voxel1Renderable->vertex_groups.insert(i);
+			voxel1Renderable->vertex_groups.insert(voxvol_vert_buffer->GetVertexGroup(i));
 		}
 	});
 	tec::RenderSystem::QueueCommand(std::move(buffer_func));
@@ -77,13 +77,11 @@ int main(int argc, char* argv[]) {
 	std::shared_ptr<tec::MD5Mesh> mesh1 = std::make_shared<tec::MD5Mesh>();
 	mesh1->Load("assets/bob/bob.md5mesh");
 	{
-		auto renderable = std::make_shared<tec::Renderable>();
-		renderable->buffer = std::make_shared<tec::VertexBufferObject>();
+		auto renderable = std::make_shared<tec::Renderable>(std::make_shared<tec::VertexBufferObject>());
 		renderable->buffer->Load(mesh1, s);
 		for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
-			renderable->vertex_groups.insert(i);
+			renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
 		}
-		//renderable->material = tec::Material::Create("bob_material", s);
 		tec::Entity(99).Add<tec::Renderable>(renderable);
 	}
 

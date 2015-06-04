@@ -33,7 +33,7 @@ namespace tec {
 
 	class Mesh {
 	public:
-		Mesh() { }
+		Mesh() : name("test") { }
 		virtual ~Mesh() { }
 
 		/**
@@ -70,8 +70,16 @@ namespace tec {
 
 		// Returns the index buffer, for specified mesh_group.
 		const std::vector<unsigned int>* GetIndexBuffer(size_t mesh_group = 0);
+
+		const std::string GetName() const {
+			return this->name;
+		}
+		void SetName(const std::string name) {
+			this->name = name;
+		}
 	protected:
 		std::vector<std::shared_ptr<MeshGroup>> mesh_groups;
+		std::string name;
 	};
 
 }

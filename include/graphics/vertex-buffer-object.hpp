@@ -16,15 +16,15 @@ namespace tec {
 	class Mesh;
 	struct VertexData;
 
+	struct VertexGroup {
+		size_t mesh_group_number;
+		size_t index_count;
+		size_t starting_offset;
+		std::shared_ptr<Material> material;
+	};
+
 	class VertexBufferObject {
 	public:
-		struct VertexGroup {
-			size_t mesh_group_number;
-			size_t index_count;
-			size_t starting_offset;
-			std::shared_ptr<Material> material;
-		};
-
 		VertexBufferObject();
 
 		VertexBufferObject(std::shared_ptr<Mesh> mesh);

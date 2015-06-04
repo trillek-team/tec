@@ -27,7 +27,7 @@ namespace tec {
 
 	const GLuint VertexBufferObject::GetIBO() { return this->ibo; }
 
-	VertexBufferObject::VertexGroup* VertexBufferObject::GetVertexGroup(const size_t vertex_group_number) {
+	VertexGroup* VertexBufferObject::GetVertexGroup(const size_t vertex_group_number) {
 		if (vertex_group_number < this->vertex_groups.size()) {
 			return &this->vertex_groups[vertex_group_number];
 		}

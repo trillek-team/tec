@@ -43,7 +43,7 @@ namespace tec {
 	void RenderSystem::Update(const double delta) {
 		ProcessCommandQueue();
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
-		this->render_list.clear();
+		this->render_item_list.clear();
 
 		// Loop through each renderbale and update its model matrix.
 		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
@@ -75,9 +75,14 @@ namespace tec {
 				}
 			}
 
+			RenderItem ri;
+			ri.model_matrix = &this->model_matricies[entity_id];
+			ri.vao = itr->second->buffer->GetVAO();
+			ri.ibo = itr->second->buffer->GetIBO();
+			ri.vertex_groups = &itr->second->vertex_groups;
+
 			for (auto group : itr->second->vertex_groups) {
-				auto mesh_group = itr->second->buffer->GetVertexGroup(group);
-				this->render_list[mesh_group->material->GetShader()][itr->second->buffer].insert(entity_id);
+				this->render_item_list[group->material->GetShader()].insert(std::move(ri));
 			}
 		}
 
@@ -93,7 +98,7 @@ namespace tec {
 			camera_matrix = view->view_matrix;
 		}
 
-		for (auto shader_list : this->render_list) {
+		for (auto shader_list : this->render_item_list) {
 			auto shader = shader_list.first;
 			if (!shader) {
 				continue;
@@ -104,23 +109,15 @@ namespace tec {
 			glUniformMatrix4fv(shader->GetUniformLocation("projection"), 1, GL_FALSE, &this->projection[0][0]);
 			GLint model_index = shader->GetUniformLocation("model");
 
-			for (auto buffer_list : shader_list.second) {
-				auto buffer = buffer_list.first;
-				glBindVertexArray(buffer->GetVAO());
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer->GetIBO());
-				for (size_t i = 0; i < buffer->GetVertexGroupCount(); ++i) {
-					auto mesh_group = buffer->GetVertexGroup(i);
-					glPolygonMode(GL_FRONT_AND_BACK, mesh_group->material->GetPolygonMode());
-					mesh_group->material->Activate();
-					for (auto entity : buffer_list.second) {
-						glm::mat4 model_matrix = glm::mat4(1.0);
-						glUniformMatrix4fv(model_index, 1, GL_FALSE, &model_matrix[0][0]);
-						if (this->model_matricies.find(entity) != this->model_matricies.end()) {
-							model_matrix = this->model_matricies.at(entity);
-						}
-						glDrawElements(GL_TRIANGLES, mesh_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(mesh_group->starting_offset * sizeof(GLuint)));
-					}
-					mesh_group->material->Deactivate();
+			for (auto render_item : shader_list.second) {
+				glBindVertexArray(render_item.vao);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
+				for (auto vertex_group : *render_item.vertex_groups) {
+					glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
+					vertex_group->material->Activate();
+					glUniformMatrix4fv(model_index, 1, GL_FALSE, &(*render_item.model_matrix)[0][0]);
+					glDrawElements(GL_TRIANGLES, vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
+					vertex_group->material->Deactivate();
 				}
 			}
 			shader->UnUse();
