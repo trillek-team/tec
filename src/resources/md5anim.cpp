@@ -46,14 +46,17 @@ namespace tec {
 	*/
 	extern std::string CleanString(std::string str);
 
-	bool MD5Anim::Load(const std::string fname) {
+	bool MD5Anim::Load(const std::string fname, std::shared_ptr<MD5Mesh> mesh) {
+		if (!mesh) {
+			return false;
+		}
 		this->fname = fname;
 
 		if (Parse()) {
 			for (size_t i = 0; i < this->frames.size(); ++i) {
 				BuildFrameSkeleton(i);
 			}
-			return true;
+			return CheckMesh(mesh);
 		}
 
 		return false;
@@ -236,8 +239,7 @@ namespace tec {
 		}
 	}
 
-	bool MD5Anim::CheckMesh(std::shared_ptr<Mesh> mesh_file) {
-		std::shared_ptr<MD5Mesh> mesh = std::static_pointer_cast<MD5Mesh>(mesh_file);
+	bool MD5Anim::CheckMesh(std::shared_ptr<MD5Mesh> mesh) {
 		if (mesh) {
 			// Make sure number of joints matches.
 			if (this->joints.size() != mesh->joints.size()) {

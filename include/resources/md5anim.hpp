@@ -8,7 +8,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 namespace tec {
-	class Mesh;
+	class MD5Mesh;
 
 	class MD5Anim final {
 	public:
@@ -57,9 +57,10 @@ namespace tec {
 		*
 		* The only used initialization property is "filename".
 		* \param[in] const std::vector<Property>& properties The creation properties for the resource.
+		* \param[in] std::shared_ptr<MD5Mesh> mesh The mesh file this animation will be animating.
 		* \return bool True if initialization finished with no errors.
 		*/
-		bool Load(const std::string fname);
+		bool Load(const std::string fname, std::shared_ptr<MD5Mesh> mesh);
 
 		/**
 		* \brief Loads the MD5Anim file from disk and parses it.
@@ -111,7 +112,7 @@ namespace tec {
 		* \param[in] std::shared_ptr<Mesh> mesh_file The mesh to check against.
 		* \return bool True if the mesh is compatible.
 		*/
-		bool CheckMesh(std::shared_ptr<Mesh> mesh_file);
+		bool CheckMesh(std::shared_ptr<MD5Mesh> mesh_file);
 
 		/**
 		* \brief Gets the interpolated FrameSkeleton between 2 frames at a given delta.

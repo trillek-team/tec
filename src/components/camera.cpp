@@ -56,10 +56,7 @@ namespace tec {
 		e.Add<View>();
 	}
 
-	Camera::~Camera() {
-		this->e.Remove<Position>();
-		this->e.Remove<Orientation>();
-	}
+	Camera::~Camera() {	}
 
 	bool Camera::MakeActive() {
 		if (this->e.Has<View>()) {

@@ -78,8 +78,7 @@ namespace tec {
 		}
 
 		std::shared_ptr<MD5Anim> anim1 = std::make_shared<MD5Anim>();
-		anim1->Load("assets/bob/bob.md5anim");
-		anim1->CheckMesh(mesh1);
+		anim1->Load("assets/bob/bob.md5anim", mesh1);
 		Entity(99).Add<Animation>(anim1);
 		Entity(99).Add<Position>(glm::vec3(0.0,-2.0,-5.0));
 		Entity(99).Add<Orientation>(glm::vec3(glm::radians(-90.0),0.0,0.0));
