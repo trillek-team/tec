@@ -152,6 +152,8 @@ namespace tec {
 			return false;
 		}
 
+		SetName(this->fname);
+
 		std::string line;
 		while (std::getline(f, line)) {
 			std::stringstream ss(line);

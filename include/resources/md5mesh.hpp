@@ -73,7 +73,7 @@ namespace tec {
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
 		 * \return bool True if initialization finished with no errors.
 		 */
-		virtual bool Load(std::string fname);
+		bool Load(std::string fname);
 
 		/**
 		 * \brief Loads the MD5Mesh file from disk and parses it.

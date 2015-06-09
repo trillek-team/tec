@@ -28,8 +28,7 @@ namespace tec {
 	struct WindowResizedEvent;
 
 	struct Renderable {
-		Renderable(std::shared_ptr<VertexBufferObject> buf) :
-			buffer(buf) {
+		Renderable(std::shared_ptr<VertexBufferObject> buf) : buffer(buf) {
 
 		}
 		Renderable() {

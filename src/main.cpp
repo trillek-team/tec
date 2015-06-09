@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
 
 	tec::CameraMover cam_mover(1);
 
+	os.GetDeltaTime();
 	while (!os.Closing()) {
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
