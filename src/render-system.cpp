@@ -81,6 +81,13 @@ namespace tec {
 			ri.ibo = itr->second->buffer->GetIBO();
 			ri.vertex_groups = &itr->second->vertex_groups;
 
+			if (e.Has<Animation>()) {
+				auto anim = e.Get<Animation>().lock();
+				anim->UpdateAnimation(delta);
+				ri.animated = true;
+				ri.animation = anim;
+			}
+
 			for (auto group : itr->second->vertex_groups) {
 				this->render_item_list[group->material->GetShader()].insert(std::move(ri));
 			}
@@ -107,11 +114,19 @@ namespace tec {
 
 			glUniformMatrix4fv(shader->GetUniformLocation("view"), 1, GL_FALSE, &camera_matrix[0][0]);
 			glUniformMatrix4fv(shader->GetUniformLocation("projection"), 1, GL_FALSE, &this->projection[0][0]);
+			GLint animatrix_loc = shader->GetUniformLocation("animation_matrix");
+			GLint animated_loc = shader->GetUniformLocation("animated");
 			GLint model_index = shader->GetUniformLocation("model");
 
 			for (auto render_item : shader_list.second) {
 				glBindVertexArray(render_item.vao);
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
+				glUniform1i(animated_loc, 0);
+				if (render_item.animated) {
+					glUniform1i(animated_loc, 1);
+					auto& animmatricies = render_item.animation->animation_matrices;
+					glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
+				}
 				for (auto vertex_group : *render_item.vertex_groups) {
 					glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
 					vertex_group->material->Activate();

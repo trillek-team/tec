@@ -15,6 +15,7 @@
 #include "types.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
+#include "graphics/animation.hpp"
 
 namespace tec {
 	class VertexBufferObject;
@@ -69,6 +70,8 @@ namespace tec {
 			glm::mat4* model_matrix;
 			std::set<VertexGroup*>* vertex_groups;
 			GLuint vao, ibo;
+			bool animated = false;
+			std::shared_ptr<Animation> animation;
 
 			friend bool operator<(const RenderItem& a, const RenderItem& b) {
 				return a.vao < b.vao;

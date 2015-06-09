@@ -11,6 +11,7 @@
 #include "resources/pixel-buffer.hpp"
 #include "graphics/texture-object.hpp"
 #include "render-system.hpp"
+#include "resources/md5anim.hpp"
 
 namespace tec {
 	void IntializeComponents() {
@@ -19,6 +20,7 @@ namespace tec {
 		ComponentUpdateSystem<Camera>::Initialize();
 		ComponentUpdateSystem<Renderable>::Initialize();
 		ComponentUpdateSystem<View>::Initialize();
+		ComponentUpdateSystem<Animation>::Initialize();
 	}
 
 	void BuildTestEntities() {
@@ -74,6 +76,13 @@ namespace tec {
 			}
 			Entity(99).Add<Renderable>(renderable);
 		}
+
+		std::shared_ptr<MD5Anim> anim1 = std::make_shared<MD5Anim>();
+		anim1->Load("assets/bob/bob.md5anim");
+		anim1->CheckMesh(mesh1);
+		Entity(99).Add<Animation>(anim1);
+		Entity(99).Add<Position>(glm::vec3(0.0,-2.0,-5.0));
+		Entity(99).Add<Orientation>(glm::vec3(glm::radians(-90.0),0.0,0.0));
 
 		Entity camera(1);
 		camera.Add<Position>();

@@ -138,6 +138,12 @@ namespace tec {
 		glVertexAttribPointer((GLuint)3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData),
 			(GLvoid*)offsetof(VertexData, uv));
 		glEnableVertexAttribArray(3);
+		glVertexAttribPointer((GLuint)4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData),
+			(GLvoid*)offsetof(VertexData, bone_weights));
+		glEnableVertexAttribArray(4);
+		glVertexAttribIPointer((GLuint)5, 4, GL_UNSIGNED_INT, sizeof(VertexData),
+			(GLvoid*)offsetof(VertexData, bone_indicies));
+		glEnableVertexAttribArray(5);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 		if (this->index_count >= indices.size()) {
