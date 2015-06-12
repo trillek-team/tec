@@ -97,15 +97,16 @@ namespace tec {
 		return true;
 	}
 
-	bool OBJ::Load(const std::string fname) {
-		this->fname = fname;
+	std::shared_ptr<OBJ> OBJ::Create(const std::string fname) {
+		auto obj = std::make_shared<OBJ>();
+		obj->fname = fname;
 
-		if (Parse()) {
-			PopulateMeshGroups();
-			return true;
+		if (obj->Parse()) {
+			obj->PopulateMeshGroups();
+			return obj;
 		}
 
-		return false;
+		return nullptr;
 	}
 
 	bool OBJ::Parse() {

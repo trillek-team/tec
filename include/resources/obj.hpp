@@ -53,9 +53,9 @@ namespace tec {
 		 *
 		 * The only used initialization property is "filename".
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
-		 * \return bool True if initialization finished with no errors.
+		 * \return std::shared_ptr<OBJ> The created OBJ resource.
 		 */
-		virtual bool Load(const std::string fname);
+		static std::shared_ptr<OBJ> Create(const std::string fname);
 
 		/**
 		 * \brief Loads the OBJ file from disk and parses it.

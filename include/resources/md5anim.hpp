@@ -58,9 +58,9 @@ namespace tec {
 		* The only used initialization property is "filename".
 		* \param[in] const std::vector<Property>& properties The creation properties for the resource.
 		* \param[in] std::shared_ptr<MD5Mesh> mesh The mesh file this animation will be animating.
-		* \return bool True if initialization finished with no errors.
+		* \return std::shared_ptr<MD5Anim> The create MD5Anim resource.
 		*/
-		bool Load(const std::string fname, std::shared_ptr<MD5Mesh> mesh);
+		static std::shared_ptr<MD5Anim> Create(const std::string fname, std::shared_ptr<MD5Mesh> mesh);
 
 		/**
 		* \brief Loads the MD5Anim file from disk and parses it.

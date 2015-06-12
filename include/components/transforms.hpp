@@ -10,9 +10,7 @@ namespace tec {
 	static glm::vec3 RIGHT_VECTOR(1.0f, 0.0f, 0.0f);
 
 	struct Position {
-		Position(glm::vec3 pos) : value(pos) {
-
-		}
+		Position(glm::vec3 pos) : value(pos) { }
 		Position() { }
 		// Translates by amount.
 		void Translate(const glm::vec3 amount);
@@ -27,6 +25,7 @@ namespace tec {
 		Orientation(glm::vec3 rot) {
 			Rotate(rot);
 		}
+		Orientation(glm::quat q) : value(q), rotation(glm::eulerAngles(q)) { }
 		Orientation() { }
 		void Rotate(const glm::vec3 amount);
 
@@ -35,5 +34,12 @@ namespace tec {
 
 		glm::quat value;
 		glm::vec3 rotation;
+	};
+
+	struct Scale {
+		Scale(glm::vec3 scale) : value(scale) { }
+		Scale() { }
+
+		glm::vec3 value;
 	};
 }
