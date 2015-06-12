@@ -26,12 +26,13 @@ int main(int argc, char* argv[]) {
 
 	tec::CameraMover cam_mover(1);
 
-	os.GetDeltaTime();
+	double delta = os.GetDeltaTime();
 	while (!os.Closing()) {
+		delta = os.GetDeltaTime();
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
 		cam_mover.Update(0.0);
-		rs.Update(os.GetDeltaTime());
+		rs.Update(delta);
 		os.OSMessageLoop();
 		os.SwapBuffers();
 		frame_id++;

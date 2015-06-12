@@ -1,22 +1,24 @@
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/shader.hpp"
-#include "voxelvolume.hpp"
-#include "components/transforms.hpp"
 #include "graphics/material.hpp"
-#include "entity.hpp"
+#include "graphics/texture-object.hpp"
+#include "components/transforms.hpp"
 #include "components/camera.hpp"
-#include "component-update-system.hpp"
-#include <glm/gtc/matrix_transform.hpp>
 #include "resources/md5mesh.hpp"
 #include "resources/pixel-buffer.hpp"
-#include "graphics/texture-object.hpp"
-#include "render-system.hpp"
 #include "resources/md5anim.hpp"
+#include "entity.hpp"
+#include "component-update-system.hpp"
+#include "render-system.hpp"
+#include "physics-system.hpp"
+#include "voxelvolume.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
 	void IntializeComponents() {
 		ComponentUpdateSystem<Position>::Initialize();
 		ComponentUpdateSystem<Orientation>::Initialize();
+		ComponentUpdateSystem<Scale>::Initialize();
 		ComponentUpdateSystem<Camera>::Initialize();
 		ComponentUpdateSystem<Renderable>::Initialize();
 		ComponentUpdateSystem<View>::Initialize();
@@ -68,20 +70,21 @@ namespace tec {
 
 		std::shared_ptr<MD5Mesh> mesh1 = std::make_shared<MD5Mesh>();
 		mesh1->Load("assets/bob/bob.md5mesh");
+		Entity bob(99);
 		{
 			auto renderable = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
 			renderable->buffer->Load(mesh1, s);
 			for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
 				renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
 			}
-			Entity(99).Add<Renderable>(renderable);
+			bob.Add<Renderable>(renderable);
 		}
 
 		std::shared_ptr<MD5Anim> anim1 = std::make_shared<MD5Anim>();
 		anim1->Load("assets/bob/bob.md5anim", mesh1);
-		Entity(99).Add<Animation>(anim1);
-		Entity(99).Add<Position>(glm::vec3(0.0,-2.0,-5.0));
-		Entity(99).Add<Orientation>(glm::vec3(glm::radians(-90.0),0.0,0.0));
+		bob.Add<Animation>(anim1);
+		bob.Add<Position>(glm::vec3(0.0, 0.0, -1.0));
+		bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
 
 		Entity camera(1);
 		camera.Add<Position>();
