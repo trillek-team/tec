@@ -71,9 +71,9 @@ namespace tec {
 		 *
 		 * The only used initialization property is "filename".
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
-		 * \return bool True if initialization finished with no errors.
+		 * \return std::shared_ptr<MD5Mesh> The created MD5Mesh resource.
 		 */
-		bool Load(std::string fname);
+		static std::shared_ptr<MD5Mesh> Create(std::string fname);
 
 		/**
 		 * \brief Loads the MD5Mesh file from disk and parses it.

@@ -46,20 +46,23 @@ namespace tec {
 	*/
 	extern std::string CleanString(std::string str);
 
-	bool MD5Anim::Load(const std::string fname, std::shared_ptr<MD5Mesh> mesh) {
+	std::shared_ptr<MD5Anim> MD5Anim::Create(const std::string fname, std::shared_ptr<MD5Mesh> mesh) {
+		auto anim = std::make_shared<MD5Anim>();
 		if (!mesh) {
 			return false;
 		}
-		this->fname = fname;
+		anim->fname = fname;
 
-		if (Parse()) {
-			for (size_t i = 0; i < this->frames.size(); ++i) {
-				BuildFrameSkeleton(i);
+		if (anim->Parse()) {
+			for (size_t i = 0; i < anim->frames.size(); ++i) {
+				anim->BuildFrameSkeleton(i);
 			}
-			return CheckMesh(mesh);
+			if (anim->CheckMesh(mesh)) {
+				return anim;
+			}
 		}
 
-		return false;
+		return nullptr;
 	}
 
 	bool MD5Anim::Parse() {

@@ -123,17 +123,22 @@ namespace tec {
 		return w;
 	}
 
-	bool MD5Mesh::Load(const std::string fname) {
-		this->fname = fname;
+	std::shared_ptr<MD5Mesh> MD5Mesh::Create(const std::string fname) {
+		auto mesh = std::make_shared<MD5Mesh>();
+		mesh->fname = fname;
 
-		if (Parse()) {
-			CalculateVertexPositions();
-			CalculateVertexNormals();
-			UpdateIndexList();
-			return true;
+		mesh->SetName(fname);
+
+		MeshMap::Set(fname, mesh);
+
+		if (mesh->Parse()) {
+			mesh->CalculateVertexPositions();
+			mesh->CalculateVertexNormals();
+			mesh->UpdateIndexList();
+			return mesh;
 		}
 
-		return false;
+		return nullptr;
 	}
 
 	bool MD5Mesh::Parse() {
@@ -151,8 +156,6 @@ namespace tec {
 		if (!f.is_open()) {
 			return false;
 		}
-
-		SetName(this->fname);
 
 		std::string line;
 		while (std::getline(f, line)) {
