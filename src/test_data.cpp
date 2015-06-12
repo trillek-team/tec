@@ -3,6 +3,7 @@
 #include "graphics/material.hpp"
 #include "graphics/texture-object.hpp"
 #include "components/transforms.hpp"
+#include "components/collisionbody.hpp"
 #include "components/camera.hpp"
 #include "resources/md5mesh.hpp"
 #include "resources/pixel-buffer.hpp"
@@ -16,6 +17,7 @@
 
 namespace tec {
 	void IntializeComponents() {
+		ComponentUpdateSystem<Velocity>::Initialize();
 		ComponentUpdateSystem<Position>::Initialize();
 		ComponentUpdateSystem<Orientation>::Initialize();
 		ComponentUpdateSystem<Scale>::Initialize();
@@ -23,6 +25,7 @@ namespace tec {
 		ComponentUpdateSystem<Renderable>::Initialize();
 		ComponentUpdateSystem<View>::Initialize();
 		ComponentUpdateSystem<Animation>::Initialize();
+		ComponentUpdateSystem<CollisionBody>::Initialize();
 	}
 
 	void BuildTestEntities() {
@@ -47,16 +50,24 @@ namespace tec {
 
 		VoxelCommand add_voxel(
 			[ ] (VoxelVolume* vox_vol) {
-			vox_vol->AddVoxel(0, 1, 1);
-			vox_vol->AddVoxel(0, -1, 1);
-			vox_vol->AddVoxel(0, -1, 0);
-			vox_vol->AddVoxel(0, -1, -1);
+			vox_vol->AddVoxel(-1, 1, 1);
+			vox_vol->AddVoxel(-1, -1, 1);
+			vox_vol->AddVoxel(-1, -1, 0);
+			vox_vol->AddVoxel(-1, -1, -1);
+			vox_vol->AddVoxel(-1, 0, 1);
+			vox_vol->AddVoxel(-1, 0, 0);
+			vox_vol->AddVoxel(-1, 0, -1);
 			vox_vol->AddVoxel(1, -1, 1);
 		});
 		VoxelVolume::QueueCommand(std::move(add_voxel));
 		voxvol_shared->Update(0.0);
 		auto voxvol_vert_buffer = std::make_shared<VertexBufferObject>();
 		voxel1.Add<Renderable>(voxvol_vert_buffer);
+		{
+			auto colbody = std::make_shared<CollisionBody>(100, STATIC_MESH);
+			colbody->SetMesh(voxvol_shared->GetMesh().lock());
+			voxel1.Add(colbody);
+		}
 
 		RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared, s] (RenderSystem* sys) {
 			auto mesh = voxvol_shared->GetMesh().lock();
@@ -68,9 +79,8 @@ namespace tec {
 		});
 		RenderSystem::QueueCommand(std::move(buffer_func));
 
-		std::shared_ptr<MD5Mesh> mesh1 = std::make_shared<MD5Mesh>();
-		mesh1->Load("assets/bob/bob.md5mesh");
 		Entity bob(99);
+		auto mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
 		{
 			auto renderable = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
 			renderable->buffer->Load(mesh1, s);
@@ -80,9 +90,13 @@ namespace tec {
 			bob.Add<Renderable>(renderable);
 		}
 
-		std::shared_ptr<MD5Anim> anim1 = std::make_shared<MD5Anim>();
-		anim1->Load("assets/bob/bob.md5anim", mesh1);
+		auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 		bob.Add<Animation>(anim1);
+		{
+			auto colbody = std::make_shared<CollisionBody>(99, DYNAMIC_MESH);
+			colbody->SetMesh(mesh1);
+			bob.Add(colbody);
+		}
 		bob.Add<Position>(glm::vec3(0.0, 0.0, -1.0));
 		bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
 

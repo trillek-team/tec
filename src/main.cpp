@@ -1,7 +1,10 @@
 #include "os.hpp"
 #include "render-system.hpp"
+#include "physics-system.hpp"
 #include "component-update-system.hpp"
 #include "components/camera.hpp"
+
+#include <thread>
 
 namespace tec {
 	extern void IntializeComponents();
@@ -19,6 +22,8 @@ int main(int argc, char* argv[]) {
 
 	rs.SetViewportSize(800, 600);
 
+	tec::PhysicsSystem ps;
+
 	std::int64_t frame_id = 1;
 
 	tec::IntializeComponents();
@@ -32,10 +37,14 @@ int main(int argc, char* argv[]) {
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
 		cam_mover.Update(0.0);
+		std::thread ps_thread([&] () {
+			ps.Update(delta);
+		});
 		rs.Update(delta);
 		os.OSMessageLoop();
 		os.SwapBuffers();
 		frame_id++;
+		ps_thread.join();
 	}
 
 	return 0;
