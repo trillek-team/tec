@@ -4,6 +4,7 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <string>
 #include "multiton.hpp"
 
 namespace tec {
