@@ -49,6 +49,7 @@ ADD_SUBDIRECTORY("modules/glm")
 INCLUDE_DIRECTORIES("modules/glm")
 ADD_SUBDIRECTORY("modules/bullet3")
 INCLUDE_DIRECTORIES("modules/bullet3/src")
+ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE)
 FIND_PACKAGE(Bullet)
 
 # Give these some dummy values and if the platform is LINUX or OSX they will be set accordingly.
@@ -88,15 +89,14 @@ IF (APPLE) # Mac OSX
 ENDIF (APPLE)
 
 # define all required external libraries
+# the use of raw names allows MSVC to pick-up debug version automatically
 SET(TEC_ALL_LIBS
 	${OPENGL_LIBRARIES}
 	${X11_LIBRARIES}
 	${OSX_LIBRARIES}
 	${GLEW_LIBRARIES}
 	glfw ${GLFW_LIBRARIES}
-	${BULLET_DYNAMICS_LIBRARY}
-	${BULLET_COLLISION_LIBRARY}
-	${BULLET_MATH_LIBRARY}
+	BulletDynamics BulletCollision LinearMath
 )
 
 ADD_EXECUTABLE("TEC"

@@ -35,10 +35,10 @@ namespace tec {
 		motion_state(new btDefaultMotionState(btTransform())) {
 		switch (collision_shape) {
 			case SPHERE:
-				this->shape = std::move(std::unique_ptr<btCollisionShape>(new btSphereShape(this->radius)));
+				this->shape = std::make_shared<btSphereShape>(this->radius);
 				break;
 			case CAPSULE:
-				this->shape = std::move(std::unique_ptr<btCollisionShape>(new btCapsuleShape(this->radius, this->height)));
+				this->shape = std::make_shared<btCapsuleShape>(this->radius, this->height);
 				break;
 			case STATIC_MESH:
 			case DYNAMIC_MESH:
@@ -65,10 +65,9 @@ namespace tec {
 		switch (this->collision_shape) {
 			case STATIC_MESH:
 				{
-					auto mesh_shape = std::unique_ptr<btBvhTriangleMeshShape>(
-						new btBvhTriangleMeshShape(this->mesh.get(), true));
+					auto mesh_shape = std::make_shared<btBvhTriangleMeshShape>(this->mesh.get(), true);
 					mesh_shape->setLocalScaling(btVector3(entity_scale.x, entity_scale.y, entity_scale.z));
-					this->shape = std::move(mesh_shape);
+					this->shape = mesh_shape;
 				}
 
 				// Static BvhTriangleMehes must have a mass of 0.
@@ -76,10 +75,10 @@ namespace tec {
 				break;
 			case DYNAMIC_MESH:
 				{
-					auto mesh_shape = std::unique_ptr<btGImpactMeshShape>(new btGImpactMeshShape(this->mesh.get()));
+					auto mesh_shape = std::make_shared<btGImpactMeshShape>(this->mesh.get());
 					mesh_shape->setLocalScaling(btVector3(entity_scale.x, entity_scale.y, entity_scale.z));
 					mesh_shape->updateBound();
-					this->shape = std::move(mesh_shape);
+					this->shape = mesh_shape;
 				}
 				break;
 			default:

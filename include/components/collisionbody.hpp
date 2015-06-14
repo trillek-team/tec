@@ -35,7 +35,7 @@ namespace tec {
 		std::shared_ptr<Mesh> mesh_file; // Used for mesh shape collidable.
 
 		btMotionState* motion_state;
-		std::unique_ptr<btCollisionShape> shape;
+		std::shared_ptr<btCollisionShape> shape;
 
 	};
 }
