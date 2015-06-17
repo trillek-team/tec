@@ -2,7 +2,7 @@
 
 #include <memory>
 #include <vector>
-#include <string>
+#include <cstring>
 
 #ifndef __APPLE__
 #include <GL/glew.h>
