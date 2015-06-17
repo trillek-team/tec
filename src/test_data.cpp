@@ -64,8 +64,7 @@ namespace tec {
 		auto voxvol_vert_buffer = std::make_shared<VertexBufferObject>();
 		voxel1.Add<Renderable>(voxvol_vert_buffer);
 		{
-			auto colbody = std::make_shared<CollisionBody>(100, STATIC_MESH);
-			colbody->SetMesh(voxvol_shared->GetMesh().lock());
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, voxvol_shared->GetMesh().lock());
 			voxel1.Add(colbody);
 		}
 
@@ -93,8 +92,7 @@ namespace tec {
 		auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 		bob.Add<Animation>(anim1);
 		{
-			auto colbody = std::make_shared<CollisionBody>(99, DYNAMIC_MESH);
-			colbody->SetMesh(mesh1);
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(99, mesh1, true);
 			bob.Add(colbody);
 		}
 		bob.Add<Position>(glm::vec3(0.0, 0.0, -1.0));

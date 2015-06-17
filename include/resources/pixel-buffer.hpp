@@ -3,6 +3,7 @@
 #include <mutex>
 #include <memory>
 #include <cstdint>
+#include <string>
 
 #include "multiton.hpp"
 

@@ -43,13 +43,43 @@ ENDIF (WIN32 AND NOT MINGW)
 
 FIND_PACKAGE(OpenGL REQUIRED)
 
-ADD_SUBDIRECTORY("modules/glfw3")
-INCLUDE_DIRECTORIES("modules/glfw3/include")
-ADD_SUBDIRECTORY("modules/glm")
+# GLFW3 check
+FIND_PACKAGE(GLFW3)
+IF (NOT ${GLFW_FOUND})
+	MESSAGE("GLFW3 will be built.")
+	# We are turning off all the extra bullet options before adding it to reduce compiling.
+	SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
+	SET(GLFW_BUILD_TESTS OFF CACHE BOOL "Build the GLFW test programs")
+	SET(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
+	SET(GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
+	ADD_SUBDIRECTORY("modules/glfw3")
+	INCLUDE_DIRECTORIES("modules/glfw3/include")
+ELSE (NOT ${GLFW_FOUND})
+	MESSAGE("GLFW3 already found skipping build.")
+	INCLUDE_DIRECTORIES (${GLFW_INCLUDE_DIR})
+ENDIF (NOT ${GLFW_FOUND})
+
+# GLM include
 INCLUDE_DIRECTORIES("modules/glm")
-ADD_SUBDIRECTORY("modules/bullet3")
-INCLUDE_DIRECTORIES("modules/bullet3/src")
+
+# Bullet check
 FIND_PACKAGE(Bullet)
+IF (NOT ${BULLET_FOUND})
+	MESSAGE("Bullet will be built.")
+	# We are turning off all the extra bullet options before adding it to reduce compiling.
+	SET(USE_DOUBLE_PRECISION ON CACHE BOOL "Use double precision")
+	SET(USE_GLUT OFF CACHE BOOL "Use Glut")
+	SET(USE_GRAPHICAL_BENCHMARK OFF CACHE BOOL "Use Graphical Benchmark")
+	ADD_SUBDIRECTORY("modules/bullet3")
+	INCLUDE_DIRECTORIES("modules/bullet3/src")
+	SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
+ELSE (NOT ${BULLET_FOUND})
+	MESSAGE("Bullet already found skipping build.")
+	INCLUDE_DIRECTORIES (${BULLET_INCLUDE_DIRS})
+ENDIF (NOT ${BULLET_FOUND})
+
+# Some definitions we need to use bullet and GLM.
+ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE)
 
 # Give these some dummy values and if the platform is LINUX or OSX they will be set accordingly.
 SET(X11_LIBRARIES "")
@@ -88,15 +118,14 @@ IF (APPLE) # Mac OSX
 ENDIF (APPLE)
 
 # define all required external libraries
+# the use of raw names allows MSVC to pick-up debug version automatically
 SET(TEC_ALL_LIBS
 	${OPENGL_LIBRARIES}
 	${X11_LIBRARIES}
 	${OSX_LIBRARIES}
 	${GLEW_LIBRARIES}
-	glfw ${GLFW_LIBRARIES}
-	${BULLET_DYNAMICS_LIBRARY}
-	${BULLET_COLLISION_LIBRARY}
-	${BULLET_MATH_LIBRARY}
+	${GLFW_LIBRARIES}
+	${BULLET_LIBRARIES}
 )
 
 ADD_EXECUTABLE("TEC"

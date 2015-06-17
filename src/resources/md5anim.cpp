@@ -49,7 +49,7 @@ namespace tec {
 	std::shared_ptr<MD5Anim> MD5Anim::Create(const std::string fname, std::shared_ptr<MD5Mesh> mesh) {
 		auto anim = std::make_shared<MD5Anim>();
 		if (!mesh) {
-			return false;
+			return nullptr;
 		}
 		anim->fname = fname;
 

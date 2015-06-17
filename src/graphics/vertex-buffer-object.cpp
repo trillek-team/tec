@@ -114,7 +114,7 @@ namespace tec {
 			auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, verts.size() *
 				sizeof(VertexData), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
-				memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
+				std::memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
 				glUnmapBuffer(GL_ARRAY_BUFFER);
 			}
 			else {
@@ -150,7 +150,7 @@ namespace tec {
 			auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() *
 				sizeof(GLuint), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
-				memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
+				std::memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
 				glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 			}
 			else {

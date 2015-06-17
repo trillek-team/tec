@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <cstring>
 
 #ifndef __APPLE__
 #include <GL/glew.h>

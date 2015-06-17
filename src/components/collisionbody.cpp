@@ -28,35 +28,20 @@ namespace tec {
 
 		return std::move(mesh);
 	}
-
-	CollisionBody::CollisionBody(eid entity_id, COLLISION_SHAPE collision_shape, double radius,
-		double height) : entity_id(entity_id), radius(radius), height(height),
-		collision_shape(collision_shape), mass(1.0), disable_rotation(false),
-		motion_state(new btDefaultMotionState(btTransform())) {
-		switch (collision_shape) {
-			case SPHERE:
-				this->shape = std::move(std::unique_ptr<btCollisionShape>(new btSphereShape(this->radius)));
-				break;
-			case CAPSULE:
-				this->shape = std::move(std::unique_ptr<btCollisionShape>(new btCapsuleShape(this->radius, this->height)));
-				break;
-			case STATIC_MESH:
-			case DYNAMIC_MESH:
-			default:
-				this->shape = nullptr;
-				break;
-		}
-	}
+	CollisionBody::CollisionBody(eid entity_id, COLLISION_SHAPE collision_shape) :
+		entity_id(entity_id), collision_shape(collision_shape), mass(1.0), shape(nullptr),
+		disable_rotation(false), motion_state(new btDefaultMotionState(btTransform())) { }
 
 	CollisionBody::~CollisionBody() {
 		delete this->motion_state;
 	}
 
-	bool CollisionBody::SetMesh(std::shared_ptr<Mesh> mesh) {
+	CollisionMesh::CollisionMesh(eid entity_id, std::shared_ptr<Mesh> mesh, bool dynamic) :
+		CollisionBody(entity_id, (dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {
 		this->mesh_file = mesh;
 		this->mesh = GenerateTriangleMesh(this->mesh_file);
 		if (!this->mesh) {
-			return false;
+			return;
 		}
 		glm::vec3 entity_scale(1.0);
 		if (Entity(this->entity_id).Has<Scale>()) {
@@ -65,10 +50,9 @@ namespace tec {
 		switch (this->collision_shape) {
 			case STATIC_MESH:
 				{
-					auto mesh_shape = std::unique_ptr<btBvhTriangleMeshShape>(
-						new btBvhTriangleMeshShape(this->mesh.get(), true));
+					auto mesh_shape = std::make_shared<btBvhTriangleMeshShape>(this->mesh.get(), true);
 					mesh_shape->setLocalScaling(btVector3(entity_scale.x, entity_scale.y, entity_scale.z));
-					this->shape = std::move(mesh_shape);
+					this->shape = mesh_shape;
 				}
 
 				// Static BvhTriangleMehes must have a mass of 0.
@@ -76,21 +60,12 @@ namespace tec {
 				break;
 			case DYNAMIC_MESH:
 				{
-					auto mesh_shape = std::unique_ptr<btGImpactMeshShape>(new btGImpactMeshShape(this->mesh.get()));
+					auto mesh_shape = std::make_shared<btGImpactMeshShape>(this->mesh.get());
 					mesh_shape->setLocalScaling(btVector3(entity_scale.x, entity_scale.y, entity_scale.z));
 					mesh_shape->updateBound();
-					this->shape = std::move(mesh_shape);
+					this->shape = mesh_shape;
 				}
 				break;
-			default:
-				this->shape = nullptr;
-				return false;
 		}
-		return true;
-	}
-
-	bool CollisionBody::SetMesh(const std::string mesh_name) {
-		auto mesh = MeshMap::Get(mesh_name);
-		return SetMesh(mesh);
 	}
 }
