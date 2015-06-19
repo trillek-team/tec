@@ -59,6 +59,15 @@ ELSE (NOT ${GLFW_FOUND})
 	INCLUDE_DIRECTORIES (${GLFW_INCLUDE_DIR})
 ENDIF (NOT ${GLFW_FOUND})
 
+# PThread check
+SET(OTHER_LIBRARIES "")
+SET(CMAKE_THREAD_PREFER_PTHREAD TRUE)
+FIND_PACKAGE( Threads )
+IF(CMAKE_USE_PTHREADS_INIT)
+  SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-pthread")
+  SET(OTHER_LIBRARIES ${OTHER_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+ENDIF(CMAKE_USE_PTHREADS_INIT)
+
 # GLM include
 INCLUDE_DIRECTORIES("modules/glm")
 
@@ -70,6 +79,12 @@ IF (NOT ${BULLET_FOUND})
 	SET(USE_DOUBLE_PRECISION ON CACHE BOOL "Use double precision")
 	SET(USE_GLUT OFF CACHE BOOL "Use Glut")
 	SET(USE_GRAPHICAL_BENCHMARK OFF CACHE BOOL "Use Graphical Benchmark")
+	SET(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "Set when you want to build the OpenGL3+ demos")
+	SET(BUILD_BULLET2_DEMOS OFF CACHE BOOL "Set when you want to build the Bullet 2 demos")
+	SET(BUILD_EXTRAS OFF CACHE BOOL "Set when you want to build the extras")
+	SET(BUILD_UNIT_TESTS OFF CACHE BOOL "Build Unit Tests")
+	SET(BUILD_CPU_DEMOS OFF CACHE BOOL "Build original Bullet CPU examples" )
+	SET(BUILD_BULLET3 OFF CACHE BOOL "Set when you want to build Bullet 3")
 	ADD_SUBDIRECTORY("modules/bullet3")
 	INCLUDE_DIRECTORIES("modules/bullet3/src")
 	SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
@@ -120,6 +135,7 @@ ENDIF (APPLE)
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
 SET(TEC_ALL_LIBS
+  ${OTHER_LIBRARIES}
 	${OPENGL_LIBRARIES}
 	${X11_LIBRARIES}
 	${OSX_LIBRARIES}
