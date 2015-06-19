@@ -2,8 +2,8 @@
 
 #include <memory>
 #include <string>
-#include <AL/al.h>
-#include <AL/alc.h>
+#include <al.h>
+#include <alc.h>
 
 #include "multiton.hpp"
 

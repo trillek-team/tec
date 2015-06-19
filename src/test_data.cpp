@@ -8,9 +8,11 @@
 #include "resources/md5mesh.hpp"
 #include "resources/pixel-buffer.hpp"
 #include "resources/md5anim.hpp"
+#include "resources/vorbis-stream.hpp"
 #include "entity.hpp"
 #include "component-update-system.hpp"
 #include "render-system.hpp"
+#include "sound-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -26,6 +28,7 @@ namespace tec {
 		ComponentUpdateSystem<View>::Initialize();
 		ComponentUpdateSystem<Animation>::Initialize();
 		ComponentUpdateSystem<CollisionBody>::Initialize();
+		ComponentUpdateSystem<AudioSource>::Initialize();
 	}
 
 	void BuildTestEntities() {
@@ -97,6 +100,8 @@ namespace tec {
 		}
 		bob.Add<Position>(glm::vec3(0.0, 0.0, -1.0));
 		bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
+		auto vorbis_stream = VorbisStream::Create("assets/theme.ogg");
+		bob.Add<AudioSource>(vorbis_stream, true);
 
 		Entity camera(1);
 		camera.Add<Position>();

@@ -1,6 +1,7 @@
 #include "os.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
+#include "sound-system.hpp"
 #include "component-update-system.hpp"
 #include "components/camera.hpp"
 
@@ -23,6 +24,8 @@ int main(int argc, char* argv[]) {
 	rs.SetViewportSize(800, 600);
 
 	tec::PhysicsSystem ps;
+	
+	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
 
@@ -40,11 +43,15 @@ int main(int argc, char* argv[]) {
 		std::thread ps_thread([&] () {
 			ps.Update(delta);
 		});
+		std::thread ss_thread([&] () {
+			ss.Update(delta);
+		});
 		rs.Update(delta);
 		os.OSMessageLoop();
 		os.SwapBuffers();
 		frame_id++;
 		ps_thread.join();
+		ss_thread.join();
 	}
 
 	return 0;
