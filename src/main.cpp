@@ -36,7 +36,9 @@ int main(int argc, char* argv[]) {
 
 	double delta = os.GetDeltaTime();
 	while (!os.Closing()) {
+		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
+
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
 		cam_mover.Update(0.0);
@@ -46,8 +48,8 @@ int main(int argc, char* argv[]) {
 		std::thread ss_thread([&] () {
 			ss.Update(delta);
 		});
+
 		rs.Update(delta);
-		os.OSMessageLoop();
 		os.SwapBuffers();
 		frame_id++;
 		ps_thread.join();
