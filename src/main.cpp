@@ -22,12 +22,12 @@ int main(int argc, char* argv[]) {
 
 	tec::IMGUISystem gui(os.GetWindow());
 	ImVec4 clear_color = ImColor(114, 144, 154);
-	gui.AddWindowDrawFunction("test", [&clear_color] () { 
-			static float f = 0.0f;
-			ImGui::Text("Hello, world!");
-			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-			ImGui::ColorEdit3("clear color", (float*)&clear_color);
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	gui.AddWindowDrawFunction("test", [&clear_color] () {
+		static float f = 0.0f;
+		ImGui::Text("Hello, world!");
+		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+		ImGui::ColorEdit3("clear color", (float*)&clear_color);
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	});
 
 	tec::RenderSystem rs;
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
 	rs.SetViewportSize(800, 600);
 
 	tec::PhysicsSystem ps;
-	
+
 	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
@@ -44,6 +44,16 @@ int main(int argc, char* argv[]) {
 	tec::BuildTestEntities();
 
 	tec::CameraMover cam_mover(1);
+	tec::eid active_entity;
+	gui.AddWindowDrawFunction("active_entity", [&active_entity] () {
+		if (active_entity != 0) {
+			ImVec2 pos(400, 300);
+			ImGui::SetNextWindowPos(pos);
+			ImGui::BeginTooltip();
+			ImGui::Text("#%i", active_entity);
+			ImGui::EndTooltip();
+		}
+	});
 
 	double delta = os.GetDeltaTime();
 	while (!os.Closing()) {
@@ -67,6 +77,7 @@ int main(int argc, char* argv[]) {
 		frame_id++;
 		ps_thread.join();
 		ss_thread.join();
+		active_entity = ps.RayCast();
 	}
 
 	return 0;
