@@ -164,6 +164,7 @@ ENDIF (APPLE)
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
 IF (NOT ${BUILD_DEPS_FIRST})
+MESSAGE("All dependencies found now building tec.")
 SET(TEC_ALL_LIBS
 	${OTHER_LIBRARIES}
 	${OPENGL_LIBRARIES}
