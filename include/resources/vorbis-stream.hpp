@@ -25,7 +25,7 @@ namespace tec {
 		 *
 		 * The only used initialization property is "filename".
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
-		 * \return std::shared_ptr<MD5Mesh> The created MD5Mesh resource.
+		 * \return std::shared_ptr<VorbisStream> The created VorbisStream resource.
 		 */
 		static std::shared_ptr<VorbisStream> Create(std::string filename);
 	private:

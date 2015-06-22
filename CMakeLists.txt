@@ -19,6 +19,12 @@ IF ( MSVC )
 		SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
 		SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
 	endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+	# This is needed for OpenAL as the libaries were built using an older MSVC.
+	IF(${_MACHINE_ARCH_FLAG} MATCHES X86)
+	 	 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+	 	 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
+	 	 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /SAFESEH:NO")
+	 ENDIF()
 ENDIF ( MSVC )
 
 # find all source files in the src directory
@@ -100,9 +106,20 @@ ELSE (NOT ${BULLET_FOUND})
 ENDIF (NOT ${BULLET_FOUND})
 
 # OpenAL check
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules//openal-soft/include/AL")
 FIND_PACKAGE(OpenAL)
-MESSAGE("OpenAL already found.")
-INCLUDE_DIRECTORIES (${OPENAL_INCLUDE_DIR})
+IF (NOT ${OPENAL_FOUND})
+	SET(BUILD_DEPS_FIRST true)
+	MESSAGE("Bullet will be built.")
+	SET(ALSOFT_UTILS OFF CACHE BOOL "Build and install utility programs")
+	SET(ALSOFT_EXAMPLES OFF CACHE BOOL "Build and install example programs")
+	SET(ALSOFT_REQUIRE_WINMM ON CACHE BOOL "Require Windows Multimedia backend")
+	ADD_SUBDIRECTORY("modules/openal-soft")
+	INCLUDE_DIRECTORIES("modules//openal-soft/include")
+ELSE (NOT ${OPENAL_FOUND})
+	MESSAGE("OpenAL already found skipping build.")
+	INCLUDE_DIRECTORIES (${OPENAL_INCLUDE_DIR})
+ENDIF (NOT ${OPENAL_FOUND})
 
 
 # Some definitions we need to use bullet and GLM.
