@@ -95,7 +95,7 @@ namespace tec {
 		auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 		bob.Add<Animation>(anim1);
 		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(99, mesh1, true);
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 0.6f, 0.5f);
 			bob.Add(colbody);
 		}
 		bob.Add<Position>(glm::vec3(0.0, 0.0, -1.0));

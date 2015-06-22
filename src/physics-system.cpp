@@ -46,7 +46,7 @@ namespace tec {
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			if (this->bodies.find(entity_id) == this->bodies.end()) {
-				glm::vec3 position;
+				glm::vec3 position(0.0);
 				if (Entity(entity_id).Has<Position>()) {
 					position = (Entity(entity_id).Get<Position>().lock())->value;
 				}
