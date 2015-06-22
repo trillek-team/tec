@@ -34,6 +34,7 @@ namespace tec {
 
 		for (auto itr = AudioSourceComponentMap::Begin(); itr != AudioSourceComponentMap::End(); ++itr) {
 			if (this->queued_sources.find(itr->second) == this->queued_sources.end()) {
+				// Make sure the stream is valid before we attempt to buffer it.
 				if (!itr->second->vorbis_stream) {
 					continue;
 				}
