@@ -41,11 +41,16 @@ IF (WIN32 AND NOT MINGW) # Windows
 	SET(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib/)
 ENDIF (WIN32 AND NOT MINGW)
 
+# This is used to flag if TEC should be built or if we are just doing a dependency build.
+SET(BUILD_DEPS_FIRST false)
+
 FIND_PACKAGE(OpenGL REQUIRED)
 
 # GLFW3 check
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/glfw3/include")
 FIND_PACKAGE(GLFW3)
 IF (NOT ${GLFW_FOUND})
+	SET(BUILD_DEPS_FIRST true)
 	MESSAGE("GLFW3 will be built.")
 	# We are turning off all the extra bullet options before adding it to reduce compiling.
 	SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
@@ -56,7 +61,7 @@ IF (NOT ${GLFW_FOUND})
 	INCLUDE_DIRECTORIES("modules/glfw3/include")
 ELSE (NOT ${GLFW_FOUND})
 	MESSAGE("GLFW3 already found skipping build.")
-	INCLUDE_DIRECTORIES (${GLFW_INCLUDE_DIR})
+	INCLUDE_DIRECTORIES (${GLFW_INCLUDE_DIRS})
 ENDIF (NOT ${GLFW_FOUND})
 
 # PThread check
@@ -72,8 +77,10 @@ ENDIF(CMAKE_USE_PTHREADS_INIT)
 INCLUDE_DIRECTORIES("modules/glm")
 
 # Bullet check
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
 FIND_PACKAGE(Bullet)
 IF (NOT ${BULLET_FOUND})
+	SET(BUILD_DEPS_FIRST true)
 	MESSAGE("Bullet will be built.")
 	# We are turning off all the extra bullet options before adding it to reduce compiling.
 	SET(USE_DOUBLE_PRECISION ON CACHE BOOL "Use double precision")
@@ -87,7 +94,6 @@ IF (NOT ${BULLET_FOUND})
 	SET(BUILD_BULLET3 OFF CACHE BOOL "Set when you want to build Bullet 3")
 	ADD_SUBDIRECTORY("modules/bullet3")
 	INCLUDE_DIRECTORIES("modules/bullet3/src")
-	SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
 ELSE (NOT ${BULLET_FOUND})
 	MESSAGE("Bullet already found skipping build.")
 	INCLUDE_DIRECTORIES (${BULLET_INCLUDE_DIRS})
@@ -140,8 +146,9 @@ ENDIF (APPLE)
 
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
+IF (NOT ${BUILD_DEPS_FIRST})
 SET(TEC_ALL_LIBS
-  ${OTHER_LIBRARIES}
+	${OTHER_LIBRARIES}
 	${OPENGL_LIBRARIES}
 	${X11_LIBRARIES}
 	${OSX_LIBRARIES}
@@ -157,3 +164,4 @@ ADD_EXECUTABLE("TEC"
 )
 
 TARGET_LINK_LIBRARIES("TEC" ${TEC_ALL_LIBS})
+ENDIF (NOT ${BUILD_DEPS_FIRST})
