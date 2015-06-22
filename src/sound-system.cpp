@@ -34,6 +34,9 @@ namespace tec {
 
 		for (auto itr = AudioSourceComponentMap::Begin(); itr != AudioSourceComponentMap::End(); ++itr) {
 			if (this->queued_sources.find(itr->second) == this->queued_sources.end()) {
+				if (!itr->second->vorbis_stream) {
+					continue;
+				}
 				alGenSources(1, &itr->second->source); alCheckError();
 
 				alSourcef(itr->second->source, AL_PITCH, 1);
