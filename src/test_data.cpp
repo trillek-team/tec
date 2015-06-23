@@ -38,12 +38,13 @@ namespace tec {
 		auto s = Shader::CreateFromFile("shader1", shader_files);
 		auto basic_fill = Material::Create("material_basic", s);
 
-		shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "assets/basic.vert"), std::make_pair(Shader::FRAGMENT, "assets/overlay.frag"),
+		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/debug.vert"), std::make_pair(Shader::FRAGMENT, "assets/debug.frag"),
 		};
-		auto s_overlay = Shader::CreateFromFile("shader_overlay", shader_files);
-		auto overlay = Material::Create("material_overlay", s_overlay);
-		overlay->SetPolygonMode(GL_LINE);
+		auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
+		auto debug_fill = Material::Create("material_debug", debug_shader);
+		debug_fill->SetPolygonMode(GL_LINE);
+		debug_fill->SetDrawElementsMode(GL_LINES);
 
 		auto voxvol = VoxelVolume::Create(100, "bob", 0);
 		auto voxvol_shared = voxvol.lock();
@@ -71,9 +72,9 @@ namespace tec {
 			voxel1.Add(colbody);
 		}
 
-		RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared, s] (RenderSystem* sys) {
+		RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared, debug_shader] (RenderSystem* sys) {
 			auto mesh = voxvol_shared->GetMesh().lock();
-			voxvol_vert_buffer->Load(mesh, s);
+			voxvol_vert_buffer->Load(mesh, debug_shader);
 			auto voxel1Renderable = Entity(100).Get<Renderable>().lock();
 			for (size_t i = 0; i < voxvol_vert_buffer->GetVertexGroupCount(); ++i) {
 				voxel1Renderable->vertex_groups.insert(voxvol_vert_buffer->GetVertexGroup(i));

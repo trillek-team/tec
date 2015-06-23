@@ -54,6 +54,8 @@ namespace tec {
 		void RaySetInvalid() {
 			last_rayvalid = false;
 		}
+
+		void DebugDraw();
 	protected:
 		/** \brief Set a rigid body's gravity.
 		 *

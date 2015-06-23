@@ -48,6 +48,7 @@ int main(int argc, char* argv[]) {
 		});
 		rs.Update(delta);
 		os.OSMessageLoop();
+		ps.DebugDraw();
 		os.SwapBuffers();
 		frame_id++;
 		ps_thread.join();

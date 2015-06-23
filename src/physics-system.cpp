@@ -4,10 +4,14 @@
 #include "entity.hpp"
 #include "components/transforms.hpp"
 #include "component-update-system.hpp"
+	
+#include "physics/physics-debug-drawer.hpp"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
 
 namespace tec {
+	PhysicsDebugDrawer debug_drawer;
+
 	PhysicsSystem::PhysicsSystem() {
 		last_rayvalid = false;
 		this->collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -20,6 +24,9 @@ namespace tec {
 		// Register the collision dispatcher with the GImpact algorithm for dynamic meshes.
 		btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(this->dynamicsWorld->getDispatcher());
 		btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+		
+		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
 	}
 
 	PhysicsSystem::~PhysicsSystem() {
@@ -176,6 +183,11 @@ namespace tec {
 		return 0;
 	}
 
+	void PhysicsSystem::DebugDraw() {
+		this->dynamicsWorld->debugDrawWorld();
+		debug_drawer.UpdateVertexBuffer();
+	}
+
 	void PhysicsSystem::SetGravity(const unsigned int entity_id, const btVector3& f) {
 		if (this->bodies.find(entity_id) != this->bodies.end()) {
 			this->bodies[entity_id]->setGravity(f);
@@ -210,6 +222,9 @@ namespace tec {
 		// Check if we want to disable automatic deactivation for this body.
 		if (collision_body->disable_deactivation) {
 			body->forceActivationState(DISABLE_DEACTIVATION);
+		}
+		else {
+			body->forceActivationState(DISABLE_SIMULATION);
 		}
 
 		// Prevent objects from rotating from physics system.
