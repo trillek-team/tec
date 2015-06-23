@@ -19,7 +19,7 @@ namespace tec {
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, -0.1, 0));
+		this->dynamicsWorld->setGravity(btVector3(0, -7.0, 0));
 
 		// Register the collision dispatcher with the GImpact algorithm for dynamic meshes.
 		btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(this->dynamicsWorld->getDispatcher());
@@ -235,7 +235,7 @@ namespace tec {
 
 		// Prevent objects from rotating from physics system.
 		if (collision_body->disable_rotation) {
-			body->setAngularVelocity(btVector3(0, 0, 0));
+			body->setAngularFactor(btVector3(0.0, 0, 0.0));
 		}
 
 		return true;

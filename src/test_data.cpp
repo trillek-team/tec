@@ -69,6 +69,7 @@ namespace tec {
 		voxel1.Add<Renderable>(voxvol_vert_buffer);
 		{
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, voxvol_shared->GetMesh().lock());
+			colbody->mass = 0.0;
 			voxel1.Add(colbody);
 		}
 
@@ -105,10 +106,18 @@ namespace tec {
 		bob.Add<AudioSource>(vorbis_stream, true);
 
 		Entity camera(1);
-		camera.Add<Position>();
-		camera.Add<Orientation>();
+		camera.Add<Position>(glm::vec3(0.0, 4.0, -20.0));
+		camera.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
 		camera.Add<Camera>(1);
+		camera.Add<Velocity>();
 		camera.Add<Renderable>(voxvol_vert_buffer);
+		{
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 1.0f, 0.5f);
+			colbody->disable_deactivation = true;
+			colbody->mass = 1.0;
+			colbody->disable_rotation = true;
+			camera.Add(colbody);
+		}
 		Entity camera2(2);
 		camera2.Add<Position>();
 		camera2.Add<Orientation>();
