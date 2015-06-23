@@ -3,6 +3,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <iostream>
 #include <thread>
+#include <cmath>
 
 #include "graphics/shader.hpp"
 #include "graphics/vertex-buffer-object.hpp"
@@ -29,7 +30,7 @@ namespace tec {
 		this->window_width = width;
 
 		float aspect_ratio = static_cast<float>(this->window_width) / static_cast<float>(this->window_height);
-		if (aspect_ratio < 1.0f) {
+		if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 			aspect_ratio = 4.0f / 3.0f;
 		}
 
