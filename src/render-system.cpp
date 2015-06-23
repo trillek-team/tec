@@ -21,6 +21,7 @@ namespace tec {
 
 		glEnable(GL_DEPTH_TEST);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_CULL_FACE);
 	}
 
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {

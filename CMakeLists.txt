@@ -33,6 +33,11 @@ FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
 
+# IMGUI setup
+FILE(GLOB IMGUI_SRC "modules/imgui/imgui.cpp")
+FILE(GLOB IMGUI_INCLUDES "modules/imgui/*.h")
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/imgui/)
+
 #Check if we can build with the current tool chain
 INCLUDE(SetCompilerFlags)
 
@@ -179,6 +184,8 @@ SET(TEC_ALL_LIBS
 ADD_EXECUTABLE("TEC"
 	${TEC_SRC}
 	${TEC_INCLUDES}
+	${IMGUI_SRC}
+	${IMGUI_INCLUDES}
 )
 
 TARGET_LINK_LIBRARIES("TEC" ${TEC_ALL_LIBS})

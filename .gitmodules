@@ -13,3 +13,6 @@ url=https://github.com/trillek-team/tec-assets
 [submodule "modules/openal-soft"]
 	path = modules/openal-soft
 	url = git://repo.or.cz/openal-soft.git
+[submodule "modules/imgui"]
+	path = modules/imgui
+	url = https://github.com/ocornut/imgui
