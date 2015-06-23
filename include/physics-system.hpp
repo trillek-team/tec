@@ -73,6 +73,7 @@ namespace tec {
 		bool CreateRigiedBody(std::shared_ptr<CollisionBody> collision_body);
 
 		typedef Multiton<eid, std::shared_ptr<CollisionBody>> CollisionBodyMap;
+		typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
 
 		btBroadphaseInterface* broadphase;
 		btCollisionConfiguration* collisionConfiguration;

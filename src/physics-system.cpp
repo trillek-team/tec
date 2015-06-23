@@ -71,6 +71,15 @@ namespace tec {
 				}
 			}
 		}
+		
+		for (auto itr = VelocityMap::Begin(); itr != VelocityMap::End(); ++itr) {
+			auto entity_id = itr->first;
+			if (this->bodies.find(entity_id) != this->bodies.end()) {
+				auto body = this->bodies.at(entity_id);
+				body->setLinearVelocity(itr->second->GetLinear() + body->getGravity());
+				body->setAngularVelocity(itr->second->GetAngular());
+			}
+		}
 
 		this->dynamicsWorld->stepSimulation(delta, 10);
 
@@ -223,13 +232,10 @@ namespace tec {
 		if (collision_body->disable_deactivation) {
 			body->forceActivationState(DISABLE_DEACTIVATION);
 		}
-		else {
-			body->forceActivationState(DISABLE_SIMULATION);
-		}
 
 		// Prevent objects from rotating from physics system.
 		if (collision_body->disable_rotation) {
-			body->setAngularFactor(btVector3(0, 0, 0));
+			body->setAngularVelocity(btVector3(0, 0, 0));
 		}
 
 		return true;

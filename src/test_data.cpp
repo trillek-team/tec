@@ -96,10 +96,10 @@ namespace tec {
 		auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 		bob.Add<Animation>(anim1);
 		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 0.6f, 0.5f);
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 1.0f, 0.5f);
 			bob.Add(colbody);
 		}
-		bob.Add<Position>(glm::vec3(0.0, 0.0, -1.0));
+		bob.Add<Position>(glm::vec3(0.0, 2.0, 0.0));
 		bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
 		auto vorbis_stream = VorbisStream::Create("assets/theme.ogg");
 		bob.Add<AudioSource>(vorbis_stream, true);
@@ -113,5 +113,15 @@ namespace tec {
 		camera2.Add<Position>();
 		camera2.Add<Orientation>();
 		camera2.Add<Camera>(2);
+
+
+		Entity floor(1000);
+		{
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionBox>(1000, 100.0f, 1.0f, 100.0f);
+			colbody->mass = 0.0;
+			floor.Add<Position>(glm::vec3(0.0, -2.0, 0.0));
+			floor.Add(colbody);
+		}
+
 	}
 }
