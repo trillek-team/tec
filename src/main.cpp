@@ -3,7 +3,7 @@
 #include "physics-system.hpp"
 #include "sound-system.hpp"
 #include "component-update-system.hpp"
-#include "components/camera.hpp"
+#include "controllers/fps-controller.hpp"
 
 #include <thread>
 
@@ -32,14 +32,14 @@ int main(int argc, char* argv[]) {
 	tec::IntializeComponents();
 	tec::BuildTestEntities();
 
-	tec::CameraMover cam_mover(1);
+	tec::FPSController camera_controller(1);
 
 	double delta = os.GetDeltaTime();
 	while (!os.Closing()) {
 		delta = os.GetDeltaTime();
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
-		cam_mover.Update(0.0);
+		camera_controller.Update(delta);
 		std::thread ps_thread([&] () {
 			ps.Update(delta);
 		});

@@ -4,7 +4,6 @@
 #include "graphics/texture-object.hpp"
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
-#include "components/camera.hpp"
 #include "resources/md5mesh.hpp"
 #include "resources/pixel-buffer.hpp"
 #include "resources/md5anim.hpp"
@@ -23,7 +22,6 @@ namespace tec {
 		ComponentUpdateSystem<Position>::Initialize();
 		ComponentUpdateSystem<Orientation>::Initialize();
 		ComponentUpdateSystem<Scale>::Initialize();
-		ComponentUpdateSystem<Camera>::Initialize();
 		ComponentUpdateSystem<Renderable>::Initialize();
 		ComponentUpdateSystem<View>::Initialize();
 		ComponentUpdateSystem<Animation>::Initialize();
@@ -108,8 +106,12 @@ namespace tec {
 		Entity camera(1);
 		camera.Add<Position>(glm::vec3(0.0, 4.0, -20.0));
 		camera.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
-		camera.Add<Camera>(1);
 		camera.Add<Velocity>();
+		{
+			std::shared_ptr<View> view = std::make_shared<View>();
+			view->active = true;
+			camera.Add<View>(view);
+		}
 		camera.Add<Renderable>(voxvol_vert_buffer);
 		{
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 1.0f, 0.5f);
@@ -118,11 +120,6 @@ namespace tec {
 			colbody->disable_rotation = true;
 			camera.Add(colbody);
 		}
-		Entity camera2(2);
-		camera2.Add<Position>();
-		camera2.Add<Orientation>();
-		camera2.Add<Camera>(2);
-
 
 		Entity floor(1000);
 		{

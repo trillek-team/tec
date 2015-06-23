@@ -1,4 +1,4 @@
-#include "components/camera.hpp"
+#include "controllers/fps-controller.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "os.hpp"
@@ -7,7 +7,7 @@
 #include "physics-system.hpp"
 
 namespace tec {
-	void CameraMover::Update(double delta) {
+	void FPSController::Update(double delta) {
 		ProcessEventQueue();
 	}
 
@@ -21,12 +21,7 @@ namespace tec {
 	bool KEY_S_DOWN = false;
 	bool KEY_D_DOWN = false;
 
-	void CameraMover::On(std::shared_ptr<KeyboardEvent> data) {
-		auto camera = this->cam.lock();
-		if (!camera) {
-			this->cam = e.Get<Camera>();
-			return;
-		}
+	void FPSController::On(std::shared_ptr<KeyboardEvent> data) {
 		auto orientation = e.Get<Orientation>().lock();
 
 		auto old_velocity = this->e.Get<Velocity>().lock();
@@ -75,9 +70,6 @@ namespace tec {
 					case GLFW_KEY_S:
 						KEY_S_DOWN = false;
 						break;
-					case GLFW_KEY_SPACE:
-						camera->MakeActive();
-						break;
 				}
 				break;
 			default:
@@ -103,24 +95,5 @@ namespace tec {
 			new_velocity->angular = glm::vec4(0.0, 0.0, 0.0, 0.0);
 		}
 		this->e.Update<Velocity>(new_velocity);
-	}
-	Camera::Camera(eid entity_id) : e(entity_id) {
-		e.Add<View>();
-	}
-
-	Camera::~Camera() { }
-
-	bool Camera::MakeActive() {
-		if (this->e.Has<View>()) {
-			auto view = this->e.Get<View>().lock();
-			if (!view->active) {
-				auto new_view = std::make_shared<View>();
-				new_view->active = true;
-				new_view->view_matrix = view->view_matrix;
-				this->e.Update<View>(new_view);
-			}
-			return true;
-		}
-		return false;
 	}
 }
