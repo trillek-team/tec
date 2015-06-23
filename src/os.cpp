@@ -168,6 +168,11 @@ namespace tec {
 		return this->client_height;
 	}
 
+	
+	GLFWwindow* OS::GetWindow() {
+		return this->window;
+	}
+
 	double OS::GetDeltaTime() {
 		double new_time = glfwGetTime();
 		double delta_time = new_time - this->last_time;

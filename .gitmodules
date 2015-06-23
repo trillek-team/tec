@@ -10,3 +10,9 @@ url=https://github.com/trillek-team/tec-assets
 [submodule "modules/bullet3"]
 	path = modules/bullet3
 	url = https://github.com/bulletphysics/bullet3
+[submodule "modules/openal-soft"]
+	path = modules/openal-soft
+	url = git://repo.or.cz/openal-soft.git
+[submodule "modules/imgui"]
+	path = modules/imgui
+	url = https://github.com/ocornut/imgui

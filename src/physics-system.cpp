@@ -4,10 +4,14 @@
 #include "entity.hpp"
 #include "components/transforms.hpp"
 #include "component-update-system.hpp"
+	
+#include "physics/physics-debug-drawer.hpp"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
 
 namespace tec {
+	PhysicsDebugDrawer debug_drawer;
+
 	PhysicsSystem::PhysicsSystem() {
 		last_rayvalid = false;
 		this->collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -15,11 +19,14 @@ namespace tec {
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, -0.1, 0));
+		this->dynamicsWorld->setGravity(btVector3(0, -7.0, 0));
 
 		// Register the collision dispatcher with the GImpact algorithm for dynamic meshes.
 		btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(this->dynamicsWorld->getDispatcher());
 		btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+		
+		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
 	}
 
 	PhysicsSystem::~PhysicsSystem() {
@@ -46,7 +53,7 @@ namespace tec {
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			if (this->bodies.find(entity_id) == this->bodies.end()) {
-				glm::vec3 position;
+				glm::vec3 position(0.0);
 				if (Entity(entity_id).Has<Position>()) {
 					position = (Entity(entity_id).Get<Position>().lock())->value;
 				}
@@ -62,6 +69,15 @@ namespace tec {
 					this->bodies[entity_id]->setWorldTransform(transform);
 					this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
 				}
+			}
+		}
+		
+		for (auto itr = VelocityMap::Begin(); itr != VelocityMap::End(); ++itr) {
+			auto entity_id = itr->first;
+			if (this->bodies.find(entity_id) != this->bodies.end()) {
+				auto body = this->bodies.at(entity_id);
+				body->setLinearVelocity(itr->second->GetLinear() + body->getGravity());
+				body->setAngularVelocity(itr->second->GetAngular());
 			}
 		}
 
@@ -176,6 +192,11 @@ namespace tec {
 		return 0;
 	}
 
+	void PhysicsSystem::DebugDraw() {
+		this->dynamicsWorld->debugDrawWorld();
+		debug_drawer.UpdateVertexBuffer();
+	}
+
 	void PhysicsSystem::SetGravity(const unsigned int entity_id, const btVector3& f) {
 		if (this->bodies.find(entity_id) != this->bodies.end()) {
 			this->bodies[entity_id]->setGravity(f);
@@ -214,7 +235,7 @@ namespace tec {
 
 		// Prevent objects from rotating from physics system.
 		if (collision_body->disable_rotation) {
-			body->setAngularFactor(btVector3(0, 0, 0));
+			body->setAngularFactor(btVector3(0.0, 0, 0.0));
 		}
 
 		return true;

@@ -22,7 +22,7 @@ namespace tec {
 
 		double height; // Used for capsule shape collidable.
 		btScalar mass; // For static objects mass must be 0.
-		bool disable_deactivation; // Whether to disable automatic deactivation.
+		bool disable_deactivation = false; // Whether to disable automatic deactivation.
 		bool disable_rotation; // prevent rotation from physics simulation.
 		eid entity_id; // entity id that raycasts resolve to (this)
 

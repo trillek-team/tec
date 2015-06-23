@@ -19,6 +19,12 @@ IF ( MSVC )
 		SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
 		SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
 	endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
+	# This is needed for OpenAL as the libaries were built using an older MSVC.
+	IF(${_MACHINE_ARCH_FLAG} MATCHES X86)
+	 	 SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
+	 	 SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
+	 	 SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} /SAFESEH:NO")
+	 ENDIF()
 ENDIF ( MSVC )
 
 # find all source files in the src directory
@@ -26,6 +32,11 @@ FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
 
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
+
+# IMGUI setup
+FILE(GLOB IMGUI_SRC "modules/imgui/imgui.cpp")
+FILE(GLOB IMGUI_INCLUDES "modules/imgui/*.h")
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/imgui/)
 
 #Check if we can build with the current tool chain
 INCLUDE(SetCompilerFlags)
@@ -41,11 +52,16 @@ IF (WIN32 AND NOT MINGW) # Windows
 	SET(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib/)
 ENDIF (WIN32 AND NOT MINGW)
 
+# This is used to flag if TEC should be built or if we are just doing a dependency build.
+SET(BUILD_DEPS_FIRST false)
+
 FIND_PACKAGE(OpenGL REQUIRED)
 
 # GLFW3 check
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/glfw3/include")
 FIND_PACKAGE(GLFW3)
 IF (NOT ${GLFW_FOUND})
+	SET(BUILD_DEPS_FIRST true)
 	MESSAGE("GLFW3 will be built.")
 	# We are turning off all the extra bullet options before adding it to reduce compiling.
 	SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
@@ -56,7 +72,7 @@ IF (NOT ${GLFW_FOUND})
 	INCLUDE_DIRECTORIES("modules/glfw3/include")
 ELSE (NOT ${GLFW_FOUND})
 	MESSAGE("GLFW3 already found skipping build.")
-	INCLUDE_DIRECTORIES (${GLFW_INCLUDE_DIR})
+	INCLUDE_DIRECTORIES (${GLFW_INCLUDE_DIRS})
 ENDIF (NOT ${GLFW_FOUND})
 
 # PThread check
@@ -70,8 +86,10 @@ ENDIF(CMAKE_USE_PTHREADS_INIT)
 INCLUDE_DIRECTORIES("modules/glm")
 
 # Bullet check
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
 FIND_PACKAGE(Bullet)
 IF (NOT ${BULLET_FOUND})
+	SET(BUILD_DEPS_FIRST true)
 	MESSAGE("Bullet will be built.")
 	# We are turning off all the extra bullet options before adding it to reduce compiling.
 	SET(USE_DOUBLE_PRECISION ON CACHE BOOL "Use double precision")
@@ -85,11 +103,27 @@ IF (NOT ${BULLET_FOUND})
 	SET(BUILD_BULLET3 OFF CACHE BOOL "Set when you want to build Bullet 3")
 	ADD_SUBDIRECTORY("modules/bullet3")
 	INCLUDE_DIRECTORIES("modules/bullet3/src")
-	SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
 ELSE (NOT ${BULLET_FOUND})
 	MESSAGE("Bullet already found skipping build.")
 	INCLUDE_DIRECTORIES (${BULLET_INCLUDE_DIRS})
 ENDIF (NOT ${BULLET_FOUND})
+
+# OpenAL check
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules//openal-soft/include/AL")
+FIND_PACKAGE(OpenAL)
+IF (NOT ${OPENAL_FOUND})
+	SET(BUILD_DEPS_FIRST true)
+	MESSAGE("Bullet will be built.")
+	SET(ALSOFT_UTILS OFF CACHE BOOL "Build and install utility programs")
+	SET(ALSOFT_EXAMPLES OFF CACHE BOOL "Build and install example programs")
+	SET(ALSOFT_REQUIRE_WINMM ON CACHE BOOL "Require Windows Multimedia backend")
+	ADD_SUBDIRECTORY("modules/openal-soft")
+	INCLUDE_DIRECTORIES("modules//openal-soft/include")
+ELSE (NOT ${OPENAL_FOUND})
+	MESSAGE("OpenAL already found skipping build.")
+	INCLUDE_DIRECTORIES (${OPENAL_INCLUDE_DIR})
+ENDIF (NOT ${OPENAL_FOUND})
+
 
 # Some definitions we need to use bullet and GLM.
 ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE)
@@ -132,19 +166,25 @@ ENDIF (APPLE)
 
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
+IF (NOT ${BUILD_DEPS_FIRST})
+MESSAGE("All dependencies found now building tec.")
 SET(TEC_ALL_LIBS
-  ${CMAKE_THREAD_LIBS_INIT}
+	${CMAKE_THREAD_LIBS_INIT}
 	${OPENGL_LIBRARIES}
 	${X11_LIBRARIES}
 	${OSX_LIBRARIES}
 	${GLEW_LIBRARIES}
 	${GLFW_LIBRARIES}
 	${BULLET_LIBRARIES}
+	${OPENAL_LIBRARY}
 )
 
 ADD_EXECUTABLE("TEC"
 	${TEC_SRC}
 	${TEC_INCLUDES}
+	${IMGUI_SRC}
+	${IMGUI_INCLUDES}
 )
 
 TARGET_LINK_LIBRARIES("TEC" ${TEC_ALL_LIBS})
+ENDIF (NOT ${BUILD_DEPS_FIRST})

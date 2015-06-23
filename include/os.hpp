@@ -112,6 +112,13 @@ namespace tec {
 		* that have passed.
 		*/
 		double GetDeltaTime();
+		
+		/**
+		* \brief Returns the current active window.
+		*
+		* \return GLFWwindow* The current active window.
+		*/
+		GLFWwindow* GetWindow();
 
 		/**
 		* \brief Callback for when the window is resized.

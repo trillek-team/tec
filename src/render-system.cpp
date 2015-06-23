@@ -3,6 +3,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <iostream>
 #include <thread>
+#include <cmath>
 
 #include "graphics/shader.hpp"
 #include "graphics/vertex-buffer-object.hpp"
@@ -21,6 +22,7 @@ namespace tec {
 
 		glEnable(GL_DEPTH_TEST);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_CULL_FACE);
 	}
 
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
@@ -28,7 +30,7 @@ namespace tec {
 		this->window_width = width;
 
 		float aspect_ratio = static_cast<float>(this->window_width) / static_cast<float>(this->window_height);
-		if (aspect_ratio < 1.0f) {
+		if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 			aspect_ratio = 4.0f / 3.0f;
 		}
 
@@ -131,12 +133,15 @@ namespace tec {
 					glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
 					vertex_group->material->Activate();
 					glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
-					glDrawElements(GL_TRIANGLES, vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
+					glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
 					vertex_group->material->Deactivate();
 				}
 			}
 			shader->UnUse();
 		}
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	bool RenderSystem::ActivateView(const eid entity_id) {

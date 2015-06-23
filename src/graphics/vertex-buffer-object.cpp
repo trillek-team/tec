@@ -162,5 +162,13 @@ namespace tec {
 			this->index_count = indices.size();
 		}
 		glBindVertexArray(0);
+
+		if (this->vertex_groups.size() == 0) {
+			VertexGroup group;
+			group.index_count = indices.size();
+			group.starting_offset = 0;
+			group.mesh_group_number = 0;
+			this->vertex_groups.push_back(group);
+		}
 	}
 }

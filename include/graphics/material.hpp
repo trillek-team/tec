@@ -20,7 +20,7 @@ namespace tec {
 
 	class Material {
 	public:
-		Material(const std::weak_ptr<Shader> shader) : shader(shader), polygon_mode(GL_FILL) { }
+		Material(const std::weak_ptr<Shader> shader);
 
 		/**
 		 * \brief Sets the shader used by this material.
@@ -80,6 +80,21 @@ namespace tec {
 		const GLenum GetPolygonMode();
 
 		/**
+		 * \brief Sets the DrawElements type used when this material is in use.
+		 * \param const GLenum mode The DrawElements (GL_POINTS, GL_LINE_STRIP, GL_LINE_LOOP,
+		 * GL_LINES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES, or GL_PATCHES).
+		 * \return void
+		 */
+		void SetDrawElementsMode(const GLenum mode);
+
+		/**
+		 * \brief Gets the DrawElements mode of this material.
+		 * \return const GLenum The DrawElements mode of this material.
+		 * \return void
+		 */
+		const GLenum GetDrawElementsMode() const;
+
+		/**
 		 * \brief Activates all the textures used by this material.
 		 * \return void
 		 */
@@ -92,6 +107,7 @@ namespace tec {
 		void Deactivate();
 	private:
 		GLenum polygon_mode;
+		GLenum draw_elements_mode;
 		std::shared_ptr<Shader> shader;
 		std::vector<std::shared_ptr<TextureObject>> textures;
 	};
