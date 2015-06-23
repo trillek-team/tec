@@ -3,6 +3,9 @@
 #include "graphics/shader.hpp"
 
 namespace tec {
+	Material::Material(const std::weak_ptr<Shader> shader) : shader(shader),
+		polygon_mode(GL_FILL), draw_elements_mode(GL_TRIANGLES) { }
+
 	const GLenum Material::GetPolygonMode() {
 		return this->polygon_mode;
 	}
@@ -17,6 +20,27 @@ namespace tec {
 			default:
 				this->polygon_mode = GL_FILL;
 		}
+	}
+
+	void Material::SetDrawElementsMode(const GLenum mode) {
+		switch (mode) {
+			case GL_POINTS:
+			case GL_LINE_STRIP:
+			case GL_LINE_LOOP:
+			case GL_LINES:
+			case GL_TRIANGLE_STRIP:
+			case GL_TRIANGLE_FAN:
+			case GL_TRIANGLES:
+			case GL_PATCHES:
+				this->draw_elements_mode = mode;
+				break;
+			default:
+				this->draw_elements_mode = GL_TRIANGLES;
+		}
+	}
+
+	const GLenum Material::GetDrawElementsMode() const {
+		return this->draw_elements_mode;
 	}
 
 	std::shared_ptr<Shader> Material::GetShader() {
@@ -50,7 +74,7 @@ namespace tec {
 	}
 
 	void Material::Activate() {
-		for (GLuint i = 0; i < this->textures.size(); ++ i) {
+		for (GLuint i = 0; i < this->textures.size(); ++i) {
 			this->shader->ActivateTextureUnit(i, this->textures[i]->GetID());
 		}
 	}

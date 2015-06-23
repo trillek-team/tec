@@ -131,12 +131,14 @@ namespace tec {
 					glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
 					vertex_group->material->Activate();
 					glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
-					glDrawElements(GL_TRIANGLES, vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
+					glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
 					vertex_group->material->Deactivate();
 				}
 			}
 			shader->UnUse();
 		}
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	bool RenderSystem::ActivateView(const eid entity_id) {
