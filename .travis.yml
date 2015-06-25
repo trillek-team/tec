@@ -1,0 +1,100 @@
+language: cpp
+
+os:
+  - linux
+
+git:
+  submodules: false
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - libgl1-mesa-dev
+      - libglew-dev
+
+compiler:
+  - gcc
+  # - clang
+
+before_install:
+  - git submodule update --init
+  - echo $LANG
+  - echo $LC_ALL
+  # CMake repo
+  - echo "yes" | sudo add-apt-repository ppa:kalakris/cmake
+  # clang++-3.4 repo
+  - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+  - sudo apt-get update -qq
+
+install:
+  # Install CMake
+  - sudo apt-get install cmake
+  - cmake --version
+  # GCC 4.8
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  # CLang 3.4
+  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
+  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
+  # GLFW3
+  - cd modules/glfw3
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - sudo make install
+  - cd ../../..
+  # GLM
+  - cd modules/glm
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - sudo make install
+  - cd ../../..
+  # OpenAL soft
+  - cd modules/openal-soft/build
+  - cmake ..
+  - make
+  - sudo make install
+  - cd ../../..
+  # Vorbis, OGG and Alure
+  #- sudo apt-get -q -y install libogg-dev libvorbis-dev libalure-dev
+  # Install and build gtest
+  #- sudo apt-get -q -y install libgtest-dev
+  #- BUILD_PATH=$(pwd)
+  #- cd /usr/src/gtest
+  #- sudo cmake CMakeLists.txt
+  #- sudo make
+  #- GTEST_ROOT=/usr/src/gtest
+  #- export GTEST_ROOT
+  #- cd $BUILD_PATH
+
+before_script:
+  - pwd
+  - mkdir build
+  - cd build
+
+script:
+  - pwd
+  - cmake ..
+  - make
+  - ls
+  - cmake ..
+  - make
+  - ls
+    #- ./TCCTests
+
+notifications:
+  #email:
+    #- my.mail@bar.com
+  # I can also set up Glitch to output build results as well if we don't want the travis bot join/part spam
+  irc:
+    channels:
+      - "chat.freenode.net#project-trillek"
+      - "chat.freenode.net#trillek"
+    on_success: change
+    on_failure: always
