@@ -38,7 +38,7 @@ install:
   # Enforces CLang 3.7
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
     # Install OpenAL and GLEW
-  - sudo apt-get -q -y libglew1.6-dev openal-dev
+  - sudo apt-get -q -y install libglew-dev openal-dev
     # Install and build gtest
   #- sudo apt-get -q -y install libgtest-dev
   #- BUILD_PATH=$(pwd)
