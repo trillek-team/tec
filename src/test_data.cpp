@@ -15,6 +15,7 @@
 #include "entity.hpp"
 #include "component-update-system.hpp"
 #include "sound-system.hpp"
+#include "vcomputer-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -30,6 +31,8 @@ namespace tec {
 		ComponentUpdateSystem<Animation>::Initialize();
 		ComponentUpdateSystem<CollisionBody>::Initialize();
 		ComponentUpdateSystem<AudioSource>::Initialize();
+		ComponentUpdateSystem<ComputerScreen>::Initialize();
+		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
 
 	void BuildTestEntities() {
@@ -102,6 +105,25 @@ namespace tec {
 			vidstand.Add<Renderable>(vbo, shader1);
 			vidstand.Add<Position>(glm::vec3(0.0, -2.0, -15.0));
 			vidstand.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
+			std::shared_ptr<ComputerScreen> screen =
+				std::make_shared<ComputerScreen>(vbo->GetVertexGroup(0)->material->GetTexutre(0));
+			vidstand.Add(screen);
+			std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
+			vidstand.Add(keybaord);
+
+			VComputerCommand add_devoces(
+				[screen, keybaord] (VComputerSystem* vcomputer) {
+				vcomputer->AddComputer(101);
+				if (vcomputer->LoadROMFile(101, "modules/trillek-vcomputer/asm/type1.ffi")) {
+					vcomputer->SetDevice(101, 5, screen->device);
+					vcomputer->SetDevice(101, 1, keybaord->device);
+					vcomputer->TurnComptuerOn(101);
+				}
+				else {
+					vcomputer->RemoveComputer(101);
+				}
+			});
+			VComputerSystem::QueueCommand(std::move(add_devoces));
 		}
 
 		{

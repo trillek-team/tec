@@ -45,6 +45,12 @@ namespace tec {
 	void Material::AddTexture(std::shared_ptr<TextureObject> tex) {
 		this->textures.push_back(tex);
 	}
+	
+	std::shared_ptr<TextureObject> Material::GetTexutre(size_t index) {
+		if (index < this->textures.size()) {
+			return this->textures[index];
+		}
+	}
 
 	void Material::RemoveTexture(std::shared_ptr<TextureObject> tex) {
 		for (auto texture : this->textures) {

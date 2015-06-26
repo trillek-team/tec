@@ -1,6 +1,7 @@
 #include "os.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
+#include "vcomputer-system.hpp"
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
 #include "component-update-system.hpp"
@@ -39,6 +40,8 @@ int main(int argc, char* argv[]) {
 	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
+	
+	tec::VComputerSystem vcs;
 
 	tec::IntializeComponents();
 	tec::BuildTestEntities();
@@ -72,6 +75,8 @@ int main(int argc, char* argv[]) {
 		});
 
 		rs.Update(delta);
+
+		vcs.Update(delta);
 
 		os.OSMessageLoop();
 
