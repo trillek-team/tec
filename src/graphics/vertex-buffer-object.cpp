@@ -10,7 +10,7 @@ namespace tec {
 
 	VertexBufferObject::VertexBufferObject(std::shared_ptr<Mesh> mesh) :
 		vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0), source_mesh(mesh) {
-		Load(mesh, nullptr);
+		Load(mesh);
 	}
 
 	VertexBufferObject::~VertexBufferObject() {
@@ -47,7 +47,7 @@ namespace tec {
 		}
 	}
 
-	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader) {
+	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh) {
 		if (mesh) {
 			this->source_mesh = mesh;
 			// TODO: Make a load method that takes offset and count to sub_buffer.
@@ -65,7 +65,7 @@ namespace tec {
 						group.material = MaterialMap::Get(submesh->material_name);
 					}
 					else {
-						group.material = Material::Create(submesh->material_name, shader);
+						group.material = Material::Create(submesh->material_name);
 						for (auto texture : submesh->textures) {
 							if (TextureMap::Has(texture)) {
 								group.material->AddTexture(TextureMap::Get(texture));

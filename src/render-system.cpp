@@ -13,6 +13,16 @@
 #include "os.hpp"
 
 namespace tec {
+	Renderable::Renderable(std::shared_ptr<VertexBufferObject> buf,
+		std::shared_ptr<Shader> shader) : buffer(buf), shader(shader) {
+		if (this->buffer) {
+			size_t group_count = this->buffer->GetVertexGroupCount();
+			for (size_t i = 0; i < group_count; ++i) {
+				this->vertex_groups.insert(this->buffer->GetVertexGroup(i));
+			}
+		}
+	}
+
 	RenderSystem::RenderSystem() : window_width(800), window_height(600) {
 		auto err = glGetError();
 		// If there is an error that means something went wrong when creating the context.
@@ -47,12 +57,17 @@ namespace tec {
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		this->render_item_list.clear();
 
+		if (!this->default_shader) {
+			this->default_shader = ShaderMap::Get("debug");
+		}
+
 		// Loop through each renderbale and update its model matrix.
 		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
-			if (itr->second->hidden) {
+			auto entity_id = itr->first;
+			std::shared_ptr<Renderable> renderable = itr->second;
+			if (renderable->hidden) {
 				continue;
 			}
-			auto entity_id = itr->first;
 			glm::vec3 position;
 			glm::quat orientation;
 			Entity e(entity_id);
@@ -79,9 +94,9 @@ namespace tec {
 
 			RenderItem ri;
 			ri.model_matrix = &this->model_matricies[entity_id];
-			ri.vao = itr->second->buffer->GetVAO();
-			ri.ibo = itr->second->buffer->GetIBO();
-			ri.vertex_groups = &itr->second->vertex_groups;
+			ri.vao = renderable->buffer->GetVAO();
+			ri.ibo = renderable->buffer->GetIBO();
+			ri.vertex_groups = &renderable->vertex_groups;
 
 			if (e.Has<Animation>()) {
 				auto anim = e.Get<Animation>().lock();
@@ -90,8 +105,12 @@ namespace tec {
 				ri.animation = anim;
 			}
 
-			for (auto group : itr->second->vertex_groups) {
-				this->render_item_list[group->material->GetShader()].insert(std::move(ri));
+			std::shared_ptr<Shader> shader = renderable->shader;
+			if (!shader) {
+				shader = this->default_shader;
+			}
+			for (auto group : renderable->vertex_groups) {
+				this->render_item_list[shader].insert(std::move(ri));
 			}
 		}
 

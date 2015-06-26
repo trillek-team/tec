@@ -35,13 +35,13 @@ namespace tec {
 			std::make_pair(Shader::VERTEX, "assets/basic.vert"), std::make_pair(Shader::FRAGMENT, "assets/basic.frag"),
 		};
 		auto s = Shader::CreateFromFile("shader1", shader_files);
-		auto basic_fill = Material::Create("material_basic", s);
 
 		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
 			std::make_pair(Shader::VERTEX, "assets/debug.vert"), std::make_pair(Shader::FRAGMENT, "assets/debug.frag"),
 		};
 		auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
-		auto debug_fill = Material::Create("material_debug", debug_shader);
+
+		auto debug_fill = Material::Create("material_debug");
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
 
@@ -65,16 +65,16 @@ namespace tec {
 		VoxelVolume::QueueCommand(std::move(add_voxel));
 		voxvol_shared->Update(0.0);
 		auto voxvol_vert_buffer = std::make_shared<VertexBufferObject>();
-		voxel1.Add<Renderable>(voxvol_vert_buffer);
+		voxel1.Add<Renderable>(voxvol_vert_buffer, debug_shader);
 		{
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, voxvol_shared->GetMesh().lock());
 			colbody->mass = 0.0;
 			voxel1.Add(colbody);
 		}
 
-		RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared, debug_shader] (RenderSystem* sys) {
+		RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared] (RenderSystem* sys) {
 			auto mesh = voxvol_shared->GetMesh().lock();
-			voxvol_vert_buffer->Load(mesh, debug_shader);
+			voxvol_vert_buffer->Load(mesh);
 			auto voxel1Renderable = Entity(100).Get<Renderable>().lock();
 			for (size_t i = 0; i < voxvol_vert_buffer->GetVertexGroupCount(); ++i) {
 				voxel1Renderable->vertex_groups.insert(voxvol_vert_buffer->GetVertexGroup(i));
@@ -85,11 +85,9 @@ namespace tec {
 		{
 			Entity bob(99);
 			auto mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
-			auto renderable = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
-			renderable->buffer->Load(mesh1, s);
-			for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
-				renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
-			}
+			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
+			vbo->Load(mesh1);
+			auto renderable = std::make_shared<Renderable>(vbo, s);
 			bob.Add<Renderable>(renderable);
 
 			auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
@@ -106,11 +104,9 @@ namespace tec {
 		{
 			Entity vidstand(101);
 			auto vidmesh = OBJ::Create("assets/vidstand/VidStand_Full.obj");
-			auto renderable = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
-			renderable->buffer->Load(vidmesh, s);
-			for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
-				renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
-			}
+			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
+			vbo->Load(vidmesh);
+			auto renderable = std::make_shared<Renderable>(vbo, s);
 			vidstand.Add<Renderable>(renderable);
 			vidstand.Add<Position>(glm::vec3(0.0, -2.0, -15.0));
 			vidstand.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));

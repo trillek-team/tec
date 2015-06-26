@@ -29,15 +29,15 @@ namespace tec {
 	struct WindowResizedEvent;
 
 	struct Renderable {
-		Renderable(std::shared_ptr<VertexBufferObject> buf) : buffer(buf) {
-
-		}
+		Renderable(std::shared_ptr<VertexBufferObject> buf,
+			std::shared_ptr<Shader> shader = nullptr);
 		Renderable() {
 
 		}
 		bool hidden = false;
 		std::set<VertexGroup*> vertex_groups;
 		std::shared_ptr<VertexBufferObject> buffer;
+		std::shared_ptr<Shader> shader;
 	};
 
 	struct View {
@@ -65,6 +65,7 @@ namespace tec {
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
+		std::shared_ptr<Shader> default_shader;
 
 		struct RenderItem {
 			glm::mat4* model_matrix;
