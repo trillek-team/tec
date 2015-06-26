@@ -5,6 +5,7 @@
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
 #include "resources/md5mesh.hpp"
+#include "resources/obj.hpp"
 #include "resources/pixel-buffer.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
@@ -81,40 +82,50 @@ namespace tec {
 		});
 		RenderSystem::QueueCommand(std::move(buffer_func));
 
-		Entity bob(99);
-		auto mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
 		{
+			Entity bob(99);
+			auto mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
 			auto renderable = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
 			renderable->buffer->Load(mesh1, s);
 			for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
 				renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
 			}
 			bob.Add<Renderable>(renderable);
-		}
 
-		auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
-		bob.Add<Animation>(anim1);
-		{
+			auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
+			bob.Add<Animation>(anim1);
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 1.0f, 0.5f);
 			bob.Add(colbody);
-		}
-		bob.Add<Position>(glm::vec3(0.0, 2.0, 0.0));
-		bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
-		auto vorbis_stream = VorbisStream::Create("assets/theme.ogg");
-		bob.Add<AudioSource>(vorbis_stream, true);
 
-		Entity camera(1);
-		camera.Add<Position>(glm::vec3(0.0, 4.0, -20.0));
-		camera.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
-		camera.Add<Velocity>();
+			bob.Add<Position>(glm::vec3(0.0, 2.0, 0.0));
+			bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
+			auto vorbis_stream = VorbisStream::Create("assets/theme.ogg");
+			bob.Add<AudioSource>(vorbis_stream, true);
+		}
+
 		{
+			Entity vidstand(101);
+			auto vidmesh = OBJ::Create("assets/vidstand/VidStand_Full.obj");
+			auto renderable = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
+			renderable->buffer->Load(vidmesh, s);
+			for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
+				renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
+			}
+			vidstand.Add<Renderable>(renderable);
+			vidstand.Add<Position>(glm::vec3(0.0, -2.0, -15.0));
+			vidstand.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
+		}
+
+		{
+			Entity camera(1);
+			camera.Add<Position>(glm::vec3(0.0, 10.0, -20.0));
+			camera.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
+			camera.Add<Velocity>();
 			std::shared_ptr<View> view = std::make_shared<View>();
 			view->active = true;
 			camera.Add<View>(view);
-		}
-		camera.Add<Renderable>(voxvol_vert_buffer);
-		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 1.0f, 0.5f);
+			camera.Add<Renderable>(voxvol_vert_buffer);
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 0.5f, 0.5f);
 			colbody->disable_deactivation = true;
 			colbody->mass = 1.0;
 			colbody->disable_rotation = true;
