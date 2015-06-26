@@ -31,6 +31,7 @@ FIND_PATH(GLFW_INCLUDE_DIRS GLFW/glfw3.h DOC "Path to GLFW include directory."
   /usr/include/GLFW
   /usr/local/include/GLFW
   ${GLFW_ROOT_DIR}/include/ # added by ptr
+  ${PROJECT_SOURCE_DIR}/modules/glfw3/include/GLFW
 )
 
 SET(GLFW_LIB_NAMES libglfw3.a glfw3 glfw GLFW3.lib)
@@ -44,6 +45,7 @@ FIND_LIBRARY(GLFW_LIBRARIES DOC "Absolute path to GLFW library."
   /usr/local/lib
   /usr/lib
   ${GLFW_ROOT_DIR}/lib-msvc100/release # added by ptr
+  ${PROJECT_SOURCE_DIR}/lib/
 )
 IF( APPLE )
     find_library(IOKIT NAMES IOKit)
