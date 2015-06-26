@@ -83,15 +83,6 @@ namespace tec {
 			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
 				glm::mat4_cast(camera_orientation);
 
-			// Check if there is a view associated with the entity_id and update it as well.
-			if (e.Has<View>()) {
-				auto view = e.Get<View>().lock();
-				view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
-				if (view->active) {
-					this->current_view = view;
-				}
-			}
-
 			RenderItem ri;
 			ri.model_matrix = &this->model_matricies[entity_id];
 			ri.vao = renderable->buffer->GetVAO();
@@ -111,6 +102,32 @@ namespace tec {
 			}
 			for (auto group : renderable->vertex_groups) {
 				this->render_item_list[shader].insert(std::move(ri));
+			}
+		}
+
+		for (auto itr = Multiton<eid, std::shared_ptr<View>>::Begin();
+			itr != Multiton<eid, std::shared_ptr<View>>::End(); ++itr) {
+			auto entity_id = itr->first;
+			std::shared_ptr<View> view = itr->second;
+
+			glm::vec3 position;
+			glm::quat orientation;
+			Entity e(entity_id);
+			if (e.Has<Position>()) {
+				position = e.Get<Position>().lock()->value;
+			}
+			if (e.Has<Orientation>()) {
+				orientation = e.Get<Orientation>().lock()->value;
+			}
+			auto camera_translation = position;
+			auto camera_orientation = orientation;
+
+			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
+				glm::mat4_cast(camera_orientation);
+
+			view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
+			if (view->active) {
+				this->current_view = view;
 			}
 		}
 

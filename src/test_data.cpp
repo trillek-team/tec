@@ -34,7 +34,7 @@ namespace tec {
 		auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
 			std::make_pair(Shader::VERTEX, "assets/basic.vert"), std::make_pair(Shader::FRAGMENT, "assets/basic.frag"),
 		};
-		auto s = Shader::CreateFromFile("shader1", shader_files);
+		auto shader1 = Shader::CreateFromFile("shader1", shader_files);
 
 		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
 			std::make_pair(Shader::VERTEX, "assets/debug.vert"), std::make_pair(Shader::FRAGMENT, "assets/debug.frag"),
@@ -64,50 +64,40 @@ namespace tec {
 		});
 		VoxelVolume::QueueCommand(std::move(add_voxel));
 		voxvol_shared->Update(0.0);
-		auto voxvol_vert_buffer = std::make_shared<VertexBufferObject>();
-		voxel1.Add<Renderable>(voxvol_vert_buffer, debug_shader);
 		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, voxvol_shared->GetMesh().lock());
+			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
+			std::shared_ptr<Mesh> mesh = voxvol_shared->GetMesh().lock();
+			vbo->Load(mesh);
+			voxel1.Add<Renderable>(vbo, debug_shader);
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, mesh);
 			colbody->mass = 0.0;
 			voxel1.Add(colbody);
 		}
 
-		RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared] (RenderSystem* sys) {
-			auto mesh = voxvol_shared->GetMesh().lock();
-			voxvol_vert_buffer->Load(mesh);
-			auto voxel1Renderable = Entity(100).Get<Renderable>().lock();
-			for (size_t i = 0; i < voxvol_vert_buffer->GetVertexGroupCount(); ++i) {
-				voxel1Renderable->vertex_groups.insert(voxvol_vert_buffer->GetVertexGroup(i));
-			}
-		});
-		RenderSystem::QueueCommand(std::move(buffer_func));
-
 		{
 			Entity bob(99);
-			auto mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
+			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
 			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
 			vbo->Load(mesh1);
-			auto renderable = std::make_shared<Renderable>(vbo, s);
-			bob.Add<Renderable>(renderable);
+			bob.Add<Renderable>(vbo, shader1);
 
-			auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
+			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 			bob.Add<Animation>(anim1);
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 1.0f, 0.5f);
 			bob.Add(colbody);
 
 			bob.Add<Position>(glm::vec3(0.0, 2.0, 0.0));
 			bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
-			auto vorbis_stream = VorbisStream::Create("assets/theme.ogg");
+			std::shared_ptr<VorbisStream> vorbis_stream = VorbisStream::Create("assets/theme.ogg");
 			bob.Add<AudioSource>(vorbis_stream, true);
 		}
 
 		{
 			Entity vidstand(101);
-			auto vidmesh = OBJ::Create("assets/vidstand/VidStand_Full.obj");
+			std::shared_ptr<OBJ> vidmesh = OBJ::Create("assets/vidstand/VidStand_Full.obj");
 			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
 			vbo->Load(vidmesh);
-			auto renderable = std::make_shared<Renderable>(vbo, s);
-			vidstand.Add<Renderable>(renderable);
+			vidstand.Add<Renderable>(vbo, shader1);
 			vidstand.Add<Position>(glm::vec3(0.0, -2.0, -15.0));
 			vidstand.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
 		}
@@ -120,7 +110,6 @@ namespace tec {
 			std::shared_ptr<View> view = std::make_shared<View>();
 			view->active = true;
 			camera.Add<View>(view);
-			camera.Add<Renderable>(voxvol_vert_buffer);
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 0.5f, 0.5f);
 			colbody->disable_deactivation = true;
 			colbody->mass = 1.0;
