@@ -31,7 +31,7 @@ before_install:
 
 install:
   # Install CMake 3.0
-  - sudo apt-get -y install cmake
+  - sudo apt-get -y install cmake3
   - cmake --version
   # Enforces GCC 4.8
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
