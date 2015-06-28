@@ -18,8 +18,8 @@
 #include "graphics/animation.hpp"
 
 namespace tec {
-	class VertexBufferObject;
 	struct VertexGroup;
+	struct Renderable;
 	class Shader;
 
 	class RenderSystem;
@@ -27,18 +27,6 @@ namespace tec {
 
 	struct KeyboardEvent;
 	struct WindowResizedEvent;
-
-	struct Renderable {
-		Renderable(std::shared_ptr<VertexBufferObject> buf,
-			std::shared_ptr<Shader> shader = nullptr);
-		Renderable() {
-
-		}
-		bool hidden = false;
-		std::set<VertexGroup*> vertex_groups;
-		std::shared_ptr<VertexBufferObject> buffer;
-		std::shared_ptr<Shader> shader;
-	};
 
 	struct View {
 		glm::mat4 view_matrix;

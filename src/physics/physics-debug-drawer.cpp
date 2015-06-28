@@ -1,7 +1,7 @@
 #include "physics/physics-debug-drawer.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/material.hpp"
-#include "render-system.hpp"
+#include "components/renderable.hpp"
 #include "entity.hpp"
 
 namespace tec {

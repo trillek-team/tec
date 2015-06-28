@@ -2,7 +2,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include "os.hpp"
-#include "render-system.hpp"
 #include "components/transforms.hpp"
 #include "physics-system.hpp"
 
