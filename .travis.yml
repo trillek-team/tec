@@ -25,21 +25,20 @@ before_install:
   - git submodule update --init
   - echo $LANG
   - echo $LC_ALL
-  # CMake repo
-  - echo "yes" | sudo add-apt-repository ppa:andykimpe/cmake3
   - sudo apt-get update -qq
 
 install:
-  # Install CMake 3.0
-  - sudo apt-get -q -y install cmake3
+  # Install CMake 3.1
+  - (cd /tmp && wget http://www.cmake.org/files/v3.1/cmake-3.1.3.tar.gz && tar zxf cmake-3.1.3.tar.gz)
+  - (cd /tmp/cmake-3.1.3 && cmake . && make && sudo make install) > /dev/null 2>&1
   - cmake --version
   # Enforces GCC 4.8
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
   # Enforces CLang 3.7
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
-    # Install OpenAL and GLEW
+  # Install OpenAL and GLEW
   - sudo apt-get -q -y install libglew-dev libopenal-dev
-    # Install and build gtest
+  # Install and build gtest
   #- sudo apt-get -q -y install libgtest-dev
   #- BUILD_PATH=$(pwd)
   #- cd /usr/src/gtest
@@ -64,7 +63,7 @@ script:
   - cmake ..
   - make
   - ls
-    #- ./TCCTests
+    #- ./TECTests
 
 notifications:
   #email:
