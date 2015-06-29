@@ -1,4 +1,6 @@
 # Trillek Engine C
+[![Build Status](https://travis-ci.org/trillek-team/tec.svg)](https://travis-ci.org/trillek-team/tec)
+
 
 ## Building
 Building takes a few steps to get everything set up for the first build.
