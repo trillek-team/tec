@@ -15,6 +15,7 @@ extern "C" SEL sel_getUid(const char *str);
 #endif
 
 namespace tec {
+	GLFWwindow* OS::focused_window;
 
 	// Error helper function used by GLFW for error messaging.
 	// Currently outputs to std::cout.
@@ -133,6 +134,8 @@ namespace tec {
 
 		UpdateWindowSize(width, height);
 
+		OS::focused_window = this->window;
+
 		return true;
 	}
 
@@ -168,7 +171,7 @@ namespace tec {
 		return this->client_height;
 	}
 
-	
+
 	GLFWwindow* OS::GetWindow() {
 		return this->window;
 	}
@@ -227,13 +230,16 @@ namespace tec {
 
 	void OS::WindowFocusChangeCallback(GLFWwindow* window, int focused) {
 		if (focused == GL_FALSE) {
+			OS::focused_window = nullptr;
 			// Get the user pointer and cast it.
 			OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
 
 			if (os) {
-				// TODO: Implement a DispatchWindowFocusEvent() method in OS
-				// TODO: Dispatch a focus changed event.
+
 			}
+		}
+		else if (focused == GL_TRUE) {
+			OS::focused_window = window;
 		}
 	}
 
@@ -321,7 +327,10 @@ namespace tec {
 	}
 
 	void OS::SetMousePosition(const double x, const double y) {
-		glfwSetCursorPos(this->window, x, y);
+		glfwSetCursorPos(OS::focused_window, x, y);
 	}
 
+	void OS::GetMousePosition(double* x, double* y) {
+		glfwGetCursorPos(OS::focused_window, x, y);
+	}
 }

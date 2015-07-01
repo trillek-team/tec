@@ -4,7 +4,7 @@
 #include "entity.hpp"
 #include "components/transforms.hpp"
 #include "component-update-system.hpp"
-	
+
 #include "physics/physics-debug-drawer.hpp"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
@@ -24,7 +24,7 @@ namespace tec {
 		// Register the collision dispatcher with the GImpact algorithm for dynamic meshes.
 		btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(this->dynamicsWorld->getDispatcher());
 		btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
-		
+
 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
 	}
@@ -71,7 +71,7 @@ namespace tec {
 				}
 			}
 		}
-		
+
 		for (auto itr = VelocityMap::Begin(); itr != VelocityMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			if (this->bodies.find(entity_id) != this->bodies.end()) {
@@ -95,7 +95,8 @@ namespace tec {
 			if (e.Has<Orientation>()) {
 				auto rot = transform.getRotation();
 				auto orientation = std::make_shared<Orientation>(glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z()));
-				ComponentUpdateSystem<Orientation>::SubmitUpdate(entity_id, orientation);
+				// HACK: renable orientation updates when FPSControlelr sends angular updates and not maually sets orientation.
+				//ComponentUpdateSystem<Orientation>::SubmitUpdate(entity_id, orientation);
 			}
 		}
 	}

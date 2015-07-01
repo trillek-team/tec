@@ -89,6 +89,9 @@ int main(int argc, char* argv[]) {
 		ps_thread.join();
 		ss_thread.join();
 		active_entity = ps.RayCast();
+		if (camera_controller.mouse_look) {
+			os.SetMousePosition(400, 300);
+		}
 	}
 
 	return 0;
