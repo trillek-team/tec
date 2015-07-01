@@ -28,7 +28,7 @@ namespace tec {
 		frame_index0 = frame_index0 % frame_count;
 		frame_index1 = frame_index1 % frame_count;
 
-		double fInterpolate = fmod(this->animation_time, this->frame_duration);
+		float fInterpolate = static_cast<float>(fmod(this->animation_time, this->frame_duration));
 
 		if (this->animation_file) {
 			auto frame_skeleton = this->animation_file->InterpolateSkeletons(

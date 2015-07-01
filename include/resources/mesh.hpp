@@ -14,7 +14,7 @@ namespace tec {
 	// Vertex data used for rendering or other purposes.
 	struct VertexData {
 		VertexData() : position(0.0f, 0.0f, 0.0f), color(0.0f, 1.0f, 0.0f, 1.0f) { }
-		VertexData(float x, float y, float z, float r, float g, float b) :
+		VertexData(double x, double y, double z, double r, double g, double b) :
 			position(x, y, z), color(r, g, b, 1.0f) { }
 		glm::vec3 position;
 		glm::vec4 color;

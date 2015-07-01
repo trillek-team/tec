@@ -94,7 +94,7 @@ namespace tec {
 			}
 			if (e.Has<Orientation>()) {
 				auto rot = transform.getRotation();
-				auto orientation = std::make_shared<Orientation>(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
+				auto orientation = std::make_shared<Orientation>(glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z()));
 				ComponentUpdateSystem<Orientation>::SubmitUpdate(entity_id, orientation);
 			}
 		}

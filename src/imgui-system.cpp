@@ -79,7 +79,7 @@ namespace tec {
 	}
 
 	void IMGUISystem::Update(double delta) {
-		this->io.DeltaTime = delta;
+		this->io.DeltaTime = static_cast<float>(delta);
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 
