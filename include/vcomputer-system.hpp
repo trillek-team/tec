@@ -1,13 +1,13 @@
 #pragma once
 
-#include "VComputer.hpp"
+#include "vcomputer.hpp"
 #include "types.hpp"
 #include <memory>
 #include <list>
 #include <cstdint>
 #include "resources/pixel-buffer.hpp"
-#include "devices/TDA.hpp"
-#include "devices/GKeyb.hpp"
+#include "devices/tda.hpp"
+#include "devices/gkeyb.hpp"
 
 #include "event-system.hpp"
 #include "command-queue.hpp"
