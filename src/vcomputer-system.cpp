@@ -2,9 +2,9 @@
 #include "os.hpp"
 #include "entity.hpp"
 
-#include "VComputer.hpp"
-#include "Auxiliar.hpp"
-#include "TR3200/TR3200.hpp"
+#include "vcomputer.hpp"
+#include "auxiliar.hpp"
+#include "tr3200/tr3200.hpp"
 
 #include "graphics/texture-object.hpp"
 
