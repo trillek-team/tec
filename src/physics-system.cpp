@@ -101,16 +101,15 @@ namespace tec {
 		}
 	}
 
-	eid PhysicsSystem::RayCast() {
-		eid cam = 1; // TODO: This hardcoded number should be the active camera id.
+	eid PhysicsSystem::RayCast(eid source_entity) {
 		last_rayvalid = false;
 		glm::vec3 position;
-		if (Entity(cam).Has<Position>()) {
-			position = (Entity(cam).Get<Position>().lock())->value;
+		if (Entity(source_entity).Has<Position>()) {
+			position = (Entity(source_entity).Get<Position>().lock())->value;
 		}
 		glm::quat orientation;
-		if (Entity(cam).Has<Orientation>()) {
-			orientation = (Entity(cam).Get<Orientation>().lock())->value;
+		if (Entity(source_entity).Has<Orientation>()) {
+			orientation = (Entity(source_entity).Get<Orientation>().lock())->value;
 		}
 		auto fv = position + glm::rotate(orientation, FORWARD_VECTOR * 300.f);
 		btVector3 from(position.x, position.y, position.z), to(fv.x, fv.y, fv.z);
@@ -128,7 +127,7 @@ namespace tec {
 				const CollisionBody* coll = (const CollisionBody*)cr.m_collisionObjects.at(i)->getUserPointer();
 				if (!coll) continue;
 				entity = coll->entity_id;
-				if (entity && entity != cam) {
+				if (entity && entity != source_entity) {
 					if (frc < lastfrac) {
 						entity_hit = entity;
 						hc = i;

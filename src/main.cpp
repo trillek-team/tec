@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 		frame_id++;
 		ps_thread.join();
 		ss_thread.join();
-		active_entity = ps.RayCast();
+		active_entity = ps.RayCast(1);
 		if (camera_controller.mouse_look) {
 			os.SetMousePosition(400, 300);
 		}
