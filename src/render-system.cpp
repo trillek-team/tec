@@ -73,6 +73,14 @@ namespace tec {
 
 			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
 				glm::mat4_cast(camera_orientation);
+			if (!renderable->buffer) {
+				renderable->buffer = std::make_shared<VertexBufferObject>();
+				renderable->buffer->Load(renderable->mesh);
+				size_t group_count = renderable->buffer->GetVertexGroupCount();
+				for (size_t i = 0; i < group_count; ++i) {
+					renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
+				}
+			}
 
 			RenderItem ri;
 			ri.model_matrix = &this->model_matricies[entity_id];

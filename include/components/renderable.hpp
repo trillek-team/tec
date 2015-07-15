@@ -2,8 +2,11 @@
 #include <set>
 #include <map>
 
+#include "../proto/components.pb.h"
+
 namespace tec {
 	class Shader;
+	class Mesh;
 	class VertexBufferObject;
 	struct VertexGroup;
 
@@ -13,9 +16,17 @@ namespace tec {
 		Renderable() {
 
 		}
-		bool hidden = false;
+
+		void Out(proto::Renderable* target);
+
+		void In(const proto::Renderable& source);
+
 		std::set<VertexGroup*> vertex_groups;
 		std::shared_ptr<VertexBufferObject> buffer;
+		std::string mesh_name;
+		std::shared_ptr<Mesh> mesh;
+		std::string shader_name;
 		std::shared_ptr<Shader> shader;
+		bool hidden = false;
 	};
 }

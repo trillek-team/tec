@@ -18,6 +18,9 @@
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <map>
+#include <set>
+
 #include "../proto/components.pb.h"
 
 namespace tec {
@@ -35,7 +38,23 @@ namespace tec {
 
 	std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
 	std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
+
 	void IntializeIOFunctors() {
+		in_functors[proto::Component::ComponentCase::kRenderable] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
+			auto renderable = std::make_shared<Renderable>();
+			renderable->In(comp.renderable());
+			Entity(entity.id()).Add(renderable);
+		};
+
+		out_functors[proto::Component::ComponentCase::kRenderable] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<Renderable>()) {
+				proto::Component* comp = entity->add_components();
+				e.Get<Renderable>().lock()->Out(comp->mutable_renderable());
+			}
+		};
+
 		in_functors[proto::Component::ComponentCase::kPosition] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
 			auto position = std::make_shared<Position>();
 			position->In(comp.position());
@@ -82,7 +101,6 @@ namespace tec {
 
 		auto voxvol = VoxelVolume::Create(100, "bob", 0);
 		auto voxvol_shared = voxvol.lock();
-		Entity voxel1(100);
 
 		VoxelCommand add_voxel(
 			[ ] (VoxelVolume* vox_vol) {
@@ -98,22 +116,18 @@ namespace tec {
 		VoxelVolume::QueueCommand(std::move(add_voxel));
 		voxvol_shared->Update(0.0);
 		{
-			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
+			Entity voxel1(100);
 			std::shared_ptr<Mesh> mesh = voxvol_shared->GetMesh().lock();
-			vbo->Load(mesh);
-			voxel1.Add<Renderable>(vbo, debug_shader);
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, mesh);
 			colbody->mass = 0.0;
 			voxel1.Add(colbody);
 		}
 
+		OBJ::Create("assets/vidstand/VidStand_Full.obj");
+		MD5Mesh::Create("assets/bob/bob.md5mesh");
 		{
 			Entity bob(99);
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
-			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
-			vbo->Load(mesh1);
-			bob.Add<Renderable>(vbo, shader1);
-
 			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 			bob.Add<Animation>(anim1);
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 1.0f, 0.5f);
@@ -121,14 +135,6 @@ namespace tec {
 
 			std::shared_ptr<VorbisStream> vorbis_stream = VorbisStream::Create("assets/theme.ogg");
 			bob.Add<AudioSource>(vorbis_stream, true);
-		}
-
-		{
-			Entity vidstand(101);
-			std::shared_ptr<OBJ> vidmesh = OBJ::Create("assets/vidstand/VidStand_Full.obj");
-			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
-			vbo->Load(vidmesh);
-			vidstand.Add<Renderable>(vbo, shader1);
 		}
 
 		{
@@ -164,6 +170,7 @@ namespace tec {
 				const proto::Component& comp = entity.components(i);
 				if (in_functors.find(comp.component_case()) != in_functors.end()) {
 					in_functors[comp.component_case()](entity, comp);
+					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
 				}
 			}
 		}
@@ -172,12 +179,23 @@ namespace tec {
 	void ProtoSave() {
 		std::fstream output("assets/test.proto", std::ios::out | std::ios::trunc | std::ios::binary);
 		proto::EntityList elist;
-		for (auto pos_itr = Multiton<eid, std::shared_ptr<Position>>::Begin(); pos_itr != Multiton<eid, std::shared_ptr<Position>>::End(); ++pos_itr) {
+		for (auto entity_functors : entity_out_functors) {
 			proto::Entity* entity = elist.add_entities();
-			entity->set_id(pos_itr->first);
-			out_functors[proto::Component::ComponentCase::kPosition](entity);
-			out_functors[proto::Component::ComponentCase::kOrientation](entity);
+			entity->set_id(entity_functors.first);
+			for (auto functor : entity_functors.second) {
+				(*functor)(entity);
+			}
 		}
+		/*for (auto itr = Multiton<eid, std::shared_ptr<Renderable>>::Begin(); itr != Multiton<eid, std::shared_ptr<Renderable>>::End(); ++itr) {
+			proto::Entity* entity = elist.add_entities();
+			entity->set_id(itr->first);
+			for (auto entity_functors : entity_out_functors) {
+				for (auto functor : entity_functors.second) {
+					(*functor)(entity);
+				}
+			}
+			out_functors[proto::Component::ComponentCase::kRenderable](entity);
+		}*/
 		elist.SerializeToOstream(&output);
 	}
 }

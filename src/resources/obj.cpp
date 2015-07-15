@@ -108,6 +108,10 @@ namespace tec {
 		auto obj = std::make_shared<OBJ>();
 		obj->fname = fname;
 
+		obj->SetName(fname);
+
+		MeshMap::Set(fname, obj);
+
 		if (obj->Parse()) {
 			obj->PopulateMeshGroups();
 			return obj;
