@@ -4,6 +4,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include "../proto/components.pb.h"
+
 namespace tec {
 	static glm::vec3 FORWARD_VECTOR(0.0f, 0.0f, -1.0f);
 	static glm::vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
@@ -19,6 +21,9 @@ namespace tec {
 		void Translate(const glm::vec3 amount, const glm::quat orientation);
 
 		glm::vec3 value;
+		
+		void Out(proto::Position* target);
+		void In(const proto::Position& source);
 	};
 
 	struct Orientation {
@@ -34,6 +39,9 @@ namespace tec {
 
 		glm::quat value;
 		glm::vec3 rotation;
+
+		void Out(proto::Orientation* target);
+		void In(const proto::Orientation& source);
 	};
 
 	struct Scale {

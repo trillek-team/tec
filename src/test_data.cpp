@@ -18,6 +18,7 @@
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "../proto/components.pb.h"
 
 namespace tec {
 	void IntializeComponents() {
@@ -30,6 +31,38 @@ namespace tec {
 		ComponentUpdateSystem<Animation>::Initialize();
 		ComponentUpdateSystem<CollisionBody>::Initialize();
 		ComponentUpdateSystem<AudioSource>::Initialize();
+	}
+
+	std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
+	std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	void IntializeIOFunctors() {
+		in_functors[proto::Component::ComponentCase::kPosition] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
+			auto position = std::make_shared<Position>();
+			position->In(comp.position());
+			Entity(entity.id()).Add(position);
+		};
+
+		out_functors[proto::Component::ComponentCase::kPosition] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<Position>()) {
+				proto::Component* comp = entity->add_components();
+				e.Get<Position>().lock()->Out(comp->mutable_position());
+			}
+		};
+
+		in_functors[proto::Component::ComponentCase::kOrientation] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
+			auto orientation = std::make_shared<Orientation>();
+			orientation->In(comp.orientation());
+			Entity(entity.id()).Add(orientation);
+		};
+
+		out_functors[proto::Component::ComponentCase::kOrientation] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<Orientation>()) {
+				proto::Component* comp = entity->add_components();
+				e.Get<Orientation>().lock()->Out(comp->mutable_orientation());
+			}
+		};
 	}
 
 	void BuildTestEntities() {
@@ -50,8 +83,6 @@ namespace tec {
 		auto voxvol = VoxelVolume::Create(100, "bob", 0);
 		auto voxvol_shared = voxvol.lock();
 		Entity voxel1(100);
-		voxel1.Add<Position>();
-		voxel1.Add<Orientation>();
 
 		VoxelCommand add_voxel(
 			[ ] (VoxelVolume* vox_vol) {
@@ -88,8 +119,6 @@ namespace tec {
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 1.0f, 0.5f);
 			bob.Add(colbody);
 
-			bob.Add<Position>(glm::vec3(0.0, 2.0, 0.0));
-			bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
 			std::shared_ptr<VorbisStream> vorbis_stream = VorbisStream::Create("assets/theme.ogg");
 			bob.Add<AudioSource>(vorbis_stream, true);
 		}
@@ -100,14 +129,10 @@ namespace tec {
 			std::shared_ptr<VertexBufferObject> vbo = std::make_shared<VertexBufferObject>();
 			vbo->Load(vidmesh);
 			vidstand.Add<Renderable>(vbo, shader1);
-			vidstand.Add<Position>(glm::vec3(0.0, -2.0, -15.0));
-			vidstand.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
 		}
 
 		{
 			Entity camera(1);
-			camera.Add<Position>(glm::vec3(0.0, 10.0, -20.0));
-			camera.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
 			camera.Add<Velocity>();
 			std::shared_ptr<View> view = std::make_shared<View>();
 			view->active = true;
@@ -123,9 +148,36 @@ namespace tec {
 		{
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionBox>(1000, 100.0f, 1.0f, 100.0f);
 			colbody->mass = 0.0;
-			floor.Add<Position>(glm::vec3(0.0, -2.0, 0.0));
 			floor.Add(colbody);
 		}
 
+	}
+
+	void ProtoLoad() {
+		std::fstream input("assets/test.proto", std::ios::in | std::ios::binary);
+		proto::EntityList elist;
+		elist.ParseFromIstream(&input);
+		for (int i = 0; i < elist.entities_size(); i++) {
+			const proto::Entity& entity = elist.entities(i);
+			eid entity_id = entity.id();
+			for (int i = 0; i < entity.components_size(); ++i) {
+				const proto::Component& comp = entity.components(i);
+				if (in_functors.find(comp.component_case()) != in_functors.end()) {
+					in_functors[comp.component_case()](entity, comp);
+				}
+			}
+		}
+	}
+
+	void ProtoSave() {
+		std::fstream output("assets/test.proto", std::ios::out | std::ios::trunc | std::ios::binary);
+		proto::EntityList elist;
+		for (auto pos_itr = Multiton<eid, std::shared_ptr<Position>>::Begin(); pos_itr != Multiton<eid, std::shared_ptr<Position>>::End(); ++pos_itr) {
+			proto::Entity* entity = elist.add_entities();
+			entity->set_id(pos_itr->first);
+			out_functors[proto::Component::ComponentCase::kPosition](entity);
+			out_functors[proto::Component::ComponentCase::kOrientation](entity);
+		}
+		elist.SerializeToOstream(&output);
 	}
 }

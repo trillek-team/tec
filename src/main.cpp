@@ -10,7 +10,10 @@
 
 namespace tec {
 	extern void IntializeComponents();
+	extern void IntializeIOFunctors();
 	extern void BuildTestEntities();
+	extern void ProtoSave();
+	extern void ProtoLoad();
 }
 
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
@@ -41,7 +44,9 @@ int main(int argc, char* argv[]) {
 	std::int64_t frame_id = 1;
 
 	tec::IntializeComponents();
+	tec::IntializeIOFunctors();
 	tec::BuildTestEntities();
+	tec::ProtoLoad();
 
 	tec::FPSController camera_controller(1);
 
@@ -85,6 +90,7 @@ int main(int argc, char* argv[]) {
 		ss_thread.join();
 		active_entity = ps.RayCast();
 	}
+	tec::ProtoSave();
 
 	return 0;
 }
