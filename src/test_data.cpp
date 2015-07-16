@@ -112,7 +112,7 @@ namespace tec {
 		out_functors[proto::Component::ComponentCase::kScale] = [ ] (proto::Entity* entity) {
 			Entity e(entity->id());
 			if (e.Has<Scale>()) {
-				proto::Scale* proto_scale= entity->add_components()->mutable_scale();
+				proto::Scale* proto_scale = entity->add_components()->mutable_scale();
 				auto scale = e.Get<Scale>().lock();
 
 				proto_scale->set_x(scale->value.x);

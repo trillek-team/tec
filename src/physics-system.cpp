@@ -90,12 +90,12 @@ namespace tec {
 			if (e.Has<Position>()) {
 				auto pos = transform.getOrigin();
 				auto position = std::make_shared<Position>(glm::vec3(pos.x(), pos.y(), pos.z()));
-				ComponentUpdateSystem<Position>::SubmitUpdate(entity_id, position);
+				e.Update(position);
 			}
 			if (e.Has<Orientation>()) {
 				auto rot = transform.getRotation();
 				auto orientation = std::make_shared<Orientation>(glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z()));
-				ComponentUpdateSystem<Orientation>::SubmitUpdate(entity_id, orientation);
+				e.Update(orientation);
 			}
 		}
 	}

@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "types.hpp"
+#include "entity.hpp"
 #include "multiton.hpp"
 #include "command-queue.hpp"
 
@@ -26,6 +27,17 @@ namespace tec {
 		}
 		btVector3 GetAngular() const {
 			return btVector3(angular.x, angular.y, angular.z);
+		}
+
+		static ReflectionComponent Reflection(Velocity* val) {
+			ReflectionComponent refcomp;
+			refcomp.properties["linear_x"] = std::to_string(val->linear.x);
+			refcomp.properties["linear_y"] = std::to_string(val->linear.y);
+			refcomp.properties["linear_z"] = std::to_string(val->linear.z);
+			refcomp.properties["angular_x"] = std::to_string(val->angular.x);
+			refcomp.properties["angular_y"] = std::to_string(val->angular.y);
+			refcomp.properties["angular_z"] = std::to_string(val->angular.z);
+			return std::move(refcomp);
 		}
 	};
 

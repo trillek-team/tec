@@ -81,6 +81,7 @@ INCLUDE_DIRECTORIES("modules/glm")
 # Protobuf setup
 FILE(GLOB PB_FILES_SRC "proto/*.cc")
 FILE(GLOB PB_FILES_INCLUDES "proto/*.h")
+SET(BUILD_TESTING OFF CACHE BOOL "Build tests")
 INCLUDE_DIRECTORIES("modules/protobuf/src")
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/protobuf/src")
 ADD_SUBDIRECTORY("modules/protobuf/cmake")

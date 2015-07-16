@@ -4,6 +4,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include "entity.hpp"
+
 #include "../proto/components.pb.h"
 
 namespace tec {
@@ -21,9 +23,17 @@ namespace tec {
 		void Translate(const glm::vec3 amount, const glm::quat orientation);
 
 		glm::vec3 value;
-		
+
 		void Out(proto::Position* target);
 		void In(const proto::Position& source);
+
+		static ReflectionComponent Reflection(Position* val) {
+			ReflectionComponent refcomp;
+			refcomp.properties["x"] = std::to_string(val->value.x);
+			refcomp.properties["y"] = std::to_string(val->value.y);
+			refcomp.properties["z"] = std::to_string(val->value.z);
+			return std::move(refcomp);
+		}
 	};
 
 	struct Orientation {
@@ -42,6 +52,15 @@ namespace tec {
 
 		void Out(proto::Orientation* target);
 		void In(const proto::Orientation& source);
+
+		static ReflectionComponent Reflection(Orientation* val) {
+			ReflectionComponent refcomp;
+			refcomp.properties["x"] = std::to_string(val->value.x);
+			refcomp.properties["y"] = std::to_string(val->value.y);
+			refcomp.properties["z"] = std::to_string(val->value.z);
+			refcomp.properties["w"] = std::to_string(val->value.w);
+			return std::move(refcomp);
+		}
 	};
 
 	struct Scale {
@@ -49,5 +68,13 @@ namespace tec {
 		Scale() { }
 
 		glm::vec3 value;
+
+		static ReflectionComponent Reflection(Scale* val) {
+			ReflectionComponent refcomp;
+			refcomp.properties["x"] = std::to_string(val->value.x);
+			refcomp.properties["y"] = std::to_string(val->value.y);
+			refcomp.properties["z"] = std::to_string(val->value.z);
+			return std::move(refcomp);
+		}
 	};
 }

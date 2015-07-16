@@ -7,6 +7,7 @@
 #include <alc.h>
 
 #include "multiton.hpp"
+#include "entity.hpp"
 #include "types.hpp"
 #include "command-queue.hpp"
 
@@ -18,6 +19,13 @@ namespace tec {
 	struct AudioSource {
 		AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play) :
 			vorbis_stream(stream), source_state(auto_play ? PLAYING : PAUSED) { }
+
+		static ReflectionComponent Reflection(AudioSource* val) {
+			ReflectionComponent refcomp;
+			refcomp.properties["looping"] = std::to_string(val->looping);
+			return std::move(refcomp);
+		}
+
 		ALuint source;
 		ALuint buffer[2];
 

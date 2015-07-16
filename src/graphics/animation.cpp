@@ -50,4 +50,10 @@ namespace tec {
 		}
 	}
 
+	ReflectionComponent Animation::Reflection(Animation* val) {
+		ReflectionComponent refcomp;
+		refcomp.properties["animation_file"] = val->animation_file->GetFileName();
+		refcomp.properties["animation_time"] = std::to_string(val->current_frame_index);
+		return std::move(refcomp);
+	}
 }

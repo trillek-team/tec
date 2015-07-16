@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "entity.hpp"
+
 namespace tec {
 	class MD5Anim;
 
@@ -31,6 +33,8 @@ namespace tec {
 		* \return void
 		*/
 		void SetAnimationFile(std::shared_ptr<MD5Anim> file);
+
+		static ReflectionComponent Reflection(Animation* val);
 
 		friend class RenderSystem;
 	private:

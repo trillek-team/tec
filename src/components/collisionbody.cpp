@@ -35,6 +35,38 @@ namespace tec {
 	CollisionBody::~CollisionBody() {
 		delete this->motion_state;
 	}
+	ReflectionComponent CollisionBody::Reflection(CollisionBody* val) {
+		ReflectionComponent refcomp;
+		switch (val->collision_shape) {
+			case SPHERE:
+				{
+					refcomp.properties["shape"] = "SPHERE";
+					auto colspehre = static_cast<CollisionSphere*>(val);
+					refcomp.properties["radius"] = std::to_string(colspehre->radius);
+				}
+				break;
+			case BOX:
+				{
+					refcomp.properties["shape"] = "BOX";
+					auto colbox = static_cast<CollisionBox*>(val);
+					refcomp.properties["extent_x"] = std::to_string(colbox->half_extents.x());
+					refcomp.properties["extent_y"] = std::to_string(colbox->half_extents.y());
+					refcomp.properties["extent_z"] = std::to_string(colbox->half_extents.z());
+				}
+				break;
+			case CAPSULE:
+				{
+					refcomp.properties["shape"] = "CAPSULE";
+					auto colcapsule = static_cast<CollisionCapsule*>(val);
+					refcomp.properties["radius"] = std::to_string(colcapsule->radius);
+					refcomp.properties["height"] = std::to_string(colcapsule->height);
+				}
+				break;
+		}
+		refcomp.properties["disable_deactivation"] = std::to_string(val->disable_deactivation);
+		refcomp.properties["disable_rotation"] = std::to_string(val->disable_rotation);
+		return std::move(refcomp);
+	}
 
 	CollisionMesh::CollisionMesh(eid entity_id, std::shared_ptr<Mesh> mesh, bool dynamic) :
 		CollisionBody(entity_id, (dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {

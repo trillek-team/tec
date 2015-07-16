@@ -1,4 +1,5 @@
 #include "os.hpp"
+#include "entity.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
 #include "sound-system.hpp"
@@ -14,6 +15,7 @@ namespace tec {
 	extern void BuildTestEntities();
 	extern void ProtoSave();
 	extern void ProtoLoad();
+	ReflectionEntityList Entity::entity_list;
 }
 
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
@@ -25,13 +27,13 @@ int main(int argc, char* argv[]) {
 
 	tec::IMGUISystem gui(os.GetWindow());
 	ImVec4 clear_color = ImColor(114, 144, 154);
-	gui.AddWindowDrawFunction("test", [&clear_color] () {
+	/*gui.AddWindowDrawFunction("test", [&clear_color] () {
 		static float f = 0.0f;
 		ImGui::Text("Hello, world!");
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 		ImGui::ColorEdit3("clear color", (float*)&clear_color);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	});
+	});*/
 
 	tec::RenderSystem rs;
 
@@ -53,11 +55,52 @@ int main(int argc, char* argv[]) {
 	tec::eid active_entity;
 	gui.AddWindowDrawFunction("active_entity", [&active_entity] () {
 		if (active_entity != 0) {
-			ImVec2 pos(400, 300);
-			ImGui::SetNextWindowPos(pos);
-			ImGui::BeginTooltip();
-			ImGui::Text("#%i", active_entity);
-			ImGui::EndTooltip();
+			//ImVec2 pos(400, 300);
+			//ImGui::SetNextWindowPos(pos);
+			//ImGui::BeginTooltip();
+			ImGui::SetTooltip("#%i", active_entity);
+			//ImGui::EndTooltip();
+		}
+	});
+	gui.AddWindowDrawFunction("entity_tree", [ ] () {
+		static bool no_titlebar = false;
+		static bool no_border = true;
+		static bool no_resize = false;
+		static bool no_move = false;
+		static bool no_scrollbar = false;
+		static bool no_collapse = false;
+		static bool no_menu = true;
+		static float bg_alpha = 0.65f;
+
+		// Demonstrate the various window flags. Typically you would just use the default.
+		ImGuiWindowFlags window_flags = 0;
+		if (no_titlebar)  window_flags |= ImGuiWindowFlags_NoTitleBar;
+		if (!no_border)   window_flags |= ImGuiWindowFlags_ShowBorders;
+		if (no_resize)    window_flags |= ImGuiWindowFlags_NoResize;
+		if (no_move)      window_flags |= ImGuiWindowFlags_NoMove;
+		if (no_scrollbar) window_flags |= ImGuiWindowFlags_NoScrollbar;
+		if (no_collapse)  window_flags |= ImGuiWindowFlags_NoCollapse;
+		if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
+		bool opened = true;
+		if (ImGui::Begin("Entity Tree", &opened, ImVec2(550, 680), bg_alpha, window_flags)) {
+			if (ImGui::TreeNode("Entities")) {
+				for (auto entity : tec::Entity::entity_list.entities) {
+					if (ImGui::TreeNode((void*)entity.first, "#%d", entity.first)) {
+						int i = 0;
+						for (auto component : entity.second.components) {
+							if (ImGui::TreeNode((void*)i++, component.first.c_str())) {
+								for (auto prop : component.second.properties) {
+									ImGui::Text((prop.first + ": " + prop.second).c_str());
+								}
+								ImGui::TreePop();
+							}
+						}
+						ImGui::TreePop();
+					}
+				}
+				ImGui::TreePop();
+			}
+			ImGui::End();
 		}
 	});
 

@@ -8,6 +8,7 @@
 #include <string>
 
 #include "types.hpp"
+#include "entity.hpp"
 
 namespace tec {
 	class Mesh;
@@ -17,6 +18,8 @@ namespace tec {
 	struct CollisionBody {
 		CollisionBody(eid entity_id, COLLISION_SHAPE collision_shape);
 		~CollisionBody();
+
+		static ReflectionComponent Reflection(CollisionBody* val);
 
 		COLLISION_SHAPE collision_shape;
 

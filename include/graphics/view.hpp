@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glm/mat4x4.hpp>
+#include "entity.hpp"
+
 #include "../proto/components.pb.h"
 
 namespace tec {
@@ -16,6 +18,12 @@ namespace tec {
 			if (source.has_active()) {
 				this->active = source.active();
 			}
+		}
+
+		static ReflectionComponent Reflection(View* val) {
+			ReflectionComponent refcomp;
+			refcomp.properties["active"] = std::to_string(val->active);
+			return std::move(refcomp);
 		}
 	};
 }
