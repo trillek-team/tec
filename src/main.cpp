@@ -27,13 +27,13 @@ int main(int argc, char* argv[]) {
 
 	tec::IMGUISystem gui(os.GetWindow());
 	ImVec4 clear_color = ImColor(114, 144, 154);
-	/*gui.AddWindowDrawFunction("test", [&clear_color] () {
+	gui.AddWindowDrawFunction("test", [&clear_color] () {
 		static float f = 0.0f;
 		ImGui::Text("Hello, world!");
 		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 		ImGui::ColorEdit3("clear color", (float*)&clear_color);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	});*/
+	});
 
 	tec::RenderSystem rs;
 
@@ -55,11 +55,7 @@ int main(int argc, char* argv[]) {
 	tec::eid active_entity;
 	gui.AddWindowDrawFunction("active_entity", [&active_entity] () {
 		if (active_entity != 0) {
-			//ImVec2 pos(400, 300);
-			//ImGui::SetNextWindowPos(pos);
-			//ImGui::BeginTooltip();
 			ImGui::SetTooltip("#%i", active_entity);
-			//ImGui::EndTooltip();
 		}
 	});
 	gui.AddWindowDrawFunction("entity_tree", [ ] () {
@@ -84,12 +80,12 @@ int main(int argc, char* argv[]) {
 		bool opened = true;
 		if (ImGui::Begin("Entity Tree", &opened, ImVec2(550, 680), bg_alpha, window_flags)) {
 			if (ImGui::TreeNode("Entities")) {
-				for (auto entity : tec::Entity::entity_list.entities) {
+				for (const auto& entity : tec::Entity::entity_list.entities) {
 					if (ImGui::TreeNode((void*)entity.first, "#%d", entity.first)) {
 						int i = 0;
-						for (auto component : entity.second.components) {
+						for (const auto& component : entity.second.components) {
 							if (ImGui::TreeNode((void*)i++, component.first.c_str())) {
-								for (auto prop : component.second.properties) {
+								for (const auto& prop : component.second.properties) {
 									ImGui::Text((prop.first + ": " + prop.second).c_str());
 								}
 								ImGui::TreePop();
@@ -123,14 +119,15 @@ int main(int argc, char* argv[]) {
 
 		os.OSMessageLoop();
 
+		ps_thread.join();
+		ss_thread.join();
+
 		ps.DebugDraw();
 
 		gui.Update(delta);
 
 		os.SwapBuffers();
 		frame_id++;
-		ps_thread.join();
-		ss_thread.join();
 		active_entity = ps.RayCast();
 	}
 	tec::ProtoSave();
