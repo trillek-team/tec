@@ -11,6 +11,7 @@
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
 #include "graphics/animation.hpp"
+#include "graphics/view.hpp"
 #include "render-system.hpp"
 #include "entity.hpp"
 #include "component-update-system.hpp"
@@ -82,6 +83,34 @@ namespace tec {
 				e.Get<Orientation>().lock()->Out(comp->mutable_orientation());
 			}
 		};
+
+		in_functors[proto::Component::ComponentCase::kView] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
+			auto view = std::make_shared<View>();
+			view->In(comp.view());
+			Entity(entity.id()).Add(view);
+		};
+
+		out_functors[proto::Component::ComponentCase::kView] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<View>()) {
+				proto::Component* comp = entity->add_components();
+				e.Get<View>().lock()->Out(comp->mutable_view());
+			}
+		};
+
+		in_functors[proto::Component::ComponentCase::kScale] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
+			auto scale = std::make_shared<Scale>();
+			scale->In(comp.scale());
+			Entity(entity.id()).Add(scale);
+		};
+
+		out_functors[proto::Component::ComponentCase::kScale] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<Scale>()) {
+				proto::Component* comp = entity->add_components();
+				e.Get<Scale>().lock()->Out(comp->mutable_scale());
+			}
+		};
 	}
 
 	void BuildTestEntities() {
@@ -140,9 +169,6 @@ namespace tec {
 		{
 			Entity camera(1);
 			camera.Add<Velocity>();
-			std::shared_ptr<View> view = std::make_shared<View>();
-			view->active = true;
-			camera.Add<View>(view);
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 0.5f, 0.5f);
 			colbody->disable_deactivation = true;
 			colbody->mass = 1.0;
@@ -185,17 +211,8 @@ namespace tec {
 			for (auto functor : entity_functors.second) {
 				(*functor)(entity);
 			}
+			//out_functors[proto::Component::ComponentCase::kView](entity);
 		}
-		/*for (auto itr = Multiton<eid, std::shared_ptr<Renderable>>::Begin(); itr != Multiton<eid, std::shared_ptr<Renderable>>::End(); ++itr) {
-			proto::Entity* entity = elist.add_entities();
-			entity->set_id(itr->first);
-			for (auto entity_functors : entity_out_functors) {
-				for (auto functor : entity_functors.second) {
-					(*functor)(entity);
-				}
-			}
-			out_functors[proto::Component::ComponentCase::kRenderable](entity);
-		}*/
 		elist.SerializeToOstream(&output);
 	}
 }

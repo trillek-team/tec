@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "graphics/shader.hpp"
+#include "graphics/view.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "components/transforms.hpp"
 #include "components/renderable.hpp"

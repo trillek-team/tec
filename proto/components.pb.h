@@ -40,6 +40,9 @@ void protobuf_ShutdownFile_components_2eproto();
 class Renderable;
 class Position;
 class Orientation;
+class View;
+class Animation;
+class Scale;
 class Component;
 class Entity;
 class EntityList;
@@ -396,6 +399,298 @@ class Orientation : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class View : public ::google::protobuf::Message {
+ public:
+  View();
+  virtual ~View();
+
+  View(const View& from);
+
+  inline View& operator=(const View& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const View& default_instance();
+
+  void Swap(View* other);
+
+  // implements Message ----------------------------------------------
+
+  inline View* New() const { return New(NULL); }
+
+  View* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const View& from);
+  void MergeFrom(const View& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(View* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bool active = 1;
+  bool has_active() const;
+  void clear_active();
+  static const int kActiveFieldNumber = 1;
+  bool active() const;
+  void set_active(bool value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.View)
+ private:
+  inline void set_has_active();
+  inline void clear_has_active();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  bool active_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static View* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Animation : public ::google::protobuf::Message {
+ public:
+  Animation();
+  virtual ~Animation();
+
+  Animation(const Animation& from);
+
+  inline Animation& operator=(const Animation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Animation& default_instance();
+
+  void Swap(Animation* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Animation* New() const { return New(NULL); }
+
+  Animation* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Animation& from);
+  void MergeFrom(const Animation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Animation* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string animation_name = 1;
+  bool has_animation_name() const;
+  void clear_animation_name();
+  static const int kAnimationNameFieldNumber = 1;
+  const ::std::string& animation_name() const;
+  void set_animation_name(const ::std::string& value);
+  void set_animation_name(const char* value);
+  void set_animation_name(const char* value, size_t size);
+  ::std::string* mutable_animation_name();
+  ::std::string* release_animation_name();
+  void set_allocated_animation_name(::std::string* animation_name);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Animation)
+ private:
+  inline void set_has_animation_name();
+  inline void clear_has_animation_name();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr animation_name_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Animation* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Scale : public ::google::protobuf::Message {
+ public:
+  Scale();
+  virtual ~Scale();
+
+  Scale(const Scale& from);
+
+  inline Scale& operator=(const Scale& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Scale& default_instance();
+
+  void Swap(Scale* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Scale* New() const { return New(NULL); }
+
+  Scale* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Scale& from);
+  void MergeFrom(const Scale& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Scale* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float x = 1;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  float x() const;
+  void set_x(float value);
+
+  // optional float y = 2;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  float y() const;
+  void set_y(float value);
+
+  // optional float z = 3;
+  bool has_z() const;
+  void clear_z();
+  static const int kZFieldNumber = 3;
+  float z() const;
+  void set_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Scale)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_;
+  float y_;
+  float z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Scale* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -423,6 +718,9 @@ class Component : public ::google::protobuf::Message {
     kRenderable = 1,
     kPosition = 2,
     kOrientation = 3,
+    kView = 4,
+    kAnimation = 5,
+    kScale = 6,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -494,12 +792,42 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::Orientation* release_orientation();
   void set_allocated_orientation(::tec::proto::Orientation* orientation);
 
+  // optional .tec.proto.View view = 4;
+  bool has_view() const;
+  void clear_view();
+  static const int kViewFieldNumber = 4;
+  const ::tec::proto::View& view() const;
+  ::tec::proto::View* mutable_view();
+  ::tec::proto::View* release_view();
+  void set_allocated_view(::tec::proto::View* view);
+
+  // optional .tec.proto.Animation animation = 5;
+  bool has_animation() const;
+  void clear_animation();
+  static const int kAnimationFieldNumber = 5;
+  const ::tec::proto::Animation& animation() const;
+  ::tec::proto::Animation* mutable_animation();
+  ::tec::proto::Animation* release_animation();
+  void set_allocated_animation(::tec::proto::Animation* animation);
+
+  // optional .tec.proto.Scale Scale = 6;
+  bool has_scale() const;
+  void clear_scale();
+  static const int kScaleFieldNumber = 6;
+  const ::tec::proto::Scale& scale() const;
+  ::tec::proto::Scale* mutable_scale();
+  ::tec::proto::Scale* release_scale();
+  void set_allocated_scale(::tec::proto::Scale* scale);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
   inline void set_has_renderable();
   inline void set_has_position();
   inline void set_has_orientation();
+  inline void set_has_view();
+  inline void set_has_animation();
+  inline void set_has_scale();
 
   inline bool has_component() const;
   void clear_component();
@@ -513,6 +841,9 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::Renderable* renderable_;
     ::tec::proto::Position* position_;
     ::tec::proto::Orientation* orientation_;
+    ::tec::proto::View* view_;
+    ::tec::proto::Animation* animation_;
+    ::tec::proto::Scale* scale_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -1033,6 +1364,167 @@ inline void Orientation::set_w(float value) {
 
 // -------------------------------------------------------------------
 
+// View
+
+// optional bool active = 1;
+inline bool View::has_active() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void View::set_has_active() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void View::clear_has_active() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void View::clear_active() {
+  active_ = false;
+  clear_has_active();
+}
+inline bool View::active() const {
+  // @@protoc_insertion_point(field_get:tec.proto.View.active)
+  return active_;
+}
+inline void View::set_active(bool value) {
+  set_has_active();
+  active_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.View.active)
+}
+
+// -------------------------------------------------------------------
+
+// Animation
+
+// optional string animation_name = 1;
+inline bool Animation::has_animation_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Animation::set_has_animation_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Animation::clear_has_animation_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Animation::clear_animation_name() {
+  animation_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_animation_name();
+}
+inline const ::std::string& Animation::animation_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Animation.animation_name)
+  return animation_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Animation::set_animation_name(const ::std::string& value) {
+  set_has_animation_name();
+  animation_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Animation.animation_name)
+}
+inline void Animation::set_animation_name(const char* value) {
+  set_has_animation_name();
+  animation_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Animation.animation_name)
+}
+inline void Animation::set_animation_name(const char* value, size_t size) {
+  set_has_animation_name();
+  animation_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Animation.animation_name)
+}
+inline ::std::string* Animation::mutable_animation_name() {
+  set_has_animation_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Animation.animation_name)
+  return animation_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Animation::release_animation_name() {
+  clear_has_animation_name();
+  return animation_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Animation::set_allocated_animation_name(::std::string* animation_name) {
+  if (animation_name != NULL) {
+    set_has_animation_name();
+  } else {
+    clear_has_animation_name();
+  }
+  animation_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), animation_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Animation.animation_name)
+}
+
+// -------------------------------------------------------------------
+
+// Scale
+
+// optional float x = 1;
+inline bool Scale::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Scale::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Scale::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Scale::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline float Scale::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Scale.x)
+  return x_;
+}
+inline void Scale::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Scale.x)
+}
+
+// optional float y = 2;
+inline bool Scale::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Scale::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Scale::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Scale::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline float Scale::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Scale.y)
+  return y_;
+}
+inline void Scale::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Scale.y)
+}
+
+// optional float z = 3;
+inline bool Scale::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Scale::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Scale::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Scale::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline float Scale::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Scale.z)
+  return z_;
+}
+inline void Scale::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Scale.z)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -1173,6 +1665,144 @@ inline void Component::set_allocated_orientation(::tec::proto::Orientation* orie
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.orientation)
 }
 
+// optional .tec.proto.View view = 4;
+inline bool Component::has_view() const {
+  return component_case() == kView;
+}
+inline void Component::set_has_view() {
+  _oneof_case_[0] = kView;
+}
+inline void Component::clear_view() {
+  if (has_view()) {
+    delete component_.view_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::View& Component::view() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.view)
+  return has_view() ? *component_.view_
+                      : ::tec::proto::View::default_instance();
+}
+inline ::tec::proto::View* Component::mutable_view() {
+  if (!has_view()) {
+    clear_component();
+    set_has_view();
+    component_.view_ = new ::tec::proto::View;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.view)
+  return component_.view_;
+}
+inline ::tec::proto::View* Component::release_view() {
+  if (has_view()) {
+    clear_has_component();
+    ::tec::proto::View* temp = component_.view_;
+    component_.view_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_view(::tec::proto::View* view) {
+  clear_component();
+  if (view) {
+    set_has_view();
+    component_.view_ = view;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.view)
+}
+
+// optional .tec.proto.Animation animation = 5;
+inline bool Component::has_animation() const {
+  return component_case() == kAnimation;
+}
+inline void Component::set_has_animation() {
+  _oneof_case_[0] = kAnimation;
+}
+inline void Component::clear_animation() {
+  if (has_animation()) {
+    delete component_.animation_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Animation& Component::animation() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.animation)
+  return has_animation() ? *component_.animation_
+                      : ::tec::proto::Animation::default_instance();
+}
+inline ::tec::proto::Animation* Component::mutable_animation() {
+  if (!has_animation()) {
+    clear_component();
+    set_has_animation();
+    component_.animation_ = new ::tec::proto::Animation;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.animation)
+  return component_.animation_;
+}
+inline ::tec::proto::Animation* Component::release_animation() {
+  if (has_animation()) {
+    clear_has_component();
+    ::tec::proto::Animation* temp = component_.animation_;
+    component_.animation_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_animation(::tec::proto::Animation* animation) {
+  clear_component();
+  if (animation) {
+    set_has_animation();
+    component_.animation_ = animation;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.animation)
+}
+
+// optional .tec.proto.Scale Scale = 6;
+inline bool Component::has_scale() const {
+  return component_case() == kScale;
+}
+inline void Component::set_has_scale() {
+  _oneof_case_[0] = kScale;
+}
+inline void Component::clear_scale() {
+  if (has_scale()) {
+    delete component_.scale_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Scale& Component::scale() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.Scale)
+  return has_scale() ? *component_.scale_
+                      : ::tec::proto::Scale::default_instance();
+}
+inline ::tec::proto::Scale* Component::mutable_scale() {
+  if (!has_scale()) {
+    clear_component();
+    set_has_scale();
+    component_.scale_ = new ::tec::proto::Scale;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.Scale)
+  return component_.scale_;
+}
+inline ::tec::proto::Scale* Component::release_scale() {
+  if (has_scale()) {
+    clear_has_component();
+    ::tec::proto::Scale* temp = component_.scale_;
+    component_.scale_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_scale(::tec::proto::Scale* scale) {
+  clear_component();
+  if (scale) {
+    set_has_scale();
+    component_.scale_ = scale;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.Scale)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -1275,6 +1905,12 @@ EntityList::mutable_entities() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

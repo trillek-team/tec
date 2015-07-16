@@ -30,6 +30,15 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Orientation_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Orientation_reflection_ = NULL;
+const ::google::protobuf::Descriptor* View_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  View_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Animation_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Animation_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Scale_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Scale_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Component_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Component_reflection_ = NULL;
@@ -37,6 +46,9 @@ struct ComponentOneofInstance {
   const ::tec::proto::Renderable* renderable_;
   const ::tec::proto::Position* position_;
   const ::tec::proto::Orientation* orientation_;
+  const ::tec::proto::View* view_;
+  const ::tec::proto::Animation* animation_;
+  const ::tec::proto::Scale* scale_;
 }* Component_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* Entity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
@@ -106,11 +118,61 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Orientation),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation, _internal_metadata_),
       -1);
-  Component_descriptor_ = file->message_type(3);
-  static const int Component_offsets_[4] = {
+  View_descriptor_ = file->message_type(3);
+  static const int View_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(View, active_),
+  };
+  View_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      View_descriptor_,
+      View::default_instance_,
+      View_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(View, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(View),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(View, _internal_metadata_),
+      -1);
+  Animation_descriptor_ = file->message_type(4);
+  static const int Animation_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Animation, animation_name_),
+  };
+  Animation_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Animation_descriptor_,
+      Animation::default_instance_,
+      Animation_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Animation, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Animation),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Animation, _internal_metadata_),
+      -1);
+  Scale_descriptor_ = file->message_type(5);
+  static const int Scale_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Scale, x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Scale, y_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Scale, z_),
+  };
+  Scale_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Scale_descriptor_,
+      Scale::default_instance_,
+      Scale_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Scale, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Scale),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Scale, _internal_metadata_),
+      -1);
+  Component_descriptor_ = file->message_type(6);
+  static const int Component_offsets_[7] = {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, renderable_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, position_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, orientation_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, view_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, animation_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, scale_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, component_),
   };
   Component_reflection_ =
@@ -126,7 +188,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Component),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, _internal_metadata_),
       -1);
-  Entity_descriptor_ = file->message_type(4);
+  Entity_descriptor_ = file->message_type(7);
   static const int Entity_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, components_),
@@ -142,7 +204,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Entity),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, _internal_metadata_),
       -1);
-  EntityList_descriptor_ = file->message_type(5);
+  EntityList_descriptor_ = file->message_type(8);
   static const int EntityList_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, entities_),
   };
@@ -176,6 +238,12 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Orientation_descriptor_, &Orientation::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      View_descriptor_, &View::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Animation_descriptor_, &Animation::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Scale_descriptor_, &Scale::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Component_descriptor_, &Component::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Entity_descriptor_, &Entity::default_instance());
@@ -192,6 +260,12 @@ void protobuf_ShutdownFile_components_2eproto() {
   delete Position_reflection_;
   delete Orientation::default_instance_;
   delete Orientation_reflection_;
+  delete View::default_instance_;
+  delete View_reflection_;
+  delete Animation::default_instance_;
+  delete Animation_reflection_;
+  delete Scale::default_instance_;
+  delete Scale_reflection_;
   delete Component::default_instance_;
   delete Component_default_oneof_instance_;
   delete Component_reflection_;
@@ -213,18 +287,27 @@ void protobuf_AddDesc_components_2eproto() {
     "\001(\t\022\016\n\006hidden\030\003 \001(\010\"+\n\010Position\022\t\n\001x\030\001 \001"
     "(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"9\n\013Orientation\022"
     "\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022\t\n\001z\030\003 \002(\002\022\t\n\001w\030\004 "
-    "\002(\002\"\235\001\n\tComponent\022+\n\nrenderable\030\001 \001(\0132\025."
-    "tec.proto.RenderableH\000\022\'\n\010position\030\002 \001(\013"
-    "2\023.tec.proto.PositionH\000\022-\n\013orientation\030\003"
-    " \001(\0132\026.tec.proto.OrientationH\000B\013\n\tcompon"
-    "ent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\ncomponents\030"
-    "\002 \003(\0132\024.tec.proto.Component\"1\n\nEntityLis"
-    "t\022#\n\010entities\030\001 \003(\0132\021.tec.proto.Entity", 478);
+    "\002(\002\"\026\n\004View\022\016\n\006active\030\001 \001(\010\"#\n\tAnimation"
+    "\022\026\n\016animation_name\030\001 \001(\t\"(\n\005Scale\022\t\n\001x\030\001"
+    " \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"\214\002\n\tComponent"
+    "\022+\n\nrenderable\030\001 \001(\0132\025.tec.proto.Rendera"
+    "bleH\000\022\'\n\010position\030\002 \001(\0132\023.tec.proto.Posi"
+    "tionH\000\022-\n\013orientation\030\003 \001(\0132\026.tec.proto."
+    "OrientationH\000\022\037\n\004view\030\004 \001(\0132\017.tec.proto."
+    "ViewH\000\022)\n\tanimation\030\005 \001(\0132\024.tec.proto.An"
+    "imationH\000\022!\n\005Scale\030\006 \001(\0132\020.tec.proto.Sca"
+    "leH\000B\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022"
+    "(\n\ncomponents\030\002 \003(\0132\024.tec.proto.Componen"
+    "t\"1\n\nEntityList\022#\n\010entities\030\001 \003(\0132\021.tec."
+    "proto.Entity", 692);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
   Position::default_instance_ = new Position();
   Orientation::default_instance_ = new Orientation();
+  View::default_instance_ = new View();
+  Animation::default_instance_ = new Animation();
+  Scale::default_instance_ = new Scale();
   Component::default_instance_ = new Component();
   Component_default_oneof_instance_ = new ComponentOneofInstance();
   Entity::default_instance_ = new Entity();
@@ -232,6 +315,9 @@ void protobuf_AddDesc_components_2eproto() {
   Renderable::default_instance_->InitAsDefaultInstance();
   Position::default_instance_->InitAsDefaultInstance();
   Orientation::default_instance_->InitAsDefaultInstance();
+  View::default_instance_->InitAsDefaultInstance();
+  Animation::default_instance_->InitAsDefaultInstance();
+  Scale::default_instance_->InitAsDefaultInstance();
   Component::default_instance_->InitAsDefaultInstance();
   Entity::default_instance_->InitAsDefaultInstance();
   EntityList::default_instance_->InitAsDefaultInstance();
@@ -1600,9 +1686,966 @@ void Orientation::clear_w() {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int View::kActiveFieldNumber;
+#endif  // !_MSC_VER
+
+View::View()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.View)
+}
+
+void View::InitAsDefaultInstance() {
+}
+
+View::View(const View& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.View)
+}
+
+void View::SharedCtor() {
+  _cached_size_ = 0;
+  active_ = false;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+View::~View() {
+  // @@protoc_insertion_point(destructor:tec.proto.View)
+  SharedDtor();
+}
+
+void View::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void View::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* View::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return View_descriptor_;
+}
+
+const View& View::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+View* View::default_instance_ = NULL;
+
+View* View::New(::google::protobuf::Arena* arena) const {
+  View* n = new View;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void View::Clear() {
+  active_ = false;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool View::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.View)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional bool active = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &active_)));
+          set_has_active();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.View)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.View)
+  return false;
+#undef DO_
+}
+
+void View::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.View)
+  // optional bool active = 1;
+  if (has_active()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->active(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.View)
+}
+
+::google::protobuf::uint8* View::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.View)
+  // optional bool active = 1;
+  if (has_active()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->active(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.View)
+  return target;
+}
+
+int View::ByteSize() const {
+  int total_size = 0;
+
+  // optional bool active = 1;
+  if (has_active()) {
+    total_size += 1 + 1;
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void View::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const View* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const View>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void View::MergeFrom(const View& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_active()) {
+      set_active(from.active());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void View::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void View::CopyFrom(const View& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool View::IsInitialized() const {
+
+  return true;
+}
+
+void View::Swap(View* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void View::InternalSwap(View* other) {
+  std::swap(active_, other->active_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata View::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = View_descriptor_;
+  metadata.reflection = View_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// View
+
+// optional bool active = 1;
+bool View::has_active() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void View::set_has_active() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void View::clear_has_active() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void View::clear_active() {
+  active_ = false;
+  clear_has_active();
+}
+ bool View::active() const {
+  // @@protoc_insertion_point(field_get:tec.proto.View.active)
+  return active_;
+}
+ void View::set_active(bool value) {
+  set_has_active();
+  active_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.View.active)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int Animation::kAnimationNameFieldNumber;
+#endif  // !_MSC_VER
+
+Animation::Animation()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Animation)
+}
+
+void Animation::InitAsDefaultInstance() {
+}
+
+Animation::Animation(const Animation& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Animation)
+}
+
+void Animation::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  animation_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Animation::~Animation() {
+  // @@protoc_insertion_point(destructor:tec.proto.Animation)
+  SharedDtor();
+}
+
+void Animation::SharedDtor() {
+  animation_name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void Animation::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Animation::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Animation_descriptor_;
+}
+
+const Animation& Animation::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Animation* Animation::default_instance_ = NULL;
+
+Animation* Animation::New(::google::protobuf::Arena* arena) const {
+  Animation* n = new Animation;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Animation::Clear() {
+  if (has_animation_name()) {
+    animation_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Animation::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Animation)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string animation_name = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_animation_name()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->animation_name().data(), this->animation_name().length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "tec.proto.Animation.animation_name");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Animation)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Animation)
+  return false;
+#undef DO_
+}
+
+void Animation::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Animation)
+  // optional string animation_name = 1;
+  if (has_animation_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->animation_name().data(), this->animation_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.Animation.animation_name");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->animation_name(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Animation)
+}
+
+::google::protobuf::uint8* Animation::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Animation)
+  // optional string animation_name = 1;
+  if (has_animation_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->animation_name().data(), this->animation_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.Animation.animation_name");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->animation_name(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Animation)
+  return target;
+}
+
+int Animation::ByteSize() const {
+  int total_size = 0;
+
+  // optional string animation_name = 1;
+  if (has_animation_name()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->animation_name());
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Animation::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Animation* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Animation>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Animation::MergeFrom(const Animation& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_animation_name()) {
+      set_has_animation_name();
+      animation_name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.animation_name_);
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Animation::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Animation::CopyFrom(const Animation& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Animation::IsInitialized() const {
+
+  return true;
+}
+
+void Animation::Swap(Animation* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Animation::InternalSwap(Animation* other) {
+  animation_name_.Swap(&other->animation_name_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Animation::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Animation_descriptor_;
+  metadata.reflection = Animation_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Animation
+
+// optional string animation_name = 1;
+bool Animation::has_animation_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Animation::set_has_animation_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Animation::clear_has_animation_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Animation::clear_animation_name() {
+  animation_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_animation_name();
+}
+ const ::std::string& Animation::animation_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Animation.animation_name)
+  return animation_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Animation::set_animation_name(const ::std::string& value) {
+  set_has_animation_name();
+  animation_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Animation.animation_name)
+}
+ void Animation::set_animation_name(const char* value) {
+  set_has_animation_name();
+  animation_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Animation.animation_name)
+}
+ void Animation::set_animation_name(const char* value, size_t size) {
+  set_has_animation_name();
+  animation_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Animation.animation_name)
+}
+ ::std::string* Animation::mutable_animation_name() {
+  set_has_animation_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Animation.animation_name)
+  return animation_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Animation::release_animation_name() {
+  clear_has_animation_name();
+  return animation_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Animation::set_allocated_animation_name(::std::string* animation_name) {
+  if (animation_name != NULL) {
+    set_has_animation_name();
+  } else {
+    clear_has_animation_name();
+  }
+  animation_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), animation_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Animation.animation_name)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int Scale::kXFieldNumber;
+const int Scale::kYFieldNumber;
+const int Scale::kZFieldNumber;
+#endif  // !_MSC_VER
+
+Scale::Scale()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Scale)
+}
+
+void Scale::InitAsDefaultInstance() {
+}
+
+Scale::Scale(const Scale& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Scale)
+}
+
+void Scale::SharedCtor() {
+  _cached_size_ = 0;
+  x_ = 0;
+  y_ = 0;
+  z_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Scale::~Scale() {
+  // @@protoc_insertion_point(destructor:tec.proto.Scale)
+  SharedDtor();
+}
+
+void Scale::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void Scale::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Scale::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Scale_descriptor_;
+}
+
+const Scale& Scale::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Scale* Scale::default_instance_ = NULL;
+
+Scale* Scale::New(::google::protobuf::Arena* arena) const {
+  Scale* n = new Scale;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Scale::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Scale*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(x_, z_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Scale::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Scale)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float x = 1;
+      case 1: {
+        if (tag == 13) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &x_)));
+          set_has_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(21)) goto parse_y;
+        break;
+      }
+
+      // optional float y = 2;
+      case 2: {
+        if (tag == 21) {
+         parse_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &y_)));
+          set_has_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(29)) goto parse_z;
+        break;
+      }
+
+      // optional float z = 3;
+      case 3: {
+        if (tag == 29) {
+         parse_z:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &z_)));
+          set_has_z();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Scale)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Scale)
+  return false;
+#undef DO_
+}
+
+void Scale::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Scale)
+  // optional float x = 1;
+  if (has_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->x(), output);
+  }
+
+  // optional float y = 2;
+  if (has_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->y(), output);
+  }
+
+  // optional float z = 3;
+  if (has_z()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->z(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Scale)
+}
+
+::google::protobuf::uint8* Scale::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Scale)
+  // optional float x = 1;
+  if (has_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->x(), target);
+  }
+
+  // optional float y = 2;
+  if (has_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->y(), target);
+  }
+
+  // optional float z = 3;
+  if (has_z()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->z(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Scale)
+  return target;
+}
+
+int Scale::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & 7u) {
+    // optional float x = 1;
+    if (has_x()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float y = 2;
+    if (has_y()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float z = 3;
+    if (has_z()) {
+      total_size += 1 + 4;
+    }
+
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Scale::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Scale* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Scale>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Scale::MergeFrom(const Scale& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_x()) {
+      set_x(from.x());
+    }
+    if (from.has_y()) {
+      set_y(from.y());
+    }
+    if (from.has_z()) {
+      set_z(from.z());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Scale::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Scale::CopyFrom(const Scale& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Scale::IsInitialized() const {
+
+  return true;
+}
+
+void Scale::Swap(Scale* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Scale::InternalSwap(Scale* other) {
+  std::swap(x_, other->x_);
+  std::swap(y_, other->y_);
+  std::swap(z_, other->z_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Scale::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Scale_descriptor_;
+  metadata.reflection = Scale_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Scale
+
+// optional float x = 1;
+bool Scale::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Scale::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Scale::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Scale::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+ float Scale::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Scale.x)
+  return x_;
+}
+ void Scale::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Scale.x)
+}
+
+// optional float y = 2;
+bool Scale::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Scale::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Scale::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Scale::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+ float Scale::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Scale.y)
+  return y_;
+}
+ void Scale::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Scale.y)
+}
+
+// optional float z = 3;
+bool Scale::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Scale::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Scale::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Scale::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+ float Scale::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Scale.z)
+  return z_;
+}
+ void Scale::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Scale.z)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int Component::kRenderableFieldNumber;
 const int Component::kPositionFieldNumber;
 const int Component::kOrientationFieldNumber;
+const int Component::kViewFieldNumber;
+const int Component::kAnimationFieldNumber;
+const int Component::kScaleFieldNumber;
 #endif  // !_MSC_VER
 
 Component::Component()
@@ -1615,6 +2658,9 @@ void Component::InitAsDefaultInstance() {
   Component_default_oneof_instance_->renderable_ = const_cast< ::tec::proto::Renderable*>(&::tec::proto::Renderable::default_instance());
   Component_default_oneof_instance_->position_ = const_cast< ::tec::proto::Position*>(&::tec::proto::Position::default_instance());
   Component_default_oneof_instance_->orientation_ = const_cast< ::tec::proto::Orientation*>(&::tec::proto::Orientation::default_instance());
+  Component_default_oneof_instance_->view_ = const_cast< ::tec::proto::View*>(&::tec::proto::View::default_instance());
+  Component_default_oneof_instance_->animation_ = const_cast< ::tec::proto::Animation*>(&::tec::proto::Animation::default_instance());
+  Component_default_oneof_instance_->scale_ = const_cast< ::tec::proto::Scale*>(&::tec::proto::Scale::default_instance());
 }
 
 Component::Component(const Component& from)
@@ -1683,6 +2729,18 @@ void Component::clear_component() {
       delete component_.orientation_;
       break;
     }
+    case kView: {
+      delete component_.view_;
+      break;
+    }
+    case kAnimation: {
+      delete component_.animation_;
+      break;
+    }
+    case kScale: {
+      delete component_.scale_;
+      break;
+    }
     case COMPONENT_NOT_SET: {
       break;
     }
@@ -1743,6 +2801,45 @@ bool Component::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(34)) goto parse_view;
+        break;
+      }
+
+      // optional .tec.proto.View view = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_view:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_view()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(42)) goto parse_animation;
+        break;
+      }
+
+      // optional .tec.proto.Animation animation = 5;
+      case 5: {
+        if (tag == 42) {
+         parse_animation:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_animation()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(50)) goto parse_Scale;
+        break;
+      }
+
+      // optional .tec.proto.Scale Scale = 6;
+      case 6: {
+        if (tag == 50) {
+         parse_Scale:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_scale()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1790,6 +2887,24 @@ void Component::SerializeWithCachedSizes(
       3, *component_.orientation_, output);
   }
 
+  // optional .tec.proto.View view = 4;
+  if (has_view()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, *component_.view_, output);
+  }
+
+  // optional .tec.proto.Animation animation = 5;
+  if (has_animation()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, *component_.animation_, output);
+  }
+
+  // optional .tec.proto.Scale Scale = 6;
+  if (has_scale()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      6, *component_.scale_, output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1819,6 +2934,27 @@ void Component::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         3, *component_.orientation_, target);
+  }
+
+  // optional .tec.proto.View view = 4;
+  if (has_view()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        4, *component_.view_, target);
+  }
+
+  // optional .tec.proto.Animation animation = 5;
+  if (has_animation()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        5, *component_.animation_, target);
+  }
+
+  // optional .tec.proto.Scale Scale = 6;
+  if (has_scale()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        6, *component_.scale_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1852,6 +2988,27 @@ int Component::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           *component_.orientation_);
+      break;
+    }
+    // optional .tec.proto.View view = 4;
+    case kView: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.view_);
+      break;
+    }
+    // optional .tec.proto.Animation animation = 5;
+    case kAnimation: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.animation_);
+      break;
+    }
+    // optional .tec.proto.Scale Scale = 6;
+    case kScale: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.scale_);
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -1894,6 +3051,18 @@ void Component::MergeFrom(const Component& from) {
     }
     case kOrientation: {
       mutable_orientation()->::tec::proto::Orientation::MergeFrom(from.orientation());
+      break;
+    }
+    case kView: {
+      mutable_view()->::tec::proto::View::MergeFrom(from.view());
+      break;
+    }
+    case kAnimation: {
+      mutable_animation()->::tec::proto::Animation::MergeFrom(from.animation());
+      break;
+    }
+    case kScale: {
+      mutable_scale()->::tec::proto::Scale::MergeFrom(from.scale());
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -2084,6 +3253,144 @@ void Component::clear_orientation() {
     component_.orientation_ = orientation;
   }
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.orientation)
+}
+
+// optional .tec.proto.View view = 4;
+bool Component::has_view() const {
+  return component_case() == kView;
+}
+void Component::set_has_view() {
+  _oneof_case_[0] = kView;
+}
+void Component::clear_view() {
+  if (has_view()) {
+    delete component_.view_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::View& Component::view() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.view)
+  return has_view() ? *component_.view_
+                      : ::tec::proto::View::default_instance();
+}
+ ::tec::proto::View* Component::mutable_view() {
+  if (!has_view()) {
+    clear_component();
+    set_has_view();
+    component_.view_ = new ::tec::proto::View;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.view)
+  return component_.view_;
+}
+ ::tec::proto::View* Component::release_view() {
+  if (has_view()) {
+    clear_has_component();
+    ::tec::proto::View* temp = component_.view_;
+    component_.view_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_view(::tec::proto::View* view) {
+  clear_component();
+  if (view) {
+    set_has_view();
+    component_.view_ = view;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.view)
+}
+
+// optional .tec.proto.Animation animation = 5;
+bool Component::has_animation() const {
+  return component_case() == kAnimation;
+}
+void Component::set_has_animation() {
+  _oneof_case_[0] = kAnimation;
+}
+void Component::clear_animation() {
+  if (has_animation()) {
+    delete component_.animation_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::Animation& Component::animation() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.animation)
+  return has_animation() ? *component_.animation_
+                      : ::tec::proto::Animation::default_instance();
+}
+ ::tec::proto::Animation* Component::mutable_animation() {
+  if (!has_animation()) {
+    clear_component();
+    set_has_animation();
+    component_.animation_ = new ::tec::proto::Animation;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.animation)
+  return component_.animation_;
+}
+ ::tec::proto::Animation* Component::release_animation() {
+  if (has_animation()) {
+    clear_has_component();
+    ::tec::proto::Animation* temp = component_.animation_;
+    component_.animation_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_animation(::tec::proto::Animation* animation) {
+  clear_component();
+  if (animation) {
+    set_has_animation();
+    component_.animation_ = animation;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.animation)
+}
+
+// optional .tec.proto.Scale Scale = 6;
+bool Component::has_scale() const {
+  return component_case() == kScale;
+}
+void Component::set_has_scale() {
+  _oneof_case_[0] = kScale;
+}
+void Component::clear_scale() {
+  if (has_scale()) {
+    delete component_.scale_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::Scale& Component::scale() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.Scale)
+  return has_scale() ? *component_.scale_
+                      : ::tec::proto::Scale::default_instance();
+}
+ ::tec::proto::Scale* Component::mutable_scale() {
+  if (!has_scale()) {
+    clear_component();
+    set_has_scale();
+    component_.scale_ = new ::tec::proto::Scale;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.Scale)
+  return component_.scale_;
+}
+ ::tec::proto::Scale* Component::release_scale() {
+  if (has_scale()) {
+    clear_has_component();
+    ::tec::proto::Scale* temp = component_.scale_;
+    component_.scale_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_scale(::tec::proto::Scale* scale) {
+  clear_component();
+  if (scale) {
+    set_has_scale();
+    component_.scale_ = scale;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.Scale)
 }
 
 bool Component::has_component() const {

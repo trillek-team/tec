@@ -21,11 +21,28 @@ message Orientation {
 	required float w = 4;
 }
 
+message View {
+	optional bool active = 1;
+}
+
+message Animation {
+	optional string animation_name = 1;
+}
+
+message Scale {
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
 message Component {
 	oneof component {
 		Renderable renderable = 1;
 		Position position = 2;
 		Orientation orientation = 3;
+		View view = 4;
+		Animation animation = 5;
+		Scale Scale = 6;
 	}
 }
 
