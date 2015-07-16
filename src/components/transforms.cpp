@@ -57,22 +57,4 @@ namespace tec {
 		this->value.z = source.z();
 		this->value.w = source.w();
 	}
-
-	void Scale::Out(proto::Scale* target) {
-		target->set_x(this->value.x);
-		target->set_y(this->value.y);
-		target->set_z(this->value.z);
-	}
-
-	void Scale::In(const proto::Scale& source) {
-		if (source.has_x()) {
-			this->value.x = source.x();
-		}
-		if (source.has_y()) {
-			this->value.y = source.y();
-		}
-		if (source.has_z()) {
-			this->value.z = source.z();
-		}
-	}
 }

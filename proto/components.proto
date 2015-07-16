@@ -35,6 +35,29 @@ message Scale {
 	optional float z = 3;
 }
 
+message CollisionBody {
+	message Box {
+		required float x_extent = 1;
+		required float y_extent = 2;
+		required float z_extent = 3;
+	};
+	message Sphere {
+		required float radius = 1;
+	};
+	message Capsule {
+		required float radius = 1;
+		required float height = 2;
+	};
+	optional bool disable_deactivation = 1;
+	optional bool disable_rotation = 2;
+	oneof shape {
+		Box box = 3;
+		Sphere sphere = 4;
+		Capsule capsule = 5;
+	}
+	optional float mass = 6;
+}
+
 message Component {
 	oneof component {
 		Renderable renderable = 1;
@@ -43,6 +66,7 @@ message Component {
 		View view = 4;
 		Animation animation = 5;
 		Scale Scale = 6;
+		CollisionBody collision_body = 7;
 	}
 }
 

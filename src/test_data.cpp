@@ -1,26 +1,22 @@
-#include "graphics/vertex-buffer-object.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/material.hpp"
-#include "graphics/texture-object.hpp"
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
 #include "components/renderable.hpp"
 #include "resources/md5mesh.hpp"
 #include "resources/obj.hpp"
-#include "resources/pixel-buffer.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
 #include "graphics/animation.hpp"
 #include "graphics/view.hpp"
-#include "render-system.hpp"
 #include "entity.hpp"
 #include "component-update-system.hpp"
 #include "sound-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
-#include <glm/gtc/matrix_transform.hpp>
 #include <map>
 #include <set>
+#include <memory>
 
 #include "../proto/components.pb.h"
 
@@ -100,15 +96,98 @@ namespace tec {
 
 		in_functors[proto::Component::ComponentCase::kScale] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
 			auto scale = std::make_shared<Scale>();
-			scale->In(comp.scale());
+			const proto::Scale& proto_scale = comp.scale();
+			if (proto_scale.has_x()) {
+				scale->value.x = proto_scale.x();
+			}
+			if (proto_scale.has_y()) {
+				scale->value.y = proto_scale.y();
+			}
+			if (proto_scale.has_z()) {
+				scale->value.z = proto_scale.z();
+			}
 			Entity(entity.id()).Add(scale);
 		};
 
 		out_functors[proto::Component::ComponentCase::kScale] = [ ] (proto::Entity* entity) {
 			Entity e(entity->id());
 			if (e.Has<Scale>()) {
+				proto::Scale* proto_scale= entity->add_components()->mutable_scale();
+				auto scale = e.Get<Scale>().lock();
+
+				proto_scale->set_x(scale->value.x);
+				proto_scale->set_y(scale->value.y);
+				proto_scale->set_z(scale->value.z);
+			}
+		};
+
+		in_functors[proto::Component::ComponentCase::kCollisionBody] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
+			const proto::CollisionBody& body = comp.collision_body();
+			eid entity_id = entity.id();
+			std::shared_ptr<CollisionBody> colbody;
+			switch (body.shape_case()) {
+				case proto::CollisionBody::ShapeCase::kBox:
+					colbody = std::make_shared<CollisionBox>(entity_id,
+						body.box().x_extent(), body.box().y_extent(), body.box().z_extent());
+					break;
+				case proto::CollisionBody::ShapeCase::kSphere:
+					colbody = std::make_shared<CollisionSphere>(entity_id, body.sphere().radius());
+					break;
+				case proto::CollisionBody::ShapeCase::kCapsule:
+					colbody = std::make_shared<CollisionCapsule>(entity_id,
+						body.capsule().height(), body.capsule().radius());
+					break;
+
+			}
+			if (colbody) {
+				if (body.has_disable_deactivation()) {
+					colbody->disable_deactivation = body.disable_deactivation();
+				}
+				if (body.has_disable_rotation()) {
+					colbody->disable_rotation = body.disable_rotation();
+				}
+				if (body.has_mass()) {
+					colbody->mass = body.mass();
+				}
+				Entity(entity_id).Add(colbody);
+			}
+		};
+
+		out_functors[proto::Component::ComponentCase::kCollisionBody] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<CollisionBody>()) {
 				proto::Component* comp = entity->add_components();
-				e.Get<Scale>().lock()->Out(comp->mutable_scale());
+				std::shared_ptr<CollisionBody> colbody = e.Get<CollisionBody>().lock();
+				proto::CollisionBody* body = comp->mutable_collision_body();
+				body->set_disable_deactivation(colbody->disable_deactivation);
+				body->set_disable_rotation(colbody->disable_rotation);
+				body->set_mass(colbody->mass);
+				switch (colbody->collision_shape) {
+					case COLLISION_SHAPE::BOX:
+						{
+							proto::CollisionBody::Box* box = body->mutable_box();
+							std::shared_ptr<CollisionBox> colbox = std::static_pointer_cast<CollisionBox>(colbody);
+							box->set_x_extent(static_cast<float>(colbox->half_extents.x()));
+							box->set_y_extent(static_cast<float>(colbox->half_extents.y()));
+							box->set_z_extent(static_cast<float>(colbox->half_extents.z()));
+						}
+						break;
+					case COLLISION_SHAPE::SPHERE:
+						{
+							proto::CollisionBody::Sphere* sphere = body->mutable_sphere();
+							std::shared_ptr<CollisionSphere> colsphere = std::static_pointer_cast<CollisionSphere>(colbody);
+							sphere->set_radius(colsphere->radius);
+						}
+						break;
+					case COLLISION_SHAPE::CAPSULE:
+						{
+							proto::CollisionBody::Capsule* capsule = body->mutable_capsule();
+							std::shared_ptr<CollisionCapsule> colcapsule = std::static_pointer_cast<CollisionCapsule>(colbody);
+							capsule->set_radius(colcapsule->radius);
+							capsule->set_height(colcapsule->height);
+						}
+						break;
+				}
 			}
 		};
 	}
@@ -153,15 +232,11 @@ namespace tec {
 		}
 
 		OBJ::Create("assets/vidstand/VidStand_Full.obj");
-		MD5Mesh::Create("assets/bob/bob.md5mesh");
 		{
 			Entity bob(99);
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
 			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 			bob.Add<Animation>(anim1);
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 1.0f, 0.5f);
-			bob.Add(colbody);
-
 			std::shared_ptr<VorbisStream> vorbis_stream = VorbisStream::Create("assets/theme.ogg");
 			bob.Add<AudioSource>(vorbis_stream, true);
 		}
@@ -169,20 +244,7 @@ namespace tec {
 		{
 			Entity camera(1);
 			camera.Add<Velocity>();
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 0.5f, 0.5f);
-			colbody->disable_deactivation = true;
-			colbody->mass = 1.0;
-			colbody->disable_rotation = true;
-			camera.Add(colbody);
 		}
-
-		Entity floor(1000);
-		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionBox>(1000, 100.0f, 1.0f, 100.0f);
-			colbody->mass = 0.0;
-			floor.Add(colbody);
-		}
-
 	}
 
 	void ProtoLoad() {
@@ -211,7 +273,7 @@ namespace tec {
 			for (auto functor : entity_functors.second) {
 				(*functor)(entity);
 			}
-			//out_functors[proto::Component::ComponentCase::kView](entity);
+			//out_functors[proto::Component::ComponentCase::kCollisionBody](entity);
 		}
 		elist.SerializeToOstream(&output);
 	}

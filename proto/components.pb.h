@@ -43,6 +43,10 @@ class Orientation;
 class View;
 class Animation;
 class Scale;
+class CollisionBody;
+class CollisionBody_Box;
+class CollisionBody_Sphere;
+class CollisionBody_Capsule;
 class Component;
 class Entity;
 class EntityList;
@@ -691,6 +695,472 @@ class Scale : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class CollisionBody_Box : public ::google::protobuf::Message {
+ public:
+  CollisionBody_Box();
+  virtual ~CollisionBody_Box();
+
+  CollisionBody_Box(const CollisionBody_Box& from);
+
+  inline CollisionBody_Box& operator=(const CollisionBody_Box& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CollisionBody_Box& default_instance();
+
+  void Swap(CollisionBody_Box* other);
+
+  // implements Message ----------------------------------------------
+
+  inline CollisionBody_Box* New() const { return New(NULL); }
+
+  CollisionBody_Box* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CollisionBody_Box& from);
+  void MergeFrom(const CollisionBody_Box& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(CollisionBody_Box* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required float x_extent = 1;
+  bool has_x_extent() const;
+  void clear_x_extent();
+  static const int kXExtentFieldNumber = 1;
+  float x_extent() const;
+  void set_x_extent(float value);
+
+  // required float y_extent = 2;
+  bool has_y_extent() const;
+  void clear_y_extent();
+  static const int kYExtentFieldNumber = 2;
+  float y_extent() const;
+  void set_y_extent(float value);
+
+  // required float z_extent = 3;
+  bool has_z_extent() const;
+  void clear_z_extent();
+  static const int kZExtentFieldNumber = 3;
+  float z_extent() const;
+  void set_z_extent(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.CollisionBody.Box)
+ private:
+  inline void set_has_x_extent();
+  inline void clear_has_x_extent();
+  inline void set_has_y_extent();
+  inline void clear_has_y_extent();
+  inline void set_has_z_extent();
+  inline void clear_has_z_extent();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_extent_;
+  float y_extent_;
+  float z_extent_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static CollisionBody_Box* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CollisionBody_Sphere : public ::google::protobuf::Message {
+ public:
+  CollisionBody_Sphere();
+  virtual ~CollisionBody_Sphere();
+
+  CollisionBody_Sphere(const CollisionBody_Sphere& from);
+
+  inline CollisionBody_Sphere& operator=(const CollisionBody_Sphere& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CollisionBody_Sphere& default_instance();
+
+  void Swap(CollisionBody_Sphere* other);
+
+  // implements Message ----------------------------------------------
+
+  inline CollisionBody_Sphere* New() const { return New(NULL); }
+
+  CollisionBody_Sphere* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CollisionBody_Sphere& from);
+  void MergeFrom(const CollisionBody_Sphere& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(CollisionBody_Sphere* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required float radius = 1;
+  bool has_radius() const;
+  void clear_radius();
+  static const int kRadiusFieldNumber = 1;
+  float radius() const;
+  void set_radius(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.CollisionBody.Sphere)
+ private:
+  inline void set_has_radius();
+  inline void clear_has_radius();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float radius_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static CollisionBody_Sphere* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CollisionBody_Capsule : public ::google::protobuf::Message {
+ public:
+  CollisionBody_Capsule();
+  virtual ~CollisionBody_Capsule();
+
+  CollisionBody_Capsule(const CollisionBody_Capsule& from);
+
+  inline CollisionBody_Capsule& operator=(const CollisionBody_Capsule& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CollisionBody_Capsule& default_instance();
+
+  void Swap(CollisionBody_Capsule* other);
+
+  // implements Message ----------------------------------------------
+
+  inline CollisionBody_Capsule* New() const { return New(NULL); }
+
+  CollisionBody_Capsule* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CollisionBody_Capsule& from);
+  void MergeFrom(const CollisionBody_Capsule& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(CollisionBody_Capsule* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required float radius = 1;
+  bool has_radius() const;
+  void clear_radius();
+  static const int kRadiusFieldNumber = 1;
+  float radius() const;
+  void set_radius(float value);
+
+  // required float height = 2;
+  bool has_height() const;
+  void clear_height();
+  static const int kHeightFieldNumber = 2;
+  float height() const;
+  void set_height(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.CollisionBody.Capsule)
+ private:
+  inline void set_has_radius();
+  inline void clear_has_radius();
+  inline void set_has_height();
+  inline void clear_has_height();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float radius_;
+  float height_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static CollisionBody_Capsule* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class CollisionBody : public ::google::protobuf::Message {
+ public:
+  CollisionBody();
+  virtual ~CollisionBody();
+
+  CollisionBody(const CollisionBody& from);
+
+  inline CollisionBody& operator=(const CollisionBody& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const CollisionBody& default_instance();
+
+  enum ShapeCase {
+    kBox = 3,
+    kSphere = 4,
+    kCapsule = 5,
+    SHAPE_NOT_SET = 0,
+  };
+
+  void Swap(CollisionBody* other);
+
+  // implements Message ----------------------------------------------
+
+  inline CollisionBody* New() const { return New(NULL); }
+
+  CollisionBody* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const CollisionBody& from);
+  void MergeFrom(const CollisionBody& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(CollisionBody* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef CollisionBody_Box Box;
+  typedef CollisionBody_Sphere Sphere;
+  typedef CollisionBody_Capsule Capsule;
+
+  // accessors -------------------------------------------------------
+
+  // optional bool disable_deactivation = 1;
+  bool has_disable_deactivation() const;
+  void clear_disable_deactivation();
+  static const int kDisableDeactivationFieldNumber = 1;
+  bool disable_deactivation() const;
+  void set_disable_deactivation(bool value);
+
+  // optional bool disable_rotation = 2;
+  bool has_disable_rotation() const;
+  void clear_disable_rotation();
+  static const int kDisableRotationFieldNumber = 2;
+  bool disable_rotation() const;
+  void set_disable_rotation(bool value);
+
+  // optional .tec.proto.CollisionBody.Box box = 3;
+  bool has_box() const;
+  void clear_box();
+  static const int kBoxFieldNumber = 3;
+  const ::tec::proto::CollisionBody_Box& box() const;
+  ::tec::proto::CollisionBody_Box* mutable_box();
+  ::tec::proto::CollisionBody_Box* release_box();
+  void set_allocated_box(::tec::proto::CollisionBody_Box* box);
+
+  // optional .tec.proto.CollisionBody.Sphere sphere = 4;
+  bool has_sphere() const;
+  void clear_sphere();
+  static const int kSphereFieldNumber = 4;
+  const ::tec::proto::CollisionBody_Sphere& sphere() const;
+  ::tec::proto::CollisionBody_Sphere* mutable_sphere();
+  ::tec::proto::CollisionBody_Sphere* release_sphere();
+  void set_allocated_sphere(::tec::proto::CollisionBody_Sphere* sphere);
+
+  // optional .tec.proto.CollisionBody.Capsule capsule = 5;
+  bool has_capsule() const;
+  void clear_capsule();
+  static const int kCapsuleFieldNumber = 5;
+  const ::tec::proto::CollisionBody_Capsule& capsule() const;
+  ::tec::proto::CollisionBody_Capsule* mutable_capsule();
+  ::tec::proto::CollisionBody_Capsule* release_capsule();
+  void set_allocated_capsule(::tec::proto::CollisionBody_Capsule* capsule);
+
+  // optional float mass = 6;
+  bool has_mass() const;
+  void clear_mass();
+  static const int kMassFieldNumber = 6;
+  float mass() const;
+  void set_mass(float value);
+
+  ShapeCase shape_case() const;
+  // @@protoc_insertion_point(class_scope:tec.proto.CollisionBody)
+ private:
+  inline void set_has_disable_deactivation();
+  inline void clear_has_disable_deactivation();
+  inline void set_has_disable_rotation();
+  inline void clear_has_disable_rotation();
+  inline void set_has_box();
+  inline void set_has_sphere();
+  inline void set_has_capsule();
+  inline void set_has_mass();
+  inline void clear_has_mass();
+
+  inline bool has_shape() const;
+  void clear_shape();
+  inline void clear_has_shape();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  bool disable_deactivation_;
+  bool disable_rotation_;
+  float mass_;
+  union ShapeUnion {
+    ShapeUnion() {}
+    ::tec::proto::CollisionBody_Box* box_;
+    ::tec::proto::CollisionBody_Sphere* sphere_;
+    ::tec::proto::CollisionBody_Capsule* capsule_;
+  } shape_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static CollisionBody* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -721,6 +1191,7 @@ class Component : public ::google::protobuf::Message {
     kView = 4,
     kAnimation = 5,
     kScale = 6,
+    kCollisionBody = 7,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -819,6 +1290,15 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::Scale* release_scale();
   void set_allocated_scale(::tec::proto::Scale* scale);
 
+  // optional .tec.proto.CollisionBody collision_body = 7;
+  bool has_collision_body() const;
+  void clear_collision_body();
+  static const int kCollisionBodyFieldNumber = 7;
+  const ::tec::proto::CollisionBody& collision_body() const;
+  ::tec::proto::CollisionBody* mutable_collision_body();
+  ::tec::proto::CollisionBody* release_collision_body();
+  void set_allocated_collision_body(::tec::proto::CollisionBody* collision_body);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
@@ -828,6 +1308,7 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_view();
   inline void set_has_animation();
   inline void set_has_scale();
+  inline void set_has_collision_body();
 
   inline bool has_component() const;
   void clear_component();
@@ -844,6 +1325,7 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::View* view_;
     ::tec::proto::Animation* animation_;
     ::tec::proto::Scale* scale_;
+    ::tec::proto::CollisionBody* collision_body_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -1525,6 +2007,385 @@ inline void Scale::set_z(float value) {
 
 // -------------------------------------------------------------------
 
+// CollisionBody_Box
+
+// required float x_extent = 1;
+inline bool CollisionBody_Box::has_x_extent() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CollisionBody_Box::set_has_x_extent() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CollisionBody_Box::clear_has_x_extent() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CollisionBody_Box::clear_x_extent() {
+  x_extent_ = 0;
+  clear_has_x_extent();
+}
+inline float CollisionBody_Box::x_extent() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.Box.x_extent)
+  return x_extent_;
+}
+inline void CollisionBody_Box::set_x_extent(float value) {
+  set_has_x_extent();
+  x_extent_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.Box.x_extent)
+}
+
+// required float y_extent = 2;
+inline bool CollisionBody_Box::has_y_extent() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CollisionBody_Box::set_has_y_extent() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CollisionBody_Box::clear_has_y_extent() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CollisionBody_Box::clear_y_extent() {
+  y_extent_ = 0;
+  clear_has_y_extent();
+}
+inline float CollisionBody_Box::y_extent() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.Box.y_extent)
+  return y_extent_;
+}
+inline void CollisionBody_Box::set_y_extent(float value) {
+  set_has_y_extent();
+  y_extent_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.Box.y_extent)
+}
+
+// required float z_extent = 3;
+inline bool CollisionBody_Box::has_z_extent() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void CollisionBody_Box::set_has_z_extent() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void CollisionBody_Box::clear_has_z_extent() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void CollisionBody_Box::clear_z_extent() {
+  z_extent_ = 0;
+  clear_has_z_extent();
+}
+inline float CollisionBody_Box::z_extent() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.Box.z_extent)
+  return z_extent_;
+}
+inline void CollisionBody_Box::set_z_extent(float value) {
+  set_has_z_extent();
+  z_extent_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.Box.z_extent)
+}
+
+// -------------------------------------------------------------------
+
+// CollisionBody_Sphere
+
+// required float radius = 1;
+inline bool CollisionBody_Sphere::has_radius() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CollisionBody_Sphere::set_has_radius() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CollisionBody_Sphere::clear_has_radius() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CollisionBody_Sphere::clear_radius() {
+  radius_ = 0;
+  clear_has_radius();
+}
+inline float CollisionBody_Sphere::radius() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.Sphere.radius)
+  return radius_;
+}
+inline void CollisionBody_Sphere::set_radius(float value) {
+  set_has_radius();
+  radius_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.Sphere.radius)
+}
+
+// -------------------------------------------------------------------
+
+// CollisionBody_Capsule
+
+// required float radius = 1;
+inline bool CollisionBody_Capsule::has_radius() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CollisionBody_Capsule::set_has_radius() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CollisionBody_Capsule::clear_has_radius() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CollisionBody_Capsule::clear_radius() {
+  radius_ = 0;
+  clear_has_radius();
+}
+inline float CollisionBody_Capsule::radius() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.Capsule.radius)
+  return radius_;
+}
+inline void CollisionBody_Capsule::set_radius(float value) {
+  set_has_radius();
+  radius_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.Capsule.radius)
+}
+
+// required float height = 2;
+inline bool CollisionBody_Capsule::has_height() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CollisionBody_Capsule::set_has_height() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CollisionBody_Capsule::clear_has_height() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CollisionBody_Capsule::clear_height() {
+  height_ = 0;
+  clear_has_height();
+}
+inline float CollisionBody_Capsule::height() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.Capsule.height)
+  return height_;
+}
+inline void CollisionBody_Capsule::set_height(float value) {
+  set_has_height();
+  height_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.Capsule.height)
+}
+
+// -------------------------------------------------------------------
+
+// CollisionBody
+
+// optional bool disable_deactivation = 1;
+inline bool CollisionBody::has_disable_deactivation() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void CollisionBody::set_has_disable_deactivation() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void CollisionBody::clear_has_disable_deactivation() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void CollisionBody::clear_disable_deactivation() {
+  disable_deactivation_ = false;
+  clear_has_disable_deactivation();
+}
+inline bool CollisionBody::disable_deactivation() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.disable_deactivation)
+  return disable_deactivation_;
+}
+inline void CollisionBody::set_disable_deactivation(bool value) {
+  set_has_disable_deactivation();
+  disable_deactivation_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.disable_deactivation)
+}
+
+// optional bool disable_rotation = 2;
+inline bool CollisionBody::has_disable_rotation() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void CollisionBody::set_has_disable_rotation() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void CollisionBody::clear_has_disable_rotation() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void CollisionBody::clear_disable_rotation() {
+  disable_rotation_ = false;
+  clear_has_disable_rotation();
+}
+inline bool CollisionBody::disable_rotation() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.disable_rotation)
+  return disable_rotation_;
+}
+inline void CollisionBody::set_disable_rotation(bool value) {
+  set_has_disable_rotation();
+  disable_rotation_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.disable_rotation)
+}
+
+// optional .tec.proto.CollisionBody.Box box = 3;
+inline bool CollisionBody::has_box() const {
+  return shape_case() == kBox;
+}
+inline void CollisionBody::set_has_box() {
+  _oneof_case_[0] = kBox;
+}
+inline void CollisionBody::clear_box() {
+  if (has_box()) {
+    delete shape_.box_;
+    clear_has_shape();
+  }
+}
+inline const ::tec::proto::CollisionBody_Box& CollisionBody::box() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.box)
+  return has_box() ? *shape_.box_
+                      : ::tec::proto::CollisionBody_Box::default_instance();
+}
+inline ::tec::proto::CollisionBody_Box* CollisionBody::mutable_box() {
+  if (!has_box()) {
+    clear_shape();
+    set_has_box();
+    shape_.box_ = new ::tec::proto::CollisionBody_Box;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.CollisionBody.box)
+  return shape_.box_;
+}
+inline ::tec::proto::CollisionBody_Box* CollisionBody::release_box() {
+  if (has_box()) {
+    clear_has_shape();
+    ::tec::proto::CollisionBody_Box* temp = shape_.box_;
+    shape_.box_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void CollisionBody::set_allocated_box(::tec::proto::CollisionBody_Box* box) {
+  clear_shape();
+  if (box) {
+    set_has_box();
+    shape_.box_ = box;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.CollisionBody.box)
+}
+
+// optional .tec.proto.CollisionBody.Sphere sphere = 4;
+inline bool CollisionBody::has_sphere() const {
+  return shape_case() == kSphere;
+}
+inline void CollisionBody::set_has_sphere() {
+  _oneof_case_[0] = kSphere;
+}
+inline void CollisionBody::clear_sphere() {
+  if (has_sphere()) {
+    delete shape_.sphere_;
+    clear_has_shape();
+  }
+}
+inline const ::tec::proto::CollisionBody_Sphere& CollisionBody::sphere() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.sphere)
+  return has_sphere() ? *shape_.sphere_
+                      : ::tec::proto::CollisionBody_Sphere::default_instance();
+}
+inline ::tec::proto::CollisionBody_Sphere* CollisionBody::mutable_sphere() {
+  if (!has_sphere()) {
+    clear_shape();
+    set_has_sphere();
+    shape_.sphere_ = new ::tec::proto::CollisionBody_Sphere;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.CollisionBody.sphere)
+  return shape_.sphere_;
+}
+inline ::tec::proto::CollisionBody_Sphere* CollisionBody::release_sphere() {
+  if (has_sphere()) {
+    clear_has_shape();
+    ::tec::proto::CollisionBody_Sphere* temp = shape_.sphere_;
+    shape_.sphere_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void CollisionBody::set_allocated_sphere(::tec::proto::CollisionBody_Sphere* sphere) {
+  clear_shape();
+  if (sphere) {
+    set_has_sphere();
+    shape_.sphere_ = sphere;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.CollisionBody.sphere)
+}
+
+// optional .tec.proto.CollisionBody.Capsule capsule = 5;
+inline bool CollisionBody::has_capsule() const {
+  return shape_case() == kCapsule;
+}
+inline void CollisionBody::set_has_capsule() {
+  _oneof_case_[0] = kCapsule;
+}
+inline void CollisionBody::clear_capsule() {
+  if (has_capsule()) {
+    delete shape_.capsule_;
+    clear_has_shape();
+  }
+}
+inline const ::tec::proto::CollisionBody_Capsule& CollisionBody::capsule() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.capsule)
+  return has_capsule() ? *shape_.capsule_
+                      : ::tec::proto::CollisionBody_Capsule::default_instance();
+}
+inline ::tec::proto::CollisionBody_Capsule* CollisionBody::mutable_capsule() {
+  if (!has_capsule()) {
+    clear_shape();
+    set_has_capsule();
+    shape_.capsule_ = new ::tec::proto::CollisionBody_Capsule;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.CollisionBody.capsule)
+  return shape_.capsule_;
+}
+inline ::tec::proto::CollisionBody_Capsule* CollisionBody::release_capsule() {
+  if (has_capsule()) {
+    clear_has_shape();
+    ::tec::proto::CollisionBody_Capsule* temp = shape_.capsule_;
+    shape_.capsule_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void CollisionBody::set_allocated_capsule(::tec::proto::CollisionBody_Capsule* capsule) {
+  clear_shape();
+  if (capsule) {
+    set_has_capsule();
+    shape_.capsule_ = capsule;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.CollisionBody.capsule)
+}
+
+// optional float mass = 6;
+inline bool CollisionBody::has_mass() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void CollisionBody::set_has_mass() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void CollisionBody::clear_has_mass() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void CollisionBody::clear_mass() {
+  mass_ = 0;
+  clear_has_mass();
+}
+inline float CollisionBody::mass() const {
+  // @@protoc_insertion_point(field_get:tec.proto.CollisionBody.mass)
+  return mass_;
+}
+inline void CollisionBody::set_mass(float value) {
+  set_has_mass();
+  mass_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.CollisionBody.mass)
+}
+
+inline bool CollisionBody::has_shape() const {
+  return shape_case() != SHAPE_NOT_SET;
+}
+inline void CollisionBody::clear_has_shape() {
+  _oneof_case_[0] = SHAPE_NOT_SET;
+}
+inline CollisionBody::ShapeCase CollisionBody::shape_case() const {
+  return CollisionBody::ShapeCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -1803,6 +2664,52 @@ inline void Component::set_allocated_scale(::tec::proto::Scale* scale) {
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.Scale)
 }
 
+// optional .tec.proto.CollisionBody collision_body = 7;
+inline bool Component::has_collision_body() const {
+  return component_case() == kCollisionBody;
+}
+inline void Component::set_has_collision_body() {
+  _oneof_case_[0] = kCollisionBody;
+}
+inline void Component::clear_collision_body() {
+  if (has_collision_body()) {
+    delete component_.collision_body_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::CollisionBody& Component::collision_body() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.collision_body)
+  return has_collision_body() ? *component_.collision_body_
+                      : ::tec::proto::CollisionBody::default_instance();
+}
+inline ::tec::proto::CollisionBody* Component::mutable_collision_body() {
+  if (!has_collision_body()) {
+    clear_component();
+    set_has_collision_body();
+    component_.collision_body_ = new ::tec::proto::CollisionBody;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.collision_body)
+  return component_.collision_body_;
+}
+inline ::tec::proto::CollisionBody* Component::release_collision_body() {
+  if (has_collision_body()) {
+    clear_has_component();
+    ::tec::proto::CollisionBody* temp = component_.collision_body_;
+    component_.collision_body_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_collision_body(::tec::proto::CollisionBody* collision_body) {
+  clear_component();
+  if (collision_body) {
+    set_has_collision_body();
+    component_.collision_body_ = collision_body;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.collision_body)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -1905,6 +2812,14 @@ EntityList::mutable_entities() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

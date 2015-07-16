@@ -49,8 +49,5 @@ namespace tec {
 		Scale() { }
 
 		glm::vec3 value;
-
-		void Out(proto::Scale* target);
-		void In(const proto::Scale& source);
 	};
 }
