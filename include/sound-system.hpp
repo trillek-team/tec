@@ -22,7 +22,9 @@ namespace tec {
 
 		static ReflectionComponent Reflection(AudioSource* val) {
 			ReflectionComponent refcomp;
-			refcomp.properties["looping"] = std::to_string(val->looping);
+			Property prop(Property::BOOLEAN);
+			(refcomp.properties2["Looping"] = prop).Set<bool>(val->looping);
+			refcomp.properties2["Looping"].update_func = [val] (Property& prop) { val->looping = prop.Get<bool>(); };
 			return std::move(refcomp);
 		}
 

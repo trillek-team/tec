@@ -1,5 +1,5 @@
 #include "os.hpp"
-#include "entity.hpp"
+#include "reflection.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
 #include "sound-system.hpp"
@@ -8,6 +8,7 @@
 #include "controllers/fps-controller.hpp"
 
 #include <thread>
+#include <string>
 
 namespace tec {
 	extern void IntializeComponents();
@@ -15,7 +16,8 @@ namespace tec {
 	extern void BuildTestEntities();
 	extern void ProtoSave();
 	extern void ProtoLoad();
-	ReflectionEntityList Entity::entity_list;
+
+	ReflectionEntityList entity_list;
 }
 
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
@@ -80,13 +82,57 @@ int main(int argc, char* argv[]) {
 		bool opened = true;
 		if (ImGui::Begin("Entity Tree", &opened, ImVec2(550, 680), bg_alpha, window_flags)) {
 			if (ImGui::TreeNode("Entities")) {
-				for (const auto& entity : tec::Entity::entity_list.entities) {
+				for (auto&& entity : tec::entity_list.entities) {
 					if (ImGui::TreeNode((void*)entity.first, "#%d", entity.first)) {
 						int i = 0;
-						for (const auto& component : entity.second.components) {
+						for (auto&& component : entity.second.components) {
 							if (ImGui::TreeNode((void*)i++, component.first.c_str())) {
-								for (const auto& prop : component.second.properties) {
-									ImGui::Text((prop.first + ": " + prop.second).c_str());
+								for (auto&& prop : component.second.properties2) {
+									ImGui::Text(prop.first.c_str());
+									ImGui::SameLine();
+									ImGui::PushItemWidth(-1);
+									ImGui::PushID(prop.first.c_str());
+									switch (prop.second.type) {
+										case tec::Property::FLOAT:
+											{
+												float val = prop.second.Get<float>();
+												if (ImGui::InputFloat("##labellessInputFloat", &val)) {
+													prop.second.Set(val);
+													prop.second.update_func(prop.second);
+												}
+											}
+											break;
+										case tec::Property::BOOLEAN:
+											{
+												bool val = prop.second.Get<bool>();
+												if (ImGui::Checkbox("##labellessCheckbox", &val)) {
+													prop.second.Set(val);
+													prop.second.update_func(prop.second);
+												}
+											}
+											break;
+										case tec::Property::INTEGER:
+											{
+												int val = prop.second.Get<int>();
+												if (ImGui::InputInt("##labellessInputInt", &val)) {
+													prop.second.Set(val);
+													prop.second.update_func(prop.second);
+												}
+											}
+											break;
+										case tec::Property::STRING:
+											{
+												std::string val = prop.second.Get<std::string>();
+												val.resize(256);
+												if (ImGui::InputText("##labellessInputText", &val[0], 256)) {
+													std::string trimmed = val.substr(0, val.find('\0'));
+													prop.second.Set(trimmed);
+													prop.second.update_func(prop.second);
+												}
+											}
+											break;
+									}
+									ImGui::PopID();
 								}
 								ImGui::TreePop();
 							}
@@ -123,12 +169,12 @@ int main(int argc, char* argv[]) {
 		ss_thread.join();
 
 		ps.DebugDraw();
+		active_entity = ps.RayCast();
 
 		gui.Update(delta);
 
 		os.SwapBuffers();
 		frame_id++;
-		active_entity = ps.RayCast();
 	}
 	tec::ProtoSave();
 

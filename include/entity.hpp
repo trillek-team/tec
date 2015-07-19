@@ -1,24 +1,14 @@
 #pragma once
 
 #include <memory>
-#include <map>
 #include <tuple>
-#include <string>
-#include <cstdint>
 #include "multiton.hpp"
 #include "component-update-system.hpp"
 #include "types.hpp"
+#include "reflection.hpp"
 
 namespace tec {
-	struct ReflectionComponent {
-		std::map<std::string, std::string> properties;
-	};
-	struct ReflectionEntity {
-		std::map<std::string, ReflectionComponent> components;
-	};
-	struct ReflectionEntityList {
-		std::map<eid, ReflectionEntity> entities;
-	};
+	extern ReflectionEntityList entity_list;
 	class Entity {
 	public:
 		Entity(eid id) : id(id) { }
@@ -58,7 +48,7 @@ namespace tec {
 
 		template <typename T>
 		void Update(std::shared_ptr<T> val) {
-			entity_list.entities[this->id].components[GetTypeName<T>()] = T::Reflection(val.get());
+			entity_list.entities[this->id].components[GetTypeName<T>()] = std::move(T::Reflection(val.get()));
 			ComponentUpdateSystem<T>::SubmitUpdate(this->id, val);
 		}
 
@@ -67,7 +57,6 @@ namespace tec {
 			auto comp = std::make_shared<T>(val);
 			Update(comp);
 		}
-		static ReflectionEntityList entity_list;
 	private:
 		eid id;
 	};

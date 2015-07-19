@@ -20,9 +20,14 @@ namespace tec {
 
 		static ReflectionComponent Reflection(Renderable* val) {
 			ReflectionComponent refcomp;
-			refcomp.properties["mesh_name"] = val->mesh_name;
-			refcomp.properties["shader_name"] = val->shader_name;
-			refcomp.properties["hidden"] = std::to_string(val->hidden);
+			Property sprop(Property::STRING);
+			(refcomp.properties2["Mesh Name"] = sprop).Set<std::string>(val->mesh_name);
+			refcomp.properties2["Mesh Name"].update_func = [val] (Property& prop) { val->mesh_name = prop.Get<std::string>(); };
+			(refcomp.properties2["Shader Name"] = sprop).Set<std::string>(val->shader_name);
+			refcomp.properties2["Shader Name"].update_func = [val] (Property& prop) { val->shader_name = prop.Get<std::string>(); };
+			Property bprop(Property::BOOLEAN);
+			(refcomp.properties2["Hidden"] = bprop).Set<bool>(val->hidden);
+			refcomp.properties2["Hidden"].update_func = [val] (Property& prop) { val->hidden = prop.Get<bool>(); };
 			return std::move(refcomp);
 		}
 

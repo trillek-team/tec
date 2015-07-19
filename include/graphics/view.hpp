@@ -22,7 +22,9 @@ namespace tec {
 
 		static ReflectionComponent Reflection(View* val) {
 			ReflectionComponent refcomp;
-			refcomp.properties["active"] = std::to_string(val->active);
+			Property prop(Property::BOOLEAN);
+			(refcomp.properties2["Active"] = prop).Set<bool>(val->active);
+			refcomp.properties2["Active"].update_func = [val] (Property& prop) { val->active = prop.Get<bool>(); };
 			return std::move(refcomp);
 		}
 	};

@@ -4,7 +4,7 @@
 #include "entity.hpp"
 #include "components/transforms.hpp"
 #include "component-update-system.hpp"
-	
+
 #include "physics/physics-debug-drawer.hpp"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
@@ -24,7 +24,7 @@ namespace tec {
 		// Register the collision dispatcher with the GImpact algorithm for dynamic meshes.
 		btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(this->dynamicsWorld->getDispatcher());
 		btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
-		
+
 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
 	}
@@ -70,8 +70,34 @@ namespace tec {
 					this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
 				}
 			}
+			else {
+				btRigidBody* body = this->bodies[entity_id];
+				glm::vec3 position(0.0);
+				if (Entity(entity_id).Has<Position>()) {
+					position = (Entity(entity_id).Get<Position>().lock())->value;
+				}
+				glm::quat orientation;
+				if (Entity(entity_id).Has<Orientation>()) {
+					orientation = (Entity(entity_id).Get<Orientation>().lock())->value;
+				}
+				btTransform transform(
+					btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
+					btVector3(position.x, position.y, position.z));
+				body->setWorldTransform(transform);
+				if (itr->second->mass != body->getInvMass()) {
+					body->setMassProps(itr->second->mass, btVector3(0, 0, 0));
+				}
+
+				if (itr->second->disable_deactivation) {
+					body->forceActivationState(DISABLE_DEACTIVATION);
+				}
+
+				if (itr->second->disable_rotation) {
+					body->setAngularFactor(btVector3(0.0, 0, 0.0));
+				}
+			}
 		}
-		
+
 		for (auto itr = VelocityMap::Begin(); itr != VelocityMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			if (this->bodies.find(entity_id) != this->bodies.end()) {

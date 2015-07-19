@@ -29,9 +29,19 @@ namespace tec {
 
 		static ReflectionComponent Reflection(Position* val) {
 			ReflectionComponent refcomp;
-			refcomp.properties["x"] = std::to_string(val->value.x);
-			refcomp.properties["y"] = std::to_string(val->value.y);
-			refcomp.properties["z"] = std::to_string(val->value.z);
+			Property prop(Property::FLOAT);
+			(refcomp.properties2["x"] = prop).Set(val->value.x);
+			refcomp.properties2["x"].update_func = [val] (Property& prop) {
+				val->value.x = prop.Get<float>();
+			};
+			(refcomp.properties2["y"] = prop).Set(val->value.y);
+			refcomp.properties2["y"].update_func = [val] (Property& prop) {
+				val->value.y = prop.Get<float>();
+			};
+			(refcomp.properties2["z"] = prop).Set(val->value.z);
+			refcomp.properties2["z"].update_func = [val] (Property& prop) {
+				val->value.z = prop.Get<float>();
+			};
 			return std::move(refcomp);
 		}
 	};
@@ -55,10 +65,23 @@ namespace tec {
 
 		static ReflectionComponent Reflection(Orientation* val) {
 			ReflectionComponent refcomp;
-			refcomp.properties["x"] = std::to_string(val->value.x);
-			refcomp.properties["y"] = std::to_string(val->value.y);
-			refcomp.properties["z"] = std::to_string(val->value.z);
-			refcomp.properties["w"] = std::to_string(val->value.w);
+			Property prop(Property::FLOAT);
+			(refcomp.properties2["x"] = prop).Set(val->value.x);
+			refcomp.properties2["x"].update_func = [val] (Property& prop) {
+				val->value.x = prop.Get<float>();
+			};
+			(refcomp.properties2["y"] = prop).Set(val->value.y);
+			refcomp.properties2["y"].update_func = [val] (Property& prop) {
+				val->value.y = prop.Get<float>();
+			};
+			(refcomp.properties2["z"] = prop).Set(val->value.z);
+			refcomp.properties2["z"].update_func = [val] (Property& prop) {
+				val->value.z = prop.Get<float>();
+			};
+			(refcomp.properties2["w"] = prop).Set(val->value.w);
+			refcomp.properties2["w"].update_func = [val] (Property& prop) {
+				val->value.w = prop.Get<float>();
+			};
 			return std::move(refcomp);
 		}
 	};
@@ -71,9 +94,19 @@ namespace tec {
 
 		static ReflectionComponent Reflection(Scale* val) {
 			ReflectionComponent refcomp;
-			refcomp.properties["x"] = std::to_string(val->value.x);
-			refcomp.properties["y"] = std::to_string(val->value.y);
-			refcomp.properties["z"] = std::to_string(val->value.z);
+			Property prop(Property::FLOAT);
+			(refcomp.properties2["x"] = prop).Set(val->value.x);
+			refcomp.properties2["x"].update_func = [val] (Property& prop) {
+				val->value.x = prop.Get<float>();
+			};
+			(refcomp.properties2["y"] = prop).Set(val->value.y);
+			refcomp.properties2["y"].update_func = [val] (Property& prop) {
+				val->value.y = prop.Get<float>();
+			};
+			(refcomp.properties2["z"] = prop).Set(val->value.z);
+			refcomp.properties2["z"].update_func = [val] (Property& prop) {
+				val->value.z = prop.Get<float>();
+			};
 			return std::move(refcomp);
 		}
 	};

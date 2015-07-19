@@ -52,8 +52,12 @@ namespace tec {
 
 	ReflectionComponent Animation::Reflection(Animation* val) {
 		ReflectionComponent refcomp;
-		refcomp.properties["animation_file"] = val->animation_file->GetFileName();
-		refcomp.properties["animation_time"] = std::to_string(val->current_frame_index);
+		Property sprop(Property::STRING);
+		(refcomp.properties2["Animation Name"] = sprop).Set<std::string>(val->animation_file->GetFileName());
+		refcomp.properties2["Animation Name"].update_func = [val] (Property& prop) { /*val->mesh_name = prop.Get<std::string>();*/ };
+		Property iprop(Property::INTEGER);
+		(refcomp.properties2["Current Frame"] = sprop).Set<int>(val->current_frame_index);
+		refcomp.properties2["Current Frame"].update_func = [val] (Property& prop) { val->current_frame_index = prop.Get<int>(); };
 		return std::move(refcomp);
 	}
 }

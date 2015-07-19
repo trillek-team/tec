@@ -31,12 +31,20 @@ namespace tec {
 
 		static ReflectionComponent Reflection(Velocity* val) {
 			ReflectionComponent refcomp;
-			refcomp.properties["linear_x"] = std::to_string(val->linear.x);
-			refcomp.properties["linear_y"] = std::to_string(val->linear.y);
-			refcomp.properties["linear_z"] = std::to_string(val->linear.z);
-			refcomp.properties["angular_x"] = std::to_string(val->angular.x);
-			refcomp.properties["angular_y"] = std::to_string(val->angular.y);
-			refcomp.properties["angular_z"] = std::to_string(val->angular.z);
+			Property prop(Property::FLOAT);
+			(refcomp.properties2["Linear X"] = prop).Set<float>(val->linear.x);
+			refcomp.properties2["Linear X"].update_func = [val] (Property& prop) { val->linear.x = prop.Get<float>(); };
+			(refcomp.properties2["Linear Y"] = prop).Set<float>(val->linear.y);
+			refcomp.properties2["Linear Y"].update_func = [val] (Property& prop) { val->linear.y = prop.Get<float>(); };
+			(refcomp.properties2["Linear Z"] = prop).Set<float>(val->linear.z);
+			refcomp.properties2["Linear Z"].update_func = [val] (Property& prop) { val->linear.z = prop.Get<float>(); };
+			(refcomp.properties2["Angular X"] = prop).Set<float>(val->angular.x);
+			refcomp.properties2["Angular X"].update_func = [val] (Property& prop) { val->angular.x = prop.Get<float>(); };
+			(refcomp.properties2["Angular Y"] = prop).Set<float>(val->angular.y);
+			refcomp.properties2["Angular Y"].update_func = [val] (Property& prop) { val->angular.y = prop.Get<float>(); };
+			(refcomp.properties2["Angular Z"] = prop).Set<float>(val->angular.z);
+			refcomp.properties2["Angular Z"].update_func = [val] (Property& prop) { val->angular.z = prop.Get<float>(); };
+			
 			return std::move(refcomp);
 		}
 	};
