@@ -140,6 +140,7 @@ int main(int argc, char* argv[]) {
 				}
 				ImGui::EndPopup();
 			}
+			ImGui::SameLine();
 			if (ImGui::Button("Remove")) {
 				ImGui::OpenPopup("RemoveEntity");
 			}

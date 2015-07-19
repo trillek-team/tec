@@ -45,7 +45,7 @@ namespace tec {
 
 	void IntializeComponents() {
 		ComponentUpdateSystem<Velocity>::Initialize();
-		//AddComponentFactory<Velocity>(proto::Component::ComponentCase::kVelocity);
+		AddComponentFactory<Velocity>(proto::Component::ComponentCase::kVelocity);
 		ComponentUpdateSystem<Position>::Initialize();
 		AddComponentFactory<Position>(proto::Component::ComponentCase::kPosition);
 		ComponentUpdateSystem<Orientation>::Initialize();
@@ -227,6 +227,45 @@ namespace tec {
 						}
 						break;
 				}
+			}
+		};
+
+		in_functors[proto::Component::ComponentCase::kVelocity] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
+			const proto::Velocity& vel = comp.velocity();
+			auto velocity = std::make_shared<Velocity>();
+			if (vel.has_linear_x()) {
+				velocity->linear.x = vel.linear_x();
+			}
+			if (vel.has_linear_y()) {
+				velocity->linear.y = vel.linear_y();
+			}
+			if (vel.has_linear_z()) {
+				velocity->linear.z = vel.linear_z();
+			}
+			if (vel.has_angular_x()) {
+				velocity->angular.x = vel.angular_x();
+			}
+			if (vel.has_angular_y()) {
+				velocity->angular.y = vel.angular_y();
+			}
+			if (vel.has_angular_z()) {
+				velocity->angular.z = vel.angular_z();
+			}
+			Entity(entity.id()).Add(velocity);
+		};
+
+		out_functors[proto::Component::ComponentCase::kVelocity] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<Velocity>()) {
+				proto::Component* comp = entity->add_components();
+				proto::Velocity* vel = comp->mutable_velocity();
+				std::shared_ptr<Velocity> velocity = e.Get<Velocity>().lock();
+				vel->set_linear_x(velocity->linear.x);
+				vel->set_linear_y(velocity->linear.y);
+				vel->set_linear_z(velocity->linear.z);
+				vel->set_angular_x(velocity->angular.x);
+				vel->set_angular_y(velocity->angular.y);
+				vel->set_angular_z(velocity->angular.z);
 			}
 		};
 	}

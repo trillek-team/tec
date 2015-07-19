@@ -47,6 +47,7 @@ class CollisionBody;
 class CollisionBody_Box;
 class CollisionBody_Sphere;
 class CollisionBody_Capsule;
+class Velocity;
 class Component;
 class Entity;
 class EntityList;
@@ -1161,6 +1162,145 @@ class CollisionBody : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class Velocity : public ::google::protobuf::Message {
+ public:
+  Velocity();
+  virtual ~Velocity();
+
+  Velocity(const Velocity& from);
+
+  inline Velocity& operator=(const Velocity& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Velocity& default_instance();
+
+  void Swap(Velocity* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Velocity* New() const { return New(NULL); }
+
+  Velocity* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Velocity& from);
+  void MergeFrom(const Velocity& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Velocity* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float linear_x = 1;
+  bool has_linear_x() const;
+  void clear_linear_x();
+  static const int kLinearXFieldNumber = 1;
+  float linear_x() const;
+  void set_linear_x(float value);
+
+  // optional float linear_y = 2;
+  bool has_linear_y() const;
+  void clear_linear_y();
+  static const int kLinearYFieldNumber = 2;
+  float linear_y() const;
+  void set_linear_y(float value);
+
+  // optional float linear_z = 3;
+  bool has_linear_z() const;
+  void clear_linear_z();
+  static const int kLinearZFieldNumber = 3;
+  float linear_z() const;
+  void set_linear_z(float value);
+
+  // optional float angular_x = 4;
+  bool has_angular_x() const;
+  void clear_angular_x();
+  static const int kAngularXFieldNumber = 4;
+  float angular_x() const;
+  void set_angular_x(float value);
+
+  // optional float angular_y = 5;
+  bool has_angular_y() const;
+  void clear_angular_y();
+  static const int kAngularYFieldNumber = 5;
+  float angular_y() const;
+  void set_angular_y(float value);
+
+  // optional float angular_z = 6;
+  bool has_angular_z() const;
+  void clear_angular_z();
+  static const int kAngularZFieldNumber = 6;
+  float angular_z() const;
+  void set_angular_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Velocity)
+ private:
+  inline void set_has_linear_x();
+  inline void clear_has_linear_x();
+  inline void set_has_linear_y();
+  inline void clear_has_linear_y();
+  inline void set_has_linear_z();
+  inline void clear_has_linear_z();
+  inline void set_has_angular_x();
+  inline void clear_has_angular_x();
+  inline void set_has_angular_y();
+  inline void clear_has_angular_y();
+  inline void set_has_angular_z();
+  inline void clear_has_angular_z();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float linear_x_;
+  float linear_y_;
+  float linear_z_;
+  float angular_x_;
+  float angular_y_;
+  float angular_z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Velocity* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -1192,6 +1332,7 @@ class Component : public ::google::protobuf::Message {
     kAnimation = 5,
     kScale = 6,
     kCollisionBody = 7,
+    kVelocity = 8,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -1299,6 +1440,15 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::CollisionBody* release_collision_body();
   void set_allocated_collision_body(::tec::proto::CollisionBody* collision_body);
 
+  // optional .tec.proto.Velocity velocity = 8;
+  bool has_velocity() const;
+  void clear_velocity();
+  static const int kVelocityFieldNumber = 8;
+  const ::tec::proto::Velocity& velocity() const;
+  ::tec::proto::Velocity* mutable_velocity();
+  ::tec::proto::Velocity* release_velocity();
+  void set_allocated_velocity(::tec::proto::Velocity* velocity);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
@@ -1309,6 +1459,7 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_animation();
   inline void set_has_scale();
   inline void set_has_collision_body();
+  inline void set_has_velocity();
 
   inline bool has_component() const;
   void clear_component();
@@ -1326,6 +1477,7 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::Animation* animation_;
     ::tec::proto::Scale* scale_;
     ::tec::proto::CollisionBody* collision_body_;
+    ::tec::proto::Velocity* velocity_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -2386,6 +2538,154 @@ inline CollisionBody::ShapeCase CollisionBody::shape_case() const {
 }
 // -------------------------------------------------------------------
 
+// Velocity
+
+// optional float linear_x = 1;
+inline bool Velocity::has_linear_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Velocity::set_has_linear_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Velocity::clear_has_linear_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Velocity::clear_linear_x() {
+  linear_x_ = 0;
+  clear_has_linear_x();
+}
+inline float Velocity::linear_x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Velocity.linear_x)
+  return linear_x_;
+}
+inline void Velocity::set_linear_x(float value) {
+  set_has_linear_x();
+  linear_x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Velocity.linear_x)
+}
+
+// optional float linear_y = 2;
+inline bool Velocity::has_linear_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Velocity::set_has_linear_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Velocity::clear_has_linear_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Velocity::clear_linear_y() {
+  linear_y_ = 0;
+  clear_has_linear_y();
+}
+inline float Velocity::linear_y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Velocity.linear_y)
+  return linear_y_;
+}
+inline void Velocity::set_linear_y(float value) {
+  set_has_linear_y();
+  linear_y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Velocity.linear_y)
+}
+
+// optional float linear_z = 3;
+inline bool Velocity::has_linear_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Velocity::set_has_linear_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Velocity::clear_has_linear_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Velocity::clear_linear_z() {
+  linear_z_ = 0;
+  clear_has_linear_z();
+}
+inline float Velocity::linear_z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Velocity.linear_z)
+  return linear_z_;
+}
+inline void Velocity::set_linear_z(float value) {
+  set_has_linear_z();
+  linear_z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Velocity.linear_z)
+}
+
+// optional float angular_x = 4;
+inline bool Velocity::has_angular_x() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Velocity::set_has_angular_x() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Velocity::clear_has_angular_x() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Velocity::clear_angular_x() {
+  angular_x_ = 0;
+  clear_has_angular_x();
+}
+inline float Velocity::angular_x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Velocity.angular_x)
+  return angular_x_;
+}
+inline void Velocity::set_angular_x(float value) {
+  set_has_angular_x();
+  angular_x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Velocity.angular_x)
+}
+
+// optional float angular_y = 5;
+inline bool Velocity::has_angular_y() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Velocity::set_has_angular_y() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Velocity::clear_has_angular_y() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Velocity::clear_angular_y() {
+  angular_y_ = 0;
+  clear_has_angular_y();
+}
+inline float Velocity::angular_y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Velocity.angular_y)
+  return angular_y_;
+}
+inline void Velocity::set_angular_y(float value) {
+  set_has_angular_y();
+  angular_y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Velocity.angular_y)
+}
+
+// optional float angular_z = 6;
+inline bool Velocity::has_angular_z() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Velocity::set_has_angular_z() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Velocity::clear_has_angular_z() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Velocity::clear_angular_z() {
+  angular_z_ = 0;
+  clear_has_angular_z();
+}
+inline float Velocity::angular_z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Velocity.angular_z)
+  return angular_z_;
+}
+inline void Velocity::set_angular_z(float value) {
+  set_has_angular_z();
+  angular_z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Velocity.angular_z)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -2710,6 +3010,52 @@ inline void Component::set_allocated_collision_body(::tec::proto::CollisionBody*
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.collision_body)
 }
 
+// optional .tec.proto.Velocity velocity = 8;
+inline bool Component::has_velocity() const {
+  return component_case() == kVelocity;
+}
+inline void Component::set_has_velocity() {
+  _oneof_case_[0] = kVelocity;
+}
+inline void Component::clear_velocity() {
+  if (has_velocity()) {
+    delete component_.velocity_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Velocity& Component::velocity() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.velocity)
+  return has_velocity() ? *component_.velocity_
+                      : ::tec::proto::Velocity::default_instance();
+}
+inline ::tec::proto::Velocity* Component::mutable_velocity() {
+  if (!has_velocity()) {
+    clear_component();
+    set_has_velocity();
+    component_.velocity_ = new ::tec::proto::Velocity;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.velocity)
+  return component_.velocity_;
+}
+inline ::tec::proto::Velocity* Component::release_velocity() {
+  if (has_velocity()) {
+    clear_has_component();
+    ::tec::proto::Velocity* temp = component_.velocity_;
+    component_.velocity_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_velocity(::tec::proto::Velocity* velocity) {
+  clear_component();
+  if (velocity) {
+    set_has_velocity();
+    component_.velocity_ = velocity;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.velocity)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -2812,6 +3158,8 @@ EntityList::mutable_entities() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

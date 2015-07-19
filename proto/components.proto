@@ -58,6 +58,15 @@ message CollisionBody {
 	optional float mass = 6;
 }
 
+message Velocity {
+	optional float linear_x = 1;
+	optional float linear_y = 2;
+	optional float linear_z = 3;
+	optional float angular_x = 4;
+	optional float angular_y = 5;
+	optional float angular_z = 6;
+}
+
 message Component {
 	oneof component {
 		Renderable renderable = 1;
@@ -67,6 +76,7 @@ message Component {
 		Animation animation = 5;
 		Scale Scale = 6;
 		CollisionBody collision_body = 7;
+		Velocity velocity = 8;
 	}
 }
 
