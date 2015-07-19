@@ -28,6 +28,19 @@ namespace tec {
 				this->value_holder = nullptr;
 			}
 		}
+		Property& operator= (const Property &other) {
+			if (this != &other) {
+				this->type = other.type;
+				this->update_func = other.update_func;
+				if (other.value_holder != nullptr) {
+					this->value_holder = other.value_holder->Clone();
+				}
+				else {
+					this->value_holder = nullptr;
+				}
+			}
+			return *this;
+		}
 		Property(Property&& other) : type(other.type), value_holder(other.value_holder), update_func(other.update_func) {
 			other.value_holder = nullptr;
 		}

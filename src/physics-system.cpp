@@ -52,19 +52,19 @@ namespace tec {
 
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
-			if (this->bodies.find(entity_id) == this->bodies.end()) {
-				glm::vec3 position(0.0);
-				if (Entity(entity_id).Has<Position>()) {
-					position = (Entity(entity_id).Get<Position>().lock())->value;
-				}
-				glm::quat orientation;
-				if (Entity(entity_id).Has<Orientation>()) {
-					orientation = (Entity(entity_id).Get<Orientation>().lock())->value;
-				}
-				btTransform transform(
-					btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
-					btVector3(position.x, position.y, position.z));
+			glm::vec3 position(0.0);
+			if (Entity(entity_id).Has<Position>()) {
+				position = (Entity(entity_id).Get<Position>().lock())->value;
+			}
+			glm::quat orientation;
+			if (Entity(entity_id).Has<Orientation>()) {
+				orientation = (Entity(entity_id).Get<Orientation>().lock())->value;
+			}
+			btTransform transform(
+				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
+				btVector3(position.x, position.y, position.z));
 
+			if (this->bodies.find(entity_id) == this->bodies.end()) {
 				if (CreateRigiedBody(itr->second)) {
 					this->bodies[entity_id]->setWorldTransform(transform);
 					this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
@@ -72,24 +72,17 @@ namespace tec {
 			}
 			else {
 				btRigidBody* body = this->bodies[entity_id];
-				glm::vec3 position(0.0);
-				if (Entity(entity_id).Has<Position>()) {
-					position = (Entity(entity_id).Get<Position>().lock())->value;
-				}
-				glm::quat orientation;
-				if (Entity(entity_id).Has<Orientation>()) {
-					orientation = (Entity(entity_id).Get<Orientation>().lock())->value;
-				}
-				btTransform transform(
-					btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
-					btVector3(position.x, position.y, position.z));
 				body->setWorldTransform(transform);
 				if (itr->second->mass != body->getInvMass()) {
 					body->setMassProps(itr->second->mass, btVector3(0, 0, 0));
 				}
 
+				int state = body->getActivationState();
 				if (itr->second->disable_deactivation) {
 					body->forceActivationState(DISABLE_DEACTIVATION);
+				}
+				else if (state == DISABLE_DEACTIVATION) {
+					body->forceActivationState(ACTIVE_TAG);
 				}
 
 				if (itr->second->disable_rotation) {
