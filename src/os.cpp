@@ -1,6 +1,7 @@
 #include "os.hpp"
 
 #include <iostream>
+#include <algorithm>
 #include "event-system.hpp"
 
 #ifdef __APPLE__
@@ -128,6 +129,7 @@ namespace tec {
 		glfwSetCharCallback(this->window, &OS::CharacterEventCallback);
 		glfwSetMouseButtonCallback(this->window, &OS::MouseButtonEventCallback);
 		glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
+		glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
 		glfwGetCursorPos(this->window, &this->old_mouse_x, &this->old_mouse_y);
 
@@ -168,7 +170,7 @@ namespace tec {
 		return this->client_height;
 	}
 
-	
+
 	GLFWwindow* OS::GetWindow() {
 		return this->window;
 	}
@@ -235,6 +237,12 @@ namespace tec {
 				// TODO: Dispatch a focus changed event.
 			}
 		}
+	}
+
+	void OS::FileDropCallback(GLFWwindow* window, int count, const char** paths) {
+		// Get the user pointer and cast it.
+		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+		os->DispatchFileDropEvent(count, paths);
 	}
 
 	void OS::UpdateWindowSize(const int width, const int height) {
@@ -308,6 +316,17 @@ namespace tec {
 			mbtn_event->button = MouseBtnEvent::MIDDLE;
 		}
 		EventSystem<MouseBtnEvent>::Get()->Emit(mbtn_event);
+	}
+	
+	void OS::DispatchFileDropEvent(const int count, const char** paths) {
+		std::shared_ptr<FileDropEvent> fd_event = std::make_shared<FileDropEvent>();
+		for (int i = 0; i < count; ++i) {
+			fd_event->filenames.push_back(paths[i]);
+			while (fd_event->filenames[i].find("\\") != std::string::npos) {
+				fd_event->filenames[i].replace(fd_event->filenames[i].find("\\"), 1, "/");
+			}
+		}
+		EventSystem<FileDropEvent>::Get()->Emit(fd_event);
 	}
 
 	void OS::ToggleMouseLock() {

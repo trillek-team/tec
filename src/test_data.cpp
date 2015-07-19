@@ -36,6 +36,7 @@ namespace tec {
 	std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
 	std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
+	std::map<std::string, std::function<void(std::string)>> file_factories;
 
 	void IntializeIOFunctors() {
 		in_functors[proto::Component::ComponentCase::kRenderable] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
@@ -189,6 +190,12 @@ namespace tec {
 						break;
 				}
 			}
+		};
+	}
+
+	void IntializeFileFactories() {
+		file_factories["md5mesh"] = [ ] (std::string fname) {
+			MD5Mesh::Create(fname);
 		};
 	}
 

@@ -14,11 +14,29 @@
 namespace tec {
 	extern void IntializeComponents();
 	extern void IntializeIOFunctors();
+	extern void IntializeFileFactories();
 	extern void BuildTestEntities();
 	extern void ProtoSave();
 	extern void ProtoLoad();
+	extern std::map<std::string, std::function<void(std::string)>> file_factories;
 
 	ReflectionEntityList entity_list;
+
+	struct FileLisenter : public EventQueue < FileDropEvent > {
+		void Update(double delta) {
+			ProcessEventQueue();
+		}
+
+		void On(std::shared_ptr<FileDropEvent> fd_event) {
+			for (auto file : fd_event->filenames) {
+				std::string ext = file.substr(file.find_last_of(".") + 1);
+				std::string relative_filename = file.substr(file.find("assets/"));
+				if (file_factories.find(ext) != file_factories.end()) {
+					file_factories[ext](relative_filename);
+				}
+			}
+		}
+	};
 }
 
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
@@ -50,10 +68,13 @@ int main(int argc, char* argv[]) {
 
 	tec::IntializeComponents();
 	tec::IntializeIOFunctors();
+	tec::IntializeFileFactories();
 	tec::BuildTestEntities();
 	tec::ProtoLoad();
 
 	tec::FPSController camera_controller(1);
+
+	tec::FileLisenter flistener;
 
 	tec::eid active_entity;
 	gui.AddWindowDrawFunction("active_entity", [&active_entity] () {
@@ -189,6 +210,7 @@ int main(int argc, char* argv[]) {
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
 		camera_controller.Update(delta);
+		flistener.Update(delta);
 		std::thread ps_thread([&] () {
 			ps.Update(delta);
 		});
