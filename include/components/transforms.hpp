@@ -30,16 +30,16 @@ namespace tec {
 		static ReflectionComponent Reflection(Position* val) {
 			ReflectionComponent refcomp;
 			Property prop(Property::FLOAT);
-			(refcomp.properties2["x"] = prop).Set(val->value.x);
-			refcomp.properties2["x"].update_func = [val] (Property& prop) {
+			(refcomp.properties["x"] = prop).Set(val->value.x);
+			refcomp.properties["x"].update_func = [val] (Property& prop) {
 				val->value.x = prop.Get<float>();
 			};
-			(refcomp.properties2["y"] = prop).Set(val->value.y);
-			refcomp.properties2["y"].update_func = [val] (Property& prop) {
+			(refcomp.properties["y"] = prop).Set(val->value.y);
+			refcomp.properties["y"].update_func = [val] (Property& prop) {
 				val->value.y = prop.Get<float>();
 			};
-			(refcomp.properties2["z"] = prop).Set(val->value.z);
-			refcomp.properties2["z"].update_func = [val] (Property& prop) {
+			(refcomp.properties["z"] = prop).Set(val->value.z);
+			refcomp.properties["z"].update_func = [val] (Property& prop) {
 				val->value.z = prop.Get<float>();
 			};
 			return std::move(refcomp);
@@ -66,20 +66,20 @@ namespace tec {
 		static ReflectionComponent Reflection(Orientation* val) {
 			ReflectionComponent refcomp;
 			Property prop(Property::FLOAT);
-			(refcomp.properties2["x"] = prop).Set(val->value.x);
-			refcomp.properties2["x"].update_func = [val] (Property& prop) {
+			(refcomp.properties["x"] = prop).Set(val->value.x);
+			refcomp.properties["x"].update_func = [val] (Property& prop) {
 				val->value.x = prop.Get<float>();
 			};
-			(refcomp.properties2["y"] = prop).Set(val->value.y);
-			refcomp.properties2["y"].update_func = [val] (Property& prop) {
+			(refcomp.properties["y"] = prop).Set(val->value.y);
+			refcomp.properties["y"].update_func = [val] (Property& prop) {
 				val->value.y = prop.Get<float>();
 			};
-			(refcomp.properties2["z"] = prop).Set(val->value.z);
-			refcomp.properties2["z"].update_func = [val] (Property& prop) {
+			(refcomp.properties["z"] = prop).Set(val->value.z);
+			refcomp.properties["z"].update_func = [val] (Property& prop) {
 				val->value.z = prop.Get<float>();
 			};
-			(refcomp.properties2["w"] = prop).Set(val->value.w);
-			refcomp.properties2["w"].update_func = [val] (Property& prop) {
+			(refcomp.properties["w"] = prop).Set(val->value.w);
+			refcomp.properties["w"].update_func = [val] (Property& prop) {
 				val->value.w = prop.Get<float>();
 			};
 			return std::move(refcomp);
@@ -95,16 +95,16 @@ namespace tec {
 		static ReflectionComponent Reflection(Scale* val) {
 			ReflectionComponent refcomp;
 			Property prop(Property::FLOAT);
-			(refcomp.properties2["x"] = prop).Set(val->value.x);
-			refcomp.properties2["x"].update_func = [val] (Property& prop) {
+			(refcomp.properties["x"] = prop).Set(val->value.x);
+			refcomp.properties["x"].update_func = [val] (Property& prop) {
 				val->value.x = prop.Get<float>();
 			};
-			(refcomp.properties2["y"] = prop).Set(val->value.y);
-			refcomp.properties2["y"].update_func = [val] (Property& prop) {
+			(refcomp.properties["y"] = prop).Set(val->value.y);
+			refcomp.properties["y"].update_func = [val] (Property& prop) {
 				val->value.y = prop.Get<float>();
 			};
-			(refcomp.properties2["z"] = prop).Set(val->value.z);
-			refcomp.properties2["z"].update_func = [val] (Property& prop) {
+			(refcomp.properties["z"] = prop).Set(val->value.z);
+			refcomp.properties["z"].update_func = [val] (Property& prop) {
 				val->value.z = prop.Get<float>();
 			};
 			return std::move(refcomp);

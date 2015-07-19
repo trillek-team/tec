@@ -14,7 +14,8 @@ namespace tec {
 			BOOLEAN,
 			STRING,
 			COLOR,
-			VEC3
+			VEC3,
+			DROPDOWN,
 		};
 		Type type;
 		Property(Type t = INTEGER) : type(t), value_holder(nullptr) { }
@@ -74,7 +75,7 @@ namespace tec {
 		ValueHolderBase* value_holder;
 	};
 	struct ReflectionComponent {
-		std::map<std::string, Property> properties2;
+		std::map<std::string, Property> properties;
 	};
 	struct ReflectionEntity {
 		std::map<std::string, ReflectionComponent> components;

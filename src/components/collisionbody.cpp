@@ -44,8 +44,8 @@ namespace tec {
 					//refcomp.properties["shape"] = "SPHERE";
 					auto colspehre = static_cast<CollisionSphere*>(val);
 					Property prop(Property::FLOAT);
-					(refcomp.properties2["radius"] = prop).Set<float>(colspehre->radius);
-					refcomp.properties2["radius"].update_func = [colspehre] (Property& prop) {
+					(refcomp.properties["radius"] = prop).Set<float>(colspehre->radius);
+					refcomp.properties["radius"].update_func = [colspehre] (Property& prop) {
 						colspehre->radius = prop.Get<float>();
 						static_cast<btSphereShape*>(colspehre->shape.get())->setUnscaledRadius(colspehre->radius);
 					};
@@ -56,18 +56,18 @@ namespace tec {
 					//refcomp.properties["shape"] = "BOX";
 					auto colbox = static_cast<CollisionBox*>(val);
 					Property prop(Property::FLOAT);
-					(refcomp.properties2["extent_x"] = prop).Set<float>(colbox->half_extents.x());
-					refcomp.properties2["extent_x"].update_func = [colbox] (Property& prop) {
+					(refcomp.properties["extent_x"] = prop).Set<float>(colbox->half_extents.x());
+					refcomp.properties["extent_x"].update_func = [colbox] (Property& prop) {
 						colbox->half_extents.setX(prop.Get<float>());
 						static_cast<btBoxShape*>(colbox->shape.get())->setImplicitShapeDimensions(colbox->half_extents);
 					};
-					(refcomp.properties2["extent_y"] = prop).Set<float>(colbox->half_extents.y());
-					refcomp.properties2["extent_y"].update_func = [colbox] (Property& prop) {
+					(refcomp.properties["extent_y"] = prop).Set<float>(colbox->half_extents.y());
+					refcomp.properties["extent_y"].update_func = [colbox] (Property& prop) {
 						colbox->half_extents.setY(prop.Get<float>());
 						static_cast<btBoxShape*>(colbox->shape.get())->setImplicitShapeDimensions(colbox->half_extents);
 					};
-					(refcomp.properties2["extent_z"] = prop).Set<float>(colbox->half_extents.z());
-					refcomp.properties2["extent_z"].update_func = [colbox] (Property& prop) {
+					(refcomp.properties["extent_z"] = prop).Set<float>(colbox->half_extents.z());
+					refcomp.properties["extent_z"].update_func = [colbox] (Property& prop) {
 						colbox->half_extents.setZ(prop.Get<float>());
 						static_cast<btBoxShape*>(colbox->shape.get())->setImplicitShapeDimensions(colbox->half_extents);
 					};
@@ -78,14 +78,14 @@ namespace tec {
 					//refcomp.properties["shape"] = "CAPSULE";
 					auto colcapsule = static_cast<CollisionCapsule*>(val);
 					Property prop(Property::FLOAT);
-					(refcomp.properties2["radius"] = prop).Set<float>(colcapsule->radius);
-					refcomp.properties2["radius"].update_func = [colcapsule] (Property& prop) {
+					(refcomp.properties["radius"] = prop).Set<float>(colcapsule->radius);
+					refcomp.properties["radius"].update_func = [colcapsule] (Property& prop) {
 						colcapsule->radius = prop.Get<float>();
 						static_cast<btCapsuleShape*>(colcapsule->shape.get())->setImplicitShapeDimensions(
 							btVector3(colcapsule->radius, 0.5f * colcapsule->height, colcapsule->radius));
 					};
-					(refcomp.properties2["height"] = prop).Set<float>(colcapsule->height);
-					refcomp.properties2["height"].update_func = [colcapsule] (Property& prop) {
+					(refcomp.properties["height"] = prop).Set<float>(colcapsule->height);
+					refcomp.properties["height"].update_func = [colcapsule] (Property& prop) {
 						colcapsule->height = prop.Get<float>();
 						static_cast<btCapsuleShape*>(colcapsule->shape.get())->setImplicitShapeDimensions(
 							btVector3(colcapsule->radius, 0.5f * colcapsule->height, colcapsule->radius));
@@ -95,13 +95,13 @@ namespace tec {
 				break;
 		}
 		Property prop(Property::BOOLEAN);
-		(refcomp.properties2["Disable Deactivation"] = prop).Set<bool>(val->disable_deactivation);
-		refcomp.properties2["Disable Deactivation"].update_func = [val] (Property& prop) { val->disable_deactivation = prop.Get<bool>(); };
-		(refcomp.properties2["Disable Rotation"] = prop).Set<bool>(val->disable_rotation);
-		refcomp.properties2["Disable Rotation"].update_func = [val] (Property& prop) { val->disable_rotation = prop.Get<bool>(); };
+		(refcomp.properties["Disable Deactivation"] = prop).Set<bool>(val->disable_deactivation);
+		refcomp.properties["Disable Deactivation"].update_func = [val] (Property& prop) { val->disable_deactivation = prop.Get<bool>(); };
+		(refcomp.properties["Disable Rotation"] = prop).Set<bool>(val->disable_rotation);
+		refcomp.properties["Disable Rotation"].update_func = [val] (Property& prop) { val->disable_rotation = prop.Get<bool>(); };
 		Property mass_prop(Property::FLOAT);
-		(refcomp.properties2["Mass"] = mass_prop).Set<float>(val->mass);
-		refcomp.properties2["Mass"].update_func = [val] (Property& prop) { val->mass = prop.Get<float>(); };
+		(refcomp.properties["Mass"] = mass_prop).Set<float>(val->mass);
+		refcomp.properties["Mass"].update_func = [val] (Property& prop) { val->mass = prop.Get<float>(); };
 		return std::move(refcomp);
 	}
 

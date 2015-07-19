@@ -9,6 +9,7 @@
 
 #include <thread>
 #include <string>
+#include <sstream>
 
 namespace tec {
 	extern void IntializeComponents();
@@ -60,6 +61,10 @@ int main(int argc, char* argv[]) {
 			ImGui::SetTooltip("#%i", active_entity);
 		}
 	});
+	gui.AddWindowDrawFunction("test_window", [&active_entity] () {
+		static bool opened = true;
+		ImGui::ShowTestWindow(&opened);
+	});
 	gui.AddWindowDrawFunction("entity_tree", [ ] () {
 		static bool no_titlebar = false;
 		static bool no_border = true;
@@ -68,6 +73,9 @@ int main(int argc, char* argv[]) {
 		static bool no_scrollbar = false;
 		static bool no_collapse = false;
 		static bool no_menu = true;
+		static int current_combo_item_slot = 0;
+		const int MAX_COMBO_ITEM_SLOTS = 10;
+		static int current_combo_item[MAX_COMBO_ITEM_SLOTS] = {0};
 		static float bg_alpha = 0.65f;
 
 		// Demonstrate the various window flags. Typically you would just use the default.
@@ -82,12 +90,13 @@ int main(int argc, char* argv[]) {
 		bool opened = true;
 		if (ImGui::Begin("Entity Tree", &opened, ImVec2(550, 680), bg_alpha, window_flags)) {
 			if (ImGui::TreeNode("Entities")) {
+				current_combo_item_slot = 0;
 				for (auto&& entity : tec::entity_list.entities) {
 					if (ImGui::TreeNode((void*)entity.first, "#%d", entity.first)) {
 						int i = 0;
 						for (auto&& component : entity.second.components) {
 							if (ImGui::TreeNode((void*)i++, component.first.c_str())) {
-								for (auto&& prop : component.second.properties2) {
+								for (auto&& prop : component.second.properties) {
 									ImGui::Text(prop.first.c_str());
 									ImGui::SameLine();
 									ImGui::PushItemWidth(-1);
@@ -127,6 +136,32 @@ int main(int argc, char* argv[]) {
 												if (ImGui::InputText("##labellessInputText", &val[0], 256)) {
 													std::string trimmed = val.substr(0, val.find('\0'));
 													prop.second.Set(trimmed);
+													prop.second.update_func(prop.second);
+												}
+											}
+											break;
+										case tec::Property::DROPDOWN:
+											{
+												std::vector<std::pair<std::string, bool>> val = prop.second.Get<std::vector<std::pair<std::string, bool>>>();
+												if (current_combo_item_slot < MAX_COMBO_ITEM_SLOTS) {
+													current_combo_item_slot++;
+												}
+												current_combo_item[current_combo_item_slot] = -1;
+												std::stringstream joinedValues;
+												for (size_t item = 0; item < val.size(); ++item) {
+													joinedValues << val[item].first << '\0';
+													if (val[item].second) {
+														current_combo_item[current_combo_item_slot] = item;
+													}
+												}
+												joinedValues << '\0';
+												std::string result = joinedValues.str();
+												if (ImGui::Combo("##labellessCombo", &current_combo_item[current_combo_item_slot], result.c_str())) {
+													for (size_t item = 0; item < val.size(); ++item) {
+														val[item].second = false;
+													}
+													val[current_combo_item[current_combo_item_slot]].second = true;
+													prop.second.Set(val);
 													prop.second.update_func(prop.second);
 												}
 											}
