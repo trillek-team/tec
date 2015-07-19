@@ -17,12 +17,9 @@ namespace tec {
 
 	ReflectionComponent Renderable::Reflection(Renderable* val) {
 		ReflectionComponent refcomp;
-		Property sprop(Property::STRING);
-		(refcomp.properties["Mesh Name"] = sprop).Set(val->mesh_name);
-		refcomp.properties["Mesh Name"].update_func = [val] (Property& prop) { val->mesh_name = prop.Get<std::string>(); };
 		Property dprop(Property::DROPDOWN);
-		dropdown_t key_func = std::make_pair(MeshMap::Keys, val->mesh_name);
-		(refcomp.properties["Mesh Picker"] = dprop).Set(key_func);
+		dropdown_t key_func_mesh = std::make_pair(MeshMap::Keys, val->mesh_name);
+		(refcomp.properties["Mesh Picker"] = dprop).Set(key_func_mesh);
 		refcomp.properties["Mesh Picker"].update_func = [val] (Property& prop) {
 			dropdown_t key_func = prop.Get<dropdown_t>();
 			val->mesh_name = key_func.second;
@@ -34,9 +31,13 @@ namespace tec {
 				val->vertex_groups.insert(val->buffer->GetVertexGroup(i));
 			}
 		};
-
-		(refcomp.properties["Shader Name"] = sprop).Set(val->shader_name);
-		refcomp.properties["Shader Name"].update_func = [val] (Property& prop) { val->shader_name = prop.Get<std::string>(); };
+		dropdown_t key_func_shader = std::make_pair(ShaderMap::Keys, val->shader_name);
+		(refcomp.properties["Shader Picker"] = dprop).Set(key_func_shader);
+		refcomp.properties["Shader Picker"].update_func = [val] (Property& prop) {
+			dropdown_t key_func = prop.Get<dropdown_t>();
+			val->shader_name = key_func.second;
+			val->shader = ShaderMap::Get(val->shader_name);
+		};
 		Property bprop(Property::BOOLEAN);
 		(refcomp.properties["Hidden"] = bprop).Set(val->hidden);
 		refcomp.properties["Hidden"].update_func = [val] (Property& prop) { val->hidden = prop.Get<bool>(); };

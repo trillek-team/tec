@@ -26,6 +26,7 @@ namespace tec {
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
 	std::map<std::string, std::function<void(std::string)>> file_factories;
 	std::map<std::string, std::function<void(eid)>> component_factories;
+	std::map<std::string, std::function<void(eid)>> component_removal_factories;
 
 	template <typename T>
 	void AddComponentFactory(proto::Component::ComponentCase component_case) {
@@ -33,6 +34,12 @@ namespace tec {
 			std::shared_ptr<T> comp = std::make_shared<T>();
 			Entity(entity_id).Add<T>(comp);
 			entity_out_functors[entity_id].insert(&out_functors.at(component_case));
+		};
+		component_removal_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
+			Entity e(entity_id);
+			if (e.Has<T>()) {
+				e.Remove<T>();
+			}
 		};
 	}
 

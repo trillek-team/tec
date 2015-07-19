@@ -20,6 +20,7 @@ namespace tec {
 	extern void ProtoLoad();
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
 	extern std::map<std::string, std::function<void(eid)>> component_factories;
+	extern std::map<std::string, std::function<void(eid)>> component_removal_factories;
 
 	ReflectionEntityList entity_list;
 
@@ -111,7 +112,7 @@ int main(int argc, char* argv[]) {
 		if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
 		bool opened = true;
 		if (ImGui::Begin("Entity Tree", &opened, ImVec2(550, 680), bg_alpha, window_flags)) {
-			if (ImGui::Button("New")) {
+			if (ImGui::Button("Add")) {
 				ImGui::OpenPopup("AddEntity");
 			}
 			if (ImGui::BeginPopup("AddEntity")) {
@@ -135,6 +136,21 @@ int main(int argc, char* argv[]) {
 							}
 							ImGui::EndPopup();
 						}
+					}
+				}
+				ImGui::EndPopup();
+			}
+			if (ImGui::Button("Remove")) {
+				ImGui::OpenPopup("RemoveEntity");
+			}
+			if (ImGui::BeginPopup("RemoveEntity")) {
+				for (auto itr = tec::entity_list.entities.begin(); itr != tec::entity_list.entities.end(); ++itr) {
+					if (ImGui::Selectable(std::to_string(itr->first).c_str())) {
+						for (auto factory : tec::component_removal_factories) {
+							factory.second(itr->first);
+						}
+						tec::entity_list.entities.erase(itr);
+						break;
 					}
 				}
 				ImGui::EndPopup();
@@ -233,6 +249,22 @@ int main(int argc, char* argv[]) {
 							}
 							ImGui::EndPopup();
 						}
+						ImGui::SameLine();
+						if (ImGui::Button("Remove")) {
+							ImGui::OpenPopup("RemoveComponent");
+						}
+						if (ImGui::BeginPopup("RemoveComponent")) {
+							for (auto itr = entity.second.components.begin(); itr != entity.second.components.end();) {
+								if (ImGui::Selectable(itr->first.c_str())) {
+									tec::component_removal_factories[itr->first.c_str()](entity.first);
+									entity.second.components.erase(itr++);
+								}
+								else {
+									++itr;
+								}
+							}
+							ImGui::EndPopup();
+						}
 						ImGui::TreePop();
 					}
 				}
@@ -265,7 +297,7 @@ int main(int argc, char* argv[]) {
 		ps_thread.join();
 		ss_thread.join();
 
-		ps.DebugDraw();
+		//ps.DebugDraw();
 		active_entity = ps.RayCast();
 
 		gui.Update(delta);
