@@ -7,6 +7,7 @@
 #include "types.hpp"
 
 namespace tec {
+	typedef std::pair<std::function<std::vector<std::string>&(void)>, std::string> dropdown_t;
 	struct Property {
 		enum Type {
 			INTEGER,

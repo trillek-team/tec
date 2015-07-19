@@ -163,26 +163,24 @@ int main(int argc, char* argv[]) {
 											break;
 										case tec::Property::DROPDOWN:
 											{
-												std::vector<std::pair<std::string, bool>> val = prop.second.Get<std::vector<std::pair<std::string, bool>>>();
-												if (current_combo_item_slot < MAX_COMBO_ITEM_SLOTS) {
-													current_combo_item_slot++;
-												}
+												tec::dropdown_t key_func = prop.second.Get<tec::dropdown_t>();
+												std::vector<std::string>& keys = key_func.first();
 												current_combo_item[current_combo_item_slot] = -1;
 												std::stringstream joinedValues;
-												for (size_t item = 0; item < val.size(); ++item) {
-													joinedValues << val[item].first << '\0';
-													if (val[item].second) {
+												for (size_t item = 0; item < keys.size(); ++item) {
+													joinedValues << keys[item] << '\0';
+													if (keys[item] == key_func.second) {
 														current_combo_item[current_combo_item_slot] = item;
 													}
 												}
 												joinedValues << '\0';
 												std::string result = joinedValues.str();
-												if (ImGui::Combo("##labellessCombo", &current_combo_item[current_combo_item_slot], result.c_str())) {
-													for (size_t item = 0; item < val.size(); ++item) {
-														val[item].second = false;
-													}
-													val[current_combo_item[current_combo_item_slot]].second = true;
-													prop.second.Set(val);
+												if (current_combo_item_slot < MAX_COMBO_ITEM_SLOTS) {
+													current_combo_item_slot++;
+												}
+												if (ImGui::Combo("##labellessCombo", &current_combo_item[current_combo_item_slot - 1], result.c_str())) {
+													key_func.second = keys[current_combo_item[current_combo_item_slot - 1]];
+													prop.second.Set(key_func);
 													prop.second.update_func(prop.second);
 												}
 											}

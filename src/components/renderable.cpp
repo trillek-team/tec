@@ -21,25 +21,17 @@ namespace tec {
 		(refcomp.properties["Mesh Name"] = sprop).Set(val->mesh_name);
 		refcomp.properties["Mesh Name"].update_func = [val] (Property& prop) { val->mesh_name = prop.Get<std::string>(); };
 		Property dprop(Property::DROPDOWN);
-		std::vector<std::pair<std::string, bool>> meshes;
-		for (auto itr = MeshMap::Begin(); itr != MeshMap::End(); ++itr) {
-			meshes.push_back(std::make_pair(itr->first, (itr->first == val->mesh_name) ? true : false));
-		}
-		(refcomp.properties["Mesh Picker"] = dprop).Set(meshes);
+		dropdown_t key_func = std::make_pair(MeshMap::Keys, val->mesh_name);
+		(refcomp.properties["Mesh Picker"] = dprop).Set(key_func);
 		refcomp.properties["Mesh Picker"].update_func = [val] (Property& prop) {
-			std::vector<std::pair<std::string, bool>> mesh_list = prop.Get<std::vector<std::pair<std::string, bool>>>();
-			for (size_t item = 0; item < mesh_list.size(); ++item) {
-				if (mesh_list[item].second) {
-					val->mesh_name = mesh_list[item].first;
-					val->mesh = MeshMap::Get(val->mesh_name);
-					val->buffer->Load(val->mesh);
-					val->vertex_groups.clear();
-					size_t group_count = val->buffer->GetVertexGroupCount();
-					for (size_t i = 0; i < group_count; ++i) {
-						val->vertex_groups.insert(val->buffer->GetVertexGroup(i));
-					}
-					break;
-				}
+			dropdown_t key_func = prop.Get<dropdown_t>();
+			val->mesh_name = key_func.second;
+			val->mesh = MeshMap::Get(val->mesh_name);
+			val->buffer->Load(val->mesh);
+			val->vertex_groups.clear();
+			size_t group_count = val->buffer->GetVertexGroupCount();
+			for (size_t i = 0; i < group_count; ++i) {
+				val->vertex_groups.insert(val->buffer->GetVertexGroup(i));
 			}
 		};
 
