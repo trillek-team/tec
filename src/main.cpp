@@ -19,6 +19,7 @@ namespace tec {
 	extern void ProtoSave();
 	extern void ProtoLoad();
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	extern std::map<std::string, std::function<void(eid)>> component_factories;
 
 	ReflectionEntityList entity_list;
 
@@ -110,6 +111,34 @@ int main(int argc, char* argv[]) {
 		if (!no_menu)     window_flags |= ImGuiWindowFlags_MenuBar;
 		bool opened = true;
 		if (ImGui::Begin("Entity Tree", &opened, ImVec2(550, 680), bg_alpha, window_flags)) {
+			if (ImGui::Button("New")) {
+				ImGui::OpenPopup("AddEntity");
+			}
+			if (ImGui::BeginPopup("AddEntity")) {
+				ImGui::Text("ID");
+				ImGui::SameLine();
+				static int new_entity_id = 0;
+				ImGui::InputInt("##labellessInputInt", &new_entity_id);
+				if (!ImGui::IsWindowFocused() && new_entity_id != 0) {
+					if (tec::entity_list.entities.find(new_entity_id) == tec::entity_list.entities.end()) {
+						tec::ReflectionEntity refentity;
+						tec::entity_list.entities[new_entity_id] = std::move(refentity);
+					}
+					else {
+						ImGui::OpenPopup("EntityExists");
+						if (ImGui::BeginPopup("EntityExists")) {
+							ImGui::Text("Entity with that ID exists");
+							ImGui::SameLine();
+							if (ImGui::Button("Ok")) {
+								new_entity_id = 0;
+								ImGui::CloseCurrentPopup();
+							}
+							ImGui::EndPopup();
+						}
+					}
+				}
+				ImGui::EndPopup();
+			}
 			if (ImGui::TreeNode("Entities")) {
 				current_combo_item_slot = 0;
 				for (auto&& entity : tec::entity_list.entities) {
@@ -190,6 +219,19 @@ int main(int argc, char* argv[]) {
 								}
 								ImGui::TreePop();
 							}
+						}
+						if (ImGui::Button("Add")) {
+							ImGui::OpenPopup("AddComponent");
+						}
+						if (ImGui::BeginPopup("AddComponent")) {
+							for (auto factory : tec::component_factories) {
+								if (entity.second.components.find(factory.first) == entity.second.components.end()) {
+									if (ImGui::Selectable(factory.first.c_str())) {
+										factory.second(entity.first);
+									}
+								}
+							}
+							ImGui::EndPopup();
 						}
 						ImGui::TreePop();
 					}

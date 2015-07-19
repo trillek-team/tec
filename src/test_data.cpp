@@ -21,22 +21,53 @@
 #include "../proto/components.pb.h"
 
 namespace tec {
-	void IntializeComponents() {
-		ComponentUpdateSystem<Velocity>::Initialize();
-		ComponentUpdateSystem<Position>::Initialize();
-		ComponentUpdateSystem<Orientation>::Initialize();
-		ComponentUpdateSystem<Scale>::Initialize();
-		ComponentUpdateSystem<Renderable>::Initialize();
-		ComponentUpdateSystem<View>::Initialize();
-		ComponentUpdateSystem<Animation>::Initialize();
-		ComponentUpdateSystem<CollisionBody>::Initialize();
-		ComponentUpdateSystem<AudioSource>::Initialize();
-	}
-
 	std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
 	std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
 	std::map<std::string, std::function<void(std::string)>> file_factories;
+	std::map<std::string, std::function<void(eid)>> component_factories;
+
+	template <typename T>
+	void AddComponentFactory(proto::Component::ComponentCase component_case) {
+		component_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
+			std::shared_ptr<T> comp = std::make_shared<T>();
+			Entity(entity_id).Add<T>(comp);
+			entity_out_functors[entity_id].insert(&out_functors.at(component_case));
+		};
+	}
+
+	void IntializeComponents() {
+		ComponentUpdateSystem<Velocity>::Initialize();
+		//AddComponentFactory<Velocity>(proto::Component::ComponentCase::kVelocity);
+		ComponentUpdateSystem<Position>::Initialize();
+		AddComponentFactory<Position>(proto::Component::ComponentCase::kPosition);
+		ComponentUpdateSystem<Orientation>::Initialize();
+		AddComponentFactory<Orientation>(proto::Component::ComponentCase::kOrientation);
+		ComponentUpdateSystem<Scale>::Initialize();
+		AddComponentFactory<Scale>(proto::Component::ComponentCase::kScale);
+		ComponentUpdateSystem<Renderable>::Initialize();
+		AddComponentFactory<Renderable>(proto::Component::ComponentCase::kRenderable);
+		ComponentUpdateSystem<View>::Initialize();
+		AddComponentFactory<View>(proto::Component::ComponentCase::kView);
+		ComponentUpdateSystem<Animation>::Initialize();
+		AddComponentFactory<Animation>(proto::Component::ComponentCase::kAnimation);
+		ComponentUpdateSystem<CollisionBody>::Initialize();
+		//AddComponentFactory<CollisionBody>(proto::Component::ComponentCase::kCollisionBody);
+		ComponentUpdateSystem<AudioSource>::Initialize();
+		//AddComponentFactory<AudioSource>(proto::Component::ComponentCase::kAudioSource);
+	}
+	
+	template <typename T>
+	void AddFileFactory() {
+		file_factories[GetTypeEXT<T>()] = [ ] (std::string fname) {
+			T::Create(fname);
+		};
+	}
+
+	void IntializeFileFactories() {
+		AddFileFactory<MD5Mesh>();
+		AddFileFactory<OBJ>();
+	}
 
 	void IntializeIOFunctors() {
 		in_functors[proto::Component::ComponentCase::kRenderable] = [ ] (const proto::Entity& entity, const proto::Component& comp) {
@@ -190,12 +221,6 @@ namespace tec {
 						break;
 				}
 			}
-		};
-	}
-
-	void IntializeFileFactories() {
-		file_factories["md5mesh"] = [ ] (std::string fname) {
-			MD5Mesh::Create(fname);
 		};
 	}
 

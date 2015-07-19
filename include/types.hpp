@@ -11,10 +11,14 @@ namespace tec {
 
 	template<class TYPE> const char* GetTypeName(void) { return "UNKNOWN"; }
 	template<class TYPE> unsigned int GetTypeID(void) { return ~0; }
+	template<class TYPE> const char* GetTypeEXT(void) { return "UNKNOWN"; }
 
 #define MAKE_IDTYPE(a,b) \
 	template<> inline const char* GetTypeName<a>() { return #a; } \
 	template<> inline unsigned int GetTypeID<a>() { return b; }
+#define MAKE_EXTTYPE(a,b) \
+	template<> inline const char* GetTypeName<a>() { return #a; } \
+	template<> inline const char* GetTypeEXT<a>() { return b; }
 #define MAKE_IDTYPE_NAMESPACE(ns,a,b) \
 	template<> inline const char* GetTypeName<ns::a>() { return #a; } \
 	template<> inline unsigned int GetTypeID<ns::a>() { return b; }
@@ -35,4 +39,10 @@ namespace tec {
 	MAKE_IDTYPE(CollisionBody, 6);
 	struct Velocity;
 	MAKE_IDTYPE(Velocity, 7);
+
+
+	class MD5Mesh;
+	MAKE_EXTTYPE(MD5Mesh, "md5mesh");
+	class OBJ;
+	MAKE_EXTTYPE(OBJ, "obj");
 }
