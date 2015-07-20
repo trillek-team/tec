@@ -72,6 +72,18 @@ namespace tec {
 			}
 			else {
 				btRigidBody* body = this->bodies[entity_id];
+				if (itr->second->new_collision_shape != itr->second->collision_shape) {
+					this->dynamicsWorld->removeRigidBody(body);
+					this->bodies.erase(entity_id);
+					itr->second->shape.reset();
+					itr->second->collision_shape = itr->second->new_collision_shape;
+					if (CreateRigiedBody(entity_id, itr->second)) {
+						body = this->bodies[entity_id];
+						body->setWorldTransform(transform);
+						this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
+						break;
+					}
+				}
 				body->setWorldTransform(transform);
 				if (itr->second->mass != body->getInvMass()) {
 					this->dynamicsWorld->removeRigidBody(body);
@@ -243,6 +255,19 @@ namespace tec {
 
 	bool PhysicsSystem::CreateRigiedBody(eid entity_id, std::shared_ptr<CollisionBody> collision_body) {
 		btVector3 fallInertia(0, 0, 0);
+		if (!collision_body->shape) {
+			switch (collision_body->collision_shape) {
+				case SPHERE:
+					collision_body->shape = std::make_shared<btSphereShape>(collision_body->radius);
+					break;
+				case BOX:
+					collision_body->shape = std::make_shared<btBoxShape>(collision_body->half_extents);
+					break;
+				case CAPSULE:
+					collision_body->shape = std::make_shared<btCapsuleShape>(collision_body->radius, collision_body->height);
+					break;
+			}
+		}
 		if (collision_body->mass > 0.0) {
 			if (collision_body->shape) {
 				collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);

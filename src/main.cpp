@@ -228,8 +228,11 @@ int main(int argc, char* argv[]) {
 													if (keys[i] == choices.second) {
 														radio_choice = i;
 													}
+													ImGui::SameLine();
 													if (ImGui::RadioButton(keys[i].c_str(), (radio_choice == i) ? true : false)) {
-
+														choices.second = keys[radio_choice];
+														prop.second.Set(choices);
+														prop.second.update_func(prop.second);
 													}
 												}
 											}
@@ -301,7 +304,7 @@ int main(int argc, char* argv[]) {
 		ps_thread.join();
 		ss_thread.join();
 
-		//ps.DebugDraw();
+		ps.DebugDraw();
 		active_entity = ps.RayCast();
 
 		gui.Update(delta);

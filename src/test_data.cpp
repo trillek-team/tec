@@ -42,7 +42,6 @@ namespace tec {
 			}
 		};
 	}
-
 	void IntializeComponents() {
 		ComponentUpdateSystem<Velocity>::Initialize();
 		AddComponentFactory<Velocity>(proto::Component::ComponentCase::kVelocity);
@@ -59,11 +58,11 @@ namespace tec {
 		ComponentUpdateSystem<Animation>::Initialize();
 		AddComponentFactory<Animation>(proto::Component::ComponentCase::kAnimation);
 		ComponentUpdateSystem<CollisionBody>::Initialize();
-		//AddComponentFactory<CollisionBody>(proto::Component::ComponentCase::kCollisionBody);
+		AddComponentFactory<CollisionBody>(proto::Component::ComponentCase::kCollisionBody);
 		ComponentUpdateSystem<AudioSource>::Initialize();
 		//AddComponentFactory<AudioSource>(proto::Component::ComponentCase::kAudioSource);
 	}
-	
+
 	template <typename T>
 	void AddFileFactory() {
 		file_factories[GetTypeEXT<T>()] = [ ] (std::string fname) {
@@ -166,16 +165,21 @@ namespace tec {
 			std::shared_ptr<CollisionBody> colbody;
 			switch (body.shape_case()) {
 				case proto::CollisionBody::ShapeCase::kBox:
-					colbody = std::make_shared<CollisionBox>(body.box().x_extent(), body.box().y_extent(), body.box().z_extent());
+					colbody = std::make_shared<CollisionBody>(BOX);
+					colbody->half_extents = btVector3(body.box().x_extent(), body.box().y_extent(), body.box().z_extent());
 					break;
 				case proto::CollisionBody::ShapeCase::kSphere:
-					colbody = std::make_shared<CollisionSphere>(body.sphere().radius());
+					colbody = std::make_shared<CollisionBody>(SPHERE);
+					colbody->radius = body.sphere().radius();
 					break;
 				case proto::CollisionBody::ShapeCase::kCapsule:
-					colbody = std::make_shared<CollisionCapsule>(body.capsule().height(), body.capsule().radius());
+					colbody = std::make_shared<CollisionBody>(CAPSULE);
+					colbody->radius = body.capsule().radius();
+					colbody->height = body.capsule().height();
 					break;
 
 			}
+
 			if (colbody) {
 				if (body.has_disable_deactivation()) {
 					colbody->disable_deactivation = body.disable_deactivation();
@@ -203,25 +207,22 @@ namespace tec {
 					case COLLISION_SHAPE::BOX:
 						{
 							proto::CollisionBody::Box* box = body->mutable_box();
-							std::shared_ptr<CollisionBox> colbox = std::static_pointer_cast<CollisionBox>(colbody);
-							box->set_x_extent(static_cast<float>(colbox->half_extents.x()));
-							box->set_y_extent(static_cast<float>(colbox->half_extents.y()));
-							box->set_z_extent(static_cast<float>(colbox->half_extents.z()));
+							box->set_x_extent(static_cast<float>(colbody->half_extents.x()));
+							box->set_y_extent(static_cast<float>(colbody->half_extents.y()));
+							box->set_z_extent(static_cast<float>(colbody->half_extents.z()));
 						}
 						break;
 					case COLLISION_SHAPE::SPHERE:
 						{
 							proto::CollisionBody::Sphere* sphere = body->mutable_sphere();
-							std::shared_ptr<CollisionSphere> colsphere = std::static_pointer_cast<CollisionSphere>(colbody);
-							sphere->set_radius(colsphere->radius);
+							sphere->set_radius(colbody->radius);
 						}
 						break;
 					case COLLISION_SHAPE::CAPSULE:
 						{
 							proto::CollisionBody::Capsule* capsule = body->mutable_capsule();
-							std::shared_ptr<CollisionCapsule> colcapsule = std::static_pointer_cast<CollisionCapsule>(colbody);
-							capsule->set_radius(colcapsule->radius);
-							capsule->set_height(colcapsule->height);
+							capsule->set_radius(colbody->radius);
+							capsule->set_height(colbody->height);
 						}
 						break;
 				}

@@ -22,32 +22,19 @@ namespace tec {
 		static ReflectionComponent Reflection(CollisionBody* val);
 
 		COLLISION_SHAPE collision_shape;
+		COLLISION_SHAPE new_collision_shape;
 
 		btScalar mass; // For static objects mass must be 0.
 		bool disable_deactivation = false; // Whether to disable automatic deactivation.
 		bool disable_rotation; // prevent rotation from physics simulation.
 
+		btVector3 half_extents; // For BOX shapes.
+		float radius; // For SPHERE and CAPSULE shapes.
+		float height; // For CAPSULE shapes.
+
 		btMotionState* motion_state;
 		std::shared_ptr<btCollisionShape> shape;
 		eid entity_id;
-	};
-	struct CollisionBox : public CollisionBody {
-		CollisionBox(float width = 5.0f, float height = 5.0f, float depth = 5.0f) : CollisionBody(BOX), half_extents(width, height, depth) {
-			this->shape = std::make_shared<btBoxShape>(this->half_extents);
-		}
-		btVector3 half_extents;
-	};
-	struct CollisionSphere : public CollisionBody {
-		CollisionSphere(float radius = 1.0f) : CollisionBody(SPHERE), radius(radius) {
-			this->shape = std::make_shared<btSphereShape>(this->radius);
-		}
-		float radius;
-	};
-	struct CollisionCapsule : public CollisionBody {
-		CollisionCapsule(float radius = 1.0f, float height = 1.0f) : CollisionBody(CAPSULE), radius(radius), height(height) {
-			this->shape = std::make_shared<btCapsuleShape>(this->radius, this->height);
-		}
-		float radius, height;
 	};
 	struct CollisionMesh : public CollisionBody {
 		CollisionMesh(std::shared_ptr<Mesh> mesh, bool dynamic = false);
