@@ -13,10 +13,7 @@ namespace tec {
 	class Animation final {
 	public:
 		Animation() : animation_time(0.0f) { }
-		Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f) {
-			SetAnimationFile(animation);
-		}
-
+		Animation(std::shared_ptr<MD5Anim> animation);
 		/**
 		* \brief Updates the current animation based on a change in time.
 		*
@@ -40,6 +37,7 @@ namespace tec {
 	private:
 		std::vector<glm::mat4x4> animation_matrices;
 
+		std::string animation_name;
 		std::shared_ptr<MD5Anim> animation_file;
 
 		size_t current_frame_index;

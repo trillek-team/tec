@@ -7,6 +7,10 @@
 #include "resources/md5anim.hpp"
 
 namespace tec {
+	Animation::Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f) {
+		SetAnimationFile(animation);
+		this->animation_name = animation_file->GetFileName();
+	}
 	void Animation::UpdateAnimation(const double delta) {
 		if (this->frame_count < 1) {
 			return;
@@ -27,6 +31,7 @@ namespace tec {
 		int frame_index1 = (int)ceil(frame_number);
 		frame_index0 = frame_index0 % frame_count;
 		frame_index1 = frame_index1 % frame_count;
+		this->current_frame_index = frame_index0;
 
 		float fInterpolate = static_cast<float>(fmod(this->animation_time, this->frame_duration));
 
@@ -53,8 +58,8 @@ namespace tec {
 	ReflectionComponent Animation::Reflection(Animation* val) {
 		ReflectionComponent refcomp;
 		Property sprop(Property::STRING);
-		(refcomp.properties["Animation Name"] = sprop).Set<std::string>(val->animation_file->GetFileName());
-		refcomp.properties["Animation Name"].update_func = [val] (Property& prop) { /*val->mesh_name = prop.Get<std::string>();*/ };
+		(refcomp.properties["Animation Name"] = sprop).Set<std::string>(val->animation_name);
+		refcomp.properties["Animation Name"].update_func = [val] (Property& prop) { val->animation_name = prop.Get<std::string>(); };
 		Property iprop(Property::INTEGER);
 		(refcomp.properties["Current Frame"] = sprop).Set<int>(val->current_frame_index);
 		refcomp.properties["Current Frame"].update_func = [val] (Property& prop) { val->current_frame_index = prop.Get<int>(); };

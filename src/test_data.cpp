@@ -56,7 +56,7 @@ namespace tec {
 		ComponentUpdateSystem<View>::Initialize();
 		AddComponentFactory<View>(proto::Component::ComponentCase::kView);
 		ComponentUpdateSystem<Animation>::Initialize();
-		AddComponentFactory<Animation>(proto::Component::ComponentCase::kAnimation);
+		//AddComponentFactory<Animation>(proto::Component::ComponentCase::kAnimation);
 		ComponentUpdateSystem<CollisionBody>::Initialize();
 		AddComponentFactory<CollisionBody>(proto::Component::ComponentCase::kCollisionBody);
 		ComponentUpdateSystem<AudioSource>::Initialize();
