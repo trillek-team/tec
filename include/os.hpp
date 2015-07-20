@@ -10,6 +10,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <chrono>
+#include <vector>
 
 namespace tec {
 	struct KeyboardEvent {
@@ -36,6 +37,10 @@ namespace tec {
 	struct WindowResizedEvent {
 		int old_width, old_height; // Client space old width, height.
 		int new_width, new_height; // Client space new width, height.
+	};
+
+	struct FileDropEvent {
+		std::vector<std::string> filenames;
 	};
 
 	class OS {
@@ -182,6 +187,16 @@ namespace tec {
 		static void WindowFocusChangeCallback(GLFWwindow* window, int focused);
 
 		/**
+		* \brief Callback for window focus change events.
+		*
+		* \param[in] GLFWwindow* window
+		* \param[in] int count The number of files dropped.
+		* \param[in] const char** paths Array of filenames.
+		* \return void
+		*/
+		static void FileDropCallback(GLFWwindow* window, int count, const char** paths);
+
+		/**
 		* \brief Toggles whether the mouse cursor should be locked to the current window.
 		*
 		* \return void
@@ -241,6 +256,15 @@ namespace tec {
 		* \return void
 		*/
 		void DispatchMouseButtonEvent(const int button, const int action, const int mods);
+
+		/**
+		* \brief Dispatches a character event.
+		*
+		* \param[in] const int count The number of files dropped.
+		* \param[in] const char** paths Array of filenames.
+		* \return void
+		*/
+		void DispatchFileDropEvent(const int count, const char** paths);
 
 		GLFWwindow* window;
 		int client_width, client_height; // Current window's client width and height.

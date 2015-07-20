@@ -4,6 +4,10 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include "entity.hpp"
+
+#include "../proto/components.pb.h"
+
 namespace tec {
 	static glm::vec3 FORWARD_VECTOR(0.0f, 0.0f, -1.0f);
 	static glm::vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
@@ -19,6 +23,27 @@ namespace tec {
 		void Translate(const glm::vec3 amount, const glm::quat orientation);
 
 		glm::vec3 value;
+
+		void Out(proto::Position* target);
+		void In(const proto::Position& source);
+
+		static ReflectionComponent Reflection(Position* val) {
+			ReflectionComponent refcomp;
+			Property prop(Property::FLOAT);
+			(refcomp.properties["x"] = prop).Set(val->value.x);
+			refcomp.properties["x"].update_func = [val] (Property& prop) {
+				val->value.x = prop.Get<float>();
+			};
+			(refcomp.properties["y"] = prop).Set(val->value.y);
+			refcomp.properties["y"].update_func = [val] (Property& prop) {
+				val->value.y = prop.Get<float>();
+			};
+			(refcomp.properties["z"] = prop).Set(val->value.z);
+			refcomp.properties["z"].update_func = [val] (Property& prop) {
+				val->value.z = prop.Get<float>();
+			};
+			return std::move(refcomp);
+		}
 	};
 
 	struct Orientation {
@@ -34,6 +59,31 @@ namespace tec {
 
 		glm::quat value;
 		glm::vec3 rotation;
+
+		void Out(proto::Orientation* target);
+		void In(const proto::Orientation& source);
+
+		static ReflectionComponent Reflection(Orientation* val) {
+			ReflectionComponent refcomp;
+			Property prop(Property::FLOAT);
+			(refcomp.properties["x"] = prop).Set(val->value.x);
+			refcomp.properties["x"].update_func = [val] (Property& prop) {
+				val->value.x = prop.Get<float>();
+			};
+			(refcomp.properties["y"] = prop).Set(val->value.y);
+			refcomp.properties["y"].update_func = [val] (Property& prop) {
+				val->value.y = prop.Get<float>();
+			};
+			(refcomp.properties["z"] = prop).Set(val->value.z);
+			refcomp.properties["z"].update_func = [val] (Property& prop) {
+				val->value.z = prop.Get<float>();
+			};
+			(refcomp.properties["w"] = prop).Set(val->value.w);
+			refcomp.properties["w"].update_func = [val] (Property& prop) {
+				val->value.w = prop.Get<float>();
+			};
+			return std::move(refcomp);
+		}
 	};
 
 	struct Scale {
@@ -41,5 +91,23 @@ namespace tec {
 		Scale() { }
 
 		glm::vec3 value;
+
+		static ReflectionComponent Reflection(Scale* val) {
+			ReflectionComponent refcomp;
+			Property prop(Property::FLOAT);
+			(refcomp.properties["x"] = prop).Set(val->value.x);
+			refcomp.properties["x"].update_func = [val] (Property& prop) {
+				val->value.x = prop.Get<float>();
+			};
+			(refcomp.properties["y"] = prop).Set(val->value.y);
+			refcomp.properties["y"].update_func = [val] (Property& prop) {
+				val->value.y = prop.Get<float>();
+			};
+			(refcomp.properties["z"] = prop).Set(val->value.z);
+			refcomp.properties["z"].update_func = [val] (Property& prop) {
+				val->value.z = prop.Get<float>();
+			};
+			return std::move(refcomp);
+		}
 	};
 }
