@@ -166,15 +166,13 @@ namespace tec {
 			std::shared_ptr<CollisionBody> colbody;
 			switch (body.shape_case()) {
 				case proto::CollisionBody::ShapeCase::kBox:
-					colbody = std::make_shared<CollisionBox>(entity_id,
-						body.box().x_extent(), body.box().y_extent(), body.box().z_extent());
+					colbody = std::make_shared<CollisionBox>(body.box().x_extent(), body.box().y_extent(), body.box().z_extent());
 					break;
 				case proto::CollisionBody::ShapeCase::kSphere:
-					colbody = std::make_shared<CollisionSphere>(entity_id, body.sphere().radius());
+					colbody = std::make_shared<CollisionSphere>(body.sphere().radius());
 					break;
 				case proto::CollisionBody::ShapeCase::kCapsule:
-					colbody = std::make_shared<CollisionCapsule>(entity_id,
-						body.capsule().height(), body.capsule().radius());
+					colbody = std::make_shared<CollisionCapsule>(body.capsule().height(), body.capsule().radius());
 					break;
 
 			}
@@ -304,7 +302,7 @@ namespace tec {
 		{
 			Entity voxel1(100);
 			std::shared_ptr<Mesh> mesh = voxvol_shared->GetMesh().lock();
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, mesh);
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(mesh);
 			colbody->mass = 0.0;
 			voxel1.Add(colbody);
 		}

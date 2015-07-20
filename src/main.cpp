@@ -49,15 +49,6 @@ int main(int argc, char* argv[]) {
 	os.InitializeWindow(800, 600, "TEC 0.1", 3, 2);
 
 	tec::IMGUISystem gui(os.GetWindow());
-	ImVec4 clear_color = ImColor(114, 144, 154);
-	gui.AddWindowDrawFunction("test", [&clear_color] () {
-		static float f = 0.0f;
-		ImGui::Text("Hello, world!");
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-		ImGui::ColorEdit3("clear color", (float*)&clear_color);
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	});
-
 	tec::RenderSystem rs;
 
 	rs.SetViewportSize(800, 600);
@@ -83,10 +74,6 @@ int main(int argc, char* argv[]) {
 		if (active_entity != 0) {
 			ImGui::SetTooltip("#%i", active_entity);
 		}
-	});
-	gui.AddWindowDrawFunction("test_window", [&active_entity] () {
-		static bool opened = true;
-		ImGui::ShowTestWindow(&opened);
 	});
 	gui.AddWindowDrawFunction("entity_tree", [ ] () {
 		static bool no_titlebar = false;

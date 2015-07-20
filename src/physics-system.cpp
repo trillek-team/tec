@@ -65,7 +65,7 @@ namespace tec {
 				btVector3(position.x, position.y, position.z));
 
 			if (this->bodies.find(entity_id) == this->bodies.end()) {
-				if (CreateRigiedBody(itr->second)) {
+				if (CreateRigiedBody(entity_id, itr->second)) {
 					this->bodies[entity_id]->setWorldTransform(transform);
 					this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
 				}
@@ -74,7 +74,11 @@ namespace tec {
 				btRigidBody* body = this->bodies[entity_id];
 				body->setWorldTransform(transform);
 				if (itr->second->mass != body->getInvMass()) {
-					body->setMassProps(itr->second->mass, btVector3(0, 0, 0));
+					this->dynamicsWorld->removeRigidBody(body);
+					btVector3 fallInertia(0, 0, 0);
+					itr->second->shape->calculateLocalInertia(itr->second->mass, fallInertia);
+					body->setMassProps(itr->second->mass, fallInertia);
+					this->dynamicsWorld->addRigidBody(body);
 				}
 
 				int state = body->getActivationState();
@@ -97,6 +101,15 @@ namespace tec {
 				auto body = this->bodies.at(entity_id);
 				body->setLinearVelocity(itr->second->GetLinear() + body->getGravity());
 				body->setAngularVelocity(itr->second->GetAngular());
+			}
+		}
+
+		btCollisionObjectArray& obj_array = this->dynamicsWorld->getCollisionObjectArray();
+		for (std::size_t i = 0; i < obj_array.size(); ++i) {
+			const CollisionBody* colbody = static_cast<const CollisionBody*>(obj_array.at(i)->getUserPointer());
+			eid entity_id = colbody->entity_id;
+			if (this->bodies.find(entity_id) == this->bodies.end()) {
+				this->dynamicsWorld->removeCollisionObject(obj_array.at(i));
 			}
 		}
 
@@ -228,7 +241,7 @@ namespace tec {
 		}
 	}
 
-	bool PhysicsSystem::CreateRigiedBody(std::shared_ptr<CollisionBody> collision_body) {
+	bool PhysicsSystem::CreateRigiedBody(eid entity_id, std::shared_ptr<CollisionBody> collision_body) {
 		btVector3 fallInertia(0, 0, 0);
 		if (collision_body->mass > 0.0) {
 			if (collision_body->shape) {
@@ -242,8 +255,8 @@ namespace tec {
 		if (!body) {
 			return false;
 		}
-
-		this->bodies[collision_body->entity_id] = body;
+		collision_body->entity_id = entity_id;
+		this->bodies[entity_id] = body;
 
 		body->setUserPointer(collision_body.get());
 

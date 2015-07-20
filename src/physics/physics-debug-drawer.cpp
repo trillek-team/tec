@@ -50,6 +50,8 @@ namespace tec {
 			std::shared_ptr<Renderable> ren = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
 			this->vert_buffer = ren->buffer;
 			this->vert_buffer->Load(verts, indicies);
+			this->verts.clear();
+			this->indicies.clear();
 			this->vert_buffer->GetVertexGroup(0)->material = MaterialMap::Get("material_debug"); // HACK: This should be configurable.
 			ren->vertex_groups.insert(vert_buffer->GetVertexGroup(0));
 			Entity(0).Add<Renderable>(ren); // HACK: This should be configurable.

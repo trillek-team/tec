@@ -28,8 +28,7 @@ namespace tec {
 
 		return std::move(mesh);
 	}
-	CollisionBody::CollisionBody(eid entity_id, COLLISION_SHAPE collision_shape) :
-		entity_id(entity_id), collision_shape(collision_shape), mass(1.0), shape(nullptr),
+	CollisionBody::CollisionBody(COLLISION_SHAPE collision_shape) : collision_shape(collision_shape), mass(0.0), shape(nullptr),
 		disable_rotation(false), motion_state(new btDefaultMotionState(btTransform())) { }
 
 	CollisionBody::~CollisionBody() {
@@ -105,17 +104,13 @@ namespace tec {
 		return std::move(refcomp);
 	}
 
-	CollisionMesh::CollisionMesh(eid entity_id, std::shared_ptr<Mesh> mesh, bool dynamic) :
-		CollisionBody(entity_id, (dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {
+	CollisionMesh::CollisionMesh(std::shared_ptr<Mesh> mesh, bool dynamic) : CollisionBody((dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {
 		this->mesh_file = mesh;
 		this->mesh = GenerateTriangleMesh(this->mesh_file);
 		if (!this->mesh) {
 			return;
 		}
 		glm::vec3 entity_scale(1.0);
-		if (Entity(this->entity_id).Has<Scale>()) {
-			entity_scale = Entity(this->entity_id).Get<Scale>().lock()->value;
-		}
 		switch (this->collision_shape) {
 			case STATIC_MESH:
 				{
