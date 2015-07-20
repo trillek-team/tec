@@ -311,7 +311,6 @@ namespace tec {
 			voxel1.Add(colbody);
 		}
 
-		OBJ::Create("assets/vidstand/VidStand_Full.obj");
 		{
 			Entity bob(99);
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");

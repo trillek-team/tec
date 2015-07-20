@@ -7,6 +7,9 @@
 #include "tr3200/tr3200.hpp"
 
 #include "graphics/texture-object.hpp"
+#include "graphics/material.hpp"
+#include "graphics/vertex-buffer-object.hpp"
+#include "components/renderable.hpp"
 
 namespace tec {
 	using namespace trillek::computer;
@@ -65,6 +68,17 @@ namespace tec {
 			local_pbuffer.UnlockWrite();
 			if (screen_itr->second->texture) {
 				screen_itr->second->texture->Load(local_pbuffer);
+			}
+			else {
+				Entity screen_entity(screen_itr->first);
+				if (screen_entity.Has<Renderable>()) {
+					std::shared_ptr<Renderable> ren = screen_entity.Get<Renderable>().lock();
+					if (ren->buffer) {
+						if (ren->buffer->GetVertexGroupCount() > 0) {
+							screen_itr->second->texture = ren->buffer->GetVertexGroup(0)->material->GetTexutre(0);
+						}
+					}
+				}
 			}
 		}
 	}

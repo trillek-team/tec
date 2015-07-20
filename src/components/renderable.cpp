@@ -49,10 +49,17 @@ namespace tec {
 		target->set_shader_name(this->shader_name);
 		target->set_hidden(this->hidden);
 	}
-
+	
+	extern std::map<std::string, std::function<void(std::string)>> file_factories;
 	void Renderable::In(const proto::Renderable& source) {
 		if (source.has_mesh_name()) {
 			this->mesh_name = source.mesh_name();
+			if (!MeshMap::Has(this->mesh_name)) {
+				std::string ext = this->mesh_name.substr(this->mesh_name.find_last_of(".") + 1);
+				if (file_factories.find(ext) != file_factories.end()) {
+					file_factories[ext](this->mesh_name);
+				}
+			}
 			this->mesh = MeshMap::Get(this->mesh_name);
 		}
 		if (source.has_shader_name()) {
