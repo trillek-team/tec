@@ -62,7 +62,7 @@ namespace tec {
 		*/
 		void Update(const double delta);
 
-		eid RayCast();
+		eid RayCast(eid source_entity);
 		eid RayCastIgnore(eid);
 		glm::vec3 GetLastRayPos() const {
 			btVector3 tmp = last_raypos; // grab a copy

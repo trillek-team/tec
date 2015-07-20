@@ -12,6 +12,7 @@
 #include "entity.hpp"
 #include "component-update-system.hpp"
 #include "sound-system.hpp"
+#include "vcomputer-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
 #include <map>
@@ -61,6 +62,8 @@ namespace tec {
 		AddComponentFactory<CollisionBody>(proto::Component::ComponentCase::kCollisionBody);
 		ComponentUpdateSystem<AudioSource>::Initialize();
 		//AddComponentFactory<AudioSource>(proto::Component::ComponentCase::kAudioSource);
+		ComponentUpdateSystem<ComputerScreen>::Initialize();
+		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
 
 	template <typename T>
@@ -316,6 +319,29 @@ namespace tec {
 			bob.Add<Animation>(anim1);
 			std::shared_ptr<VorbisStream> vorbis_stream = VorbisStream::Create("assets/theme.ogg");
 			bob.Add<AudioSource>(vorbis_stream, true);
+		}
+
+		{
+			Entity vidstand(101);
+			std::shared_ptr<ComputerScreen> screen =
+				std::make_shared<ComputerScreen>(vbo->GetVertexGroup(0)->material->GetTexutre(0));
+			vidstand.Add(screen);
+			std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
+			vidstand.Add(keybaord);
+
+			VComputerCommand add_devoces(
+				[screen, keybaord] (VComputerSystem* vcomputer) {
+				vcomputer->AddComputer(101);
+				if (vcomputer->LoadROMFile(101, "modules/trillek-vcomputer/asm/type1.ffi")) {
+					vcomputer->SetDevice(101, 5, screen->device);
+					vcomputer->SetDevice(101, 1, keybaord->device);
+					vcomputer->TurnComptuerOn(101);
+				}
+				else {
+					vcomputer->RemoveComputer(101);
+				}
+			});
+			VComputerSystem::QueueCommand(std::move(add_devoces));
 		}
 
 		{

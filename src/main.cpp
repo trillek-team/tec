@@ -2,6 +2,7 @@
 #include "reflection.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
+#include "vcomputer-system.hpp"
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
 #include "component-update-system.hpp"
@@ -58,6 +59,8 @@ int main(int argc, char* argv[]) {
 	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
+	
+	tec::VComputerSystem vcs;
 
 	tec::IntializeComponents();
 	tec::IntializeIOFunctors();
@@ -299,17 +302,22 @@ int main(int argc, char* argv[]) {
 
 		rs.Update(delta);
 
+		vcs.Update(delta);
+
 		os.OSMessageLoop();
 
 		ps_thread.join();
 		ss_thread.join();
 
 		ps.DebugDraw();
-		active_entity = ps.RayCast();
+		active_entity = ps.RayCast(1);
 
 		gui.Update(delta);
 
 		os.SwapBuffers();
+		if (camera_controller.mouse_look) {
+			os.SetMousePosition(400, 300);
+		}
 		frame_id++;
 	}
 	tec::ProtoSave();

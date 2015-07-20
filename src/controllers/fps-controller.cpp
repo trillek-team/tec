@@ -1,13 +1,17 @@
 #include "controllers/fps-controller.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include "os.hpp"
 #include "components/transforms.hpp"
 #include "physics-system.hpp"
 
 namespace tec {
 	void FPSController::Update(double delta) {
-		ProcessEventQueue();
+		this->current_delta = delta;
+		EventQueue<KeyboardEvent>::ProcessEventQueue();
+		EventQueue<MouseBtnEvent>::ProcessEventQueue();
+		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 	}
 
 	// These tell us which was pressed first.
@@ -74,25 +78,83 @@ namespace tec {
 			default:
 				break;
 		}
+		int forward = 0;
+		int strafe = 0;
 
 		if (KEY_W_DOWN && KEY_W_FIRST) {
-			new_velocity->linear = glm::vec4(orientation->value * glm::vec3(0.0, 0.0, -7.0), 1.0);
+			forward = -1;
 		}
 		else if (KEY_S_DOWN) {
-			new_velocity->linear = glm::vec4(orientation->value * glm::vec3(0.0, 0.0, 7.0), 1.0);
-		}
-		else {
-			new_velocity->linear = glm::vec4(0.0, 0.0, 0.0, 0.0);
+			forward = 1;
 		}
 		if (KEY_A_DOWN && KEY_A_FIRST) {
-			new_velocity->angular = glm::vec4(0.0, glm::radians(30.0f), 0.0, 0.0);
+			strafe = -1;
 		}
 		else if (KEY_D_DOWN) {
-			new_velocity->angular = glm::vec4(0.0, glm::radians(-30.0f), 0.0, 0.0);
+			strafe = 1;
 		}
-		else {
-			new_velocity->angular = glm::vec4(0.0, 0.0, 0.0, 0.0);
-		}
+		new_velocity->linear = glm::vec4(orientation->value * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
 		this->e.Update<Velocity>(new_velocity);
+	}
+	void FPSController::On(std::shared_ptr<MouseBtnEvent> data) {
+		static double old_mouse_x;
+		static double old_mouse_Y;
+
+		if ((data->action == MouseBtnEvent::DOWN) && (data->button == MouseBtnEvent::RIGHT)) {
+			this->mouse_look = true;
+			OS::GetMousePosition(&old_mouse_x, &old_mouse_Y);
+			OS::SetMousePosition(400, 300);
+		}
+		else if ((data->action == MouseBtnEvent::UP) && (data->button == MouseBtnEvent::RIGHT)) {
+			this->mouse_look = false;
+			OS::SetMousePosition(old_mouse_x, old_mouse_Y);
+		}
+
+	}
+
+	void FPSController::On(std::shared_ptr<MouseMoveEvent> data) {
+		if (!this->mouse_look) {
+			return;
+		}
+		auto old_orientation = e.Get<Orientation>().lock();
+		std::shared_ptr<Orientation> new_orientation;
+		if (old_orientation) {
+			new_orientation = std::make_shared<Orientation>(old_orientation->value);
+		}
+
+		auto old_velocity = this->e.Get<Velocity>().lock();
+		std::shared_ptr<Velocity> new_velocity;
+		if (old_velocity) {
+			new_velocity = std::make_shared<Velocity>(old_velocity->linear, old_velocity->angular);
+		}
+
+		float change_x = data->new_x - data->old_x;
+		float change_y = data->new_y - data->old_y;
+
+		static float pitch;
+
+		pitch += change_y;
+
+		if (pitch > 90.0) {
+			change_y = 90.0f - pitch - change_y;
+			pitch = 90.0f;
+		}
+		else if (pitch < -90.0f) {
+			change_y = -90.0f - pitch - change_y;
+			pitch = -90.0f;
+		}
+
+		glm::quat rot;
+		if (change_x != 0.0) {
+			rot = glm::angleAxis(static_cast<float>(change_x * this->current_delta),
+				glm::vec3(0.0, 1.0, 0.0));
+			new_orientation->value = rot * new_orientation->value;
+		}
+		if (change_y != 0.0) {
+			rot = glm::angleAxis(static_cast<float>(change_y *  this->current_delta),
+				glm::vec3(1.0, 0.0, 0.0));
+			new_orientation->value = new_orientation->value * rot;
+		}
+		this->e.Update<Orientation>(new_orientation);
 	}
 }

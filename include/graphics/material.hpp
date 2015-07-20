@@ -36,6 +36,13 @@ namespace tec {
 		 * \return void
 		 */
 		void AddTexture(std::shared_ptr<TextureObject> tex);
+		
+		/**
+		 * \brief Gets a TextureObject from this material.
+		 * \param size_t index The index of the texture to grab (0-based).
+		 * \return std::shared_ptr<TextureObject> The request texture, or nullptr if index is invalid.
+		 */
+		std::shared_ptr<TextureObject> GetTexutre(size_t index);
 
 		/**
 		 * \brief Removes a TextureObject from this material.
