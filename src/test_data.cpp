@@ -323,8 +323,7 @@ namespace tec {
 
 		{
 			Entity vidstand(101);
-			std::shared_ptr<ComputerScreen> screen =
-				std::make_shared<ComputerScreen>(vbo->GetVertexGroup(0)->material->GetTexutre(0));
+			std::shared_ptr<ComputerScreen> screen = std::make_shared<ComputerScreen>();
 			vidstand.Add(screen);
 			std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
 			vidstand.Add(keybaord);

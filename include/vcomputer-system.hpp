@@ -10,6 +10,7 @@
 #include "devices/gkeyb.hpp"
 
 #include "event-system.hpp"
+#include "reflection.hpp"
 #include "command-queue.hpp"
 #include "multiton.hpp"
 
@@ -32,15 +33,25 @@ namespace tec {
 		size_t rom_size;
 		std::unique_ptr<VComputer> vc;
 		std::list<std::shared_ptr<Device>> devices;
+		
+		static ReflectionComponent Reflection(Computer* val) {
+			ReflectionComponent refcomp;
+			return std::move(refcomp);
+		}
 	};
 
 	class TextureObject;
 	struct ComputerScreen {
-		ComputerScreen(std::shared_ptr<TextureObject> tex) : texture(tex) {
+		ComputerScreen() {
 			this->device = std::make_shared<tda::TDADev>();
 		}
 		std::shared_ptr<TextureObject> texture;
 		std::shared_ptr<tda::TDADev> device;
+
+		static ReflectionComponent Reflection(ComputerScreen* val) {
+			ReflectionComponent refcomp;
+			return std::move(refcomp);
+		}
 	};
 
 	struct ComputerKeyboard {
@@ -49,6 +60,11 @@ namespace tec {
 		}
 		bool has_focus;
 		std::shared_ptr<gkeyboard::GKeyboardDev> device;
+
+		static ReflectionComponent Reflection(ComputerKeyboard* val) {
+			ReflectionComponent refcomp;
+			return std::move(refcomp);
+		}
 	};
 
 	struct KeyboardEvent;

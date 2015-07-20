@@ -102,12 +102,12 @@ namespace tec {
 
 		if ((data->action == MouseBtnEvent::DOWN) && (data->button == MouseBtnEvent::RIGHT)) {
 			this->mouse_look = true;
-			OS::GetMousePosition(&old_mouse_x, &old_mouse_Y);
-			OS::SetMousePosition(400, 300);
+			//OS::GetMousePosition(&old_mouse_x, &old_mouse_Y);
+			//OS::SetMousePosition(400, 300);
 		}
 		else if ((data->action == MouseBtnEvent::UP) && (data->button == MouseBtnEvent::RIGHT)) {
 			this->mouse_look = false;
-			OS::SetMousePosition(old_mouse_x, old_mouse_Y);
+			//OS::SetMousePosition(old_mouse_x, old_mouse_Y);
 		}
 
 	}
@@ -122,38 +122,31 @@ namespace tec {
 			new_orientation = std::make_shared<Orientation>(old_orientation->value);
 		}
 
-		auto old_velocity = this->e.Get<Velocity>().lock();
-		std::shared_ptr<Velocity> new_velocity;
-		if (old_velocity) {
-			new_velocity = std::make_shared<Velocity>(old_velocity->linear, old_velocity->angular);
-		}
-
 		float change_x = data->new_x - data->old_x;
 		float change_y = data->new_y - data->old_y;
 
-		static float pitch;
+		static float pitch = 0.0f;
 
-		pitch += change_y;
+		pitch += change_y / 5.0f;
 
-		if (pitch > 90.0) {
-			change_y = 90.0f - pitch - change_y;
+		if (pitch > 90.0f) {
+			change_y = 0.0;
 			pitch = 90.0f;
 		}
-		else if (pitch < -90.0f) {
-			change_y = -90.0f - pitch - change_y;
-			pitch = -90.0f;
+		if (pitch < -120.0f) {
+			change_y = 0.0;
+			pitch = -120.0f;
 		}
 
-		glm::quat rot;
-		if (change_x != 0.0) {
-			rot = glm::angleAxis(static_cast<float>(change_x * this->current_delta),
+		if (change_x != 0) {
+			glm::quat rotX = glm::angleAxis(static_cast<float>(glm::radians(change_x * -20.0f *  this->current_delta)),
 				glm::vec3(0.0, 1.0, 0.0));
-			new_orientation->value = rot * new_orientation->value;
+			new_orientation->value = rotX * new_orientation->value;
 		}
-		if (change_y != 0.0) {
-			rot = glm::angleAxis(static_cast<float>(change_y *  this->current_delta),
+		if (change_y != 0) {
+			glm::quat rotY = glm::angleAxis(static_cast<float>(glm::radians(change_y * -10.0f  * this->current_delta)),
 				glm::vec3(1.0, 0.0, 0.0));
-			new_orientation->value = new_orientation->value * rot;
+			new_orientation->value = new_orientation->value * rotY;
 		}
 		this->e.Update<Orientation>(new_orientation);
 	}

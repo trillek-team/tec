@@ -63,7 +63,9 @@ namespace tec {
 			screen_itr->second->device->DumpScreen(screen);
 			tda::TDAtoRGBATexture(screen, (std::uint32_t*)local_pbuffer.LockWrite());
 			local_pbuffer.UnlockWrite();
-			screen_itr->second->texture->Load(local_pbuffer);
+			if (screen_itr->second->texture) {
+				screen_itr->second->texture->Load(local_pbuffer);
+			}
 		}
 	}
 

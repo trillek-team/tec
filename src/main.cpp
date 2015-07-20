@@ -291,7 +291,6 @@ int main(int argc, char* argv[]) {
 
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
-		camera_controller.Update(delta);
 		flistener.Update(delta);
 		std::thread ps_thread([&] () {
 			ps.Update(delta);
@@ -304,10 +303,10 @@ int main(int argc, char* argv[]) {
 
 		vcs.Update(delta);
 
-		os.OSMessageLoop();
-
 		ps_thread.join();
 		ss_thread.join();
+		
+		camera_controller.Update(delta);
 
 		ps.DebugDraw();
 		active_entity = ps.RayCast(1);
@@ -316,7 +315,7 @@ int main(int argc, char* argv[]) {
 
 		os.SwapBuffers();
 		if (camera_controller.mouse_look) {
-			os.SetMousePosition(400, 300);
+			//os.SetMousePosition(400, 300);
 		}
 		frame_id++;
 	}
