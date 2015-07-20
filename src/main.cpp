@@ -218,6 +218,22 @@ int main(int argc, char* argv[]) {
 												}
 											}
 											break;
+										case tec::Property::RADIO:
+											{
+												tec::radio_t choices = prop.second.Get<tec::radio_t>();
+												std::vector<std::string>& keys = choices.first;
+												current_combo_item[current_combo_item_slot] = -1;
+												static int radio_choice = 0;
+												for (std::size_t i = 0; i < keys.size(); ++i) {
+													if (keys[i] == choices.second) {
+														radio_choice = i;
+													}
+													if (ImGui::RadioButton(keys[i].c_str(), (radio_choice == i) ? true : false)) {
+
+													}
+												}
+											}
+											break;
 									}
 									ImGui::PopID();
 								}

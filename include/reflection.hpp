@@ -8,6 +8,7 @@
 
 namespace tec {
 	typedef std::pair<std::function<std::vector<std::string>&(void)>, std::string> dropdown_t;
+	typedef std::pair<std::vector<std::string>&, std::string> radio_t;
 	struct Property {
 		enum Type {
 			INTEGER,
@@ -17,6 +18,7 @@ namespace tec {
 			COLOR,
 			VEC3,
 			DROPDOWN,
+			RADIO,
 		};
 		Type type;
 		Property(Type t = INTEGER) : type(t), value_holder(nullptr) { }

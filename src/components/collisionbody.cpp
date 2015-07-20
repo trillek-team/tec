@@ -40,7 +40,6 @@ namespace tec {
 		switch (val->collision_shape) {
 			case SPHERE:
 				{
-					//refcomp.properties["shape"] = "SPHERE";
 					auto colspehre = static_cast<CollisionSphere*>(val);
 					Property prop(Property::FLOAT);
 					(refcomp.properties["radius"] = prop).Set<float>(colspehre->radius);
@@ -52,7 +51,6 @@ namespace tec {
 				break;
 			case BOX:
 				{
-					//refcomp.properties["shape"] = "BOX";
 					auto colbox = static_cast<CollisionBox*>(val);
 					Property prop(Property::FLOAT);
 					(refcomp.properties["extent_x"] = prop).Set<float>(colbox->half_extents.x());
@@ -74,7 +72,6 @@ namespace tec {
 				break;
 			case CAPSULE:
 				{
-					//refcomp.properties["shape"] = "CAPSULE";
 					auto colcapsule = static_cast<CollisionCapsule*>(val);
 					Property prop(Property::FLOAT);
 					(refcomp.properties["radius"] = prop).Set<float>(colcapsule->radius);
