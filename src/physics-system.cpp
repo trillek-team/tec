@@ -25,7 +25,7 @@ namespace tec {
 		btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(this->dynamicsWorld->getDispatcher());
 		btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
 
-		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
 	}
 
@@ -65,46 +65,45 @@ namespace tec {
 				btVector3(position.x, position.y, position.z));
 
 			if (this->bodies.find(entity_id) == this->bodies.end()) {
+				itr->second->motion_state = new btDefaultMotionState(transform);
 				if (CreateRigiedBody(entity_id, itr->second)) {
-					this->bodies[entity_id]->setWorldTransform(transform);
 					this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
 				}
 			}
-			else {
-				btRigidBody* body = this->bodies[entity_id];
-				if (itr->second->new_collision_shape != itr->second->collision_shape) {
-					this->dynamicsWorld->removeRigidBody(body);
-					this->bodies.erase(entity_id);
-					itr->second->shape.reset();
-					itr->second->collision_shape = itr->second->new_collision_shape;
-					if (CreateRigiedBody(entity_id, itr->second)) {
-						body = this->bodies[entity_id];
-						body->setWorldTransform(transform);
-						this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
-						break;
-					}
-				}
-				body->setWorldTransform(transform);
-				if (itr->second->mass != body->getInvMass()) {
-					this->dynamicsWorld->removeRigidBody(body);
-					btVector3 fallInertia(0, 0, 0);
-					itr->second->shape->calculateLocalInertia(itr->second->mass, fallInertia);
-					body->setMassProps(itr->second->mass, fallInertia);
-					this->dynamicsWorld->addRigidBody(body);
-				}
-
-				int state = body->getActivationState();
-				if (itr->second->disable_deactivation) {
-					body->forceActivationState(DISABLE_DEACTIVATION);
-				}
-				else if (state == DISABLE_DEACTIVATION) {
-					body->forceActivationState(ACTIVE_TAG);
-				}
-
-				if (itr->second->disable_rotation) {
-					body->setAngularFactor(btVector3(0.0, 0, 0.0));
+			btRigidBody* body = this->bodies[entity_id];
+			this->dynamicsWorld->removeRigidBody(body);
+			if (itr->second->new_collision_shape != itr->second->collision_shape) {
+				this->bodies.erase(entity_id);
+				itr->second->shape.reset();
+				itr->second->collision_shape = itr->second->new_collision_shape;
+				if (CreateRigiedBody(entity_id, itr->second)) {
+					body = this->bodies[entity_id];
+					body->setWorldTransform(transform);
+					break;
 				}
 			}
+			if (itr->second->mass != body->getInvMass()) {
+				btVector3 fallInertia(0, 0, 0);
+				itr->second->shape->calculateLocalInertia(itr->second->mass, fallInertia);
+				body->setMassProps(itr->second->mass, fallInertia);
+				body->updateInertiaTensor();
+				body->clearForces();
+			}
+
+			int state = body->getActivationState();
+			if (itr->second->disable_deactivation) {
+				body->forceActivationState(DISABLE_DEACTIVATION);
+			}
+			else if (state == DISABLE_DEACTIVATION) {
+				body->forceActivationState(ACTIVE_TAG);
+			}
+
+			if (itr->second->disable_rotation) {
+				body->setAngularFactor(btVector3(0.0, 0, 0.0));
+			}
+
+			body->setWorldTransform(transform);
+			this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
 		}
 
 		for (auto itr = VelocityMap::Begin(); itr != VelocityMap::End(); ++itr) {
@@ -129,6 +128,9 @@ namespace tec {
 
 		for (auto body : this->bodies) {
 			auto entity_id = body.first;
+			if (body.second->getActivationState() == DISABLE_SIMULATION) {
+				continue;
+			}
 			Entity e(entity_id);
 			auto transform = body.second->getWorldTransform();
 			if (e.Has<Position>()) {
@@ -254,23 +256,19 @@ namespace tec {
 
 	bool PhysicsSystem::CreateRigiedBody(eid entity_id, std::shared_ptr<CollisionBody> collision_body) {
 		btVector3 fallInertia(0, 0, 0);
-		if (!collision_body->shape) {
-			switch (collision_body->collision_shape) {
-				case SPHERE:
-					collision_body->shape = std::make_shared<btSphereShape>(collision_body->radius);
-					break;
-				case BOX:
-					collision_body->shape = std::make_shared<btBoxShape>(collision_body->half_extents);
-					break;
-				case CAPSULE:
-					collision_body->shape = std::make_shared<btCapsuleShape>(collision_body->radius, collision_body->height);
-					break;
-			}
+		switch (collision_body->collision_shape) {
+			case SPHERE:
+				collision_body->shape = std::make_shared<btSphereShape>(collision_body->radius);
+				break;
+			case BOX:
+				collision_body->shape = std::make_shared<btBoxShape>(collision_body->half_extents);
+				break;
+			case CAPSULE:
+				collision_body->shape = std::make_shared<btCapsuleShape>(collision_body->radius, collision_body->height);
+				break;
 		}
-		if (collision_body->mass > 0.0) {
-			if (collision_body->shape) {
-				collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);
-			}
+		if (collision_body->shape) {
+			collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);
 		}
 		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
 			collision_body->motion_state, collision_body->shape.get(), fallInertia);

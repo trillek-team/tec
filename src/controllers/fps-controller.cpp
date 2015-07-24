@@ -26,6 +26,9 @@ namespace tec {
 
 	void FPSController::On(std::shared_ptr<KeyboardEvent> data) {
 		auto orientation = e.Get<Orientation>().lock();
+		if (!orientation) {
+			return;
+		}
 
 		auto old_velocity = this->e.Get<Velocity>().lock();
 		std::shared_ptr<Velocity> new_velocity;
@@ -120,6 +123,9 @@ namespace tec {
 		std::shared_ptr<Orientation> new_orientation;
 		if (old_orientation) {
 			new_orientation = std::make_shared<Orientation>(old_orientation->value);
+		}
+		else {
+			return;
 		}
 
 		float change_x = data->new_x - data->old_x;

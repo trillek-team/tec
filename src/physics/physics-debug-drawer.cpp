@@ -18,6 +18,15 @@ namespace tec {
 		this->indicies.push_back(this->indicies.size());
 	}
 
+	void PhysicsDebugDrawer::drawAABB(const btVector3& from, const btVector3& to, const btVector3& color) {
+		VertexData from_vert(from.getX(), from.getY(), from.getZ(), color.getX(), color.getY(), color.getZ());
+		this->verts.push_back(from_vert);
+		VertexData to_vert(to.getX(), to.getY(), to.getZ(), color.getX(), color.getY(), color.getZ());
+		this->verts.push_back(to_vert);
+		this->indicies.push_back(this->indicies.size());
+		this->indicies.push_back(this->indicies.size());
+	}
+
 	void PhysicsDebugDrawer::setDebugMode(int debugMode) {
 		m_debugMode = debugMode;
 	}

@@ -29,8 +29,8 @@ namespace tec {
 		return std::move(mesh);
 	}
 	CollisionBody::CollisionBody(COLLISION_SHAPE collision_shape) : collision_shape(collision_shape),
-		new_collision_shape(collision_shape), mass(0.0), shape(nullptr), radius(1.0f), height(1.0f),
-		disable_rotation(false), motion_state(new btDefaultMotionState(btTransform())), half_extents(btVector3(1.0f, 1.0f, 1.0)) { }
+		new_collision_shape(collision_shape), mass(0.0), radius(1.0f), height(1.0f), disable_deactivation(false),
+		disable_rotation(false), motion_state(nullptr), half_extents(btVector3(1.0, 1.0, 1.0)) { }
 
 	CollisionBody::~CollisionBody() {
 		delete this->motion_state;
