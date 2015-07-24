@@ -330,7 +330,7 @@ namespace tec {
 			VComputerCommand add_devoces(
 				[screen, keybaord] (VComputerSystem* vcomputer) {
 				vcomputer->AddComputer(101);
-				if (vcomputer->LoadROMFile(101, "modules/trillek-vcomputer/asm/type1.ffi")) {
+				if (vcomputer->LoadROMFile(101, "assets/asm/type1.ffi")) {
 					vcomputer->SetDevice(101, 5, screen->device);
 					vcomputer->SetDevice(101, 1, keybaord->device);
 					vcomputer->TurnComptuerOn(101);
