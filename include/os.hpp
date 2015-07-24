@@ -10,8 +10,9 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <chrono>
+#include <vector>
 
-namespace vv {
+namespace tec {
 	struct KeyboardEvent {
 		enum KEY_ACTION { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR };
 		int key;
@@ -31,6 +32,15 @@ namespace vv {
 		double norm_x, norm_y; // Resolution independent new x, y (0-1) from upper-left to lower-right.
 		int old_x, old_y; // Client space old x, y.
 		int new_x, new_y; // Client space new x, y.
+	};
+
+	struct WindowResizedEvent {
+		int old_width, old_height; // Client space old width, height.
+		int new_width, new_height; // Client space new width, height.
+	};
+
+	struct FileDropEvent {
+		std::vector<std::string> filenames;
 	};
 
 	class OS {
@@ -109,6 +119,13 @@ namespace vv {
 		double GetDeltaTime();
 
 		/**
+		* \brief Returns the current active window.
+		*
+		* \return GLFWwindow* The current active window.
+		*/
+		GLFWwindow* GetWindow();
+
+		/**
 		* \brief Callback for when the window is resized.
 		*
 		* \param[in] GLFWwindow* window
@@ -170,6 +187,16 @@ namespace vv {
 		static void WindowFocusChangeCallback(GLFWwindow* window, int focused);
 
 		/**
+		* \brief Callback for window focus change events.
+		*
+		* \param[in] GLFWwindow* window
+		* \param[in] int count The number of files dropped.
+		* \param[in] const char** paths Array of filenames.
+		* \return void
+		*/
+		static void FileDropCallback(GLFWwindow* window, int count, const char** paths);
+
+		/**
 		* \brief Toggles whether the mouse cursor should be locked to the current window.
 		*
 		* \return void
@@ -182,7 +209,15 @@ namespace vv {
 		* \param[in] double x, y The new x and y coordinate of the mouse in screen coordinates.
 		* \return void
 		*/
-		void SetMousePosition(const double x, const double y);
+		static void SetMousePosition(const double x, const double y);
+
+		/**
+		* \brief Gets the mouse cursor position relative to the upper-left corner of the window.
+		*
+		* \param[out] double* x, y The current x and y coordinate of the mouse in screen coordinates.
+		* \return void
+		*/
+		static void GetMousePosition(double* x, double* y);
 	private:
 		/**
 		* \brief Updates the internal size variables from the windowResized callback.
@@ -230,7 +265,17 @@ namespace vv {
 		*/
 		void DispatchMouseButtonEvent(const int button, const int action, const int mods);
 
+		/**
+		* \brief Dispatches a character event.
+		*
+		* \param[in] const int count The number of files dropped.
+		* \param[in] const char** paths Array of filenames.
+		* \return void
+		*/
+		void DispatchFileDropEvent(const int count, const char** paths);
+
 		GLFWwindow* window;
+		static GLFWwindow* focused_window; // The window that currently has focus.
 		int client_width, client_height; // Current window's client width and height.
 		double old_mouse_x, old_mouse_y;
 		double last_time; // The time at the last call to GetDeltaTime().

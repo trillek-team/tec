@@ -3,44 +3,28 @@
 #include <glm/gtc/quaternion.hpp>
 #include <iostream>
 #include <thread>
+#include <cmath>
 
-#include "shader.hpp"
-#include "vertexbuffer.hpp"
-#include "transform.hpp"
-#include "material.hpp"
+#include "graphics/shader.hpp"
+#include "graphics/view.hpp"
+#include "graphics/vertex-buffer-object.hpp"
+#include "components/transforms.hpp"
+#include "components/renderable.hpp"
+#include "graphics/material.hpp"
 #include "entity.hpp"
+#include "os.hpp"
 
-namespace vv {
-	class Texture {
-	public:
-		GLuint name;
-	};
-
-	typedef Multiton<std::string, std::shared_ptr<Texture>> TextureMap;
-
-	RenderSystem::RenderSystem() {
+namespace tec {
+	RenderSystem::RenderSystem() : window_width(800), window_height(600) {
 		auto err = glGetError();
 		// If there is an error that means something went wrong when creating the context.
 		if (err) {
 			return;
 		}
-		// Use the GL3 way to get the version number.
-		int gl_version[3];
-		glGetIntegerv(GL_MAJOR_VERSION, &gl_version[0]);
-		glGetIntegerv(GL_MINOR_VERSION, &gl_version[1]);
-		if (err) {
-			return;
-		}
-		int opengl_version = gl_version[0] * 100 + gl_version[1] * 10;
 
-		if (opengl_version < 300) {
-			std::cerr << "OpenGL version " << opengl_version << std::endl;
-			assert(opengl_version >= 300);
-		}
-
-		SetViewportSize(800, 600);
 		glEnable(GL_DEPTH_TEST);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_CULL_FACE);
 	}
 
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
@@ -48,7 +32,7 @@ namespace vv {
 		this->window_width = width;
 
 		float aspect_ratio = static_cast<float>(this->window_width) / static_cast<float>(this->window_height);
-		if (aspect_ratio < 1.0f) {
+		if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 			aspect_ratio = 4.0f / 3.0f;
 		}
 
@@ -62,10 +46,20 @@ namespace vv {
 
 	void RenderSystem::Update(const double delta) {
 		ProcessCommandQueue();
+		EventQueue<WindowResizedEvent>::ProcessEventQueue();
+		this->render_item_list.clear();
+
+		if (!this->default_shader) {
+			this->default_shader = ShaderMap::Get("debug");
+		}
 
 		// Loop through each renderbale and update its model matrix.
-		for (auto itr = RenderableMap::Begin(); itr != RenderableMap::End(); ++itr) {
+		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
 			auto entity_id = itr->first;
+			std::shared_ptr<Renderable> renderable = itr->second;
+			if (renderable->hidden) {
+				continue;
+			}
 			glm::vec3 position;
 			glm::quat orientation;
 			Entity e(entity_id);
@@ -78,16 +72,62 @@ namespace vv {
 			auto camera_translation = position;
 			auto camera_orientation = orientation;
 
-			itr->second->model_matrix = glm::translate(glm::mat4(1.0), camera_translation) *
+			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
+				glm::mat4_cast(camera_orientation);
+			if (!renderable->buffer) {
+				renderable->buffer = std::make_shared<VertexBufferObject>();
+				renderable->buffer->Load(renderable->mesh);
+				size_t group_count = renderable->buffer->GetVertexGroupCount();
+				for (size_t i = 0; i < group_count; ++i) {
+					renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
+				}
+			}
+
+			RenderItem ri;
+			ri.model_matrix = &this->model_matricies[entity_id];
+			ri.vao = renderable->buffer->GetVAO();
+			ri.ibo = renderable->buffer->GetIBO();
+			ri.vertex_groups = &renderable->vertex_groups;
+
+			if (e.Has<Animation>()) {
+				auto anim = e.Get<Animation>().lock();
+				anim->UpdateAnimation(delta);
+				ri.animated = true;
+				ri.animation = anim;
+			}
+
+			std::shared_ptr<Shader> shader = renderable->shader;
+			if (!shader) {
+				shader = this->default_shader;
+			}
+			for (auto group : renderable->vertex_groups) {
+				this->render_item_list[shader].insert(std::move(ri));
+			}
+		}
+
+		for (auto itr = Multiton<eid, std::shared_ptr<View>>::Begin();
+			itr != Multiton<eid, std::shared_ptr<View>>::End(); ++itr) {
+			auto entity_id = itr->first;
+			std::shared_ptr<View> view = itr->second;
+
+			glm::vec3 position;
+			glm::quat orientation;
+			Entity e(entity_id);
+			if (e.Has<Position>()) {
+				position = e.Get<Position>().lock()->value;
+			}
+			if (e.Has<Orientation>()) {
+				orientation = e.Get<Orientation>().lock()->value;
+			}
+			auto camera_translation = position;
+			auto camera_orientation = orientation;
+
+			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
 				glm::mat4_cast(camera_orientation);
 
-			// Check if there is a view associated with the entity_id and update it as well.
-			if (e.Has<View>()) {
-				auto view = e.Get<View>().lock();
-				view->view_matrix = glm::inverse(itr->second->model_matrix);
-				if (view->active) {
-					this->current_view = view;
-				}
+			view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
+			if (view->active) {
+				this->current_view = view;
 			}
 		}
 
@@ -102,77 +142,42 @@ namespace vv {
 		if (view) {
 			camera_matrix = view->view_matrix;
 		}
-		for (auto material_group : this->buffers) {
-			auto material = material_group.first.lock();
-			if (!material) {
-				continue;
-			}
-			glPolygonMode(GL_FRONT_AND_BACK, material->GetFillMode());
-			auto shader = material->GetShader().lock();
-			if (!material) {
+
+		for (auto shader_list : this->render_item_list) {
+			auto shader = shader_list.first;
+			if (!shader) {
 				continue;
 			}
 			shader->Use();
 
-			glUniformMatrix4fv(shader->GetUniform("view"), 1, GL_FALSE, &camera_matrix[0][0]);
-			glUniformMatrix4fv(shader->GetUniform("projection"), 1, GL_FALSE, &this->projection[0][0]);
-			GLint model_index = shader->GetUniform("model");
+			glUniformMatrix4fv(shader->GetUniformLocation("view"), 1, GL_FALSE, &camera_matrix[0][0]);
+			glUniformMatrix4fv(shader->GetUniformLocation("projection"), 1, GL_FALSE, &this->projection[0][0]);
+			GLint animatrix_loc = shader->GetUniformLocation("animation_matrix");
+			GLint animated_loc = shader->GetUniformLocation("animated");
+			GLint model_index = shader->GetUniformLocation("model");
 
-			auto vb = material_group.second.first.lock();
-			if (!vb) {
-				continue;
+			for (auto render_item : shader_list.second) {
+				glBindVertexArray(render_item.vao);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
+				glUniform1i(animated_loc, 0);
+				if (render_item.animated) {
+					glUniform1i(animated_loc, 1);
+					auto& animmatricies = render_item.animation->animation_matrices;
+					glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
+				}
+				for (auto vertex_group : *render_item.vertex_groups) {
+					glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
+					vertex_group->material->Activate();
+					glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
+					glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
+					vertex_group->material->Deactivate();
+				}
 			}
-			glBindVertexArray(vb->vao);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vb->ibo);
-			/*for (size_t i = 0; i < mesh_group.second.textures.size(); ++i) {
-				auto tex = mesh_group.second.textures[i].lock();
-				GLuint name = 0;
-				if (tex) {
-				name = tex->name;
-				}
-				shader->ActivateTextureUnit(i, name);
-				}*/
-
-			for (eid entity_id : material_group.second.second) {
-				glm::mat4 model_matrix = glm::mat4(1.0);
-				auto mm = RenderableMap::Get(entity_id);
-				if (mm != nullptr) {
-					model_matrix = mm->model_matrix;
-				}
-				glUniformMatrix4fv(model_index, 1, GL_FALSE, &model_matrix[0][0]);
-				/*auto renanim = ren_group.animations.find(entity_id);
-				if (renanim != ren_group.animations.end()) {
-				glUniform1i(u_animate_loc, 1);
-				auto &animmatricies = renanim->second->matrices;
-				glUniformMatrix4fv(u_animatrix_loc, animmatricies.size(), GL_FALSE, &animmatricies[0][0][0]);
-				}
-				else {
-				glUniform1i(u_animate_loc, 0);
-				}*/
-				glDrawElements(GL_TRIANGLES, vb->index_count, GL_UNSIGNED_INT, 0);
-			}
-
 			shader->UnUse();
 		}
-	}
-
-	void RenderSystem::AddVertexBuffer(const std::weak_ptr<Material> mat,
-		const std::weak_ptr<VertexBuffer> buffer, const eid entity_id) {
-		auto mat1 = mat.lock();
-		for (auto material_group : this->buffers) {
-			auto mat2 = material_group.first.lock();
-			if ((mat1 && mat2) && (mat1 == mat2)) {
-				auto vb1 = buffer.lock();
-				auto vb2 = material_group.second.first.lock();
-				if ((vb1 && vb2) && (vb1 == vb2)) {
-					material_group.second.second.push_back(entity_id);
-					return;
-				}
-			}
-		}
-		std::list<eid> entity_list;
-		entity_list.push_back(entity_id);
-		this->buffers[mat] = std::make_pair(buffer, std::move(entity_list));
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
 	bool RenderSystem::ActivateView(const eid entity_id) {
@@ -181,5 +186,9 @@ namespace vv {
 			return true;
 		}
 		return false;
+	}
+
+	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
+		SetViewportSize(data->new_width, data->new_height);
 	}
 }

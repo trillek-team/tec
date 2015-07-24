@@ -4,3 +4,22 @@
 [submodule "modules/glfw3"]
 	path = modules/glfw3
 	url = https://github.com/glfw/glfw/
+[submodule "assets"]
+	path = assets
+url=https://github.com/trillek-team/tec-assets
+[submodule "modules/bullet3"]
+	path = modules/bullet3
+	url = https://github.com/bulletphysics/bullet3
+[submodule "modules/openal-soft"]
+	path = modules/openal-soft
+	url = git://repo.or.cz/openal-soft.git
+[submodule "modules/imgui"]
+	path = modules/imgui
+	url = https://github.com/ocornut/imgui
+[submodule "modules/protobuf"]
+	path = modules/protobuf
+	url = https://github.com/google/protobuf
+[submodule "modules/trillek-vcomputer"]
+	path = modules/trillek-vcomputer
+	url = https://github.com/trillek-team/trillek-vcomputer-module.git
+	branch = releases/tag/v0.5.2

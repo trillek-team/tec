@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <list>
+#include <set>
 #include <map>
 #include <glm/mat4x4.hpp>
 
@@ -15,28 +15,23 @@
 #include "types.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
+#include "graphics/animation.hpp"
 
-namespace vv {
-	struct VertexBuffer;
-	class Material;
+namespace tec {
+	struct VertexGroup;
+	struct Renderable;
+	struct View;
+	class Shader;
 
 	class RenderSystem;
 	typedef Command<RenderSystem> RenderCommand;
 
 	struct KeyboardEvent;
+	struct WindowResizedEvent;
 
-	struct Renderable {
-		glm::mat4 model_matrix;
-	};
-
-	struct View {
-		glm::mat4 view_matrix;
-		bool active = false;
-	};
-
-	typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableMap;
-
-	class RenderSystem : public CommandQueue < RenderSystem >, public EventQueue < KeyboardEvent > {
+	class RenderSystem : public CommandQueue < RenderSystem >,
+		public EventQueue < KeyboardEvent >,
+		public EventQueue < WindowResizedEvent > {
 	public:
 		RenderSystem();
 
@@ -44,17 +39,29 @@ namespace vv {
 
 		void Update(const double delta);
 
-		void AddVertexBuffer(const std::weak_ptr<Material> mat, const std::weak_ptr<VertexBuffer> buffer, const eid entity_id);
-
-		// Checks if there is a view associated entity_id and sets it as the current view.
 		bool ActivateView(const eid entity_id);
-	protected:
-		//void CreateVertexBuffer(eid entity_id, const std::vector<Vertex>& verts, const std::vector<GLuint>& indices);
 	private:
+		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
+
+		void On(std::shared_ptr<WindowResizedEvent> data);
+
 		glm::mat4 projection;
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
-		std::map < std::weak_ptr<Material>, std::pair < std::weak_ptr<VertexBuffer>,
-			std::list<eid >> , std::owner_less<std::weak_ptr<Material>>> buffers;
+		std::map<eid, glm::mat4> model_matricies;
+		std::shared_ptr<Shader> default_shader;
+
+		struct RenderItem {
+			glm::mat4* model_matrix;
+			std::set<VertexGroup*>* vertex_groups;
+			GLuint vao, ibo;
+			bool animated = false;
+			std::shared_ptr<Animation> animation;
+
+			friend bool operator<(const RenderItem& a, const RenderItem& b) {
+				return a.vao < b.vao;
+			}
+		};
+		std::map<std::shared_ptr<Shader>, std::set<RenderItem>> render_item_list;
 	};
 }

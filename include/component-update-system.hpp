@@ -8,7 +8,7 @@
 #include "multiton.hpp"
 #include "types.hpp"
 
-namespace vv {
+namespace tec {
 	template <typename T>
 	struct ComponentUpdateList {
 		frame_id_t frame = 0; // The frame id the changes are in.
