@@ -6,8 +6,10 @@
 #include <cmath>
 
 #include "graphics/shader.hpp"
+#include "graphics/view.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "components/transforms.hpp"
+#include "components/renderable.hpp"
 #include "graphics/material.hpp"
 #include "entity.hpp"
 #include "os.hpp"
@@ -47,12 +49,67 @@ namespace tec {
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		this->render_item_list.clear();
 
+		if (!this->default_shader) {
+			this->default_shader = ShaderMap::Get("debug");
+		}
+
 		// Loop through each renderbale and update its model matrix.
 		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
-			if (itr->second->hidden) {
+			auto entity_id = itr->first;
+			std::shared_ptr<Renderable> renderable = itr->second;
+			if (renderable->hidden) {
 				continue;
 			}
+			glm::vec3 position;
+			glm::quat orientation;
+			Entity e(entity_id);
+			if (e.Has<Position>()) {
+				position = e.Get<Position>().lock()->value;
+			}
+			if (e.Has<Orientation>()) {
+				orientation = e.Get<Orientation>().lock()->value;
+			}
+			auto camera_translation = position;
+			auto camera_orientation = orientation;
+
+			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
+				glm::mat4_cast(camera_orientation);
+			if (!renderable->buffer) {
+				renderable->buffer = std::make_shared<VertexBufferObject>();
+				renderable->buffer->Load(renderable->mesh);
+				size_t group_count = renderable->buffer->GetVertexGroupCount();
+				for (size_t i = 0; i < group_count; ++i) {
+					renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
+				}
+			}
+
+			RenderItem ri;
+			ri.model_matrix = &this->model_matricies[entity_id];
+			ri.vao = renderable->buffer->GetVAO();
+			ri.ibo = renderable->buffer->GetIBO();
+			ri.vertex_groups = &renderable->vertex_groups;
+
+			if (e.Has<Animation>()) {
+				auto anim = e.Get<Animation>().lock();
+				anim->UpdateAnimation(delta);
+				ri.animated = true;
+				ri.animation = anim;
+			}
+
+			std::shared_ptr<Shader> shader = renderable->shader;
+			if (!shader) {
+				shader = this->default_shader;
+			}
+			for (auto group : renderable->vertex_groups) {
+				this->render_item_list[shader].insert(std::move(ri));
+			}
+		}
+
+		for (auto itr = Multiton<eid, std::shared_ptr<View>>::Begin();
+			itr != Multiton<eid, std::shared_ptr<View>>::End(); ++itr) {
 			auto entity_id = itr->first;
+			std::shared_ptr<View> view = itr->second;
+
 			glm::vec3 position;
 			glm::quat orientation;
 			Entity e(entity_id);
@@ -68,30 +125,9 @@ namespace tec {
 			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
 				glm::mat4_cast(camera_orientation);
 
-			// Check if there is a view associated with the entity_id and update it as well.
-			if (e.Has<View>()) {
-				auto view = e.Get<View>().lock();
-				view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
-				if (view->active) {
-					this->current_view = view;
-				}
-			}
-
-			RenderItem ri;
-			ri.model_matrix = &this->model_matricies[entity_id];
-			ri.vao = itr->second->buffer->GetVAO();
-			ri.ibo = itr->second->buffer->GetIBO();
-			ri.vertex_groups = &itr->second->vertex_groups;
-
-			if (e.Has<Animation>()) {
-				auto anim = e.Get<Animation>().lock();
-				anim->UpdateAnimation(delta);
-				ri.animated = true;
-				ri.animation = anim;
-			}
-
-			for (auto group : itr->second->vertex_groups) {
-				this->render_item_list[group->material->GetShader()].insert(std::move(ri));
+			view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
+			if (view->active) {
+				this->current_view = view;
 			}
 		}
 

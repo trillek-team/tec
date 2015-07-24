@@ -1,14 +1,14 @@
 #pragma once
 
 #include <memory>
-#include <map>
 #include <tuple>
-#include <cstdint>
 #include "multiton.hpp"
 #include "component-update-system.hpp"
 #include "types.hpp"
+#include "reflection.hpp"
 
 namespace tec {
+	extern ReflectionEntityList entity_list;
 	class Entity {
 	public:
 		Entity(eid id) : id(id) { }
@@ -48,6 +48,7 @@ namespace tec {
 
 		template <typename T>
 		void Update(std::shared_ptr<T> val) {
+			entity_list.entities[this->id].components[GetTypeName<T>()] = std::move(T::Reflection(val.get()));
 			ComponentUpdateSystem<T>::SubmitUpdate(this->id, val);
 		}
 

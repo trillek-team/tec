@@ -1,6 +1,7 @@
 #include "os.hpp"
 
 #include <iostream>
+#include <algorithm>
 #include "event-system.hpp"
 
 #ifdef __APPLE__
@@ -15,6 +16,7 @@ extern "C" SEL sel_getUid(const char *str);
 #endif
 
 namespace tec {
+	GLFWwindow* OS::focused_window;
 
 	// Error helper function used by GLFW for error messaging.
 	// Currently outputs to std::cout.
@@ -128,10 +130,13 @@ namespace tec {
 		glfwSetCharCallback(this->window, &OS::CharacterEventCallback);
 		glfwSetMouseButtonCallback(this->window, &OS::MouseButtonEventCallback);
 		glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
+		glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
 		glfwGetCursorPos(this->window, &this->old_mouse_x, &this->old_mouse_y);
 
 		UpdateWindowSize(width, height);
+
+		OS::focused_window = this->window;
 
 		return true;
 	}
@@ -168,7 +173,7 @@ namespace tec {
 		return this->client_height;
 	}
 
-	
+
 	GLFWwindow* OS::GetWindow() {
 		return this->window;
 	}
@@ -227,14 +232,23 @@ namespace tec {
 
 	void OS::WindowFocusChangeCallback(GLFWwindow* window, int focused) {
 		if (focused == GL_FALSE) {
+			OS::focused_window = nullptr;
 			// Get the user pointer and cast it.
 			OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
 
 			if (os) {
-				// TODO: Implement a DispatchWindowFocusEvent() method in OS
-				// TODO: Dispatch a focus changed event.
+
 			}
 		}
+		else if (focused == GL_TRUE) {
+			OS::focused_window = window;
+		}
+	}
+
+	void OS::FileDropCallback(GLFWwindow* window, int count, const char** paths) {
+		// Get the user pointer and cast it.
+		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+		os->DispatchFileDropEvent(count, paths);
 	}
 
 	void OS::UpdateWindowSize(const int width, const int height) {
@@ -309,6 +323,17 @@ namespace tec {
 		}
 		EventSystem<MouseBtnEvent>::Get()->Emit(mbtn_event);
 	}
+	
+	void OS::DispatchFileDropEvent(const int count, const char** paths) {
+		std::shared_ptr<FileDropEvent> fd_event = std::make_shared<FileDropEvent>();
+		for (int i = 0; i < count; ++i) {
+			fd_event->filenames.push_back(paths[i]);
+			while (fd_event->filenames[i].find("\\") != std::string::npos) {
+				fd_event->filenames[i].replace(fd_event->filenames[i].find("\\"), 1, "/");
+			}
+		}
+		EventSystem<FileDropEvent>::Get()->Emit(fd_event);
+	}
 
 	void OS::ToggleMouseLock() {
 		this->mouse_lock = !this->mouse_lock;
@@ -321,7 +346,10 @@ namespace tec {
 	}
 
 	void OS::SetMousePosition(const double x, const double y) {
-		glfwSetCursorPos(this->window, x, y);
+		glfwSetCursorPos(OS::focused_window, x, y);
 	}
 
+	void OS::GetMousePosition(double* x, double* y) {
+		glfwGetCursorPos(OS::focused_window, x, y);
+	}
 }

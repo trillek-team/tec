@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "types.hpp"
+#include "entity.hpp"
 #include "multiton.hpp"
 #include "command-queue.hpp"
 
@@ -27,6 +28,25 @@ namespace tec {
 		btVector3 GetAngular() const {
 			return btVector3(angular.x, angular.y, angular.z);
 		}
+
+		static ReflectionComponent Reflection(Velocity* val) {
+			ReflectionComponent refcomp;
+			Property prop(Property::FLOAT);
+			(refcomp.properties["Linear X"] = prop).Set<float>(val->linear.x);
+			refcomp.properties["Linear X"].update_func = [val] (Property& prop) { val->linear.x = prop.Get<float>(); };
+			(refcomp.properties["Linear Y"] = prop).Set<float>(val->linear.y);
+			refcomp.properties["Linear Y"].update_func = [val] (Property& prop) { val->linear.y = prop.Get<float>(); };
+			(refcomp.properties["Linear Z"] = prop).Set<float>(val->linear.z);
+			refcomp.properties["Linear Z"].update_func = [val] (Property& prop) { val->linear.z = prop.Get<float>(); };
+			(refcomp.properties["Angular X"] = prop).Set<float>(val->angular.x);
+			refcomp.properties["Angular X"].update_func = [val] (Property& prop) { val->angular.x = prop.Get<float>(); };
+			(refcomp.properties["Angular Y"] = prop).Set<float>(val->angular.y);
+			refcomp.properties["Angular Y"].update_func = [val] (Property& prop) { val->angular.y = prop.Get<float>(); };
+			(refcomp.properties["Angular Z"] = prop).Set<float>(val->angular.z);
+			refcomp.properties["Angular Z"].update_func = [val] (Property& prop) { val->angular.z = prop.Get<float>(); };
+			
+			return std::move(refcomp);
+		}
 	};
 
 	class PhysicsSystem : public CommandQueue < PhysicsSystem > {
@@ -42,7 +62,7 @@ namespace tec {
 		*/
 		void Update(const double delta);
 
-		eid RayCast();
+		eid RayCast(eid source_entity);
 		eid RayCastIgnore(eid);
 		glm::vec3 GetLastRayPos() const {
 			btVector3 tmp = last_raypos; // grab a copy
@@ -70,7 +90,7 @@ namespace tec {
 		 */
 		void SetNormalGravity(const unsigned int entity_id);
 	private:
-		bool CreateRigiedBody(std::shared_ptr<CollisionBody> collision_body);
+		bool CreateRigiedBody(eid entity_id, std::shared_ptr<CollisionBody> collision_body);
 
 		typedef Multiton<eid, std::shared_ptr<CollisionBody>> CollisionBodyMap;
 		typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
