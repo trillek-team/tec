@@ -16,3 +16,10 @@ url=https://github.com/trillek-team/tec-assets
 [submodule "modules/imgui"]
 	path = modules/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "modules/protobuf"]
+	path = modules/protobuf
+	url = https://github.com/google/protobuf
+[submodule "modules/trillek-vcomputer"]
+	path = modules/trillek-vcomputer
+	url = https://github.com/trillek-team/trillek-vcomputer-module.git
+	branch = releases/tag/v0.5.2

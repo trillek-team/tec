@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include "types.hpp"
 
 namespace tec {
@@ -44,6 +45,21 @@ namespace tec {
 
 		static typename std::map<ID, T>::const_iterator End() {
 			return instances.end();
+		}
+
+		static typename std::size_t Size() {
+			return instances.size();
+		}
+
+		static typename std::vector<ID>& Keys() {
+			static std::vector<ID> keys;
+			if (keys.size() != instances.size()) {
+				keys.clear();
+				for (auto pair : instances) {
+					keys.push_back(pair.first);
+				}
+			}
+			return keys;
 		}
 
 		/**

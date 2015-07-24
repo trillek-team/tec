@@ -20,6 +20,7 @@
 namespace tec {
 	struct VertexGroup;
 	struct Renderable;
+	struct View;
 	class Shader;
 
 	class RenderSystem;
@@ -27,11 +28,6 @@ namespace tec {
 
 	struct KeyboardEvent;
 	struct WindowResizedEvent;
-
-	struct View {
-		glm::mat4 view_matrix;
-		bool active = false;
-	};
 
 	class RenderSystem : public CommandQueue < RenderSystem >,
 		public EventQueue < KeyboardEvent >,

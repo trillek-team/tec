@@ -14,6 +14,8 @@ namespace tec {
 
 		virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color);
 
+		virtual void drawAABB(const btVector3& from, const btVector3& to, const btVector3& color);
+
 		virtual void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color);
 
 		virtual void reportErrorWarning(const char* warningString);

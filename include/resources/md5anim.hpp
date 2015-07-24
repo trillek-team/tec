@@ -80,6 +80,10 @@ namespace tec {
 			this->fname = fname;
 		}
 
+		std::string GetFileName() {
+			return this->fname;
+		}
+
 		/**
 		* \brief Returns the number of animation frames.
 		*

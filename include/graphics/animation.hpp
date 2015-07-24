@@ -5,16 +5,15 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "entity.hpp"
+
 namespace tec {
 	class MD5Anim;
 
 	class Animation final {
 	public:
 		Animation() : animation_time(0.0f) { }
-		Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f) {
-			SetAnimationFile(animation);
-		}
-
+		Animation(std::shared_ptr<MD5Anim> animation);
 		/**
 		* \brief Updates the current animation based on a change in time.
 		*
@@ -32,10 +31,13 @@ namespace tec {
 		*/
 		void SetAnimationFile(std::shared_ptr<MD5Anim> file);
 
+		static ReflectionComponent Reflection(Animation* val);
+
 		friend class RenderSystem;
 	private:
 		std::vector<glm::mat4x4> animation_matrices;
 
+		std::string animation_name;
 		std::shared_ptr<MD5Anim> animation_file;
 
 		size_t current_frame_index;

@@ -1,0 +1,90 @@
+syntax = "proto2";
+
+package tec.proto;
+
+message Renderable {
+	optional string shader_name = 1;
+	optional string mesh_name = 2;
+	optional bool hidden = 3;
+}
+
+message Position {
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
+message Orientation {
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+	required float w = 4;
+}
+
+message View {
+	optional bool active = 1;
+}
+
+message Animation {
+	optional string animation_name = 1;
+}
+
+message Scale {
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
+message CollisionBody {
+	message Box {
+		required float x_extent = 1;
+		required float y_extent = 2;
+		required float z_extent = 3;
+	};
+	message Sphere {
+		required float radius = 1;
+	};
+	message Capsule {
+		required float radius = 1;
+		required float height = 2;
+	};
+	optional bool disable_deactivation = 1;
+	optional bool disable_rotation = 2;
+	oneof shape {
+		Box box = 3;
+		Sphere sphere = 4;
+		Capsule capsule = 5;
+	}
+	optional float mass = 6;
+}
+
+message Velocity {
+	optional float linear_x = 1;
+	optional float linear_y = 2;
+	optional float linear_z = 3;
+	optional float angular_x = 4;
+	optional float angular_y = 5;
+	optional float angular_z = 6;
+}
+
+message Component {
+	oneof component {
+		Renderable renderable = 1;
+		Position position = 2;
+		Orientation orientation = 3;
+		View view = 4;
+		Animation animation = 5;
+		Scale Scale = 6;
+		CollisionBody collision_body = 7;
+		Velocity velocity = 8;
+	}
+}
+
+message Entity {
+	required uint64 id = 1;
+	repeated Component components = 2;
+}
+
+message EntityList {
+	repeated Entity entities = 1;
+}
