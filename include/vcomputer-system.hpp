@@ -68,9 +68,10 @@ namespace tec {
 	};
 
 	struct KeyboardEvent;
+	struct MouseBtnEvent;
 
 	class VComputerSystem final : public CommandQueue < VComputerSystem >,
-		public EventQueue < KeyboardEvent > {
+		public EventQueue < KeyboardEvent >, public EventQueue< MouseBtnEvent > {
 	public:
 		VComputerSystem();
 		~VComputerSystem();
@@ -135,6 +136,7 @@ namespace tec {
 		void Update(double delta);
 
 		void On(std::shared_ptr<KeyboardEvent> data);
+		void On(std::shared_ptr<MouseBtnEvent> data);
 	private:
 		typedef Multiton<eid, std::shared_ptr<ComputerScreen>> ScreenComponentMap;
 		typedef Multiton<eid, std::shared_ptr<ComputerKeyboard>> KeyboardComponentMap;

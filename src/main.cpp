@@ -24,6 +24,7 @@ namespace tec {
 	extern std::map<std::string, std::function<void(eid)>> component_removal_factories;
 
 	ReflectionEntityList entity_list;
+	eid active_entity;
 
 	struct FileLisenter : public EventQueue < FileDropEvent > {
 		void Update(double delta) {
@@ -32,11 +33,23 @@ namespace tec {
 
 		void On(std::shared_ptr<FileDropEvent> fd_event) {
 			for (auto file : fd_event->filenames) {
-				std::string ext = file.substr(file.find_last_of(".") + 1);
-				std::string relative_filename = file.substr(file.find("assets/"));
-				if (file_factories.find(ext) != file_factories.end()) {
-					file_factories[ext](relative_filename);
+				if (file.find(".") != std::string::npos) {
+					std::string ext = file.substr(file.find_last_of(".") + 1);
+					if (file.find("assets/") != std::string::npos) {
+						std::string relative_filename = file.substr(file.find("assets/"));
+						if (file_factories.find(ext) != file_factories.end()) {
+							std::cout << "Loading: " << relative_filename << std::endl;
+							file_factories[ext](relative_filename);
+						}
+						else {
+							std::cout << "No loader for extension: " << ext << std::endl;
+						}
+					}
+					else {
+						std::cout << "Please place files in the assets/ folder." << std::endl;
+					}
 				}
+				std::cout << "No extension!." << std::endl;
 			}
 		}
 	};
@@ -59,7 +72,7 @@ int main(int argc, char* argv[]) {
 	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
-	
+
 	tec::VComputerSystem vcs;
 
 	tec::IntializeComponents();
@@ -72,10 +85,9 @@ int main(int argc, char* argv[]) {
 
 	tec::FileLisenter flistener;
 
-	tec::eid active_entity;
-	gui.AddWindowDrawFunction("active_entity", [&active_entity] () {
-		if (active_entity != 0) {
-			ImGui::SetTooltip("#%i", active_entity);
+	gui.AddWindowDrawFunction("active_entity", [] () {
+		if (tec::active_entity != 0) {
+			ImGui::SetTooltip("#%i", tec::active_entity);
 		}
 	});
 	gui.AddWindowDrawFunction("entity_tree", [ ] () {
@@ -305,11 +317,11 @@ int main(int argc, char* argv[]) {
 
 		ps_thread.join();
 		ss_thread.join();
-		
+
 		camera_controller.Update(delta);
 
 		ps.DebugDraw();
-		active_entity = ps.RayCast(1);
+		tec::active_entity = ps.RayCast(1);
 
 		gui.Update(delta);
 

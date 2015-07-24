@@ -55,6 +55,7 @@ namespace tec {
 	void VComputerSystem::Update(double delta) {
 		ProcessCommandQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
+		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		this->delta = delta;
 		for (const auto& comp : this->computers) {
 			comp.second.vc->Update(delta);
@@ -110,6 +111,8 @@ namespace tec {
 			this->computers[entity_id].vc->Off();
 		}
 	}
+	
+	extern eid active_entity;
 
 	void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 		std::shared_ptr<gkeyboard::GKeyboardDev> active_keybaord;
@@ -122,10 +125,24 @@ namespace tec {
 		if (active_keybaord) {
 			switch (data->action) {
 				case KeyboardEvent::KEY_DOWN:
+					if (data->key == GLFW_KEY_ESCAPE) {
+						KeyboardComponentMap::Get(active_entity)->has_focus = false;
+					}
 					active_keybaord->SendKeyEvent(data->scancode, data->key,
 						gkeyboard::KEY_MODS::KEY_MOD_NONE);
 				default:
 					break;
+			}
+		}
+	}
+
+	void VComputerSystem::On(std::shared_ptr<MouseBtnEvent> data) {
+		if (data->action == MouseBtnEvent::DOWN && data->button == MouseBtnEvent::LEFT) {
+			for (auto keyboard_itr = KeyboardComponentMap::Begin();
+				keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
+				if (keyboard_itr->first == active_entity) {
+					keyboard_itr->second->has_focus = true;
+				}
 			}
 		}
 	}
