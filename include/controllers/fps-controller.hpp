@@ -4,33 +4,28 @@
 #include "entity.hpp"
 #include "event-system.hpp"
 
-namespace vv {
-	class Camera {
-	public:
-		Camera(eid entity_id);
-		~Camera();
-
-		bool MakeActive();
-	private:
-		Entity e;
-	};
-
+namespace tec {
 	struct KeyboardEvent;
+	struct MouseBtnEvent;
+	struct MouseMoveEvent;
 
 	// TODO: Create Controller system that calls update on all controller instances.
 	struct Controller {
 		virtual void Update(double delta) { }
 	};
 	// TODO: Remove this class as it is only for testing and should really be implemented in script.
-	struct CameraMover : public Controller, public EventQueue < KeyboardEvent > {
-		CameraMover(eid entity_id) : e(entity_id) { }
+	struct FPSController : public Controller, public EventQueue < KeyboardEvent >,
+		public EventQueue < MouseMoveEvent >, public EventQueue < MouseBtnEvent > {
+		FPSController(eid entity_id) : e(entity_id), mouse_look(false) { }
 
 		void On(std::shared_ptr<KeyboardEvent> data);
+		void On(std::shared_ptr<MouseBtnEvent> data);
+		void On(std::shared_ptr<MouseMoveEvent> data);
 
 		void Update(double delta);
 
-		std::weak_ptr<Camera> cam;
-
 		Entity e;
+		double current_delta;
+		bool mouse_look;
 	};
 }

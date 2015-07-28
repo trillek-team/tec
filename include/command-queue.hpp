@@ -5,7 +5,7 @@
 #include <functional>
 #include <atomic>
 
-namespace vv {
+namespace tec {
 	template <class T>
 	struct Command {
 		Command(std::function<void(T*)>&& command) : command(std::move(command)) { }

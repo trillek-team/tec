@@ -1,6 +1,7 @@
 #include "os.hpp"
 
 #include <iostream>
+#include <algorithm>
 #include "event-system.hpp"
 
 #ifdef __APPLE__
@@ -14,7 +15,8 @@ extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char *str);
 #endif
 
-namespace vv {
+namespace tec {
+	GLFWwindow* OS::focused_window;
 
 	// Error helper function used by GLFW for error messaging.
 	// Currently outputs to std::cout.
@@ -31,27 +33,67 @@ namespace vv {
 			return false;
 		}
 
+		// don't hint much (request default context version)
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
-
-#ifndef __APPLE__
-#ifdef _DEBUG
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-#else
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
-#else
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
 
 		// Create a windowed mode window and its OpenGL context.
 		this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
 		if (!this->window) {
-			glfwTerminate();
-			return false;
+			// creating a window with default hints failed
+			// try again with specific hints
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+
+			if (!this->window) {
+				// still not right, give up
+				glfwTerminate();
+				return false;
+			}
 		}
+
+		// attach the context
+		glfwMakeContextCurrent(this->window);
+
+		// check the context version
+		std::string glcx_version((char*)glGetString(GL_VERSION));
+		std::string glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
+		if (glcx_major == "1" || glcx_major == "2") {
+			// we got a version 1 context, that will not work
+			// so try again.
+			glfwMakeContextCurrent(nullptr);
+			glfwDestroyWindow(this->window);
+			// be more specific this time
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+
+			if (!this->window) {
+				glfwTerminate();
+				return false;
+			}
+			// attach the context
+			glfwMakeContextCurrent(this->window);
+
+			// check the context version again
+			glcx_version = (char*)glGetString(GL_VERSION);
+			glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
+			if (glcx_major == "1") {
+				// still 1, higher versions probably not supported
+				glfwTerminate();
+				std::cerr << "Initializing OpenGL failed, unsupported version: " << glcx_version << '\n';
+				std::cerr << "Press \"Enter\" to exit\n";
+				std::cin.get();
+				return false;
+			}
+		}
+
+		std::cerr << "GL version string: " << glcx_version << std::endl;
 
 		this->client_width = width;
 		this->client_height = height;
@@ -88,8 +130,13 @@ namespace vv {
 		glfwSetCharCallback(this->window, &OS::CharacterEventCallback);
 		glfwSetMouseButtonCallback(this->window, &OS::MouseButtonEventCallback);
 		glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
+		glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
 		glfwGetCursorPos(this->window, &this->old_mouse_x, &this->old_mouse_y);
+
+		UpdateWindowSize(width, height);
+
+		OS::focused_window = this->window;
 
 		return true;
 	}
@@ -124,6 +171,11 @@ namespace vv {
 
 	int OS::GetWindowHeight() {
 		return this->client_height;
+	}
+
+
+	GLFWwindow* OS::GetWindow() {
+		return this->window;
 	}
 
 	double OS::GetDeltaTime() {
@@ -180,17 +232,30 @@ namespace vv {
 
 	void OS::WindowFocusChangeCallback(GLFWwindow* window, int focused) {
 		if (focused == GL_FALSE) {
+			OS::focused_window = nullptr;
 			// Get the user pointer and cast it.
 			OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
 
 			if (os) {
-				// TODO: Implement a DispatchWindowFocusEvent() method in OS
-				// TODO: Dispatch a focus changed event.
+
 			}
+		}
+		else if (focused == GL_TRUE) {
+			OS::focused_window = window;
 		}
 	}
 
+	void OS::FileDropCallback(GLFWwindow* window, int count, const char** paths) {
+		// Get the user pointer and cast it.
+		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+		os->DispatchFileDropEvent(count, paths);
+	}
+
 	void OS::UpdateWindowSize(const int width, const int height) {
+		std::shared_ptr<WindowResizedEvent> resize_event = std::make_shared<WindowResizedEvent>(
+			WindowResizedEvent {this->client_width, this->client_height, width, height});
+		EventSystem<WindowResizedEvent>::Get()->Emit(resize_event);
+
 		this->client_width = width;
 		this->client_height = height;
 	}
@@ -258,6 +323,17 @@ namespace vv {
 		}
 		EventSystem<MouseBtnEvent>::Get()->Emit(mbtn_event);
 	}
+	
+	void OS::DispatchFileDropEvent(const int count, const char** paths) {
+		std::shared_ptr<FileDropEvent> fd_event = std::make_shared<FileDropEvent>();
+		for (int i = 0; i < count; ++i) {
+			fd_event->filenames.push_back(paths[i]);
+			while (fd_event->filenames[i].find("\\") != std::string::npos) {
+				fd_event->filenames[i].replace(fd_event->filenames[i].find("\\"), 1, "/");
+			}
+		}
+		EventSystem<FileDropEvent>::Get()->Emit(fd_event);
+	}
 
 	void OS::ToggleMouseLock() {
 		this->mouse_lock = !this->mouse_lock;
@@ -270,7 +346,10 @@ namespace vv {
 	}
 
 	void OS::SetMousePosition(const double x, const double y) {
-		glfwSetCursorPos(this->window, x, y);
+		glfwSetCursorPos(OS::focused_window, x, y);
 	}
 
+	void OS::GetMousePosition(double* x, double* y) {
+		glfwGetCursorPos(OS::focused_window, x, y);
+	}
 }

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include "types.hpp"
 
-namespace vv {
+namespace tec {
 	/* Based class to be used for instance or state storage.
 	*
 	* This is useful in place of static instances or globals. Derived classes
@@ -46,6 +47,21 @@ namespace vv {
 			return instances.end();
 		}
 
+		static typename std::size_t Size() {
+			return instances.size();
+		}
+
+		static typename std::vector<ID>& Keys() {
+			static std::vector<ID> keys;
+			if (keys.size() != instances.size()) {
+				keys.clear();
+				for (auto pair : instances) {
+					keys.push_back(pair.first);
+				}
+			}
+			return keys;
+		}
+
 		/**
 		* \brief Get the instance for the given ID.
 		*
@@ -62,7 +78,7 @@ namespace vv {
 		}
 
 
-		static bool Has() {
+		static bool Has(const ID id) {
 			return instances.find(id) != instances.end();
 		}
 
