@@ -15,6 +15,18 @@ extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char *str);
 #endif
 
+// Stuff to get OS libs for paths
+#ifdef __unix__
+#ifdef __APPLE__
+#include <CoreServices/CoreServices.h>
+#endif
+
+#include <sys/stat.h>
+
+#elif defined(WIN32)
+#include <shlobj.h>
+#endif
+
 namespace tec {
 	GLFWwindow* OS::focused_window;
 
@@ -327,7 +339,7 @@ namespace tec {
 		}
 		EventSystem<MouseBtnEvent>::Get()->Emit(mbtn_event);
 	}
-	
+
 	void OS::DispatchFileDropEvent(const int count, const char** paths) {
 		std::shared_ptr<FileDropEvent> fd_event = std::make_shared<FileDropEvent>();
 		for (int i = 0; i < count; ++i) {
@@ -357,5 +369,61 @@ namespace tec {
 		if (focused_window) {
 			glfwGetCursorPos(OS::focused_window, x, y);
 		}
+	}
+
+
+	std::string OS::GetUserSettingsFile() {
+		// Try to use cached value
+		if (! settings_file.empty()) {
+			return settings_file;
+		}
+#if defined(__unix__)
+#if defined(__APPLE__)
+		FSRef ref;
+		FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
+		char home[PATH_MAX];
+		FSRefMakePath(&ref, (UInt8 *)&home, PATH_MAX);
+		std::string path(home);
+		path += "/";
+		path += app_name;
+		path += "/settings.conf";
+#else
+// Try to use a secure version of getenv
+#if defined(_GNU_SOURCE)
+		char* home = secure_getenv("XDG_CONFIG_HOME");
+		if (home == nullptr) {
+			home = secure_getenv("HOME");
+			if (home == nullptr) {
+				return "";
+			}
+		}
+#else
+		char* home = getenv("XDG_CONFIG_HOME");
+		if (home == nullptr) {
+			home = getenv("HOME");
+			if (home == nullptr) {
+				return "";
+			}
+		}
+#endif
+		std::string path(home);
+		path += "/.config/";
+		path += app_name;
+		path += "/settings.conf";
+#endif // __APPLE
+#elif defined(WIN32)
+		char home[MAX_PATH];
+		if (!SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, home))) {
+			return "";
+		}
+
+		std::string path(home);
+		path += "\\";
+		path += app_name;
+		path += "/settings.conf";
+#endif
+		settings_file = path;
+		return path;
+
 	}
 }
