@@ -24,7 +24,10 @@ extern "C" SEL sel_getUid(const char *str);
 #include <sys/stat.h>
 
 #elif defined(WIN32)
-#include <shlobj.h>
+#include <Shlobj.h>
+#include <comutil.h>
+
+#pragma comment(lib, "comsuppw")
 #endif
 
 namespace tec {
@@ -412,15 +415,19 @@ namespace tec {
 		path += "/settings.conf";
 #endif // __APPLE
 #elif defined(WIN32)
-		char home[MAX_PATH];
-		if (!SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, home))) {
+		LPWSTR wszPath = NULL;
+
+		if ( !SUCCEEDED( SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &wszPath) )) {
 			return "";
 		}
 
-		std::string path(home);
+		_bstr_t bstrPath(wszPath);
+		std::string path((char*)bstrPath);
+		CoTaskMemFree(wszPath);
 		path += "\\";
 		path += app_name;
-		path += "/settings.conf";
+		path += "\\settings.conf";
+
 #endif
 		settings_file = path;
 		return path;
