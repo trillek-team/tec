@@ -4,6 +4,9 @@ PROJECT("TEC")
 
 SET(CMAKE_CXX_STANDARD_REQUIRED 11)
 
+# Test not enabled by default
+SET(BUILD_TESTS_TEC FALSE CACHE BOOL "Build TEC unit tests")
+
 # Set the directory of cmake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules")
 
@@ -31,6 +34,7 @@ ENDIF ( MSVC )
 
 # find all source files in the src directory
 FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
+LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
@@ -165,42 +169,52 @@ IF (APPLE) # Mac OSX
   SET(OSX_LIBRARIES "-framework CoreFoundation /usr/lib/libobjc.dylib")
 ENDIF (APPLE)
 
-# Add the virtual computer
-SET(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - static
-     version")
-SET(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
-SET(BUILD_TOOLS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tools")
-SET(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
-ADD_SUBDIRECTORY("modules/trillek-vcomputer")
-INCLUDE_DIRECTORIES("modules/trillek-vcomputer/include")
-
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
 IF (NOT ${BUILD_DEPS_FIRST})
-MESSAGE("All dependencies found now building tec.")
-SET(TEC_ALL_LIBS
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${OPENGL_LIBRARIES}
-  ${X11_LIBRARIES}
-  ${OSX_LIBRARIES}
-  ${GLEW_LIBRARIES}
-  ${GLFW_LIBRARIES}
-  ${BULLET_LIBRARIES}
-  ${OPENAL_LIBRARY}
-  libprotobuf
-  VCOMPUTER_STATIC
-)
+  MESSAGE("All dependencies found now building tec.")
+  # Add the virtual computer
+  SET(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - static
+       version")
+  SET(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
+  SET(BUILD_TOOLS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tools")
+  SET(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
+  ADD_SUBDIRECTORY("modules/trillek-vcomputer")
+  INCLUDE_DIRECTORIES("modules/trillek-vcomputer/include")
 
-ADD_EXECUTABLE("TEC"
-  ${TEC_SRC}
-  ${TEC_INCLUDES}
-  ${IMGUI_SRC}
-  ${IMGUI_INCLUDES}
-  ${PB_FILES_SRC}
-  ${PB_FILES_INCLUDES}
-)
+  SET(TEC_ALL_LIBS
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${OPENGL_LIBRARIES}
+    ${X11_LIBRARIES}
+    ${OSX_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${GLFW_LIBRARIES}
+    ${BULLET_LIBRARIES}
+    ${OPENAL_LIBRARY}
+    libprotobuf
+    VCOMPUTER_STATIC
+  )
 
-SET_PROPERTY(TARGET TEC PROPERTY CXX_STANDARD 11)
+  ADD_LIBRARY(TEC_LIB STATIC
+    ${TEC_SRC}
+    ${TEC_INCLUDES}
+    ${IMGUI_SRC}
+    ${IMGUI_INCLUDES}
+    ${PB_FILES_SRC}
+    ${PB_FILES_INCLUDES}
+  )
+  SET_PROPERTY(TARGET TEC_LIB PROPERTY CXX_STANDARD 11)
 
-TARGET_LINK_LIBRARIES("TEC" ${TEC_ALL_LIBS})
+  ADD_EXECUTABLE("TEC"
+    "src/main.cpp"
+  )
+
+  SET_PROPERTY(TARGET TEC PROPERTY CXX_STANDARD 11)
+
+  TARGET_LINK_LIBRARIES("TEC" TEC_LIB  ${TEC_ALL_LIBS})
+
+  IF(BUILD_TESTS_TEC)
+    ADD_SUBDIRECTORY("tests")
+  ENDIF(BUILD_TESTS_TEC)
+
 ENDIF (NOT ${BUILD_DEPS_FIRST})
