@@ -60,10 +60,10 @@ script:
   - sudo make install
   - echo "Building TEC"
   - rm -f cmakecache.txt
-  - cmake ..
+  - cmake -DBUILD_TESTS_TEC=True ..
   - make
   - ls
-    #- ./TECTests
+  - ./bin/UNIT_TEST
 
 notifications:
   #email:
