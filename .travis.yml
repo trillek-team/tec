@@ -39,14 +39,14 @@ install:
   # Install OpenAL and GLEW
   - sudo apt-get -q -y install libglew-dev libopenal-dev
   # Install and build gtest
-  #- sudo apt-get -q -y install libgtest-dev
-  #- BUILD_PATH=$(pwd)
-  #- cd /usr/src/gtest
-  #- sudo cmake CMakeLists.txt
-  #- sudo make
-  #- GTEST_ROOT=/usr/src/gtest
-  #- export GTEST_ROOT
-  #- cd $BUILD_PATH
+  - sudo apt-get -q -y install libgtest-dev
+  - BUILD_PATH=$(pwd)
+  - cd /usr/src/gtest
+  - sudo cmake CMakeLists.txt
+  - sudo make
+  - GTEST_ROOT=/usr/src/gtest
+  - export GTEST_ROOT
+  - cd $BUILD_PATH
 
 before_script:
   - pwd
