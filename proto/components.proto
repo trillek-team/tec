@@ -71,6 +71,7 @@ message AudioSource {
 	optional bool looping = 1;
 	optional string audio_name = 2;
 	optional bool playing = 3;
+	optional uint32 volume = 4;
 }
 
 message Component {

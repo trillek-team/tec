@@ -41,7 +41,7 @@ namespace tec {
 				alGenSources(1, &itr->second->source); alCheckError();
 
 				alSourcef(itr->second->source, AL_PITCH, 1);
-				alSourcef(itr->second->source, AL_GAIN, 1);
+				alSourcef(itr->second->source, AL_GAIN, itr->second->gain / 100.0f);
 				if (Entity(itr->first).Has<Position>()) {
 					std::shared_ptr<Position> pos = Entity(itr->first).Get<Position>().lock();
 					alSource3f(itr->second->source, AL_POSITION, pos->value.x, pos->value.y, pos->value.z);
@@ -98,6 +98,7 @@ namespace tec {
 			}
 			ALint state;
 			alGetSourcei(source->source, AL_SOURCE_STATE, &state);
+			alSourcef(source->source, AL_GAIN, source->gain / 100.0f);
 
 			// If there was a state change to play then start playing
 			if (state != AL_PLAYING && source->source_state == PLAYING) {

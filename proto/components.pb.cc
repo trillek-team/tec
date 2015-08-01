@@ -283,10 +283,11 @@ void protobuf_AssignDesc_components_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Velocity, _internal_metadata_),
       -1);
   AudioSource_descriptor_ = file->message_type(8);
-  static const int AudioSource_offsets_[3] = {
+  static const int AudioSource_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, looping_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, audio_name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, playing_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, volume_),
   };
   AudioSource_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -464,22 +465,22 @@ void protobuf_AddDesc_components_2eproto() {
     "pe\"y\n\010Velocity\022\020\n\010linear_x\030\001 \001(\002\022\020\n\010line"
     "ar_y\030\002 \001(\002\022\020\n\010linear_z\030\003 \001(\002\022\021\n\tangular_"
     "x\030\004 \001(\002\022\021\n\tangular_y\030\005 \001(\002\022\021\n\tangular_z\030"
-    "\006 \001(\002\"C\n\013AudioSource\022\017\n\007looping\030\001 \001(\010\022\022\n"
-    "\naudio_name\030\002 \001(\t\022\017\n\007playing\030\003 \001(\010\"\231\003\n\tC"
-    "omponent\022+\n\nrenderable\030\001 \001(\0132\025.tec.proto"
-    ".RenderableH\000\022\'\n\010position\030\002 \001(\0132\023.tec.pr"
-    "oto.PositionH\000\022-\n\013orientation\030\003 \001(\0132\026.te"
-    "c.proto.OrientationH\000\022\037\n\004view\030\004 \001(\0132\017.te"
-    "c.proto.ViewH\000\022)\n\tanimation\030\005 \001(\0132\024.tec."
-    "proto.AnimationH\000\022!\n\005Scale\030\006 \001(\0132\020.tec.p"
-    "roto.ScaleH\000\0222\n\016collision_body\030\007 \001(\0132\030.t"
-    "ec.proto.CollisionBodyH\000\022\'\n\010velocity\030\010 \001"
-    "(\0132\023.tec.proto.VelocityH\000\022.\n\014audio_sourc"
-    "e\030\t \001(\0132\026.tec.proto.AudioSourceH\000B\013\n\tcom"
-    "ponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\ncomponen"
-    "ts\030\002 \003(\0132\024.tec.proto.Component\"1\n\nEntity"
-    "List\022#\n\010entities\030\001 \003(\0132\021.tec.proto.Entit"
-    "y", 1401);
+    "\006 \001(\002\"S\n\013AudioSource\022\017\n\007looping\030\001 \001(\010\022\022\n"
+    "\naudio_name\030\002 \001(\t\022\017\n\007playing\030\003 \001(\010\022\016\n\006vo"
+    "lume\030\004 \001(\r\"\231\003\n\tComponent\022+\n\nrenderable\030\001"
+    " \001(\0132\025.tec.proto.RenderableH\000\022\'\n\010positio"
+    "n\030\002 \001(\0132\023.tec.proto.PositionH\000\022-\n\013orient"
+    "ation\030\003 \001(\0132\026.tec.proto.OrientationH\000\022\037\n"
+    "\004view\030\004 \001(\0132\017.tec.proto.ViewH\000\022)\n\tanimat"
+    "ion\030\005 \001(\0132\024.tec.proto.AnimationH\000\022!\n\005Sca"
+    "le\030\006 \001(\0132\020.tec.proto.ScaleH\000\0222\n\016collisio"
+    "n_body\030\007 \001(\0132\030.tec.proto.CollisionBodyH\000"
+    "\022\'\n\010velocity\030\010 \001(\0132\023.tec.proto.VelocityH"
+    "\000\022.\n\014audio_source\030\t \001(\0132\026.tec.proto.Audi"
+    "oSourceH\000B\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001"
+    " \002(\004\022(\n\ncomponents\030\002 \003(\0132\024.tec.proto.Com"
+    "ponent\"1\n\nEntityList\022#\n\010entities\030\001 \003(\0132\021"
+    ".tec.proto.Entity", 1417);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
@@ -5122,6 +5123,7 @@ void Velocity::clear_angular_z() {
 const int AudioSource::kLoopingFieldNumber;
 const int AudioSource::kAudioNameFieldNumber;
 const int AudioSource::kPlayingFieldNumber;
+const int AudioSource::kVolumeFieldNumber;
 #endif  // !_MSC_VER
 
 AudioSource::AudioSource()
@@ -5147,6 +5149,7 @@ void AudioSource::SharedCtor() {
   looping_ = false;
   audio_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   playing_ = false;
+  volume_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -5195,8 +5198,8 @@ void AudioSource::Clear() {
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
-  if (_has_bits_[0 / 32] & 7u) {
-    ZR_(looping_, playing_);
+  if (_has_bits_[0 / 32] & 15u) {
+    ZR_(looping_, volume_);
     if (has_audio_name()) {
       audio_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
@@ -5263,6 +5266,21 @@ bool AudioSource::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(32)) goto parse_volume;
+        break;
+      }
+
+      // optional uint32 volume = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_volume:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &volume_)));
+          set_has_volume();
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -5312,6 +5330,11 @@ void AudioSource::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->playing(), output);
   }
 
+  // optional uint32 volume = 4;
+  if (has_volume()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->volume(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -5343,6 +5366,11 @@ void AudioSource::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->playing(), target);
   }
 
+  // optional uint32 volume = 4;
+  if (has_volume()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->volume(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -5354,7 +5382,7 @@ void AudioSource::SerializeWithCachedSizes(
 int AudioSource::ByteSize() const {
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & 7u) {
+  if (_has_bits_[0 / 32] & 15u) {
     // optional bool looping = 1;
     if (has_looping()) {
       total_size += 1 + 1;
@@ -5370,6 +5398,13 @@ int AudioSource::ByteSize() const {
     // optional bool playing = 3;
     if (has_playing()) {
       total_size += 1 + 1;
+    }
+
+    // optional uint32 volume = 4;
+    if (has_volume()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->volume());
     }
 
   }
@@ -5409,6 +5444,9 @@ void AudioSource::MergeFrom(const AudioSource& from) {
     if (from.has_playing()) {
       set_playing(from.playing());
     }
+    if (from.has_volume()) {
+      set_volume(from.volume());
+    }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -5440,6 +5478,7 @@ void AudioSource::InternalSwap(AudioSource* other) {
   std::swap(looping_, other->looping_);
   audio_name_.Swap(&other->audio_name_);
   std::swap(playing_, other->playing_);
+  std::swap(volume_, other->volume_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -5555,6 +5594,30 @@ void AudioSource::clear_playing() {
   set_has_playing();
   playing_ = value;
   // @@protoc_insertion_point(field_set:tec.proto.AudioSource.playing)
+}
+
+// optional uint32 volume = 4;
+bool AudioSource::has_volume() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void AudioSource::set_has_volume() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void AudioSource::clear_has_volume() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void AudioSource::clear_volume() {
+  volume_ = 0u;
+  clear_has_volume();
+}
+ ::google::protobuf::uint32 AudioSource::volume() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.volume)
+  return volume_;
+}
+ void AudioSource::set_volume(::google::protobuf::uint32 value) {
+  set_has_volume();
+  volume_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.volume)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

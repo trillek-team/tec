@@ -1392,6 +1392,13 @@ class AudioSource : public ::google::protobuf::Message {
   bool playing() const;
   void set_playing(bool value);
 
+  // optional uint32 volume = 4;
+  bool has_volume() const;
+  void clear_volume();
+  static const int kVolumeFieldNumber = 4;
+  ::google::protobuf::uint32 volume() const;
+  void set_volume(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:tec.proto.AudioSource)
  private:
   inline void set_has_looping();
@@ -1400,6 +1407,8 @@ class AudioSource : public ::google::protobuf::Message {
   inline void clear_has_audio_name();
   inline void set_has_playing();
   inline void clear_has_playing();
+  inline void set_has_volume();
+  inline void clear_has_volume();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
@@ -1407,6 +1416,7 @@ class AudioSource : public ::google::protobuf::Message {
   ::google::protobuf::internal::ArenaStringPtr audio_name_;
   bool looping_;
   bool playing_;
+  ::google::protobuf::uint32 volume_;
   friend void  protobuf_AddDesc_components_2eproto();
   friend void protobuf_AssignDesc_components_2eproto();
   friend void protobuf_ShutdownFile_components_2eproto();
@@ -2914,6 +2924,30 @@ inline void AudioSource::set_playing(bool value) {
   set_has_playing();
   playing_ = value;
   // @@protoc_insertion_point(field_set:tec.proto.AudioSource.playing)
+}
+
+// optional uint32 volume = 4;
+inline bool AudioSource::has_volume() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void AudioSource::set_has_volume() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void AudioSource::clear_has_volume() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void AudioSource::clear_volume() {
+  volume_ = 0u;
+  clear_has_volume();
+}
+inline ::google::protobuf::uint32 AudioSource::volume() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.volume)
+  return volume_;
+}
+inline void AudioSource::set_volume(::google::protobuf::uint32 value) {
+  set_has_volume();
+  volume_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.volume)
 }
 
 // -------------------------------------------------------------------

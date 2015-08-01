@@ -48,7 +48,9 @@ namespace tec {
 						std::cout << "Please place files in the assets/ folder." << std::endl;
 					}
 				}
-				std::cout << "No extension!." << std::endl;
+				else {
+					std::cout << "No extension!." << std::endl;
+				}
 			}
 		}
 	};

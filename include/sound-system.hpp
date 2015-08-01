@@ -20,14 +20,15 @@ namespace tec {
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
 	struct AudioSource {
 		AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play) :
-			vorbis_stream(stream), source_state(auto_play ? PLAYING : PAUSED) { }
-		AudioSource() : vorbis_stream(nullptr), source_state(PAUSED) { }
+			vorbis_stream(stream), source_state(auto_play ? PLAYING : PAUSED), gain(100) { }
+		AudioSource() : vorbis_stream(nullptr), source_state(PAUSED), gain(100) { }
 
 		void Out(proto::Component* target) {
 			proto::AudioSource* comp = target->mutable_audio_source();
 			comp->set_audio_name(this->audio_name);
 			comp->set_looping(this->looping);
 			comp->set_playing((this->source_state == PLAYING) ? true : false);
+			comp->set_volume(this->gain);
 		}
 		void In(const proto::Component& source) {
 			const proto::AudioSource& comp = source.audio_source();
@@ -46,6 +47,9 @@ namespace tec {
 			}
 			if (comp.has_playing()) {
 				this->source_state = comp.playing() ? PLAYING : PAUSED;
+			}
+			if (comp.has_volume()) {
+				this->gain = comp.volume();
 			}
 		}
 
@@ -71,6 +75,9 @@ namespace tec {
 				val->audio_name = key_func.second;
 				val->vorbis_stream = SoundMap::Get(val->audio_name);
 			};
+			Property iprop(Property::INTEGER);
+			(refcomp.properties["Volume"] = iprop).Set<int>(val->gain);
+			refcomp.properties["Volume"].update_func = [val] (Property& prop) { val->gain = prop.Get<int>(); };
 			return std::move(refcomp);
 		}
 
@@ -78,6 +85,8 @@ namespace tec {
 		ALuint buffer[2];
 
 		bool looping;
+
+		int gain; // Volume
 
 		AUDIOSOURCE_STATE source_state;
 

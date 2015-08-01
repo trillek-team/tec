@@ -116,7 +116,7 @@ namespace tec {
 		}
 
 		btCollisionObjectArray& obj_array = this->dynamicsWorld->getCollisionObjectArray();
-		for (std::size_t i = 0; i < obj_array.size(); ++i) {
+		for (int i = 0; i < obj_array.size(); ++i) {
 			const CollisionBody* colbody = static_cast<const CollisionBody*>(obj_array.at(i)->getUserPointer());
 			eid entity_id = colbody->entity_id;
 			if (this->bodies.find(entity_id) == this->bodies.end()) {
