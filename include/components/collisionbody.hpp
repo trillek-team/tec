@@ -18,6 +18,9 @@ namespace tec {
 	struct CollisionBody {
 		CollisionBody(COLLISION_SHAPE collision_shape = NONE);
 		~CollisionBody();
+		
+		void Out(proto::Component* target);
+		void In(const proto::Component& source);
 
 		static ReflectionComponent Reflection(CollisionBody* val);
 

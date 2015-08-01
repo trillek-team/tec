@@ -24,8 +24,8 @@ namespace tec {
 
 		glm::vec3 value;
 
-		void Out(proto::Position* target);
-		void In(const proto::Position& source);
+		void Out(proto::Component* target);
+		void In(const proto::Component& source);
 
 		static ReflectionComponent Reflection(Position* val) {
 			ReflectionComponent refcomp;
@@ -60,8 +60,8 @@ namespace tec {
 		glm::quat value;
 		glm::vec3 rotation;
 
-		void Out(proto::Orientation* target);
-		void In(const proto::Orientation& source);
+		void Out(proto::Component* target);
+		void In(const proto::Component& source);
 
 		static ReflectionComponent Reflection(Orientation* val) {
 			ReflectionComponent refcomp;
@@ -91,6 +91,9 @@ namespace tec {
 		Scale() { }
 
 		glm::vec3 value;
+
+		void Out(proto::Component* target);
+		void In(const proto::Component& source);
 
 		static ReflectionComponent Reflection(Scale* val) {
 			ReflectionComponent refcomp;

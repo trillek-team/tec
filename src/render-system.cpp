@@ -8,9 +8,9 @@
 #include "graphics/shader.hpp"
 #include "graphics/view.hpp"
 #include "graphics/vertex-buffer-object.hpp"
+#include "graphics/material.hpp"
 #include "components/transforms.hpp"
 #include "components/renderable.hpp"
-#include "graphics/material.hpp"
 #include "entity.hpp"
 #include "os.hpp"
 
@@ -62,6 +62,7 @@ namespace tec {
 			}
 			glm::vec3 position;
 			glm::quat orientation;
+			glm::vec3 scale(1.0);
 			Entity e(entity_id);
 			if (e.Has<Position>()) {
 				position = e.Get<Position>().lock()->value;
@@ -69,11 +70,14 @@ namespace tec {
 			if (e.Has<Orientation>()) {
 				orientation = e.Get<Orientation>().lock()->value;
 			}
+			if (e.Has<Scale>()) {
+				scale = e.Get<Scale>().lock()->value;
+			}
 			auto camera_translation = position;
 			auto camera_orientation = orientation;
 
-			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
-				glm::mat4_cast(camera_orientation);
+			this->model_matricies[entity_id] = glm::scale(glm::translate(glm::mat4(1.0), camera_translation) *
+				glm::mat4_cast(camera_orientation), scale);
 			if (!renderable->buffer) {
 				renderable->buffer = std::make_shared<VertexBufferObject>();
 				renderable->buffer->Load(renderable->mesh);
@@ -92,8 +96,10 @@ namespace tec {
 			if (e.Has<Animation>()) {
 				auto anim = e.Get<Animation>().lock();
 				anim->UpdateAnimation(delta);
-				ri.animated = true;
-				ri.animation = anim;
+				if (anim->animation_matrices.size() > 0) {
+					ri.animated = true;
+					ri.animation = anim;
+				}
 			}
 
 			std::shared_ptr<Shader> shader = renderable->shader;
@@ -112,6 +118,7 @@ namespace tec {
 
 			glm::vec3 position;
 			glm::quat orientation;
+			glm::vec3 scale(1.0);
 			Entity e(entity_id);
 			if (e.Has<Position>()) {
 				position = e.Get<Position>().lock()->value;
@@ -119,18 +126,20 @@ namespace tec {
 			if (e.Has<Orientation>()) {
 				orientation = e.Get<Orientation>().lock()->value;
 			}
+			if (e.Has<Scale>()) {
+				scale = e.Get<Scale>().lock()->value;
+			}
 			auto camera_translation = position;
 			auto camera_orientation = orientation;
 
-			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), camera_translation) *
-				glm::mat4_cast(camera_orientation);
+			this->model_matricies[entity_id] = glm::scale(glm::translate(glm::mat4(1.0), camera_translation) *
+				glm::mat4_cast(camera_orientation), scale);
 
 			view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
 			if (view->active) {
 				this->current_view = view;
 			}
 		}
-
 		static float red = 0.3f, blue = 0.3f, green = 0.3f;
 
 		glClearColor(red, green, blue, 1.0f);

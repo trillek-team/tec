@@ -267,8 +267,10 @@ namespace tec {
 				collision_body->shape = std::make_shared<btCapsuleShape>(collision_body->radius, collision_body->height);
 				break;
 		}
-		if (collision_body->shape) {
-			collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);
+		if (collision_body->mass > 0.0) {
+			if (collision_body->shape) {
+				collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);
+			}
 		}
 		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
 			collision_body->motion_state, collision_body->shape.get(), fallInertia);

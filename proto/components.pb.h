@@ -48,6 +48,7 @@ class CollisionBody_Box;
 class CollisionBody_Sphere;
 class CollisionBody_Capsule;
 class Velocity;
+class AudioSource;
 class Component;
 class Entity;
 class EntityList;
@@ -1301,6 +1302,120 @@ class Velocity : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class AudioSource : public ::google::protobuf::Message {
+ public:
+  AudioSource();
+  virtual ~AudioSource();
+
+  AudioSource(const AudioSource& from);
+
+  inline AudioSource& operator=(const AudioSource& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AudioSource& default_instance();
+
+  void Swap(AudioSource* other);
+
+  // implements Message ----------------------------------------------
+
+  inline AudioSource* New() const { return New(NULL); }
+
+  AudioSource* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AudioSource& from);
+  void MergeFrom(const AudioSource& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(AudioSource* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bool looping = 1;
+  bool has_looping() const;
+  void clear_looping();
+  static const int kLoopingFieldNumber = 1;
+  bool looping() const;
+  void set_looping(bool value);
+
+  // optional string audio_name = 2;
+  bool has_audio_name() const;
+  void clear_audio_name();
+  static const int kAudioNameFieldNumber = 2;
+  const ::std::string& audio_name() const;
+  void set_audio_name(const ::std::string& value);
+  void set_audio_name(const char* value);
+  void set_audio_name(const char* value, size_t size);
+  ::std::string* mutable_audio_name();
+  ::std::string* release_audio_name();
+  void set_allocated_audio_name(::std::string* audio_name);
+
+  // optional bool playing = 3;
+  bool has_playing() const;
+  void clear_playing();
+  static const int kPlayingFieldNumber = 3;
+  bool playing() const;
+  void set_playing(bool value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.AudioSource)
+ private:
+  inline void set_has_looping();
+  inline void clear_has_looping();
+  inline void set_has_audio_name();
+  inline void clear_has_audio_name();
+  inline void set_has_playing();
+  inline void clear_has_playing();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr audio_name_;
+  bool looping_;
+  bool playing_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static AudioSource* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -1333,6 +1448,7 @@ class Component : public ::google::protobuf::Message {
     kScale = 6,
     kCollisionBody = 7,
     kVelocity = 8,
+    kAudioSource = 9,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -1449,6 +1565,15 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::Velocity* release_velocity();
   void set_allocated_velocity(::tec::proto::Velocity* velocity);
 
+  // optional .tec.proto.AudioSource audio_source = 9;
+  bool has_audio_source() const;
+  void clear_audio_source();
+  static const int kAudioSourceFieldNumber = 9;
+  const ::tec::proto::AudioSource& audio_source() const;
+  ::tec::proto::AudioSource* mutable_audio_source();
+  ::tec::proto::AudioSource* release_audio_source();
+  void set_allocated_audio_source(::tec::proto::AudioSource* audio_source);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
@@ -1460,6 +1585,7 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_scale();
   inline void set_has_collision_body();
   inline void set_has_velocity();
+  inline void set_has_audio_source();
 
   inline bool has_component() const;
   void clear_component();
@@ -1478,6 +1604,7 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::Scale* scale_;
     ::tec::proto::CollisionBody* collision_body_;
     ::tec::proto::Velocity* velocity_;
+    ::tec::proto::AudioSource* audio_source_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -2686,6 +2813,111 @@ inline void Velocity::set_angular_z(float value) {
 
 // -------------------------------------------------------------------
 
+// AudioSource
+
+// optional bool looping = 1;
+inline bool AudioSource::has_looping() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AudioSource::set_has_looping() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AudioSource::clear_has_looping() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AudioSource::clear_looping() {
+  looping_ = false;
+  clear_has_looping();
+}
+inline bool AudioSource::looping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.looping)
+  return looping_;
+}
+inline void AudioSource::set_looping(bool value) {
+  set_has_looping();
+  looping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.looping)
+}
+
+// optional string audio_name = 2;
+inline bool AudioSource::has_audio_name() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AudioSource::set_has_audio_name() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AudioSource::clear_has_audio_name() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AudioSource::clear_audio_name() {
+  audio_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_audio_name();
+}
+inline const ::std::string& AudioSource::audio_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.audio_name)
+  return audio_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void AudioSource::set_audio_name(const ::std::string& value) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.audio_name)
+}
+inline void AudioSource::set_audio_name(const char* value) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.AudioSource.audio_name)
+}
+inline void AudioSource::set_audio_name(const char* value, size_t size) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.AudioSource.audio_name)
+}
+inline ::std::string* AudioSource::mutable_audio_name() {
+  set_has_audio_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.AudioSource.audio_name)
+  return audio_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* AudioSource::release_audio_name() {
+  clear_has_audio_name();
+  return audio_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void AudioSource::set_allocated_audio_name(::std::string* audio_name) {
+  if (audio_name != NULL) {
+    set_has_audio_name();
+  } else {
+    clear_has_audio_name();
+  }
+  audio_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), audio_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.AudioSource.audio_name)
+}
+
+// optional bool playing = 3;
+inline bool AudioSource::has_playing() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AudioSource::set_has_playing() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AudioSource::clear_has_playing() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AudioSource::clear_playing() {
+  playing_ = false;
+  clear_has_playing();
+}
+inline bool AudioSource::playing() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.playing)
+  return playing_;
+}
+inline void AudioSource::set_playing(bool value) {
+  set_has_playing();
+  playing_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.playing)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -3056,6 +3288,52 @@ inline void Component::set_allocated_velocity(::tec::proto::Velocity* velocity) 
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.velocity)
 }
 
+// optional .tec.proto.AudioSource audio_source = 9;
+inline bool Component::has_audio_source() const {
+  return component_case() == kAudioSource;
+}
+inline void Component::set_has_audio_source() {
+  _oneof_case_[0] = kAudioSource;
+}
+inline void Component::clear_audio_source() {
+  if (has_audio_source()) {
+    delete component_.audio_source_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::AudioSource& Component::audio_source() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.audio_source)
+  return has_audio_source() ? *component_.audio_source_
+                      : ::tec::proto::AudioSource::default_instance();
+}
+inline ::tec::proto::AudioSource* Component::mutable_audio_source() {
+  if (!has_audio_source()) {
+    clear_component();
+    set_has_audio_source();
+    component_.audio_source_ = new ::tec::proto::AudioSource;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.audio_source)
+  return component_.audio_source_;
+}
+inline ::tec::proto::AudioSource* Component::release_audio_source() {
+  if (has_audio_source()) {
+    clear_has_component();
+    ::tec::proto::AudioSource* temp = component_.audio_source_;
+    component_.audio_source_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_audio_source(::tec::proto::AudioSource* audio_source) {
+  clear_component();
+  if (audio_source) {
+    set_has_audio_source();
+    component_.audio_source_ = audio_source;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.audio_source)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -3158,6 +3436,8 @@ EntityList::mutable_entities() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

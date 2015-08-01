@@ -12,7 +12,7 @@ namespace tec {
 
 	class Animation final {
 	public:
-		Animation() : animation_time(0.0f) { }
+		Animation() : animation_time(0.0f), frame_count(0) { }
 		Animation(std::shared_ptr<MD5Anim> animation);
 		/**
 		* \brief Updates the current animation based on a change in time.
@@ -30,6 +30,9 @@ namespace tec {
 		* \return void
 		*/
 		void SetAnimationFile(std::shared_ptr<MD5Anim> file);
+
+		void Out(proto::Component* target);
+		void In(const proto::Component& source);
 
 		static ReflectionComponent Reflection(Animation* val);
 

@@ -41,19 +41,23 @@ namespace tec {
 		Property bprop(Property::BOOLEAN);
 		(refcomp.properties["Hidden"] = bprop).Set(val->hidden);
 		refcomp.properties["Hidden"].update_func = [val] (Property& prop) { val->hidden = prop.Get<bool>(); };
+
 		return std::move(refcomp);
 	}
 
-	void Renderable::Out(proto::Renderable* target) {
-		target->set_mesh_name(this->mesh_name);
-		target->set_shader_name(this->shader_name);
-		target->set_hidden(this->hidden);
+	void Renderable::Out(proto::Component* target) {
+		proto::Renderable* comp = target->mutable_renderable();
+		comp->set_mesh_name(this->mesh_name);
+		comp->set_shader_name(this->shader_name);
+		comp->set_hidden(this->hidden);
 	}
-	
+
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
-	void Renderable::In(const proto::Renderable& source) {
-		if (source.has_mesh_name()) {
-			this->mesh_name = source.mesh_name();
+
+	void Renderable::In(const proto::Component& source) {
+		const proto::Renderable& comp = source.renderable();
+		if (comp.has_mesh_name()) {
+			this->mesh_name = comp.mesh_name();
 			if (!MeshMap::Has(this->mesh_name)) {
 				std::string ext = this->mesh_name.substr(this->mesh_name.find_last_of(".") + 1);
 				if (file_factories.find(ext) != file_factories.end()) {
@@ -62,12 +66,12 @@ namespace tec {
 			}
 			this->mesh = MeshMap::Get(this->mesh_name);
 		}
-		if (source.has_shader_name()) {
-			this->shader_name = source.shader_name();
+		if (comp.has_shader_name()) {
+			this->shader_name = comp.shader_name();
 			this->shader = ShaderMap::Get(this->shader_name);
 		}
-		if (source.has_hidden()) {
-			this->hidden = source.hidden();
+		if (comp.has_hidden()) {
+			this->hidden = comp.hidden();
 		}
 	}
 }

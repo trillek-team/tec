@@ -126,7 +126,9 @@ namespace tec {
 			switch (data->action) {
 				case KeyboardEvent::KEY_DOWN:
 					if (data->key == GLFW_KEY_ESCAPE) {
-						KeyboardComponentMap::Get(active_entity)->has_focus = false;
+						if (KeyboardComponentMap::Has(active_entity)) {
+							KeyboardComponentMap::Get(active_entity)->has_focus = false;
+						}
 					}
 					active_keybaord->SendKeyEvent(data->scancode, data->key,
 						gkeyboard::KEY_MODS::KEY_MOD_NONE);
