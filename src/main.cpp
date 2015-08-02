@@ -61,12 +61,12 @@ std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::
 int main(int argc, char* argv[]) {
 	tec::OS os;
 
-	os.InitializeWindow(800, 600, "TEC 0.1", 3, 2);
+	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
 
 	tec::IMGUISystem gui(os.GetWindow());
 	tec::RenderSystem rs;
 
-	rs.SetViewportSize(800, 600);
+	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
 	tec::PhysicsSystem ps;
 
@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
 
 	tec::FileLisenter flistener;
 
-	gui.AddWindowDrawFunction("active_entity", [] () {
+	gui.AddWindowDrawFunction("active_entity", [ ] () {
 		if (tec::active_entity != 0) {
 			ImGui::SetTooltip("#%i", tec::active_entity);
 		}
@@ -250,6 +250,16 @@ int main(int argc, char* argv[]) {
 														prop.second.Set(choices);
 														prop.second.update_func(prop.second);
 													}
+												}
+											}
+											break;
+										case tec::Property::RGB:
+											{
+												glm::vec3 val = prop.second.Get<glm::vec3>();
+												float color[] = {val.r, val.g, val.b};
+												if (ImGui::ColorEdit3("Color", color)) {
+													prop.second.Set(glm::vec3(color[0], color[1], color[2]));
+													prop.second.update_func(prop.second);
 												}
 											}
 											break;

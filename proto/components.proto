@@ -74,6 +74,21 @@ message AudioSource {
 	optional uint32 volume = 4;
 }
 
+message Light {
+	optional float color_x = 1;
+	optional float color_y = 2;
+	optional float color_z = 3;
+	optional float ambient_intensity = 4;
+	optional float diffuse_intensity = 5;
+	message Attenuation {
+		optional float constant = 1;
+		optional float linear = 2;
+		optional float exponential = 3;
+	}
+	optional Attenuation attenuation = 6;
+	optional float cutoff = 7;
+}
+
 message Component {
 	oneof component {
 		Renderable renderable = 1;
@@ -85,6 +100,7 @@ message Component {
 		CollisionBody collision_body = 7;
 		Velocity velocity = 8;
 		AudioSource audio_source = 9;
+		Light light = 10;
 	}
 }
 

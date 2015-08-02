@@ -16,10 +16,13 @@
 #include "event-system.hpp"
 #include "command-queue.hpp"
 #include "graphics/animation.hpp"
+#include "graphics/gbuffer.hpp"
+#include "graphics/vertex-buffer-object.hpp"
 
 namespace tec {
 	struct VertexGroup;
 	struct Renderable;
+	struct PointLight;
 	struct View;
 	class Shader;
 
@@ -39,9 +42,20 @@ namespace tec {
 
 		void Update(const double delta);
 
+		void RenderGbuffer();
+
+		void RenderGeometryPass();
+
+		void BeginLightPass();
+
+		void PointLightPass();
+
+		void DirectionalLightPass();
+
 		bool ActivateView(const eid entity_id);
 	private:
 		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
+		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
 
 		void On(std::shared_ptr<WindowResizedEvent> data);
 
@@ -50,6 +64,9 @@ namespace tec {
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
 		std::shared_ptr<Shader> default_shader;
+
+		GBuffer gbuffer;
+		VertexBufferObject sphere_vbo; // Used for rendering point lights.
 
 		struct RenderItem {
 			glm::mat4* model_matrix;

@@ -55,7 +55,8 @@ namespace tec {
 	MAKE_IDTYPE(AudioSource, 8);
 	MAKE_COMPONENTCASETYPE(AudioSource, proto::Component::kAudioSource);
 	struct PointLight;
-	MAKE_IDTYPE(PointLight, 8);
+	MAKE_IDTYPE(PointLight, 9);
+	MAKE_COMPONENTCASETYPE(PointLight, proto::Component::kLight);
 
 
 	class MD5Mesh;
