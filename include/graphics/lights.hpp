@@ -23,10 +23,68 @@ namespace tec {
 	};
 
 	struct DirectionalLight : public BaseLight {
-		glm::vec3 Direction;
+		glm::vec3 direction;
 
 		DirectionalLight() {
-			Direction = glm::vec3(0.0f, 0.0f, 0.0f);
+			direction = glm::vec3(0.0f, 0.0f, -1.0f);
+		}
+
+		void Out(proto::Component* target) {
+			proto::Light* comp = target->mutable_dirlight();
+			comp->set_color_x(this->color.x);
+			comp->set_color_y(this->color.y);
+			comp->set_color_z(this->color.z);
+			comp->set_ambient_intensity(this->ambient_intensity);
+			comp->set_diffuse_intensity(this->diffuse_intensity);
+			proto::Light::Direction* dir = comp->mutable_direction();
+			dir->set_x(this->direction.x);
+			dir->set_y(this->direction.y);
+			dir->set_z(this->direction.z);
+		}
+
+		void In(const proto::Component& source) {
+			const proto::Light& comp = source.dirlight();
+			if (comp.has_color_x()) {
+				this->color.x = comp.color_x();
+			}
+			if (comp.has_color_y()) {
+				this->color.y = comp.color_y();
+			}
+			if (comp.has_color_z()) {
+				this->color.z = comp.color_z();
+			}
+			if (comp.has_ambient_intensity()) {
+				this->ambient_intensity = comp.ambient_intensity();
+			}
+			if (comp.has_diffuse_intensity()) {
+				this->diffuse_intensity = comp.diffuse_intensity();
+			}
+			if (comp.has_direction()) {
+				const proto::Light::Direction& direction = comp.direction();
+				this->direction.x = direction.x();
+				this->direction.y = direction.y();
+				this->direction.z = direction.z();
+			}
+		}
+
+		static ReflectionComponent Reflection(DirectionalLight* val) {
+			ReflectionComponent refcomp;
+			Property rgbprop(Property::RGB);
+			(refcomp.properties["Color"] = rgbprop).Set(val->color);
+			refcomp.properties["Color"].update_func = [val] (Property& prop) { val->color = prop.Get<glm::vec3>(); };
+			Property fprop(Property::FLOAT);
+			(refcomp.properties["Ambient Intensity"] = fprop).Set(val->ambient_intensity);
+			refcomp.properties["Ambient Intensity"].update_func = [val] (Property& prop) { val->ambient_intensity = prop.Get<float>(); };
+			(refcomp.properties["Diffuse Intensity"] = fprop).Set(val->diffuse_intensity);
+			refcomp.properties["Diffuse Intensity"].update_func = [val] (Property& prop) { val->diffuse_intensity = prop.Get<float>(); };
+			(refcomp.properties["Direction X"] = fprop).Set(val->direction.x);
+			refcomp.properties["Direction X"].update_func = [val] (Property& prop) { val->direction.x = prop.Get<float>(); };
+			(refcomp.properties["Direction Y"] = fprop).Set(val->direction.y);
+			refcomp.properties["Direction Y"].update_func = [val] (Property& prop) { val->direction.y = prop.Get<float>(); };
+			(refcomp.properties["Direction Z"] = fprop).Set(val->direction.z);
+			refcomp.properties["Direction Z"].update_func = [val] (Property& prop) { val->direction.z = prop.Get<float>(); };
+
+			return std::move(refcomp);
 		}
 	};
 

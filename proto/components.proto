@@ -87,6 +87,12 @@ message Light {
 	}
 	optional Attenuation attenuation = 6;
 	optional float cutoff = 7;
+	message Direction {
+		optional float x = 1;
+		optional float y = 2;
+		optional float z = 3;
+	}
+	optional Direction direction = 8;
 }
 
 message Component {
@@ -101,6 +107,8 @@ message Component {
 		Velocity velocity = 8;
 		AudioSource audio_source = 9;
 		Light light = 10;
+		Light dirlight = 11;
+		Light spotlight = 12;
 	}
 }
 

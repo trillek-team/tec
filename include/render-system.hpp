@@ -23,6 +23,7 @@ namespace tec {
 	struct VertexGroup;
 	struct Renderable;
 	struct PointLight;
+	struct DirectionalLight;
 	struct View;
 	class Shader;
 
@@ -46,16 +47,19 @@ namespace tec {
 
 		void RenderGeometryPass();
 
-		void BeginLightPass();
+		void StencilPass(glm::mat4 scale_matrix);
 
 		void PointLightPass();
 
 		void DirectionalLightPass();
+		
+		void FinalPass();
 
 		bool ActivateView(const eid entity_id);
 	private:
 		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
 		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
+		typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
 
 		void On(std::shared_ptr<WindowResizedEvent> data);
 
@@ -67,6 +71,7 @@ namespace tec {
 
 		GBuffer gbuffer;
 		VertexBufferObject sphere_vbo; // Used for rendering point lights.
+		VertexBufferObject quad_vbo; // Used for rendering directional lights.
 
 		struct RenderItem {
 			glm::mat4* model_matrix;

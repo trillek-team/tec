@@ -11,7 +11,7 @@ namespace tec {
 	typedef std::int64_t eid;
 
 	template<class TYPE> const char* GetTypeName(void) { return "UNKNOWN"; }
-	template<class TYPE> proto::Component::ComponentCase GetComponentCase(void) { return "UNKNOWN"; }
+	template<class TYPE> proto::Component::ComponentCase GetComponentCase(void) { return proto::Component::ComponentCase::COMPONENT_NOT_SET; }
 	template<class TYPE> unsigned int GetTypeID(void) { return ~0; }
 	template<class TYPE> const char* GetTypeEXT(void) { return "UNKNOWN"; }
 
@@ -57,6 +57,9 @@ namespace tec {
 	struct PointLight;
 	MAKE_IDTYPE(PointLight, 9);
 	MAKE_COMPONENTCASETYPE(PointLight, proto::Component::kLight);
+	struct DirectionalLight;
+	MAKE_IDTYPE(DirectionalLight, 10);
+	MAKE_COMPONENTCASETYPE(DirectionalLight, proto::Component::kDirlight);
 
 
 	class MD5Mesh;

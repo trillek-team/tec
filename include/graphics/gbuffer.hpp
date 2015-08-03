@@ -27,16 +27,23 @@ namespace tec {
 
 		bool Resize(unsigned int window_width, unsigned int window_height);
 
-		void BindForWriting() const;
+		void StartFrame();
+
+		void BindForGeomPass();
+
+		void BindForStencilPass();
+
+		void BindForLightPass();
+
+		void BindForFinalPass();
 
 		void BindForRendering() const;
-
-		void BindForReading() const;
 
 		void SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) const;
 	private:
 		GLuint frame_buffer_object;
 		GLuint textures[GBUFFER_NUM_TEXTURES];
 		GLuint depth_texture;
+		GLuint final_texture;
 	};
 }

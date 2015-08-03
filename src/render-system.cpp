@@ -29,6 +29,7 @@ namespace tec {
 		glDisable(GL_CULL_FACE);
 		this->gbuffer.Init(window_width, window_height);
 		this->sphere_vbo.Load(OBJ::Create("assets/sphere/sphere.obj"));
+		this->quad_vbo.Load(OBJ::Create("assets/quad/quad.obj"));
 	}
 
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
@@ -146,10 +147,16 @@ namespace tec {
 			}
 		}
 		glViewport(0, 0, this->window_width, this->window_height);
+
+		this->gbuffer.StartFrame();
 		RenderGeometryPass();
-		BeginLightPass();
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_STENCIL_TEST);
 		PointLightPass();
-		//RenderGbuffer();
+		glDisable(GL_STENCIL_TEST);
+		DirectionalLightPass();
+		FinalPass();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
@@ -188,7 +195,7 @@ namespace tec {
 		glClearColor(red, green, blue, 0.5f);
 		glDepthMask(GL_TRUE);
 
-		this->gbuffer.BindForWriting();
+		this->gbuffer.BindForGeomPass();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
@@ -202,17 +209,15 @@ namespace tec {
 
 		auto def_shader = ShaderMap::Get("deferred");
 		def_shader->Use();
+		if (!def_shader) {
+			return;
+		}
+		glUniformMatrix4fv(def_shader->GetUniformLocation("view"), 1, GL_FALSE, &camera_matrix[0][0]);
+		glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, &this->projection[0][0]);
+		GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
+		GLint animated_loc = def_shader->GetUniformLocation("animated");
+		GLint model_index = def_shader->GetUniformLocation("model");
 		for (auto shader_list : this->render_item_list) {
-			if (!def_shader) {
-				continue;
-			}
-
-			glUniformMatrix4fv(def_shader->GetUniformLocation("view"), 1, GL_FALSE, &camera_matrix[0][0]);
-			glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, &this->projection[0][0]);
-			GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
-			GLint animated_loc = def_shader->GetUniformLocation("animated");
-			GLint model_index = def_shader->GetUniformLocation("model");
-
 			for (auto render_item : shader_list.second) {
 				glBindVertexArray(render_item.vao);
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
@@ -239,23 +244,46 @@ namespace tec {
 		glDisable(GL_DEPTH_TEST);
 	}
 
-	void RenderSystem::BeginLightPass() {
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
+	void RenderSystem::StencilPass(glm::mat4 scale_matrix) {
+		auto def_stencil_shader = ShaderMap::Get("deferred_stencil");
 
-		this->gbuffer.BindForReading();
-		glClear(GL_COLOR_BUFFER_BIT);
+		this->gbuffer.BindForStencilPass();
+
+		def_stencil_shader->Use();
+
+		glm::mat4 camera_matrix(1.0);
+		auto view = this->current_view.lock();
+		if (view) {
+			camera_matrix = view->view_matrix;
+		}
+		glUniformMatrix4fv(def_stencil_shader->GetUniformLocation("view"), 1, GL_FALSE, &camera_matrix[0][0]);
+		glUniformMatrix4fv(def_stencil_shader->GetUniformLocation("projection"), 1, GL_FALSE, &this->projection[0][0]);
+		glUniformMatrix4fv(def_stencil_shader->GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(scale_matrix));
+
+		// Stencil Pass
+		glEnable(GL_DEPTH_TEST);
+
+		glDisable(GL_CULL_FACE);
+
+		glClear(GL_STENCIL_BUFFER_BIT);
+
+		glStencilFunc(GL_ALWAYS, 0, 0);
+
+		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+		glDrawElements(GL_TRIANGLES, this->sphere_vbo.GetVertexGroup(0)->index_count, GL_UNSIGNED_INT, 0);
+		def_stencil_shader->UnUse();
 	}
 
 	void RenderSystem::PointLightPass() {
+		auto def_pl_shader = ShaderMap::Get("deferred_pointlight");
+
 		glm::mat4 camera_matrix(1.0);
 		auto view = this->current_view.lock();
 		if (view) {
 			camera_matrix = view->view_matrix;
 		}
 
-		auto def_pl_shader = ShaderMap::Get("deferred_pointlight");
 		def_pl_shader->Use();
 
 		glUniformMatrix4fv(def_pl_shader->GetUniformLocation("view"), 1, GL_FALSE, &camera_matrix[0][0]);
@@ -271,6 +299,10 @@ namespace tec {
 		GLint Atten_Constant_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Constant");
 		GLint Atten_Linear_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Linear");
 		GLint Atten_Exp_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Exp");
+
+		glBindVertexArray(this->sphere_vbo.GetVAO());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->sphere_vbo.GetIBO());
+		size_t index_count = this->sphere_vbo.GetVertexGroup(0)->index_count;
 
 		for (auto itr = PointLightMap::Begin(); itr != PointLightMap::End(); ++itr) {
 			auto entity_id = itr->first;
@@ -288,9 +320,17 @@ namespace tec {
 			if (e.Has<Scale>()) {
 				scale = e.Get<Scale>().lock()->value;
 			}
-			
+
 			glm::mat4 transform_matrix = glm::scale(glm::translate(glm::mat4(1.0), position) *
 				glm::mat4_cast(orientation), scale);
+
+			light->UpdateBoundingRadius();
+			glm::mat4 scale_matrix = glm::scale(transform_matrix, glm::vec3(light->bounding_radius));
+
+			StencilPass(scale_matrix);
+
+			// Change state for light pass after the stencil pass. Stencil pass must happen for each light.
+			def_pl_shader->Use();
 
 			glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
 			glUniform1f(AmbientIntensity_index, light->ambient_intensity);
@@ -299,20 +339,118 @@ namespace tec {
 			glUniform1f(Atten_Linear_index, light->Attenuation.linear);
 			glUniform1f(Atten_Exp_index, light->Attenuation.exponential);
 
-			light->UpdateBoundingRadius();
-			glm::mat4 scale_matrix = glm::scale(transform_matrix, glm::vec3(light->bounding_radius));
 			glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
-			glBindVertexArray(this->sphere_vbo.GetVAO());
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->sphere_vbo.GetIBO());
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glDrawElements(GL_TRIANGLES, this->sphere_vbo.GetVertexGroup(0)->index_count, GL_UNSIGNED_INT, 0);
+
+			this->gbuffer.BindForLightPass();
+
+			glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+			glDisable(GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT);
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_ONE, GL_ONE);
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+			glCullFace(GL_BACK);
+			glDisable(GL_BLEND);
 		}
 
 		def_pl_shader->UnUse();
 	}
 
-	void RenderSystem::DirectionalLightPass() {
+	void RenderSystem::FinalPass() {
+		this->gbuffer.BindForFinalPass();
+		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
+			0, 0, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	}
+	glm::vec3 ExtractCameraPos(glm::mat4 a_modelView) {
+		// Get the 3 basis vector planes at the camera origin and transform them into model space.
+		//  
+		// NOTE: Planes have to be transformed by the inverse transpose of a matrix
+		//       Nice reference here: http://www.opengl.org/discussion_boards/showthread.php/159564-Clever-way-to-transform-plane-by-matrix
+		//
+		//       So for a transform to model space we need to do:
+		//            inverse(transpose(inverse(MV)))
+		//       This equals : transpose(MV) - see Lemma 5 in http://mathrefresher.blogspot.com.au/2007/06/transpose-of-matrix.html
+		//
+		// As each plane is simply (1,0,0,0), (0,1,0,0), (0,0,1,0) we can pull the data directly from the transpose matrix.
+		//  
+		glm::mat4 modelViewT = transpose(a_modelView);
 
+		// Get plane normals 
+		glm::vec3 n1 = {modelViewT[0].x, modelViewT[0].y, modelViewT[0].z};
+		glm::vec3 n2 = {modelViewT[1].x, modelViewT[1].y, modelViewT[1].z};
+		glm::vec3 n3 = {modelViewT[2].x, modelViewT[2].y, modelViewT[2].z};
+
+		// Get plane distances
+		float d1 = modelViewT[0].w;
+		float d2 = modelViewT[1].w;
+		float d3 = modelViewT[2].w;
+
+		// Get the intersection of these 3 planes
+		// http://paulbourke.net/geometry/3planes/
+		glm::vec3 n2n3 = cross(n2, n3);
+		glm::vec3 n3n1 = cross(n3, n1);
+		glm::vec3 n1n2 = cross(n1, n2);
+
+		glm::vec3 top = (n2n3 * d1) + (n3n1 * d2) + (n1n2 * d3);
+		float denom = dot(n1, n2n3);
+
+		return top / -denom;
+	}
+
+	void RenderSystem::DirectionalLightPass() {
+		auto def_dl_shader = ShaderMap::Get("deferred_dirlight");
+		def_dl_shader->Use();
+
+		glm::mat4 camera_matrix(1.0);
+		auto view = this->current_view.lock();
+		if (view) {
+			camera_matrix = view->view_matrix;
+		}
+		glm::vec3 eye_pos = ExtractCameraPos(camera_matrix);
+
+		glm::mat4 ident;
+		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(ident));
+		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(ident));
+		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(ident));
+		glUniform1i(def_dl_shader->GetUniformLocation("gPositionMap"), GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+		glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+		glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), this->window_width, this->window_height);
+		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), eye_pos.x, eye_pos.y, eye_pos.z);
+		GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
+		GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
+		GLint DiffuseIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.DiffuseIntensity");
+		GLint direction_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Direction");
+
+		glBindVertexArray(this->quad_vbo.GetVAO());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_vbo.GetIBO());
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		this->gbuffer.BindForLightPass();
+
+		size_t index_count = this->quad_vbo.GetVertexGroup(0)->index_count;
+
+		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
+			auto entity_id = itr->first;
+			std::shared_ptr<DirectionalLight> light = itr->second;
+
+			glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
+			glUniform1f(AmbientIntensity_index, light->ambient_intensity);
+			glUniform1f(DiffuseIntensity_index, light->diffuse_intensity);
+			glUniform3f(direction_index, light->direction.x, light->direction.y, light->direction.z);
+
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+		}
+		glEnable(GL_CULL_FACE);
+		glDisable(GL_BLEND);
+
+		def_dl_shader->UnUse();
 	}
 
 	bool RenderSystem::ActivateView(const eid entity_id) {
