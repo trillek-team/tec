@@ -173,6 +173,9 @@ namespace tec {
 	}
 
 	CollisionMesh::CollisionMesh(std::shared_ptr<Mesh> mesh, bool dynamic) : CollisionBody((dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {
+		if (!mesh) {
+			return;
+		}
 		this->mesh_file = mesh;
 		this->mesh = GenerateTriangleMesh(this->mesh_file);
 		if (!this->mesh) {

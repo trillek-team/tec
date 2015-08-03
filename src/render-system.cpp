@@ -82,32 +82,39 @@ namespace tec {
 				renderable->buffer = std::make_shared<VertexBufferObject>();
 				renderable->buffer->Load(renderable->mesh);
 				size_t group_count = renderable->buffer->GetVertexGroupCount();
-				for (size_t i = 0; i < group_count; ++i) {
-					renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
+				if (group_count > 0) {
+					for (size_t i = 0; i < group_count; ++i) {
+						renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
+					}
+				}
+				else {
+					renderable->buffer.reset();
 				}
 			}
 
-			RenderItem ri;
-			ri.model_matrix = &this->model_matricies[entity_id];
-			ri.vao = renderable->buffer->GetVAO();
-			ri.ibo = renderable->buffer->GetIBO();
-			ri.vertex_groups = &renderable->vertex_groups;
+			if (renderable->buffer) {
+				RenderItem ri;
+				ri.model_matrix = &this->model_matricies[entity_id];
+				ri.vao = renderable->buffer->GetVAO();
+				ri.ibo = renderable->buffer->GetIBO();
+				ri.vertex_groups = &renderable->vertex_groups;
 
-			if (e.Has<Animation>()) {
-				auto anim = e.Get<Animation>().lock();
-				anim->UpdateAnimation(delta);
-				if (anim->animation_matrices.size() > 0) {
-					ri.animated = true;
-					ri.animation = anim;
+				if (e.Has<Animation>()) {
+					auto anim = e.Get<Animation>().lock();
+					anim->UpdateAnimation(delta);
+					if (anim->animation_matrices.size() > 0) {
+						ri.animated = true;
+						ri.animation = anim;
+					}
 				}
-			}
 
-			std::shared_ptr<Shader> shader = renderable->shader;
-			if (!shader) {
-				shader = this->default_shader;
-			}
-			for (auto group : renderable->vertex_groups) {
-				this->render_item_list[shader].insert(std::move(ri));
+				std::shared_ptr<Shader> shader = renderable->shader;
+				if (!shader) {
+					shader = this->default_shader;
+				}
+				for (auto group : renderable->vertex_groups) {
+					this->render_item_list[shader].insert(std::move(ri));
+				}
 			}
 		}
 

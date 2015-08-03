@@ -110,10 +110,11 @@ namespace tec {
 
 		obj->SetName(fname);
 
-		MeshMap::Set(fname, obj);
-
 		if (obj->Parse()) {
 			obj->PopulateMeshGroups();
+
+			MeshMap::Set(fname, obj);
+
 			return obj;
 		}
 
