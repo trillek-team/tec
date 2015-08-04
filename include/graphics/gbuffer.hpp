@@ -33,6 +33,8 @@ namespace tec {
 
 		void BindForStencilPass();
 
+		void BindForShadowPass();
+
 		void BindForLightPass();
 
 		void BindForFinalPass();
@@ -45,5 +47,7 @@ namespace tec {
 		GLuint textures[GBUFFER_NUM_TEXTURES];
 		GLuint depth_texture;
 		GLuint final_texture;
+		GLuint shadow_map_texture;
+		GLuint shadow_frame_buffer_object;
 	};
 }

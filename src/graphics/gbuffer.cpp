@@ -31,9 +31,31 @@ namespace tec {
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, this->final_texture, 0);
 
 		GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
+
 		glDrawBuffers(GBUFFER_NUM_TEXTURES, DrawBuffers);
 
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+		if (status != GL_FRAMEBUFFER_COMPLETE) {
+			return false;
+		}
+
+		// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+		glGenFramebuffers(1, &this->shadow_frame_buffer_object);
+		glBindFramebuffer(GL_FRAMEBUFFER, this->shadow_frame_buffer_object);
+
+		// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+		glGenTextures(1, &this->shadow_map_texture);
+		glBindTexture(GL_TEXTURE_2D, this->shadow_map_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->shadow_map_texture, 0);
+
+		status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
 			return false;
@@ -106,6 +128,12 @@ namespace tec {
 		glDrawBuffer(GL_NONE);
 	}
 
+	void GBuffer::BindForShadowPass() {
+		glViewport(0, 0, 1024, 1024);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->shadow_frame_buffer_object);
+		glDrawBuffer(GL_NONE);
+	}
+
 	void GBuffer::BindForLightPass() {
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 
@@ -113,6 +141,8 @@ namespace tec {
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, this->textures[GBUFFER_TEXTURE_TYPE_POSITION + i]);
 		}
+		glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES);
+		glBindTexture(GL_TEXTURE_2D, this->shadow_map_texture);
 	}
 
 	void GBuffer::BindForFinalPass() {

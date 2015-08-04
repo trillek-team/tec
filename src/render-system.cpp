@@ -146,8 +146,9 @@ namespace tec {
 				this->current_view = view;
 			}
 		}
-		glViewport(0, 0, this->window_width, this->window_height);
 
+		RenderShadowPass();
+		glViewport(0, 0, this->window_width, this->window_height);
 		this->gbuffer.StartFrame();
 		RenderGeometryPass();
 
@@ -157,6 +158,7 @@ namespace tec {
 		glDisable(GL_STENCIL_TEST);
 		DirectionalLightPass();
 		FinalPass();
+		RenderGbuffer();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
@@ -183,10 +185,6 @@ namespace tec {
 		this->gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
 			this->window_width - QuaterWidth, HalfHeight, this->window_width, HalfHeight + QuaterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-		this->gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_TEXCOORD);
-		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuaterWidth, HalfHeight + QuaterHeight, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}
 
 	void RenderSystem::RenderGeometryPass() {
@@ -241,6 +239,81 @@ namespace tec {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		glDepthMask(GL_FALSE);
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	void RenderSystem::RenderShadowPass() {
+		static float red = 0.0f, blue = 0.0f, green = 0.0f;
+
+		glm::mat4 camera_matrix(1.0);
+		auto view = this->current_view.lock();
+		if (view) {
+			camera_matrix = view->view_matrix;
+		}
+
+		glClearColor(red, green, blue, 0.5f);
+		glDepthMask(GL_TRUE);
+
+		this->gbuffer.BindForShadowPass();
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glDisable(GL_BLEND);
+
+		auto def_shader = ShaderMap::Get("deferred_shadow");
+		def_shader->Use();
+		if (!def_shader) {
+			return;
+		}
+
+		GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
+		GLint animated_loc = def_shader->GetUniformLocation("animated");
+		GLint model_index = def_shader->GetUniformLocation("model");
+		GLint depthMVP_index = def_shader->GetUniformLocation("depthMVP");
+
+		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
+			auto entity_id = itr->first;
+			std::shared_ptr<DirectionalLight> light = itr->second;
+			glm::vec3 lightInvDir = light->direction * -1.0f;
+
+			// Compute the MVP matrix from the light's point of view
+			glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
+			glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0.0,1.0,0.0));
+			glm::mat4 depthModelMatrix = glm::mat4(1.0);
+			glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
+
+			// Send our transformation to the currently bound shader,
+			// in the "MVP" uniform
+			glUniformMatrix4fv(depthMVP_index, 1, GL_FALSE, &depthMVP[0][0]);
+			for (auto shader_list : this->render_item_list) {
+				for (auto render_item : shader_list.second) {
+					glBindVertexArray(render_item.vao);
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
+					glUniform1i(animated_loc, 0);
+					if (render_item.animated) {
+						glUniform1i(animated_loc, 1);
+						auto& animmatricies = render_item.animation->animation_matrices;
+						glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
+					}
+					for (auto vertex_group : *render_item.vertex_groups) {
+						glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
+						vertex_group->material->Activate();
+						glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
+						glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
+						vertex_group->material->Deactivate();
+					}
+				}
+			}
+		}
+		def_shader->UnUse();
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glDepthMask(GL_FALSE);
+		glDisable(GL_CULL_FACE);
 		glDisable(GL_DEPTH_TEST);
 	}
 
@@ -414,15 +487,18 @@ namespace tec {
 		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(ident));
 		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(ident));
 		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(ident));
+		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("gCameraPos"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniform1i(def_dl_shader->GetUniformLocation("gPositionMap"), GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
 		glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+		glUniform1i(def_dl_shader->GetUniformLocation("gShadowMap"), GBuffer::GBUFFER_NUM_TEXTURES);
 		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), this->window_width, this->window_height);
 		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), eye_pos.x, eye_pos.y, eye_pos.z);
 		GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 		GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
 		GLint DiffuseIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.DiffuseIntensity");
 		GLint direction_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Direction");
+		GLint DepthBiasMVP_index = def_dl_shader->GetUniformLocation("DepthBiasMVP");
 
 		glBindVertexArray(this->quad_vbo.GetVAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_vbo.GetIBO());
@@ -439,6 +515,22 @@ namespace tec {
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			std::shared_ptr<DirectionalLight> light = itr->second;
+
+			glm::vec3 lightInvDir = light->direction * -1.0f;
+
+			// Compute the MVP matrix from the light's point of view
+			glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
+			glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0.0,1.0,0.0));
+			glm::mat4 depthModelMatrix = glm::mat4(1.0);
+			glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
+			glm::mat4 biasMatrix(
+				0.5, 0.0, 0.0, 0.0,
+				0.0, 0.5, 0.0, 0.0,
+				0.0, 0.0, 0.5, 0.0,
+				0.5, 0.5, 0.5, 1.0
+				);
+			glm::mat4 depthBiasMVP = biasMatrix * depthMVP;
+			glUniformMatrix4fv(DepthBiasMVP_index, 1, GL_FALSE, glm::value_ptr(depthBiasMVP));
 
 			glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
 			glUniform1f(AmbientIntensity_index, light->ambient_intensity);

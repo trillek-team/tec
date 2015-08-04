@@ -47,6 +47,8 @@ namespace tec {
 
 		void RenderGeometryPass();
 
+		void RenderShadowPass();
+
 		void StencilPass(glm::mat4 scale_matrix);
 
 		void PointLightPass();
