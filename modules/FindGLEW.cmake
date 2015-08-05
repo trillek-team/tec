@@ -18,8 +18,8 @@
 #  License text for the above reference.)
 
 find_path(GLEW_INCLUDE_DIR GL/glew.h)
-SET(GLEW_DEBUG_NAMES glew32_debug)
-SET(GLEW_NAMES glew32 GLEW)
+SET(GLEW_DEBUG_NAMES glew32s_debug)
+SET(GLEW_NAMES glew32s GLEW)
 add_definitions(-DGLEW_STATIC)
 
 # Reset the variables so that find_library will rescan in case we changed from static to none (or vice versa).
