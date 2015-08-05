@@ -10,13 +10,15 @@ namespace tec {
 		glm::mat4 view_matrix;
 		bool active = false;
 
-		void Out(proto::View* target) {
-			target->set_active(this->active);
+		void Out(proto::Component* target) {
+			proto::View* comp = target->mutable_view();
+			comp->set_active(this->active);
 		}
 
-		void In(const proto::View& source) {
-			if (source.has_active()) {
-				this->active = source.active();
+		void In(const proto::Component& source) {
+			const proto::View& comp = source.view();
+			if (comp.has_active()) {
+				this->active = comp.active();
 			}
 		}
 

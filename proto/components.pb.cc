@@ -59,6 +59,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Velocity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Velocity_reflection_ = NULL;
+const ::google::protobuf::Descriptor* AudioSource_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  AudioSource_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Component_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Component_reflection_ = NULL;
@@ -71,6 +74,7 @@ struct ComponentOneofInstance {
   const ::tec::proto::Scale* scale_;
   const ::tec::proto::CollisionBody* collision_body_;
   const ::tec::proto::Velocity* velocity_;
+  const ::tec::proto::AudioSource* audio_source_;
 }* Component_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* Entity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
@@ -278,8 +282,26 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Velocity),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Velocity, _internal_metadata_),
       -1);
-  Component_descriptor_ = file->message_type(8);
-  static const int Component_offsets_[9] = {
+  AudioSource_descriptor_ = file->message_type(8);
+  static const int AudioSource_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, looping_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, audio_name_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, playing_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, volume_),
+  };
+  AudioSource_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      AudioSource_descriptor_,
+      AudioSource::default_instance_,
+      AudioSource_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(AudioSource),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, _internal_metadata_),
+      -1);
+  Component_descriptor_ = file->message_type(9);
+  static const int Component_offsets_[10] = {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, renderable_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, position_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, orientation_),
@@ -288,6 +310,7 @@ void protobuf_AssignDesc_components_2eproto() {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, scale_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, collision_body_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, velocity_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, audio_source_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, component_),
   };
   Component_reflection_ =
@@ -303,7 +326,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Component),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, _internal_metadata_),
       -1);
-  Entity_descriptor_ = file->message_type(9);
+  Entity_descriptor_ = file->message_type(10);
   static const int Entity_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, components_),
@@ -319,7 +342,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Entity),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, _internal_metadata_),
       -1);
-  EntityList_descriptor_ = file->message_type(10);
+  EntityList_descriptor_ = file->message_type(11);
   static const int EntityList_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, entities_),
   };
@@ -369,6 +392,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Velocity_descriptor_, &Velocity::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      AudioSource_descriptor_, &AudioSource::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Component_descriptor_, &Component::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Entity_descriptor_, &Entity::default_instance());
@@ -402,6 +427,8 @@ void protobuf_ShutdownFile_components_2eproto() {
   delete CollisionBody_Capsule_reflection_;
   delete Velocity::default_instance_;
   delete Velocity_reflection_;
+  delete AudioSource::default_instance_;
+  delete AudioSource_reflection_;
   delete Component::default_instance_;
   delete Component_default_oneof_instance_;
   delete Component_reflection_;
@@ -438,19 +465,22 @@ void protobuf_AddDesc_components_2eproto() {
     "pe\"y\n\010Velocity\022\020\n\010linear_x\030\001 \001(\002\022\020\n\010line"
     "ar_y\030\002 \001(\002\022\020\n\010linear_z\030\003 \001(\002\022\021\n\tangular_"
     "x\030\004 \001(\002\022\021\n\tangular_y\030\005 \001(\002\022\021\n\tangular_z\030"
-    "\006 \001(\002\"\351\002\n\tComponent\022+\n\nrenderable\030\001 \001(\0132"
-    "\025.tec.proto.RenderableH\000\022\'\n\010position\030\002 \001"
-    "(\0132\023.tec.proto.PositionH\000\022-\n\013orientation"
-    "\030\003 \001(\0132\026.tec.proto.OrientationH\000\022\037\n\004view"
-    "\030\004 \001(\0132\017.tec.proto.ViewH\000\022)\n\tanimation\030\005"
-    " \001(\0132\024.tec.proto.AnimationH\000\022!\n\005Scale\030\006 "
-    "\001(\0132\020.tec.proto.ScaleH\000\0222\n\016collision_bod"
-    "y\030\007 \001(\0132\030.tec.proto.CollisionBodyH\000\022\'\n\010v"
-    "elocity\030\010 \001(\0132\023.tec.proto.VelocityH\000B\013\n\t"
-    "component\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\ncompo"
-    "nents\030\002 \003(\0132\024.tec.proto.Component\"1\n\nEnt"
-    "ityList\022#\n\010entities\030\001 \003(\0132\021.tec.proto.En"
-    "tity", 1284);
+    "\006 \001(\002\"S\n\013AudioSource\022\017\n\007looping\030\001 \001(\010\022\022\n"
+    "\naudio_name\030\002 \001(\t\022\017\n\007playing\030\003 \001(\010\022\016\n\006vo"
+    "lume\030\004 \001(\r\"\231\003\n\tComponent\022+\n\nrenderable\030\001"
+    " \001(\0132\025.tec.proto.RenderableH\000\022\'\n\010positio"
+    "n\030\002 \001(\0132\023.tec.proto.PositionH\000\022-\n\013orient"
+    "ation\030\003 \001(\0132\026.tec.proto.OrientationH\000\022\037\n"
+    "\004view\030\004 \001(\0132\017.tec.proto.ViewH\000\022)\n\tanimat"
+    "ion\030\005 \001(\0132\024.tec.proto.AnimationH\000\022!\n\005Sca"
+    "le\030\006 \001(\0132\020.tec.proto.ScaleH\000\0222\n\016collisio"
+    "n_body\030\007 \001(\0132\030.tec.proto.CollisionBodyH\000"
+    "\022\'\n\010velocity\030\010 \001(\0132\023.tec.proto.VelocityH"
+    "\000\022.\n\014audio_source\030\t \001(\0132\026.tec.proto.Audi"
+    "oSourceH\000B\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001"
+    " \002(\004\022(\n\ncomponents\030\002 \003(\0132\024.tec.proto.Com"
+    "ponent\"1\n\nEntityList\022#\n\010entities\030\001 \003(\0132\021"
+    ".tec.proto.Entity", 1417);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
@@ -465,6 +495,7 @@ void protobuf_AddDesc_components_2eproto() {
   CollisionBody_Sphere::default_instance_ = new CollisionBody_Sphere();
   CollisionBody_Capsule::default_instance_ = new CollisionBody_Capsule();
   Velocity::default_instance_ = new Velocity();
+  AudioSource::default_instance_ = new AudioSource();
   Component::default_instance_ = new Component();
   Component_default_oneof_instance_ = new ComponentOneofInstance();
   Entity::default_instance_ = new Entity();
@@ -480,6 +511,7 @@ void protobuf_AddDesc_components_2eproto() {
   CollisionBody_Sphere::default_instance_->InitAsDefaultInstance();
   CollisionBody_Capsule::default_instance_->InitAsDefaultInstance();
   Velocity::default_instance_->InitAsDefaultInstance();
+  AudioSource::default_instance_->InitAsDefaultInstance();
   Component::default_instance_->InitAsDefaultInstance();
   Entity::default_instance_->InitAsDefaultInstance();
   EntityList::default_instance_->InitAsDefaultInstance();
@@ -5088,6 +5120,511 @@ void Velocity::clear_angular_z() {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int AudioSource::kLoopingFieldNumber;
+const int AudioSource::kAudioNameFieldNumber;
+const int AudioSource::kPlayingFieldNumber;
+const int AudioSource::kVolumeFieldNumber;
+#endif  // !_MSC_VER
+
+AudioSource::AudioSource()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.AudioSource)
+}
+
+void AudioSource::InitAsDefaultInstance() {
+}
+
+AudioSource::AudioSource(const AudioSource& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.AudioSource)
+}
+
+void AudioSource::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  looping_ = false;
+  audio_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  playing_ = false;
+  volume_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+AudioSource::~AudioSource() {
+  // @@protoc_insertion_point(destructor:tec.proto.AudioSource)
+  SharedDtor();
+}
+
+void AudioSource::SharedDtor() {
+  audio_name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void AudioSource::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* AudioSource::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return AudioSource_descriptor_;
+}
+
+const AudioSource& AudioSource::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+AudioSource* AudioSource::default_instance_ = NULL;
+
+AudioSource* AudioSource::New(::google::protobuf::Arena* arena) const {
+  AudioSource* n = new AudioSource;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void AudioSource::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<AudioSource*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 15u) {
+    ZR_(looping_, volume_);
+    if (has_audio_name()) {
+      audio_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    }
+  }
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool AudioSource::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.AudioSource)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional bool looping = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &looping_)));
+          set_has_looping();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_audio_name;
+        break;
+      }
+
+      // optional string audio_name = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_audio_name:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_audio_name()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->audio_name().data(), this->audio_name().length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "tec.proto.AudioSource.audio_name");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_playing;
+        break;
+      }
+
+      // optional bool playing = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_playing:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &playing_)));
+          set_has_playing();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_volume;
+        break;
+      }
+
+      // optional uint32 volume = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_volume:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &volume_)));
+          set_has_volume();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.AudioSource)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.AudioSource)
+  return false;
+#undef DO_
+}
+
+void AudioSource::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.AudioSource)
+  // optional bool looping = 1;
+  if (has_looping()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(1, this->looping(), output);
+  }
+
+  // optional string audio_name = 2;
+  if (has_audio_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->audio_name().data(), this->audio_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.AudioSource.audio_name");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->audio_name(), output);
+  }
+
+  // optional bool playing = 3;
+  if (has_playing()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(3, this->playing(), output);
+  }
+
+  // optional uint32 volume = 4;
+  if (has_volume()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->volume(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.AudioSource)
+}
+
+::google::protobuf::uint8* AudioSource::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.AudioSource)
+  // optional bool looping = 1;
+  if (has_looping()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(1, this->looping(), target);
+  }
+
+  // optional string audio_name = 2;
+  if (has_audio_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->audio_name().data(), this->audio_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.AudioSource.audio_name");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->audio_name(), target);
+  }
+
+  // optional bool playing = 3;
+  if (has_playing()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(3, this->playing(), target);
+  }
+
+  // optional uint32 volume = 4;
+  if (has_volume()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->volume(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.AudioSource)
+  return target;
+}
+
+int AudioSource::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & 15u) {
+    // optional bool looping = 1;
+    if (has_looping()) {
+      total_size += 1 + 1;
+    }
+
+    // optional string audio_name = 2;
+    if (has_audio_name()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->audio_name());
+    }
+
+    // optional bool playing = 3;
+    if (has_playing()) {
+      total_size += 1 + 1;
+    }
+
+    // optional uint32 volume = 4;
+    if (has_volume()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->volume());
+    }
+
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void AudioSource::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const AudioSource* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const AudioSource>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void AudioSource::MergeFrom(const AudioSource& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_looping()) {
+      set_looping(from.looping());
+    }
+    if (from.has_audio_name()) {
+      set_has_audio_name();
+      audio_name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.audio_name_);
+    }
+    if (from.has_playing()) {
+      set_playing(from.playing());
+    }
+    if (from.has_volume()) {
+      set_volume(from.volume());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void AudioSource::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void AudioSource::CopyFrom(const AudioSource& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool AudioSource::IsInitialized() const {
+
+  return true;
+}
+
+void AudioSource::Swap(AudioSource* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void AudioSource::InternalSwap(AudioSource* other) {
+  std::swap(looping_, other->looping_);
+  audio_name_.Swap(&other->audio_name_);
+  std::swap(playing_, other->playing_);
+  std::swap(volume_, other->volume_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata AudioSource::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = AudioSource_descriptor_;
+  metadata.reflection = AudioSource_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// AudioSource
+
+// optional bool looping = 1;
+bool AudioSource::has_looping() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void AudioSource::set_has_looping() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void AudioSource::clear_has_looping() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void AudioSource::clear_looping() {
+  looping_ = false;
+  clear_has_looping();
+}
+ bool AudioSource::looping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.looping)
+  return looping_;
+}
+ void AudioSource::set_looping(bool value) {
+  set_has_looping();
+  looping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.looping)
+}
+
+// optional string audio_name = 2;
+bool AudioSource::has_audio_name() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void AudioSource::set_has_audio_name() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void AudioSource::clear_has_audio_name() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void AudioSource::clear_audio_name() {
+  audio_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_audio_name();
+}
+ const ::std::string& AudioSource::audio_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.audio_name)
+  return audio_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void AudioSource::set_audio_name(const ::std::string& value) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.audio_name)
+}
+ void AudioSource::set_audio_name(const char* value) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.AudioSource.audio_name)
+}
+ void AudioSource::set_audio_name(const char* value, size_t size) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.AudioSource.audio_name)
+}
+ ::std::string* AudioSource::mutable_audio_name() {
+  set_has_audio_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.AudioSource.audio_name)
+  return audio_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* AudioSource::release_audio_name() {
+  clear_has_audio_name();
+  return audio_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void AudioSource::set_allocated_audio_name(::std::string* audio_name) {
+  if (audio_name != NULL) {
+    set_has_audio_name();
+  } else {
+    clear_has_audio_name();
+  }
+  audio_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), audio_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.AudioSource.audio_name)
+}
+
+// optional bool playing = 3;
+bool AudioSource::has_playing() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void AudioSource::set_has_playing() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void AudioSource::clear_has_playing() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void AudioSource::clear_playing() {
+  playing_ = false;
+  clear_has_playing();
+}
+ bool AudioSource::playing() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.playing)
+  return playing_;
+}
+ void AudioSource::set_playing(bool value) {
+  set_has_playing();
+  playing_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.playing)
+}
+
+// optional uint32 volume = 4;
+bool AudioSource::has_volume() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void AudioSource::set_has_volume() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void AudioSource::clear_has_volume() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void AudioSource::clear_volume() {
+  volume_ = 0u;
+  clear_has_volume();
+}
+ ::google::protobuf::uint32 AudioSource::volume() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.volume)
+  return volume_;
+}
+ void AudioSource::set_volume(::google::protobuf::uint32 value) {
+  set_has_volume();
+  volume_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.volume)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int Component::kRenderableFieldNumber;
 const int Component::kPositionFieldNumber;
 const int Component::kOrientationFieldNumber;
@@ -5096,6 +5633,7 @@ const int Component::kAnimationFieldNumber;
 const int Component::kScaleFieldNumber;
 const int Component::kCollisionBodyFieldNumber;
 const int Component::kVelocityFieldNumber;
+const int Component::kAudioSourceFieldNumber;
 #endif  // !_MSC_VER
 
 Component::Component()
@@ -5113,6 +5651,7 @@ void Component::InitAsDefaultInstance() {
   Component_default_oneof_instance_->scale_ = const_cast< ::tec::proto::Scale*>(&::tec::proto::Scale::default_instance());
   Component_default_oneof_instance_->collision_body_ = const_cast< ::tec::proto::CollisionBody*>(&::tec::proto::CollisionBody::default_instance());
   Component_default_oneof_instance_->velocity_ = const_cast< ::tec::proto::Velocity*>(&::tec::proto::Velocity::default_instance());
+  Component_default_oneof_instance_->audio_source_ = const_cast< ::tec::proto::AudioSource*>(&::tec::proto::AudioSource::default_instance());
 }
 
 Component::Component(const Component& from)
@@ -5199,6 +5738,10 @@ void Component::clear_component() {
     }
     case kVelocity: {
       delete component_.velocity_;
+      break;
+    }
+    case kAudioSource: {
+      delete component_.audio_source_;
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -5326,6 +5869,19 @@ bool Component::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(74)) goto parse_audio_source;
+        break;
+      }
+
+      // optional .tec.proto.AudioSource audio_source = 9;
+      case 9: {
+        if (tag == 74) {
+         parse_audio_source:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_audio_source()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -5403,6 +5959,12 @@ void Component::SerializeWithCachedSizes(
       8, *component_.velocity_, output);
   }
 
+  // optional .tec.proto.AudioSource audio_source = 9;
+  if (has_audio_source()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      9, *component_.audio_source_, output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -5467,6 +6029,13 @@ void Component::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         8, *component_.velocity_, target);
+  }
+
+  // optional .tec.proto.AudioSource audio_source = 9;
+  if (has_audio_source()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        9, *component_.audio_source_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -5537,6 +6106,13 @@ int Component::ByteSize() const {
           *component_.velocity_);
       break;
     }
+    // optional .tec.proto.AudioSource audio_source = 9;
+    case kAudioSource: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.audio_source_);
+      break;
+    }
     case COMPONENT_NOT_SET: {
       break;
     }
@@ -5597,6 +6173,10 @@ void Component::MergeFrom(const Component& from) {
     }
     case kVelocity: {
       mutable_velocity()->::tec::proto::Velocity::MergeFrom(from.velocity());
+      break;
+    }
+    case kAudioSource: {
+      mutable_audio_source()->::tec::proto::AudioSource::MergeFrom(from.audio_source());
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -6020,6 +6600,52 @@ void Component::clear_velocity() {
     component_.velocity_ = velocity;
   }
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.velocity)
+}
+
+// optional .tec.proto.AudioSource audio_source = 9;
+bool Component::has_audio_source() const {
+  return component_case() == kAudioSource;
+}
+void Component::set_has_audio_source() {
+  _oneof_case_[0] = kAudioSource;
+}
+void Component::clear_audio_source() {
+  if (has_audio_source()) {
+    delete component_.audio_source_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::AudioSource& Component::audio_source() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.audio_source)
+  return has_audio_source() ? *component_.audio_source_
+                      : ::tec::proto::AudioSource::default_instance();
+}
+ ::tec::proto::AudioSource* Component::mutable_audio_source() {
+  if (!has_audio_source()) {
+    clear_component();
+    set_has_audio_source();
+    component_.audio_source_ = new ::tec::proto::AudioSource;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.audio_source)
+  return component_.audio_source_;
+}
+ ::tec::proto::AudioSource* Component::release_audio_source() {
+  if (has_audio_source()) {
+    clear_has_component();
+    ::tec::proto::AudioSource* temp = component_.audio_source_;
+    component_.audio_source_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_audio_source(::tec::proto::AudioSource* audio_source) {
+  clear_component();
+  if (audio_source) {
+    set_has_audio_source();
+    component_.audio_source_ = audio_source;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.audio_source)
 }
 
 bool Component::has_component() const {

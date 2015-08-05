@@ -7,7 +7,7 @@
 #include "resources/md5anim.hpp"
 
 namespace tec {
-	Animation::Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f) {
+	Animation::Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f), frame_count(0) {
 		SetAnimationFile(animation);
 		this->animation_name = animation_file->GetFileName();
 	}
@@ -52,6 +52,25 @@ namespace tec {
 			auto frame_skeleton = this->animation_file->InterpolateSkeletons(
 				0, 1, 0.0f);
 			this->animation_matrices.assign(frame_skeleton.bone_matricies.begin(), frame_skeleton.bone_matricies.end());
+		}
+	}
+	void Animation::Out(proto::Component* target) {
+		proto::Animation* comp = target->mutable_animation();
+		comp->set_animation_name(this->animation_name);
+	}
+
+	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	void Animation::In(const proto::Component& source) {
+		const proto::Animation& comp = source.animation();
+		if (comp.has_animation_name()) {
+			this->animation_name = comp.animation_name();
+			/*if (!AnimationMap::Has(this->animation_name)) {
+				std::string ext = this->animation_name.substr(this->animation_name.find_last_of(".") + 1);
+				if (file_factories.find(ext) != file_factories.end()) {
+					file_factories[ext](this->animation_name);
+				}
+			}
+			this->animation_file = AnimationMap::Get(this->animation_name);*/
 		}
 	}
 

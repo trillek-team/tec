@@ -50,6 +50,7 @@ namespace tec {
 		if (index < this->textures.size()) {
 			return this->textures[index];
 		}
+		return nullptr;
 	}
 
 	void Material::RemoveTexture(std::shared_ptr<TextureObject> tex) {

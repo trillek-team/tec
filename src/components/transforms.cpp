@@ -9,21 +9,23 @@ namespace tec {
 		this->value += orientation * amount;
 	}
 
-	void Position::Out(proto::Position* target) {
-		target->set_x(this->value.x);
-		target->set_y(this->value.y);
-		target->set_z(this->value.z);
+	void Position::Out(proto::Component* target) {
+		proto::Position* comp = target->mutable_position();
+		comp->set_x(this->value.x);
+		comp->set_y(this->value.y);
+		comp->set_z(this->value.z);
 	}
 
-	void Position::In(const proto::Position& source) {
-		if (source.has_x()) {
-			this->value.x = source.x();
+	void Position::In(const proto::Component& source) {
+		const proto::Position& comp = source.position();
+		if (comp.has_x()) {
+			this->value.x = comp.x();
 		}
-		if (source.has_y()) {
-			this->value.y = source.y();
+		if (comp.has_y()) {
+			this->value.y = comp.y();
 		}
-		if (source.has_z()) {
-			this->value.z = source.z();
+		if (comp.has_z()) {
+			this->value.z = comp.z();
 		}
 	}
 
@@ -44,17 +46,47 @@ namespace tec {
 		this->value = glm::normalize(change * this->value);
 	}
 
-	void Orientation::Out(proto::Orientation* target) {
-		target->set_x(this->value.x);
-		target->set_y(this->value.y);
-		target->set_z(this->value.z);
-		target->set_w(this->value.w);
+	void Orientation::Out(proto::Component* target) {
+		proto::Orientation* comp = target->mutable_orientation();
+		comp->set_x(this->value.x);
+		comp->set_y(this->value.y);
+		comp->set_z(this->value.z);
+		comp->set_w(this->value.w);
 	}
 
-	void Orientation::In(const proto::Orientation& source) {
-		this->value.x = source.x();
-		this->value.y = source.y();
-		this->value.z = source.z();
-		this->value.w = source.w();
+	void Orientation::In(const proto::Component& source) {
+		const proto::Orientation& comp = source.orientation();
+		if (comp.has_x()) {
+			this->value.x = comp.x();
+		}
+		if (comp.has_y()) {
+			this->value.y = comp.y();
+		}
+		if (comp.has_z()) {
+			this->value.z = comp.z();
+		}
+		if (comp.has_w()) {
+			this->value.w = comp.w();
+		}
+	}
+
+	void Scale::Out(proto::Component* target) {
+		proto::Scale* comp = target->mutable_scale();
+		comp->set_x(this->value.x);
+		comp->set_y(this->value.y);
+		comp->set_z(this->value.z);
+	}
+
+	void Scale::In(const proto::Component& source) {
+		const proto::Scale& comp = source.scale();
+		if (comp.has_x()) {
+			this->value.x = comp.x();
+		}
+		if (comp.has_y()) {
+			this->value.y = comp.y();
+		}
+		if (comp.has_z()) {
+			this->value.z = comp.z();
+		}
 	}
 }

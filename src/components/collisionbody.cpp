@@ -36,6 +36,69 @@ namespace tec {
 		delete this->motion_state;
 	}
 
+	void CollisionBody::Out(proto::Component* target) {
+		proto::CollisionBody* comp = target->mutable_collision_body();
+		comp->set_disable_deactivation(this->disable_deactivation);
+		comp->set_disable_rotation(this->disable_rotation);
+		comp->set_mass(this->mass);
+		switch (this->collision_shape) {
+			case COLLISION_SHAPE::BOX:
+				{
+					proto::CollisionBody::Box* box = comp->mutable_box();
+					box->set_x_extent(static_cast<float>(this->half_extents.x()));
+					box->set_y_extent(static_cast<float>(this->half_extents.y()));
+					box->set_z_extent(static_cast<float>(this->half_extents.z()));
+				}
+				break;
+			case COLLISION_SHAPE::SPHERE:
+				{
+					proto::CollisionBody::Sphere* sphere = comp->mutable_sphere();
+					sphere->set_radius(this->radius);
+				}
+				break;
+			case COLLISION_SHAPE::CAPSULE:
+				{
+					proto::CollisionBody::Capsule* capsule = comp->mutable_capsule();
+					capsule->set_radius(this->radius);
+					capsule->set_height(this->height);
+				}
+				break;
+		}
+	}
+
+	void CollisionBody::In(const proto::Component& source) {
+		const proto::CollisionBody& comp = source.collision_body();
+		switch (comp.shape_case()) {
+			case proto::CollisionBody::ShapeCase::kBox:
+				this->collision_shape = BOX;
+				this->new_collision_shape = BOX;
+				this->half_extents = btVector3(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
+				break;
+			case proto::CollisionBody::ShapeCase::kSphere:
+				this->collision_shape = SPHERE;
+				this->new_collision_shape = SPHERE;
+				this->radius = comp.sphere().radius();
+				break;
+			case proto::CollisionBody::ShapeCase::kCapsule:
+				this->collision_shape = CAPSULE;
+				this->new_collision_shape = CAPSULE;
+				this->radius = comp.capsule().radius();
+				this->height = comp.capsule().height();
+				break;
+
+		}
+
+		if (comp.has_disable_deactivation()) {
+			this->disable_deactivation = comp.disable_deactivation();
+		}
+		if (comp.has_disable_rotation()) {
+			this->disable_rotation = comp.disable_rotation();
+		}
+		if (comp.has_mass()) {
+			this->mass = comp.mass();
+		}
+	}
+
 	ReflectionComponent CollisionBody::Reflection(CollisionBody* val) {
 		ReflectionComponent refcomp;
 		Property fprop(Property::FLOAT);
@@ -89,7 +152,7 @@ namespace tec {
 		radio_t shape_choices = std::make_pair(std::ref(choices), current_shape);
 		Property rprop(Property::RADIO);
 		(refcomp.properties["Shape"] = rprop).Set<radio_t>(shape_choices);
-		refcomp.properties["Shape"].update_func = [val] (Property& prop) { 
+		refcomp.properties["Shape"].update_func = [val] (Property& prop) {
 			radio_t shape_choices = prop.Get<radio_t>();
 			if (shape_choices.second == "BOX") {
 				val->new_collision_shape = BOX;
@@ -110,6 +173,9 @@ namespace tec {
 	}
 
 	CollisionMesh::CollisionMesh(std::shared_ptr<Mesh> mesh, bool dynamic) : CollisionBody((dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {
+		if (!mesh) {
+			return;
+		}
 		this->mesh_file = mesh;
 		this->mesh = GenerateTriangleMesh(this->mesh_file);
 		if (!this->mesh) {

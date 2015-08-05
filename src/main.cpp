@@ -14,7 +14,6 @@
 
 namespace tec {
 	extern void IntializeComponents();
-	extern void IntializeIOFunctors();
 	extern void IntializeFileFactories();
 	extern void BuildTestEntities();
 	extern void ProtoSave();
@@ -49,7 +48,9 @@ namespace tec {
 						std::cout << "Please place files in the assets/ folder." << std::endl;
 					}
 				}
-				std::cout << "No extension!." << std::endl;
+				else {
+					std::cout << "No extension!." << std::endl;
+				}
 			}
 		}
 	};
@@ -76,7 +77,6 @@ int main(int argc, char* argv[]) {
 	tec::VComputerSystem vcs;
 
 	tec::IntializeComponents();
-	tec::IntializeIOFunctors();
 	tec::IntializeFileFactories();
 	tec::BuildTestEntities();
 	tec::ProtoLoad();
@@ -245,6 +245,7 @@ int main(int argc, char* argv[]) {
 													}
 													ImGui::SameLine();
 													if (ImGui::RadioButton(keys[i].c_str(), (radio_choice == i) ? true : false)) {
+														radio_choice = i;
 														choices.second = keys[radio_choice];
 														prop.second.Set(choices);
 														prop.second.update_func(prop.second);

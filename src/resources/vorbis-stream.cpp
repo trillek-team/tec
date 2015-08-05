@@ -1,4 +1,5 @@
 #include "resources/vorbis-stream.hpp"
+#include "sound-system.hpp"
 
 #undef STB_VORBIS_HEADER_ONLY
 #include "resources/stb_vorbis.c"
@@ -62,6 +63,7 @@ namespace tec {
 				stream->format = AL_FORMAT_MONO16;
 			}
 			stream->totalSamplesLeft = stb_vorbis_stream_length_in_samples(stream->stream) * stream->info.channels;
+			SoundMap::Set(filename, stream);
 		}
 		else {
 			stream.reset();

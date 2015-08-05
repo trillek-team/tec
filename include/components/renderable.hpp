@@ -20,9 +20,8 @@ namespace tec {
 
 		static ReflectionComponent Reflection(Renderable* val);
 
-		void Out(proto::Renderable* target);
-
-		void In(const proto::Renderable& source);
+		void Out(proto::Component* target);
+		void In(const proto::Component& source);
 
 		std::set<VertexGroup*> vertex_groups;
 		std::shared_ptr<VertexBufferObject> buffer;

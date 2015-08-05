@@ -110,10 +110,11 @@ namespace tec {
 
 		obj->SetName(fname);
 
-		MeshMap::Set(fname, obj);
-
 		if (obj->Parse()) {
 			obj->PopulateMeshGroups();
+
+			MeshMap::Set(fname, obj);
+
 			return obj;
 		}
 
@@ -232,12 +233,14 @@ namespace tec {
 			if (mgruop->verts.size() < (vgroup->faces.size() * 3)) {
 				mgruop->verts.resize(vgroup->faces.size() * 3);
 			}
-			auto material_name = this->materials[vgroup->mtl]->diffuseMap;
-			mgruop->material_name = material_name.substr(
-				material_name.find_last_of("/") + 1,
-				material_name.find_last_of(".") -
-				material_name.find_last_of("/") - 1)
-				+ "_material";
+			if (this->materials.find(vgroup->mtl) != this->materials.end()) {
+				auto material_name = this->materials[vgroup->mtl]->diffuseMap;
+				mgruop->material_name = material_name.substr(
+					material_name.find_last_of("/") + 1,
+					material_name.find_last_of(".") -
+					material_name.find_last_of("/") - 1)
+					+ "_material";
+			}
 			for (size_t i = 0, j = 0; i < vgroup->faces.size(); ++i) {
 				Face face;
 				if (vgroup->faces[i].pos[0] > 0 && vgroup->faces[i].pos[0] <= this->positions.size()) {

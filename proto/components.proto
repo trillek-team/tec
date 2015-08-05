@@ -67,6 +67,13 @@ message Velocity {
 	optional float angular_z = 6;
 }
 
+message AudioSource {
+	optional bool looping = 1;
+	optional string audio_name = 2;
+	optional bool playing = 3;
+	optional uint32 volume = 4;
+}
+
 message Component {
 	oneof component {
 		Renderable renderable = 1;
@@ -77,6 +84,7 @@ message Component {
 		Scale Scale = 6;
 		CollisionBody collision_body = 7;
 		Velocity velocity = 8;
+		AudioSource audio_source = 9;
 	}
 }
 
