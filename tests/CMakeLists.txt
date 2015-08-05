@@ -9,12 +9,16 @@ SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/ThirdParty)
 
 FIND_PACKAGE(Threads REQUIRED)
 
+# Set the build type if it isn't already
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Release)
+ENDIF()
 # Add gtest
 ExternalProject_Add(
     googletest
 # SVN_REPOSITORY http://googletest.googlecode.com/svn/trunk/
 # SVN_REVISION -r 660
-    URL https://googletest.googlecode.com/files/gtest-1.7.0.zip
+    URL http://googletest.googlecode.com/files/gtest-1.7.0.zip
     TIMEOUT 30
     # Force separate output paths for debug and release builds to allow easy
     # identification of correct lib in subsequent TARGET_LINK_LIBRARIES commands
