@@ -8,6 +8,7 @@
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
 #include "graphics/animation.hpp"
+#include "graphics/lights.hpp"
 #include "graphics/view.hpp"
 #include "entity.hpp"
 #include "component-update-system.hpp"
@@ -60,7 +61,7 @@ namespace tec {
 			}
 		};
 	}
-	
+
 	template <typename T>
 	void SetupComponent() {
 		AddInOutFunctors<T>();
@@ -78,6 +79,8 @@ namespace tec {
 		SetupComponent<Animation>();
 		SetupComponent<CollisionBody>();
 		SetupComponent<AudioSource>();
+		SetupComponent<PointLight>();
+		SetupComponent<DirectionalLight>();
 		ComponentUpdateSystem<ComputerScreen>::Initialize();
 		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
@@ -96,11 +99,6 @@ namespace tec {
 	}
 
 	void BuildTestEntities() {
-		auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "assets/basic.vert"), std::make_pair(Shader::FRAGMENT, "assets/basic.frag"),
-		};
-		auto shader1 = Shader::CreateFromFile("shader1", shader_files);
-
 		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
 			std::make_pair(Shader::VERTEX, "assets/debug.vert"), std::make_pair(Shader::FRAGMENT, "assets/debug.frag"),
 		};
@@ -109,6 +107,29 @@ namespace tec {
 		auto debug_fill = Material::Create("material_debug");
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
+
+		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_geometry.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_geometry.frag"),
+		};
+		auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
+
+		auto deferred_pl_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_light.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_pointlight.frag"),
+		};
+		auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
+
+		auto deferred_dl_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_light.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_dirlight.frag"),
+		};
+		auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
+
+		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > { std::make_pair(Shader::VERTEX, "assets/deferred_light.vert"), };
+		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_pl_shader_files);
+
+		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_shadow.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_shadow.frag"),
+		};
+		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 
 		auto voxvol = VoxelVolume::Create(100, "bob", 0);
 		auto voxvol_shared = voxvol.lock();

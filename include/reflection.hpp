@@ -17,6 +17,7 @@ namespace tec {
 			STRING,
 			COLOR,
 			VEC3,
+			RGB,
 			DROPDOWN,
 			RADIO,
 		};

@@ -49,6 +49,9 @@ class CollisionBody_Sphere;
 class CollisionBody_Capsule;
 class Velocity;
 class AudioSource;
+class Light;
+class Light_Attenuation;
+class Light_Direction;
 class Component;
 class Entity;
 class EntityList;
@@ -1426,6 +1429,390 @@ class AudioSource : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class Light_Attenuation : public ::google::protobuf::Message {
+ public:
+  Light_Attenuation();
+  virtual ~Light_Attenuation();
+
+  Light_Attenuation(const Light_Attenuation& from);
+
+  inline Light_Attenuation& operator=(const Light_Attenuation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Light_Attenuation& default_instance();
+
+  void Swap(Light_Attenuation* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Light_Attenuation* New() const { return New(NULL); }
+
+  Light_Attenuation* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Light_Attenuation& from);
+  void MergeFrom(const Light_Attenuation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Light_Attenuation* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float constant = 1;
+  bool has_constant() const;
+  void clear_constant();
+  static const int kConstantFieldNumber = 1;
+  float constant() const;
+  void set_constant(float value);
+
+  // optional float linear = 2;
+  bool has_linear() const;
+  void clear_linear();
+  static const int kLinearFieldNumber = 2;
+  float linear() const;
+  void set_linear(float value);
+
+  // optional float exponential = 3;
+  bool has_exponential() const;
+  void clear_exponential();
+  static const int kExponentialFieldNumber = 3;
+  float exponential() const;
+  void set_exponential(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Light.Attenuation)
+ private:
+  inline void set_has_constant();
+  inline void clear_has_constant();
+  inline void set_has_linear();
+  inline void clear_has_linear();
+  inline void set_has_exponential();
+  inline void clear_has_exponential();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float constant_;
+  float linear_;
+  float exponential_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Light_Attenuation* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Light_Direction : public ::google::protobuf::Message {
+ public:
+  Light_Direction();
+  virtual ~Light_Direction();
+
+  Light_Direction(const Light_Direction& from);
+
+  inline Light_Direction& operator=(const Light_Direction& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Light_Direction& default_instance();
+
+  void Swap(Light_Direction* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Light_Direction* New() const { return New(NULL); }
+
+  Light_Direction* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Light_Direction& from);
+  void MergeFrom(const Light_Direction& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Light_Direction* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float x = 1;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  float x() const;
+  void set_x(float value);
+
+  // optional float y = 2;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  float y() const;
+  void set_y(float value);
+
+  // optional float z = 3;
+  bool has_z() const;
+  void clear_z();
+  static const int kZFieldNumber = 3;
+  float z() const;
+  void set_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Light.Direction)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_;
+  float y_;
+  float z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Light_Direction* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Light : public ::google::protobuf::Message {
+ public:
+  Light();
+  virtual ~Light();
+
+  Light(const Light& from);
+
+  inline Light& operator=(const Light& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Light& default_instance();
+
+  void Swap(Light* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Light* New() const { return New(NULL); }
+
+  Light* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Light& from);
+  void MergeFrom(const Light& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Light* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Light_Attenuation Attenuation;
+  typedef Light_Direction Direction;
+
+  // accessors -------------------------------------------------------
+
+  // optional float color_x = 1;
+  bool has_color_x() const;
+  void clear_color_x();
+  static const int kColorXFieldNumber = 1;
+  float color_x() const;
+  void set_color_x(float value);
+
+  // optional float color_y = 2;
+  bool has_color_y() const;
+  void clear_color_y();
+  static const int kColorYFieldNumber = 2;
+  float color_y() const;
+  void set_color_y(float value);
+
+  // optional float color_z = 3;
+  bool has_color_z() const;
+  void clear_color_z();
+  static const int kColorZFieldNumber = 3;
+  float color_z() const;
+  void set_color_z(float value);
+
+  // optional float ambient_intensity = 4;
+  bool has_ambient_intensity() const;
+  void clear_ambient_intensity();
+  static const int kAmbientIntensityFieldNumber = 4;
+  float ambient_intensity() const;
+  void set_ambient_intensity(float value);
+
+  // optional float diffuse_intensity = 5;
+  bool has_diffuse_intensity() const;
+  void clear_diffuse_intensity();
+  static const int kDiffuseIntensityFieldNumber = 5;
+  float diffuse_intensity() const;
+  void set_diffuse_intensity(float value);
+
+  // optional .tec.proto.Light.Attenuation attenuation = 6;
+  bool has_attenuation() const;
+  void clear_attenuation();
+  static const int kAttenuationFieldNumber = 6;
+  const ::tec::proto::Light_Attenuation& attenuation() const;
+  ::tec::proto::Light_Attenuation* mutable_attenuation();
+  ::tec::proto::Light_Attenuation* release_attenuation();
+  void set_allocated_attenuation(::tec::proto::Light_Attenuation* attenuation);
+
+  // optional float cutoff = 7;
+  bool has_cutoff() const;
+  void clear_cutoff();
+  static const int kCutoffFieldNumber = 7;
+  float cutoff() const;
+  void set_cutoff(float value);
+
+  // optional .tec.proto.Light.Direction direction = 8;
+  bool has_direction() const;
+  void clear_direction();
+  static const int kDirectionFieldNumber = 8;
+  const ::tec::proto::Light_Direction& direction() const;
+  ::tec::proto::Light_Direction* mutable_direction();
+  ::tec::proto::Light_Direction* release_direction();
+  void set_allocated_direction(::tec::proto::Light_Direction* direction);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Light)
+ private:
+  inline void set_has_color_x();
+  inline void clear_has_color_x();
+  inline void set_has_color_y();
+  inline void clear_has_color_y();
+  inline void set_has_color_z();
+  inline void clear_has_color_z();
+  inline void set_has_ambient_intensity();
+  inline void clear_has_ambient_intensity();
+  inline void set_has_diffuse_intensity();
+  inline void clear_has_diffuse_intensity();
+  inline void set_has_attenuation();
+  inline void clear_has_attenuation();
+  inline void set_has_cutoff();
+  inline void clear_has_cutoff();
+  inline void set_has_direction();
+  inline void clear_has_direction();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float color_x_;
+  float color_y_;
+  float color_z_;
+  float ambient_intensity_;
+  ::tec::proto::Light_Attenuation* attenuation_;
+  float diffuse_intensity_;
+  float cutoff_;
+  ::tec::proto::Light_Direction* direction_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Light* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -1459,6 +1846,9 @@ class Component : public ::google::protobuf::Message {
     kCollisionBody = 7,
     kVelocity = 8,
     kAudioSource = 9,
+    kLight = 10,
+    kDirlight = 11,
+    kSpotlight = 12,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -1584,6 +1974,33 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::AudioSource* release_audio_source();
   void set_allocated_audio_source(::tec::proto::AudioSource* audio_source);
 
+  // optional .tec.proto.Light light = 10;
+  bool has_light() const;
+  void clear_light();
+  static const int kLightFieldNumber = 10;
+  const ::tec::proto::Light& light() const;
+  ::tec::proto::Light* mutable_light();
+  ::tec::proto::Light* release_light();
+  void set_allocated_light(::tec::proto::Light* light);
+
+  // optional .tec.proto.Light dirlight = 11;
+  bool has_dirlight() const;
+  void clear_dirlight();
+  static const int kDirlightFieldNumber = 11;
+  const ::tec::proto::Light& dirlight() const;
+  ::tec::proto::Light* mutable_dirlight();
+  ::tec::proto::Light* release_dirlight();
+  void set_allocated_dirlight(::tec::proto::Light* dirlight);
+
+  // optional .tec.proto.Light spotlight = 12;
+  bool has_spotlight() const;
+  void clear_spotlight();
+  static const int kSpotlightFieldNumber = 12;
+  const ::tec::proto::Light& spotlight() const;
+  ::tec::proto::Light* mutable_spotlight();
+  ::tec::proto::Light* release_spotlight();
+  void set_allocated_spotlight(::tec::proto::Light* spotlight);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
@@ -1596,6 +2013,9 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_collision_body();
   inline void set_has_velocity();
   inline void set_has_audio_source();
+  inline void set_has_light();
+  inline void set_has_dirlight();
+  inline void set_has_spotlight();
 
   inline bool has_component() const;
   void clear_component();
@@ -1615,6 +2035,9 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::CollisionBody* collision_body_;
     ::tec::proto::Velocity* velocity_;
     ::tec::proto::AudioSource* audio_source_;
+    ::tec::proto::Light* light_;
+    ::tec::proto::Light* dirlight_;
+    ::tec::proto::Light* spotlight_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -2952,6 +3375,392 @@ inline void AudioSource::set_volume(::google::protobuf::uint32 value) {
 
 // -------------------------------------------------------------------
 
+// Light_Attenuation
+
+// optional float constant = 1;
+inline bool Light_Attenuation::has_constant() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Light_Attenuation::set_has_constant() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Light_Attenuation::clear_has_constant() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Light_Attenuation::clear_constant() {
+  constant_ = 0;
+  clear_has_constant();
+}
+inline float Light_Attenuation::constant() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.constant)
+  return constant_;
+}
+inline void Light_Attenuation::set_constant(float value) {
+  set_has_constant();
+  constant_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.constant)
+}
+
+// optional float linear = 2;
+inline bool Light_Attenuation::has_linear() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Light_Attenuation::set_has_linear() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Light_Attenuation::clear_has_linear() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Light_Attenuation::clear_linear() {
+  linear_ = 0;
+  clear_has_linear();
+}
+inline float Light_Attenuation::linear() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.linear)
+  return linear_;
+}
+inline void Light_Attenuation::set_linear(float value) {
+  set_has_linear();
+  linear_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.linear)
+}
+
+// optional float exponential = 3;
+inline bool Light_Attenuation::has_exponential() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Light_Attenuation::set_has_exponential() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Light_Attenuation::clear_has_exponential() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Light_Attenuation::clear_exponential() {
+  exponential_ = 0;
+  clear_has_exponential();
+}
+inline float Light_Attenuation::exponential() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.exponential)
+  return exponential_;
+}
+inline void Light_Attenuation::set_exponential(float value) {
+  set_has_exponential();
+  exponential_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.exponential)
+}
+
+// -------------------------------------------------------------------
+
+// Light_Direction
+
+// optional float x = 1;
+inline bool Light_Direction::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Light_Direction::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Light_Direction::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Light_Direction::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline float Light_Direction::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.x)
+  return x_;
+}
+inline void Light_Direction::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.x)
+}
+
+// optional float y = 2;
+inline bool Light_Direction::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Light_Direction::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Light_Direction::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Light_Direction::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline float Light_Direction::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.y)
+  return y_;
+}
+inline void Light_Direction::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.y)
+}
+
+// optional float z = 3;
+inline bool Light_Direction::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Light_Direction::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Light_Direction::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Light_Direction::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline float Light_Direction::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.z)
+  return z_;
+}
+inline void Light_Direction::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.z)
+}
+
+// -------------------------------------------------------------------
+
+// Light
+
+// optional float color_x = 1;
+inline bool Light::has_color_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Light::set_has_color_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Light::clear_has_color_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Light::clear_color_x() {
+  color_x_ = 0;
+  clear_has_color_x();
+}
+inline float Light::color_x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_x)
+  return color_x_;
+}
+inline void Light::set_color_x(float value) {
+  set_has_color_x();
+  color_x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_x)
+}
+
+// optional float color_y = 2;
+inline bool Light::has_color_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Light::set_has_color_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Light::clear_has_color_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Light::clear_color_y() {
+  color_y_ = 0;
+  clear_has_color_y();
+}
+inline float Light::color_y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_y)
+  return color_y_;
+}
+inline void Light::set_color_y(float value) {
+  set_has_color_y();
+  color_y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_y)
+}
+
+// optional float color_z = 3;
+inline bool Light::has_color_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Light::set_has_color_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Light::clear_has_color_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Light::clear_color_z() {
+  color_z_ = 0;
+  clear_has_color_z();
+}
+inline float Light::color_z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_z)
+  return color_z_;
+}
+inline void Light::set_color_z(float value) {
+  set_has_color_z();
+  color_z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_z)
+}
+
+// optional float ambient_intensity = 4;
+inline bool Light::has_ambient_intensity() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Light::set_has_ambient_intensity() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Light::clear_has_ambient_intensity() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Light::clear_ambient_intensity() {
+  ambient_intensity_ = 0;
+  clear_has_ambient_intensity();
+}
+inline float Light::ambient_intensity() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.ambient_intensity)
+  return ambient_intensity_;
+}
+inline void Light::set_ambient_intensity(float value) {
+  set_has_ambient_intensity();
+  ambient_intensity_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.ambient_intensity)
+}
+
+// optional float diffuse_intensity = 5;
+inline bool Light::has_diffuse_intensity() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Light::set_has_diffuse_intensity() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Light::clear_has_diffuse_intensity() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Light::clear_diffuse_intensity() {
+  diffuse_intensity_ = 0;
+  clear_has_diffuse_intensity();
+}
+inline float Light::diffuse_intensity() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.diffuse_intensity)
+  return diffuse_intensity_;
+}
+inline void Light::set_diffuse_intensity(float value) {
+  set_has_diffuse_intensity();
+  diffuse_intensity_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.diffuse_intensity)
+}
+
+// optional .tec.proto.Light.Attenuation attenuation = 6;
+inline bool Light::has_attenuation() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Light::set_has_attenuation() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Light::clear_has_attenuation() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Light::clear_attenuation() {
+  if (attenuation_ != NULL) attenuation_->::tec::proto::Light_Attenuation::Clear();
+  clear_has_attenuation();
+}
+inline const ::tec::proto::Light_Attenuation& Light::attenuation() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.attenuation)
+  return attenuation_ != NULL ? *attenuation_ : *default_instance_->attenuation_;
+}
+inline ::tec::proto::Light_Attenuation* Light::mutable_attenuation() {
+  set_has_attenuation();
+  if (attenuation_ == NULL) {
+    attenuation_ = new ::tec::proto::Light_Attenuation;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Light.attenuation)
+  return attenuation_;
+}
+inline ::tec::proto::Light_Attenuation* Light::release_attenuation() {
+  clear_has_attenuation();
+  ::tec::proto::Light_Attenuation* temp = attenuation_;
+  attenuation_ = NULL;
+  return temp;
+}
+inline void Light::set_allocated_attenuation(::tec::proto::Light_Attenuation* attenuation) {
+  delete attenuation_;
+  attenuation_ = attenuation;
+  if (attenuation) {
+    set_has_attenuation();
+  } else {
+    clear_has_attenuation();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Light.attenuation)
+}
+
+// optional float cutoff = 7;
+inline bool Light::has_cutoff() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Light::set_has_cutoff() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Light::clear_has_cutoff() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void Light::clear_cutoff() {
+  cutoff_ = 0;
+  clear_has_cutoff();
+}
+inline float Light::cutoff() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.cutoff)
+  return cutoff_;
+}
+inline void Light::set_cutoff(float value) {
+  set_has_cutoff();
+  cutoff_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.cutoff)
+}
+
+// optional .tec.proto.Light.Direction direction = 8;
+inline bool Light::has_direction() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Light::set_has_direction() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Light::clear_has_direction() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Light::clear_direction() {
+  if (direction_ != NULL) direction_->::tec::proto::Light_Direction::Clear();
+  clear_has_direction();
+}
+inline const ::tec::proto::Light_Direction& Light::direction() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.direction)
+  return direction_ != NULL ? *direction_ : *default_instance_->direction_;
+}
+inline ::tec::proto::Light_Direction* Light::mutable_direction() {
+  set_has_direction();
+  if (direction_ == NULL) {
+    direction_ = new ::tec::proto::Light_Direction;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Light.direction)
+  return direction_;
+}
+inline ::tec::proto::Light_Direction* Light::release_direction() {
+  clear_has_direction();
+  ::tec::proto::Light_Direction* temp = direction_;
+  direction_ = NULL;
+  return temp;
+}
+inline void Light::set_allocated_direction(::tec::proto::Light_Direction* direction) {
+  delete direction_;
+  direction_ = direction;
+  if (direction) {
+    set_has_direction();
+  } else {
+    clear_has_direction();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Light.direction)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -3368,6 +4177,144 @@ inline void Component::set_allocated_audio_source(::tec::proto::AudioSource* aud
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.audio_source)
 }
 
+// optional .tec.proto.Light light = 10;
+inline bool Component::has_light() const {
+  return component_case() == kLight;
+}
+inline void Component::set_has_light() {
+  _oneof_case_[0] = kLight;
+}
+inline void Component::clear_light() {
+  if (has_light()) {
+    delete component_.light_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Light& Component::light() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.light)
+  return has_light() ? *component_.light_
+                      : ::tec::proto::Light::default_instance();
+}
+inline ::tec::proto::Light* Component::mutable_light() {
+  if (!has_light()) {
+    clear_component();
+    set_has_light();
+    component_.light_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.light)
+  return component_.light_;
+}
+inline ::tec::proto::Light* Component::release_light() {
+  if (has_light()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.light_;
+    component_.light_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_light(::tec::proto::Light* light) {
+  clear_component();
+  if (light) {
+    set_has_light();
+    component_.light_ = light;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.light)
+}
+
+// optional .tec.proto.Light dirlight = 11;
+inline bool Component::has_dirlight() const {
+  return component_case() == kDirlight;
+}
+inline void Component::set_has_dirlight() {
+  _oneof_case_[0] = kDirlight;
+}
+inline void Component::clear_dirlight() {
+  if (has_dirlight()) {
+    delete component_.dirlight_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Light& Component::dirlight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.dirlight)
+  return has_dirlight() ? *component_.dirlight_
+                      : ::tec::proto::Light::default_instance();
+}
+inline ::tec::proto::Light* Component::mutable_dirlight() {
+  if (!has_dirlight()) {
+    clear_component();
+    set_has_dirlight();
+    component_.dirlight_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.dirlight)
+  return component_.dirlight_;
+}
+inline ::tec::proto::Light* Component::release_dirlight() {
+  if (has_dirlight()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.dirlight_;
+    component_.dirlight_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_dirlight(::tec::proto::Light* dirlight) {
+  clear_component();
+  if (dirlight) {
+    set_has_dirlight();
+    component_.dirlight_ = dirlight;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.dirlight)
+}
+
+// optional .tec.proto.Light spotlight = 12;
+inline bool Component::has_spotlight() const {
+  return component_case() == kSpotlight;
+}
+inline void Component::set_has_spotlight() {
+  _oneof_case_[0] = kSpotlight;
+}
+inline void Component::clear_spotlight() {
+  if (has_spotlight()) {
+    delete component_.spotlight_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Light& Component::spotlight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.spotlight)
+  return has_spotlight() ? *component_.spotlight_
+                      : ::tec::proto::Light::default_instance();
+}
+inline ::tec::proto::Light* Component::mutable_spotlight() {
+  if (!has_spotlight()) {
+    clear_component();
+    set_has_spotlight();
+    component_.spotlight_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.spotlight)
+  return component_.spotlight_;
+}
+inline ::tec::proto::Light* Component::release_spotlight() {
+  if (has_spotlight()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.spotlight_;
+    component_.spotlight_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_spotlight(::tec::proto::Light* spotlight) {
+  clear_component();
+  if (spotlight) {
+    set_has_spotlight();
+    component_.spotlight_ = spotlight;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.spotlight)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -3470,6 +4417,12 @@ EntityList::mutable_entities() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
