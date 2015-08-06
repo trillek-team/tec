@@ -45,8 +45,7 @@ namespace tec {
 
 	class OS {
 	public:
-		OS() : mouse_lock(false), app_name("Trillek") { }
-		OS(const std::string& app_name) : mouse_lock(false), app_name(app_name) { }
+		OS() : mouse_lock(false) { }
 		~OS() { }
 
 		/**
@@ -229,13 +228,6 @@ namespace tec {
 		*/
 		static void GetMousePosition(double* x, double* y);
 
-		/**
-		 * \brief Returns the path to the User settings file
-		 *
-		 * \return string to the OS path. Empty string if fails
-		 */
-		std::string GetUserSettingsFile();
-
 	private:
 		/**
 		* \brief Updates the internal size variables from the windowResized callback.
@@ -299,7 +291,6 @@ namespace tec {
 		double last_time; // The time at the last call to GetDeltaTime().
 		bool mouse_lock; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
 
-		std::string app_name;
-		std::string settings_file;
+
 	};
 }
