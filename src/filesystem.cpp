@@ -20,14 +20,14 @@
 namespace tec {
 namespace fs {
 
+const std::string app_name("trillek");
 
 std::string GetUserSettingsPath() {
-	const std::string app_name("trillek");
-	static std::string settings_file;
+	static std::string settings_folder;
 
 	// Try to use cached value
-	if (!settings_file.empty()) {
-		return settings_file;
+	if (!settings_folder.empty()) {
+		return settings_folder;
 	}
 #if defined(__unix__)
 #if defined(__APPLE__)
@@ -36,7 +36,9 @@ std::string GetUserSettingsPath() {
 	char home[PATH_MAX];
 	FSRefMakePath(&ref, (UInt8 *)&home, PATH_MAX);
 	std::string path(home);
-	path += PATH_SEPARATOR + app_name + PATH_SEPARATOR;
+	path += PATH_SEPARATOR;
+	path += app_name;
+	path += PATH_SEPARATOR;
 #else
 	// Try to use a secure version of getenv
 #if defined(_GNU_SOURCE)
@@ -57,7 +59,11 @@ std::string GetUserSettingsPath() {
 	}
 #endif
 	std::string path(home);
-	path += PATH_SEPARATOR + ".config" + PATH_SEPARATOR + app_name + path + PATH_SEPARATOR;
+	path += PATH_SEPARATOR ;
+	path += ".config";
+	path += PATH_SEPARATOR;
+	path += app_name;
+	path += PATH_SEPARATOR;
 
 #endif // __APPLE
 #elif defined(WIN32)
@@ -70,14 +76,123 @@ std::string GetUserSettingsPath() {
 	_bstr_t bstrPath(wszPath);
 	std::string path((char*)bstrPath);
 	CoTaskMemFree(wszPath);
-	path += PATH_SEPARATOR + app_name + PATH_SEPARATOR;
+	path += PATH_SEPARATOR;
+	path += app_name;
+	path += PATH_SEPARATOR;
 
 #endif
-	settings_file = path;
+	settings_folder = path;
 	return path;
 
 } // End of GetUserSettingsPath
 
+
+std::string GetUserDataPath() {
+	static std::string udata_folder;
+
+	// Try to use cached value
+	if (!udata_folder.empty()) {
+		return udata_folder;
+	}
+#if defined(__unix__)
+	// Try to use a secure version of getenv
+#if defined(_GNU_SOURCE)
+	char* home = secure_getenv("XDG_DATA_HOME");
+	if (home == nullptr) {
+		home = secure_getenv("HOME");
+		if (home == nullptr) {
+			return "";
+		}
+	}
+#else
+	char* home = getenv("XDG_DATA_HOME");
+	if (home == nullptr) {
+		home = getenv("HOME");
+		if (home == nullptr) {
+			return "";
+		}
+	}
+#endif
+	std::string path(home);
+	path += PATH_SEPARATOR;
+	path += ".local/share";
+	path += PATH_SEPARATOR;
+	path += app_name;
+	path += PATH_SEPARATOR;
+
+#elif defined(WIN32) || defined(__APPLE__)
+	std::string path = GetUserSettingsPath();
+	if (path.empty()) {
+		return "";
+	}
+	path += "data";
+	path += PATH_SEPARATOR;
+#endif
+	udata_folder = path;
+	return path;
+
+} // End of GetUserDataPath
+
+std::string GetUserCachePath() {
+	static std::string cache_folder;
+
+	// Try to use cached value
+	if (!cache_folder.empty()) {
+		return cache_folder;
+	}
+#if defined(__unix__)
+#if defined(__APPLE__)
+	std::string path = GetUserSettingsPath();
+	if (path.empty()) {
+		return "";
+	}
+	path += "cache";
+	path += PATH_SEPARATOR ;
+#else
+	// Try to use a secure version of getenv
+#if defined(_GNU_SOURCE)
+	char* home = secure_getenv("XDG_CACHE_HOME");
+	if (home == nullptr) {
+		home = secure_getenv("HOME");
+		if (home == nullptr) {
+			return "";
+		}
+	}
+#else
+	char* home = getenv("XDG_CACHE_HOME");
+	if (home == nullptr) {
+		home = getenv("HOME");
+		if (home == nullptr) {
+			return "";
+		}
+	}
+#endif
+	std::string path(home);
+	path += PATH_SEPARATOR;
+	path += ".cache";
+	path += PATH_SEPARATOR;
+	path += app_name;
+	path += PATH_SEPARATOR;
+
+#endif // __APPLE
+#elif defined(WIN32)
+	LPWSTR wszPath = NULL;
+
+	if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &wszPath))) {
+		return "";
+	}
+
+	_bstr_t bstrPath(wszPath);
+	std::string path((char*)bstrPath);
+	CoTaskMemFree(wszPath);
+	path += PATH_SEPARATOR;
+	path += app_name;
+	path += PATH_SEPARATOR;
+
+#endif
+	cache_folder = path;
+	return path;
+} // End of GetUserCachePath
 
 }
 }

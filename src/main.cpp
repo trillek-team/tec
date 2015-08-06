@@ -62,6 +62,8 @@ std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::
 
 int main(int argc, char* argv[]) {
 	std::cout << tec::fs::GetUserSettingsPath() << "\n";
+	std::cout << tec::fs::GetUserDataPath() << "\n";
+	std::cout << tec::fs::GetUserCachePath() << "\n";
 
 	tec::OS os;
 
