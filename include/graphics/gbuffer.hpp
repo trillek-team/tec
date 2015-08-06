@@ -18,36 +18,46 @@ namespace tec {
 			GBUFFER_TEXTURE_TYPE_TEXCOORD,
 			GBUFFER_NUM_TEXTURES
 		};
+		enum GBUFFER_DEPTH_TYPE {
+			GBUFFER_DEPTH_TYPE_SHADOW,
+			GBUFFER_DEPTH_TYPE_STENCIL
+		};
 
-		GBuffer() { }
-
+		GBuffer();
 		~GBuffer() { }
-
-		bool Init(unsigned int window_width, unsigned int window_height);
-
-		bool Resize(unsigned int window_width, unsigned int window_height);
-
+		void AddColorAttachments(unsigned short count,
+			const unsigned int window_width, const unsigned int window_height);
+		void ResizeColorAttachments(const unsigned int window_width, const unsigned int window_height);
+		void SetDepthAttachment(GBUFFER_DEPTH_TYPE type,
+			const unsigned int width, const unsigned int height);
+		void ResizeDepthAttachment(const unsigned int width, const unsigned int height);
+		bool CheckCompletion() const;
 		void StartFrame();
-
-		void BindForGeomPass();
-
-		void BindForStencilPass();
-
-		void BindForShadowPass();
-
-		void BindForLightPass();
-
-		void BindForFinalPass();
-
+		void ShadowPass();
+		void GeometyPass();
+		void StencilPass();
+		void LightPass(GLuint external_shadow_map_texture);
+		void FinalPass();
 		void BindForRendering() const;
-
 		void SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) const;
+
+		GLuint GetDepthTexture() const {
+			return this->depth_texture;
+		}
+
+		GLuint GetColorTexture(unsigned short index) const {
+			if (index < this->num_color_textures) {
+				return this->color_textures[index];
+			}
+			return 0;
+		}
 	private:
 		GLuint frame_buffer_object;
-		GLuint textures[GBUFFER_NUM_TEXTURES];
+		GLuint color_textures[GBUFFER_NUM_TEXTURES];
 		GLuint depth_texture;
 		GLuint final_texture;
-		GLuint shadow_map_texture;
-		GLuint shadow_frame_buffer_object;
+		unsigned short num_color_textures;
+		unsigned int depth_width, depth_height;
+		GBUFFER_DEPTH_TYPE depth_type;
 	};
 }

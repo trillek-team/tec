@@ -42,24 +42,17 @@ namespace tec {
 		void SetViewportSize(const unsigned int width, const unsigned int height);
 
 		void Update(const double delta);
-
-		void RenderGbuffer();
-
-		void RenderGeometryPass();
-
-		void RenderShadowPass();
-
-		void StencilPass(glm::mat4 scale_matrix);
-
+		void ShadowPass();
+		void GeometryPass();
 		void PointLightPass();
-
 		void DirectionalLightPass();
-		
 		void FinalPass();
+		void RenderGbuffer();
 
 		bool ActivateView(const eid entity_id);
 	private:
 		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
+		void UpdateRenderList(double delta);
 		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
 		typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
 
@@ -71,7 +64,8 @@ namespace tec {
 		std::map<eid, glm::mat4> model_matricies;
 		std::shared_ptr<Shader> default_shader;
 
-		GBuffer gbuffer;
+		GBuffer light_gbuffer;
+		GBuffer shadow_gbuffer;
 		VertexBufferObject sphere_vbo; // Used for rendering point lights.
 		VertexBufferObject quad_vbo; // Used for rendering directional lights.
 

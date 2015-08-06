@@ -1,111 +1,83 @@
 #include "graphics/gbuffer.hpp"
 
 namespace tec {
-	bool GBuffer::Init(unsigned int window_width, unsigned int window_height) {
-		// Create the FBO
+	GBuffer::GBuffer() : num_color_textures(0) {
 		glGenFramebuffers(1, &this->frame_buffer_object);
+	}
+	void GBuffer::AddColorAttachments(unsigned short count,
+		const unsigned int window_width, const unsigned int window_height) {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
-
-		// Create the gbuffer textures
-		glGenTextures(GBUFFER_NUM_TEXTURES, this->textures);
-		glGenTextures(1, &this->depth_texture);
+		if (count > GBUFFER_NUM_TEXTURES) {
+			count = GBUFFER_NUM_TEXTURES;
+		}
+		this->num_color_textures = count;
+		glGenTextures(this->num_color_textures, this->color_textures);
 		glGenTextures(1, &this->final_texture);
 
-		for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
-			glBindTexture(GL_TEXTURE_2D, this->textures[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, window_width, window_height, 0, GL_RGB, GL_FLOAT, nullptr);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, this->textures[i], 0);
-		}
-
-		// depth
-		glBindTexture(GL_TEXTURE_2D, this->depth_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, window_width, window_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT,
-			nullptr);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, this->depth_texture, 0);
-
-		// final
-		glBindTexture(GL_TEXTURE_2D, this->final_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window_width, window_height, 0, GL_RGB, GL_FLOAT, nullptr);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, this->final_texture, 0);
-
-		GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
-
-		glDrawBuffers(GBUFFER_NUM_TEXTURES, DrawBuffers);
-
-		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
-		if (status != GL_FRAMEBUFFER_COMPLETE) {
-			return false;
-		}
-
-		// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
-		glGenFramebuffers(1, &this->shadow_frame_buffer_object);
-		glBindFramebuffer(GL_FRAMEBUFFER, this->shadow_frame_buffer_object);
-
-		// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
-		glGenTextures(1, &this->shadow_map_texture);
-		glBindTexture(GL_TEXTURE_2D, this->shadow_map_texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->shadow_map_texture, 0);
-
-		status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
-		if (status != GL_FRAMEBUFFER_COMPLETE) {
-			return false;
-		}
-
-		// restore default FBO
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-		return true;
+		ResizeColorAttachments(window_width, window_height);
 	}
 
-	bool GBuffer::Resize(unsigned int window_width, unsigned int window_height) {
-		// Create the FBO
-		if (this->frame_buffer_object) {
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
-
-			for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
-				if (this->textures[i]) {
-					glBindTexture(GL_TEXTURE_2D, this->textures[i]);
-					glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, window_width, window_height, 0, GL_RGB, GL_FLOAT, nullptr);
-					glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, this->textures[i], 0);
-				}
-			}
-
-			// depth
-			if (this->depth_texture) {
-				glBindTexture(GL_TEXTURE_2D, this->depth_texture);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, window_width, window_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT,
-					nullptr);
-				glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, this->depth_texture, 0);
-			}
-
-			// final
-			glBindTexture(GL_TEXTURE_2D, this->final_texture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window_width, window_height, 0, GL_RGB, GL_FLOAT, nullptr);
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, this->final_texture, 0);
-
-			GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
-			glDrawBuffers(GBUFFER_NUM_TEXTURES, DrawBuffers);
+	void GBuffer::ResizeColorAttachments(const unsigned int window_width, const unsigned int window_height) {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
+		for (unsigned int i = 0; i < this->num_color_textures; i++) {
+			glBindTexture(GL_TEXTURE_2D, this->color_textures[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, window_width, window_height,
+				0, GL_RGB, GL_FLOAT, nullptr);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
+				GL_TEXTURE_2D, this->color_textures[i], 0);
 		}
+		glBindTexture(GL_TEXTURE_2D, this->final_texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window_width, window_height, 0,
+			GL_RGB, GL_FLOAT, nullptr);
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D,
+			this->final_texture, 0);
+		GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
+			GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
+		glDrawBuffers(this->num_color_textures, DrawBuffers);
 
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+
+	void GBuffer::SetDepthAttachment(GBUFFER_DEPTH_TYPE type,
+		const unsigned int width, const unsigned int height) {
+		this->depth_type = type;
+		glGenTextures(1, &this->depth_texture);
+		ResizeDepthAttachment(width, height);
+	}
+
+	void GBuffer::ResizeDepthAttachment(const unsigned int width, const unsigned int height) {
+		this->depth_width = width;
+		this->depth_height = height;
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
+		glBindTexture(GL_TEXTURE_2D, this->depth_texture);
+		if (this->depth_type == GBUFFER_DEPTH_TYPE_SHADOW) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, depth_height,
+				depth_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
+				this->depth_texture, 0);
+		}
+		else {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, depth_width, depth_height,
+				0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+				GL_TEXTURE_2D, this->depth_texture, 0);
+		}
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+
+	bool GBuffer::CheckCompletion() const {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		if (status != GL_FRAMEBUFFER_COMPLETE) {
 			return false;
 		}
-
-		// restore default FBO
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
 		return true;
 	}
 
@@ -115,37 +87,49 @@ namespace tec {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void GBuffer::BindForGeomPass() {
+	void GBuffer::ShadowPass() {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
-
-		GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
-
-		glDrawBuffers(3, DrawBuffers);
-	}
-
-	void GBuffer::BindForStencilPass() {
-		// must disable the draw buffers 
 		glDrawBuffer(GL_NONE);
+		glViewport(0, 0, this->depth_width, this->depth_height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void GBuffer::BindForShadowPass() {
-		glViewport(0, 0, 1024, 1024);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->shadow_frame_buffer_object);
+	void GBuffer::GeometyPass() {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
+		GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
+		glDrawBuffers(this->num_color_textures, DrawBuffers);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDisable(GL_CULL_FACE);
+	}
+
+	void GBuffer::StencilPass() {
 		glDrawBuffer(GL_NONE);
+		glEnable(GL_DEPTH_TEST);
+		glClear(GL_STENCIL_BUFFER_BIT);
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_BLEND);
+		glStencilFunc(GL_ALWAYS, 0, 0);
+		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 	}
 
-	void GBuffer::BindForLightPass() {
+	void GBuffer::LightPass(GLuint external_shadow_map_texture) {
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
-
-		for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+		for (unsigned int i = 0; i < this->num_color_textures; i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, this->textures[GBUFFER_TEXTURE_TYPE_POSITION + i]);
+			glBindTexture(GL_TEXTURE_2D, this->color_textures[i]);
 		}
-		glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES);
-		glBindTexture(GL_TEXTURE_2D, this->shadow_map_texture);
+		glActiveTexture(GL_TEXTURE0 + this->num_color_textures);
+		glBindTexture(GL_TEXTURE_2D, external_shadow_map_texture);
 	}
 
-	void GBuffer::BindForFinalPass() {
+	void GBuffer::FinalPass() {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->frame_buffer_object);
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
