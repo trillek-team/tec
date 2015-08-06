@@ -40,16 +40,6 @@ std::string GetUserSettingsPath() {
 	path += app_name;
 	path += PATH_SEPARATOR;
 #else
-	// Try to use a secure version of getenv
-#if defined(_GNU_SOURCE)
-	char* home = secure_getenv("XDG_CONFIG_HOME");
-	if (home == nullptr) {
-		home = secure_getenv("HOME");
-		if (home == nullptr) {
-			return "";
-		}
-	}
-#else
 	char* home = getenv("XDG_CONFIG_HOME");
 	if (home == nullptr) {
 		home = getenv("HOME");
@@ -57,7 +47,6 @@ std::string GetUserSettingsPath() {
 			return "";
 		}
 	}
-#endif
 	std::string path(home);
 	path += PATH_SEPARATOR ;
 	path += ".config";
@@ -95,16 +84,6 @@ std::string GetUserDataPath() {
 		return udata_folder;
 	}
 #if defined(__unix__)
-	// Try to use a secure version of getenv
-#if defined(_GNU_SOURCE)
-	char* home = secure_getenv("XDG_DATA_HOME");
-	if (home == nullptr) {
-		home = secure_getenv("HOME");
-		if (home == nullptr) {
-			return "";
-		}
-	}
-#else
 	char* home = getenv("XDG_DATA_HOME");
 	if (home == nullptr) {
 		home = getenv("HOME");
@@ -112,7 +91,6 @@ std::string GetUserDataPath() {
 			return "";
 		}
 	}
-#endif
 	std::string path(home);
 	path += PATH_SEPARATOR;
 	path += ".local/share";
@@ -149,16 +127,6 @@ std::string GetUserCachePath() {
 	path += "cache";
 	path += PATH_SEPARATOR ;
 #else
-	// Try to use a secure version of getenv
-#if defined(_GNU_SOURCE)
-	char* home = secure_getenv("XDG_CACHE_HOME");
-	if (home == nullptr) {
-		home = secure_getenv("HOME");
-		if (home == nullptr) {
-			return "";
-		}
-	}
-#else
 	char* home = getenv("XDG_CACHE_HOME");
 	if (home == nullptr) {
 		home = getenv("HOME");
@@ -166,7 +134,6 @@ std::string GetUserCachePath() {
 			return "";
 		}
 	}
-#endif
 	std::string path(home);
 	path += PATH_SEPARATOR;
 	path += ".cache";
