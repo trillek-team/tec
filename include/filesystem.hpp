@@ -11,10 +11,20 @@ namespace tec {
 namespace fs {
 
 #if defined(__unix__)
-	const char PATH_SEPARATOR = "/"; /// OS Filesystem path separator
+	const std::string PATH_SEPARATOR("/");  /// OS Filesystem path separator
+	const char PATH_SEPARATOR_C = '/';      /// OS Filesystem path separator
 #else
-	const char PATH_SEPARATOR = "\\"; /// OS Filesystem path separator
+	const std::string PATH_SEPARATOR("\\"); /// OS Filesystem path separator
+	const char PATH_SEPARATOR_C = '\\';     /// OS Filesystem path separator
 #endif
+
+#if defined(WIN32)
+	typedef std::wstring NFilePath; /// Native string format for paths
+#else
+	typedef std::string NFilePath;  /// Native string format for paths
+#endif
+
+	typedef std::string FilePath; // If someday we decide to change this for work with paths
 
 	/**
 	* \brief Returns the path to the User settings folder
@@ -26,7 +36,7 @@ namespace fs {
 	*
 	* \return string with the full path. Empty string if fails
 	*/
-	std::string GetUserSettingsPath();
+	FilePath GetUserSettingsPath();
 
 	/**
 	* \brief Returns the path to the User persitent data folder (for save files, for example)
@@ -38,7 +48,7 @@ namespace fs {
 	*
 	* \return string with the full path. Empty string if fails
 	*/
-	std::string GetUserDataPath();
+	FilePath GetUserDataPath();
 
 	/**
 	* \brief Returns the path to the User cache folder
@@ -50,36 +60,83 @@ namespace fs {
 	*
 	* \return string with the full path. Empty string if fails
 	*/
-	std::string GetUserCachePath();
+	FilePath GetUserCachePath();
 
 	/**
 	 * \brief Check if a directory exists
 	 *
 	 * \return True if the directory exists
 	*/
-	bool DirExists(const std::string& path);
+	bool DirExists(const FilePath& path);
 
 	/**
 	 * \brief Check if a file exists
 	 *
 	 * \return True if the directory exists
 	*/
-	bool FileExists(const std::string& path);
+	bool FileExists(const FilePath& path);
 
 	/**
 	 * \brief Try to create a directory route
-	 * TODO change int by a enum
-	 * \return 0 if success. If fails, return a error code
+	 *
+	 * \return True if success or the dir exists
 	 */
-	int MkDir(const std::string& path);
+	bool MkDir(const FilePath& path);
+
+	/**
+	 * \brief Try to create a full path
+	 *
+	 * \param path Absolute path
+	 * \return True if success.
+	 */
+	bool MkPath(const FilePath& path);
+
+	/**
+	 * \brief Extract a filename from a path
+	 *
+	 * \return Empty string if is an invalid path for a file
+	 */
+	FilePath FileName(const FilePath& path);
+
+	/**
+	 * \brief Return base path of a full path
+	 *
+	 * If is a path of a file, returns the path to the dir that contains the file
+	 * If is a path of a directory, returns the path to the dir that contains the direcotory (like cd .. && pwd)
+	 * \retirm Empty string if is an invalid path. Returned path would have the final slash
+	 */
+	FilePath BasePath(const FilePath& path);
+
+	/**
+	 * \brief Is an absolute or relative path ?
+	 */
+	bool isAbsolutePath(const FilePath& path);
 
 	/**
 	 * \brief Try to obtain the full path to the program binary file
 	 *
 	 * \return string with the full path. Empty string if fails
 	 */
-	std::string GetProgramPath();
+	FilePath GetProgramPath();
+
+	/**
+	 * \brief Normalize path to the OS format
+	 *
+	 * - Convert slashs to the correct OS slash
+	 * - Remove drive unit if is a *NIX OS
+	 * \return normalized path
+	*/
+	void NormalizePath(FilePath& path);
+
+	/**
+	 * \brief Returns a path on the native OS encoding
+	 *
+	 * - Normalize path
+	 * - return wstring on Windows
+	 * - return string on *NIX
+	 * \return native string of the path
+	*/
+	NFilePath GetNativePath(const FilePath& path);
 
 }
 }
-

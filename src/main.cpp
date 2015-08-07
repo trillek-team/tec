@@ -61,9 +61,39 @@ namespace tec {
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
+	// Path "sanization" and conversion
+	std::string bad_path = "c:\\usr/share\\MyApp\\foo/bar.png";
+	std::cout << bad_path << " -> ";
+#if defined(WIN32)
+	std::wcout << tec::fs::GetNativePath(bad_path) << "\n";
+#else
+	std::cout << tec::fs::GetNativePath(bad_path) << "\n";
+#endif
+
+	// Program location
+	std::cout << tec::fs::GetProgramPath() <<"\n";
+
+	// Default paths for user data
 	std::cout << tec::fs::GetUserSettingsPath() << "\n";
 	std::cout << tec::fs::GetUserDataPath() << "\n";
 	std::cout << tec::fs::GetUserCachePath() << "\n";
+
+	// Checks of dir exists
+	std::cout << "c:\\windows\\ - " << tec::fs::DirExists("c:\\windows\\") << "\n";
+	std::cout << "/home/ - " << tec::fs::DirExists("/home/") << "\n";
+
+	// Checks of file exists
+	std::cout << "c:\\windows\\notepad.exe - " << tec::fs::FileExists("c:\\windows\\notepad.exe") << "\n";
+	std::cout << "/bin/bash - " << tec::fs::FileExists("/bin/bash") << "\n";
+
+	// Path manipulation
+	std::cout << "c:\\windows\\notepad.exe -> "<< tec::fs::FileName("c:\\windows\\notepad.exe") << "\n";
+	std::cout << "/usr/local/share/MyApp/foo.ini -> "<< tec::fs::BasePath("/usr/local/share/MyApp/foo.ini") << "\n";
+	std::cout << "/usr/local/share/MyApp/ -> "<< tec::fs::BasePath("/usr/local/share/MyApp/") << "\n";
+
+	std::cout << "Creating dir on /tmp/MyApp/blabla/foo " << tec::fs::MkPath("/tmp/MyApp/blabla/foo") <<"\n";
+
+	std::cout << "Is abs path : /usr/share/ ? " << tec::fs::isAbsolutePath("/usr/path") << "\n";
 
 	tec::OS os;
 
