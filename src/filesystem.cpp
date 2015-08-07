@@ -161,6 +161,29 @@ std::string GetUserCachePath() {
 	return path;
 } // End of GetUserCachePath
 
+
+bool DirExists(const std::string& path) {
+	// TODO use stat
+	return true;
+}
+
+bool FileExists(const std::string& path) {
+	// TODO try to open file
+	return true;
+}
+
+int MkDir(const std::string& path) {
+	// TODO call to mkdir on unix or _mkdir on windows and check errors
+	return 0;
+}
+
+
+std::string GetProgramPath() {
+	std::string path;
+	// TODO
+	return path;
+}
+
 }
 }
 

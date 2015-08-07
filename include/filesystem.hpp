@@ -11,9 +11,9 @@ namespace tec {
 namespace fs {
 
 #if defined(__unix__)
-	const char PATH_SEPARATOR = '/'; /// OS Filesystem path separator
+	const char PATH_SEPARATOR = "/"; /// OS Filesystem path separator
 #else
-	const char PATH_SEPARATOR = '\\'; /// OS Filesystem path separator
+	const char PATH_SEPARATOR = "\\"; /// OS Filesystem path separator
 #endif
 
 	/**
@@ -24,7 +24,7 @@ namespace fs {
 	* OSX  : /Users/USER/Library/Application Support/APPNAME/
 	* WIN  : C:\Users\USER\AppData\Roaming\APPNAME\
 	*
-	* \return string with the path. Empty string if fails
+	* \return string with the full path. Empty string if fails
 	*/
 	std::string GetUserSettingsPath();
 
@@ -36,7 +36,7 @@ namespace fs {
 	* OSX  : /Users/USER/Library/Application Support/APPNAME/data/
 	* WIN  : C:\Users\USER\AppData\Roaming\APPNAME\data\
 	*
-	* \return string with the path. Empty string if fails
+	* \return string with the full path. Empty string if fails
 	*/
 	std::string GetUserDataPath();
 
@@ -48,9 +48,37 @@ namespace fs {
 	* OSX  : /Users/USER/Library/Application Support/APPNAME/cache/
 	* WIN  : C:\Users\USER\AppData\Local\APPNAME\
 	*
-	* \return string with the path. Empty string if fails
+	* \return string with the full path. Empty string if fails
 	*/
 	std::string GetUserCachePath();
+
+	/**
+	 * \brief Check if a directory exists
+	 *
+	 * \return True if the directory exists
+	*/
+	bool DirExists(const std::string& path);
+
+	/**
+	 * \brief Check if a file exists
+	 *
+	 * \return True if the directory exists
+	*/
+	bool FileExists(const std::string& path);
+
+	/**
+	 * \brief Try to create a directory route
+	 * TODO change int by a enum
+	 * \return 0 if success. If fails, return a error code
+	 */
+	int MkDir(const std::string& path);
+
+	/**
+	 * \brief Try to obtain the full path to the program binary file
+	 *
+	 * \return string with the full path. Empty string if fails
+	 */
+	std::string GetProgramPath();
 
 }
 }
