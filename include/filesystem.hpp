@@ -17,7 +17,6 @@ public:
 		 //("/"); 
 		const static char PATH_SEPARATOR_C = '/';      /// OS Filesystem path separator
 #else
-		const static std::string PATH_SEPARATOR; //("\\"); /// OS Filesystem path separator
 		const static char PATH_SEPARATOR_C = '\\';     /// OS Filesystem path separator
 #endif
 
@@ -151,6 +150,11 @@ public:
 		 * \return normalized path
 		 */
 		void NormalizePath();
+
+		/**
+		 * \brief Check if the path is a valid absolute o relative path
+		 */
+		bool isValidPath() const;
 
 		/**
 		 * \brief Returns a path on the native OS encoding

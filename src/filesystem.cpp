@@ -133,17 +133,20 @@ FilePath FilePath::GetUserDataPath() {
 	path += PATH_SEPARATOR;
 	path += app_name;
 	path += PATH_SEPARATOR;
+	FilePath::udata_folder = path;
 
+	return FilePath(path);
 #elif defined(WIN32) || defined(__APPLE__)
-	std::string path = GetUserSettingsPath();
+	auto path = FilePath::GetUserSettingsPath();
 	if (path.empty()) {
-		return FilePath();
+		return path;
 	}
 	path += u8"data";
 	path += PATH_SEPARATOR;
+	return path;
+#else
+	return FilePath();
 #endif
-	FilePath::udata_folder = path;
-	return FilePath(path);
 
 } // End of GetUserDataPath
 
@@ -201,7 +204,7 @@ FilePath FilePath::GetUserCachePath() {
 bool FilePath::DirExists() const {
 #if defined(WIN32)
 	struct __stat64 s;
-	auto wtmp = this.GetNativePath();
+	auto wtmp = this->GetNativePath();
 	int err = _wstat64((wchar_t*)wtmp.c_str() , &s);
 #else
 	struct stat s;
@@ -216,15 +219,14 @@ bool FilePath::DirExists() const {
 	}
 }
 
-bool FilePath::FileExists() const{
-#if defined(__linux__)
-	return std::ifstream(path).good();
-#else
-	return std::ifstream(GetNativePath(path)).good();
-#endif
+bool FilePath::FileExists() const {
+	return std::ifstream(this->GetNativePath()).good();
 }
 
 bool FilePath::MkDir(const FilePath& path) {
+	if (!path.isValidPath()) {
+		return false;
+	}
 	#if defined(__unix__)
 	int ret = mkdir(path.GetNativePath().c_str(), 0755);
 	#else // Windows
@@ -238,14 +240,17 @@ bool FilePath::MkDir(const FilePath& path) {
 
 bool FilePath::MkPath(const FilePath& path) {
 	// Build the path on a recursive way
+	if (! path.isValidPath()) {
+		return false;
+	}
 #if defined(WIN32)
-		if (path.path.size() <= 3 && std::isalpha( path.path.at(0))) { // 'X:\'
-			return true;
-		}
+	if (path.path.size() <= 3 && std::isalpha( path.path.at(0))) { // 'X:\'
+		return true;
+	}
 #else
-		if (path.path.size() == 1 && path.path.at(0) == PATH_SEPARATOR_C) { // '\'
-			return true;
-		}
+	if (path.path.size() == 1 && path.path.at(0) == PATH_SEPARATOR_C) { // '\'
+		return true;
+	}
 #endif
 	auto base = path.BasePath();
 	if (! base.empty()) {
@@ -360,6 +365,19 @@ void FilePath::NormalizePath() {
 		path.erase(0, 2);
 	}
 #endif
+}
+
+bool  FilePath::isValidPath() const {
+	if (! this->isAbsolutePath()) { // No contains drive, so check if is a valid relative path
+		// TODO improve this with <regex>
+		if (path.size() >= 3 && path.at(0) == '.' && (path.at(1) == PATH_SEPARATOR_C || (path.at(1) == '.' && path.at(2) == PATH_SEPARATOR_C))) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return true;
+	}
 }
 
 FilePath::NFilePath FilePath::GetNativePath() const {

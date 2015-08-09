@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 	tec::FilePath fp2("c:/usr/local/share/");
 	std::cout << "c:/usr/local/share/ -> " << fp2 << "\n"; 
 	tec::FilePath fp3 = std::wstring(L"c:/usr/local/share/€");
-	std::cout << "c:/usr/local/share/€ -> " << fp3 << "\n"; 
+	std::cout << u8"c:/usr/local/share/€ -> " << fp3 << "\n";  // Note: Windows console can't handle unicode output
 	
 
 	// Program location
@@ -92,10 +92,10 @@ int main(int argc, char* argv[]) {
 	std::cout << "c:\\windows\\notepad.exe -> "<< tec::FilePath("c:\\windows\\notepad.exe").FileName() << "\n";
 	std::cout << "/usr/local/share/MyApp/foo.ini -> "<< tec::FilePath("/usr/local/share/MyApp/foo.ini").BasePath() << "\n";
 	std::cout << "/usr/local/share/MyApp/ -> "<< tec::FilePath("/usr/local/share/MyApp/").BasePath() << "\n";
-
+	std::cout << "Creating dir on c:/tmp/MyApp/blabla/foo " << tec::FilePath::MkPath(tec::FilePath("c:/tmp/MyApp/blabla/foo")) << "\n";
 	std::cout << "Creating dir on /tmp/MyApp/blabla/foo " << tec::FilePath::MkPath(tec::FilePath("/tmp/MyApp/blabla/foo")) <<"\n";
-
 	std::cout << "Is abs path : /usr/share/ ? " << tec::FilePath("/usr/path").isAbsolutePath() << "\n";
+	std::cout << "Is abs path : c:\\windows\\system\\ ? " << tec::FilePath("c:\\windows\\system\\").isAbsolutePath() << "\n";
 	
 	fp2 = fp2 + "MyApp/assets";
 	std::cout << "/usr/local/share/ + MyApp/assets -> " << fp2 << "\n";
