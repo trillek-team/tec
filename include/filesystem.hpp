@@ -42,6 +42,15 @@ public:
 		FilePath( const std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
 		
 		/**
+		 * \brief Builds a path from a wstring or substring
+		 * 
+		 * \param other A wstring with a path
+		 * \param pos Begin of the range to get a slice (default = 0)
+		 * \param count How many bytes to grab from other (default = size of other)
+		 */
+		FilePath( const std::wstring& other, std::size_t pos = 0, std::size_t count = std::wstring::npos);
+		
+		/**
 		 * \brief Returns the path to the User settings folder
 		 *
 		 * Usually this paths are :
@@ -178,12 +187,12 @@ public:
 			this->NormalizePath();
 			return *this;
 		}
-		/*
+		
 		FilePath& operator= (const std::wstring& wstr) {
 			this->path = utf8_encode(wstr);
 			this->NormalizePath();
 			return *this;
-		}*/
+		}
 		
 		FilePath& operator= (const char* str) {
 			this->path = std::string(str);
@@ -205,11 +214,11 @@ public:
 			FilePath tmp(str);
 			return lhs += tmp;
 		}
-		/*
+		
 		friend FilePath operator+ (FilePath lhs, const std::wstring& wstr) {
 			FilePath tmp(wstr);
 			return lhs += tmp;
-		}*/
+		}
 		
 		friend FilePath operator+ (FilePath lhs, const char* str) {
 			FilePath tmp(str);

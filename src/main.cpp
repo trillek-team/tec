@@ -67,6 +67,9 @@ int main(int argc, char* argv[]) {
 	std::cout << bad_path << " -> " << fp1 << "\n";
 	tec::FilePath fp2("c:/usr/local/share/");
 	std::cout << "c:/usr/local/share/ -> " << fp2 << "\n"; 
+	tec::FilePath fp3 = std::wstring(L"c:/usr/local/share/€");
+	std::cout << "c:/usr/local/share/€ -> " << fp3 << "\n"; 
+	
 
 	// Program location
 	std::cout << "I'm at " << tec::FilePath::GetProgramPath() <<"\n";

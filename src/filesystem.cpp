@@ -51,6 +51,11 @@ FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count)
 	this->NormalizePath();
 }
 
+FilePath::FilePath(const std::wstring& other, std::size_t pos, std::size_t count) {
+	auto ustr = tec::utf8_encode(other);
+	this->path = ustr;
+	this->NormalizePath();
+}
 
 FilePath FilePath::GetUserSettingsPath() {
 	// Try to use cached value
