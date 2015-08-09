@@ -61,39 +61,41 @@ namespace tec {
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
-	// Path "sanization" and conversion
+	// Construction from strings
 	std::string bad_path = "c:\\usr/share\\MyApp\\foo/bar.png";
-	std::cout << bad_path << " -> ";
-#if defined(WIN32)
-	std::wcout << tec::fs::GetNativePath(bad_path) << "\n";
-#else
-	std::cout << tec::fs::GetNativePath(bad_path) << "\n";
-#endif
+	tec::FilePath fp1(bad_path);
+	std::cout << bad_path << " -> " << fp1 << "\n";
+	tec::FilePath fp2("c:/usr/local/share/");
+	std::cout << "c:/usr/local/share/ -> " << fp2 << "\n"; 
 
 	// Program location
-	std::cout << tec::fs::GetProgramPath() <<"\n";
+	std::cout << "I'm at " << tec::FilePath::GetProgramPath() <<"\n";
 
 	// Default paths for user data
-	std::cout << tec::fs::GetUserSettingsPath() << "\n";
-	std::cout << tec::fs::GetUserDataPath() << "\n";
-	std::cout << tec::fs::GetUserCachePath() << "\n";
+	std::cout << tec::FilePath::GetUserSettingsPath() << "\n";
+	std::cout << tec::FilePath::GetUserDataPath() << "\n";
+	std::cout << tec::FilePath::GetUserCachePath() << "\n";
 
 	// Checks of dir exists
-	std::cout << "c:\\windows\\ - " << tec::fs::DirExists("c:\\windows\\") << "\n";
-	std::cout << "/home/ - " << tec::fs::DirExists("/home/") << "\n";
+	std::cout << "c:\\windows\\ - " << tec::FilePath("c:\\windows\\").DirExists() << "\n";
+	std::cout << "/home/ - " << tec::FilePath("/home/").DirExists() << "\n";
 
 	// Checks of file exists
-	std::cout << "c:\\windows\\notepad.exe - " << tec::fs::FileExists("c:\\windows\\notepad.exe") << "\n";
-	std::cout << "/bin/bash - " << tec::fs::FileExists("/bin/bash") << "\n";
+	std::cout << "c:\\windows\\notepad.exe - " << tec::FilePath("c:\\windows\\notepad.exe").FileExists() << "\n";
+	std::cout << "/bin/bash - " << tec::FilePath("/bin/bash").FileExists() << "\n";
 
 	// Path manipulation
-	std::cout << "c:\\windows\\notepad.exe -> "<< tec::fs::FileName("c:\\windows\\notepad.exe") << "\n";
-	std::cout << "/usr/local/share/MyApp/foo.ini -> "<< tec::fs::BasePath("/usr/local/share/MyApp/foo.ini") << "\n";
-	std::cout << "/usr/local/share/MyApp/ -> "<< tec::fs::BasePath("/usr/local/share/MyApp/") << "\n";
+	
+	std::cout << "c:\\windows\\notepad.exe -> "<< tec::FilePath("c:\\windows\\notepad.exe").FileName() << "\n";
+	std::cout << "/usr/local/share/MyApp/foo.ini -> "<< tec::FilePath("/usr/local/share/MyApp/foo.ini").BasePath() << "\n";
+	std::cout << "/usr/local/share/MyApp/ -> "<< tec::FilePath("/usr/local/share/MyApp/").BasePath() << "\n";
 
-	std::cout << "Creating dir on /tmp/MyApp/blabla/foo " << tec::fs::MkPath("/tmp/MyApp/blabla/foo") <<"\n";
+	std::cout << "Creating dir on /tmp/MyApp/blabla/foo " << tec::FilePath::MkPath(tec::FilePath("/tmp/MyApp/blabla/foo")) <<"\n";
 
-	std::cout << "Is abs path : /usr/share/ ? " << tec::fs::isAbsolutePath("/usr/path") << "\n";
+	std::cout << "Is abs path : /usr/share/ ? " << tec::FilePath("/usr/path").isAbsolutePath() << "\n";
+	
+	fp2 = fp2 + "MyApp/assets";
+	std::cout <<"/usr/local/share/ + MyApp/assets -> " << fp2 << "\n";
 
 	tec::OS os;
 

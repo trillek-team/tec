@@ -1,7 +1,5 @@
 #include "filesystem.hpp"
 
-#include "string.hpp"
-
 #include <algorithm>
 #include <fstream>
 #include <cctype>
@@ -28,20 +26,38 @@
 #endif
 
 namespace tec {
-namespace fs {
 
 const std::string app_name(u8"trillek"); // TODO Ask to tec::OS for the appname ?
 const char UNIX_PATH_SEPARATOR = '/';    /// *NIX filesystem path separator
-const char WIN_PATH_SEPARATOR = '\\';	 /// Windows filesystem path separator
+const char WIN_PATH_SEPARATOR = '\\';    /// Windows filesystem path separator
+#if defined(__unix__)
+	const std::string FilePath::PATH_SEPARATOR = std::string("\\");
+#else
+	const std::string FilePath::PATH_SEPARATOR = std::string("/");
+#endif
+	
+std::string FilePath::settings_folder = "";
+std::string FilePath::udata_folder = "";
+std::string FilePath::cache_folder = "";
+	
+
+FilePath::FilePath() 
+	: path("")
+{ }
+
+FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count) 
+: path(other, pos, count) 
+{ 
+	this->NormalizePath();
+}
 
 
-std::string GetUserSettingsPath() {
-	static std::string settings_folder;
-
+FilePath FilePath::GetUserSettingsPath() {
 	// Try to use cached value
-	if (!settings_folder.empty()) {
-		return settings_folder;
+	if (! FilePath::settings_folder.empty()) {
+		return FilePath(FilePath::settings_folder);
 	}
+
 #if defined(__unix__)
 #if defined(__APPLE__)
 	FSRef ref;
@@ -58,7 +74,7 @@ std::string GetUserSettingsPath() {
 	if (home == nullptr) {
 		home = getenv(u8"HOME");
 		if (home == nullptr) {
-			return "";
+			return FilePath();
 		}
 	}
 	std::string path(home);
@@ -73,7 +89,7 @@ std::string GetUserSettingsPath() {
 	LPWSTR wszPath = NULL;
 
 	if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &wszPath))) {
-		return "";
+		return FilePath();
 	}
 
 	_bstr_t bstrPath(wszPath);
@@ -85,25 +101,23 @@ std::string GetUserSettingsPath() {
 	path += PATH_SEPARATOR;
 
 #endif
-	settings_folder = path;
-	return path;
+	FilePath::settings_folder = path;
+	return FilePath(path);
 
 } // End of GetUserSettingsPath
 
-
-std::string GetUserDataPath() {
-	static std::string udata_folder;
-
+FilePath FilePath::GetUserDataPath() {
 	// Try to use cached value
-	if (!udata_folder.empty()) {
-		return udata_folder;
+	if (! FilePath::udata_folder.empty()) {
+		return FilePath(FilePath::udata_folder);
 	}
+
 #if defined(__unix__)
 	char* home = getenv(u8"XDG_DATA_HOME");
 	if (home == nullptr) {
 		home = getenv(u8"HOME");
 		if (home == nullptr) {
-			return "";
+			return FilePath();
 		}
 	}
 	std::string path(home);
@@ -116,28 +130,27 @@ std::string GetUserDataPath() {
 #elif defined(WIN32) || defined(__APPLE__)
 	std::string path = GetUserSettingsPath();
 	if (path.empty()) {
-		return "";
+		return FilePath();
 	}
 	path += u8"data";
 	path += PATH_SEPARATOR;
 #endif
-	udata_folder = path;
-	return path;
+	FilePath::udata_folder = path;
+	return FilePath(path);
 
 } // End of GetUserDataPath
 
-std::string GetUserCachePath() {
-	static std::string cache_folder;
-
+FilePath FilePath::GetUserCachePath() {
 	// Try to use cached value
-	if (!cache_folder.empty()) {
-		return cache_folder;
+	if (! FilePath::cache_folder.empty()) {
+		return FilePath(FilePath::cache_folder);
 	}
+	
 #if defined(__unix__)
 #if defined(__APPLE__)
 	std::string path = GetUserSettingsPath();
 	if (path.empty()) {
-		return "";
+		return FilePath();
 	}
 	path += u8"cache";
 	path += PATH_SEPARATOR ;
@@ -146,7 +159,7 @@ std::string GetUserCachePath() {
 	if (home == nullptr) {
 		home = getenv(u8"HOME");
 		if (home == nullptr) {
-			return "";
+			return FilePath();
 		}
 	}
 	std::string path(home);
@@ -161,7 +174,7 @@ std::string GetUserCachePath() {
 	LPWSTR wszPath = NULL;
 
 	if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &wszPath))) {
-		return "";
+		return FilePath();
 	}
 
 	_bstr_t bstrPath(wszPath);
@@ -173,16 +186,15 @@ std::string GetUserCachePath() {
 	path += PATH_SEPARATOR;
 
 #endif
-	cache_folder = path;
-	return path;
+	FilePath::cache_folder = path;
+	return FilePath(path);
 } // End of GetUserCachePath
 
 
-bool DirExists(const std::string& path) {
-
+bool FilePath::DirExists() const {
 #if defined(WIN32)
 	struct __stat64 s;
-	auto wtmp = GetNativePath(path);
+	auto wtmp = this.GetNativePath();
 	int err = _wstat64((wchar_t*)wtmp.c_str() , &s);
 #else
 	struct stat s;
@@ -194,16 +206,10 @@ bool DirExists(const std::string& path) {
 		return false;
 	} else {
 		return true;
-		/*
-		if ((s.st_mode & _S_IFDIR) > 0) {
-			// Is a dir
-			return true;
-		}
-		*/
 	}
 }
 
-bool FileExists(const std::string& path) {
+bool FilePath::FileExists() const{
 #if defined(__linux__)
 	return std::ifstream(path).good();
 #else
@@ -211,88 +217,72 @@ bool FileExists(const std::string& path) {
 #endif
 }
 
-/**
- * Does the dirty job of creating a dir
- */
-inline bool _MkDir(const std::string& path) {
-#if defined(__unix__)
-	int ret = mkdir(GetNativePath(path).c_str(), 0755);
-#else // Windows
-	int ret = _wmkdir(GetNativePath(path).c_str());
-#endif
-	if (ret != 0 && errno == EEXIST) {
+bool FilePath::MkDir(const FilePath& path) {
+	#if defined(__unix__)
+	int ret = mkdir(path.GetNativePath().c_str(), 0755);
+	#else // Windows
+	int ret = _wmkdir(path.GetNativePath().c_str());
+	#endif
+	if (ret != 0 || errno == EEXIST) {
 		return true;
 	}
-	return ret != 0;
+	return false;
 }
 
-bool MkDir(const std::string& path) {
-	std::string tmp(path);
-	NormalizePath(tmp);
-	return _MkDir(tmp);
-}
-
-bool MkPath(const std::string& path) {
+bool FilePath::MkPath(const FilePath& path) {
 	// Build the path on a recursive way
 #if defined(WIN32)
-		if (path.size() <= 3 && std::isalpha( path.at(0))) { // 'X:\'
+		if (path.path.size() <= 3 && std::isalpha( path.path.at(0))) { // 'X:\'
 			return true;
 		}
 #else
-		if (path.size() == 1 && path.at(0) == PATH_SEPARATOR_C) { // '\'
+		if (path.path.size() == 1 && path.path.at(0) == PATH_SEPARATOR_C) { // '\'
 			return true;
 		}
 #endif
-	auto base = BasePath(path);
+	auto base = path.BasePath();
 	if (! base.empty()) {
-		size_t len = base.size();
+		size_t len = base.path.size();
 		if (MkPath(base)) {
-			return _MkDir(path);
+			return MkDir(path);
 		}
 	}
 	return false;
 }
 
-
-std::string FileName(const std::string& path) {
-	std::string tmp(path);
-	NormalizePath(tmp);
-	size_t pos = tmp.find_last_of( PATH_SEPARATOR_C);
+FilePath FilePath::FileName() const {
+	std::size_t pos = path.find_last_of( FilePath::PATH_SEPARATOR_C);
 	if (pos != std::string::npos) {
-		std::string name(tmp, pos+1);
-		return name;
+		return FilePath(path, pos+1);
 	}
-	return "";
+	return FilePath();
 }
 
-std::string BasePath(const std::string& path) {
-	std::string tmp(path);
-	NormalizePath(tmp);
-	size_t len = tmp.size();
+FilePath FilePath::BasePath() const {
+	size_t len = path.size();
 #if defined(WIN32)
-	if (len <= 3 && std::isalpha( tmp.at(0))) { // 'X:\'
-		return tmp;
+	if (len <= 3 && std::isalpha( path.at(0))) { // 'X:\'
+		return FilePath(path);
 	}
 #else
-	if (len == 1 && tmp.at(0) == PATH_SEPARATOR_C) { // '\'
-		return tmp;
+	if (len == 1 && path.at(0) == PATH_SEPARATOR_C) { // '\'
+		return FilePath(path);
 	}
 #endif
 
-	size_t pos = tmp.find_last_of( PATH_SEPARATOR_C);
+	size_t pos = path.find_last_of( PATH_SEPARATOR_C);
 	if (pos == len -1) {
 		// Path ended with a path separator
-		pos = tmp.find_last_of( PATH_SEPARATOR_C, tmp.size()-2);
+		pos = path.find_last_of( PATH_SEPARATOR_C, path.size()-2);
 	}
 	if (pos == std::string::npos) {
-		return "";
+		return FilePath();
 	}
-
-	tmp.erase(pos+1);
-	return tmp;
+	
+	return FilePath(path, 0, pos+1);
 }
 
-bool isAbsolutePath(const FilePath& path) {
+bool FilePath::isAbsolutePath() const {
 	if (path.empty()) {
 		return false;
 	}
@@ -306,7 +296,7 @@ bool isAbsolutePath(const FilePath& path) {
 #endif
 }
 
-std::string GetProgramPath() {
+FilePath FilePath::GetProgramPath() {
 
 #if defined(__unix__)
 	const size_t LEN = 512;
@@ -314,14 +304,12 @@ std::string GetProgramPath() {
 	char tmp[LEN];
 	uint32_t size = LEN;
 	if (_NSGetExecutablePath(tmp, &size) == 0) {
-		std::string path(tmp);
-		return path;
+		return FilePath(tmp);
 	} else {
 		// Too small buffer
 		char* tmp2 = new char[size]();
 		_NSGetExecutablePath(tmp2, &size)
-		std::string path(tmp2);
-		return path;
+		return FilePath(tmp2);
 	}
 #elif defined(__linux__)
 	char szTmp[LEN];
@@ -333,31 +321,29 @@ std::string GetProgramPath() {
 		tmp[bytes] = '\0';
 	}
 
-	std::string path(tmp);
-	return path;
+	return FilePath(tmp);
 #endif
-	/* Other *NIX have his proper API or changes on procfs
-	 * Mac OS X: _NSGetExecutablePath() (man 3 dyld)
-	 * Linux: readlink /proc/self/exe
-	 * Solaris: getexecname()
-	 * FreeBSD: sysctl CTL_KERN KERN_PROC KERN_PROC_PATHNAME -1
-	 * FreeBSD if it has procfs: readlink /proc/curproc/file (FreeBSD doesn't have procfs by default)
-	 * NetBSD: readlink /proc/curproc/exe
-	 * DragonFly BSD: readlink /proc/curproc/file
-	 */
+	// Other *NIX have his proper API or changes on procfs
+	//  * Mac OS X: _NSGetExecutablePath() (man 3 dyld)
+	//  * Linux: readlink /proc/self/exe
+	//  * Solaris: getexecname()
+	//  * FreeBSD: sysctl CTL_KERN KERN_PROC KERN_PROC_PATHNAME -1
+	//  * FreeBSD if it has procfs: readlink /proc/curproc/file (FreeBSD doesn't have procfs by default)
+	//  * NetBSD: readlink /proc/curproc/exe
+	//  * DragonFly BSD: readlink /proc/curproc/file
 
 #elif defined(WIN32)
 	//LPWSTR buffer; //or wchar_t * buffer;
 	wchar_t buffer[MAX_PATH];
 	if (0 == GetModuleFileNameW(NULL, buffer, MAX_PATH)) {
-		return "";
+		return FilePath();
 	}
-	std::wstring str(buffer);
-	return tec::utf8_encode(str);
+	std::wstring wstr(buffer);
+	return FilePath(wstr);
 #endif
 }
 
-void NormalizePath(std::string& path) {
+void FilePath::NormalizePath() {
 #if defined(WIN32)
 	std::replace(path.begin(), path.end(), UNIX_PATH_SEPARATOR, WIN_PATH_SEPARATOR);
 #else
@@ -369,16 +355,14 @@ void NormalizePath(std::string& path) {
 #endif
 }
 
-NFilePath GetNativePath(const std::string& path) {
-	std::string tmp(path);
-	NormalizePath(tmp);
+FilePath::NFilePath FilePath::GetNativePath() const {
 #if defined(WIN32)
-	return tec::utf8_decode(tmp);
+	return tec::utf8_decode(path);
 #else
-	return tmp;
+	return path;
 #endif
 }
 
-}
+
 }
 
