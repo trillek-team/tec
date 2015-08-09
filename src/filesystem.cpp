@@ -39,6 +39,8 @@ const char WIN_PATH_SEPARATOR = '\\';    /// Windows filesystem path separator
 std::string FilePath::settings_folder = "";
 std::string FilePath::udata_folder = "";
 std::string FilePath::cache_folder = "";
+
+std::string FilePath::assets_base = "";
 	
 
 FilePath::FilePath() 
@@ -319,7 +321,7 @@ FilePath FilePath::GetProgramPath() {
 #elif defined(__linux__)
 	char szTmp[LEN];
 	char tmp[LEN];
-	snprintf(szTmp, LEN, "/proc/%d/exe", getpid());
+	std::snprintf(szTmp, LEN, "/proc/%d/exe", getpid());
 	int bytes = readlink(szTmp, tmp, LEN);
 	bytes = bytes < LEN-1 ? bytes : LEN-1;
 	if (bytes >= 0) {
@@ -353,7 +355,7 @@ void FilePath::NormalizePath() {
 	std::replace(path.begin(), path.end(), UNIX_PATH_SEPARATOR, WIN_PATH_SEPARATOR);
 #else
 	std::replace(path.begin(), path.end(), WIN_PATH_SEPARATOR, UNIX_PATH_SEPARATOR);
-	if (std::isalpha(path.at(0)) && path.at(1) == ':') { // x: windows unit to remove
+	if (path.size() > 2 && std::isalpha(path.at(0)) && path.at(1) == ':') { // x: windows unit to remove
 		// This comparation it's safe on UTF-8 as isalpha would check [a-zA-Z] and Windows units are only letters
 		path.erase(0, 2);
 	}
@@ -368,6 +370,48 @@ FilePath::NFilePath FilePath::GetNativePath() const {
 #endif
 }
 
-
+FilePath FilePath::GetAssetsBasePath() {
+	if (FilePath::assets_base.empty()) {
+		// Search for the assets folder
+		FilePath tmp(u8"./assets/");
+		if (tmp.DirExists()) {
+			FilePath::assets_base = tmp.toString();
+		} else {
+			tmp = FilePath::GetProgramPath().BasePath() + u8"assets/";
+			if (tmp.DirExists()) {
+				FilePath::assets_base = tmp.toString();
+			} else {
+				tmp = tmp.BasePath().BasePath() + u8"share/assets/";
+				if (tmp.DirExists()) {
+					FilePath::assets_base = tmp.toString();
+				} else {
+					tmp = FilePath::GetProgramPath().BasePath().BasePath() + (u8"share/" + app_name + "/assets/");
+					if (tmp.DirExists()) {
+						FilePath::assets_base = tmp.toString();
+					}
+				}
+			}
+		}
+		// If assets_base is empty, then can't find the folder
+	}
+	
+	return FilePath(FilePath::assets_base);
 }
 
+void FilePath::SetAssetsBasePath(FilePath new_base) {
+	FilePath::assets_base = new_base.toString();
+}
+
+FilePath FilePath::GetAssetPath(const std::string& asset) {
+	auto tmp =FilePath::GetAssetsBasePath();
+	tmp += asset;
+	return tmp;
+}
+
+FilePath FilePath::GetAssetPath(const char* asset) {
+	auto tmp =FilePath::GetAssetsBasePath();
+	tmp += asset;
+	return tmp;
+}
+
+}

@@ -163,6 +163,38 @@ public:
 		FilePath::NFilePath GetNativePath() const;
 		
 		/**
+		 * \brief Return the base directory where search the assets
+		 * 
+		 * If isn't set, then would try to search a valid directory path, probing with this paths:
+		 * - ./assets/
+		 * - EXE_PATH/assets/
+		 * - EXE_PATH/../assets/
+		 * - EXE_PATH/../share/assets/
+		 * Were EXE_PATH is the value returned by GetProgramPath()
+		 * If find a valid path, then stores it for the future
+		 */
+		static FilePath GetAssetsBasePath();
+		
+		/**
+		 * \brief returns the full path to an asset
+		 * 
+		 * \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
+		 */
+		static FilePath GetAssetPath(const std::string& asset);
+		
+		/**
+		 * \brief returns the full path to an asset
+		 * 
+		 * \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
+		 */
+		static FilePath GetAssetPath(const char* asset);
+		
+		/**
+		 * \brief Sets the base directory where search the assets
+		 */
+		static void SetAssetsBasePath(FilePath);
+		
+		/**
 		 * \brief Returns the string representation of a path
 		 */
 		std::string toString() const{
@@ -206,6 +238,18 @@ public:
 			return *this;
 		}
 		
+		FilePath& operator+= (const char* lhs) {
+			this->path += lhs;
+			this->NormalizePath();
+			return *this;
+		}
+		
+		FilePath& operator+= (const std::string& lhs) {
+			this->path += lhs;
+			this->NormalizePath();
+			return *this;
+		}
+		
 		friend FilePath operator+ (FilePath lhs, const FilePath& rhs) {
 			return lhs += rhs;
 		}
@@ -233,7 +277,7 @@ private:
 		static std::string udata_folder;
 		static std::string cache_folder;
 		
-		//friend std::ostream& operator<<(std::ostream& os, const FilePath& path);
+		static std::string assets_base;
 
 	}; // End of FileSystem
 	

@@ -98,7 +98,10 @@ int main(int argc, char* argv[]) {
 	std::cout << "Is abs path : /usr/share/ ? " << tec::FilePath("/usr/path").isAbsolutePath() << "\n";
 	
 	fp2 = fp2 + "MyApp/assets";
-	std::cout <<"/usr/local/share/ + MyApp/assets -> " << fp2 << "\n";
+	std::cout << "/usr/local/share/ + MyApp/assets -> " << fp2 << "\n";
+	
+	// Assets path resolution
+	std::cout << "#" << tec::FilePath::GetAssetPath("debug.vert") << "\n";
 
 	tec::OS os;
 
