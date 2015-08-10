@@ -112,7 +112,7 @@ namespace tec {
 		GLint model_index = def_shader->GetUniformLocation("model");
 		GLint depthMVP_index = def_shader->GetUniformLocation("depthMVP");
 
-		glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
+		glm::mat4 depthProjectionMatrix = glm::ortho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
 		glm::mat4 depthModelMatrix = glm::mat4(1.0);
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
@@ -137,11 +137,8 @@ namespace tec {
 						glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
 					}
 					for (VertexGroup* vertex_group : *render_item.vertex_groups) {
-						glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
-						vertex_group->material->Activate();
 						glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
 						glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
-						vertex_group->material->Deactivate();
 					}
 				}
 			}
@@ -307,7 +304,7 @@ namespace tec {
 
 		size_t index_count = this->quad_vbo.GetVertexGroup(0)->index_count;
 		glm::mat4 depthModelMatrix = glm::mat4(1.0);
-		glm::mat4 depthProjectionMatrix = glm::ortho<float>(-10, 10, -10, 10, -10, 10);
+		glm::mat4 depthProjectionMatrix = glm::ortho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
 		glm::mat4 biasMatrix(
 			0.5, 0.0, 0.0, 0.0,
 			0.0, 0.5, 0.0, 0.0,
@@ -474,8 +471,7 @@ namespace tec {
 					scale = e.Get<Scale>().lock()->value;
 				}
 
-				this->model_matricies[entity_id] = glm::scale(glm::translate(glm::mat4(1.0), position) *
-					glm::mat4_cast(orientation), scale);
+				this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);
 
 				view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
 				if (view->active) {

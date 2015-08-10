@@ -75,6 +75,15 @@ namespace tec {
 		* \return void
 		*/
 		static void Terminate();
+		
+		/**
+		* \brief Tells the OS that the active window should close.
+		*
+		* Since the main loop is based on that close status of that active window
+		* this effectively causes Closing() to return true during an upcoming message loop.
+		* \return void
+		*/
+		void Quit();
 
 		/**
 		* \brief Checks if the window is closing.

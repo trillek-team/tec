@@ -152,6 +152,10 @@ namespace tec {
 	void OS::Terminate() {
 		glfwTerminate();
 	}
+	
+	void OS::Quit() {
+		glfwSetWindowShouldClose(this->window, true);
+	}
 
 	bool OS::Closing() {
 		return glfwWindowShouldClose(this->window) > 0;
@@ -350,6 +354,8 @@ namespace tec {
 	}
 
 	void OS::GetMousePosition(double* x, double* y) {
-		glfwGetCursorPos(OS::focused_window, x, y);
+		if (focused_window) {
+			glfwGetCursorPos(OS::focused_window, x, y);
+		}
 	}
 }

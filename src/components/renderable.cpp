@@ -24,12 +24,7 @@ namespace tec {
 			dropdown_t key_func = prop.Get<dropdown_t>();
 			val->mesh_name = key_func.second;
 			val->mesh = MeshMap::Get(val->mesh_name);
-			val->buffer->Load(val->mesh);
-			val->vertex_groups.clear();
-			size_t group_count = val->buffer->GetVertexGroupCount();
-			for (size_t i = 0; i < group_count; ++i) {
-				val->vertex_groups.insert(val->buffer->GetVertexGroup(i));
-			}
+			val->buffer.reset();
 		};
 		dropdown_t key_func_shader = std::make_pair(ShaderMap::Keys, val->shader_name);
 		(refcomp.properties["Shader Picker"] = dprop).Set(key_func_shader);
