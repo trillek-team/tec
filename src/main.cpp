@@ -308,6 +308,7 @@ int main(int argc, char* argv[]) {
 	});
 
 	double delta = os.GetDeltaTime();
+	double mouse_x, mouse_y;
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
@@ -331,8 +332,10 @@ int main(int argc, char* argv[]) {
 
 		camera_controller.Update(delta);
 
+		os.GetMousePosition(&mouse_x, &mouse_y);
+		tec::active_entity = ps.RayCastMousePick(1, mouse_x, mouse_y,
+			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 		ps.DebugDraw();
-		tec::active_entity = ps.RayCast(1);
 
 		gui.Update(delta);
 
