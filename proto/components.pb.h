@@ -56,7 +56,7 @@ class Light_Attenuation;
 class Light_Direction;
 class Component;
 class Entity;
-class EntityList;
+class EntityFileList;
 
 // ===================================================================
 
@@ -2403,14 +2403,14 @@ class Entity : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class EntityList : public ::google::protobuf::Message {
+class EntityFileList : public ::google::protobuf::Message {
  public:
-  EntityList();
-  virtual ~EntityList();
+  EntityFileList();
+  virtual ~EntityFileList();
 
-  EntityList(const EntityList& from);
+  EntityFileList(const EntityFileList& from);
 
-  inline EntityList& operator=(const EntityList& from) {
+  inline EntityFileList& operator=(const EntityFileList& from) {
     CopyFrom(from);
     return *this;
   }
@@ -2424,19 +2424,19 @@ class EntityList : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const EntityList& default_instance();
+  static const EntityFileList& default_instance();
 
-  void Swap(EntityList* other);
+  void Swap(EntityFileList* other);
 
   // implements Message ----------------------------------------------
 
-  inline EntityList* New() const { return New(NULL); }
+  inline EntityFileList* New() const { return New(NULL); }
 
-  EntityList* New(::google::protobuf::Arena* arena) const;
+  EntityFileList* New(::google::protobuf::Arena* arena) const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const EntityList& from);
-  void MergeFrom(const EntityList& from);
+  void CopyFrom(const EntityFileList& from);
+  void MergeFrom(const EntityFileList& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -2451,7 +2451,7 @@ class EntityList : public ::google::protobuf::Message {
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const;
-  void InternalSwap(EntityList* other);
+  void InternalSwap(EntityFileList* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return _internal_metadata_.arena();
@@ -2467,31 +2467,35 @@ class EntityList : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated .tec.proto.Entity entities = 1;
-  int entities_size() const;
-  void clear_entities();
-  static const int kEntitiesFieldNumber = 1;
-  const ::tec::proto::Entity& entities(int index) const;
-  ::tec::proto::Entity* mutable_entities(int index);
-  ::tec::proto::Entity* add_entities();
-  const ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >&
-      entities() const;
-  ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >*
-      mutable_entities();
+  // repeated string entity_file_list = 1;
+  int entity_file_list_size() const;
+  void clear_entity_file_list();
+  static const int kEntityFileListFieldNumber = 1;
+  const ::std::string& entity_file_list(int index) const;
+  ::std::string* mutable_entity_file_list(int index);
+  void set_entity_file_list(int index, const ::std::string& value);
+  void set_entity_file_list(int index, const char* value);
+  void set_entity_file_list(int index, const char* value, size_t size);
+  ::std::string* add_entity_file_list();
+  void add_entity_file_list(const ::std::string& value);
+  void add_entity_file_list(const char* value);
+  void add_entity_file_list(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& entity_file_list() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_entity_file_list();
 
-  // @@protoc_insertion_point(class_scope:tec.proto.EntityList)
+  // @@protoc_insertion_point(class_scope:tec.proto.EntityFileList)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity > entities_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> entity_file_list_;
   friend void  protobuf_AddDesc_components_2eproto();
   friend void protobuf_AssignDesc_components_2eproto();
   friend void protobuf_ShutdownFile_components_2eproto();
 
   void InitAsDefaultInstance();
-  static EntityList* default_instance_;
+  static EntityFileList* default_instance_;
 };
 // ===================================================================
 
@@ -4873,36 +4877,60 @@ Entity::mutable_components() {
 
 // -------------------------------------------------------------------
 
-// EntityList
+// EntityFileList
 
-// repeated .tec.proto.Entity entities = 1;
-inline int EntityList::entities_size() const {
-  return entities_.size();
+// repeated string entity_file_list = 1;
+inline int EntityFileList::entity_file_list_size() const {
+  return entity_file_list_.size();
 }
-inline void EntityList::clear_entities() {
-  entities_.Clear();
+inline void EntityFileList::clear_entity_file_list() {
+  entity_file_list_.Clear();
 }
-inline const ::tec::proto::Entity& EntityList::entities(int index) const {
-  // @@protoc_insertion_point(field_get:tec.proto.EntityList.entities)
-  return entities_.Get(index);
+inline const ::std::string& EntityFileList::entity_file_list(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Get(index);
 }
-inline ::tec::proto::Entity* EntityList::mutable_entities(int index) {
-  // @@protoc_insertion_point(field_mutable:tec.proto.EntityList.entities)
-  return entities_.Mutable(index);
+inline ::std::string* EntityFileList::mutable_entity_file_list(int index) {
+  // @@protoc_insertion_point(field_mutable:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Mutable(index);
 }
-inline ::tec::proto::Entity* EntityList::add_entities() {
-  // @@protoc_insertion_point(field_add:tec.proto.EntityList.entities)
-  return entities_.Add();
+inline void EntityFileList::set_entity_file_list(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:tec.proto.EntityFileList.entity_file_list)
+  entity_file_list_.Mutable(index)->assign(value);
 }
-inline const ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >&
-EntityList::entities() const {
-  // @@protoc_insertion_point(field_list:tec.proto.EntityList.entities)
-  return entities_;
+inline void EntityFileList::set_entity_file_list(int index, const char* value) {
+  entity_file_list_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:tec.proto.EntityFileList.entity_file_list)
 }
-inline ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >*
-EntityList::mutable_entities() {
-  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityList.entities)
-  return &entities_;
+inline void EntityFileList::set_entity_file_list(int index, const char* value, size_t size) {
+  entity_file_list_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+inline ::std::string* EntityFileList::add_entity_file_list() {
+  return entity_file_list_.Add();
+}
+inline void EntityFileList::add_entity_file_list(const ::std::string& value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:tec.proto.EntityFileList.entity_file_list)
+}
+inline void EntityFileList::add_entity_file_list(const char* value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:tec.proto.EntityFileList.entity_file_list)
+}
+inline void EntityFileList::add_entity_file_list(const char* value, size_t size) {
+  entity_file_list_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+EntityFileList::entity_file_list() const {
+  // @@protoc_insertion_point(field_list:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+EntityFileList::mutable_entity_file_list() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityFileList.entity_file_list)
+  return &entity_file_list_;
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS

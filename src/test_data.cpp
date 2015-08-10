@@ -189,33 +189,44 @@ namespace tec {
 			camera.Add<Velocity>();
 		}
 	}
+	
+	void ProtoLoadEntity(std::string fname) {
+		std::fstream input(fname, std::ios::in | std::ios::binary);
+		proto::Entity entity;
+		entity.ParseFromIstream(&input);
+		eid entity_id = entity.id();
+		for (int i = 0; i < entity.components_size(); ++i) {
+			const proto::Component& comp = entity.components(i);
+			if (in_functors.find(comp.component_case()) != in_functors.end()) {
+				in_functors[comp.component_case()](entity, comp);
+				entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
+			}
+		}
+	}
 
 	void ProtoLoad() {
 		std::fstream input("assets/test.proto", std::ios::in | std::ios::binary);
-		proto::EntityList elist;
+		proto::EntityFileList elist;
 		elist.ParseFromIstream(&input);
-		for (int i = 0; i < elist.entities_size(); i++) {
-			const proto::Entity& entity = elist.entities(i);
-			eid entity_id = entity.id();
-			for (int i = 0; i < entity.components_size(); ++i) {
-				const proto::Component& comp = entity.components(i);
-				if (in_functors.find(comp.component_case()) != in_functors.end()) {
-					in_functors[comp.component_case()](entity, comp);
-					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
-				}
-			}
+		for (int i = 0; i < elist.entity_file_list_size(); i++) {
+			const std::string& entity_filename = elist.entity_file_list(i);
+			ProtoLoadEntity(entity_filename);
 		}
 	}
 
 	void ProtoSave() {
 		std::fstream output("assets/test.proto", std::ios::out | std::ios::trunc | std::ios::binary);
-		proto::EntityList elist;
+		proto::EntityFileList elist;
 		for (auto entity_functors : entity_out_functors) {
-			proto::Entity* entity = elist.add_entities();
-			entity->set_id(entity_functors.first);
+			proto::Entity entity;
+			entity.set_id(entity_functors.first);
 			for (auto functor : entity_functors.second) {
-				(*functor)(entity);
+				(*functor)(&entity);
 			}
+			std::string fname = "assets/entities/" + std::to_string(entity_functors.first) + ".proto";
+			std::fstream entity_output(fname, std::ios::out | std::ios::trunc | std::ios::binary);
+			entity.SerializeToOstream(&entity_output);
+			elist.add_entity_file_list(fname);
 			//out_functors[proto::Component::ComponentCase::kCollisionBody](entity);
 		}
 		elist.SerializeToOstream(&output);

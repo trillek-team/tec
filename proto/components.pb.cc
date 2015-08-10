@@ -97,9 +97,9 @@ struct ComponentOneofInstance {
 const ::google::protobuf::Descriptor* Entity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Entity_reflection_ = NULL;
-const ::google::protobuf::Descriptor* EntityList_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* EntityFileList_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  EntityList_reflection_ = NULL;
+  EntityFileList_reflection_ = NULL;
 
 }  // namespace
 
@@ -455,20 +455,20 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Entity),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, _internal_metadata_),
       -1);
-  EntityList_descriptor_ = file->message_type(12);
-  static const int EntityList_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, entities_),
+  EntityFileList_descriptor_ = file->message_type(12);
+  static const int EntityFileList_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, entity_file_list_),
   };
-  EntityList_reflection_ =
+  EntityFileList_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      EntityList_descriptor_,
-      EntityList::default_instance_,
-      EntityList_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, _has_bits_[0]),
+      EntityFileList_descriptor_,
+      EntityFileList::default_instance_,
+      EntityFileList_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, _has_bits_[0]),
       -1,
       -1,
-      sizeof(EntityList),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, _internal_metadata_),
+      sizeof(EntityFileList),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, _internal_metadata_),
       -1);
 }
 
@@ -521,7 +521,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Entity_descriptor_, &Entity::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      EntityList_descriptor_, &EntityList::default_instance());
+      EntityFileList_descriptor_, &EntityFileList::default_instance());
 }
 
 }  // namespace
@@ -567,8 +567,8 @@ void protobuf_ShutdownFile_components_2eproto() {
   delete Component_reflection_;
   delete Entity::default_instance_;
   delete Entity_reflection_;
-  delete EntityList::default_instance_;
-  delete EntityList_reflection_;
+  delete EntityFileList::default_instance_;
+  delete EntityFileList_reflection_;
 }
 
 void protobuf_AddDesc_components_2eproto() {
@@ -628,9 +628,8 @@ void protobuf_AddDesc_components_2eproto() {
     "dirlight\030\013 \001(\0132\020.tec.proto.LightH\000\022%\n\tsp"
     "otlight\030\014 \001(\0132\020.tec.proto.LightH\000B\013\n\tcom"
     "ponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\ncomponen"
-    "ts\030\002 \003(\0132\024.tec.proto.Component\"1\n\nEntity"
-    "List\022#\n\010entities\030\001 \003(\0132\021.tec.proto.Entit"
-    "y", 2081);
+    "ts\030\002 \003(\0132\024.tec.proto.Component\"*\n\016Entity"
+    "FileList\022\030\n\020entity_file_list\030\001 \003(\t", 2074);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
@@ -654,7 +653,7 @@ void protobuf_AddDesc_components_2eproto() {
   Component::default_instance_ = new Component();
   Component_default_oneof_instance_ = new ComponentOneofInstance();
   Entity::default_instance_ = new Entity();
-  EntityList::default_instance_ = new EntityList();
+  EntityFileList::default_instance_ = new EntityFileList();
   Renderable::default_instance_->InitAsDefaultInstance();
   Position::default_instance_->InitAsDefaultInstance();
   Position_CenterOffset::default_instance_->InitAsDefaultInstance();
@@ -674,7 +673,7 @@ void protobuf_AddDesc_components_2eproto() {
   Light_Direction::default_instance_->InitAsDefaultInstance();
   Component::default_instance_->InitAsDefaultInstance();
   Entity::default_instance_->InitAsDefaultInstance();
-  EntityList::default_instance_->InitAsDefaultInstance();
+  EntityFileList::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_components_2eproto);
 }
 
@@ -9932,96 +9931,100 @@ Entity::mutable_components() {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int EntityList::kEntitiesFieldNumber;
+const int EntityFileList::kEntityFileListFieldNumber;
 #endif  // !_MSC_VER
 
-EntityList::EntityList()
+EntityFileList::EntityFileList()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:tec.proto.EntityList)
+  // @@protoc_insertion_point(constructor:tec.proto.EntityFileList)
 }
 
-void EntityList::InitAsDefaultInstance() {
+void EntityFileList::InitAsDefaultInstance() {
 }
 
-EntityList::EntityList(const EntityList& from)
+EntityFileList::EntityFileList(const EntityFileList& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:tec.proto.EntityList)
+  // @@protoc_insertion_point(copy_constructor:tec.proto.EntityFileList)
 }
 
-void EntityList::SharedCtor() {
+void EntityFileList::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-EntityList::~EntityList() {
-  // @@protoc_insertion_point(destructor:tec.proto.EntityList)
+EntityFileList::~EntityFileList() {
+  // @@protoc_insertion_point(destructor:tec.proto.EntityFileList)
   SharedDtor();
 }
 
-void EntityList::SharedDtor() {
+void EntityFileList::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void EntityList::SetCachedSize(int size) const {
+void EntityFileList::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* EntityList::descriptor() {
+const ::google::protobuf::Descriptor* EntityFileList::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return EntityList_descriptor_;
+  return EntityFileList_descriptor_;
 }
 
-const EntityList& EntityList::default_instance() {
+const EntityFileList& EntityFileList::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
   return *default_instance_;
 }
 
-EntityList* EntityList::default_instance_ = NULL;
+EntityFileList* EntityFileList::default_instance_ = NULL;
 
-EntityList* EntityList::New(::google::protobuf::Arena* arena) const {
-  EntityList* n = new EntityList;
+EntityFileList* EntityFileList::New(::google::protobuf::Arena* arena) const {
+  EntityFileList* n = new EntityFileList;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void EntityList::Clear() {
-  entities_.Clear();
+void EntityFileList::Clear() {
+  entity_file_list_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
   }
 }
 
-bool EntityList::MergePartialFromCodedStream(
+bool EntityFileList::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:tec.proto.EntityList)
+  // @@protoc_insertion_point(parse_start:tec.proto.EntityFileList)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .tec.proto.Entity entities = 1;
+      // repeated string entity_file_list = 1;
       case 1: {
         if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_entities:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
-                input, add_entities()));
+         parse_entity_file_list:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_entity_file_list()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->entity_file_list(this->entity_file_list_size() - 1).data(),
+            this->entity_file_list(this->entity_file_list_size() - 1).length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "tec.proto.EntityFileList.entity_file_list");
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_entities;
-        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectTag(10)) goto parse_entity_file_list;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -10040,57 +10043,63 @@ bool EntityList::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:tec.proto.EntityList)
+  // @@protoc_insertion_point(parse_success:tec.proto.EntityFileList)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:tec.proto.EntityList)
+  // @@protoc_insertion_point(parse_failure:tec.proto.EntityFileList)
   return false;
 #undef DO_
 }
 
-void EntityList::SerializeWithCachedSizes(
+void EntityFileList::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:tec.proto.EntityList)
-  // repeated .tec.proto.Entity entities = 1;
-  for (unsigned int i = 0, n = this->entities_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->entities(i), output);
+  // @@protoc_insertion_point(serialize_start:tec.proto.EntityFileList)
+  // repeated string entity_file_list = 1;
+  for (int i = 0; i < this->entity_file_list_size(); i++) {
+  ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+    this->entity_file_list(i).data(), this->entity_file_list(i).length(),
+    ::google::protobuf::internal::WireFormat::SERIALIZE,
+    "tec.proto.EntityFileList.entity_file_list");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->entity_file_list(i), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:tec.proto.EntityList)
+  // @@protoc_insertion_point(serialize_end:tec.proto.EntityFileList)
 }
 
-::google::protobuf::uint8* EntityList::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* EntityFileList::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.EntityList)
-  // repeated .tec.proto.Entity entities = 1;
-  for (unsigned int i = 0, n = this->entities_size(); i < n; i++) {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.EntityFileList)
+  // repeated string entity_file_list = 1;
+  for (int i = 0; i < this->entity_file_list_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->entity_file_list(i).data(), this->entity_file_list(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.EntityFileList.entity_file_list");
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        1, this->entities(i), target);
+      WriteStringToArray(1, this->entity_file_list(i), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.EntityList)
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.EntityFileList)
   return target;
 }
 
-int EntityList::ByteSize() const {
+int EntityFileList::ByteSize() const {
   int total_size = 0;
 
-  // repeated .tec.proto.Entity entities = 1;
-  total_size += 1 * this->entities_size();
-  for (int i = 0; i < this->entities_size(); i++) {
-    total_size +=
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        this->entities(i));
+  // repeated string entity_file_list = 1;
+  total_size += 1 * this->entity_file_list_size();
+  for (int i = 0; i < this->entity_file_list_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->entity_file_list(i));
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -10104,10 +10113,10 @@ int EntityList::ByteSize() const {
   return total_size;
 }
 
-void EntityList::MergeFrom(const ::google::protobuf::Message& from) {
+void EntityFileList::MergeFrom(const ::google::protobuf::Message& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const EntityList* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const EntityList>(
+  const EntityFileList* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const EntityFileList>(
           &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -10116,82 +10125,105 @@ void EntityList::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void EntityList::MergeFrom(const EntityList& from) {
+void EntityFileList::MergeFrom(const EntityFileList& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  entities_.MergeFrom(from.entities_);
+  entity_file_list_.MergeFrom(from.entity_file_list_);
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
   }
 }
 
-void EntityList::CopyFrom(const ::google::protobuf::Message& from) {
+void EntityFileList::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void EntityList::CopyFrom(const EntityList& from) {
+void EntityFileList::CopyFrom(const EntityFileList& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool EntityList::IsInitialized() const {
+bool EntityFileList::IsInitialized() const {
 
-  if (!::google::protobuf::internal::AllAreInitialized(this->entities())) return false;
   return true;
 }
 
-void EntityList::Swap(EntityList* other) {
+void EntityFileList::Swap(EntityFileList* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void EntityList::InternalSwap(EntityList* other) {
-  entities_.UnsafeArenaSwap(&other->entities_);
+void EntityFileList::InternalSwap(EntityFileList* other) {
+  entity_file_list_.UnsafeArenaSwap(&other->entity_file_list_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata EntityList::GetMetadata() const {
+::google::protobuf::Metadata EntityFileList::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = EntityList_descriptor_;
-  metadata.reflection = EntityList_reflection_;
+  metadata.descriptor = EntityFileList_descriptor_;
+  metadata.reflection = EntityFileList_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// EntityList
+// EntityFileList
 
-// repeated .tec.proto.Entity entities = 1;
-int EntityList::entities_size() const {
-  return entities_.size();
+// repeated string entity_file_list = 1;
+int EntityFileList::entity_file_list_size() const {
+  return entity_file_list_.size();
 }
-void EntityList::clear_entities() {
-  entities_.Clear();
+void EntityFileList::clear_entity_file_list() {
+  entity_file_list_.Clear();
 }
- const ::tec::proto::Entity& EntityList::entities(int index) const {
-  // @@protoc_insertion_point(field_get:tec.proto.EntityList.entities)
-  return entities_.Get(index);
+ const ::std::string& EntityFileList::entity_file_list(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Get(index);
 }
- ::tec::proto::Entity* EntityList::mutable_entities(int index) {
-  // @@protoc_insertion_point(field_mutable:tec.proto.EntityList.entities)
-  return entities_.Mutable(index);
+ ::std::string* EntityFileList::mutable_entity_file_list(int index) {
+  // @@protoc_insertion_point(field_mutable:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Mutable(index);
 }
- ::tec::proto::Entity* EntityList::add_entities() {
-  // @@protoc_insertion_point(field_add:tec.proto.EntityList.entities)
-  return entities_.Add();
+ void EntityFileList::set_entity_file_list(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:tec.proto.EntityFileList.entity_file_list)
+  entity_file_list_.Mutable(index)->assign(value);
 }
- const ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >&
-EntityList::entities() const {
-  // @@protoc_insertion_point(field_list:tec.proto.EntityList.entities)
-  return entities_;
+ void EntityFileList::set_entity_file_list(int index, const char* value) {
+  entity_file_list_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:tec.proto.EntityFileList.entity_file_list)
 }
- ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >*
-EntityList::mutable_entities() {
-  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityList.entities)
-  return &entities_;
+ void EntityFileList::set_entity_file_list(int index, const char* value, size_t size) {
+  entity_file_list_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+ ::std::string* EntityFileList::add_entity_file_list() {
+  return entity_file_list_.Add();
+}
+ void EntityFileList::add_entity_file_list(const ::std::string& value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:tec.proto.EntityFileList.entity_file_list)
+}
+ void EntityFileList::add_entity_file_list(const char* value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:tec.proto.EntityFileList.entity_file_list)
+}
+ void EntityFileList::add_entity_file_list(const char* value, size_t size) {
+  entity_file_list_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+EntityFileList::entity_file_list() const {
+  // @@protoc_insertion_point(field_list:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+EntityFileList::mutable_entity_file_list() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityFileList.entity_file_list)
+  return &entity_file_list_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

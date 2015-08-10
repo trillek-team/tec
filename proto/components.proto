@@ -129,6 +129,6 @@ message Entity {
 	repeated Component components = 2;
 }
 
-message EntityList {
-	repeated Entity entities = 1;
+message EntityFileList {
+	repeated string entity_file_list = 1;
 }
