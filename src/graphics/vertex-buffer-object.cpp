@@ -10,7 +10,7 @@ namespace tec {
 
 	VertexBufferObject::VertexBufferObject(std::shared_ptr<Mesh> mesh) :
 		vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0), source_mesh(mesh) {
-		Load(mesh, nullptr);
+		Load(mesh);
 	}
 
 	VertexBufferObject::~VertexBufferObject() {
@@ -47,13 +47,14 @@ namespace tec {
 		}
 	}
 
-	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader) {
+	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh) {
 		if (mesh) {
 			this->source_mesh = mesh;
 			// TODO: Make a load method that takes offset and count to sub_buffer.
 			size_t vertex_goup_count = mesh->GetMeshGroupCount();
 			size_t total_verts = 0;
 			size_t total_indices = 0;
+			this->vertex_groups.clear();
 			for (size_t i = 0; i < vertex_goup_count; ++i) {
 				auto submesh = mesh->GetMeshGroup(i).lock();
 				if (submesh) {
@@ -65,7 +66,9 @@ namespace tec {
 						group.material = MaterialMap::Get(submesh->material_name);
 					}
 					else {
-						group.material = Material::Create(submesh->material_name, shader);
+						group.material = Material::Create(submesh->material_name);
+						group.material->SetDrawElementsMode(GL_TRIANGLES);
+						group.material->SetPolygonMode(GL_FILL);
 						for (auto texture : submesh->textures) {
 							if (TextureMap::Has(texture)) {
 								group.material->AddTexture(TextureMap::Get(texture));
@@ -162,6 +165,8 @@ namespace tec {
 			this->index_count = indices.size();
 		}
 		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		if (this->vertex_groups.size() == 0) {
 			VertexGroup group;

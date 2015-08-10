@@ -1,7 +1,8 @@
 #include "physics/physics-debug-drawer.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/material.hpp"
-#include "render-system.hpp"
+#include "graphics/shader.hpp"
+#include "components/renderable.hpp"
 #include "entity.hpp"
 
 namespace tec {
@@ -10,6 +11,15 @@ namespace tec {
 	}
 
 	void PhysicsDebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color) {
+		VertexData from_vert(from.getX(), from.getY(), from.getZ(), color.getX(), color.getY(), color.getZ());
+		this->verts.push_back(from_vert);
+		VertexData to_vert(to.getX(), to.getY(), to.getZ(), color.getX(), color.getY(), color.getZ());
+		this->verts.push_back(to_vert);
+		this->indicies.push_back(this->indicies.size());
+		this->indicies.push_back(this->indicies.size());
+	}
+
+	void PhysicsDebugDrawer::drawAABB(const btVector3& from, const btVector3& to, const btVector3& color) {
 		VertexData from_vert(from.getX(), from.getY(), from.getZ(), color.getX(), color.getY(), color.getZ());
 		this->verts.push_back(from_vert);
 		VertexData to_vert(to.getX(), to.getY(), to.getZ(), color.getX(), color.getY(), color.getZ());
@@ -50,7 +60,10 @@ namespace tec {
 			std::shared_ptr<Renderable> ren = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
 			this->vert_buffer = ren->buffer;
 			this->vert_buffer->Load(verts, indicies);
+			this->verts.clear();
+			this->indicies.clear();
 			this->vert_buffer->GetVertexGroup(0)->material = MaterialMap::Get("material_debug"); // HACK: This should be configurable.
+			ren->shader = ShaderMap::Get("debug");
 			ren->vertex_groups.insert(vert_buffer->GetVertexGroup(0));
 			Entity(0).Add<Renderable>(ren); // HACK: This should be configurable.
 			return;

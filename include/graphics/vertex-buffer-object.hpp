@@ -78,10 +78,9 @@ namespace tec {
 		 * Loads a mesh into a vertex buffer object.
 		 * note: calls Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices).
 		 * \param std::shared_ptr<Mesh> mesh The mesh to load into this VertexBufferObject.
-		 * \param std::shared_ptr<Shader> shader The shader used if a material needs to be created for a VertexGroup.
 		 * \return void
 		 */
-		void Load(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader);
+		void Load(std::shared_ptr<Mesh> mesh);
 
 		/**
 		 * Loads a set of vertex and index data into a vertex buffer object.

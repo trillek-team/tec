@@ -16,10 +16,15 @@
 #include "event-system.hpp"
 #include "command-queue.hpp"
 #include "graphics/animation.hpp"
+#include "graphics/gbuffer.hpp"
+#include "graphics/vertex-buffer-object.hpp"
 
 namespace tec {
-	class VertexBufferObject;
 	struct VertexGroup;
+	struct Renderable;
+	struct PointLight;
+	struct DirectionalLight;
+	struct View;
 	class Shader;
 
 	class RenderSystem;
@@ -27,23 +32,6 @@ namespace tec {
 
 	struct KeyboardEvent;
 	struct WindowResizedEvent;
-
-	struct Renderable {
-		Renderable(std::shared_ptr<VertexBufferObject> buf) : buffer(buf) {
-
-		}
-		Renderable() {
-
-		}
-		bool hidden = false;
-		std::set<VertexGroup*> vertex_groups;
-		std::shared_ptr<VertexBufferObject> buffer;
-	};
-
-	struct View {
-		glm::mat4 view_matrix;
-		bool active = false;
-	};
 
 	class RenderSystem : public CommandQueue < RenderSystem >,
 		public EventQueue < KeyboardEvent >,
@@ -54,10 +42,19 @@ namespace tec {
 		void SetViewportSize(const unsigned int width, const unsigned int height);
 
 		void Update(const double delta);
+		void ShadowPass();
+		void GeometryPass();
+		void PointLightPass();
+		void DirectionalLightPass();
+		void FinalPass();
+		void RenderGbuffer();
 
 		bool ActivateView(const eid entity_id);
 	private:
 		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
+		void UpdateRenderList(double delta);
+		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
+		typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
 
 		void On(std::shared_ptr<WindowResizedEvent> data);
 
@@ -65,6 +62,12 @@ namespace tec {
 		std::weak_ptr<View> current_view;
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
+		std::shared_ptr<Shader> default_shader;
+
+		GBuffer light_gbuffer;
+		GBuffer shadow_gbuffer;
+		VertexBufferObject sphere_vbo; // Used for rendering point lights.
+		VertexBufferObject quad_vbo; // Used for rendering directional lights.
 
 		struct RenderItem {
 			glm::mat4* model_matrix;

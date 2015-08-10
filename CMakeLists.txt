@@ -76,7 +76,16 @@ IF(CMAKE_USE_PTHREADS_INIT)
 ENDIF(CMAKE_USE_PTHREADS_INIT)
 
 # GLM include
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/glmi/glm/")
 INCLUDE_DIRECTORIES("modules/glm")
+
+# Protobuf setup
+FILE(GLOB PB_FILES_SRC "proto/*.cc")
+FILE(GLOB PB_FILES_INCLUDES "proto/*.h")
+SET(BUILD_TESTING OFF CACHE BOOL "Build tests")
+INCLUDE_DIRECTORIES("modules/protobuf/src")
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/protobuf/src")
+ADD_SUBDIRECTORY("modules/protobuf/cmake")
 
 # Bullet check
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
@@ -102,7 +111,7 @@ ELSE (NOT ${BULLET_FOUND})
 ENDIF (NOT ${BULLET_FOUND})
 
 # OpenAL check
-SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules//openal-soft/include/AL")
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/openal-soft/include/AL")
 FIND_PACKAGE(OpenAL)
 IF (NOT ${OPENAL_FOUND})
   SET(BUILD_DEPS_FIRST true)
@@ -116,7 +125,6 @@ ELSE (NOT ${OPENAL_FOUND})
   MESSAGE("OpenAL already found skipping build.")
   INCLUDE_DIRECTORIES (${OPENAL_INCLUDE_DIR})
 ENDIF (NOT ${OPENAL_FOUND})
-
 
 # Some definitions we need to use bullet and GLM.
 ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE)
@@ -157,6 +165,15 @@ IF (APPLE) # Mac OSX
   SET(OSX_LIBRARIES "-framework CoreFoundation /usr/lib/libobjc.dylib")
 ENDIF (APPLE)
 
+# Add the virtual computer
+SET(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - static
+     version")
+SET(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
+SET(BUILD_TOOLS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tools")
+SET(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
+ADD_SUBDIRECTORY("modules/trillek-vcomputer")
+INCLUDE_DIRECTORIES("modules/trillek-vcomputer/include")
+
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
 IF (NOT ${BUILD_DEPS_FIRST})
@@ -170,6 +187,8 @@ SET(TEC_ALL_LIBS
   ${GLFW_LIBRARIES}
   ${BULLET_LIBRARIES}
   ${OPENAL_LIBRARY}
+  libprotobuf
+  VCOMPUTER_STATIC
 )
 
 ADD_EXECUTABLE("TEC"
@@ -177,6 +196,8 @@ ADD_EXECUTABLE("TEC"
   ${TEC_INCLUDES}
   ${IMGUI_SRC}
   ${IMGUI_INCLUDES}
+  ${PB_FILES_SRC}
+  ${PB_FILES_INCLUDES}
 )
 
 SET_PROPERTY(TARGET TEC PROPERTY CXX_STANDARD 11)

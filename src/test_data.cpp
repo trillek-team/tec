@@ -1,54 +1,138 @@
-#include "graphics/vertex-buffer-object.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/material.hpp"
-#include "graphics/texture-object.hpp"
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
+#include "components/renderable.hpp"
 #include "resources/md5mesh.hpp"
-#include "resources/pixel-buffer.hpp"
+#include "resources/obj.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
+#include "graphics/animation.hpp"
+#include "graphics/lights.hpp"
+#include "graphics/view.hpp"
 #include "entity.hpp"
 #include "component-update-system.hpp"
-#include "render-system.hpp"
 #include "sound-system.hpp"
+#include "vcomputer-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
-#include <glm/gtc/matrix_transform.hpp>
+#include "types.hpp"
+#include <map>
+#include <set>
+#include <memory>
+
+#include "../proto/components.pb.h"
 
 namespace tec {
+	std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
+	std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
+	std::map<std::string, std::function<void(std::string)>> file_factories;
+	std::map<std::string, std::function<void(eid)>> component_factories;
+	std::map<std::string, std::function<void(eid)>> component_removal_factories;
+
+	template <typename T>
+	void AddComponentFactory() {
+		proto::Component::ComponentCase component_case = GetComponentCase<T>();
+		component_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
+			std::shared_ptr<T> comp = std::make_shared<T>();
+			Entity(entity_id).Add<T>(comp);
+			entity_out_functors[entity_id].insert(&out_functors.at(component_case));
+		};
+		component_removal_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
+			Entity e(entity_id);
+			if (e.Has<T>()) {
+				e.Remove<T>();
+			}
+		};
+	}
+	template <typename T>
+	void AddInOutFunctors() {
+		in_functors[GetComponentCase<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
+			auto comp = std::make_shared<T>();
+			comp->In(proto_comp);
+			Entity(entity.id()).Add<T>(comp);
+		};
+		out_functors[GetComponentCase<T>()] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<T>()) {
+				proto::Component* comp = entity->add_components();
+				e.Get<T>().lock()->Out(comp);
+			}
+		};
+	}
+
+	template <typename T>
+	void SetupComponent() {
+		AddInOutFunctors<T>();
+		AddComponentFactory<T>();
+		ComponentUpdateSystem<T>::Initialize();
+	}
+
 	void IntializeComponents() {
-		ComponentUpdateSystem<Velocity>::Initialize();
-		ComponentUpdateSystem<Position>::Initialize();
-		ComponentUpdateSystem<Orientation>::Initialize();
-		ComponentUpdateSystem<Scale>::Initialize();
-		ComponentUpdateSystem<Renderable>::Initialize();
-		ComponentUpdateSystem<View>::Initialize();
-		ComponentUpdateSystem<Animation>::Initialize();
-		ComponentUpdateSystem<CollisionBody>::Initialize();
-		ComponentUpdateSystem<AudioSource>::Initialize();
+		SetupComponent<Renderable>();
+		SetupComponent<Position>();
+		SetupComponent<Orientation>();
+		SetupComponent<Scale>();
+		SetupComponent<Velocity>();
+		SetupComponent<View>();
+		SetupComponent<Animation>();
+		SetupComponent<CollisionBody>();
+		SetupComponent<AudioSource>();
+		SetupComponent<PointLight>();
+		SetupComponent<DirectionalLight>();
+		ComponentUpdateSystem<ComputerScreen>::Initialize();
+		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
+	}
+
+	template <typename T>
+	void AddFileFactory() {
+		file_factories[GetTypeEXT<T>()] = [ ] (std::string fname) {
+			T::Create(fname);
+		};
+	}
+
+	void IntializeFileFactories() {
+		AddFileFactory<MD5Mesh>();
+		AddFileFactory<OBJ>();
+		AddFileFactory<VorbisStream>();
 	}
 
 	void BuildTestEntities() {
-		auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "assets/basic.vert"), std::make_pair(Shader::FRAGMENT, "assets/basic.frag"),
-		};
-		auto s = Shader::CreateFromFile("shader1", shader_files);
-		auto basic_fill = Material::Create("material_basic", s);
-
 		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
 			std::make_pair(Shader::VERTEX, "assets/debug.vert"), std::make_pair(Shader::FRAGMENT, "assets/debug.frag"),
 		};
 		auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
-		auto debug_fill = Material::Create("material_debug", debug_shader);
+
+		auto debug_fill = Material::Create("material_debug");
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
 
+		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_geometry.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_geometry.frag"),
+		};
+		auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
+
+		auto deferred_pl_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_light.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_pointlight.frag"),
+		};
+		auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
+
+		auto deferred_dl_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_light.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_dirlight.frag"),
+		};
+		auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
+
+		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > { std::make_pair(Shader::VERTEX, "assets/deferred_light.vert"), };
+		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_pl_shader_files);
+
+		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+			std::make_pair(Shader::VERTEX, "assets/deferred_shadow.vert"), std::make_pair(Shader::FRAGMENT, "assets/deferred_shadow.frag"),
+		};
+		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
+
 		auto voxvol = VoxelVolume::Create(100, "bob", 0);
 		auto voxvol_shared = voxvol.lock();
-		Entity voxel1(100);
-		voxel1.Add<Position>();
-		voxel1.Add<Orientation>();
 
 		VoxelCommand add_voxel(
 			[ ] (VoxelVolume* vox_vol) {
@@ -63,71 +147,88 @@ namespace tec {
 		});
 		VoxelVolume::QueueCommand(std::move(add_voxel));
 		voxvol_shared->Update(0.0);
-		auto voxvol_vert_buffer = std::make_shared<VertexBufferObject>();
-		voxel1.Add<Renderable>(voxvol_vert_buffer);
 		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(100, voxvol_shared->GetMesh().lock());
+			Entity voxel1(100);
+			std::shared_ptr<Mesh> mesh = voxvol_shared->GetMesh().lock();
+			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(mesh);
 			colbody->mass = 0.0;
 			voxel1.Add(colbody);
 		}
 
-		RenderCommand buffer_func([voxvol_vert_buffer, voxvol_shared, debug_shader] (RenderSystem* sys) {
-			auto mesh = voxvol_shared->GetMesh().lock();
-			voxvol_vert_buffer->Load(mesh, debug_shader);
-			auto voxel1Renderable = Entity(100).Get<Renderable>().lock();
-			for (size_t i = 0; i < voxvol_vert_buffer->GetVertexGroupCount(); ++i) {
-				voxel1Renderable->vertex_groups.insert(voxvol_vert_buffer->GetVertexGroup(i));
+		{
+			Entity bob(99);
+			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
+			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
+			bob.Add<Animation>(anim1);
+		}
+
+		{
+			Entity vidstand(101);
+			std::shared_ptr<ComputerScreen> screen = std::make_shared<ComputerScreen>();
+			vidstand.Add(screen);
+			std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
+			vidstand.Add(keybaord);
+
+			VComputerCommand add_devoces(
+				[screen, keybaord] (VComputerSystem* vcomputer) {
+				vcomputer->AddComputer(101);
+				if (vcomputer->LoadROMFile(101, "assets/asm/type1.ffi")) {
+					vcomputer->SetDevice(101, 5, screen->device);
+					vcomputer->SetDevice(101, 1, keybaord->device);
+					vcomputer->TurnComptuerOn(101);
+				}
+				else {
+					vcomputer->RemoveComputer(101);
+				}
+			});
+			VComputerSystem::QueueCommand(std::move(add_devoces));
+		}
+
+		{
+			Entity camera(1);
+			camera.Add<Velocity>();
+		}
+	}
+	
+	void ProtoLoadEntity(std::string fname) {
+		std::fstream input(fname, std::ios::in | std::ios::binary);
+		proto::Entity entity;
+		entity.ParseFromIstream(&input);
+		eid entity_id = entity.id();
+		for (int i = 0; i < entity.components_size(); ++i) {
+			const proto::Component& comp = entity.components(i);
+			if (in_functors.find(comp.component_case()) != in_functors.end()) {
+				in_functors[comp.component_case()](entity, comp);
+				entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
 			}
-		});
-		RenderSystem::QueueCommand(std::move(buffer_func));
+		}
+	}
 
-		Entity bob(99);
-		auto mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
-		{
-			auto renderable = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
-			renderable->buffer->Load(mesh1, s);
-			for (size_t i = 0; i < renderable->buffer->GetVertexGroupCount(); ++i) {
-				renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
+	void ProtoLoad() {
+		std::fstream input("assets/test.proto", std::ios::in | std::ios::binary);
+		proto::EntityFileList elist;
+		elist.ParseFromIstream(&input);
+		for (int i = 0; i < elist.entity_file_list_size(); i++) {
+			const std::string& entity_filename = elist.entity_file_list(i);
+			ProtoLoadEntity(entity_filename);
+		}
+	}
+
+	void ProtoSave() {
+		std::fstream output("assets/test.proto", std::ios::out | std::ios::trunc | std::ios::binary);
+		proto::EntityFileList elist;
+		for (auto entity_functors : entity_out_functors) {
+			proto::Entity entity;
+			entity.set_id(entity_functors.first);
+			for (auto functor : entity_functors.second) {
+				(*functor)(&entity);
 			}
-			bob.Add<Renderable>(renderable);
+			std::string fname = "assets/entities/" + std::to_string(entity_functors.first) + ".proto";
+			std::fstream entity_output(fname, std::ios::out | std::ios::trunc | std::ios::binary);
+			entity.SerializeToOstream(&entity_output);
+			elist.add_entity_file_list(fname);
+			//out_functors[proto::Component::ComponentCase::kCollisionBody](entity);
 		}
-
-		auto anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
-		bob.Add<Animation>(anim1);
-		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(99, 1.0f, 0.5f);
-			bob.Add(colbody);
-		}
-		bob.Add<Position>(glm::vec3(0.0, 2.0, 0.0));
-		bob.Add<Orientation>(glm::vec3(glm::radians(-90.0), 0.0, 0.0));
-		auto vorbis_stream = VorbisStream::Create("assets/theme.ogg");
-		bob.Add<AudioSource>(vorbis_stream, true);
-
-		Entity camera(1);
-		camera.Add<Position>(glm::vec3(0.0, 4.0, -20.0));
-		camera.Add<Orientation>(glm::vec3(0.0, glm::radians(180.0), 0.0));
-		camera.Add<Velocity>();
-		{
-			std::shared_ptr<View> view = std::make_shared<View>();
-			view->active = true;
-			camera.Add<View>(view);
-		}
-		camera.Add<Renderable>(voxvol_vert_buffer);
-		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionCapsule>(1, 1.0f, 0.5f);
-			colbody->disable_deactivation = true;
-			colbody->mass = 1.0;
-			colbody->disable_rotation = true;
-			camera.Add(colbody);
-		}
-
-		Entity floor(1000);
-		{
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionBox>(1000, 100.0f, 1.0f, 100.0f);
-			colbody->mass = 0.0;
-			floor.Add<Position>(glm::vec3(0.0, -2.0, 0.0));
-			floor.Add(colbody);
-		}
-
+		elist.SerializeToOstream(&output);
 	}
 }

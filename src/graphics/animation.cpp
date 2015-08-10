@@ -7,6 +7,10 @@
 #include "resources/md5anim.hpp"
 
 namespace tec {
+	Animation::Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f), frame_count(0) {
+		SetAnimationFile(animation);
+		this->animation_name = animation_file->GetFileName();
+	}
 	void Animation::UpdateAnimation(const double delta) {
 		if (this->frame_count < 1) {
 			return;
@@ -27,8 +31,9 @@ namespace tec {
 		int frame_index1 = (int)ceil(frame_number);
 		frame_index0 = frame_index0 % frame_count;
 		frame_index1 = frame_index1 % frame_count;
+		this->current_frame_index = frame_index0;
 
-		double fInterpolate = fmod(this->animation_time, this->frame_duration);
+		float fInterpolate = static_cast<float>(fmod(this->animation_time, this->frame_duration));
 
 		if (this->animation_file) {
 			auto frame_skeleton = this->animation_file->InterpolateSkeletons(
@@ -49,5 +54,34 @@ namespace tec {
 			this->animation_matrices.assign(frame_skeleton.bone_matricies.begin(), frame_skeleton.bone_matricies.end());
 		}
 	}
+	void Animation::Out(proto::Component* target) {
+		proto::Animation* comp = target->mutable_animation();
+		comp->set_animation_name(this->animation_name);
+	}
 
+	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	void Animation::In(const proto::Component& source) {
+		const proto::Animation& comp = source.animation();
+		if (comp.has_animation_name()) {
+			this->animation_name = comp.animation_name();
+			/*if (!AnimationMap::Has(this->animation_name)) {
+				std::string ext = this->animation_name.substr(this->animation_name.find_last_of(".") + 1);
+				if (file_factories.find(ext) != file_factories.end()) {
+					file_factories[ext](this->animation_name);
+				}
+			}
+			this->animation_file = AnimationMap::Get(this->animation_name);*/
+		}
+	}
+
+	ReflectionComponent Animation::Reflection(Animation* val) {
+		ReflectionComponent refcomp;
+		Property sprop(Property::STRING);
+		(refcomp.properties["Animation Name"] = sprop).Set<std::string>(val->animation_name);
+		refcomp.properties["Animation Name"].update_func = [val] (Property& prop) { val->animation_name = prop.Get<std::string>(); };
+		Property iprop(Property::INTEGER);
+		(refcomp.properties["Current Frame"] = sprop).Set<int>(val->current_frame_index);
+		refcomp.properties["Current Frame"].update_func = [val] (Property& prop) { val->current_frame_index = prop.Get<int>(); };
+		return std::move(refcomp);
+	}
 }

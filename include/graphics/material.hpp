@@ -12,7 +12,6 @@
 #endif
 
 namespace tec {
-	class Shader;
 	class TextureObject;
 
 	class Material;
@@ -20,27 +19,7 @@ namespace tec {
 
 	class Material {
 	public:
-		Material(const std::weak_ptr<Shader> shader);
-
-		/**
-		 * \brief Sets the shader used by this material.
-		 * \param std::shared_ptr<Shader> s The shader to use.
-		 * \return void
-		 */
-		void SetShader(std::shared_ptr<Shader> s);
-
-		/**
-		 * \brief Sets the shader used by this material, looking it up in the ShaderMap.
-		 * \param const std::string name The name of the shader to look up.
-		 * \return void
-		 */
-		void SetShader(const std::string name);
-
-		/**
-		 * \brief Gets the shader used by this material.
-		 * \return std::shared_ptr<Shader> The shader used by this material.
-		 */
-		std::shared_ptr<Shader> GetShader();
+		Material();
 
 		/**
 		 * \brief Factory method that creates a Material and stores it in the
@@ -49,7 +28,7 @@ namespace tec {
 		 * \param std::shared_ptr<Shader> shader The shader this material uses.
 		 * \return std::shared_ptr<Material> The created Material.
 		 */
-		static std::shared_ptr<Material> Create(const std::string name, std::shared_ptr<Shader> shader);
+		static std::shared_ptr<Material> Create(const std::string name);
 		
 		/**
 		 * \brief Adds a TextureObject to this material.
@@ -57,6 +36,13 @@ namespace tec {
 		 * \return void
 		 */
 		void AddTexture(std::shared_ptr<TextureObject> tex);
+		
+		/**
+		 * \brief Gets a TextureObject from this material.
+		 * \param size_t index The index of the texture to grab (0-based).
+		 * \return std::shared_ptr<TextureObject> The request texture, or nullptr if index is invalid.
+		 */
+		std::shared_ptr<TextureObject> GetTexutre(size_t index);
 
 		/**
 		 * \brief Removes a TextureObject from this material.
@@ -108,7 +94,6 @@ namespace tec {
 	private:
 		GLenum polygon_mode;
 		GLenum draw_elements_mode;
-		std::shared_ptr<Shader> shader;
 		std::vector<std::shared_ptr<TextureObject>> textures;
 	};
 }
