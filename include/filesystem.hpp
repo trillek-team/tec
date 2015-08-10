@@ -119,7 +119,14 @@ public:
 		 *
 		 * \return Empty string if is an invalid path for a file
 		 */
-		FilePath FileName() const;
+		std::string FileName() const;
+
+		/**
+		* \brief Extract a extension from a path to a file
+		*
+		* \return Empty string if isn't a file or not have extension
+		*/
+		std::string FileExtension() const;
 
 		/**
 		 * \brief Return base path of a full path

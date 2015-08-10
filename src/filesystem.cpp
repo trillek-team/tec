@@ -262,12 +262,23 @@ bool FilePath::MkPath(const FilePath& path) {
 	return false;
 }
 
-FilePath FilePath::FileName() const {
+std::string FilePath::FileName() const {
 	std::size_t pos = path.find_last_of( FilePath::PATH_SEPARATOR_C);
 	if (pos != std::string::npos) {
-		return FilePath(path, pos+1);
+		return std::string(path, pos+1);
 	}
-	return FilePath();
+	return "";
+}
+
+std::string FilePath::FileExtension() const {
+	auto tmp = this->FileName();
+	if (! tmp.empty()) {
+		if (tmp.find(".") != std::string::npos) {
+			return tmp.substr(tmp.find_last_of(".") + 1);
+		}
+	}
+
+	return "";
 }
 
 FilePath FilePath::BasePath() const {
