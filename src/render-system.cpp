@@ -166,6 +166,15 @@ namespace tec {
 		GLint animated_loc = def_shader->GetUniformLocation("animated");
 		GLint model_index = def_shader->GetUniformLocation("model");
 		for (auto shader_list : this->render_item_list) {
+			// Check if we need to use a specific shader and set it up.
+			if (shader_list.first) {
+				shader_list.first->Use();
+				glUniformMatrix4fv(shader_list.first->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
+				glUniformMatrix4fv(shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
+				animatrix_loc = shader_list.first->GetUniformLocation("animation_matrix");
+				animated_loc = shader_list.first->GetUniformLocation("animated");
+				model_index = shader_list.first->GetUniformLocation("model");
+			}
 			for (auto render_item : shader_list.second) {
 				glBindVertexArray(render_item.vao);
 				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
@@ -182,6 +191,14 @@ namespace tec {
 					glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
 					vertex_group->material->Deactivate();
 				}
+			}
+			// If we used a special shader set things back to the deferred shader.
+			if (shader_list.first) {
+				animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
+				animated_loc = def_shader->GetUniformLocation("animated");
+				model_index = def_shader->GetUniformLocation("model");
+				shader_list.first->UnUse();
+				def_shader->Use();
 			}
 		}
 		def_shader->UnUse();
@@ -443,12 +460,8 @@ namespace tec {
 						ri.animation = anim;
 					}
 				}
-				std::shared_ptr<Shader> shader = renderable->shader;
-				if (!shader) {
-					shader = this->default_shader;
-				}
 				for (VertexGroup* group : renderable->vertex_groups) {
-					this->render_item_list[shader].insert(std::move(ri));
+					this->render_item_list[renderable->shader].insert(std::move(ri));
 				}
 			}
 
