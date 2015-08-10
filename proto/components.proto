@@ -9,16 +9,28 @@ message Renderable {
 }
 
 message Position {
+	message CenterOffset {
+		optional float x = 1;
+		optional float y = 2;
+		optional float z = 3;
+	}
 	optional float x = 1;
 	optional float y = 2;
 	optional float z = 3;
+	optional CenterOffset offset = 4;
 }
 
 message Orientation {
+	message RotationOffset {
+		required float x = 1;
+		required float y = 2;
+		required float z = 3;
+	}
 	required float x = 1;
 	required float y = 2;
 	required float z = 3;
 	required float w = 4;
+	optional RotationOffset offset = 5;
 }
 
 message View {

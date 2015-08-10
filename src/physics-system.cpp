@@ -135,13 +135,17 @@ namespace tec {
 			Entity e(entity_id);
 			auto transform = body.second->getWorldTransform();
 			if (e.Has<Position>()) {
+				std::shared_ptr<Position> old_position = e.Get<Position>().lock();
 				auto pos = transform.getOrigin();
-				auto position = std::make_shared<Position>(glm::vec3(pos.x(), pos.y(), pos.z()));
+				auto position = std::make_shared<Position>(*old_position);
+				position->value = glm::vec3(pos.x(), pos.y(), pos.z());
 				e.Update(position);
 			}
 			if (e.Has<Orientation>()) {
+				std::shared_ptr<Orientation> old_orientation = e.Get<Orientation>().lock();
 				auto rot = transform.getRotation();
-				auto orientation = std::make_shared<Orientation>(glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z()));
+				auto orientation = std::make_shared<Orientation>(*old_orientation);
+				orientation->value = glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z());
 				e.Update(orientation);
 			}
 		}

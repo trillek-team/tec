@@ -39,7 +39,9 @@ void protobuf_ShutdownFile_components_2eproto();
 
 class Renderable;
 class Position;
+class Position_CenterOffset;
 class Orientation;
+class Orientation_RotationOffset;
 class View;
 class Animation;
 class Scale;
@@ -177,6 +179,115 @@ class Renderable : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class Position_CenterOffset : public ::google::protobuf::Message {
+ public:
+  Position_CenterOffset();
+  virtual ~Position_CenterOffset();
+
+  Position_CenterOffset(const Position_CenterOffset& from);
+
+  inline Position_CenterOffset& operator=(const Position_CenterOffset& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Position_CenterOffset& default_instance();
+
+  void Swap(Position_CenterOffset* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Position_CenterOffset* New() const { return New(NULL); }
+
+  Position_CenterOffset* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Position_CenterOffset& from);
+  void MergeFrom(const Position_CenterOffset& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Position_CenterOffset* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float x = 1;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  float x() const;
+  void set_x(float value);
+
+  // optional float y = 2;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  float y() const;
+  void set_y(float value);
+
+  // optional float z = 3;
+  bool has_z() const;
+  void clear_z();
+  static const int kZFieldNumber = 3;
+  float z() const;
+  void set_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Position.CenterOffset)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_;
+  float y_;
+  float z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Position_CenterOffset* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Position : public ::google::protobuf::Message {
  public:
   Position();
@@ -239,6 +350,8 @@ class Position : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef Position_CenterOffset CenterOffset;
+
   // accessors -------------------------------------------------------
 
   // optional float x = 1;
@@ -262,6 +375,15 @@ class Position : public ::google::protobuf::Message {
   float z() const;
   void set_z(float value);
 
+  // optional .tec.proto.Position.CenterOffset offset = 4;
+  bool has_offset() const;
+  void clear_offset();
+  static const int kOffsetFieldNumber = 4;
+  const ::tec::proto::Position_CenterOffset& offset() const;
+  ::tec::proto::Position_CenterOffset* mutable_offset();
+  ::tec::proto::Position_CenterOffset* release_offset();
+  void set_allocated_offset(::tec::proto::Position_CenterOffset* offset);
+
   // @@protoc_insertion_point(class_scope:tec.proto.Position)
  private:
   inline void set_has_x();
@@ -270,6 +392,121 @@ class Position : public ::google::protobuf::Message {
   inline void clear_has_y();
   inline void set_has_z();
   inline void clear_has_z();
+  inline void set_has_offset();
+  inline void clear_has_offset();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_;
+  float y_;
+  ::tec::proto::Position_CenterOffset* offset_;
+  float z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Position* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Orientation_RotationOffset : public ::google::protobuf::Message {
+ public:
+  Orientation_RotationOffset();
+  virtual ~Orientation_RotationOffset();
+
+  Orientation_RotationOffset(const Orientation_RotationOffset& from);
+
+  inline Orientation_RotationOffset& operator=(const Orientation_RotationOffset& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Orientation_RotationOffset& default_instance();
+
+  void Swap(Orientation_RotationOffset* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Orientation_RotationOffset* New() const { return New(NULL); }
+
+  Orientation_RotationOffset* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Orientation_RotationOffset& from);
+  void MergeFrom(const Orientation_RotationOffset& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Orientation_RotationOffset* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required float x = 1;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  float x() const;
+  void set_x(float value);
+
+  // required float y = 2;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  float y() const;
+  void set_y(float value);
+
+  // required float z = 3;
+  bool has_z() const;
+  void clear_z();
+  static const int kZFieldNumber = 3;
+  float z() const;
+  void set_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Orientation.RotationOffset)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
@@ -282,7 +519,7 @@ class Position : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_components_2eproto();
 
   void InitAsDefaultInstance();
-  static Position* default_instance_;
+  static Orientation_RotationOffset* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -348,6 +585,8 @@ class Orientation : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef Orientation_RotationOffset RotationOffset;
+
   // accessors -------------------------------------------------------
 
   // required float x = 1;
@@ -378,6 +617,15 @@ class Orientation : public ::google::protobuf::Message {
   float w() const;
   void set_w(float value);
 
+  // optional .tec.proto.Orientation.RotationOffset offset = 5;
+  bool has_offset() const;
+  void clear_offset();
+  static const int kOffsetFieldNumber = 5;
+  const ::tec::proto::Orientation_RotationOffset& offset() const;
+  ::tec::proto::Orientation_RotationOffset* mutable_offset();
+  ::tec::proto::Orientation_RotationOffset* release_offset();
+  void set_allocated_offset(::tec::proto::Orientation_RotationOffset* offset);
+
   // @@protoc_insertion_point(class_scope:tec.proto.Orientation)
  private:
   inline void set_has_x();
@@ -388,6 +636,8 @@ class Orientation : public ::google::protobuf::Message {
   inline void clear_has_z();
   inline void set_has_w();
   inline void clear_has_w();
+  inline void set_has_offset();
+  inline void clear_has_offset();
 
   // helper for ByteSize()
   int RequiredFieldsByteSizeFallback() const;
@@ -399,6 +649,7 @@ class Orientation : public ::google::protobuf::Message {
   float y_;
   float z_;
   float w_;
+  ::tec::proto::Orientation_RotationOffset* offset_;
   friend void  protobuf_AddDesc_components_2eproto();
   friend void protobuf_AssignDesc_components_2eproto();
   friend void protobuf_ShutdownFile_components_2eproto();
@@ -2382,6 +2633,82 @@ inline void Renderable::set_hidden(bool value) {
 
 // -------------------------------------------------------------------
 
+// Position_CenterOffset
+
+// optional float x = 1;
+inline bool Position_CenterOffset::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Position_CenterOffset::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Position_CenterOffset::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Position_CenterOffset::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline float Position_CenterOffset::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.x)
+  return x_;
+}
+inline void Position_CenterOffset::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.x)
+}
+
+// optional float y = 2;
+inline bool Position_CenterOffset::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Position_CenterOffset::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Position_CenterOffset::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Position_CenterOffset::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline float Position_CenterOffset::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.y)
+  return y_;
+}
+inline void Position_CenterOffset::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.y)
+}
+
+// optional float z = 3;
+inline bool Position_CenterOffset::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Position_CenterOffset::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Position_CenterOffset::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Position_CenterOffset::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline float Position_CenterOffset::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.z)
+  return z_;
+}
+inline void Position_CenterOffset::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.z)
+}
+
+// -------------------------------------------------------------------
+
 // Position
 
 // optional float x = 1;
@@ -2454,6 +2781,125 @@ inline void Position::set_z(float value) {
   set_has_z();
   z_ = value;
   // @@protoc_insertion_point(field_set:tec.proto.Position.z)
+}
+
+// optional .tec.proto.Position.CenterOffset offset = 4;
+inline bool Position::has_offset() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Position::set_has_offset() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Position::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Position::clear_offset() {
+  if (offset_ != NULL) offset_->::tec::proto::Position_CenterOffset::Clear();
+  clear_has_offset();
+}
+inline const ::tec::proto::Position_CenterOffset& Position::offset() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.offset)
+  return offset_ != NULL ? *offset_ : *default_instance_->offset_;
+}
+inline ::tec::proto::Position_CenterOffset* Position::mutable_offset() {
+  set_has_offset();
+  if (offset_ == NULL) {
+    offset_ = new ::tec::proto::Position_CenterOffset;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Position.offset)
+  return offset_;
+}
+inline ::tec::proto::Position_CenterOffset* Position::release_offset() {
+  clear_has_offset();
+  ::tec::proto::Position_CenterOffset* temp = offset_;
+  offset_ = NULL;
+  return temp;
+}
+inline void Position::set_allocated_offset(::tec::proto::Position_CenterOffset* offset) {
+  delete offset_;
+  offset_ = offset;
+  if (offset) {
+    set_has_offset();
+  } else {
+    clear_has_offset();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Position.offset)
+}
+
+// -------------------------------------------------------------------
+
+// Orientation_RotationOffset
+
+// required float x = 1;
+inline bool Orientation_RotationOffset::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Orientation_RotationOffset::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Orientation_RotationOffset::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Orientation_RotationOffset::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline float Orientation_RotationOffset::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.x)
+  return x_;
+}
+inline void Orientation_RotationOffset::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.x)
+}
+
+// required float y = 2;
+inline bool Orientation_RotationOffset::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Orientation_RotationOffset::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Orientation_RotationOffset::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Orientation_RotationOffset::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline float Orientation_RotationOffset::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.y)
+  return y_;
+}
+inline void Orientation_RotationOffset::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.y)
+}
+
+// required float z = 3;
+inline bool Orientation_RotationOffset::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Orientation_RotationOffset::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Orientation_RotationOffset::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Orientation_RotationOffset::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline float Orientation_RotationOffset::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.z)
+  return z_;
+}
+inline void Orientation_RotationOffset::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.z)
 }
 
 // -------------------------------------------------------------------
@@ -2554,6 +3000,49 @@ inline void Orientation::set_w(float value) {
   set_has_w();
   w_ = value;
   // @@protoc_insertion_point(field_set:tec.proto.Orientation.w)
+}
+
+// optional .tec.proto.Orientation.RotationOffset offset = 5;
+inline bool Orientation::has_offset() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Orientation::set_has_offset() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Orientation::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Orientation::clear_offset() {
+  if (offset_ != NULL) offset_->::tec::proto::Orientation_RotationOffset::Clear();
+  clear_has_offset();
+}
+inline const ::tec::proto::Orientation_RotationOffset& Orientation::offset() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.offset)
+  return offset_ != NULL ? *offset_ : *default_instance_->offset_;
+}
+inline ::tec::proto::Orientation_RotationOffset* Orientation::mutable_offset() {
+  set_has_offset();
+  if (offset_ == NULL) {
+    offset_ = new ::tec::proto::Orientation_RotationOffset;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Orientation.offset)
+  return offset_;
+}
+inline ::tec::proto::Orientation_RotationOffset* Orientation::release_offset() {
+  clear_has_offset();
+  ::tec::proto::Orientation_RotationOffset* temp = offset_;
+  offset_ = NULL;
+  return temp;
+}
+inline void Orientation::set_allocated_offset(::tec::proto::Orientation_RotationOffset* offset) {
+  delete offset_;
+  offset_ = offset;
+  if (offset) {
+    set_has_offset();
+  } else {
+    clear_has_offset();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Orientation.offset)
 }
 
 // -------------------------------------------------------------------
@@ -4417,6 +4906,10 @@ EntityList::mutable_entities() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

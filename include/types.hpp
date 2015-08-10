@@ -61,7 +61,6 @@ namespace tec {
 	MAKE_IDTYPE(DirectionalLight, 10);
 	MAKE_COMPONENTCASETYPE(DirectionalLight, proto::Component::kDirlight);
 
-
 	class MD5Mesh;
 	MAKE_EXTTYPE(MD5Mesh, "md5mesh");
 	class OBJ;

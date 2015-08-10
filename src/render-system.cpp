@@ -420,10 +420,12 @@ namespace tec {
 			glm::vec3 scale(1.0);
 			Entity e(entity_id);
 			if (e.Has<Position>()) {
-				position = e.Get<Position>().lock()->value;
+				std::shared_ptr<Position> pos = e.Get<Position>().lock();
+				position = pos->value + pos->center_offset;
 			}
 			if (e.Has<Orientation>()) {
-				orientation = e.Get<Orientation>().lock()->value;
+				std::shared_ptr<Orientation> rot = e.Get<Orientation>().lock();
+				orientation = rot->value * glm::quat(rot->rotation_offset);
 			}
 			if (e.Has<Scale>()) {
 				scale = e.Get<Scale>().lock()->value;
@@ -472,16 +474,12 @@ namespace tec {
 
 				glm::vec3 position;
 				glm::quat orientation;
-				glm::vec3 scale(1.0);
 				Entity e(entity_id);
 				if (e.Has<Position>()) {
 					position = e.Get<Position>().lock()->value;
 				}
 				if (e.Has<Orientation>()) {
 					orientation = e.Get<Orientation>().lock()->value;
-				}
-				if (e.Has<Scale>()) {
-					scale = e.Get<Scale>().lock()->value;
 				}
 
 				this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);

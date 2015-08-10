@@ -14,6 +14,10 @@ namespace tec {
 		comp->set_x(this->value.x);
 		comp->set_y(this->value.y);
 		comp->set_z(this->value.z);
+		proto::Position::CenterOffset* offset = comp->mutable_offset();
+		offset->set_x(this->center_offset.x);
+		offset->set_y(this->center_offset.y);
+		offset->set_z(this->center_offset.z);
 	}
 
 	void Position::In(const proto::Component& source) {
@@ -26,6 +30,18 @@ namespace tec {
 		}
 		if (comp.has_z()) {
 			this->value.z = comp.z();
+		}
+		if (comp.has_offset()) {
+			const proto::Position::CenterOffset& offset = comp.offset();
+			if (offset.has_x()) {
+				this->center_offset.x = offset.x();
+			}
+			if (offset.has_y()) {
+				this->center_offset.y = offset.y();
+			}
+			if (offset.has_z()) {
+				this->center_offset.z = offset.z();
+			}
 		}
 	}
 
@@ -52,6 +68,10 @@ namespace tec {
 		comp->set_y(this->value.y);
 		comp->set_z(this->value.z);
 		comp->set_w(this->value.w);
+		proto::Orientation::RotationOffset* offset = comp->mutable_offset();
+		offset->set_x(this->rotation_offset.x);
+		offset->set_y(this->rotation_offset.y);
+		offset->set_z(this->rotation_offset.z);
 	}
 
 	void Orientation::In(const proto::Component& source) {
@@ -67,6 +87,18 @@ namespace tec {
 		}
 		if (comp.has_w()) {
 			this->value.w = comp.w();
+		}
+		if (comp.has_offset()) {
+			const proto::Orientation::RotationOffset& offset = comp.offset();
+			if (offset.has_x()) {
+				this->rotation_offset.x = offset.x();
+			}
+			if (offset.has_y()) {
+				this->rotation_offset.y = offset.y();
+			}
+			if (offset.has_z()) {
+				this->rotation_offset.z = offset.z();
+			}
 		}
 	}
 
