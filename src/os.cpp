@@ -1,9 +1,5 @@
 #include "os.hpp"
 
-#include <iostream>
-#include <algorithm>
-#include "event-system.hpp"
-
 #ifdef __APPLE__
 // Needed so we can disable retina support for our window.
 #define GLFW_EXPOSE_NATIVE_COCOA 1
@@ -14,6 +10,10 @@ typedef void* SEL;
 extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char *str);
 #endif
+
+#include <iostream>
+#include <algorithm>
+#include "event-system.hpp"
 
 namespace tec {
 	GLFWwindow* OS::focused_window;
