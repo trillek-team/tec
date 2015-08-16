@@ -9,16 +9,28 @@ message Renderable {
 }
 
 message Position {
+	message CenterOffset {
+		optional float x = 1;
+		optional float y = 2;
+		optional float z = 3;
+	}
 	optional float x = 1;
 	optional float y = 2;
 	optional float z = 3;
+	optional CenterOffset offset = 4;
 }
 
 message Orientation {
+	message RotationOffset {
+		required float x = 1;
+		required float y = 2;
+		required float z = 3;
+	}
 	required float x = 1;
 	required float y = 2;
 	required float z = 3;
 	required float w = 4;
+	optional RotationOffset offset = 5;
 }
 
 message View {
@@ -74,6 +86,27 @@ message AudioSource {
 	optional uint32 volume = 4;
 }
 
+message Light {
+	optional float color_x = 1;
+	optional float color_y = 2;
+	optional float color_z = 3;
+	optional float ambient_intensity = 4;
+	optional float diffuse_intensity = 5;
+	message Attenuation {
+		optional float constant = 1;
+		optional float linear = 2;
+		optional float exponential = 3;
+	}
+	optional Attenuation attenuation = 6;
+	optional float cutoff = 7;
+	message Direction {
+		optional float x = 1;
+		optional float y = 2;
+		optional float z = 3;
+	}
+	optional Direction direction = 8;
+}
+
 message Component {
 	oneof component {
 		Renderable renderable = 1;
@@ -85,6 +118,9 @@ message Component {
 		CollisionBody collision_body = 7;
 		Velocity velocity = 8;
 		AudioSource audio_source = 9;
+		Light light = 10;
+		Light dirlight = 11;
+		Light spotlight = 12;
 	}
 }
 
@@ -93,6 +129,6 @@ message Entity {
 	repeated Component components = 2;
 }
 
-message EntityList {
-	repeated Entity entities = 1;
+message EntityFileList {
+	repeated string entity_file_list = 1;
 }

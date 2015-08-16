@@ -27,9 +27,15 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Position_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Position_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Position_CenterOffset_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Position_CenterOffset_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Orientation_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Orientation_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Orientation_RotationOffset_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Orientation_RotationOffset_reflection_ = NULL;
 const ::google::protobuf::Descriptor* View_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   View_reflection_ = NULL;
@@ -62,6 +68,15 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AudioSource_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AudioSource_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Light_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Light_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Light_Attenuation_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Light_Attenuation_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Light_Direction_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Light_Direction_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Component_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Component_reflection_ = NULL;
@@ -75,13 +90,16 @@ struct ComponentOneofInstance {
   const ::tec::proto::CollisionBody* collision_body_;
   const ::tec::proto::Velocity* velocity_;
   const ::tec::proto::AudioSource* audio_source_;
+  const ::tec::proto::Light* light_;
+  const ::tec::proto::Light* dirlight_;
+  const ::tec::proto::Light* spotlight_;
 }* Component_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* Entity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Entity_reflection_ = NULL;
-const ::google::protobuf::Descriptor* EntityList_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* EntityFileList_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  EntityList_reflection_ = NULL;
+  EntityFileList_reflection_ = NULL;
 
 }  // namespace
 
@@ -110,10 +128,11 @@ void protobuf_AssignDesc_components_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Renderable, _internal_metadata_),
       -1);
   Position_descriptor_ = file->message_type(1);
-  static const int Position_offsets_[3] = {
+  static const int Position_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position, x_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position, y_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position, z_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position, offset_),
   };
   Position_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -126,12 +145,30 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Position),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position, _internal_metadata_),
       -1);
+  Position_CenterOffset_descriptor_ = Position_descriptor_->nested_type(0);
+  static const int Position_CenterOffset_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position_CenterOffset, x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position_CenterOffset, y_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position_CenterOffset, z_),
+  };
+  Position_CenterOffset_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Position_CenterOffset_descriptor_,
+      Position_CenterOffset::default_instance_,
+      Position_CenterOffset_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position_CenterOffset, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Position_CenterOffset),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Position_CenterOffset, _internal_metadata_),
+      -1);
   Orientation_descriptor_ = file->message_type(2);
-  static const int Orientation_offsets_[4] = {
+  static const int Orientation_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation, x_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation, y_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation, z_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation, w_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation, offset_),
   };
   Orientation_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -143,6 +180,23 @@ void protobuf_AssignDesc_components_2eproto() {
       -1,
       sizeof(Orientation),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation, _internal_metadata_),
+      -1);
+  Orientation_RotationOffset_descriptor_ = Orientation_descriptor_->nested_type(0);
+  static const int Orientation_RotationOffset_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation_RotationOffset, x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation_RotationOffset, y_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation_RotationOffset, z_),
+  };
+  Orientation_RotationOffset_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Orientation_RotationOffset_descriptor_,
+      Orientation_RotationOffset::default_instance_,
+      Orientation_RotationOffset_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation_RotationOffset, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Orientation_RotationOffset),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Orientation_RotationOffset, _internal_metadata_),
       -1);
   View_descriptor_ = file->message_type(3);
   static const int View_offsets_[1] = {
@@ -300,8 +354,64 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(AudioSource),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AudioSource, _internal_metadata_),
       -1);
-  Component_descriptor_ = file->message_type(9);
-  static const int Component_offsets_[10] = {
+  Light_descriptor_ = file->message_type(9);
+  static const int Light_offsets_[8] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, color_x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, color_y_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, color_z_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, ambient_intensity_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, diffuse_intensity_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, attenuation_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, cutoff_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, direction_),
+  };
+  Light_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Light_descriptor_,
+      Light::default_instance_,
+      Light_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Light),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light, _internal_metadata_),
+      -1);
+  Light_Attenuation_descriptor_ = Light_descriptor_->nested_type(0);
+  static const int Light_Attenuation_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Attenuation, constant_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Attenuation, linear_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Attenuation, exponential_),
+  };
+  Light_Attenuation_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Light_Attenuation_descriptor_,
+      Light_Attenuation::default_instance_,
+      Light_Attenuation_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Attenuation, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Light_Attenuation),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Attenuation, _internal_metadata_),
+      -1);
+  Light_Direction_descriptor_ = Light_descriptor_->nested_type(1);
+  static const int Light_Direction_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Direction, x_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Direction, y_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Direction, z_),
+  };
+  Light_Direction_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Light_Direction_descriptor_,
+      Light_Direction::default_instance_,
+      Light_Direction_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Direction, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Light_Direction),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Direction, _internal_metadata_),
+      -1);
+  Component_descriptor_ = file->message_type(10);
+  static const int Component_offsets_[13] = {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, renderable_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, position_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, orientation_),
@@ -311,6 +421,9 @@ void protobuf_AssignDesc_components_2eproto() {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, collision_body_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, velocity_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, audio_source_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, light_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, dirlight_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, spotlight_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, component_),
   };
   Component_reflection_ =
@@ -326,7 +439,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Component),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, _internal_metadata_),
       -1);
-  Entity_descriptor_ = file->message_type(10);
+  Entity_descriptor_ = file->message_type(11);
   static const int Entity_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, components_),
@@ -342,20 +455,20 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Entity),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, _internal_metadata_),
       -1);
-  EntityList_descriptor_ = file->message_type(11);
-  static const int EntityList_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, entities_),
+  EntityFileList_descriptor_ = file->message_type(12);
+  static const int EntityFileList_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, entity_file_list_),
   };
-  EntityList_reflection_ =
+  EntityFileList_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      EntityList_descriptor_,
-      EntityList::default_instance_,
-      EntityList_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, _has_bits_[0]),
+      EntityFileList_descriptor_,
+      EntityFileList::default_instance_,
+      EntityFileList_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, _has_bits_[0]),
       -1,
       -1,
-      sizeof(EntityList),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityList, _internal_metadata_),
+      sizeof(EntityFileList),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, _internal_metadata_),
       -1);
 }
 
@@ -374,7 +487,11 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Position_descriptor_, &Position::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Position_CenterOffset_descriptor_, &Position_CenterOffset::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Orientation_descriptor_, &Orientation::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Orientation_RotationOffset_descriptor_, &Orientation_RotationOffset::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       View_descriptor_, &View::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -394,11 +511,17 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       AudioSource_descriptor_, &AudioSource::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Light_descriptor_, &Light::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Light_Attenuation_descriptor_, &Light_Attenuation::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Light_Direction_descriptor_, &Light_Direction::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Component_descriptor_, &Component::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Entity_descriptor_, &Entity::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      EntityList_descriptor_, &EntityList::default_instance());
+      EntityFileList_descriptor_, &EntityFileList::default_instance());
 }
 
 }  // namespace
@@ -408,8 +531,12 @@ void protobuf_ShutdownFile_components_2eproto() {
   delete Renderable_reflection_;
   delete Position::default_instance_;
   delete Position_reflection_;
+  delete Position_CenterOffset::default_instance_;
+  delete Position_CenterOffset_reflection_;
   delete Orientation::default_instance_;
   delete Orientation_reflection_;
+  delete Orientation_RotationOffset::default_instance_;
+  delete Orientation_RotationOffset_reflection_;
   delete View::default_instance_;
   delete View_reflection_;
   delete Animation::default_instance_;
@@ -429,13 +556,19 @@ void protobuf_ShutdownFile_components_2eproto() {
   delete Velocity_reflection_;
   delete AudioSource::default_instance_;
   delete AudioSource_reflection_;
+  delete Light::default_instance_;
+  delete Light_reflection_;
+  delete Light_Attenuation::default_instance_;
+  delete Light_Attenuation_reflection_;
+  delete Light_Direction::default_instance_;
+  delete Light_Direction_reflection_;
   delete Component::default_instance_;
   delete Component_default_oneof_instance_;
   delete Component_reflection_;
   delete Entity::default_instance_;
   delete Entity_reflection_;
-  delete EntityList::default_instance_;
-  delete EntityList_reflection_;
+  delete EntityFileList::default_instance_;
+  delete EntityFileList_reflection_;
 }
 
 void protobuf_AddDesc_components_2eproto() {
@@ -447,45 +580,63 @@ void protobuf_AddDesc_components_2eproto() {
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\020components.proto\022\ttec.proto\"D\n\nRendera"
     "ble\022\023\n\013shader_name\030\001 \001(\t\022\021\n\tmesh_name\030\002 "
-    "\001(\t\022\016\n\006hidden\030\003 \001(\010\"+\n\010Position\022\t\n\001x\030\001 \001"
-    "(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"9\n\013Orientation\022"
-    "\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022\t\n\001z\030\003 \002(\002\022\t\n\001w\030\004 "
-    "\002(\002\"\026\n\004View\022\016\n\006active\030\001 \001(\010\"#\n\tAnimation"
-    "\022\026\n\016animation_name\030\001 \001(\t\"(\n\005Scale\022\t\n\001x\030\001"
-    " \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"\365\002\n\rCollision"
-    "Body\022\034\n\024disable_deactivation\030\001 \001(\010\022\030\n\020di"
-    "sable_rotation\030\002 \001(\010\022+\n\003box\030\003 \001(\0132\034.tec."
-    "proto.CollisionBody.BoxH\000\0221\n\006sphere\030\004 \001("
-    "\0132\037.tec.proto.CollisionBody.SphereH\000\0223\n\007"
-    "capsule\030\005 \001(\0132 .tec.proto.CollisionBody."
-    "CapsuleH\000\022\014\n\004mass\030\006 \001(\002\032;\n\003Box\022\020\n\010x_exte"
-    "nt\030\001 \002(\002\022\020\n\010y_extent\030\002 \002(\002\022\020\n\010z_extent\030\003"
-    " \002(\002\032\030\n\006Sphere\022\016\n\006radius\030\001 \002(\002\032)\n\007Capsul"
-    "e\022\016\n\006radius\030\001 \002(\002\022\016\n\006height\030\002 \002(\002B\007\n\005sha"
-    "pe\"y\n\010Velocity\022\020\n\010linear_x\030\001 \001(\002\022\020\n\010line"
-    "ar_y\030\002 \001(\002\022\020\n\010linear_z\030\003 \001(\002\022\021\n\tangular_"
-    "x\030\004 \001(\002\022\021\n\tangular_y\030\005 \001(\002\022\021\n\tangular_z\030"
-    "\006 \001(\002\"S\n\013AudioSource\022\017\n\007looping\030\001 \001(\010\022\022\n"
-    "\naudio_name\030\002 \001(\t\022\017\n\007playing\030\003 \001(\010\022\016\n\006vo"
-    "lume\030\004 \001(\r\"\231\003\n\tComponent\022+\n\nrenderable\030\001"
-    " \001(\0132\025.tec.proto.RenderableH\000\022\'\n\010positio"
-    "n\030\002 \001(\0132\023.tec.proto.PositionH\000\022-\n\013orient"
-    "ation\030\003 \001(\0132\026.tec.proto.OrientationH\000\022\037\n"
-    "\004view\030\004 \001(\0132\017.tec.proto.ViewH\000\022)\n\tanimat"
-    "ion\030\005 \001(\0132\024.tec.proto.AnimationH\000\022!\n\005Sca"
-    "le\030\006 \001(\0132\020.tec.proto.ScaleH\000\0222\n\016collisio"
-    "n_body\030\007 \001(\0132\030.tec.proto.CollisionBodyH\000"
-    "\022\'\n\010velocity\030\010 \001(\0132\023.tec.proto.VelocityH"
-    "\000\022.\n\014audio_source\030\t \001(\0132\026.tec.proto.Audi"
-    "oSourceH\000B\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001"
-    " \002(\004\022(\n\ncomponents\030\002 \003(\0132\024.tec.proto.Com"
-    "ponent\"1\n\nEntityList\022#\n\010entities\030\001 \003(\0132\021"
-    ".tec.proto.Entity", 1417);
+    "\001(\t\022\016\n\006hidden\030\003 \001(\010\"\216\001\n\010Position\022\t\n\001x\030\001 "
+    "\001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\0220\n\006offset\030\004 \001("
+    "\0132 .tec.proto.Position.CenterOffset\032/\n\014C"
+    "enterOffset\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003"
+    " \001(\002\"\243\001\n\013Orientation\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002"
+    "(\002\022\t\n\001z\030\003 \002(\002\022\t\n\001w\030\004 \002(\002\0225\n\006offset\030\005 \001(\013"
+    "2%.tec.proto.Orientation.RotationOffset\032"
+    "1\n\016RotationOffset\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022"
+    "\t\n\001z\030\003 \002(\002\"\026\n\004View\022\016\n\006active\030\001 \001(\010\"#\n\tAn"
+    "imation\022\026\n\016animation_name\030\001 \001(\t\"(\n\005Scale"
+    "\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001(\002\"\365\002\n\rCo"
+    "llisionBody\022\034\n\024disable_deactivation\030\001 \001("
+    "\010\022\030\n\020disable_rotation\030\002 \001(\010\022+\n\003box\030\003 \001(\013"
+    "2\034.tec.proto.CollisionBody.BoxH\000\0221\n\006sphe"
+    "re\030\004 \001(\0132\037.tec.proto.CollisionBody.Spher"
+    "eH\000\0223\n\007capsule\030\005 \001(\0132 .tec.proto.Collisi"
+    "onBody.CapsuleH\000\022\014\n\004mass\030\006 \001(\002\032;\n\003Box\022\020\n"
+    "\010x_extent\030\001 \002(\002\022\020\n\010y_extent\030\002 \002(\002\022\020\n\010z_e"
+    "xtent\030\003 \002(\002\032\030\n\006Sphere\022\016\n\006radius\030\001 \002(\002\032)\n"
+    "\007Capsule\022\016\n\006radius\030\001 \002(\002\022\016\n\006height\030\002 \002(\002"
+    "B\007\n\005shape\"y\n\010Velocity\022\020\n\010linear_x\030\001 \001(\002\022"
+    "\020\n\010linear_y\030\002 \001(\002\022\020\n\010linear_z\030\003 \001(\002\022\021\n\ta"
+    "ngular_x\030\004 \001(\002\022\021\n\tangular_y\030\005 \001(\002\022\021\n\tang"
+    "ular_z\030\006 \001(\002\"S\n\013AudioSource\022\017\n\007looping\030\001"
+    " \001(\010\022\022\n\naudio_name\030\002 \001(\t\022\017\n\007playing\030\003 \001("
+    "\010\022\016\n\006volume\030\004 \001(\r\"\326\002\n\005Light\022\017\n\007color_x\030\001"
+    " \001(\002\022\017\n\007color_y\030\002 \001(\002\022\017\n\007color_z\030\003 \001(\002\022\031"
+    "\n\021ambient_intensity\030\004 \001(\002\022\031\n\021diffuse_int"
+    "ensity\030\005 \001(\002\0221\n\013attenuation\030\006 \001(\0132\034.tec."
+    "proto.Light.Attenuation\022\016\n\006cutoff\030\007 \001(\002\022"
+    "-\n\tdirection\030\010 \001(\0132\032.tec.proto.Light.Dir"
+    "ection\032D\n\013Attenuation\022\020\n\010constant\030\001 \001(\002\022"
+    "\016\n\006linear\030\002 \001(\002\022\023\n\013exponential\030\003 \001(\002\032,\n\t"
+    "Direction\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001"
+    "(\002\"\211\004\n\tComponent\022+\n\nrenderable\030\001 \001(\0132\025.t"
+    "ec.proto.RenderableH\000\022\'\n\010position\030\002 \001(\0132"
+    "\023.tec.proto.PositionH\000\022-\n\013orientation\030\003 "
+    "\001(\0132\026.tec.proto.OrientationH\000\022\037\n\004view\030\004 "
+    "\001(\0132\017.tec.proto.ViewH\000\022)\n\tanimation\030\005 \001("
+    "\0132\024.tec.proto.AnimationH\000\022!\n\005Scale\030\006 \001(\013"
+    "2\020.tec.proto.ScaleH\000\0222\n\016collision_body\030\007"
+    " \001(\0132\030.tec.proto.CollisionBodyH\000\022\'\n\010velo"
+    "city\030\010 \001(\0132\023.tec.proto.VelocityH\000\022.\n\014aud"
+    "io_source\030\t \001(\0132\026.tec.proto.AudioSourceH"
+    "\000\022!\n\005light\030\n \001(\0132\020.tec.proto.LightH\000\022$\n\010"
+    "dirlight\030\013 \001(\0132\020.tec.proto.LightH\000\022%\n\tsp"
+    "otlight\030\014 \001(\0132\020.tec.proto.LightH\000B\013\n\tcom"
+    "ponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\ncomponen"
+    "ts\030\002 \003(\0132\024.tec.proto.Component\"*\n\016Entity"
+    "FileList\022\030\n\020entity_file_list\030\001 \003(\t", 2074);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
   Position::default_instance_ = new Position();
+  Position_CenterOffset::default_instance_ = new Position_CenterOffset();
   Orientation::default_instance_ = new Orientation();
+  Orientation_RotationOffset::default_instance_ = new Orientation_RotationOffset();
   View::default_instance_ = new View();
   Animation::default_instance_ = new Animation();
   Scale::default_instance_ = new Scale();
@@ -496,13 +647,18 @@ void protobuf_AddDesc_components_2eproto() {
   CollisionBody_Capsule::default_instance_ = new CollisionBody_Capsule();
   Velocity::default_instance_ = new Velocity();
   AudioSource::default_instance_ = new AudioSource();
+  Light::default_instance_ = new Light();
+  Light_Attenuation::default_instance_ = new Light_Attenuation();
+  Light_Direction::default_instance_ = new Light_Direction();
   Component::default_instance_ = new Component();
   Component_default_oneof_instance_ = new ComponentOneofInstance();
   Entity::default_instance_ = new Entity();
-  EntityList::default_instance_ = new EntityList();
+  EntityFileList::default_instance_ = new EntityFileList();
   Renderable::default_instance_->InitAsDefaultInstance();
   Position::default_instance_->InitAsDefaultInstance();
+  Position_CenterOffset::default_instance_->InitAsDefaultInstance();
   Orientation::default_instance_->InitAsDefaultInstance();
+  Orientation_RotationOffset::default_instance_->InitAsDefaultInstance();
   View::default_instance_->InitAsDefaultInstance();
   Animation::default_instance_->InitAsDefaultInstance();
   Scale::default_instance_->InitAsDefaultInstance();
@@ -512,9 +668,12 @@ void protobuf_AddDesc_components_2eproto() {
   CollisionBody_Capsule::default_instance_->InitAsDefaultInstance();
   Velocity::default_instance_->InitAsDefaultInstance();
   AudioSource::default_instance_->InitAsDefaultInstance();
+  Light::default_instance_->InitAsDefaultInstance();
+  Light_Attenuation::default_instance_->InitAsDefaultInstance();
+  Light_Direction::default_instance_->InitAsDefaultInstance();
   Component::default_instance_->InitAsDefaultInstance();
   Entity::default_instance_->InitAsDefaultInstance();
-  EntityList::default_instance_->InitAsDefaultInstance();
+  EntityFileList::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_components_2eproto);
 }
 
@@ -1018,29 +1177,29 @@ void Renderable::clear_hidden() {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int Position::kXFieldNumber;
-const int Position::kYFieldNumber;
-const int Position::kZFieldNumber;
+const int Position_CenterOffset::kXFieldNumber;
+const int Position_CenterOffset::kYFieldNumber;
+const int Position_CenterOffset::kZFieldNumber;
 #endif  // !_MSC_VER
 
-Position::Position()
+Position_CenterOffset::Position_CenterOffset()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:tec.proto.Position)
+  // @@protoc_insertion_point(constructor:tec.proto.Position.CenterOffset)
 }
 
-void Position::InitAsDefaultInstance() {
+void Position_CenterOffset::InitAsDefaultInstance() {
 }
 
-Position::Position(const Position& from)
+Position_CenterOffset::Position_CenterOffset(const Position_CenterOffset& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:tec.proto.Position)
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Position.CenterOffset)
 }
 
-void Position::SharedCtor() {
+void Position_CenterOffset::SharedCtor() {
   _cached_size_ = 0;
   x_ = 0;
   y_ = 0;
@@ -1048,44 +1207,44 @@ void Position::SharedCtor() {
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-Position::~Position() {
-  // @@protoc_insertion_point(destructor:tec.proto.Position)
+Position_CenterOffset::~Position_CenterOffset() {
+  // @@protoc_insertion_point(destructor:tec.proto.Position.CenterOffset)
   SharedDtor();
 }
 
-void Position::SharedDtor() {
+void Position_CenterOffset::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void Position::SetCachedSize(int size) const {
+void Position_CenterOffset::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* Position::descriptor() {
+const ::google::protobuf::Descriptor* Position_CenterOffset::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return Position_descriptor_;
+  return Position_CenterOffset_descriptor_;
 }
 
-const Position& Position::default_instance() {
+const Position_CenterOffset& Position_CenterOffset::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
   return *default_instance_;
 }
 
-Position* Position::default_instance_ = NULL;
+Position_CenterOffset* Position_CenterOffset::default_instance_ = NULL;
 
-Position* Position::New(::google::protobuf::Arena* arena) const {
-  Position* n = new Position;
+Position_CenterOffset* Position_CenterOffset::New(::google::protobuf::Arena* arena) const {
+  Position_CenterOffset* n = new Position_CenterOffset;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void Position::Clear() {
+void Position_CenterOffset::Clear() {
 #define ZR_HELPER_(f) reinterpret_cast<char*>(\
-  &reinterpret_cast<Position*>(16)->f)
+  &reinterpret_cast<Position_CenterOffset*>(16)->f)
 
 #define ZR_(first, last) do {\
   ::memset(&first, 0,\
@@ -1103,11 +1262,11 @@ void Position::Clear() {
   }
 }
 
-bool Position::MergePartialFromCodedStream(
+bool Position_CenterOffset::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:tec.proto.Position)
+  // @@protoc_insertion_point(parse_start:tec.proto.Position.CenterOffset)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
@@ -1171,6 +1330,344 @@ bool Position::MergePartialFromCodedStream(
     }
   }
 success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Position.CenterOffset)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Position.CenterOffset)
+  return false;
+#undef DO_
+}
+
+void Position_CenterOffset::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Position.CenterOffset)
+  // optional float x = 1;
+  if (has_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->x(), output);
+  }
+
+  // optional float y = 2;
+  if (has_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->y(), output);
+  }
+
+  // optional float z = 3;
+  if (has_z()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->z(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Position.CenterOffset)
+}
+
+::google::protobuf::uint8* Position_CenterOffset::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Position.CenterOffset)
+  // optional float x = 1;
+  if (has_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->x(), target);
+  }
+
+  // optional float y = 2;
+  if (has_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->y(), target);
+  }
+
+  // optional float z = 3;
+  if (has_z()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->z(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Position.CenterOffset)
+  return target;
+}
+
+int Position_CenterOffset::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & 7u) {
+    // optional float x = 1;
+    if (has_x()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float y = 2;
+    if (has_y()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float z = 3;
+    if (has_z()) {
+      total_size += 1 + 4;
+    }
+
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Position_CenterOffset::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Position_CenterOffset* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Position_CenterOffset>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Position_CenterOffset::MergeFrom(const Position_CenterOffset& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_x()) {
+      set_x(from.x());
+    }
+    if (from.has_y()) {
+      set_y(from.y());
+    }
+    if (from.has_z()) {
+      set_z(from.z());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Position_CenterOffset::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Position_CenterOffset::CopyFrom(const Position_CenterOffset& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Position_CenterOffset::IsInitialized() const {
+
+  return true;
+}
+
+void Position_CenterOffset::Swap(Position_CenterOffset* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Position_CenterOffset::InternalSwap(Position_CenterOffset* other) {
+  std::swap(x_, other->x_);
+  std::swap(y_, other->y_);
+  std::swap(z_, other->z_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Position_CenterOffset::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Position_CenterOffset_descriptor_;
+  metadata.reflection = Position_CenterOffset_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#ifndef _MSC_VER
+const int Position::kXFieldNumber;
+const int Position::kYFieldNumber;
+const int Position::kZFieldNumber;
+const int Position::kOffsetFieldNumber;
+#endif  // !_MSC_VER
+
+Position::Position()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Position)
+}
+
+void Position::InitAsDefaultInstance() {
+  offset_ = const_cast< ::tec::proto::Position_CenterOffset*>(&::tec::proto::Position_CenterOffset::default_instance());
+}
+
+Position::Position(const Position& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Position)
+}
+
+void Position::SharedCtor() {
+  _cached_size_ = 0;
+  x_ = 0;
+  y_ = 0;
+  z_ = 0;
+  offset_ = NULL;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Position::~Position() {
+  // @@protoc_insertion_point(destructor:tec.proto.Position)
+  SharedDtor();
+}
+
+void Position::SharedDtor() {
+  if (this != default_instance_) {
+    delete offset_;
+  }
+}
+
+void Position::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Position::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Position_descriptor_;
+}
+
+const Position& Position::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Position* Position::default_instance_ = NULL;
+
+Position* Position::New(::google::protobuf::Arena* arena) const {
+  Position* n = new Position;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Position::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Position*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 15u) {
+    ZR_(x_, y_);
+    z_ = 0;
+    if (has_offset()) {
+      if (offset_ != NULL) offset_->::tec::proto::Position_CenterOffset::Clear();
+    }
+  }
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Position::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Position)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float x = 1;
+      case 1: {
+        if (tag == 13) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &x_)));
+          set_has_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(21)) goto parse_y;
+        break;
+      }
+
+      // optional float y = 2;
+      case 2: {
+        if (tag == 21) {
+         parse_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &y_)));
+          set_has_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(29)) goto parse_z;
+        break;
+      }
+
+      // optional float z = 3;
+      case 3: {
+        if (tag == 29) {
+         parse_z:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &z_)));
+          set_has_z();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_offset;
+        break;
+      }
+
+      // optional .tec.proto.Position.CenterOffset offset = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_offset:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_offset()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
   // @@protoc_insertion_point(parse_success:tec.proto.Position)
   return true;
 failure:
@@ -1195,6 +1692,12 @@ void Position::SerializeWithCachedSizes(
   // optional float z = 3;
   if (has_z()) {
     ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->z(), output);
+  }
+
+  // optional .tec.proto.Position.CenterOffset offset = 4;
+  if (has_offset()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, *this->offset_, output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1222,6 +1725,13 @@ void Position::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->z(), target);
   }
 
+  // optional .tec.proto.Position.CenterOffset offset = 4;
+  if (has_offset()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        4, *this->offset_, target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -1233,7 +1743,7 @@ void Position::SerializeWithCachedSizes(
 int Position::ByteSize() const {
   int total_size = 0;
 
-  if (_has_bits_[0 / 32] & 7u) {
+  if (_has_bits_[0 / 32] & 15u) {
     // optional float x = 1;
     if (has_x()) {
       total_size += 1 + 4;
@@ -1247,6 +1757,13 @@ int Position::ByteSize() const {
     // optional float z = 3;
     if (has_z()) {
       total_size += 1 + 4;
+    }
+
+    // optional .tec.proto.Position.CenterOffset offset = 4;
+    if (has_offset()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *this->offset_);
     }
 
   }
@@ -1285,6 +1802,9 @@ void Position::MergeFrom(const Position& from) {
     if (from.has_z()) {
       set_z(from.z());
     }
+    if (from.has_offset()) {
+      mutable_offset()->::tec::proto::Position_CenterOffset::MergeFrom(from.offset());
+    }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -1316,6 +1836,7 @@ void Position::InternalSwap(Position* other) {
   std::swap(x_, other->x_);
   std::swap(y_, other->y_);
   std::swap(z_, other->z_);
+  std::swap(offset_, other->offset_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -1330,6 +1851,82 @@ void Position::InternalSwap(Position* other) {
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Position_CenterOffset
+
+// optional float x = 1;
+bool Position_CenterOffset::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Position_CenterOffset::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Position_CenterOffset::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Position_CenterOffset::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+ float Position_CenterOffset::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.x)
+  return x_;
+}
+ void Position_CenterOffset::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.x)
+}
+
+// optional float y = 2;
+bool Position_CenterOffset::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Position_CenterOffset::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Position_CenterOffset::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Position_CenterOffset::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+ float Position_CenterOffset::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.y)
+  return y_;
+}
+ void Position_CenterOffset::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.y)
+}
+
+// optional float z = 3;
+bool Position_CenterOffset::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Position_CenterOffset::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Position_CenterOffset::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Position_CenterOffset::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+ float Position_CenterOffset::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.z)
+  return z_;
+}
+ void Position_CenterOffset::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.z)
+}
+
+// -------------------------------------------------------------------
+
 // Position
 
 // optional float x = 1;
@@ -1404,15 +2001,391 @@ void Position::clear_z() {
   // @@protoc_insertion_point(field_set:tec.proto.Position.z)
 }
 
+// optional .tec.proto.Position.CenterOffset offset = 4;
+bool Position::has_offset() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void Position::set_has_offset() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void Position::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void Position::clear_offset() {
+  if (offset_ != NULL) offset_->::tec::proto::Position_CenterOffset::Clear();
+  clear_has_offset();
+}
+ const ::tec::proto::Position_CenterOffset& Position::offset() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.offset)
+  return offset_ != NULL ? *offset_ : *default_instance_->offset_;
+}
+ ::tec::proto::Position_CenterOffset* Position::mutable_offset() {
+  set_has_offset();
+  if (offset_ == NULL) {
+    offset_ = new ::tec::proto::Position_CenterOffset;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Position.offset)
+  return offset_;
+}
+ ::tec::proto::Position_CenterOffset* Position::release_offset() {
+  clear_has_offset();
+  ::tec::proto::Position_CenterOffset* temp = offset_;
+  offset_ = NULL;
+  return temp;
+}
+ void Position::set_allocated_offset(::tec::proto::Position_CenterOffset* offset) {
+  delete offset_;
+  offset_ = offset;
+  if (offset) {
+    set_has_offset();
+  } else {
+    clear_has_offset();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Position.offset)
+}
+
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
+
+#ifndef _MSC_VER
+const int Orientation_RotationOffset::kXFieldNumber;
+const int Orientation_RotationOffset::kYFieldNumber;
+const int Orientation_RotationOffset::kZFieldNumber;
+#endif  // !_MSC_VER
+
+Orientation_RotationOffset::Orientation_RotationOffset()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Orientation.RotationOffset)
+}
+
+void Orientation_RotationOffset::InitAsDefaultInstance() {
+}
+
+Orientation_RotationOffset::Orientation_RotationOffset(const Orientation_RotationOffset& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Orientation.RotationOffset)
+}
+
+void Orientation_RotationOffset::SharedCtor() {
+  _cached_size_ = 0;
+  x_ = 0;
+  y_ = 0;
+  z_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Orientation_RotationOffset::~Orientation_RotationOffset() {
+  // @@protoc_insertion_point(destructor:tec.proto.Orientation.RotationOffset)
+  SharedDtor();
+}
+
+void Orientation_RotationOffset::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void Orientation_RotationOffset::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Orientation_RotationOffset::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Orientation_RotationOffset_descriptor_;
+}
+
+const Orientation_RotationOffset& Orientation_RotationOffset::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Orientation_RotationOffset* Orientation_RotationOffset::default_instance_ = NULL;
+
+Orientation_RotationOffset* Orientation_RotationOffset::New(::google::protobuf::Arena* arena) const {
+  Orientation_RotationOffset* n = new Orientation_RotationOffset;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Orientation_RotationOffset::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Orientation_RotationOffset*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(x_, z_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Orientation_RotationOffset::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Orientation.RotationOffset)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required float x = 1;
+      case 1: {
+        if (tag == 13) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &x_)));
+          set_has_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(21)) goto parse_y;
+        break;
+      }
+
+      // required float y = 2;
+      case 2: {
+        if (tag == 21) {
+         parse_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &y_)));
+          set_has_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(29)) goto parse_z;
+        break;
+      }
+
+      // required float z = 3;
+      case 3: {
+        if (tag == 29) {
+         parse_z:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &z_)));
+          set_has_z();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Orientation.RotationOffset)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Orientation.RotationOffset)
+  return false;
+#undef DO_
+}
+
+void Orientation_RotationOffset::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Orientation.RotationOffset)
+  // required float x = 1;
+  if (has_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->x(), output);
+  }
+
+  // required float y = 2;
+  if (has_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->y(), output);
+  }
+
+  // required float z = 3;
+  if (has_z()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->z(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Orientation.RotationOffset)
+}
+
+::google::protobuf::uint8* Orientation_RotationOffset::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Orientation.RotationOffset)
+  // required float x = 1;
+  if (has_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->x(), target);
+  }
+
+  // required float y = 2;
+  if (has_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->y(), target);
+  }
+
+  // required float z = 3;
+  if (has_z()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->z(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Orientation.RotationOffset)
+  return target;
+}
+
+int Orientation_RotationOffset::RequiredFieldsByteSizeFallback() const {
+  int total_size = 0;
+
+  if (has_x()) {
+    // required float x = 1;
+    total_size += 1 + 4;
+  }
+
+  if (has_y()) {
+    // required float y = 2;
+    total_size += 1 + 4;
+  }
+
+  if (has_z()) {
+    // required float z = 3;
+    total_size += 1 + 4;
+  }
+
+  return total_size;
+}
+int Orientation_RotationOffset::ByteSize() const {
+  int total_size = 0;
+
+  if (((_has_bits_[0] & 0x00000007) ^ 0x00000007) == 0) {  // All required fields are present.
+    // required float x = 1;
+    total_size += 1 + 4;
+
+    // required float y = 2;
+    total_size += 1 + 4;
+
+    // required float z = 3;
+    total_size += 1 + 4;
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Orientation_RotationOffset::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Orientation_RotationOffset* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Orientation_RotationOffset>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Orientation_RotationOffset::MergeFrom(const Orientation_RotationOffset& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_x()) {
+      set_x(from.x());
+    }
+    if (from.has_y()) {
+      set_y(from.y());
+    }
+    if (from.has_z()) {
+      set_z(from.z());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Orientation_RotationOffset::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Orientation_RotationOffset::CopyFrom(const Orientation_RotationOffset& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Orientation_RotationOffset::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+
+  return true;
+}
+
+void Orientation_RotationOffset::Swap(Orientation_RotationOffset* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Orientation_RotationOffset::InternalSwap(Orientation_RotationOffset* other) {
+  std::swap(x_, other->x_);
+  std::swap(y_, other->y_);
+  std::swap(z_, other->z_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Orientation_RotationOffset::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Orientation_RotationOffset_descriptor_;
+  metadata.reflection = Orientation_RotationOffset_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
 
 #ifndef _MSC_VER
 const int Orientation::kXFieldNumber;
 const int Orientation::kYFieldNumber;
 const int Orientation::kZFieldNumber;
 const int Orientation::kWFieldNumber;
+const int Orientation::kOffsetFieldNumber;
 #endif  // !_MSC_VER
 
 Orientation::Orientation()
@@ -1422,6 +2395,7 @@ Orientation::Orientation()
 }
 
 void Orientation::InitAsDefaultInstance() {
+  offset_ = const_cast< ::tec::proto::Orientation_RotationOffset*>(&::tec::proto::Orientation_RotationOffset::default_instance());
 }
 
 Orientation::Orientation(const Orientation& from)
@@ -1438,6 +2412,7 @@ void Orientation::SharedCtor() {
   y_ = 0;
   z_ = 0;
   w_ = 0;
+  offset_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1448,6 +2423,7 @@ Orientation::~Orientation() {
 
 void Orientation::SharedDtor() {
   if (this != default_instance_) {
+    delete offset_;
   }
 }
 
@@ -1485,7 +2461,12 @@ void Orientation::Clear() {
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
-  ZR_(x_, w_);
+  if (_has_bits_[0 / 32] & 31u) {
+    ZR_(x_, w_);
+    if (has_offset()) {
+      if (offset_ != NULL) offset_->::tec::proto::Orientation_RotationOffset::Clear();
+    }
+  }
 
 #undef ZR_HELPER_
 #undef ZR_
@@ -1561,6 +2542,19 @@ bool Orientation::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(42)) goto parse_offset;
+        break;
+      }
+
+      // optional .tec.proto.Orientation.RotationOffset offset = 5;
+      case 5: {
+        if (tag == 42) {
+         parse_offset:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_offset()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -1610,6 +2604,12 @@ void Orientation::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->w(), output);
   }
 
+  // optional .tec.proto.Orientation.RotationOffset offset = 5;
+  if (has_offset()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, *this->offset_, output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -1638,6 +2638,13 @@ void Orientation::SerializeWithCachedSizes(
   // required float w = 4;
   if (has_w()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->w(), target);
+  }
+
+  // optional .tec.proto.Orientation.RotationOffset offset = 5;
+  if (has_offset()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        5, *this->offset_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1692,6 +2699,13 @@ int Orientation::ByteSize() const {
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
+  // optional .tec.proto.Orientation.RotationOffset offset = 5;
+  if (has_offset()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->offset_);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -1730,6 +2744,9 @@ void Orientation::MergeFrom(const Orientation& from) {
     if (from.has_w()) {
       set_w(from.w());
     }
+    if (from.has_offset()) {
+      mutable_offset()->::tec::proto::Orientation_RotationOffset::MergeFrom(from.offset());
+    }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -1751,6 +2768,9 @@ void Orientation::CopyFrom(const Orientation& from) {
 bool Orientation::IsInitialized() const {
   if ((_has_bits_[0] & 0x0000000f) != 0x0000000f) return false;
 
+  if (has_offset()) {
+    if (!this->offset_->IsInitialized()) return false;
+  }
   return true;
 }
 
@@ -1763,6 +2783,7 @@ void Orientation::InternalSwap(Orientation* other) {
   std::swap(y_, other->y_);
   std::swap(z_, other->z_);
   std::swap(w_, other->w_);
+  std::swap(offset_, other->offset_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -1777,6 +2798,82 @@ void Orientation::InternalSwap(Orientation* other) {
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Orientation_RotationOffset
+
+// required float x = 1;
+bool Orientation_RotationOffset::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Orientation_RotationOffset::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Orientation_RotationOffset::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Orientation_RotationOffset::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+ float Orientation_RotationOffset::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.x)
+  return x_;
+}
+ void Orientation_RotationOffset::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.x)
+}
+
+// required float y = 2;
+bool Orientation_RotationOffset::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Orientation_RotationOffset::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Orientation_RotationOffset::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Orientation_RotationOffset::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+ float Orientation_RotationOffset::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.y)
+  return y_;
+}
+ void Orientation_RotationOffset::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.y)
+}
+
+// required float z = 3;
+bool Orientation_RotationOffset::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Orientation_RotationOffset::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Orientation_RotationOffset::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Orientation_RotationOffset::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+ float Orientation_RotationOffset::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.z)
+  return z_;
+}
+ void Orientation_RotationOffset::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.z)
+}
+
+// -------------------------------------------------------------------
+
 // Orientation
 
 // required float x = 1;
@@ -1873,6 +2970,49 @@ void Orientation::clear_w() {
   set_has_w();
   w_ = value;
   // @@protoc_insertion_point(field_set:tec.proto.Orientation.w)
+}
+
+// optional .tec.proto.Orientation.RotationOffset offset = 5;
+bool Orientation::has_offset() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void Orientation::set_has_offset() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void Orientation::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+void Orientation::clear_offset() {
+  if (offset_ != NULL) offset_->::tec::proto::Orientation_RotationOffset::Clear();
+  clear_has_offset();
+}
+ const ::tec::proto::Orientation_RotationOffset& Orientation::offset() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.offset)
+  return offset_ != NULL ? *offset_ : *default_instance_->offset_;
+}
+ ::tec::proto::Orientation_RotationOffset* Orientation::mutable_offset() {
+  set_has_offset();
+  if (offset_ == NULL) {
+    offset_ = new ::tec::proto::Orientation_RotationOffset;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Orientation.offset)
+  return offset_;
+}
+ ::tec::proto::Orientation_RotationOffset* Orientation::release_offset() {
+  clear_has_offset();
+  ::tec::proto::Orientation_RotationOffset* temp = offset_;
+  offset_ = NULL;
+  return temp;
+}
+ void Orientation::set_allocated_offset(::tec::proto::Orientation_RotationOffset* offset) {
+  delete offset_;
+  offset_ = offset;
+  if (offset) {
+    set_has_offset();
+  } else {
+    clear_has_offset();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Orientation.offset)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
@@ -5625,6 +6765,1536 @@ void AudioSource::clear_volume() {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int Light_Attenuation::kConstantFieldNumber;
+const int Light_Attenuation::kLinearFieldNumber;
+const int Light_Attenuation::kExponentialFieldNumber;
+#endif  // !_MSC_VER
+
+Light_Attenuation::Light_Attenuation()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Light.Attenuation)
+}
+
+void Light_Attenuation::InitAsDefaultInstance() {
+}
+
+Light_Attenuation::Light_Attenuation(const Light_Attenuation& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Light.Attenuation)
+}
+
+void Light_Attenuation::SharedCtor() {
+  _cached_size_ = 0;
+  constant_ = 0;
+  linear_ = 0;
+  exponential_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Light_Attenuation::~Light_Attenuation() {
+  // @@protoc_insertion_point(destructor:tec.proto.Light.Attenuation)
+  SharedDtor();
+}
+
+void Light_Attenuation::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void Light_Attenuation::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Light_Attenuation::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Light_Attenuation_descriptor_;
+}
+
+const Light_Attenuation& Light_Attenuation::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Light_Attenuation* Light_Attenuation::default_instance_ = NULL;
+
+Light_Attenuation* Light_Attenuation::New(::google::protobuf::Arena* arena) const {
+  Light_Attenuation* n = new Light_Attenuation;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Light_Attenuation::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Light_Attenuation*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(constant_, exponential_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Light_Attenuation::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Light.Attenuation)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float constant = 1;
+      case 1: {
+        if (tag == 13) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &constant_)));
+          set_has_constant();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(21)) goto parse_linear;
+        break;
+      }
+
+      // optional float linear = 2;
+      case 2: {
+        if (tag == 21) {
+         parse_linear:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &linear_)));
+          set_has_linear();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(29)) goto parse_exponential;
+        break;
+      }
+
+      // optional float exponential = 3;
+      case 3: {
+        if (tag == 29) {
+         parse_exponential:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &exponential_)));
+          set_has_exponential();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Light.Attenuation)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Light.Attenuation)
+  return false;
+#undef DO_
+}
+
+void Light_Attenuation::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Light.Attenuation)
+  // optional float constant = 1;
+  if (has_constant()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->constant(), output);
+  }
+
+  // optional float linear = 2;
+  if (has_linear()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->linear(), output);
+  }
+
+  // optional float exponential = 3;
+  if (has_exponential()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->exponential(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Light.Attenuation)
+}
+
+::google::protobuf::uint8* Light_Attenuation::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Light.Attenuation)
+  // optional float constant = 1;
+  if (has_constant()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->constant(), target);
+  }
+
+  // optional float linear = 2;
+  if (has_linear()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->linear(), target);
+  }
+
+  // optional float exponential = 3;
+  if (has_exponential()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->exponential(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Light.Attenuation)
+  return target;
+}
+
+int Light_Attenuation::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & 7u) {
+    // optional float constant = 1;
+    if (has_constant()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float linear = 2;
+    if (has_linear()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float exponential = 3;
+    if (has_exponential()) {
+      total_size += 1 + 4;
+    }
+
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Light_Attenuation::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Light_Attenuation* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Light_Attenuation>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Light_Attenuation::MergeFrom(const Light_Attenuation& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_constant()) {
+      set_constant(from.constant());
+    }
+    if (from.has_linear()) {
+      set_linear(from.linear());
+    }
+    if (from.has_exponential()) {
+      set_exponential(from.exponential());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Light_Attenuation::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Light_Attenuation::CopyFrom(const Light_Attenuation& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Light_Attenuation::IsInitialized() const {
+
+  return true;
+}
+
+void Light_Attenuation::Swap(Light_Attenuation* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Light_Attenuation::InternalSwap(Light_Attenuation* other) {
+  std::swap(constant_, other->constant_);
+  std::swap(linear_, other->linear_);
+  std::swap(exponential_, other->exponential_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Light_Attenuation::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Light_Attenuation_descriptor_;
+  metadata.reflection = Light_Attenuation_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#ifndef _MSC_VER
+const int Light_Direction::kXFieldNumber;
+const int Light_Direction::kYFieldNumber;
+const int Light_Direction::kZFieldNumber;
+#endif  // !_MSC_VER
+
+Light_Direction::Light_Direction()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Light.Direction)
+}
+
+void Light_Direction::InitAsDefaultInstance() {
+}
+
+Light_Direction::Light_Direction(const Light_Direction& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Light.Direction)
+}
+
+void Light_Direction::SharedCtor() {
+  _cached_size_ = 0;
+  x_ = 0;
+  y_ = 0;
+  z_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Light_Direction::~Light_Direction() {
+  // @@protoc_insertion_point(destructor:tec.proto.Light.Direction)
+  SharedDtor();
+}
+
+void Light_Direction::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void Light_Direction::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Light_Direction::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Light_Direction_descriptor_;
+}
+
+const Light_Direction& Light_Direction::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Light_Direction* Light_Direction::default_instance_ = NULL;
+
+Light_Direction* Light_Direction::New(::google::protobuf::Arena* arena) const {
+  Light_Direction* n = new Light_Direction;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Light_Direction::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Light_Direction*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  ZR_(x_, z_);
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Light_Direction::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Light.Direction)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float x = 1;
+      case 1: {
+        if (tag == 13) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &x_)));
+          set_has_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(21)) goto parse_y;
+        break;
+      }
+
+      // optional float y = 2;
+      case 2: {
+        if (tag == 21) {
+         parse_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &y_)));
+          set_has_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(29)) goto parse_z;
+        break;
+      }
+
+      // optional float z = 3;
+      case 3: {
+        if (tag == 29) {
+         parse_z:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &z_)));
+          set_has_z();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Light.Direction)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Light.Direction)
+  return false;
+#undef DO_
+}
+
+void Light_Direction::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Light.Direction)
+  // optional float x = 1;
+  if (has_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->x(), output);
+  }
+
+  // optional float y = 2;
+  if (has_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->y(), output);
+  }
+
+  // optional float z = 3;
+  if (has_z()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->z(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Light.Direction)
+}
+
+::google::protobuf::uint8* Light_Direction::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Light.Direction)
+  // optional float x = 1;
+  if (has_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->x(), target);
+  }
+
+  // optional float y = 2;
+  if (has_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->y(), target);
+  }
+
+  // optional float z = 3;
+  if (has_z()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->z(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Light.Direction)
+  return target;
+}
+
+int Light_Direction::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & 7u) {
+    // optional float x = 1;
+    if (has_x()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float y = 2;
+    if (has_y()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float z = 3;
+    if (has_z()) {
+      total_size += 1 + 4;
+    }
+
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Light_Direction::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Light_Direction* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Light_Direction>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Light_Direction::MergeFrom(const Light_Direction& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_x()) {
+      set_x(from.x());
+    }
+    if (from.has_y()) {
+      set_y(from.y());
+    }
+    if (from.has_z()) {
+      set_z(from.z());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Light_Direction::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Light_Direction::CopyFrom(const Light_Direction& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Light_Direction::IsInitialized() const {
+
+  return true;
+}
+
+void Light_Direction::Swap(Light_Direction* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Light_Direction::InternalSwap(Light_Direction* other) {
+  std::swap(x_, other->x_);
+  std::swap(y_, other->y_);
+  std::swap(z_, other->z_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Light_Direction::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Light_Direction_descriptor_;
+  metadata.reflection = Light_Direction_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#ifndef _MSC_VER
+const int Light::kColorXFieldNumber;
+const int Light::kColorYFieldNumber;
+const int Light::kColorZFieldNumber;
+const int Light::kAmbientIntensityFieldNumber;
+const int Light::kDiffuseIntensityFieldNumber;
+const int Light::kAttenuationFieldNumber;
+const int Light::kCutoffFieldNumber;
+const int Light::kDirectionFieldNumber;
+#endif  // !_MSC_VER
+
+Light::Light()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Light)
+}
+
+void Light::InitAsDefaultInstance() {
+  attenuation_ = const_cast< ::tec::proto::Light_Attenuation*>(&::tec::proto::Light_Attenuation::default_instance());
+  direction_ = const_cast< ::tec::proto::Light_Direction*>(&::tec::proto::Light_Direction::default_instance());
+}
+
+Light::Light(const Light& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Light)
+}
+
+void Light::SharedCtor() {
+  _cached_size_ = 0;
+  color_x_ = 0;
+  color_y_ = 0;
+  color_z_ = 0;
+  ambient_intensity_ = 0;
+  diffuse_intensity_ = 0;
+  attenuation_ = NULL;
+  cutoff_ = 0;
+  direction_ = NULL;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Light::~Light() {
+  // @@protoc_insertion_point(destructor:tec.proto.Light)
+  SharedDtor();
+}
+
+void Light::SharedDtor() {
+  if (this != default_instance_) {
+    delete attenuation_;
+    delete direction_;
+  }
+}
+
+void Light::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Light::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Light_descriptor_;
+}
+
+const Light& Light::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Light* Light::default_instance_ = NULL;
+
+Light* Light::New(::google::protobuf::Arena* arena) const {
+  Light* n = new Light;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Light::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Light*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 255u) {
+    ZR_(color_x_, ambient_intensity_);
+    ZR_(diffuse_intensity_, cutoff_);
+    if (has_attenuation()) {
+      if (attenuation_ != NULL) attenuation_->::tec::proto::Light_Attenuation::Clear();
+    }
+    if (has_direction()) {
+      if (direction_ != NULL) direction_->::tec::proto::Light_Direction::Clear();
+    }
+  }
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Light::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Light)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float color_x = 1;
+      case 1: {
+        if (tag == 13) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &color_x_)));
+          set_has_color_x();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(21)) goto parse_color_y;
+        break;
+      }
+
+      // optional float color_y = 2;
+      case 2: {
+        if (tag == 21) {
+         parse_color_y:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &color_y_)));
+          set_has_color_y();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(29)) goto parse_color_z;
+        break;
+      }
+
+      // optional float color_z = 3;
+      case 3: {
+        if (tag == 29) {
+         parse_color_z:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &color_z_)));
+          set_has_color_z();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(37)) goto parse_ambient_intensity;
+        break;
+      }
+
+      // optional float ambient_intensity = 4;
+      case 4: {
+        if (tag == 37) {
+         parse_ambient_intensity:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &ambient_intensity_)));
+          set_has_ambient_intensity();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(45)) goto parse_diffuse_intensity;
+        break;
+      }
+
+      // optional float diffuse_intensity = 5;
+      case 5: {
+        if (tag == 45) {
+         parse_diffuse_intensity:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &diffuse_intensity_)));
+          set_has_diffuse_intensity();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(50)) goto parse_attenuation;
+        break;
+      }
+
+      // optional .tec.proto.Light.Attenuation attenuation = 6;
+      case 6: {
+        if (tag == 50) {
+         parse_attenuation:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_attenuation()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(61)) goto parse_cutoff;
+        break;
+      }
+
+      // optional float cutoff = 7;
+      case 7: {
+        if (tag == 61) {
+         parse_cutoff:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &cutoff_)));
+          set_has_cutoff();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(66)) goto parse_direction;
+        break;
+      }
+
+      // optional .tec.proto.Light.Direction direction = 8;
+      case 8: {
+        if (tag == 66) {
+         parse_direction:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_direction()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Light)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Light)
+  return false;
+#undef DO_
+}
+
+void Light::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Light)
+  // optional float color_x = 1;
+  if (has_color_x()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->color_x(), output);
+  }
+
+  // optional float color_y = 2;
+  if (has_color_y()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->color_y(), output);
+  }
+
+  // optional float color_z = 3;
+  if (has_color_z()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->color_z(), output);
+  }
+
+  // optional float ambient_intensity = 4;
+  if (has_ambient_intensity()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->ambient_intensity(), output);
+  }
+
+  // optional float diffuse_intensity = 5;
+  if (has_diffuse_intensity()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(5, this->diffuse_intensity(), output);
+  }
+
+  // optional .tec.proto.Light.Attenuation attenuation = 6;
+  if (has_attenuation()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      6, *this->attenuation_, output);
+  }
+
+  // optional float cutoff = 7;
+  if (has_cutoff()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(7, this->cutoff(), output);
+  }
+
+  // optional .tec.proto.Light.Direction direction = 8;
+  if (has_direction()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      8, *this->direction_, output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Light)
+}
+
+::google::protobuf::uint8* Light::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Light)
+  // optional float color_x = 1;
+  if (has_color_x()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->color_x(), target);
+  }
+
+  // optional float color_y = 2;
+  if (has_color_y()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->color_y(), target);
+  }
+
+  // optional float color_z = 3;
+  if (has_color_z()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->color_z(), target);
+  }
+
+  // optional float ambient_intensity = 4;
+  if (has_ambient_intensity()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->ambient_intensity(), target);
+  }
+
+  // optional float diffuse_intensity = 5;
+  if (has_diffuse_intensity()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(5, this->diffuse_intensity(), target);
+  }
+
+  // optional .tec.proto.Light.Attenuation attenuation = 6;
+  if (has_attenuation()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        6, *this->attenuation_, target);
+  }
+
+  // optional float cutoff = 7;
+  if (has_cutoff()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(7, this->cutoff(), target);
+  }
+
+  // optional .tec.proto.Light.Direction direction = 8;
+  if (has_direction()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        8, *this->direction_, target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Light)
+  return target;
+}
+
+int Light::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & 255u) {
+    // optional float color_x = 1;
+    if (has_color_x()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float color_y = 2;
+    if (has_color_y()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float color_z = 3;
+    if (has_color_z()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float ambient_intensity = 4;
+    if (has_ambient_intensity()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float diffuse_intensity = 5;
+    if (has_diffuse_intensity()) {
+      total_size += 1 + 4;
+    }
+
+    // optional .tec.proto.Light.Attenuation attenuation = 6;
+    if (has_attenuation()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *this->attenuation_);
+    }
+
+    // optional float cutoff = 7;
+    if (has_cutoff()) {
+      total_size += 1 + 4;
+    }
+
+    // optional .tec.proto.Light.Direction direction = 8;
+    if (has_direction()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *this->direction_);
+    }
+
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Light::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Light* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Light>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Light::MergeFrom(const Light& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_color_x()) {
+      set_color_x(from.color_x());
+    }
+    if (from.has_color_y()) {
+      set_color_y(from.color_y());
+    }
+    if (from.has_color_z()) {
+      set_color_z(from.color_z());
+    }
+    if (from.has_ambient_intensity()) {
+      set_ambient_intensity(from.ambient_intensity());
+    }
+    if (from.has_diffuse_intensity()) {
+      set_diffuse_intensity(from.diffuse_intensity());
+    }
+    if (from.has_attenuation()) {
+      mutable_attenuation()->::tec::proto::Light_Attenuation::MergeFrom(from.attenuation());
+    }
+    if (from.has_cutoff()) {
+      set_cutoff(from.cutoff());
+    }
+    if (from.has_direction()) {
+      mutable_direction()->::tec::proto::Light_Direction::MergeFrom(from.direction());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Light::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Light::CopyFrom(const Light& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Light::IsInitialized() const {
+
+  return true;
+}
+
+void Light::Swap(Light* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Light::InternalSwap(Light* other) {
+  std::swap(color_x_, other->color_x_);
+  std::swap(color_y_, other->color_y_);
+  std::swap(color_z_, other->color_z_);
+  std::swap(ambient_intensity_, other->ambient_intensity_);
+  std::swap(diffuse_intensity_, other->diffuse_intensity_);
+  std::swap(attenuation_, other->attenuation_);
+  std::swap(cutoff_, other->cutoff_);
+  std::swap(direction_, other->direction_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Light::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Light_descriptor_;
+  metadata.reflection = Light_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Light_Attenuation
+
+// optional float constant = 1;
+bool Light_Attenuation::has_constant() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Light_Attenuation::set_has_constant() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Light_Attenuation::clear_has_constant() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Light_Attenuation::clear_constant() {
+  constant_ = 0;
+  clear_has_constant();
+}
+ float Light_Attenuation::constant() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.constant)
+  return constant_;
+}
+ void Light_Attenuation::set_constant(float value) {
+  set_has_constant();
+  constant_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.constant)
+}
+
+// optional float linear = 2;
+bool Light_Attenuation::has_linear() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Light_Attenuation::set_has_linear() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Light_Attenuation::clear_has_linear() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Light_Attenuation::clear_linear() {
+  linear_ = 0;
+  clear_has_linear();
+}
+ float Light_Attenuation::linear() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.linear)
+  return linear_;
+}
+ void Light_Attenuation::set_linear(float value) {
+  set_has_linear();
+  linear_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.linear)
+}
+
+// optional float exponential = 3;
+bool Light_Attenuation::has_exponential() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Light_Attenuation::set_has_exponential() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Light_Attenuation::clear_has_exponential() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Light_Attenuation::clear_exponential() {
+  exponential_ = 0;
+  clear_has_exponential();
+}
+ float Light_Attenuation::exponential() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.exponential)
+  return exponential_;
+}
+ void Light_Attenuation::set_exponential(float value) {
+  set_has_exponential();
+  exponential_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.exponential)
+}
+
+// -------------------------------------------------------------------
+
+// Light_Direction
+
+// optional float x = 1;
+bool Light_Direction::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Light_Direction::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Light_Direction::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Light_Direction::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+ float Light_Direction::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.x)
+  return x_;
+}
+ void Light_Direction::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.x)
+}
+
+// optional float y = 2;
+bool Light_Direction::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Light_Direction::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Light_Direction::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Light_Direction::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+ float Light_Direction::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.y)
+  return y_;
+}
+ void Light_Direction::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.y)
+}
+
+// optional float z = 3;
+bool Light_Direction::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Light_Direction::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Light_Direction::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Light_Direction::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+ float Light_Direction::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.z)
+  return z_;
+}
+ void Light_Direction::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.z)
+}
+
+// -------------------------------------------------------------------
+
+// Light
+
+// optional float color_x = 1;
+bool Light::has_color_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Light::set_has_color_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Light::clear_has_color_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Light::clear_color_x() {
+  color_x_ = 0;
+  clear_has_color_x();
+}
+ float Light::color_x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_x)
+  return color_x_;
+}
+ void Light::set_color_x(float value) {
+  set_has_color_x();
+  color_x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_x)
+}
+
+// optional float color_y = 2;
+bool Light::has_color_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Light::set_has_color_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Light::clear_has_color_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Light::clear_color_y() {
+  color_y_ = 0;
+  clear_has_color_y();
+}
+ float Light::color_y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_y)
+  return color_y_;
+}
+ void Light::set_color_y(float value) {
+  set_has_color_y();
+  color_y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_y)
+}
+
+// optional float color_z = 3;
+bool Light::has_color_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Light::set_has_color_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Light::clear_has_color_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Light::clear_color_z() {
+  color_z_ = 0;
+  clear_has_color_z();
+}
+ float Light::color_z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_z)
+  return color_z_;
+}
+ void Light::set_color_z(float value) {
+  set_has_color_z();
+  color_z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_z)
+}
+
+// optional float ambient_intensity = 4;
+bool Light::has_ambient_intensity() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void Light::set_has_ambient_intensity() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void Light::clear_has_ambient_intensity() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void Light::clear_ambient_intensity() {
+  ambient_intensity_ = 0;
+  clear_has_ambient_intensity();
+}
+ float Light::ambient_intensity() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.ambient_intensity)
+  return ambient_intensity_;
+}
+ void Light::set_ambient_intensity(float value) {
+  set_has_ambient_intensity();
+  ambient_intensity_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.ambient_intensity)
+}
+
+// optional float diffuse_intensity = 5;
+bool Light::has_diffuse_intensity() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void Light::set_has_diffuse_intensity() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void Light::clear_has_diffuse_intensity() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+void Light::clear_diffuse_intensity() {
+  diffuse_intensity_ = 0;
+  clear_has_diffuse_intensity();
+}
+ float Light::diffuse_intensity() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.diffuse_intensity)
+  return diffuse_intensity_;
+}
+ void Light::set_diffuse_intensity(float value) {
+  set_has_diffuse_intensity();
+  diffuse_intensity_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.diffuse_intensity)
+}
+
+// optional .tec.proto.Light.Attenuation attenuation = 6;
+bool Light::has_attenuation() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+void Light::set_has_attenuation() {
+  _has_bits_[0] |= 0x00000020u;
+}
+void Light::clear_has_attenuation() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+void Light::clear_attenuation() {
+  if (attenuation_ != NULL) attenuation_->::tec::proto::Light_Attenuation::Clear();
+  clear_has_attenuation();
+}
+ const ::tec::proto::Light_Attenuation& Light::attenuation() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.attenuation)
+  return attenuation_ != NULL ? *attenuation_ : *default_instance_->attenuation_;
+}
+ ::tec::proto::Light_Attenuation* Light::mutable_attenuation() {
+  set_has_attenuation();
+  if (attenuation_ == NULL) {
+    attenuation_ = new ::tec::proto::Light_Attenuation;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Light.attenuation)
+  return attenuation_;
+}
+ ::tec::proto::Light_Attenuation* Light::release_attenuation() {
+  clear_has_attenuation();
+  ::tec::proto::Light_Attenuation* temp = attenuation_;
+  attenuation_ = NULL;
+  return temp;
+}
+ void Light::set_allocated_attenuation(::tec::proto::Light_Attenuation* attenuation) {
+  delete attenuation_;
+  attenuation_ = attenuation;
+  if (attenuation) {
+    set_has_attenuation();
+  } else {
+    clear_has_attenuation();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Light.attenuation)
+}
+
+// optional float cutoff = 7;
+bool Light::has_cutoff() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+void Light::set_has_cutoff() {
+  _has_bits_[0] |= 0x00000040u;
+}
+void Light::clear_has_cutoff() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+void Light::clear_cutoff() {
+  cutoff_ = 0;
+  clear_has_cutoff();
+}
+ float Light::cutoff() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.cutoff)
+  return cutoff_;
+}
+ void Light::set_cutoff(float value) {
+  set_has_cutoff();
+  cutoff_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.cutoff)
+}
+
+// optional .tec.proto.Light.Direction direction = 8;
+bool Light::has_direction() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+void Light::set_has_direction() {
+  _has_bits_[0] |= 0x00000080u;
+}
+void Light::clear_has_direction() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+void Light::clear_direction() {
+  if (direction_ != NULL) direction_->::tec::proto::Light_Direction::Clear();
+  clear_has_direction();
+}
+ const ::tec::proto::Light_Direction& Light::direction() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.direction)
+  return direction_ != NULL ? *direction_ : *default_instance_->direction_;
+}
+ ::tec::proto::Light_Direction* Light::mutable_direction() {
+  set_has_direction();
+  if (direction_ == NULL) {
+    direction_ = new ::tec::proto::Light_Direction;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Light.direction)
+  return direction_;
+}
+ ::tec::proto::Light_Direction* Light::release_direction() {
+  clear_has_direction();
+  ::tec::proto::Light_Direction* temp = direction_;
+  direction_ = NULL;
+  return temp;
+}
+ void Light::set_allocated_direction(::tec::proto::Light_Direction* direction) {
+  delete direction_;
+  direction_ = direction;
+  if (direction) {
+    set_has_direction();
+  } else {
+    clear_has_direction();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Light.direction)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int Component::kRenderableFieldNumber;
 const int Component::kPositionFieldNumber;
 const int Component::kOrientationFieldNumber;
@@ -5634,6 +8304,9 @@ const int Component::kScaleFieldNumber;
 const int Component::kCollisionBodyFieldNumber;
 const int Component::kVelocityFieldNumber;
 const int Component::kAudioSourceFieldNumber;
+const int Component::kLightFieldNumber;
+const int Component::kDirlightFieldNumber;
+const int Component::kSpotlightFieldNumber;
 #endif  // !_MSC_VER
 
 Component::Component()
@@ -5652,6 +8325,9 @@ void Component::InitAsDefaultInstance() {
   Component_default_oneof_instance_->collision_body_ = const_cast< ::tec::proto::CollisionBody*>(&::tec::proto::CollisionBody::default_instance());
   Component_default_oneof_instance_->velocity_ = const_cast< ::tec::proto::Velocity*>(&::tec::proto::Velocity::default_instance());
   Component_default_oneof_instance_->audio_source_ = const_cast< ::tec::proto::AudioSource*>(&::tec::proto::AudioSource::default_instance());
+  Component_default_oneof_instance_->light_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
+  Component_default_oneof_instance_->dirlight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
+  Component_default_oneof_instance_->spotlight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
 }
 
 Component::Component(const Component& from)
@@ -5742,6 +8418,18 @@ void Component::clear_component() {
     }
     case kAudioSource: {
       delete component_.audio_source_;
+      break;
+    }
+    case kLight: {
+      delete component_.light_;
+      break;
+    }
+    case kDirlight: {
+      delete component_.dirlight_;
+      break;
+    }
+    case kSpotlight: {
+      delete component_.spotlight_;
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -5882,6 +8570,45 @@ bool Component::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(82)) goto parse_light;
+        break;
+      }
+
+      // optional .tec.proto.Light light = 10;
+      case 10: {
+        if (tag == 82) {
+         parse_light:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_light()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(90)) goto parse_dirlight;
+        break;
+      }
+
+      // optional .tec.proto.Light dirlight = 11;
+      case 11: {
+        if (tag == 90) {
+         parse_dirlight:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_dirlight()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(98)) goto parse_spotlight;
+        break;
+      }
+
+      // optional .tec.proto.Light spotlight = 12;
+      case 12: {
+        if (tag == 98) {
+         parse_spotlight:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_spotlight()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -5965,6 +8692,24 @@ void Component::SerializeWithCachedSizes(
       9, *component_.audio_source_, output);
   }
 
+  // optional .tec.proto.Light light = 10;
+  if (has_light()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      10, *component_.light_, output);
+  }
+
+  // optional .tec.proto.Light dirlight = 11;
+  if (has_dirlight()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      11, *component_.dirlight_, output);
+  }
+
+  // optional .tec.proto.Light spotlight = 12;
+  if (has_spotlight()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      12, *component_.spotlight_, output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -6036,6 +8781,27 @@ void Component::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         9, *component_.audio_source_, target);
+  }
+
+  // optional .tec.proto.Light light = 10;
+  if (has_light()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        10, *component_.light_, target);
+  }
+
+  // optional .tec.proto.Light dirlight = 11;
+  if (has_dirlight()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        11, *component_.dirlight_, target);
+  }
+
+  // optional .tec.proto.Light spotlight = 12;
+  if (has_spotlight()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        12, *component_.spotlight_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -6113,6 +8879,27 @@ int Component::ByteSize() const {
           *component_.audio_source_);
       break;
     }
+    // optional .tec.proto.Light light = 10;
+    case kLight: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.light_);
+      break;
+    }
+    // optional .tec.proto.Light dirlight = 11;
+    case kDirlight: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.dirlight_);
+      break;
+    }
+    // optional .tec.proto.Light spotlight = 12;
+    case kSpotlight: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.spotlight_);
+      break;
+    }
     case COMPONENT_NOT_SET: {
       break;
     }
@@ -6177,6 +8964,18 @@ void Component::MergeFrom(const Component& from) {
     }
     case kAudioSource: {
       mutable_audio_source()->::tec::proto::AudioSource::MergeFrom(from.audio_source());
+      break;
+    }
+    case kLight: {
+      mutable_light()->::tec::proto::Light::MergeFrom(from.light());
+      break;
+    }
+    case kDirlight: {
+      mutable_dirlight()->::tec::proto::Light::MergeFrom(from.dirlight());
+      break;
+    }
+    case kSpotlight: {
+      mutable_spotlight()->::tec::proto::Light::MergeFrom(from.spotlight());
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -6648,6 +9447,144 @@ void Component::clear_audio_source() {
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.audio_source)
 }
 
+// optional .tec.proto.Light light = 10;
+bool Component::has_light() const {
+  return component_case() == kLight;
+}
+void Component::set_has_light() {
+  _oneof_case_[0] = kLight;
+}
+void Component::clear_light() {
+  if (has_light()) {
+    delete component_.light_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::Light& Component::light() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.light)
+  return has_light() ? *component_.light_
+                      : ::tec::proto::Light::default_instance();
+}
+ ::tec::proto::Light* Component::mutable_light() {
+  if (!has_light()) {
+    clear_component();
+    set_has_light();
+    component_.light_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.light)
+  return component_.light_;
+}
+ ::tec::proto::Light* Component::release_light() {
+  if (has_light()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.light_;
+    component_.light_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_light(::tec::proto::Light* light) {
+  clear_component();
+  if (light) {
+    set_has_light();
+    component_.light_ = light;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.light)
+}
+
+// optional .tec.proto.Light dirlight = 11;
+bool Component::has_dirlight() const {
+  return component_case() == kDirlight;
+}
+void Component::set_has_dirlight() {
+  _oneof_case_[0] = kDirlight;
+}
+void Component::clear_dirlight() {
+  if (has_dirlight()) {
+    delete component_.dirlight_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::Light& Component::dirlight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.dirlight)
+  return has_dirlight() ? *component_.dirlight_
+                      : ::tec::proto::Light::default_instance();
+}
+ ::tec::proto::Light* Component::mutable_dirlight() {
+  if (!has_dirlight()) {
+    clear_component();
+    set_has_dirlight();
+    component_.dirlight_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.dirlight)
+  return component_.dirlight_;
+}
+ ::tec::proto::Light* Component::release_dirlight() {
+  if (has_dirlight()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.dirlight_;
+    component_.dirlight_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_dirlight(::tec::proto::Light* dirlight) {
+  clear_component();
+  if (dirlight) {
+    set_has_dirlight();
+    component_.dirlight_ = dirlight;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.dirlight)
+}
+
+// optional .tec.proto.Light spotlight = 12;
+bool Component::has_spotlight() const {
+  return component_case() == kSpotlight;
+}
+void Component::set_has_spotlight() {
+  _oneof_case_[0] = kSpotlight;
+}
+void Component::clear_spotlight() {
+  if (has_spotlight()) {
+    delete component_.spotlight_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::Light& Component::spotlight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.spotlight)
+  return has_spotlight() ? *component_.spotlight_
+                      : ::tec::proto::Light::default_instance();
+}
+ ::tec::proto::Light* Component::mutable_spotlight() {
+  if (!has_spotlight()) {
+    clear_component();
+    set_has_spotlight();
+    component_.spotlight_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.spotlight)
+  return component_.spotlight_;
+}
+ ::tec::proto::Light* Component::release_spotlight() {
+  if (has_spotlight()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.spotlight_;
+    component_.spotlight_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_spotlight(::tec::proto::Light* spotlight) {
+  clear_component();
+  if (spotlight) {
+    set_has_spotlight();
+    component_.spotlight_ = spotlight;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.spotlight)
+}
+
 bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -6994,96 +9931,100 @@ Entity::mutable_components() {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int EntityList::kEntitiesFieldNumber;
+const int EntityFileList::kEntityFileListFieldNumber;
 #endif  // !_MSC_VER
 
-EntityList::EntityList()
+EntityFileList::EntityFileList()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:tec.proto.EntityList)
+  // @@protoc_insertion_point(constructor:tec.proto.EntityFileList)
 }
 
-void EntityList::InitAsDefaultInstance() {
+void EntityFileList::InitAsDefaultInstance() {
 }
 
-EntityList::EntityList(const EntityList& from)
+EntityFileList::EntityFileList(const EntityFileList& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
   MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:tec.proto.EntityList)
+  // @@protoc_insertion_point(copy_constructor:tec.proto.EntityFileList)
 }
 
-void EntityList::SharedCtor() {
+void EntityFileList::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-EntityList::~EntityList() {
-  // @@protoc_insertion_point(destructor:tec.proto.EntityList)
+EntityFileList::~EntityFileList() {
+  // @@protoc_insertion_point(destructor:tec.proto.EntityFileList)
   SharedDtor();
 }
 
-void EntityList::SharedDtor() {
+void EntityFileList::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void EntityList::SetCachedSize(int size) const {
+void EntityFileList::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* EntityList::descriptor() {
+const ::google::protobuf::Descriptor* EntityFileList::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return EntityList_descriptor_;
+  return EntityFileList_descriptor_;
 }
 
-const EntityList& EntityList::default_instance() {
+const EntityFileList& EntityFileList::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
   return *default_instance_;
 }
 
-EntityList* EntityList::default_instance_ = NULL;
+EntityFileList* EntityFileList::default_instance_ = NULL;
 
-EntityList* EntityList::New(::google::protobuf::Arena* arena) const {
-  EntityList* n = new EntityList;
+EntityFileList* EntityFileList::New(::google::protobuf::Arena* arena) const {
+  EntityFileList* n = new EntityFileList;
   if (arena != NULL) {
     arena->Own(n);
   }
   return n;
 }
 
-void EntityList::Clear() {
-  entities_.Clear();
+void EntityFileList::Clear() {
+  entity_file_list_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
   }
 }
 
-bool EntityList::MergePartialFromCodedStream(
+bool EntityFileList::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:tec.proto.EntityList)
+  // @@protoc_insertion_point(parse_start:tec.proto.EntityFileList)
   for (;;) {
     ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .tec.proto.Entity entities = 1;
+      // repeated string entity_file_list = 1;
       case 1: {
         if (tag == 10) {
-          DO_(input->IncrementRecursionDepth());
-         parse_loop_entities:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
-                input, add_entities()));
+         parse_entity_file_list:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_entity_file_list()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->entity_file_list(this->entity_file_list_size() - 1).data(),
+            this->entity_file_list(this->entity_file_list_size() - 1).length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "tec.proto.EntityFileList.entity_file_list");
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(10)) goto parse_loop_entities;
-        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectTag(10)) goto parse_entity_file_list;
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -7102,57 +10043,63 @@ bool EntityList::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:tec.proto.EntityList)
+  // @@protoc_insertion_point(parse_success:tec.proto.EntityFileList)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:tec.proto.EntityList)
+  // @@protoc_insertion_point(parse_failure:tec.proto.EntityFileList)
   return false;
 #undef DO_
 }
 
-void EntityList::SerializeWithCachedSizes(
+void EntityFileList::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:tec.proto.EntityList)
-  // repeated .tec.proto.Entity entities = 1;
-  for (unsigned int i = 0, n = this->entities_size(); i < n; i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->entities(i), output);
+  // @@protoc_insertion_point(serialize_start:tec.proto.EntityFileList)
+  // repeated string entity_file_list = 1;
+  for (int i = 0; i < this->entity_file_list_size(); i++) {
+  ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+    this->entity_file_list(i).data(), this->entity_file_list(i).length(),
+    ::google::protobuf::internal::WireFormat::SERIALIZE,
+    "tec.proto.EntityFileList.entity_file_list");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->entity_file_list(i), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:tec.proto.EntityList)
+  // @@protoc_insertion_point(serialize_end:tec.proto.EntityFileList)
 }
 
-::google::protobuf::uint8* EntityList::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* EntityFileList::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.EntityList)
-  // repeated .tec.proto.Entity entities = 1;
-  for (unsigned int i = 0, n = this->entities_size(); i < n; i++) {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.EntityFileList)
+  // repeated string entity_file_list = 1;
+  for (int i = 0; i < this->entity_file_list_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->entity_file_list(i).data(), this->entity_file_list(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.EntityFileList.entity_file_list");
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        1, this->entities(i), target);
+      WriteStringToArray(1, this->entity_file_list(i), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.EntityList)
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.EntityFileList)
   return target;
 }
 
-int EntityList::ByteSize() const {
+int EntityFileList::ByteSize() const {
   int total_size = 0;
 
-  // repeated .tec.proto.Entity entities = 1;
-  total_size += 1 * this->entities_size();
-  for (int i = 0; i < this->entities_size(); i++) {
-    total_size +=
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        this->entities(i));
+  // repeated string entity_file_list = 1;
+  total_size += 1 * this->entity_file_list_size();
+  for (int i = 0; i < this->entity_file_list_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->entity_file_list(i));
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -7166,10 +10113,10 @@ int EntityList::ByteSize() const {
   return total_size;
 }
 
-void EntityList::MergeFrom(const ::google::protobuf::Message& from) {
+void EntityFileList::MergeFrom(const ::google::protobuf::Message& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const EntityList* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const EntityList>(
+  const EntityFileList* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const EntityFileList>(
           &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -7178,82 +10125,105 @@ void EntityList::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void EntityList::MergeFrom(const EntityList& from) {
+void EntityFileList::MergeFrom(const EntityFileList& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  entities_.MergeFrom(from.entities_);
+  entity_file_list_.MergeFrom(from.entity_file_list_);
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
   }
 }
 
-void EntityList::CopyFrom(const ::google::protobuf::Message& from) {
+void EntityFileList::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void EntityList::CopyFrom(const EntityList& from) {
+void EntityFileList::CopyFrom(const EntityFileList& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool EntityList::IsInitialized() const {
+bool EntityFileList::IsInitialized() const {
 
-  if (!::google::protobuf::internal::AllAreInitialized(this->entities())) return false;
   return true;
 }
 
-void EntityList::Swap(EntityList* other) {
+void EntityFileList::Swap(EntityFileList* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void EntityList::InternalSwap(EntityList* other) {
-  entities_.UnsafeArenaSwap(&other->entities_);
+void EntityFileList::InternalSwap(EntityFileList* other) {
+  entity_file_list_.UnsafeArenaSwap(&other->entity_file_list_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
-::google::protobuf::Metadata EntityList::GetMetadata() const {
+::google::protobuf::Metadata EntityFileList::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = EntityList_descriptor_;
-  metadata.reflection = EntityList_reflection_;
+  metadata.descriptor = EntityFileList_descriptor_;
+  metadata.reflection = EntityFileList_reflection_;
   return metadata;
 }
 
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
-// EntityList
+// EntityFileList
 
-// repeated .tec.proto.Entity entities = 1;
-int EntityList::entities_size() const {
-  return entities_.size();
+// repeated string entity_file_list = 1;
+int EntityFileList::entity_file_list_size() const {
+  return entity_file_list_.size();
 }
-void EntityList::clear_entities() {
-  entities_.Clear();
+void EntityFileList::clear_entity_file_list() {
+  entity_file_list_.Clear();
 }
- const ::tec::proto::Entity& EntityList::entities(int index) const {
-  // @@protoc_insertion_point(field_get:tec.proto.EntityList.entities)
-  return entities_.Get(index);
+ const ::std::string& EntityFileList::entity_file_list(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Get(index);
 }
- ::tec::proto::Entity* EntityList::mutable_entities(int index) {
-  // @@protoc_insertion_point(field_mutable:tec.proto.EntityList.entities)
-  return entities_.Mutable(index);
+ ::std::string* EntityFileList::mutable_entity_file_list(int index) {
+  // @@protoc_insertion_point(field_mutable:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Mutable(index);
 }
- ::tec::proto::Entity* EntityList::add_entities() {
-  // @@protoc_insertion_point(field_add:tec.proto.EntityList.entities)
-  return entities_.Add();
+ void EntityFileList::set_entity_file_list(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:tec.proto.EntityFileList.entity_file_list)
+  entity_file_list_.Mutable(index)->assign(value);
 }
- const ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >&
-EntityList::entities() const {
-  // @@protoc_insertion_point(field_list:tec.proto.EntityList.entities)
-  return entities_;
+ void EntityFileList::set_entity_file_list(int index, const char* value) {
+  entity_file_list_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:tec.proto.EntityFileList.entity_file_list)
 }
- ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >*
-EntityList::mutable_entities() {
-  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityList.entities)
-  return &entities_;
+ void EntityFileList::set_entity_file_list(int index, const char* value, size_t size) {
+  entity_file_list_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+ ::std::string* EntityFileList::add_entity_file_list() {
+  return entity_file_list_.Add();
+}
+ void EntityFileList::add_entity_file_list(const ::std::string& value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:tec.proto.EntityFileList.entity_file_list)
+}
+ void EntityFileList::add_entity_file_list(const char* value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:tec.proto.EntityFileList.entity_file_list)
+}
+ void EntityFileList::add_entity_file_list(const char* value, size_t size) {
+  entity_file_list_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+EntityFileList::entity_file_list() const {
+  // @@protoc_insertion_point(field_list:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+EntityFileList::mutable_entity_file_list() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityFileList.entity_file_list)
+  return &entity_file_list_;
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

@@ -61,12 +61,12 @@ std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::
 int main(int argc, char* argv[]) {
 	tec::OS os;
 
-	os.InitializeWindow(800, 600, "TEC 0.1", 3, 2);
+	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
 
 	tec::IMGUISystem gui(os.GetWindow());
 	tec::RenderSystem rs;
 
-	rs.SetViewportSize(800, 600);
+	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
 	tec::PhysicsSystem ps;
 
@@ -85,9 +85,41 @@ int main(int argc, char* argv[]) {
 
 	tec::FileLisenter flistener;
 
-	gui.AddWindowDrawFunction("active_entity", [] () {
+	gui.AddWindowDrawFunction("active_entity", [ ] () {
 		if (tec::active_entity != 0) {
 			ImGui::SetTooltip("#%i", tec::active_entity);
+		}
+	});
+	gui.AddWindowDrawFunction("main_menu", [&os] () {
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("Load PROTO", "CTRL+L")) { }
+				if (ImGui::MenuItem("Reload PROTO", "CTRL+R")) {
+					//tec::ProtoLoad();
+				}
+				if (ImGui::MenuItem("Save PROTO", "CTRL+S")) {
+					tec::ProtoSave();
+				}
+				ImGui::Separator();
+				if (ImGui::MenuItem("Quit", "Alt+F4")) {
+					tec::ProtoSave();
+					os.Quit();
+				}
+				if (ImGui::MenuItem("Quit w/o Saving", "Alt+F4")) {
+					os.Quit();
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Edit")) {
+				if (ImGui::MenuItem("Undo", "CTRL+Z")) { }
+				if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) { }  // Disabled item
+				ImGui::Separator();
+				if (ImGui::MenuItem("Cut", "CTRL+X")) { }
+				if (ImGui::MenuItem("Copy", "CTRL+C")) { }
+				if (ImGui::MenuItem("Paste", "CTRL+V")) { }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
 		}
 	});
 	gui.AddWindowDrawFunction("entity_tree", [ ] () {
@@ -96,7 +128,7 @@ int main(int argc, char* argv[]) {
 		static bool no_resize = false;
 		static bool no_move = false;
 		static bool no_scrollbar = false;
-		static bool no_collapse = false;
+		static bool no_collapse = true;
 		static bool no_menu = true;
 		static int current_combo_item_slot = 0;
 		const int MAX_COMBO_ITEM_SLOTS = 10;
@@ -253,6 +285,16 @@ int main(int argc, char* argv[]) {
 												}
 											}
 											break;
+										case tec::Property::RGB:
+											{
+												glm::vec3 val = prop.second.Get<glm::vec3>();
+												float color[] = {val.r, val.g, val.b};
+												if (ImGui::ColorEdit3("Color", color)) {
+													prop.second.Set(glm::vec3(color[0], color[1], color[2]));
+													prop.second.update_func(prop.second);
+												}
+											}
+											break;
 									}
 									ImGui::PopID();
 								}
@@ -298,6 +340,7 @@ int main(int argc, char* argv[]) {
 	});
 
 	double delta = os.GetDeltaTime();
+	double mouse_x, mouse_y;
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
@@ -321,8 +364,10 @@ int main(int argc, char* argv[]) {
 
 		camera_controller.Update(delta);
 
+		os.GetMousePosition(&mouse_x, &mouse_y);
+		tec::active_entity = ps.RayCastMousePick(1, mouse_x, mouse_y,
+			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 		ps.DebugDraw();
-		tec::active_entity = ps.RayCast(1);
 
 		gui.Update(delta);
 
@@ -332,7 +377,6 @@ int main(int argc, char* argv[]) {
 		}
 		frame_id++;
 	}
-	tec::ProtoSave();
 
 	return 0;
 }

@@ -1,6 +1,7 @@
 #include "physics/physics-debug-drawer.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/material.hpp"
+#include "graphics/shader.hpp"
 #include "components/renderable.hpp"
 #include "entity.hpp"
 
@@ -62,6 +63,7 @@ namespace tec {
 			this->verts.clear();
 			this->indicies.clear();
 			this->vert_buffer->GetVertexGroup(0)->material = MaterialMap::Get("material_debug"); // HACK: This should be configurable.
+			ren->shader = ShaderMap::Get("debug");
 			ren->vertex_groups.insert(vert_buffer->GetVertexGroup(0));
 			Entity(0).Add<Renderable>(ren); // HACK: This should be configurable.
 			return;

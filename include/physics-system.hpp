@@ -94,7 +94,7 @@ namespace tec {
 		*/
 		void Update(const double delta);
 
-		eid RayCast(eid source_entity);
+		eid RayCastMousePick(eid source_entity, float mouse_x = 0.0f, float mouse_y = 0.0f, float screen_width = 1.0f, float screen_height = 1.0f);
 		eid RayCastIgnore(eid);
 		glm::vec3 GetLastRayPos() const {
 			btVector3 tmp = last_raypos; // grab a copy
