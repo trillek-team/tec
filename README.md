@@ -38,3 +38,7 @@ Building takes a few steps to get everything set up for the first build.
      5. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
      6. Download and install oalinst.zip (OpenAL installer) http://openal.org/creative-installers/ and install it.
 5. Run it from `tec/`
+
+### Unit tests
+
+To generate the unit tests, follow the same instructions that before, but set to true the flag BUILD_TESTS_TEC

@@ -188,9 +188,9 @@ namespace tec {
 				std::getline(ss, faceLine);
 				// Check if we have 3 vertex indicies per face vertex.
 				if (faceLine.find("/") != std::string::npos) {
-					// Check if the UV is ommited and replace it with -1 if it is.
+					// Check if the UV is ommited and replace it with 0 if it is.
 					while (faceLine.find("//") != std::string::npos) {
-						faceLine = faceLine.replace(faceLine.find("//"), 2, " -1 ");
+						faceLine = faceLine.replace(faceLine.find("//"), 2, " 0 ");
 					}
 					// Replace the / separators with spaces for stringstream ouput.
 					std::replace(faceLine.begin(), faceLine.end(), '/', ' ');
