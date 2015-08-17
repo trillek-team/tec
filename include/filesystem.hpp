@@ -185,7 +185,14 @@ public:
 		 * If find a valid path, then stores it for the future
 		 */
 		static FilePath GetAssetsBasePath();
-		
+
+		/**
+		* \brief returns the full path to an asset
+		*
+		* \param asset Relative path to asset base folder that identify a asset file (for example "shaders/foo.vert")
+		*/
+		static FilePath GetAssetPath(const FilePath& asset);
+
 		/**
 		 * \brief returns the full path to an asset
 		 * 

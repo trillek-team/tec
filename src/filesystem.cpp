@@ -376,6 +376,7 @@ void FilePath::NormalizePath() {
 		path.erase(0, 2);
 	}
 #endif
+	// TODO Check multiple path separators (like "\\\\") and handled relative path stuff like "\foo\bar\..\shaders\debug.vert"
 }
 
 bool  FilePath::isValidPath() const {
@@ -406,15 +407,15 @@ FilePath FilePath::GetAssetsBasePath() {
 		if (tmp.DirExists()) {
 			FilePath::assets_base = tmp.toString();
 		} else {
-			tmp = FilePath::GetProgramPath().BasePath() + u8"assets/";
+			tmp = FilePath::GetProgramPath().BasePath() / u8"assets/";
 			if (tmp.DirExists()) {
 				FilePath::assets_base = tmp.toString();
 			} else {
-				tmp = tmp.BasePath().BasePath() + u8"share/assets/";
+				tmp = tmp.BasePath().BasePath() / u8"share/assets/";
 				if (tmp.DirExists()) {
 					FilePath::assets_base = tmp.toString();
 				} else {
-					tmp = FilePath::GetProgramPath().BasePath().BasePath() + (u8"share/" + app_name + "/assets/");
+					tmp = FilePath::GetProgramPath().BasePath().BasePath() / (u8"share/" + app_name + "/assets/");
 					if (tmp.DirExists()) {
 						FilePath::assets_base = tmp.toString();
 					}
@@ -431,15 +432,21 @@ void FilePath::SetAssetsBasePath(FilePath new_base) {
 	FilePath::assets_base = new_base.toString();
 }
 
+FilePath FilePath::GetAssetPath(const FilePath& asset) {
+	auto tmp = FilePath::GetAssetsBasePath();
+	tmp /= asset;
+	return tmp;
+}
+
 FilePath FilePath::GetAssetPath(const std::string& asset) {
 	auto tmp =FilePath::GetAssetsBasePath();
-	tmp += asset;
+	tmp /= asset;
 	return tmp;
 }
 
 FilePath FilePath::GetAssetPath(const char* asset) {
 	auto tmp =FilePath::GetAssetsBasePath();
-	tmp += asset;
+	tmp /= asset;
 	return tmp;
 }
 
