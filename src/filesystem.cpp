@@ -387,7 +387,7 @@ bool  FilePath::isValidPath() const {
 			return false;
 		}
 	} else {
-		return true;
+		return ! empty();
 	}
 }
 

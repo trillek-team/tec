@@ -215,7 +215,7 @@ public:
 		/**
 		 * \brief Return if this FilePath is empty
 		 */
-		bool empty() {
+		bool empty() const {
 			return this->path.empty();
 		}
 		
@@ -242,44 +242,138 @@ public:
 			this->NormalizePath();
 			return *this;
 		}
-		
+
+		/**
+		* \brief Concatenate a path
+		*/
 		FilePath& operator+= (const FilePath& rhs) {
 			this->path += rhs.path;
 			this->NormalizePath();
 			return *this;
 		}
-		
+
+		/**
+		* \brief Concatenate a path
+		*/
 		FilePath& operator+= (const char* lhs) {
 			this->path += lhs;
 			this->NormalizePath();
 			return *this;
 		}
-		
+
+		/**
+		* \brief Concatenate a path
+		*/
 		FilePath& operator+= (const std::string& lhs) {
 			this->path += lhs;
 			this->NormalizePath();
 			return *this;
 		}
-		
+
+		/**
+		* \brief Concatenate a path
+		*/
 		friend FilePath operator+ (FilePath lhs, const FilePath& rhs) {
 			return lhs += rhs;
 		}
-		
+
+		/**
+		* \brief Concatenate a path
+		*/
 		friend FilePath operator+ (FilePath lhs, const std::string& str) {
 			FilePath tmp(str);
 			return lhs += tmp;
 		}
-		
+
+		/**
+		* \brief Concatenate a path
+		*/
 		friend FilePath operator+ (FilePath lhs, const std::wstring& wstr) {
 			FilePath tmp(wstr);
 			return lhs += tmp;
 		}
-		
+
+		/**
+		* \brief Concatenate a path
+		*/
 		friend FilePath operator+ (FilePath lhs, const char* str) {
 			FilePath tmp(str);
 			return lhs += tmp;
 		}
-		
+
+		/**
+		 * \brief Append a subdirectory or file
+		 */
+		FilePath& operator/= (const FilePath& rhs) {
+			if (path.back() != PATH_SEPARATOR_C) {
+				this->path += PATH_SEPARATOR + rhs.path;
+			}
+			else {
+				this->path += rhs.path;
+			}
+			this->NormalizePath();
+			return *this;
+		}
+
+		/**
+		* \brief Append a subdirectory or file
+		*/
+		FilePath& operator/= (const char* lhs) {
+			if (path.back() != PATH_SEPARATOR_C) {
+				this->path += PATH_SEPARATOR + lhs;
+			}
+			else {
+				this->path += lhs;
+			}
+			this->NormalizePath();
+			return *this;
+		}
+
+		/**
+		* \brief Append a subdirectory or file
+		*/
+		FilePath& operator/= (const std::string& lhs) {
+			if (path.back() != PATH_SEPARATOR_C) {
+				this->path += PATH_SEPARATOR + lhs;
+			}
+			else {
+				this->path += lhs;
+			}
+			this->NormalizePath();
+			return *this;
+		}
+
+		/**
+		* \brief Append a subdirectory or file
+		*/
+		friend FilePath operator/ (FilePath lhs, const FilePath& rhs) {
+			return lhs /= rhs;
+		}
+
+		/**
+		* \brief Append a subdirectory or file
+		*/
+		friend FilePath operator/ (FilePath lhs, const std::string& str) {
+			FilePath tmp(str);
+			return lhs /= tmp;
+		}
+
+		/**
+		* \brief Append a subdirectory or file
+		*/
+		friend FilePath operator/ (FilePath lhs, const std::wstring& wstr) {
+			FilePath tmp(wstr);
+			return lhs /= tmp;
+		}
+
+		/**
+		* \brief Append a subdirectory or file
+		*/
+		friend FilePath operator/ (FilePath lhs, const char* str) {
+			FilePath tmp(str);
+			return lhs /= tmp;
+		}
+
 private:
 		std::string path; /// Stores path as an UTF8 string
 
