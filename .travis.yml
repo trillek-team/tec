@@ -38,15 +38,6 @@ install:
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
   # Install OpenAL and GLEW
   - sudo apt-get -q -y install libglew-dev libopenal-dev
-  # Install and build gtest
-  #- sudo apt-get -q -y install libgtest-dev
-  #- BUILD_PATH=$(pwd)
-  #- cd /usr/src/gtest
-  #- sudo cmake CMakeLists.txt
-  #- sudo make
-  #- GTEST_ROOT=/usr/src/gtest
-  #- export GTEST_ROOT
-  #- cd $BUILD_PATH
 
 before_script:
   - pwd
@@ -60,10 +51,10 @@ script:
   - sudo make install
   - echo "Building TEC"
   - rm -f cmakecache.txt
-  - cmake ..
+  - cmake -DBUILD_TESTS_TEC=True ..
   - make
   - ls
-    #- ./TECTests
+  - ./bin/UNIT_TEST
 
 notifications:
   #email:
