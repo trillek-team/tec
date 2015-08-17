@@ -61,47 +61,6 @@ namespace tec {
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
-	// Construction from strings
-	std::string bad_path = "c:\\usr/share\\MyApp\\foo/bar.png";
-	tec::FilePath fp1(bad_path);
-	std::cout << bad_path << " -> " << fp1 << "\n";
-	tec::FilePath fp2("c:/usr/local/share/");
-	std::cout << "c:/usr/local/share/ -> " << fp2 << "\n"; 
-	tec::FilePath fp3 = std::wstring(L"c:/usr/local/share/€");
-	std::cout << u8"c:/usr/local/share/€ -> " << fp3 << "\n";  // Note: Windows console can't handle unicode output
-	
-
-	// Program location
-	std::cout << "I'm at " << tec::FilePath::GetProgramPath() <<"\n";
-
-	// Default paths for user data
-	std::cout << tec::FilePath::GetUserSettingsPath() << "\n";
-	std::cout << tec::FilePath::GetUserDataPath() << "\n";
-	std::cout << tec::FilePath::GetUserCachePath() << "\n";
-
-	// Checks of dir exists
-	std::cout << "c:\\windows\\ - " << tec::FilePath("c:\\windows\\").DirExists() << "\n";
-	std::cout << "/home/ - " << tec::FilePath("/home/").DirExists() << "\n";
-
-	// Checks of file exists
-	std::cout << "c:\\windows\\notepad.exe - " << tec::FilePath("c:\\windows\\notepad.exe").FileExists() << "\n";
-	std::cout << "/bin/bash - " << tec::FilePath("/bin/bash").FileExists() << "\n";
-
-	// Path manipulation
-	
-	std::cout << "c:\\windows\\notepad.exe -> "<< tec::FilePath("c:\\windows\\notepad.exe").FileName() << "\n";
-	std::cout << "/usr/local/share/MyApp/foo.ini -> "<< tec::FilePath("/usr/local/share/MyApp/foo.ini").BasePath() << "\n";
-	std::cout << "/usr/local/share/MyApp/ -> "<< tec::FilePath("/usr/local/share/MyApp/").BasePath() << "\n";
-	std::cout << "Creating dir on c:/tmp/MyApp/blabla/foo " << tec::FilePath::MkPath(tec::FilePath("c:/tmp/MyApp/blabla/foo")) << "\n";
-	std::cout << "Creating dir on /tmp/MyApp/blabla/foo " << tec::FilePath::MkPath(tec::FilePath("/tmp/MyApp/blabla/foo")) <<"\n";
-	std::cout << "Is abs path : /usr/share/ ? " << tec::FilePath("/usr/path").isAbsolutePath() << "\n";
-	std::cout << "Is abs path : c:\\windows\\system\\ ? " << tec::FilePath("c:\\windows\\system\\").isAbsolutePath() << "\n";
-	
-	fp2 = fp2 + "MyApp/assets";
-	std::cout << "/usr/local/share/ + MyApp/assets -> " << fp2 << "\n";
-	
-	// Assets path resolution
-	std::cout << "#" << tec::FilePath::GetAssetPath("debug.vert") << "\n";
 
 	tec::OS os;
 
