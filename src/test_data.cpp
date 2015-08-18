@@ -198,47 +198,67 @@ namespace tec {
 		}
 	}
 	
-	void ProtoLoadEntity(std::string fname) {
-		std::fstream input(fname, std::ios::in | std::ios::binary);
-		proto::Entity entity;
-		entity.ParseFromIstream(&input);
-		std::cout << "ProtoLoadEntity(): " << entity.DebugString() << "\n";
-		eid entity_id = entity.id();
-		for (int i = 0; i < entity.components_size(); ++i) {
-			const proto::Component& comp = entity.components(i);
-			if (in_functors.find(comp.component_case()) != in_functors.end()) {
-				in_functors[comp.component_case()](entity, comp);
-				entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
+	// NOTE : This would be change on a future, not ? Actually is loading/saving from assets (where not is supossed to be write by a user)
+
+	void ProtoLoadEntity(const FilePath& fname) {
+		if (fname.isValidPath() && fname.FileExists()) {
+			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
+			proto::Entity entity;
+			entity.ParseFromIstream(&input);
+			std::cout << "ProtoLoadEntity(): " << entity.DebugString() << "\n";
+			eid entity_id = entity.id();
+			for (int i = 0; i < entity.components_size(); ++i) {
+				const proto::Component& comp = entity.components(i);
+				if (in_functors.find(comp.component_case()) != in_functors.end()) {
+					in_functors[comp.component_case()](entity, comp);
+					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
+				}
 			}
+		}
+		else {
+			std::clog << "Error opening "<< fname.FileName() <<" file. Can't find it\n";
 		}
 	}
 
 	void ProtoLoad() {
-		std::fstream input("assets/test.proto", std::ios::in | std::ios::binary);
-		proto::EntityFileList elist;
-		elist.ParseFromIstream(&input);
-		std::cout << "ProtoLoad(): " << elist.DebugString() << "\n";
-		for (int i = 0; i < elist.entity_file_list_size(); i++) {
-			const std::string& entity_filename = elist.entity_file_list(i);
-			ProtoLoadEntity(entity_filename);
+		FilePath fname = FilePath::GetAssetPath("test.proto");
+		if (fname.isValidPath() && fname.FileExists()) {
+			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
+			proto::EntityFileList elist;
+			elist.ParseFromIstream(&input);
+			std::cout << "ProtoLoad(): " << elist.DebugString() << "\n";
+			for (int i = 0; i < elist.entity_file_list_size(); i++) {
+				FilePath entity_filename = FilePath::GetAssetPath(elist.entity_file_list(i));
+				ProtoLoadEntity(entity_filename);
+			}
+		}
+		else {
+			std::clog << "Error opening test.proto file. Can't find it\n";
 		}
 	}
 
 	void ProtoSave() {
-		std::fstream output("assets/test.proto", std::ios::out | std::ios::trunc | std::ios::binary);
-		proto::EntityFileList elist;
-		for (auto entity_functors : entity_out_functors) {
-			proto::Entity entity;
-			entity.set_id(entity_functors.first);
-			for (auto functor : entity_functors.second) {
-				(*functor)(&entity);
+		FilePath fname = FilePath::GetAssetPath("test.proto");
+		if (fname.isValidPath()) {
+			std::fstream output(fname.GetNativePath(), std::ios::out | std::ios::trunc | std::ios::binary);
+			proto::EntityFileList elist;
+			for (auto entity_functors : entity_out_functors) {
+				proto::Entity entity;
+				entity.set_id(entity_functors.first);
+				for (auto functor : entity_functors.second) {
+					(*functor)(&entity);
+				}
+				std::string fname = "entities/" + std::to_string(entity_functors.first) + ".proto";
+				std::fstream entity_output(fname, std::ios::out | std::ios::trunc | std::ios::binary);
+				entity.SerializeToOstream(&entity_output);
+				elist.add_entity_file_list(fname);
+				//out_functors[proto::Component::ComponentCase::kCollisionBody](entity);
 			}
-			std::string fname = "assets/entities/" + std::to_string(entity_functors.first) + ".proto";
-			std::fstream entity_output(fname, std::ios::out | std::ios::trunc | std::ios::binary);
-			entity.SerializeToOstream(&entity_output);
-			elist.add_entity_file_list(fname);
-			//out_functors[proto::Component::ComponentCase::kCollisionBody](entity);
+			elist.SerializeToOstream(&output);
 		}
-		elist.SerializeToOstream(&output);
+		else {
+			std::clog << "Error opening test.proto file. Inavlid path: " << fname << "\n";
+		}
+		
 	}
 }
