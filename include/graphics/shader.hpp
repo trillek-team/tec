@@ -78,23 +78,9 @@ namespace tec {
 		 * \brief Creates a Shader from files on disk and stores it in ShaderMap under name.
 		 *
 		 * Filenames should be something like:
-		 * \code{.cpp}
-		 * auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-		 *	std::make_pair(Shader::VERTEX, "basic.vert"), std::make_pair(Shader::FRAGMENT, "basic.frag"),
-		 * };
-		 * \endcode
-		 * \return is a weak_ptr to the created Shader.
-		 * \deprecated Use FilePath version instead
-		 */
-		static std::shared_ptr<Shader> CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> filenames);
-
-		/**
-		 * \brief Creates a Shader from files on disk and stores it in ShaderMap under name.
-		 *
-		 * Filenames should be something like:
 		 * \code{.cpp}:
 		 * auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-		 *	std::make_pair(Shader::VERTEX, FilePath("basic.vert")), std::make_pair(Shader::FRAGMENT, FilePath("basic.frag")),
+		 *	std::make_pair(Shader::VERTEX, FilePath("basic.vert")), std::make_pair(Shader::FRAGMENT, FilePath("./basic.frag")),
 		 * };
 		 * \return is a weak_ptr to the created Shader.
 		 */
@@ -118,7 +104,7 @@ namespace tec {
 		 * \param const FilePath filename The filename of the source file to load (relative to assets folder)
 		 * \return void
 		 */
-		void LoadFromFile(const ShaderType type, const tec::FilePath filename);
+		void LoadFromFile(const ShaderType type, const tec::FilePath& filename);
 
 		/**
 		 * \brief Loads the specified ShaderType from the source string provided..
@@ -126,7 +112,9 @@ namespace tec {
 		 * \param const std::string source The source string to load from.
 		 * \return void
 		 */
-		void LoadFromString(const ShaderType type, const std::string source);
+		void LoadFromString(const ShaderType type, const std::string& source) {
+			LoadFromString(type, source, "");
+		}
 
 		/**
 		 * \brief Builds the shader program after all shaders have been loaded.
@@ -141,6 +129,17 @@ namespace tec {
 		 */
 		void DeleteProgram();
 	private:
+
+		/**
+		* \brief Loads the specified ShaderType from the source string provided..
+		* \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT, GEOMETRY).
+		* \param const std::string source The source string to load from.
+		* \param const std::string filename The filename from were the source comes (only for debug porpouses)
+		* \return void
+		*/
+		void LoadFromString(const ShaderType type, const std::string& source, const std::string& filename);
+
+		std::string filename;
 		GLuint program;
 		std::vector<GLuint> shaders;
 		std::map<std::string, GLint> attributes;

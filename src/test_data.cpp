@@ -101,9 +101,9 @@ namespace tec {
 	}
 
 	void BuildTestEntities() {
-		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "shaders/debug.vert"), 
-			std::make_pair(Shader::FRAGMENT, "shaders/debug.frag"),
+		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")), 
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
 		};
 		auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
 
@@ -111,31 +111,32 @@ namespace tec {
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
 
-		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "shaders/deferred_geometry.vert"), 
-			std::make_pair(Shader::FRAGMENT, "shaders/deferred_geometry.frag"),
+		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")), 
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
 		};
 		auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
 
-		auto deferred_pl_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "shaders/deferred_light.vert"), 
-			std::make_pair(Shader::FRAGMENT, "shaders/deferred_pointlight.frag"),
+		auto deferred_pl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
 		};
 		auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
 
-		auto deferred_dl_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "shaders/deferred_light.vert"), 
-			std::make_pair(Shader::FRAGMENT, "shaders/deferred_dirlight.frag"),
+		auto deferred_dl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
 		};
 		auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
 
-		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > { 
-			std::make_pair(Shader::VERTEX, "shaders/deferred_light.vert"), };
+		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > { 
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
+		};
 		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_pl_shader_files);
 
-		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-			std::make_pair(Shader::VERTEX, "shaders/deferred_shadow.vert"), 
-			std::make_pair(Shader::FRAGMENT, "shaders/deferred_shadow.frag"),
+		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")), 
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
 		};
 		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 
