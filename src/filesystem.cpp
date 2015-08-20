@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <fstream>
+#include <sstream>
+#include <iostream>
 #include <cctype>
 
 #include <sys/types.h>
@@ -317,6 +319,42 @@ bool FilePath::isAbsolutePath() const {
 #else
 	return path.at(0) == PATH_SEPARATOR_C;
 #endif
+}
+
+FilePath FilePath::Subpath(size_t begin, size_t end) const {
+	FilePath ret;
+	std::istringstream f(this->path);
+	std::string s;
+	size_t count = 0;
+	auto absoulte = this->isAbsolutePath();
+	while (count < end && std::getline(f, s, PATH_SEPARATOR_C)) {
+		if (count >= begin && count < end) {
+			if (count == 0 && absoulte) {
+				ret = s;
+			}
+			else {
+				ret /= s;
+			}
+		}
+		count++;
+	}
+
+	return ret;
+}
+
+FilePath FilePath::SubpathFrom(const std::string& needle) const {
+	FilePath ret;
+	std::istringstream f(this->path);
+	std::string s;
+	bool found = false;
+	while (std::getline(f, s, PATH_SEPARATOR_C)) {
+		if (found || s.compare(needle) == 0) {
+			found = true;
+			ret /= s;
+		}
+	}
+
+	return ret;
 }
 
 FilePath FilePath::GetProgramPath() {

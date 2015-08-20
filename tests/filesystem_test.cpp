@@ -149,6 +149,38 @@ TEST(FilePath_class_test, FileNameAndExtension) {
 	ASSERT_EQ(0, fp1.FileExtension().compare(u8"exe") );
 }
 
+TEST(FilePath_class_test, Subpath) {
+	using namespace tec;
+	
+#if defined(WIN32)
+	FilePath fp(u8"c:\\usr/local/share/MyApp/foo.ini");
+	auto sub1 = fp.Subpath(0, 1);
+	auto sub2 = fp.Subpath(0, 2);
+	auto sub3 = fp.Subpath(3, 4);
+	auto sub4 = fp.Subpath(3);
+	ASSERT_EQ(0, sub1.toString().compare(u8"c:"));
+	ASSERT_EQ(0, sub2.toString().compare(u8"c:\\usr"));
+	ASSERT_EQ(0, sub3.toString().compare(u8"\\share"));
+	ASSERT_EQ(0, sub4.toString().compare(u8"\\share\\MyApp\\foo.ini"));
+
+	auto sub5 = fp.SubpathFrom("share");
+	ASSERT_EQ(0, sub5.toString().compare(u8"\\share\\MyApp\\foo.ini"));
+#else
+	FilePath fp(u8"/usr/local/share/MyApp/foo.ini");
+	auto sub1 = fp.Subpath(0, 1);
+	auto sub2 = fp.Subpath(0, 2);
+	auto sub3 = fp.Subpath(3, 4);
+	auto sub4 = fp.Subpath(3);
+	ASSERT_EQ(0, sub1.toString().compare(u8"/"));
+	ASSERT_EQ(0, sub2.toString().compare(u8"/usr"));
+	ASSERT_EQ(0, sub3.toString().compare(u8"/share"));
+	ASSERT_EQ(0, sub4.toString().compare(u8"/share/MyApp/foo.ini"));
+
+	auto sub5 = fp.SubpathFrom("share");
+	ASSERT_EQ(0, sub5.toString().compare(u8"/share/MyApp/foo.ini"));
+#endif
+}
+
 TEST(FilePath_class_test, GetProgramPath) {
 	using namespace tec;
 	auto where = FilePath::GetProgramPath();

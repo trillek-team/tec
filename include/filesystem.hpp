@@ -26,6 +26,8 @@ public:
 		typedef std::string NFilePath;  /// Native string format for paths
 #endif
 
+    static const size_t npos = -1;
+
 		/**
 		 * \brief Builds a empty path
 		 */
@@ -141,6 +143,32 @@ public:
 		 * \brief Is an absolute or relative path ?
 		 */
 		bool isAbsolutePath() const;
+
+		/**
+		* \brief Return a subpath
+		*
+		* \param begin First element (each element is separated by a path separator)
+		* \param end Last element
+		*
+		* \code
+		* FilePath f("./assets/foo/bar/mesh.obj");
+		* f.Subpath(2, FilePath::npos); // ==> "/foo/bar/mesh.obj"
+		* f.Subpath(0, 2); // ==> "./assets/"
+		* \endcode
+		*/
+		FilePath Subpath(size_t begin, size_t end = FilePath::npos) const;
+
+		/**
+		* \brief Return a subpath
+		*
+		* \param needle path element to search
+		*
+		* \code
+		* FilePath f("./assets/foo/bar/mesh.obj");
+		* f.SubpathFrom(assets); // ==> "assets/foo/bar/mesh.obj"
+		* \endcode
+		*/
+		FilePath SubpathFrom(const std::string& needle) const;
 
 		/**
 		 * \brief Try to obtain the full path to the program binary file
@@ -312,12 +340,24 @@ public:
 		 * \brief Append a subdirectory or file
 		 */
 		FilePath& operator/= (const FilePath& rhs) {
-			if (path.back() != PATH_SEPARATOR_C) {
-				this->path += PATH_SEPARATOR + rhs.path;
+			if (path.empty()) {
+				if (rhs.empty() || rhs.path.front() != PATH_SEPARATOR_C) {
+					this->path += PATH_SEPARATOR + rhs.path;
+				}
+				else {
+					this->path += rhs.path;
+				}
 			}
 			else {
-				this->path += rhs.path;
+				if (path.back() != PATH_SEPARATOR_C && (rhs.empty() || rhs.path.front() != PATH_SEPARATOR_C)) {
+					this->path += PATH_SEPARATOR + rhs.path;
+				}
+				else {
+					this->path += rhs.path;
+				}
+
 			}
+
 			this->NormalizePath();
 			return *this;
 		}
@@ -326,26 +366,31 @@ public:
 		* \brief Append a subdirectory or file
 		*/
 		FilePath& operator/= (const char* lhs) {
-			if (path.back() != PATH_SEPARATOR_C) {
-				this->path += PATH_SEPARATOR + lhs;
-			}
-			else {
-				this->path += lhs;
-			}
-			this->NormalizePath();
-			return *this;
+			return operator/=(std::string(lhs));
 		}
 
 		/**
 		* \brief Append a subdirectory or file
 		*/
-		FilePath& operator/= (const std::string& lhs) {
-			if (path.back() != PATH_SEPARATOR_C) {
-				this->path += PATH_SEPARATOR + lhs;
+		FilePath& operator/= (const std::string& rhs) {
+			if (path.empty()) {
+				if (rhs.empty() || rhs.front() != PATH_SEPARATOR_C) {
+					this->path += PATH_SEPARATOR + rhs;
+				}
+				else {
+					this->path += rhs;
+				}
 			}
 			else {
-				this->path += lhs;
+				if (path.back() != PATH_SEPARATOR_C && (rhs.empty() || rhs.front() != PATH_SEPARATOR_C)) {
+					this->path += PATH_SEPARATOR + rhs;
+				}
+				else {
+					this->path += rhs;
+				}
+
 			}
+
 			this->NormalizePath();
 			return *this;
 		}
