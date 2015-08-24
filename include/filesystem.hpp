@@ -148,7 +148,7 @@ public:
 		* \brief Return a subpath
 		*
 		* \param begin First element (each element is separated by a path separator)
-		* \param end Last element
+		* \param end Last element (default FilePath::npos)
 		*
 		* \code
 		* FilePath f("./assets/foo/bar/mesh.obj");
@@ -162,13 +162,15 @@ public:
 		* \brief Return a subpath
 		*
 		* \param needle path element to search
+		* \param include Includes the needle element on the output ?
 		*
 		* \code
 		* FilePath f("./assets/foo/bar/mesh.obj");
-		* f.SubpathFrom(assets); // ==> "assets/foo/bar/mesh.obj"
+		* f.SubpathFrom(assets);       // ==> "/foo/bar/mesh.obj"
+		* f.SubpathFrom(assets, true); // ==> "/assets/foo/bar/mesh.obj"
 		* \endcode
 		*/
-		FilePath SubpathFrom(const std::string& needle) const;
+		FilePath SubpathFrom(const std::string& needle, bool include = false) const;
 
 		/**
 		 * \brief Try to obtain the full path to the program binary file

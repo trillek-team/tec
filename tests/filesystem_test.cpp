@@ -163,8 +163,10 @@ TEST(FilePath_class_test, Subpath) {
 	ASSERT_EQ(0, sub3.toString().compare(u8"\\share"));
 	ASSERT_EQ(0, sub4.toString().compare(u8"\\share\\MyApp\\foo.ini"));
 
-	auto sub5 = fp.SubpathFrom("share");
+	auto sub5 = fp.SubpathFrom("share", true);
 	ASSERT_EQ(0, sub5.toString().compare(u8"\\share\\MyApp\\foo.ini"));
+	auto sub6 = fp.SubpathFrom("share");
+	ASSERT_EQ(0, sub6.toString().compare(u8"\\MyApp\\foo.ini"));
 #else
 	FilePath fp(u8"/usr/local/share/MyApp/foo.ini");
 	auto sub1 = fp.Subpath(0, 1);
@@ -176,8 +178,10 @@ TEST(FilePath_class_test, Subpath) {
 	ASSERT_EQ(0, sub3.toString().compare(u8"/share"));
 	ASSERT_EQ(0, sub4.toString().compare(u8"/share/MyApp/foo.ini"));
 
-	auto sub5 = fp.SubpathFrom("share");
+	auto sub5 = fp.SubpathFrom("share", true);
 	ASSERT_EQ(0, sub5.toString().compare(u8"/share/MyApp/foo.ini"));
+	auto sub6 = fp.SubpathFrom("share");
+	ASSERT_EQ(0, sub6.toString().compare(u8"/MyApp/foo.ini"));
 #endif
 }
 

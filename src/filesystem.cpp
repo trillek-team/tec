@@ -342,15 +342,19 @@ FilePath FilePath::Subpath(size_t begin, size_t end) const {
 	return ret;
 }
 
-FilePath FilePath::SubpathFrom(const std::string& needle) const {
+FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
 	FilePath ret;
 	std::istringstream f(this->path);
 	std::string s;
 	bool found = false;
 	while (std::getline(f, s, PATH_SEPARATOR_C)) {
-		if (found || s.compare(needle) == 0) {
-			found = true;
+		if (found) {
 			ret /= s;
+		} else if (s.compare(needle) == 0) {
+			found = true;
+			if (include) {
+				ret /= s;
+			}
 		}
 	}
 
