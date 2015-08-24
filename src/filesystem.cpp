@@ -27,6 +27,10 @@
 #pragma comment(lib, "comsuppw")
 #endif
 
+#ifndef PATH_MAX
+#define PATH_MAX 1024 // same with Mac OS X's syslimits.h
+#endif
+
 namespace tec {
 
 const std::string app_name(u8"trillek"); // TODO Ask to tec::OS for the appname ?
@@ -66,6 +70,7 @@ FilePath FilePath::GetUserSettingsPath() {
 	if (! FilePath::settings_folder.empty()) {
 		return FilePath(FilePath::settings_folder);
 	}
+	FilePath ret;
 
 #if defined(__unix__)
 #if defined(__APPLE__)
@@ -74,10 +79,9 @@ FilePath FilePath::GetUserSettingsPath() {
 	char home[PATH_MAX];
 	// FSMakeFSRefUnicode ?? This functions looks that are deprecated
 	FSRefMakePath(&ref, (UInt8 *)&home, PATH_MAX);
-	std::string path(home);
-	path += PATH_SEPARATOR;
-	path += app_name;
-	path += PATH_SEPARATOR;
+	ret = home;
+	ret /= app_name;
+	ret += PATH_SEPARATOR;
 #else
 	char* home = getenv(u8"XDG_CONFIG_HOME");
 	if (home == nullptr) {
@@ -86,12 +90,10 @@ FilePath FilePath::GetUserSettingsPath() {
 			return FilePath();
 		}
 	}
-	std::string path(home);
-	path += PATH_SEPARATOR ;
-	path += u8".config";
-	path += PATH_SEPARATOR;
-	path += app_name;
-	path += PATH_SEPARATOR;
+	ret = home
+	ret /= u8".config";
+	ret /= app_name;
+	ret += PATH_SEPARATOR;
 
 #endif // __APPLE
 #elif defined(WIN32)
@@ -103,15 +105,14 @@ FilePath FilePath::GetUserSettingsPath() {
 
 	_bstr_t bstrPath(wszPath);
 	std::wstring wpath((wchar_t*)bstrPath);
-	std::string path = tec::utf8_encode(wpath);
+	ret = tec::utf8_encode(wpath);
 	CoTaskMemFree(wszPath);
-	path += PATH_SEPARATOR;
-	path += app_name;
-	path += PATH_SEPARATOR;
+	ret /= app_name;
+	ret += PATH_SEPARATOR;
 
 #endif
-	FilePath::settings_folder = path;
-	return FilePath(path);
+	FilePath::settings_folder = ret.toString();
+	return ret;
 
 } // End of GetUserSettingsPath
 
@@ -120,6 +121,7 @@ FilePath FilePath::GetUserDataPath() {
 	if (! FilePath::udata_folder.empty()) {
 		return FilePath(FilePath::udata_folder);
 	}
+	FilePath ret;
 
 #if defined(__unix__)
 	char* home = getenv(u8"XDG_DATA_HOME");
@@ -129,13 +131,12 @@ FilePath FilePath::GetUserDataPath() {
 			return FilePath();
 		}
 	}
-	std::string path(home);
-	path += PATH_SEPARATOR;
-	path += u8".local/share";
-	path += PATH_SEPARATOR;
-	path += app_name;
-	path += PATH_SEPARATOR;
-	FilePath::udata_folder = path;
+	ret = home;
+	ret /= u8".local";
+	ret /= u8"share";
+	ret /= app_name;
+	ret += PATH_SEPARATOR;
+	FilePath::udata_folder = ret.toString();
 
 	return FilePath(path);
 #elif defined(WIN32) || defined(__APPLE__)
@@ -143,7 +144,7 @@ FilePath FilePath::GetUserDataPath() {
 	if (path.empty()) {
 		return path;
 	}
-	path += u8"data";
+	path /= u8"data";
 	path += PATH_SEPARATOR;
 	return path;
 #else
@@ -160,11 +161,11 @@ FilePath FilePath::GetUserCachePath() {
 	
 #if defined(__unix__)
 #if defined(__APPLE__)
-	std::string path = GetUserSettingsPath();
+	auto path = GetUserSettingsPath();
 	if (path.empty()) {
 		return FilePath();
 	}
-	path += u8"cache";
+	path /= u8"cache";
 	path += PATH_SEPARATOR ;
 #else
 	char* home = getenv(u8"XDG_CACHE_HOME");
@@ -174,11 +175,9 @@ FilePath FilePath::GetUserCachePath() {
 			return FilePath();
 		}
 	}
-	std::string path(home);
-	path += PATH_SEPARATOR;
-	path += u8".cache";
-	path += PATH_SEPARATOR;
-	path += app_name;
+	FilePath path(home);
+	path /= u8".cache";
+	path /= app_name;
 	path += PATH_SEPARATOR;
 
 #endif // __APPLE
@@ -191,15 +190,14 @@ FilePath FilePath::GetUserCachePath() {
 
 	_bstr_t bstrPath(wszPath);
 	std::wstring wpath((wchar_t*)bstrPath);
-	std::string path = tec::utf8_encode(wpath);
+	FilePath path(tec::utf8_encode(wpath));
 	CoTaskMemFree(wszPath);
-	path += PATH_SEPARATOR;
-	path += app_name;
+	path /= app_name;
 	path += PATH_SEPARATOR;
 
 #endif
-	FilePath::cache_folder = path;
-	return FilePath(path);
+	FilePath::cache_folder = path.toString();
+	return path;
 } // End of GetUserCachePath
 
 
@@ -364,10 +362,9 @@ FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
 FilePath FilePath::GetProgramPath() {
 
 #if defined(__unix__)
-	const size_t LEN = 512;
 #if defined(__APPLE__)
-	char tmp[LEN];
-	uint32_t size = LEN;
+	char tmp[MAX_PATH];
+	uint32_t size = MAX_PATH;
 	if (_NSGetExecutablePath(tmp, &size) == 0) {
 		return FilePath(tmp);
 	} else {
@@ -377,11 +374,9 @@ FilePath FilePath::GetProgramPath() {
 		return FilePath(tmp2);
 	}
 #elif defined(__linux__)
-	char szTmp[LEN];
-	char tmp[LEN];
-	std::snprintf(szTmp, LEN, "/proc/%d/exe", getpid());
-	int bytes = readlink(szTmp, tmp, LEN);
-	bytes = bytes < LEN-1 ? bytes : LEN-1;
+	char tmp[MAX_PATH];
+	int bytes = readlink("/proc/self/exe", tmp, MAX_PATH);
+	bytes = bytes < MAX_PATH-1 ? bytes : MAX_PATH-1;
 	if (bytes >= 0) {
 		tmp[bytes] = '\0';
 	}
