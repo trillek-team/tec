@@ -7,6 +7,7 @@
 
 #include <string>
 #include <ostream>
+#include <algorithm>
 
 namespace tec {
 	class FilePath final {
@@ -244,9 +245,18 @@ public:
 		
 		/**
 		 * \brief Returns the string representation of a path
+		 *
+		 * \param separator Path separator character (by default is the OS path separator symbol)
 		 */
-		std::string toString() const{
-			return this->path;
+		std::string toString(const char separator = PATH_SEPARATOR_C ) const{
+			if (separator == PATH_SEPARATOR_C) {
+				return this->path;
+			}
+			else {
+				std::string out = path;
+				std::replace(out.begin(), out.end(), PATH_SEPARATOR_C, separator);
+				return out;
+			}
 		}
 		
 		/**

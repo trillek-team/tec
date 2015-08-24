@@ -249,8 +249,10 @@ namespace tec {
 				for (auto functor : entity_functors.second) {
 					(*functor)(&entity);
 				}
+
 				std::string fname = "entities/" + std::to_string(entity_functors.first) + ".proto";
-				std::fstream entity_output(fname, std::ios::out | std::ios::trunc | std::ios::binary);
+				auto entity_filename = FilePath::GetAssetPath(fname);
+				std::fstream entity_output(entity_filename.GetNativePath(), std::ios::out | std::ios::trunc | std::ios::binary);
 				entity.SerializeToOstream(&entity_output);
 				elist.add_entity_file_list(fname);
 				//out_functors[proto::Component::ComponentCase::kCollisionBody](entity);
