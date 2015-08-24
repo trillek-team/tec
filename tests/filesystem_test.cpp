@@ -243,7 +243,7 @@ TEST(FilePath_class_test, AssetsPath) {
 		ASSERT_FALSE(fp.empty());
 		ASSERT_TRUE(fp.isValidPath());
 
-		auto fp2 = FilePath::GetAssetPath("debug.vert"); // NOTE Rememeber to change this if debug.vert is moved
+		auto fp2 = FilePath::GetAssetPath("shaders/debug.vert"); // NOTE Rememeber to change this if debug.vert is moved
 		std::cout << fp2 << "\n";
 		ASSERT_TRUE(fp2.isValidPath());
 		ASSERT_TRUE(fp2.FileExists());
