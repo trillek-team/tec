@@ -27,6 +27,9 @@
 *.out
 *.app
 
+*~
+*.pyc
+
 build/
 lib/
 bin/
