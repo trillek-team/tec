@@ -7,6 +7,7 @@
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
 #endif
+#include "events.hpp"
 
 namespace tec {
 	GLFWwindow* IMGUISystem::window = nullptr;

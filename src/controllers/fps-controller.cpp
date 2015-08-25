@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include "os.hpp"
+#include "events.hpp"
 #include "components/transforms.hpp"
 #include "physics-system.hpp"
 

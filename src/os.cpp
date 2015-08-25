@@ -1,5 +1,10 @@
 #include "os.hpp"
 
+#include <iostream>
+#include <algorithm>
+#include "event-system.hpp"
+#include "events.hpp"
+
 #ifdef __APPLE__
 // Needed so we can disable retina support for our window.
 #define GLFW_EXPOSE_NATIVE_COCOA 1

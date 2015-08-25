@@ -14,7 +14,7 @@
 #include "resources/mesh.hpp"
 #include "resources/obj.hpp"
 #include "entity.hpp"
-#include "os.hpp"
+#include "events.hpp"
 
 namespace tec {
 	RenderSystem::RenderSystem() : window_width(1024), window_height(768) {
