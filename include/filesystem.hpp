@@ -13,17 +13,12 @@ namespace tec {
 	class FilePath final {
 public:
 
-	const static std::string PATH_SEPARATOR;  /// OS Filesystem path separator
-#if defined(__unix__)
-		 //("/"); 
-		const static char PATH_SEPARATOR_C = '/';      /// OS Filesystem path separator
-#else
-		const static char PATH_SEPARATOR_C = '\\';     /// OS Filesystem path separator
-#endif
-
+		const static std::string PATH_SEPARATOR;   /// OS Filesystem path separator
 #if defined(WIN32)
+		const static char PATH_SEPARATOR_C = '\\'; /// OS Filesystem path separator
 		typedef std::wstring NFilePath; /// Native string format for paths
 #else
+		const static char PATH_SEPARATOR_C = '/';  /// OS Filesystem path separator
 		typedef std::string NFilePath;  /// Native string format for paths
 #endif
 
@@ -33,25 +28,25 @@ public:
 		 * \brief Builds a empty path
 		 */
 		explicit FilePath();
-		
+
 		/**
 		 * \brief Builds a path from a string or substring
-		 * 
+		 *
 		 * \param other A string with a path
 		 * \param pos Begin of the range to get a slice (default = 0)
 		 * \param count How many bytes to grab from other (default = size of other)
 		 */
 		FilePath( const std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
-		
+
 		/**
 		 * \brief Builds a path from a wstring or substring
-		 * 
+		 *
 		 * \param other A wstring with a path
 		 * \param pos Begin of the range to get a slice (default = 0)
 		 * \param count How many bytes to grab from other (default = size of other)
 		 */
 		FilePath( const std::wstring& other, std::size_t pos = 0, std::size_t count = std::wstring::npos);
-		
+
 		/**
 		 * \brief Returns the path to the User settings folder
 		 *
@@ -203,10 +198,10 @@ public:
 		 * \return native string of the path
 		 */
 		FilePath::NFilePath GetNativePath() const;
-		
+
 		/**
 		 * \brief Return the base directory where search the assets
-		 * 
+		 *
 		 * If isn't set, then would try to search a valid directory path, probing with this paths:
 		 * - ./assets/
 		 * - EXE_PATH/assets/
@@ -226,39 +221,37 @@ public:
 
 		/**
 		 * \brief returns the full path to an asset
-		 * 
+		 *
 		 * \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
 		 */
 		static FilePath GetAssetPath(const std::string& asset);
-		
+
 		/**
 		 * \brief returns the full path to an asset
-		 * 
+		 *
 		 * \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
 		 */
 		static FilePath GetAssetPath(const char* asset);
-		
+
 		/**
 		 * \brief Sets the base directory where search the assets
 		 */
 		static void SetAssetsBasePath(FilePath);
-		
+
+		/**
+		 * \brief Returns the string representation of a path
+		 */
+		std::string toString() const {
+			return this->path;
+		}
+
 		/**
 		 * \brief Returns the string representation of a path
 		 *
-		 * \param separator Path separator character (by default is the OS path separator symbol)
+		 * \param separator Path separator character
 		 */
-		std::string toString(const char separator = PATH_SEPARATOR_C ) const{
-			if (separator == PATH_SEPARATOR_C) {
-				return this->path;
-			}
-			else {
-				std::string out = path;
-				std::replace(out.begin(), out.end(), PATH_SEPARATOR_C, separator);
-				return out;
-			}
-		}
-		
+		std::string toString(char separator) const;
+
 		/**
 		 * \brief Returns a generic string representation of a path (uses \ as path separator ALWAYS)
 		 */
@@ -270,25 +263,25 @@ public:
 		bool empty() const {
 			return this->path.empty();
 		}
-		
+
 		FilePath& operator= (const FilePath& rhs) {
 			this->path = rhs.path;
 			this->NormalizePath();
 			return *this;
 		}
-		
+
 		FilePath& operator= (const std::string& str) {
 			this->path = str;
 			this->NormalizePath();
 			return *this;
 		}
-		
+
 		FilePath& operator= (const std::wstring& wstr) {
 			this->path = utf8_encode(wstr);
 			this->NormalizePath();
 			return *this;
 		}
-		
+
 		FilePath& operator= (const char* str) {
 			this->path = std::string(str);
 			this->NormalizePath();
@@ -444,21 +437,22 @@ private:
 		return FilePath(lhs) /= FilePath(str);
 	}
 	
+		
+	
 	/**
 	 * \brief Output to a stream
 	 */
 	template <typename charT, typename traits>
 	std::basic_ostream<charT,traits>& operator<<(std::basic_ostream<charT,traits>& os, const FilePath& path)
 	{
-		
 		return os << path.toString();
 	}
-	
+
 	/**
 	 * \brief Input from a stream
 	 */
 	template <typename charT, typename traits>
-	std::basic_istream<charT,traits> & operator>> (std::basic_istream<charT,traits>& is, 
+	std::basic_istream<charT,traits> & operator>> (std::basic_istream<charT,traits>& is,
 			   FilePath& path) {
 		std::string tmp;
 		is >> tmp;

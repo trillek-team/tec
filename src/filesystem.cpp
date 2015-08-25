@@ -40,21 +40,21 @@ const char WIN_PATH_SEPARATOR = '\\';    /// Windows filesystem path separator
 #else
 	const std::string FilePath::PATH_SEPARATOR = std::string("/");
 #endif
-	
+
 std::string FilePath::settings_folder = "";
 std::string FilePath::udata_folder = "";
 std::string FilePath::cache_folder = "";
 
 std::string FilePath::assets_base = "";
-	
 
-FilePath::FilePath() 
+
+FilePath::FilePath()
 	: path("")
 { }
 
-FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count) 
-: path(other, pos, count) 
-{ 
+FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count)
+: path(other, pos, count)
+{
 	this->NormalizePath();
 }
 
@@ -157,7 +157,7 @@ FilePath FilePath::GetUserCachePath() {
 	if (! FilePath::cache_folder.empty()) {
 		return FilePath(FilePath::cache_folder);
 	}
-	
+
 #if defined(__unix__)
 #if defined(__APPLE__)
 	auto path = GetUserSettingsPath();
@@ -300,7 +300,7 @@ FilePath FilePath::BasePath() const {
 	if (pos == std::string::npos) {
 		return FilePath();
 	}
-	
+
 	return FilePath(path, 0, pos+1);
 }
 
@@ -470,7 +470,7 @@ FilePath FilePath::GetAssetsBasePath() {
 		}
 		// If assets_base is empty, then can't find the folder
 	}
-	
+
 	return FilePath(FilePath::assets_base);
 }
 
@@ -494,6 +494,18 @@ FilePath FilePath::GetAssetPath(const char* asset) {
 	auto tmp =FilePath::GetAssetsBasePath();
 	tmp /= asset;
 	return tmp;
+}
+
+std::string FilePath::toString(char separator) const {
+	if (separator == PATH_SEPARATOR_C) {
+		return this->path;
+	}
+	else {
+		std::string out = path;
+		char tmp = PATH_SEPARATOR_C; // g++ not like to pass PATH_SEPARATOR_C to std::replace :(º
+		std::replace(out.begin(), out.end(), tmp, separator);
+		return out;
+	}
 }
 
 }
