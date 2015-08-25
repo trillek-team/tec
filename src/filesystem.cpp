@@ -90,7 +90,7 @@ FilePath FilePath::GetUserSettingsPath() {
 			return FilePath();
 		}
 	}
-	ret = home
+	ret = home;
 	ret /= u8".config";
 	ret /= app_name;
 	ret += PATH_SEPARATOR;
@@ -121,7 +121,6 @@ FilePath FilePath::GetUserDataPath() {
 	if (! FilePath::udata_folder.empty()) {
 		return FilePath(FilePath::udata_folder);
 	}
-	FilePath ret;
 
 #if defined(__unix__)
 	char* home = getenv(u8"XDG_DATA_HOME");
@@ -131,14 +130,14 @@ FilePath FilePath::GetUserDataPath() {
 			return FilePath();
 		}
 	}
-	ret = home;
+	FilePath ret(home);
 	ret /= u8".local";
 	ret /= u8"share";
 	ret /= app_name;
 	ret += PATH_SEPARATOR;
 	FilePath::udata_folder = ret.toString();
 
-	return FilePath(path);
+	return ret;
 #elif defined(WIN32) || defined(__APPLE__)
 	auto path = FilePath::GetUserSettingsPath();
 	if (path.empty()) {
@@ -146,6 +145,7 @@ FilePath FilePath::GetUserDataPath() {
 	}
 	path /= u8"data";
 	path += PATH_SEPARATOR;
+	FilePath::udata_folder = path.toString();
 	return path;
 #else
 	return FilePath();
@@ -327,12 +327,16 @@ FilePath FilePath::Subpath(size_t begin, size_t end) const {
 	auto absoulte = this->isAbsolutePath();
 	while (count < end && std::getline(f, s, PATH_SEPARATOR_C)) {
 		if (count >= begin && count < end) {
+#if defined(WIN32)
 			if (count == 0 && absoulte) {
 				ret = s;
 			}
 			else {
 				ret /= s;
 			}
+#else
+			ret /= s;
+#endif
 		}
 		count++;
 	}
@@ -363,8 +367,8 @@ FilePath FilePath::GetProgramPath() {
 
 #if defined(__unix__)
 #if defined(__APPLE__)
-	char tmp[MAX_PATH];
-	uint32_t size = MAX_PATH;
+	char tmp[PATH_MAX];
+	uint32_t size = PATH_MAX;
 	if (_NSGetExecutablePath(tmp, &size) == 0) {
 		return FilePath(tmp);
 	} else {
@@ -374,9 +378,9 @@ FilePath FilePath::GetProgramPath() {
 		return FilePath(tmp2);
 	}
 #elif defined(__linux__)
-	char tmp[MAX_PATH];
-	int bytes = readlink("/proc/self/exe", tmp, MAX_PATH);
-	bytes = bytes < MAX_PATH-1 ? bytes : MAX_PATH-1;
+	char tmp[PATH_MAX];
+	int bytes = readlink("/proc/self/exe", tmp, PATH_MAX);
+	bytes = bytes < PATH_MAX -1 ? bytes : PATH_MAX -1;
 	if (bytes >= 0) {
 		tmp[bytes] = '\0';
 	}

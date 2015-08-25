@@ -19,20 +19,20 @@ TEST(FilePath_class_test, Constructor) {
 #if defined(WIN32)
 	ASSERT_EQ(0, fp1.toString().compare(u8"c:\\usr\\share\\MyApp\\foo\\bar.png"));
 #else
-	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/share/MyApp/foo/bar.png");
+	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/share/MyApp/foo/bar.png"));
 #endif
 	FilePath fp2("c:/usr/local/share/");
 #if defined(WIN32)
 	ASSERT_EQ(0, fp2.toString().compare(u8"c:\\usr\\local\\share\\"));
 #else
-	ASSERT_EQ(0, fp2.toString().compare(u8"/usr/local/share/");
+	ASSERT_EQ(0, fp2.toString().compare(u8"/usr/local/share/"));
 #endif
 
-	FilePath fp3 = std::wstring(L"c:/usr/local/share/€");
+	FilePath fp3 = std::wstring(L"c:/usr/local/share/\u20AC");
 #if defined(WIN32)
-	ASSERT_EQ(0, fp3.toString().compare(u8"c:\\usr\\local\\share\\€"));
+	ASSERT_EQ(0, fp3.toString().compare(u8"c:\\usr\\local\\share\\â‚¬"));
 #else
-	ASSERT_EQ(0, fp3.toString().compare(u8"c:/usr/local/share/€");
+	ASSERT_EQ(0, fp3.toString().compare(u8"/usr/local/share/â‚¬"));
 #endif
 
 }
@@ -44,28 +44,28 @@ TEST(FilePath_class_test, Operators) {
 #if defined(WIN32)
 	ASSERT_EQ(0, fp1.toString().compare(u8"c:\\windows\\"));
 #else
-	ASSERT_EQ(0, fp1.toString().compare(u8"/windows/");
+	ASSERT_EQ(0, fp1.toString().compare(u8"/windows/"));
 #endif
 
 	fp1 = FilePath(u8"/usr/") + "local/";
 #if defined(WIN32)
 	ASSERT_EQ(0, fp1.toString().compare(u8"\\usr\\local\\"));
 #else
-	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/");
+	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/"));
 #endif
 
 	fp1 += "share";
 #if defined(WIN32)
 	ASSERT_EQ(0, fp1.toString().compare(u8"\\usr\\local\\share"));
 #else
-	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/share");
+	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/share"));
 #endif
 
 	fp1 /= "trillek";
 #if defined(WIN32)
 	ASSERT_EQ(0, fp1.toString().compare(u8"\\usr\\local\\share\\trillek"));
 #else
-	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/share/trillek");
+	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/share/trillek"));
 #endif
 
 	fp1 += "/";
@@ -73,7 +73,7 @@ TEST(FilePath_class_test, Operators) {
 #if defined(WIN32)
 	ASSERT_EQ(0, fp1.toString().compare(u8"\\usr\\local\\share\\trillek\\assets"));
 #else
-	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/share/trillek/assets");
+	ASSERT_EQ(0, fp1.toString().compare(u8"/usr/local/share/trillek/assets"));
 #endif
 }
 
