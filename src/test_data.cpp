@@ -96,7 +96,10 @@ namespace tec {
 
 	void IntializeFileFactories() {
 		AddFileFactory<MD5Mesh>();
-		AddFileFactory<OBJ>();
+		//AddFileFactory<OBJ>();
+		file_factories[GetTypeEXT<OBJ>()] = [ ] (std::string fname) {
+			OBJ::Create(FilePath::GetAssetPath(fname));
+		};
 		AddFileFactory<VorbisStream>();
 	}
 

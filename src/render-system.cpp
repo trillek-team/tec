@@ -27,8 +27,8 @@ namespace tec {
 		// Black is the safest clear color since this is a space game.
 		glClearColor(0.0, 0.0, 0.0, 0.0);
 
-		this->sphere_vbo.Load(OBJ::Create(FilePath::GetAssetPath("sphere/sphere.obj")));
-		this->quad_vbo.Load(OBJ::Create(FilePath::GetAssetPath("quad/quad.obj")));
+		this->sphere_vbo.Load(OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj")));
+		this->quad_vbo.Load(OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj")));
 
 		this->light_gbuffer.AddColorAttachments(4, this->window_width, this->window_height);
 		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_STENCIL,

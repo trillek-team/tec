@@ -101,18 +101,10 @@ namespace tec {
 	}
 
 	std::shared_ptr<OBJ> OBJ::Create(const FilePath& fname) {
-		FilePath path;
-		if (fname.toString().at(0) == 'a') {
-			path = "./";
-			path /= fname;
-		}
-		else {
-			path = fname;
-		}
 		auto obj = std::make_shared<OBJ>();
-		obj->SetFileName(path);
+		obj->SetFileName(fname);
 
-		obj->SetName(path.SubpathFrom("assets").toString('/'));
+		obj->SetName(fname.SubpathFrom("assets").toString('/'));
 
 		if (obj->Parse()) {
 			obj->PopulateMeshGroups();
