@@ -138,6 +138,7 @@ namespace tec {
 		}
 
 		std::shared_ptr<VertexGroup> currentVGroup;
+		VertexGroup::FaceGroup* current_face_group = nullptr;
 
 		std::string line;
 		while (std::getline(f, line)) {
@@ -170,6 +171,8 @@ namespace tec {
 				std::string name;
 				ss >> name;
 				if (currentVGroup) {
+					currentVGroup->face_groups.push_back(current_face_group);
+					current_face_group = nullptr;
 					this->vertexGroups.push_back(currentVGroup);
 				}
 				currentVGroup = std::make_shared<VertexGroup>();
@@ -178,9 +181,12 @@ namespace tec {
 			else if (identifier == "usemtl") {
 				std::string mtlname;
 				ss >> mtlname;
-				if (currentVGroup) {
-					currentVGroup->mtl = mtlname;
+				if (current_face_group) { // We have a new material so start a new FaceGroup.
+					currentVGroup->face_groups.push_back(current_face_group);
+					current_face_group = nullptr;
 				}
+				current_face_group = new VertexGroup::FaceGroup();
+				current_face_group->mtl = mtlname;
 			}
 			else if (identifier == "f") {
 				Face face;
@@ -204,13 +210,14 @@ namespace tec {
 					// There is only 1 vertex index per face vertex.
 					face_ss >> face.pos[0]; face_ss >> face.pos[1]; face_ss >> face.pos[2];
 				}
-				if (currentVGroup) {
-					currentVGroup->faces.push_back(face);
+				if (current_face_group) {
+					current_face_group->faces.push_back(face);
 				}
 			}
 		}
 
 		if (currentVGroup) {
+			currentVGroup->face_groups.push_back(current_face_group);
 			this->vertexGroups.push_back(currentVGroup);
 		}
 
@@ -218,64 +225,82 @@ namespace tec {
 	}
 
 	void OBJ::PopulateMeshGroups() {
-		if (this->mesh_groups.size() < this->vertexGroups.size()) {
-			this->mesh_groups.resize(this->vertexGroups.size());
-			for (auto& mgruop : this->mesh_groups) {
-				if (!mgruop) {
-					mgruop = std::make_shared<MeshGroup>();
-				}
+		if (this->Mesh::meshes.size() < this->vertexGroups.size()) {
+			this->Mesh::meshes.reserve(this->vertexGroups.size());
+			for (size_t i = this->Mesh::meshes.size(); i < this->vertexGroups.size(); ++i) {
+				this->Mesh::CreateMesh();
 			}
 		}
 
-		for (size_t v = 0; v < this->vertexGroups.size(); ++v) {
-			auto vgroup = this->vertexGroups[v];
-			auto mgruop = this->mesh_groups[v];
-			if (mgruop->verts.size() < (vgroup->faces.size() * 3)) {
-				mgruop->verts.resize(vgroup->faces.size() * 3);
+		for (size_t i = 0; i < this->vertexGroups.size(); ++i) {
+			const OBJ::VertexGroup* vert_group = this->vertexGroups[i].get();
+			MFMesh* mesh = this->Mesh::meshes[i];
+			if (this->Mesh::meshes[i]->object_groups.size() == 0) {
+				this->Mesh::meshes[i]->object_groups.push_back(new ObjectGroup());
 			}
-			if (this->materials.find(vgroup->mtl) != this->materials.end()) {
-				auto material_name = this->materials[vgroup->mtl]->diffuseMap;
-				mgruop->material_name = material_name.substr(
-					material_name.find_last_of("/") + 1,
-					material_name.find_last_of(".") -
-					material_name.find_last_of("/") - 1)
-					+ "_material";
-			}
-			for (size_t i = 0, j = 0; i < vgroup->faces.size(); ++i) {
-				Face face;
-				if (vgroup->faces[i].pos[0] > 0 && vgroup->faces[i].pos[0] <= this->positions.size()) {
-					mgruop->verts[j].position = this->positions[vgroup->faces[i].pos[0] - 1];
+			ObjectGroup* objgroup = this->Mesh::meshes[i]->object_groups[0];
+
+			for (const OBJ::VertexGroup::FaceGroup* face_group : vert_group->face_groups) {
+				if (objgroup->material_groups.size() == 0) {
+					objgroup->material_groups.reserve(vert_group->face_groups.size());
 				}
-				if (vgroup->faces[i].uv[0] > 0 && vgroup->faces[i].uv[0] <= this->normals.size()) {
-					mgruop->verts[j].uv = this->uvs[vgroup->faces[i].uv[0] - 1];
+				MaterialGroup mat_group;
+				mat_group.start = objgroup->indicies.size();
+				mat_group.material_name = "";
+				if (this->materials.find(face_group->mtl) != this->materials.end()) {
+					std::string material_name = this->materials[face_group->mtl]->diffuseMap;
+					material_name = material_name.substr(
+						material_name.find_last_of("/") + 1,
+						material_name.find_last_of(".") -
+						material_name.find_last_of("/") - 1)
+						+ "_material";
+					mat_group.material_name = material_name;
 				}
-				if (vgroup->faces[i].norm[0] > 0 && vgroup->faces[i].norm[0] <= this->normals.size()) {
-					mgruop->verts[j].normal = this->normals[vgroup->faces[i].norm[0] - 1];
+
+				size_t j = mesh->verts.size();
+
+				if (mesh->verts.size() < (face_group->faces.size() * 3 + mesh->verts.size())) {
+					mesh->verts.resize(face_group->faces.size() * 3 + mesh->verts.size());
 				}
-				mgruop->indicies.push_back(j++);
-				if (vgroup->faces[i].pos[1] > 0 && vgroup->faces[i].pos[1] <= this->positions.size()) {
-					mgruop->verts[j].position = this->positions[vgroup->faces[i].pos[1] - 1];
+
+				for (size_t k = 0; k < face_group->faces.size(); ++k) {
+					Face face;
+					if (face_group->faces[k].pos[0] > 0 && face_group->faces[k].pos[0] <= this->positions.size()) {
+						mesh->verts[j].position = this->positions[face_group->faces[k].pos[0] - 1];
+					}
+					if (face_group->faces[k].uv[0] > 0 && face_group->faces[k].uv[0] <= this->normals.size()) {
+						mesh->verts[j].uv = this->uvs[face_group->faces[k].uv[0] - 1];
+					}
+					if (face_group->faces[k].norm[0] > 0 && face_group->faces[k].norm[0] <= this->normals.size()) {
+						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[0] - 1];
+					}
+					objgroup->indicies.push_back(j++);
+					if (face_group->faces[k].pos[1] > 0 && face_group->faces[k].pos[1] <= this->positions.size()) {
+						mesh->verts[j].position = this->positions[face_group->faces[k].pos[1] - 1];
+					}
+					if (face_group->faces[k].uv[1] > 0 && face_group->faces[k].uv[1] <= this->normals.size()) {
+						mesh->verts[j].uv = this->uvs[face_group->faces[k].uv[1] - 1];
+					}
+					if (face_group->faces[k].norm[1] > 0 && face_group->faces[k].norm[1] <= this->normals.size()) {
+						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[1] - 1];
+					}
+					objgroup->indicies.push_back(j++);
+					if (face_group->faces[k].pos[2] > 0 && face_group->faces[k].pos[2] <= this->positions.size()) {
+						mesh->verts[j].position = this->positions[face_group->faces[k].pos[2] - 1];
+					}
+					if (face_group->faces[k].uv[2] > 0 && face_group->faces[k].uv[2] <= this->normals.size()) {
+						mesh->verts[j].uv = this->uvs[face_group->faces[k].uv[2] - 1];
+					}
+					if (face_group->faces[k].norm[2] > 0 && face_group->faces[k].norm[2] <= this->normals.size()) {
+						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[2] - 1];
+					}
+					objgroup->indicies.push_back(j++);
 				}
-				if (vgroup->faces[i].uv[1] > 0 && vgroup->faces[i].uv[1] <= this->normals.size()) {
-					mgruop->verts[j].uv = this->uvs[vgroup->faces[i].uv[1] - 1];
+				mat_group.count = objgroup->indicies.size() - mat_group.start;
+				if (this->materials.find(face_group->mtl) != this->materials.end()) {
+					mat_group.textures.push_back(this->materials[face_group->mtl]->diffuseMap);
 				}
-				if (vgroup->faces[i].norm[1] > 0 && vgroup->faces[i].norm[1] <= this->normals.size()) {
-					mgruop->verts[j].normal = this->normals[vgroup->faces[i].norm[1] - 1];
-				}
-				mgruop->indicies.push_back(j++);
-				if (vgroup->faces[i].pos[2] > 0 && vgroup->faces[i].pos[2] <= this->positions.size()) {
-					mgruop->verts[j].position = this->positions[vgroup->faces[i].pos[2] - 1];
-				}
-				if (vgroup->faces[i].uv[2] > 0 && vgroup->faces[i].uv[2] <= this->normals.size()) {
-					mgruop->verts[j].uv = this->uvs[vgroup->faces[i].uv[2] - 1];
-				}
-				if (vgroup->faces[i].norm[2] > 0 && vgroup->faces[i].norm[2] <= this->normals.size()) {
-					mgruop->verts[j].normal = this->normals[vgroup->faces[i].norm[2] - 1];
-				}
-				mgruop->indicies.push_back(j++);
-			}
-			if (this->materials.find(vgroup->mtl) != this->materials.end()) {
-				mgruop->textures.push_back(this->materials[vgroup->mtl]->diffuseMap);
+				objgroup->material_groups.push_back(std::move(mat_group));
 			}
 		}
 	}

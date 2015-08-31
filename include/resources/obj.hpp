@@ -29,9 +29,19 @@ namespace tec {
 
 		// OBJ Helper struct for storing vertex groups
 		struct VertexGroup {
+			~VertexGroup() {
+				for (FaceGroup* face_group : this->face_groups) {
+					if (face_group) {
+						delete face_group;
+					}
+				}
+			}
 			std::string name;
-			std::string mtl;
-			std::vector<Face> faces;
+			struct FaceGroup {
+				std::string mtl;
+				std::vector<Face> faces;
+			};
+			std::vector<FaceGroup*> face_groups;
 		};
 
 		// MTL Helper struct describing mtl files

@@ -59,7 +59,7 @@ namespace tec {
 		};
 
 		// Holds information about each mesh inside the file.
-		struct Mesh {
+		struct InternalMesh {
 			std::string shader; // MTR or texture filename.
 			std::vector<Vertex> verts;
 			std::vector<Triangle> tris;
@@ -124,7 +124,7 @@ namespace tec {
 		friend class MD5Anim;
 	private:
 		std::string fname; // Relative filename
-		std::vector<Mesh> meshes;
+		std::vector<InternalMesh> meshes;
 		std::vector<Joint> joints;
 	};
 }

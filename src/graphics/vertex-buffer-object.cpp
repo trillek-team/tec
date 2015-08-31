@@ -43,54 +43,42 @@ namespace tec {
 	void VertexBufferObject::Update() {
 		std::shared_ptr<Mesh> locked_ptr = this->source_mesh.lock();
 		if (locked_ptr) {
-			Load(*locked_ptr->GetVertexBuffer(), *locked_ptr->GetIndexBuffer());
+			Load(locked_ptr);
 		}
 	}
 
 	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh) {
 		if (mesh) {
-			this->source_mesh = mesh;
-			// TODO: Make a load method that takes offset and count to sub_buffer.
-			size_t vertex_goup_count = mesh->GetMeshGroupCount();
-			size_t total_verts = 0;
-			size_t total_indices = 0;
+			std::vector<GLuint> all_indices;
+			std::vector<VertexData> all_verts;
+			size_t vert_offset = 0;
 			this->vertex_groups.clear();
-			for (size_t i = 0; i < vertex_goup_count; ++i) {
-				auto submesh = mesh->GetMeshGroup(i).lock();
-				if (submesh) {
-					VertexGroup group;
-					group.index_count = submesh->indicies.size();
-					group.starting_offset = total_indices;
-					group.mesh_group_number = i;
-					if (MaterialMap::Has(submesh->material_name)) {
-						group.material = MaterialMap::Get(submesh->material_name);
-					}
-					else {
-						group.material = Material::Create(submesh->material_name);
-						group.material->SetDrawElementsMode(GL_TRIANGLES);
-						group.material->SetPolygonMode(GL_FILL);
-						for (auto texture : submesh->textures) {
-							if (TextureMap::Has(texture)) {
-								group.material->AddTexture(TextureMap::Get(texture));
+			for (size_t i = 0; i < mesh->GetMeshCount(); ++i) {
+				MFMesh* mfmesh = mesh->GetMesh(i);
+				vert_offset = all_verts.size();
+				all_verts.insert(all_verts.end(), mfmesh->verts.begin(), mfmesh->verts.end());
+				for (ObjectGroup* objgroup : mfmesh->object_groups) {
+					for (auto mat_group : objgroup->material_groups) {
+						VertexGroup group;
+						group.index_count = mat_group.count;
+						group.starting_offset = mat_group.start + all_indices.size();
+						group.mesh_group_number = i;
+						if (MaterialMap::Has(mat_group.material_name)) {
+							group.material = MaterialMap::Get(mat_group.material_name);
+						}
+						else {
+							group.material = Material::Create(mat_group.material_name);
+							group.material->SetDrawElementsMode(GL_TRIANGLES);
+							group.material->SetPolygonMode(GL_FILL);
+							for (auto texture : mat_group.textures) {
+								if (TextureMap::Has(texture)) {
+									group.material->AddTexture(TextureMap::Get(texture));
+								}
 							}
 						}
+						this->vertex_groups.push_back(std::move(group));
 					}
-					this->vertex_groups.push_back(std::move(group));
-					total_verts += submesh->verts.size();
-					total_indices += submesh->indicies.size();
-				}
-			}
-			std::vector<VertexData> all_verts;
-			all_verts.reserve(total_verts);
-			std::vector<GLuint> all_indices;
-			all_indices.reserve(total_indices);
-			size_t vert_offset = 0;
-			for (size_t i = 0; i < vertex_goup_count; ++i) {
-				auto submesh = mesh->GetMeshGroup(i).lock();
-				if (submesh) {
-					vert_offset = all_verts.size();
-					all_verts.insert(all_verts.end(), submesh->verts.begin(), submesh->verts.end());
-					for (auto index : submesh->indicies) {
+					for (GLuint index : objgroup->indicies) {
 						all_indices.push_back(index + vert_offset);
 					}
 				}

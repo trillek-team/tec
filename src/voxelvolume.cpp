@@ -131,8 +131,26 @@ namespace tec {
 
 			auto m = this->mesh.lock();
 			if (m) {
-				m->SetVerts(verts, this->submesh);
-				m->SetIndicies(indicies, this->submesh);
+				MFMesh* mesh = nullptr;
+				if (m->GetMeshCount() > this->submesh) {
+					mesh = m->GetMesh(this->submesh);
+				}
+				else {
+					mesh = m->CreateMesh();
+				}
+				mesh->verts = verts;
+				if (mesh->object_groups.size() == 0) {
+					mesh->object_groups.push_back(new ObjectGroup());
+				}
+				mesh->object_groups[0]->indicies = indicies;
+				if (mesh->object_groups[0]->material_groups.size() == 0) {
+					MaterialGroup mat_group = {0, indicies.size(), "voxel"};
+					mat_group.textures.push_back("assets/bob/bob_body.png");
+					mesh->object_groups[0]->material_groups.push_back(std::move(mat_group));
+				}
+				else {
+					mesh->object_groups[0]->material_groups[0].count = indicies.size();
+				}
 			}
 		}
 	}
@@ -147,6 +165,7 @@ namespace tec {
 		if (!mesh.lock()) {
 			MeshMap::Set(name, std::make_shared<Mesh>());
 			mesh = MeshMap::Get(name);
+			mesh.lock()->SetName(name);
 		}
 		auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh, submesh);
 		VoxelVoumeMap::Set(entity_id, voxvol);

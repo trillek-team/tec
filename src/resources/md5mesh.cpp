@@ -129,12 +129,13 @@ namespace tec {
 
 		mesh->SetName(fname);
 
-		MeshMap::Set(fname, mesh);
-
 		if (mesh->Parse()) {
 			mesh->CalculateVertexPositions();
 			mesh->CalculateVertexNormals();
 			mesh->UpdateIndexList();
+
+			MeshMap::Set(fname, mesh);
+
 			return mesh;
 		}
 
@@ -196,7 +197,7 @@ namespace tec {
 				}
 			}
 			else if (identifier == "mesh") {
-				Mesh mesh;
+				InternalMesh mesh;
 				while (std::getline(f, line)) {
 					std::string line2 = CleanString(line);
 					ss.str(line2);
@@ -252,26 +253,18 @@ namespace tec {
 	}
 
 	void MD5Mesh::CalculateVertexPositions() {
-		if (this->mesh_groups.size() < this->meshes.size()) {
-			this->mesh_groups.resize(this->meshes.size());
-			for (auto& mgruop : this->mesh_groups) {
-				if (!mgruop) {
-					mgruop = std::make_shared<MeshGroup>();
-				}
+		if (this->Mesh::meshes.size() < this->meshes.size()) {
+			this->Mesh::meshes.reserve(this->meshes.size());
+			for (size_t i = this->Mesh::meshes.size(); i < this->meshes.size(); ++i) {
+				this->Mesh::CreateMesh();
 			}
 		}
 
 		for (size_t i = 0; i < this->meshes.size(); ++i) {
-			if (this->mesh_groups[i]->verts.size() < this->meshes[i].verts.size()) {
-				this->mesh_groups[i]->verts.resize(this->meshes[i].verts.size());
+			MFMesh* mesh = this->Mesh::meshes[i];
+			if (mesh->verts.size() < this->meshes[i].verts.size()) {
+				mesh->verts.resize(this->meshes[i].verts.size());
 			}
-			this->mesh_groups[i]->textures.push_back(this->meshes[i].shader);
-			auto material_name = this->meshes[i].shader;
-			this->mesh_groups[i]->material_name = material_name.substr(
-				material_name.find_last_of("/") + 1,
-				material_name.find_last_of(".") -
-				material_name.find_last_of("/") - 1)
-				+ "_material";
 			for (size_t j = 0; j < this->meshes[i].verts.size(); ++j) {
 				VertexData vdata;
 
@@ -294,24 +287,23 @@ namespace tec {
 				// Copy the texture coordinates
 				vdata.uv = this->meshes[i].verts[j].uv;
 
-				this->mesh_groups[i]->verts[j] = vdata;
+				mesh->verts[j] = vdata;
 			}
 		}
 	}
 
 	void MD5Mesh::CalculateVertexNormals() {
-		if (this->mesh_groups.size() < this->meshes.size()) {
-			this->mesh_groups.resize(this->meshes.size());
-			for (auto& mgruop : this->mesh_groups) {
-				if (!mgruop) {
-					mgruop = std::make_shared<MeshGroup>();
-				}
+		if (this->Mesh::meshes.size() < this->meshes.size()) {
+			this->Mesh::meshes.reserve(this->meshes.size());
+			for (size_t i = this->Mesh::meshes.size(); i < this->meshes.size(); ++i) {
+				this->Mesh::CreateMesh();
 			}
 		}
 
 		for (size_t i = 0; i < this->meshes.size(); ++i) {
-			if (this->mesh_groups[i]->verts.size() < this->meshes[i].verts.size()) {
-				this->mesh_groups[i]->verts.resize(this->meshes[i].verts.size());
+			MFMesh* mesh = this->Mesh::meshes[i];
+			if (mesh->verts.size() < this->meshes[i].verts.size()) {
+				mesh->verts.resize(this->meshes[i].verts.size());
 				// If we need to resize here then we will need to calculate the vertex positions again.
 				CalculateVertexPositions();
 			}
@@ -333,7 +325,7 @@ namespace tec {
 				Vertex& vert = this->meshes[i].verts[j];
 
 				glm::vec3 normal = glm::normalize(vert.normal);
-				this->mesh_groups[i]->verts[j].normal = normal;
+				mesh->verts[j].normal = normal;
 
 				// Reset the normal to calculate the bind-pose normal in joint space
 				vert.normal = glm::vec3(0);
@@ -349,25 +341,36 @@ namespace tec {
 	}
 
 	void MD5Mesh::UpdateIndexList() {
-		if (this->mesh_groups.size() < this->meshes.size()) {
-			this->mesh_groups.resize(this->meshes.size());
-			for (auto& mgruop : this->mesh_groups) {
-				if (!mgruop) {
-					mgruop = std::make_shared<MeshGroup>();
-				}
+		if (this->Mesh::meshes.size() < this->meshes.size()) {
+			this->Mesh::meshes.reserve(this->meshes.size());
+			for (size_t i = this->Mesh::meshes.size(); i < this->meshes.size(); ++i) {
+				this->Mesh::CreateMesh();
 			}
 		}
 
-		// Copy the triangle indicies.
 		for (size_t i = 0; i < this->meshes.size(); ++i) {
-			if (this->mesh_groups[i]->indicies.size() < this->meshes[i].tris.size()) {
-				this->mesh_groups[i]->indicies.reserve(this->meshes[i].tris.size() * 3);
+			const MD5Mesh::InternalMesh& mesh = this->meshes[i];
+			if (this->Mesh::meshes[i]->object_groups.size() == 0) {
+				this->Mesh::meshes[i]->object_groups.push_back(new ObjectGroup());
 			}
-			for (size_t j = 0; j < this->meshes[i].tris.size(); ++j) {
-				this->mesh_groups[i]->indicies.push_back(this->meshes[i].tris[j].verts[0]);
-				this->mesh_groups[i]->indicies.push_back(this->meshes[i].tris[j].verts[1]);
-				this->mesh_groups[i]->indicies.push_back(this->meshes[i].tris[j].verts[2]);
+			ObjectGroup* objgroup = this->Mesh::meshes[i]->object_groups[0];
+			std::string material_name = mesh.shader;
+			material_name = material_name.substr(
+				material_name.find_last_of("/") + 1,
+				material_name.find_last_of(".") -
+				material_name.find_last_of("/") - 1)
+				+ "_material";
+			if (objgroup->indicies.size() < mesh.tris.size()) {
+				objgroup->indicies.reserve(mesh.tris.size() * 3);
 			}
+			for (size_t j = 0; j < mesh.tris.size(); ++j) {
+				objgroup->indicies.push_back(mesh.tris[j].verts[0]);
+				objgroup->indicies.push_back(mesh.tris[j].verts[1]);
+				objgroup->indicies.push_back(mesh.tris[j].verts[2]);
+			}
+			MaterialGroup mat_group = {0, objgroup->indicies.size(), material_name};
+			mat_group.textures.push_back(mesh.shader);
+			objgroup->material_groups.push_back(std::move(mat_group));
 		}
 	}
 }
