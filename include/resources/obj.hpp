@@ -10,7 +10,7 @@
 #include "mesh.hpp"
 
 namespace tec {
-	class OBJ final : public Mesh {
+	class OBJ final : public MeshFile {
 	public:
 		OBJ() { }
 		~OBJ() { }
@@ -28,8 +28,8 @@ namespace tec {
 		};
 
 		// OBJ Helper struct for storing vertex groups
-		struct VertexGroup {
-			~VertexGroup() {
+		struct OBJGroup {
+			~OBJGroup() {
 				for (FaceGroup* face_group : this->face_groups) {
 					if (face_group) {
 						delete face_group;
@@ -102,7 +102,7 @@ namespace tec {
 		}
 	private:
 		std::string fname; // Relative filename
-		std::vector<std::shared_ptr<VertexGroup>> vertexGroups;
+		std::vector<std::shared_ptr<OBJGroup>> vertexGroups;
 
 		std::vector<glm::vec3> positions;
 		std::vector<glm::vec3> normals;

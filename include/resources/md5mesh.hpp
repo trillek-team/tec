@@ -9,7 +9,7 @@
 #include "mesh.hpp"
 
 namespace tec {
-	class MD5Mesh final : public Mesh {
+	class MD5Mesh final : public MeshFile {
 	public:
 		MD5Mesh() { }
 		~MD5Mesh() { }
@@ -124,7 +124,7 @@ namespace tec {
 		friend class MD5Anim;
 	private:
 		std::string fname; // Relative filename
-		std::vector<InternalMesh> meshes;
+		std::vector<InternalMesh> meshes_internal;
 		std::vector<Joint> joints;
 	};
 }

@@ -137,8 +137,8 @@ namespace tec {
 			return false;
 		}
 
-		std::shared_ptr<VertexGroup> currentVGroup;
-		VertexGroup::FaceGroup* current_face_group = nullptr;
+		std::shared_ptr<OBJGroup> currentVGroup;
+		OBJGroup::FaceGroup* current_face_group = nullptr;
 
 		std::string line;
 		while (std::getline(f, line)) {
@@ -175,7 +175,7 @@ namespace tec {
 					current_face_group = nullptr;
 					this->vertexGroups.push_back(currentVGroup);
 				}
-				currentVGroup = std::make_shared<VertexGroup>();
+				currentVGroup = std::make_shared<OBJGroup>();
 				currentVGroup->name = name;
 			}
 			else if (identifier == "usemtl") {
@@ -185,7 +185,7 @@ namespace tec {
 					currentVGroup->face_groups.push_back(current_face_group);
 					current_face_group = nullptr;
 				}
-				current_face_group = new VertexGroup::FaceGroup();
+				current_face_group = new OBJGroup::FaceGroup();
 				current_face_group->mtl = mtlname;
 			}
 			else if (identifier == "f") {
@@ -225,22 +225,22 @@ namespace tec {
 	}
 
 	void OBJ::PopulateMeshGroups() {
-		if (this->Mesh::meshes.size() < this->vertexGroups.size()) {
-			this->Mesh::meshes.reserve(this->vertexGroups.size());
-			for (size_t i = this->Mesh::meshes.size(); i < this->vertexGroups.size(); ++i) {
-				this->Mesh::CreateMesh();
+		if (this->MeshFile::meshes.size() < this->vertexGroups.size()) {
+			this->MeshFile::meshes.reserve(this->vertexGroups.size());
+			for (size_t i = this->MeshFile::meshes.size(); i < this->vertexGroups.size(); ++i) {
+				CreateMesh();
 			}
 		}
 
 		for (size_t i = 0; i < this->vertexGroups.size(); ++i) {
-			const OBJ::VertexGroup* vert_group = this->vertexGroups[i].get();
-			MFMesh* mesh = this->Mesh::meshes[i];
-			if (this->Mesh::meshes[i]->object_groups.size() == 0) {
-				this->Mesh::meshes[i]->object_groups.push_back(new ObjectGroup());
+			const OBJ::OBJGroup* vert_group = this->vertexGroups[i].get();
+			Mesh* mesh = this->MeshFile::meshes[i];
+			if (this->MeshFile::meshes[i]->object_groups.size() == 0) {
+				this->MeshFile::meshes[i]->object_groups.push_back(new ObjectGroup());
 			}
-			ObjectGroup* objgroup = this->Mesh::meshes[i]->object_groups[0];
+			ObjectGroup* objgroup = this->MeshFile::meshes[i]->object_groups[0];
 
-			for (const OBJ::VertexGroup::FaceGroup* face_group : vert_group->face_groups) {
+			for (const OBJ::OBJGroup::FaceGroup* face_group : vert_group->face_groups) {
 				if (objgroup->material_groups.size() == 0) {
 					objgroup->material_groups.reserve(vert_group->face_groups.size());
 				}

@@ -3,7 +3,7 @@
 #include "resources/mesh.hpp"
 
 namespace tec {
-	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<Mesh> mesh, const size_t submesh) :
+	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh, const size_t submesh) :
 		entity_id(entity_id), mesh(mesh), submesh(submesh) { }
 
 	VoxelVolume::~VoxelVolume() { }
@@ -155,15 +155,15 @@ namespace tec {
 		}
 	}
 
-	std::weak_ptr<Mesh> VoxelVolume::GetMesh() {
+	std::weak_ptr<MeshFile> VoxelVolume::GetMesh() {
 		return this->mesh;
 	}
 
 	std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id,
 		const std::string name, const size_t submesh) {
-		std::weak_ptr<Mesh> mesh = MeshMap::Get(name);
+		std::weak_ptr<MeshFile> mesh = MeshMap::Get(name);
 		if (!mesh.lock()) {
-			MeshMap::Set(name, std::make_shared<Mesh>());
+			MeshMap::Set(name, std::make_shared<MeshFile>());
 			mesh = MeshMap::Get(name);
 			mesh.lock()->SetName(name);
 		}
@@ -173,7 +173,7 @@ namespace tec {
 	}
 
 	std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id,
-		std::weak_ptr<Mesh> mesh, const size_t submesh) {
+		std::weak_ptr<MeshFile> mesh, const size_t submesh) {
 		auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh, submesh);
 		VoxelVoumeMap::Set(entity_id, voxvol);
 		return voxvol;

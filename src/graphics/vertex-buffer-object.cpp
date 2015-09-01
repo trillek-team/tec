@@ -8,7 +8,7 @@
 namespace tec {
 	VertexBufferObject::VertexBufferObject() : vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0) { }
 
-	VertexBufferObject::VertexBufferObject(std::shared_ptr<Mesh> mesh) :
+	VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) :
 		vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0), source_mesh(mesh) {
 		Load(mesh);
 	}
@@ -41,20 +41,20 @@ namespace tec {
 	bool VertexBufferObject::IsDynamic() const { return !this->source_mesh.expired(); }
 
 	void VertexBufferObject::Update() {
-		std::shared_ptr<Mesh> locked_ptr = this->source_mesh.lock();
+		std::shared_ptr<MeshFile> locked_ptr = this->source_mesh.lock();
 		if (locked_ptr) {
 			Load(locked_ptr);
 		}
 	}
 
-	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh) {
+	void VertexBufferObject::Load(std::shared_ptr<MeshFile> mesh) {
 		if (mesh) {
 			std::vector<GLuint> all_indices;
 			std::vector<VertexData> all_verts;
 			size_t vert_offset = 0;
 			this->vertex_groups.clear();
 			for (size_t i = 0; i < mesh->GetMeshCount(); ++i) {
-				MFMesh* mfmesh = mesh->GetMesh(i);
+				Mesh* mfmesh = mesh->GetMesh(i);
 				vert_offset = all_verts.size();
 				all_verts.insert(all_verts.end(), mfmesh->verts.begin(), mfmesh->verts.end());
 				for (ObjectGroup* objgroup : mfmesh->object_groups) {

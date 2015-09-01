@@ -14,7 +14,7 @@ namespace tec {
 	class Material;
 	class Shader;
 
-	class Mesh;
+	class MeshFile;
 	struct VertexData;
 
 	struct VertexGroup {
@@ -28,7 +28,7 @@ namespace tec {
 	public:
 		VertexBufferObject();
 
-		VertexBufferObject(std::shared_ptr<Mesh> mesh);
+		VertexBufferObject(std::shared_ptr<MeshFile> mesh);
 
 		~VertexBufferObject();
 
@@ -77,10 +77,10 @@ namespace tec {
 		/**
 		 * Loads a mesh into a vertex buffer object.
 		 * note: calls Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices).
-		 * \param std::shared_ptr<Mesh> mesh The mesh to load into this VertexBufferObject.
+		 * \param std::shared_ptr<MeshFile> mesh The mesh to load into this VertexBufferObject.
 		 * \return void
 		 */
-		void Load(std::shared_ptr<Mesh> mesh);
+		void Load(std::shared_ptr<MeshFile> mesh);
 
 		/**
 		 * Loads a set of vertex and index data into a vertex buffer object.
@@ -91,6 +91,6 @@ namespace tec {
 		size_t vertex_count; // Total vertex count.
 		size_t index_count; // Total index count.
 		std::vector<VertexGroup> vertex_groups;
-		std::weak_ptr<Mesh> source_mesh;
+		std::weak_ptr<MeshFile> source_mesh;
 	};
 }

@@ -8,8 +8,8 @@
 #include "multiton.hpp"
 
 namespace tec {
-	class Mesh;
-	typedef Multiton<std::string, std::shared_ptr<Mesh>> MeshMap;
+	class MeshFile;
+	typedef Multiton<std::string, std::shared_ptr<MeshFile>> MeshMap;
 
 	// Vertex data used for rendering or other purposes.
 	struct VertexData {
@@ -36,8 +36,8 @@ namespace tec {
 		std::vector<MaterialGroup> material_groups;
 	};
 
-	struct MFMesh final {
-		~MFMesh() {
+	struct Mesh final {
+		~Mesh() {
 			for (ObjectGroup* object : this->object_groups) {
 				if (object) {
 					delete object;
@@ -48,11 +48,11 @@ namespace tec {
 		std::vector<ObjectGroup*> object_groups;
 	};
 	
-	class Mesh {
+	class MeshFile {
 	public:
-		Mesh() : name("test") { }
-		virtual ~Mesh() {
-			for (MFMesh* mesh : this->meshes) {
+		MeshFile() : name("test") { }
+		virtual ~MeshFile() {
+			for (Mesh* mesh : this->meshes) {
 				if (mesh) {
 					delete mesh;
 				}
@@ -64,8 +64,8 @@ namespace tec {
 		 *
 		 * \return Mesh* The mesh that was added to this file.
 		 */
-		MFMesh* CreateMesh() {
-			this->meshes.push_back(new MFMesh());
+		Mesh* CreateMesh() {
+			this->meshes.push_back(new Mesh());
 			return *(this->meshes.end() - 1);
 		}
 
@@ -75,7 +75,7 @@ namespace tec {
 		 * \param[in] Mesh* mesh The mesh to add to this file.
 		 * \return void
 		 */
-		void AddMesh(MFMesh* mesh) {
+		void AddMesh(Mesh* mesh) {
 			this->meshes.push_back(mesh);
 		}
 
@@ -85,7 +85,7 @@ namespace tec {
 		 * \param[in] const unsigned size_t index The index of the mesh to retrieve.
 		 * \return std::weak_ptr<MeshGroup> The requested mesh or null if the index is invalid.
 		 */
-		MFMesh* GetMesh(const size_t index) {
+		Mesh* GetMesh(const size_t index) {
 			if (index < this->meshes.size()) {
 				return this->meshes.at(index);
 			}
@@ -109,7 +109,7 @@ namespace tec {
 			this->name = name;
 		}
 	protected:
-		std::vector<MFMesh*> meshes;
+		std::vector<Mesh*> meshes;
 		std::string name;
 	};
 }

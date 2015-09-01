@@ -149,7 +149,7 @@ namespace tec {
 		voxvol_shared->Update(0.0);
 		{
 			Entity voxel1(100);
-			std::shared_ptr<Mesh> mesh = voxvol_shared->GetMesh().lock();
+			std::shared_ptr<MeshFile> mesh = voxvol_shared->GetMesh().lock();
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(mesh);
 			colbody->mass = 0.0;
 			voxel1.Add(colbody);
@@ -189,7 +189,7 @@ namespace tec {
 			camera.Add<Velocity>();
 		}
 	}
-	
+
 	void ProtoLoadEntity(std::string fname) {
 		std::fstream input(fname, std::ios::in | std::ios::binary);
 		proto::Entity entity;
