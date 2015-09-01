@@ -43,12 +43,16 @@ namespace tec {
 	void VertexBufferObject::Update() {
 		std::shared_ptr<MeshFile> locked_ptr = this->source_mesh.lock();
 		if (locked_ptr) {
-			Load(locked_ptr);
+			if (locked_ptr->IsDirty()) {
+				Load(locked_ptr);
+				locked_ptr->Validate();
+			}
 		}
 	}
 
 	void VertexBufferObject::Load(std::shared_ptr<MeshFile> mesh) {
 		if (mesh) {
+			this->source_mesh = mesh;
 			std::vector<GLuint> all_indices;
 			std::vector<VertexData> all_verts;
 			size_t vert_offset = 0;

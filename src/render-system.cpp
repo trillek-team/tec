@@ -449,6 +449,7 @@ namespace tec {
 			}
 
 			if (renderable->buffer) {
+				renderable->buffer->Update();
 				RenderItem ri;
 				ri.model_matrix = &this->model_matricies[entity_id];
 				ri.vao = renderable->buffer->GetVAO();

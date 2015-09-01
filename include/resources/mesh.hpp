@@ -47,7 +47,7 @@ namespace tec {
 		std::vector<VertexData> verts;
 		std::vector<ObjectGroup*> object_groups;
 	};
-	
+
 	class MeshFile {
 	public:
 		MeshFile() : name("test") { }
@@ -108,8 +108,21 @@ namespace tec {
 		void SetName(const std::string name) {
 			this->name = name;
 		}
+
+		bool IsDirty() const {
+			return this->dirty;
+		}
+		/** \brief Mark dirty */
+		void Invalidate() {
+			this->dirty = true;
+		}
+		/** \brief Mark not dirty */
+		void Validate() {
+			this->dirty = false;
+		}
 	protected:
 		std::vector<Mesh*> meshes;
 		std::string name;
+		bool dirty = false;
 	};
 }
