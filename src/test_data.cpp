@@ -7,6 +7,7 @@
 #include "resources/obj.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
+#include "graphics/texture-object.hpp"
 #include "graphics/animation.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/view.hpp"
@@ -131,21 +132,28 @@ namespace tec {
 		};
 		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 
-		auto voxvol = VoxelVolume::Create(100, "bob", 0);
+		auto voxvol = VoxelVolume::Create(100, "bob");
 		auto voxvol_shared = voxvol.lock();
+		auto pixbuf = PixelBuffer::Create("metal_wall", "assets/metal_wall.png");
+		auto tex = std::make_shared<TextureObject>(pixbuf);
+		TextureMap::Set("metal_wall", tex);
 
 		VoxelCommand add_voxel(
 			[ ] (VoxelVolume* vox_vol) {
-			vox_vol->AddVoxel(-1, 1, 1);
-			vox_vol->AddVoxel(-1, -1, 1);
-			vox_vol->AddVoxel(-1, -1, 0);
-			vox_vol->AddVoxel(-1, -1, -1);
-			vox_vol->AddVoxel(-1, 0, 1);
-			vox_vol->AddVoxel(-1, 0, 0);
-			vox_vol->AddVoxel(-1, 0, -1);
-			vox_vol->AddVoxel(1, -1, 1);
+			for (int i = -25; i <= 25; ++i) {
+				for (int j = -25; j <= 25; ++j) {
+					vox_vol->AddVoxel(-1, i, j);
+				}
+			}
 		});
 		VoxelVolume::QueueCommand(std::move(add_voxel));
+		voxvol_shared->Update(0.0);
+
+		VoxelCommand rem_voxel(
+			[ ] (VoxelVolume* vox_vol) {
+			vox_vol->RemoveVoxel(-1, 5, 5);
+		});
+		VoxelVolume::QueueCommand(std::move(rem_voxel));
 		voxvol_shared->Update(0.0);
 		{
 			Entity voxel1(100);

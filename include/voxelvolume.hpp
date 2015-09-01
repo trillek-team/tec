@@ -8,6 +8,7 @@
 #include <cstdint>
 
 #include "multiton.hpp"
+#include "resources/mesh.hpp"
 #include "command-queue.hpp"
 
 namespace tec {
@@ -27,7 +28,7 @@ namespace tec {
 
 	class VoxelVolume : public CommandQueue < VoxelVolume > {
 	public:
-		VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh, const size_t submesh = 0);
+		VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh);
 		~VoxelVolume();
 	public:
 		// Iterates over all the actions queued before the call to update.
@@ -47,15 +48,15 @@ namespace tec {
 		void RemoveVoxel(const std::int16_t row, const std::int16_t column, const std::int16_t slice);
 
 		// Creates a VoxelVolume for entity_id and uses a PolygonMeshData with name and into submesh.
-		static std::weak_ptr<VoxelVolume> Create(const eid entity_id,
-			const std::string name, const size_t submesh = 0);
+		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, const std::string name);
 		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into submesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id,
-			std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>(), const size_t submesh = 0);
+			std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
+		std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.
+		std::unordered_map<std::int64_t, size_t> vertex_index; // Used to update or remove voxels from the mesh.
 		std::weak_ptr<MeshFile> mesh;
-		size_t submesh;
 		eid entity_id;
 	};
 }
