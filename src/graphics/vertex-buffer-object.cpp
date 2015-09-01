@@ -19,8 +19,8 @@ namespace tec {
 
 	void VertexBufferObject::Destroy() {
 		glDeleteBuffers(1, &this->vbo);
-		glDeleteBuffers(1, &this->vao);
 		glDeleteBuffers(1, &this->ibo);
+		glDeleteVertexArrays(1, &this->vao);
 	}
 
 	const GLuint VertexBufferObject::GetVAO() { return this->vao; }

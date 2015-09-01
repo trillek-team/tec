@@ -437,6 +437,7 @@ namespace tec {
 				renderable->buffer = std::make_shared<VertexBufferObject>();
 				renderable->buffer->Load(renderable->mesh);
 				size_t group_count = renderable->buffer->GetVertexGroupCount();
+				renderable->vertex_groups.clear();
 				if (group_count > 0) {
 					for (size_t i = 0; i < group_count; ++i) {
 						renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
