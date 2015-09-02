@@ -203,10 +203,9 @@ namespace tec {
 
 					if (identifier == "shader") {
 						ss >> mesh.shader;
-						auto tmp = base_path / mesh.shader;
-						mesh.shader = tmp.toString();
+						auto filename = base_path / mesh.shader;
 						if (!TextureMap::Has(mesh.shader)) {
-							auto pixbuf = PixelBuffer::Create(mesh.shader, mesh.shader);
+							auto pixbuf = PixelBuffer::Create(mesh.shader, filename);
 							auto tex = std::make_shared<TextureObject>(pixbuf);
 							TextureMap::Set(mesh.shader, tex);
 						}

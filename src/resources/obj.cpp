@@ -79,9 +79,9 @@ namespace tec {
 			else if (identifier == "map_Kd") {
 				std::string filename;
 				ss >> filename;
-				currentMTL->diffuseMap = (base_path / filename).toString(); //TODO remove toString()
+				currentMTL->diffuseMap = filename;
 				if (!TextureMap::Has(currentMTL->diffuseMap)) {
-					auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, currentMTL->diffuseMap);
+					auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
 					auto tex = std::make_shared<TextureObject>(pixbuf);
 					TextureMap::Set(currentMTL->diffuseMap, tex);
 				}
@@ -89,12 +89,14 @@ namespace tec {
 			else if (identifier == "map_Ka") {
 				std::string filename;
 				ss >> filename;
-				currentMTL->ambientMap = (base_path / filename).toString(); //TODO remove toString()
+				currentMTL->ambientMap = filename; 
+				//TODO Load ambient map to a PixelBuffer
 			}
 			else if (identifier == "map_Bump") {
 				std::string filename;
 				ss >> filename;
-				currentMTL->normalMap = (base_path / filename).toString(); //TODO remove toString()
+				currentMTL->normalMap = filename;
+				//TODO Load bump map to a PixelBuffer
 			}
 		}
 		return true;
