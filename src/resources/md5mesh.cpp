@@ -123,18 +123,18 @@ namespace tec {
 		return w;
 	}
 
-	std::shared_ptr<MD5Mesh> MD5Mesh::Create(const std::string fname) {
+	std::shared_ptr<MD5Mesh> MD5Mesh::Create(const FilePath& fname) {
 		auto mesh = std::make_shared<MD5Mesh>();
-		mesh->fname = fname;
-
-		mesh->SetName(fname);
-
-		MeshMap::Set(fname, mesh);
+		mesh->SetFileName(fname);
+		mesh->SetName(fname.SubpathFrom("assets").toGenericString());
 
 		if (mesh->Parse()) {
 			mesh->CalculateVertexPositions();
 			mesh->CalculateVertexNormals();
 			mesh->UpdateIndexList();
+			
+			MeshMap::Set(mesh->GetName(), mesh);
+			
 			return mesh;
 		}
 
@@ -142,17 +142,13 @@ namespace tec {
 	}
 
 	bool MD5Mesh::Parse() {
-		std::ifstream f(this->fname, std::ios::in);
-
-		std::string file_path;
-
-		if (this->fname.find("/") != std::string::npos) {
-			file_path = this->fname.substr(0, this->fname.find_last_of("/") + 1);
+		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			// Can't open the file!
+			return false;
 		}
-		else if (this->fname.find("\"") != std::string::npos) {
-			file_path = this->fname.substr(0, this->fname.find_last_of("\"") + 1);
-		}
-
+		auto base_path = this->path.BasePath();
+		
+		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
 			return false;
 		}
@@ -207,7 +203,8 @@ namespace tec {
 
 					if (identifier == "shader") {
 						ss >> mesh.shader;
-						mesh.shader = file_path + mesh.shader;
+						auto tmp = base_path / mesh.shader;
+						mesh.shader = tmp.toString();
 						if (!TextureMap::Has(mesh.shader)) {
 							auto pixbuf = PixelBuffer::Create(mesh.shader, mesh.shader);
 							auto tex = std::make_shared<TextureObject>(pixbuf);

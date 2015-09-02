@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "filesystem.hpp"
 #include "mesh.hpp"
 
 namespace tec {
@@ -73,7 +74,7 @@ namespace tec {
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
 		 * \return std::shared_ptr<MD5Mesh> The created MD5Mesh resource.
 		 */
-		static std::shared_ptr<MD5Mesh> Create(std::string fname);
+		static std::shared_ptr<MD5Mesh> Create(const FilePath& fname);
 
 		/**
 		 * \brief Loads the MD5Mesh file from disk and parses it.
@@ -116,14 +117,14 @@ namespace tec {
 		 * \param[in] const std::string& fname The mesh filename.
 		 * \return bool True if initialization finished with no errors.
 		 */
-		void SetFileName(const std::string& fname) {
-			this->fname = fname;
+		void SetFileName(const FilePath& fname) {
+			this->path = fname;
 		}
 
 		// Used for MD5Anim::CheckMesh().
 		friend class MD5Anim;
 	private:
-		std::string fname; // Relative filename
+		FilePath path; // Path to OBJ file
 		std::vector<Mesh> meshes;
 		std::vector<Joint> joints;
 	};

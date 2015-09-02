@@ -95,7 +95,10 @@ namespace tec {
 	}
 
 	void IntializeFileFactories() {
-		AddFileFactory<MD5Mesh>();
+		//AddFileFactory<MD5Mesh>();
+		file_factories[GetTypeEXT<MD5Mesh>()] = [ ] (std::string fname) {
+			MD5Mesh::Create(FilePath::GetAssetPath(fname));
+		};
 		//AddFileFactory<OBJ>();
 		file_factories[GetTypeEXT<OBJ>()] = [ ] (std::string fname) {
 			OBJ::Create(FilePath::GetAssetPath(fname));
@@ -169,7 +172,7 @@ namespace tec {
 
 		{
 			Entity bob(99);
-			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create("assets/bob/bob.md5mesh");
+			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create(FilePath::GetAssetPath("bob/bob.md5mesh"));
 			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create("assets/bob/bob.md5anim", mesh1);
 			bob.Add<Animation>(anim1);
 		}
