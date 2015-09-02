@@ -250,6 +250,11 @@ public:
 		}
 		
 		/**
+		 * \brief Returns a generic string representation of a path (uses \ as path separator ALWAYS)
+		 */
+		std::string toGenericString() const;
+		
+		/**
 		 * \brief Return if this FilePath is empty
 		 */
 		bool empty() const {
@@ -293,8 +298,7 @@ public:
 		* \brief Concatenate a path
 		*/
 		FilePath& operator+= (const char* lhs) {
-			this->path += lhs;
-			this->NormalizePath();
+			this->operator+=(FilePath(lhs));
 			return *this;
 		}
 
@@ -302,40 +306,16 @@ public:
 		* \brief Concatenate a path
 		*/
 		FilePath& operator+= (const std::string& lhs) {
-			this->path += lhs;
-			this->NormalizePath();
+			this->operator+=(FilePath(lhs));
 			return *this;
 		}
-
+		
 		/**
-		* \brief Concatenate a path
-		*/
-		friend FilePath operator+ (FilePath lhs, const FilePath& rhs) {
-			return lhs += rhs;
-		}
-
-		/**
-		* \brief Concatenate a path
-		*/
-		friend FilePath operator+ (FilePath lhs, const std::string& str) {
-			FilePath tmp(str);
-			return lhs += tmp;
-		}
-
-		/**
-		* \brief Concatenate a path
-		*/
-		friend FilePath operator+ (FilePath lhs, const std::wstring& wstr) {
-			FilePath tmp(wstr);
-			return lhs += tmp;
-		}
-
-		/**
-		* \brief Concatenate a path
-		*/
-		friend FilePath operator+ (FilePath lhs, const char* str) {
-			FilePath tmp(str);
-			return lhs += tmp;
+		 * \brief Concatenate a path
+		 */
+		FilePath& operator+= (const std::wstring& lhs) {
+			this->operator+=(FilePath(lhs));
+			return *this;
 		}
 
 		/**
@@ -357,9 +337,7 @@ public:
 				else {
 					this->path += rhs.path;
 				}
-
 			}
-
 			this->NormalizePath();
 			return *this;
 		}
@@ -367,67 +345,27 @@ public:
 		/**
 		* \brief Append a subdirectory or file
 		*/
-		FilePath& operator/= (const char* lhs) {
-			return operator/=(std::string(lhs));
+		FilePath& operator/= (const char* rhs) {
+			this->operator/=(FilePath(rhs));
+			return *this;
 		}
 
 		/**
 		* \brief Append a subdirectory or file
 		*/
 		FilePath& operator/= (const std::string& rhs) {
-			if (path.empty()) {
-				if (rhs.empty() || rhs.front() != PATH_SEPARATOR_C) {
-					this->path += PATH_SEPARATOR + rhs;
-				}
-				else {
-					this->path += rhs;
-				}
-			}
-			else {
-				if (path.back() != PATH_SEPARATOR_C && (rhs.empty() || rhs.front() != PATH_SEPARATOR_C)) {
-					this->path += PATH_SEPARATOR + rhs;
-				}
-				else {
-					this->path += rhs;
-				}
-
-			}
-
-			this->NormalizePath();
+			this->operator/=(FilePath(rhs));
 			return *this;
 		}
-
+		
 		/**
-		* \brief Append a subdirectory or file
-		*/
-		friend FilePath operator/ (FilePath lhs, const FilePath& rhs) {
-			return lhs /= rhs;
+		 * \brief Append a subdirectory or file
+		 */
+		FilePath& operator/= (const std::wstring& rhs) {
+			this->operator/=(FilePath(rhs));
+			return *this;
 		}
-
-		/**
-		* \brief Append a subdirectory or file
-		*/
-		friend FilePath operator/ (FilePath lhs, const std::string& str) {
-			FilePath tmp(str);
-			return lhs /= tmp;
-		}
-
-		/**
-		* \brief Append a subdirectory or file
-		*/
-		friend FilePath operator/ (FilePath lhs, const std::wstring& wstr) {
-			FilePath tmp(wstr);
-			return lhs /= tmp;
-		}
-
-		/**
-		* \brief Append a subdirectory or file
-		*/
-		friend FilePath operator/ (FilePath lhs, const char* str) {
-			FilePath tmp(str);
-			return lhs /= tmp;
-		}
-
+		
 private:
 		std::string path; /// Stores path as an UTF8 string
 
@@ -439,6 +377,62 @@ private:
 		static std::string assets_base;
 
 	}; // End of FileSystem
+
+	/**
+	 * \brief Concatenate a path
+	 */
+	inline FilePath operator+ (const FilePath& lhs, const FilePath& rhs) {
+		return FilePath(lhs) += rhs;
+	}
+	
+	/**
+	 * \brief Concatenate a path
+	 */
+	inline FilePath operator+ (const FilePath& lhs, const std::string& str) {
+		return FilePath(lhs) += FilePath(str);
+	}
+	
+	/**
+	 * \brief Concatenate a path
+	 */
+	inline FilePath operator+ (const FilePath& lhs, const std::wstring& wstr) {
+		return FilePath(lhs) += FilePath(wstr);
+	}
+	
+	/**
+	 * \brief Concatenate a path
+	 */
+	inline FilePath operator+ (const FilePath& lhs, const char* str) {
+		return FilePath(lhs) += FilePath(str);
+	}
+	
+	/**
+	 * \brief Append a subdirectory or file
+	 */
+	inline FilePath operator/ (const FilePath& lhs, const FilePath& rhs) {
+		return FilePath(lhs) /= rhs;
+	}
+	
+	/**
+	 * \brief Append a subdirectory or file
+	 */
+	inline FilePath operator/ (const FilePath& lhs, const std::string& str) {
+		return FilePath(lhs) /= FilePath(str);
+	}
+	
+	/**
+	 * \brief Append a subdirectory or file
+	 */
+	inline FilePath operator/ (const FilePath& lhs, const std::wstring& wstr) {
+		return FilePath(lhs) /= FilePath(wstr);
+	}
+	
+	/**
+	 * \brief Append a subdirectory or file
+	 */
+	inline FilePath operator/ (const FilePath& lhs, const char* str) {
+		return FilePath(lhs) /= FilePath(str);
+	}
 	
 	/**
 	 * \brief Output to a stream

@@ -30,8 +30,10 @@ TEST(FilePath_class_test, Constructor) {
 
 	FilePath fp3 = std::wstring(L"c:/usr/local/share/\u20AC");
 #if defined(WIN32)
+	ASSERT_EQ(0, fp3.toGenericString().compare(u8"c:/usr/local/share/€"));
 	ASSERT_EQ(0, fp3.toString().compare(u8"c:\\usr\\local\\share\\€"));
 #else
+	ASSERT_EQ(0, fp3.toGenericString().compare(u8"/usr/local/share/€"));
 	ASSERT_EQ(0, fp3.toString().compare(u8"/usr/local/share/€"));
 #endif
 

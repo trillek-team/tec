@@ -441,6 +441,12 @@ FilePath::NFilePath FilePath::GetNativePath() const {
 #endif
 }
 
+std::string FilePath::toGenericString() const {
+	std::string ret(path);
+	std::replace(ret.begin(), ret.end(), WIN_PATH_SEPARATOR, UNIX_PATH_SEPARATOR);
+	return ret;
+}
+
 FilePath FilePath::GetAssetsBasePath() {
 	if (FilePath::assets_base.empty()) {
 		// Search for the assets folder
