@@ -246,13 +246,6 @@ public:
 		}
 
 		/**
-		 * \brief Returns the string representation of a path
-		 *
-		 * \param separator Path separator character
-		 */
-		std::string toString(char separator) const;
-
-		/**
 		 * \brief Returns a generic string representation of a path (uses \ as path separator ALWAYS)
 		 */
 		std::string toGenericString() const;

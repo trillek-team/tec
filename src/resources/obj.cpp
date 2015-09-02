@@ -104,7 +104,7 @@ namespace tec {
 		auto obj = std::make_shared<OBJ>();
 		obj->SetFileName(fname);
 
-		obj->SetName(fname.SubpathFrom("assets").toString('/'));
+		obj->SetName(fname.SubpathFrom("assets").toGenericString());
 
 		if (obj->Parse()) {
 			obj->PopulateMeshGroups();

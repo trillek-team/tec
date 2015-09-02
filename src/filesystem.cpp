@@ -496,16 +496,4 @@ FilePath FilePath::GetAssetPath(const char* asset) {
 	return tmp;
 }
 
-std::string FilePath::toString(char separator) const {
-	if (separator == PATH_SEPARATOR_C) {
-		return this->path;
-	}
-	else {
-		std::string out = path;
-		char tmp = PATH_SEPARATOR_C; // g++ not like to pass PATH_SEPARATOR_C to std::replace :(º
-		std::replace(out.begin(), out.end(), tmp, separator);
-		return out;
-	}
-}
-
 }
