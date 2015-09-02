@@ -90,19 +90,13 @@ namespace tec {
 	template <typename T>
 	void AddFileFactory() {
 		file_factories[GetTypeEXT<T>()] = [ ] (std::string fname) {
-			T::Create(fname);
+			T::Create(FilePath::GetAssetPath(fname));
 		};
 	}
 
 	void IntializeFileFactories() {
-		//AddFileFactory<MD5Mesh>();
-		file_factories[GetTypeEXT<MD5Mesh>()] = [ ] (std::string fname) {
-			MD5Mesh::Create(FilePath::GetAssetPath(fname));
-		};
-		//AddFileFactory<OBJ>();
-		file_factories[GetTypeEXT<OBJ>()] = [ ] (std::string fname) {
-			OBJ::Create(FilePath::GetAssetPath(fname));
-		};
+		AddFileFactory<MD5Mesh>();
+		AddFileFactory<OBJ>();
 		AddFileFactory<VorbisStream>();
 	}
 
@@ -187,7 +181,7 @@ namespace tec {
 			VComputerCommand add_devoces(
 				[screen, keybaord] (VComputerSystem* vcomputer) {
 				vcomputer->AddComputer(101);
-				if (vcomputer->LoadROMFile(101, "assets/asm/type1.ffi")) {
+				if (vcomputer->LoadROMFile(101, FilePath::GetAssetPath("asm/type1.ffi").toString() )) {
 					vcomputer->SetDevice(101, 5, screen->device);
 					vcomputer->SetDevice(101, 1, keybaord->device);
 					vcomputer->TurnComptuerOn(101);

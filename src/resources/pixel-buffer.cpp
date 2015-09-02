@@ -192,6 +192,7 @@ namespace tec {
 		int num_components;
 		unsigned char *data;
 		// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a fopen to FileSystem ?
+		// Als we not are doing path valid or file existence check
 		data = stbi_load(filename.toString().c_str(), &this->imagewidth, &this->imageheight, &num_components, 0);
 		if (data) {
 			switch (num_components) {
