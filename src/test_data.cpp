@@ -206,7 +206,7 @@ namespace tec {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 			proto::Entity entity;
 			entity.ParseFromIstream(&input);
-			std::cout << "ProtoLoadEntity(): " << entity.DebugString() << "\n";
+			//std::cout << "ProtoLoadEntity(): " << entity.DebugString() << "\n";
 			eid entity_id = entity.id();
 			for (int i = 0; i < entity.components_size(); ++i) {
 				const proto::Component& comp = entity.components(i);
