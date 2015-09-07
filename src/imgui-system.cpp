@@ -1,4 +1,5 @@
 #include "imgui-system.hpp"
+#include "filesystem.hpp"
 #include "os.hpp"
 
 #ifdef _MSC_VER
@@ -17,8 +18,17 @@ namespace tec {
 	unsigned int IMGUISystem::vbo = 0, IMGUISystem::vao = 0;
 	GLuint IMGUISystem::font_texture = 0;
 
+	std::string inifilename;
+	std::string logfilename;
+
 	IMGUISystem::IMGUISystem(GLFWwindow* window) : io(ImGui::GetIO()) {
 		IMGUISystem::window = window;
+		inifilename = (FilePath::GetUserSettingsPath() / u8"imgui.ini").toString();
+		logfilename = (FilePath::GetUserCachePath() / u8"imgui_log.txt").toString();
+		this->io.IniFilename = inifilename.c_str();
+#if defined(DEBUG) || defined(_DEBUG)
+		this->io.LogFilename = logfilename.c_str();
+#endif
 		this->io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
 		this->io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
 		this->io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;

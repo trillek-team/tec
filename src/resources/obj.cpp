@@ -20,18 +20,14 @@ namespace tec {
 	 */
 	extern std::string CleanString(std::string str);
 
-	bool OBJ::ParseMTL(std::string fname) {
-		std::ifstream f(fname, std::ios::in);
-
-		std::string file_path;
-
-		if (fname.find("/") != std::string::npos) {
-			file_path = fname.substr(0, fname.find_last_of("/") + 1);
+	bool OBJ::ParseMTL(const FilePath& fname) {
+		if (!fname.isValidPath() || !fname.FileExists()) {
+			// Can't open the file!
+			return false;
 		}
-		else if (fname.find("\"") != std::string::npos) {
-			file_path = fname.substr(0, fname.find_last_of("\"") + 1);
-		}
+		auto base_path = this->path.BasePath();
 
+		std::ifstream f(fname.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
 			return false;
 		}
@@ -83,9 +79,9 @@ namespace tec {
 			else if (identifier == "map_Kd") {
 				std::string filename;
 				ss >> filename;
-				currentMTL->diffuseMap = file_path + filename;
+				currentMTL->diffuseMap = filename;
 				if (!TextureMap::Has(currentMTL->diffuseMap)) {
-					auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, currentMTL->diffuseMap);
+					auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
 					auto tex = std::make_shared<TextureObject>(pixbuf);
 					TextureMap::Set(currentMTL->diffuseMap, tex);
 				}
@@ -93,27 +89,29 @@ namespace tec {
 			else if (identifier == "map_Ka") {
 				std::string filename;
 				ss >> filename;
-				currentMTL->ambientMap = file_path + filename;
+				currentMTL->ambientMap = filename; 
+				//TODO Load ambient map to a PixelBuffer
 			}
 			else if (identifier == "map_Bump") {
 				std::string filename;
 				ss >> filename;
-				currentMTL->normalMap = file_path + filename;
+				currentMTL->normalMap = filename;
+				//TODO Load bump map to a PixelBuffer
 			}
 		}
 		return true;
 	}
 
-	std::shared_ptr<OBJ> OBJ::Create(const std::string fname) {
+	std::shared_ptr<OBJ> OBJ::Create(const FilePath& fname) {
 		auto obj = std::make_shared<OBJ>();
-		obj->fname = fname;
+		obj->SetFileName(fname);
 
-		obj->SetName(fname);
+		obj->SetName(fname.SubpathFrom("assets").toGenericString());
 
 		if (obj->Parse()) {
 			obj->PopulateMeshGroups();
 
-			MeshMap::Set(fname, obj);
+			MeshMap::Set(obj->GetName(), obj);
 
 			return obj;
 		}
@@ -122,17 +120,13 @@ namespace tec {
 	}
 
 	bool OBJ::Parse() {
-		std::ifstream f(this->fname, std::ios::in);
-
-		std::string file_path;
-
-		if (this->fname.find("/") != std::string::npos) {
-			file_path = this->fname.substr(0, this->fname.find_last_of("/") + 1);
+		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			// Can't open the file!
+			return false;
 		}
-		else if (this->fname.find("\"") != std::string::npos) {
-			file_path = this->fname.substr(0, this->fname.find_last_of("\"") + 1);
-		}
+		auto base_path = this->path.BasePath();
 
+		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
 			return false;
 		}
@@ -148,7 +142,7 @@ namespace tec {
 			if (identifier == "mtllib") {
 				std::string fname;
 				ss >> fname;
-				ParseMTL(file_path + fname);
+				ParseMTL(base_path / fname); // Path to MTL file
 			}
 			else if (identifier == "v") {
 				glm::vec3 vert;

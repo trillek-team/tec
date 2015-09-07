@@ -7,6 +7,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "filesystem.hpp"
 #include "mesh.hpp"
 
 namespace tec {
@@ -55,7 +56,7 @@ namespace tec {
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
 		 * \return std::shared_ptr<OBJ> The created OBJ resource.
 		 */
-		static std::shared_ptr<OBJ> Create(const std::string fname);
+		static std::shared_ptr<OBJ> Create(const FilePath& fname);
 
 		/**
 		 * \brief Loads the OBJ file from disk and parses it.
@@ -69,7 +70,7 @@ namespace tec {
 		 *
 		 * \return bool If the material was valid and loaded correctly.
 		 */
-		bool ParseMTL(std::string fname);
+		bool ParseMTL(const FilePath& fname);
 
 		/**
 		 * \brief Calculates the final vertex positions based on the bind-pose skeleton.
@@ -87,11 +88,11 @@ namespace tec {
 		 * \param[in] const std::string& fname The mesh filename.
 		 * \return bool True if initialization finished with no errors.
 		 */
-		void SetFileName(const std::string& fname) {
-			this->fname = fname;
+		void SetFileName(const FilePath& fname) {
+			this->path = fname;
 		}
 	private:
-		std::string fname; // Relative filename
+		FilePath path; // Path to OBJ file
 		std::vector<std::shared_ptr<VertexGroup>> vertexGroups;
 
 		std::vector<glm::vec3> positions;

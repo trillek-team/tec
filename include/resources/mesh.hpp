@@ -75,7 +75,7 @@ namespace tec {
 		const std::string GetName() const {
 			return this->name;
 		}
-		void SetName(const std::string name) {
+		void SetName(const std::string& name) {
 			this->name = name;
 		}
 	protected:

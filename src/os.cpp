@@ -327,7 +327,7 @@ namespace tec {
 		}
 		EventSystem<MouseBtnEvent>::Get()->Emit(mbtn_event);
 	}
-	
+
 	void OS::DispatchFileDropEvent(const int count, const char** paths) {
 		std::shared_ptr<FileDropEvent> fd_event = std::make_shared<FileDropEvent>();
 		for (int i = 0; i < count; ++i) {
@@ -358,4 +358,5 @@ namespace tec {
 			glfwGetCursorPos(OS::focused_window, x, y);
 		}
 	}
+
 }

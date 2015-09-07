@@ -7,6 +7,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "filesystem.hpp"
+
 namespace tec {
 	class MD5Mesh;
 
@@ -60,7 +62,7 @@ namespace tec {
 		* \param[in] std::shared_ptr<MD5Mesh> mesh The mesh file this animation will be animating.
 		* \return std::shared_ptr<MD5Anim> The create MD5Anim resource.
 		*/
-		static std::shared_ptr<MD5Anim> Create(const std::string fname, std::shared_ptr<MD5Mesh> mesh);
+		static std::shared_ptr<MD5Anim> Create(const FilePath& fname, std::shared_ptr<MD5Mesh> mesh);
 
 		/**
 		* \brief Loads the MD5Anim file from disk and parses it.
@@ -76,14 +78,22 @@ namespace tec {
 		* \param[in] const std::string& fname The mesh filename.
 		* \return bool True if initialization finished with no errors.
 		*/
-		void SetFileName(const std::string& fname) {
-			this->fname = fname;
+		void SetFileName(const FilePath& fname) {
+			this->path = fname;
 		}
 
-		std::string GetFileName() {
-			return this->fname;
+		FilePath GetFileName() {
+			return this->path;
 		}
-
+		
+		const std::string GetName() const {
+			return this->name;
+		}
+		
+		void SetName(const std::string& name) {
+			this->name = name;
+		}
+		
 		/**
 		* \brief Returns the number of animation frames.
 		*
@@ -128,7 +138,8 @@ namespace tec {
 		*/
 		FrameSkeleton InterpolateSkeletons(size_t frame_index_start, size_t frame_index_end, float delta);
 	private:
-		std::string fname; // Relative filename
+		FilePath path; // Relative filename
+		std::string name;
 		std::vector<BoundingBox> bounds; // Bound box sizes for each join.
 		std::vector<Frame> frames;
 		std::vector<Joint> joints;
