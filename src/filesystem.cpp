@@ -110,6 +110,7 @@ FilePath FilePath::GetUserSettingsPath() {
 	ret += PATH_SEPARATOR;
 
 #endif
+	FilePath::MkPath(ret);
 	FilePath::settings_folder = ret.toString();
 	return ret;
 
@@ -136,6 +137,7 @@ FilePath FilePath::GetUserDataPath() {
 	ret += PATH_SEPARATOR;
 	FilePath::udata_folder = ret.toString();
 
+	FilePath::MkPath(ret);
 	return ret;
 #elif defined(WIN32) || defined(__APPLE__)
 	auto path = FilePath::GetUserSettingsPath();
@@ -145,6 +147,8 @@ FilePath FilePath::GetUserDataPath() {
 	path /= u8"data";
 	path += PATH_SEPARATOR;
 	FilePath::udata_folder = path.toString();
+
+	FilePath::MkPath(path);
 	return path;
 #else
 	return FilePath();
@@ -196,6 +200,7 @@ FilePath FilePath::GetUserCachePath() {
 
 #endif
 	FilePath::cache_folder = path.toString();
+	FilePath::MkPath(path);
 	return path;
 } // End of GetUserCachePath
 
