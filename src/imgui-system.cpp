@@ -242,7 +242,7 @@ namespace tec {
 			const ImDrawIdx* idx_buffer = &cmd_list->IdxBuffer.front();
 
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			int needed_vtx_size = cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
+			size_t needed_vtx_size = cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
 			if (vbo_size < needed_vtx_size) {
 				// Grow our buffer if needed
 				vbo_size = needed_vtx_size + 2000 * sizeof(ImDrawVert);
