@@ -6,7 +6,7 @@
 	url = https://github.com/glfw/glfw/
 [submodule "assets"]
 	path = assets
-	url=git@github.com:Zardoz89/tec-assets.git
+url=http://github.com:Zardoz89/tec-assets
 [submodule "modules/bullet3"]
 	path = modules/bullet3
 	url = https://github.com/bulletphysics/bullet3
