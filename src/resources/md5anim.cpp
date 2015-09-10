@@ -46,12 +46,13 @@ namespace tec {
 	*/
 	extern std::string CleanString(std::string str);
 
-	std::shared_ptr<MD5Anim> MD5Anim::Create(const std::string fname, std::shared_ptr<MD5Mesh> mesh) {
-		auto anim = std::make_shared<MD5Anim>();
+	std::shared_ptr<MD5Anim> MD5Anim::Create(const FilePath& fname, std::shared_ptr<MD5Mesh> mesh) {
 		if (!mesh) {
 			return nullptr;
 		}
-		anim->fname = fname;
+		auto anim = std::make_shared<MD5Anim>();
+		anim->SetName(fname.SubpathFrom("assets").toGenericString());
+		anim->SetFileName(fname);
 
 		if (anim->Parse()) {
 			for (size_t i = 0; i < anim->frames.size(); ++i) {
@@ -66,8 +67,12 @@ namespace tec {
 	}
 
 	bool MD5Anim::Parse() {
-		std::ifstream f(this->fname, std::ios::in);
-
+		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			// Can't open the file!
+			return false;
+		}
+		
+		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
 			return false;
 		}

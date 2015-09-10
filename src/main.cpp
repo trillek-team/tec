@@ -1,5 +1,6 @@
 #include "os.hpp"
 #include "events.hpp"
+#include "filesystem.hpp"
 #include "reflection.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
@@ -9,6 +10,7 @@
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 
+#include <iostream>
 #include <thread>
 #include <string>
 #include <sstream>
@@ -60,6 +62,7 @@ namespace tec {
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
+
 	tec::OS os;
 
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);

@@ -197,6 +197,7 @@ namespace tec {
 		* \return void
 		*/
 		static void GetMousePosition(double* x, double* y);
+
 	private:
 		/**
 		* \brief Updates the internal size variables from the windowResized callback.
@@ -259,5 +260,7 @@ namespace tec {
 		double old_mouse_x, old_mouse_y;
 		double last_time; // The time at the last call to GetDeltaTime().
 		bool mouse_lock; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
+
+
 	};
 }

@@ -50,10 +50,15 @@ namespace tec {
 		this->totalSamplesLeft = stb_vorbis_stream_length_in_samples(this->stream) * this->info.channels;
 	}
 
-	std::shared_ptr<VorbisStream> VorbisStream::Create(std::string filename) {
+	std::shared_ptr<VorbisStream> VorbisStream::Create(const FilePath& filename) {
 		std::shared_ptr<VorbisStream> stream = std::make_shared<VorbisStream>();
+		//stream->SetFileName(fname);
+		stream->SetName(filename.SubpathFrom("assets").toGenericString());
+		
 		int error;
-		stream->stream = stb_vorbis_open_filename(filename.c_str(), &error, NULL);
+		// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a fopen to FileSystem ?
+		// Als we not are doing path valid or file existence check
+		stream->stream = stb_vorbis_open_filename(filename.toString().c_str(), &error, NULL);
 		if (stream->stream) {
 			stream->info = stb_vorbis_get_info(stream->stream);
 			if (stream->info.channels == 2) {
@@ -63,7 +68,7 @@ namespace tec {
 				stream->format = AL_FORMAT_MONO16;
 			}
 			stream->totalSamplesLeft = stb_vorbis_stream_length_in_samples(stream->stream) * stream->info.channels;
-			SoundMap::Set(filename, stream);
+			SoundMap::Set(stream->GetName(), stream);
 		}
 		else {
 			stream.reset();
