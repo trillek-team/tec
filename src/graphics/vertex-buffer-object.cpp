@@ -106,10 +106,11 @@ namespace tec {
 		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 		// If the size hasn't changed we can call update
 		if (this->vertex_count >= verts.size()) {
-			auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, verts.size() *
+			auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, this->vertex_count *
 				sizeof(VertexData), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
+				std::memset((char*)buffer + verts.size() * sizeof(VertexData) - 1, 0, (this->vertex_count - verts.size()) * sizeof(VertexData));
 				glUnmapBuffer(GL_ARRAY_BUFFER);
 			}
 			else {
@@ -142,10 +143,11 @@ namespace tec {
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 		if (this->index_count >= indices.size()) {
-			auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() *
+			auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, this->index_count *
 				sizeof(GLuint), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
+				std::memset((char*)buffer + indices.size() * sizeof(GLuint) - 1, 0, (this->index_count - indices.size()) * sizeof(GLuint));
 				glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 			}
 			else {
