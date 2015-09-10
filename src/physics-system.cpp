@@ -51,6 +51,7 @@ namespace tec {
 
 	void PhysicsSystem::Update(const double delta) {
 		ProcessCommandQueue();
+		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
@@ -166,6 +167,7 @@ namespace tec {
 
 	eid PhysicsSystem::RayCastMousePick(eid source_entity, float mouse_x, float mouse_y, float screen_width, float screen_height) {
 		this->last_rayvalid = false;
+		this->last_entity_hit = 0;
 		glm::vec3 position;
 		if (Entity(source_entity).Has<Position>()) {
 			position = (Entity(source_entity).Get<Position>().lock())->value;
@@ -212,15 +214,15 @@ namespace tec {
 					}
 				}
 			}
+			this->last_entity_hit = hit_entity;
 			if (hit_entity_index < collision_object_count) {
 				this->last_raypos = ray_result_callback.m_hitPointWorld.at(hit_entity_index);
 				this->last_raynorm = ray_result_callback.m_hitNormalWorld.at(hit_entity_index);
 				this->last_raydist = last_rayfrom.distance(this->last_raypos);
 				this->last_rayvalid = true;
-				return hit_entity;
 			}
 		}
-		return 0;
+		return this->last_entity_hit;
 	}
 
 	eid PhysicsSystem::RayCastIgnore(eid ign) {
@@ -327,5 +329,18 @@ namespace tec {
 		}
 
 		return true;
+	}
+
+	void PhysicsSystem::On(std::shared_ptr<MouseBtnEvent> data) {
+		if (data->action == MouseBtnEvent::DOWN) {
+			if (this->last_entity_hit) {
+				std::shared_ptr<MouseClickEvent> mce_event = std::make_shared<MouseClickEvent>();
+				mce_event->button = data->button;
+				mce_event->ray_distance = this->last_raydist;
+				mce_event->ray_hit_piont_world = glm::vec3(this->last_raypos.getX(),
+					this->last_raypos.getY(), this->last_raypos.getZ());
+				EventSystem<MouseClickEvent>::Get()->Emit(this->last_entity_hit, mce_event);
+			}
+		}
 	}
 }
