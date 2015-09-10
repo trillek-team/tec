@@ -7,6 +7,8 @@
 #include "imgui-system.hpp"
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
+#include "gui/console.hpp"
+
 
 #include <thread>
 #include <string>
@@ -64,6 +66,7 @@ int main(int argc, char* argv[]) {
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
 
 	tec::IMGUISystem gui(os.GetWindow());
+	tec::Console console;
 	tec::RenderSystem rs;
 
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
@@ -338,6 +341,25 @@ int main(int argc, char* argv[]) {
 			ImGui::End();
 		}
 	});
+	gui.AddWindowDrawFunction("console", [&console]() {
+		console.Draw();
+	});
+	console.AddLog("Testing...\n");
+	console.AddLog("1 Testing...\n");
+	console.AddLog("2 Testing...\n");
+	console.AddLog("3 Testing...\n");
+	console.AddLog("4 Testing...\n");
+	console.AddLog("5 Testing...\n");
+	console.AddLog("6 Testing...\n");
+	console.AddLog("7 Testing...\n");
+	console.AddLog("8 Testing...\n");
+	console.AddLog("9 Testing...\n");
+	console.AddLog("10 Testing...\n");
+	console.AddLog("11 Testing...\n");
+	console.AddLog("12 Testing...\n");
+	console.AddLog("13 Testing...\n");
+	console.AddLog("14 Testing...\n");
+	console.AddLog("15 Testing...\n");
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
@@ -370,6 +392,7 @@ int main(int argc, char* argv[]) {
 		ps.DebugDraw();
 
 		gui.Update(delta);
+		console.Update(delta);
 
 		os.SwapBuffers();
 		if (camera_controller.mouse_look) {
