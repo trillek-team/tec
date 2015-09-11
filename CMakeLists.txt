@@ -38,15 +38,40 @@ LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
+# Filters for VStudio
+SOURCE_GROUP("TEC" "src/.*[.]cpp")
+SOURCE_GROUP("TEC" "include/.*[.]hpp")
+SOURCE_GROUP("TEC\\Components" ".*/components/.*")
+SOURCE_GROUP("TEC\\Physics" ".*/physics/.*")
+SOURCE_GROUP("TEC\\Resources" ".*/resources/.*")
+SOURCE_GROUP("TEC\\Graphics" ".*/graphics/.*")
+SOURCE_GROUP("TEC\\GUI" ".*/gui/.*")
+SOURCE_GROUP("TEC\\Controllers" ".*/controllers/.*")
+SOURCE_GROUP("TEC\\Systems" ".*-system.*")
 
 # IMGUI setup
-FILE(GLOB IMGUI_SRC 
+FILE(GLOB IMGUI_SRC
   "modules/imgui/imgui.cpp"
   "modules/imgui/imgui_draw.cpp"
   "modules/imgui/imgui_demo.cpp"
   )
 FILE(GLOB IMGUI_INCLUDES "modules/imgui/*.h")
+SOURCE_GROUP(ImGui FILES ${IMGUI_SRC} ${IMGUI_INCLUDES})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/imgui/)
+
+
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/include/)
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include/")
+
+# SPDLOG setup
+FILE(GLOB SPDLOG_INCLUDES
+  "modules/spdlog/include/spdlog/*.h"
+  "modules/spdlog/include/spdlog/details/*.h"
+  "modules/spdlog/include/spdlog/sinks/*.h"
+  )
+LIST(REMOVE_ITEM SPDLOG_INCLUDES "modules/spdlog/include/spdlog/tweakme.h" )
+SOURCE_GROUP(SPDLog FILES ${SPDLOG_INCLUDES})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/spdlog/include/)
 
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/include/)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include/")
@@ -204,6 +229,7 @@ IF (NOT ${BUILD_DEPS_FIRST})
     ${TEC_INCLUDES}
     ${IMGUI_SRC}
     ${IMGUI_INCLUDES}
+    ${SPDLOG_INCLUDES}
     ${PB_FILES_SRC}
     ${PB_FILES_INCLUDES}
   )

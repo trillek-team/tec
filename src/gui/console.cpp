@@ -16,12 +16,22 @@ namespace tec {
 		buf.clear();
 	}
 
-	void Console::AddLog(const char* fmt, ...) IM_PRINTFARGS(2)
+	void Console::Printf(const char* fmt, ...) IM_PRINTFARGS(2)
 	{
 		va_list args;
 		va_start(args, fmt);
 		buf.appendv(fmt, args);
 		va_end(args);
+		scrollToBottom = true;
+	}
+
+	void Console::Printfln(const char* fmt, ...) IM_PRINTFARGS(2)
+	{
+		va_list args;
+		va_start(args, fmt);
+		buf.appendv(fmt, args);
+		va_end(args);
+		buf.append("\n");
 		scrollToBottom = true;
 	}
 
@@ -98,6 +108,22 @@ namespace tec {
 			&& data->key == GLFW_KEY_ESCAPE) { // Togles console
 			show = !show;
 		}
+	}
+
+	void Console::log(const spdlog::details::log_msg& msg) {
+		switch (msg.level) {
+		case spdlog::level::emerg :
+		case spdlog::level::alert :
+		case spdlog::level::critical :
+		case spdlog::level::err :
+		case spdlog::level::warn :
+		case spdlog::level::notice :
+		case spdlog::level::info :
+		case spdlog::level::debug :
+		case spdlog::level::trace :
+			defaut:
+		}
+		Printfln(msg.raw.c_str()); // formatted.str().c_str());
 	}
 
 }

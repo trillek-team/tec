@@ -8,7 +8,7 @@
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include "gui/console.hpp"
-
+#include "spdlog/spdlog.h"
 
 #include <thread>
 #include <string>
@@ -61,23 +61,38 @@ namespace tec {
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
-	tec::OS os;
+	// Console and logging initialization
+	spdlog::set_async_mode(1048576);
+	auto console = std::make_shared<tec::Console>();
+	std::vector<spdlog::sink_ptr> sinks;
+	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
+	sinks.push_back(console);
+	auto log = std::make_shared<spdlog::logger>("log", begin(sinks), end(sinks));
+	log->set_pattern("[%l] [thread %t] %v");
+	spdlog::register_logger(log);
 
+	tec::OS os;
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
+	log->info("Initialized OS and window system");
 
 	tec::IMGUISystem gui(os.GetWindow());
-	tec::Console console;
+
+	log->info("Initialized GUI system");
 	tec::RenderSystem rs;
+	log->info("Initialized rendiring system");
 
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
 	tec::PhysicsSystem ps;
+	log->info("Initialized physics engine");
 
 	tec::SoundSystem ss;
+	log->info("Initialized sound system");
 
 	std::int64_t frame_id = 1;
 
 	tec::VComputerSystem vcs;
+	log->info("Initialized virtual computer system");
 
 	tec::IntializeComponents();
 	tec::IntializeFileFactories();
@@ -342,24 +357,8 @@ int main(int argc, char* argv[]) {
 		}
 	});
 	gui.AddWindowDrawFunction("console", [&console]() {
-		console.Draw();
+		console->Draw();
 	});
-	console.AddLog("Testing...\n");
-	console.AddLog("1 Testing...\n");
-	console.AddLog("2 Testing...\n");
-	console.AddLog("3 Testing...\n");
-	console.AddLog("4 Testing...\n");
-	console.AddLog("5 Testing...\n");
-	console.AddLog("6 Testing...\n");
-	console.AddLog("7 Testing...\n");
-	console.AddLog("8 Testing...\n");
-	console.AddLog("9 Testing...\n");
-	console.AddLog("10 Testing...\n");
-	console.AddLog("11 Testing...\n");
-	console.AddLog("12 Testing...\n");
-	console.AddLog("13 Testing...\n");
-	console.AddLog("14 Testing...\n");
-	console.AddLog("15 Testing...\n");
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
@@ -392,7 +391,7 @@ int main(int argc, char* argv[]) {
 		ps.DebugDraw();
 
 		gui.Update(delta);
-		console.Update(delta);
+		console->Update(delta);
 
 		os.SwapBuffers();
 		if (camera_controller.mouse_look) {
