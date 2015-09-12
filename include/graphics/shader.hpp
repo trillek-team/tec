@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "filesystem.hpp"
 #include "multiton.hpp"
 
 namespace tec {
@@ -73,29 +74,37 @@ namespace tec {
 		 */
 		GLint GetAttributeLocation(const std::string name);
 
-		// Creates a Shader from files on disk and stores it in ShaderMap under name.
-		// filenames should be something like:
-		// auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-		//	std::make_pair(Shader::VERTEX, "basic.vert"), std::make_pair(Shader::FRAGMENT, "basic.frag"),
-		// };
-		// return is a weak_ptr to the created Shader.
-		static std::shared_ptr<Shader> CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> filenames);
-
-		// Creates a Shader from the provide source code stores it in ShaderMap under name.
-		// source_code should be something like:
-		// auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-		//	std::make_pair(Shader::VERTEX, "shader source code\nversion 330\n{}"), std::make_pair(Shader::FRAGMENT, "shader source code\nversion 330\n{}"),
-		// };
-		// return is a weak_ptr to the created Shader.
+		/**
+		 * \brief Creates a Shader from files on disk and stores it in ShaderMap under name.
+		 *
+		 * Filenames should be something like:
+		 * \code{.cpp}:
+		 * auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+		 *	std::make_pair(Shader::VERTEX, FilePath("basic.vert")), std::make_pair(Shader::FRAGMENT, FilePath("./basic.frag")),
+		 * };
+		 * \return is a weak_ptr to the created Shader.
+		 */
+		static std::shared_ptr<Shader> CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, tec::FilePath>> filenames);
+	
+		/**
+		 * \brief Creates a Shader the provide source code stores it in ShaderMap under name.
+		 *
+		 * Source_code should be something like:
+		 * \code{.cpp}:
+		 * auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
+		 *   std::make_pair(Shader::VERTEX, "shader source code\nversion 330\n{}"), std::make_pair(Shader::FRAGMENT, "shader source code\nversion 330\n{}"),
+		 * };
+		 * \return is a weak_ptr to the created Shader.
+		 */
 		static std::shared_ptr<Shader> CreateFromString(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code);
 
 		/**
 		 * \brief Loads the specified ShaderType from file filename.
 		 * \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT, GEOMETRY).
-		 * \param const std::string filename The filename of the source file to load.
+		 * \param const FilePath filename The filename of the source file to load (relative to assets folder)
 		 * \return void
 		 */
-		void LoadFromFile(const ShaderType type, const std::string filename);
+		void LoadFromFile(const ShaderType type, const tec::FilePath& filename);
 
 		/**
 		 * \brief Loads the specified ShaderType from the source string provided..
@@ -103,7 +112,9 @@ namespace tec {
 		 * \param const std::string source The source string to load from.
 		 * \return void
 		 */
-		void LoadFromString(const ShaderType type, const std::string source);
+		void LoadFromString(const ShaderType type, const std::string& source) {
+			LoadFromString(type, source, "");
+		}
 
 		/**
 		 * \brief Builds the shader program after all shaders have been loaded.
@@ -118,6 +129,17 @@ namespace tec {
 		 */
 		void DeleteProgram();
 	private:
+
+		/**
+		* \brief Loads the specified ShaderType from the source string provided..
+		* \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT, GEOMETRY).
+		* \param const std::string source The source string to load from.
+		* \param const std::string filename The filename from were the source comes (only for debug porpouses)
+		* \return void
+		*/
+		void LoadFromString(const ShaderType type, const std::string& source, const std::string& filename);
+
+		std::string filename;
 		GLuint program;
 		std::vector<GLuint> shaders;
 		std::map<std::string, GLint> attributes;

@@ -13,36 +13,6 @@
 #include <vector>
 
 namespace tec {
-	struct KeyboardEvent {
-		enum KEY_ACTION { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR };
-		int key;
-		int scancode;
-		KEY_ACTION action;
-		int mods;
-	};
-
-	struct MouseBtnEvent {
-		enum MOUSE_BTN_ACTION { DOWN, UP };
-		enum MOUSE_BTN { LEFT, RIGHT, MIDDLE };
-		MOUSE_BTN_ACTION action;
-		MOUSE_BTN button;
-	};
-
-	struct MouseMoveEvent {
-		double norm_x, norm_y; // Resolution independent new x, y (0-1) from upper-left to lower-right.
-		int old_x, old_y; // Client space old x, y.
-		int new_x, new_y; // Client space new x, y.
-	};
-
-	struct WindowResizedEvent {
-		int old_width, old_height; // Client space old width, height.
-		int new_width, new_height; // Client space new width, height.
-	};
-
-	struct FileDropEvent {
-		std::vector<std::string> filenames;
-	};
-
 	class OS {
 	public:
 		OS() : mouse_lock(false) { }
@@ -227,6 +197,7 @@ namespace tec {
 		* \return void
 		*/
 		static void GetMousePosition(double* x, double* y);
+
 	private:
 		/**
 		* \brief Updates the internal size variables from the windowResized callback.
@@ -289,5 +260,7 @@ namespace tec {
 		double old_mouse_x, old_mouse_y;
 		double last_time; // The time at the last call to GetDeltaTime().
 		bool mouse_lock; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
+
+
 	};
 }

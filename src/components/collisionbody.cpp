@@ -7,26 +7,29 @@
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 
 namespace tec {
-	std::unique_ptr<btTriangleMesh> GenerateTriangleMesh(std::shared_ptr<Mesh> mesh_file) {
-		auto mesh = std::unique_ptr<btTriangleMesh>(new btTriangleMesh());
+	std::unique_ptr<btTriangleMesh> GenerateTriangleMesh(std::shared_ptr<MeshFile> mesh_file) {
+		auto btmesh = std::unique_ptr<btTriangleMesh>(new btTriangleMesh());
 		if (!mesh_file) {
 			return nullptr;
 		}
-		for (size_t mesh_i = 0; mesh_i < mesh_file->GetMeshGroupCount(); ++mesh_i) {
-			const auto& mesh_group = mesh_file->GetMeshGroup(mesh_i);
-			const auto& temp_lock = mesh_group.lock();
-			for (size_t face_i = 0; face_i < temp_lock->indicies.size(); ++face_i) {
-				const VertexData& v1 = temp_lock->verts[temp_lock->indicies[face_i]];
-				const VertexData& v2 = temp_lock->verts[temp_lock->indicies[++face_i]];
-				const VertexData& v3 = temp_lock->verts[temp_lock->indicies[++face_i]];
-				mesh->addTriangle(
-					btVector3(v1.position.x, v1.position.y, v1.position.z),
-					btVector3(v2.position.x, v2.position.y, v2.position.z),
-					btVector3(v3.position.x, v3.position.y, v3.position.z), true);
+		for (size_t mesh_i = 0; mesh_i < mesh_file->GetMeshCount(); ++mesh_i) {
+			Mesh* mesh = mesh_file->GetMesh(mesh_i);
+			for (ObjectGroup* objgroup : mesh->object_groups) {
+				btmesh->preallocateVertices(mesh->verts.size());
+				btmesh->preallocateIndices(objgroup->indicies.size());
+				for (size_t face_i = 0; face_i < objgroup->indicies.size(); ++face_i) {
+					const VertexData& v1 = mesh->verts[objgroup->indicies[face_i]];
+					const VertexData& v2 = mesh->verts[objgroup->indicies[++face_i]];
+					const VertexData& v3 = mesh->verts[objgroup->indicies[++face_i]];
+					btmesh->addTriangle(
+						btVector3(v1.position.x, v1.position.y, v1.position.z),
+						btVector3(v2.position.x, v2.position.y, v2.position.z),
+						btVector3(v3.position.x, v3.position.y, v3.position.z), false);
+				}
 			}
 		}
 
-		return std::move(mesh);
+		return std::move(btmesh);
 	}
 	CollisionBody::CollisionBody(COLLISION_SHAPE collision_shape) : collision_shape(collision_shape),
 		new_collision_shape(collision_shape), mass(0.0), radius(1.0f), height(1.0f), disable_deactivation(false),
@@ -172,7 +175,7 @@ namespace tec {
 		return std::move(refcomp);
 	}
 
-	CollisionMesh::CollisionMesh(std::shared_ptr<Mesh> mesh, bool dynamic) : CollisionBody((dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {
+	CollisionMesh::CollisionMesh(std::shared_ptr<MeshFile> mesh, bool dynamic) : CollisionBody((dynamic ? DYNAMIC_MESH : STATIC_MESH)), mesh_file(mesh) {
 		if (!mesh) {
 			return;
 		}

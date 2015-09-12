@@ -8,14 +8,14 @@
 #include "multiton.hpp"
 
 namespace tec {
-	class Mesh;
-	typedef Multiton<std::string, std::shared_ptr<Mesh>> MeshMap;
+	class MeshFile;
+	typedef Multiton<std::string, std::shared_ptr<MeshFile>> MeshMap;
 
 	// Vertex data used for rendering or other purposes.
 	struct VertexData {
 		VertexData() : position(0.0f, 0.0f, 0.0f), color(0.0f, 1.0f, 0.0f, 1.0f) { }
-		VertexData(double x, double y, double z, double r, double g, double b) :
-			position(x, y, z), color(r, g, b, 1.0f) { }
+		VertexData(double x, double y, double z, double r, double g, double b, double u = 0.0, double v = 0.0) :
+			position(x, y, z), color(r, g, b, 1.0f), uv(u, v) { }
 		glm::vec3 position;
 		glm::vec4 color;
 		glm::vec3 normal;
@@ -24,63 +24,105 @@ namespace tec {
 		glm::uvec4 bone_indicies; // Used for animation.
 	};
 
-	// Container for holding sub-mesh groups.
-	struct MeshGroup {
-		std::vector<VertexData> verts;
-		std::vector<unsigned int> indicies;
-		std::list<std::string> textures;
+	struct MaterialGroup final {
+		unsigned int start;
+		unsigned int count;
 		std::string material_name;
+		std::list<std::string> textures;
 	};
 
-	class Mesh {
+	struct ObjectGroup final {
+		std::vector<unsigned int> indicies;
+		std::vector<MaterialGroup> material_groups;
+	};
+
+	struct Mesh final {
+		~Mesh() {
+			for (ObjectGroup* object : this->object_groups) {
+				if (object) {
+					delete object;
+				}
+			}
+		}
+		std::vector<VertexData> verts;
+		std::vector<ObjectGroup*> object_groups;
+	};
+
+	class MeshFile {
 	public:
-		Mesh() : name("test") { }
-		virtual ~Mesh() { }
-
-		/**
-		 * \brief Returns a sub-mesh group.
-		 *
-		 * \param[in] const unsigned int& meshGroup The index of the mesh group to retrieve.
-		 * \return std::weak_ptr<MeshGroup> The mesh group requested
-		 */
-		std::weak_ptr<MeshGroup> GetMeshGroup(const size_t mesh_group);
-
-		/**
-		 * \brief Returns the number of sub-mesh groups.
-		 *
-		 * \return size_t The number of sub-mesh groups.
-		 */
-		size_t GetMeshGroupCount() const {
-			return this->mesh_groups.size();
+		MeshFile() : name("test") { }
+		virtual ~MeshFile() {
+			for (Mesh* mesh : this->meshes) {
+				if (mesh) {
+					delete mesh;
+				}
+			}
 		}
 
-		// Add a single vertex to the vector, for the specified mesh_group.
-		void AddVertex(VertexData& v, size_t mesh_group = 0);
+		/**
+		 * \brief Creates a new mesh and adds it to this file.
+		 *
+		 * \return Mesh* The mesh that was added to this file.
+		 */
+		Mesh* CreateMesh() {
+			this->meshes.push_back(new Mesh());
+			return *(this->meshes.end() - 1);
+		}
 
-		// Used to batch copy a vector of vertices, for the specified mesh_group.
-		void SetVerts(std::vector<VertexData>& verts, size_t mesh_group = 0);
+		/**
+		 * \brief Adds a mesh to this file. Ownership is transferred.
+		 *
+		 * \param[in] Mesh* mesh The mesh to add to this file.
+		 * \return void
+		 */
+		void AddMesh(Mesh* mesh) {
+			this->meshes.push_back(mesh);
+		}
 
-		// Returns the vertex buffer, for specified mesh_group.
-		const std::vector<VertexData>* GetVertexBuffer(size_t mesh_group = 0);
+		/**
+		 * \brief Returns a specific mesh.
+		 *
+		 * \param[in] const unsigned size_t index The index of the mesh to retrieve.
+		 * \return std::weak_ptr<MeshGroup> The requested mesh or null if the index is invalid.
+		 */
+		Mesh* GetMesh(const size_t index) {
+			if (index < this->meshes.size()) {
+				return this->meshes.at(index);
+			}
 
-		// Add a single index to the vector, for the specified mesh_group.
-		void AddIndex(unsigned int i, size_t mesh_group = 0);
+			return nullptr;
+		}
 
-		// Used to batch copy a vector of indices, for the specified mesh_group.
-		void SetIndicies(std::vector<unsigned int>& indicies, size_t mesh_group = 0);
-
-		// Returns the index buffer, for specified mesh_group.
-		const std::vector<unsigned int>* GetIndexBuffer(size_t mesh_group = 0);
+		/**
+		 * \brief Returns the number of meshes in this file.
+		 *
+		 * \return size_t The number of meshes in this file.
+		 */
+		size_t GetMeshCount() const {
+			return this->meshes.size();
+		}
 
 		const std::string GetName() const {
 			return this->name;
 		}
-		void SetName(const std::string name) {
+		void SetName(const std::string& name) {
 			this->name = name;
 		}
-	protected:
-		std::vector<std::shared_ptr<MeshGroup>> mesh_groups;
-		std::string name;
-	};
 
+		bool IsDirty() const {
+			return this->dirty;
+		}
+		/** \brief Mark dirty */
+		void Invalidate() {
+			this->dirty = true;
+		}
+		/** \brief Mark not dirty */
+		void Validate() {
+			this->dirty = false;
+		}
+	protected:
+		std::vector<Mesh*> meshes;
+		std::string name;
+		bool dirty = false;
+	};
 }
