@@ -151,7 +151,7 @@ namespace tec {
 
 		VoxelCommand add_voxel(
 			[ ] (VoxelVolume* vox_vol) {
-			for (int i = -25; i <= 25; ++i) {
+			for (int i = -5; i <= 5; ++i) {
 				for (int j = -25; j <= 25; ++j) {
 					vox_vol->AddVoxel(-1, i, j);
 				}

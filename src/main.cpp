@@ -36,22 +36,25 @@ namespace tec {
 
 		void On(std::shared_ptr<FileDropEvent> fd_event) {
 			for (auto file : fd_event->filenames) {
+				// TODO Use FilePath class !
 				if (file.find(".") == std::string::npos) {
 					std::cout << "No extension!" << std::endl;
 					continue;
 				}
-				std::string ext = file.substr(file.find_last_of(".") + 1);
+				/*
 				if (file.find("assets/") == std::string::npos) {
 					std::cout << "Please place files in the assets/ folder." << std::endl;
 					continue;
 				}
 				std::string relative_filename = file.substr(file.find("assets/"));
+				*/
+				std::string ext = file.substr(file.find_last_of(".") + 1);
 				if (file_factories.find(ext) == file_factories.end()) {
 					std::cout << "No loader for extension: " << ext << std::endl;
 					continue;
 				}
-				std::cout << "Loading: " << relative_filename << std::endl;
-				file_factories[ext](relative_filename);
+				std::cout << "Loading: " << file << std::endl;
+				file_factories[ext](file);
 			}
 		}
 	};
