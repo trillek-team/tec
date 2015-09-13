@@ -38,7 +38,7 @@ namespace tec {
 
 		static const char* GetClipboardText();
 		static void SetClipboardText(const char* text);
-		static void RenderDrawLists(ImDrawList** const cmd_lists, int cmd_lists_count);
+		static void RenderDrawLists(ImDrawData* draw_data);
 	private:
 		void On(std::shared_ptr<WindowResizedEvent> data);
 

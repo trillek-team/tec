@@ -40,7 +40,11 @@ LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/main.cpp")
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
 
 # IMGUI setup
-FILE(GLOB IMGUI_SRC "modules/imgui/imgui.cpp")
+FILE(GLOB IMGUI_SRC 
+  "modules/imgui/imgui.cpp"
+  "modules/imgui/imgui_draw.cpp"
+  "modules/imgui/imgui_demo.cpp"
+  )
 FILE(GLOB IMGUI_INCLUDES "modules/imgui/*.h")
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/imgui/)
 
