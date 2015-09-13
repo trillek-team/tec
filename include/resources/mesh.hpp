@@ -21,7 +21,7 @@ namespace tec {
 		glm::vec3 normal;
 		glm::vec2 uv;
 		glm::vec4 bone_weights; // Used for animation.
-		glm::uvec4 bone_indicies; // Used for animation.
+		glm::uvec4 bone_indices; // Used for animation.
 	};
 
 	struct MaterialGroup final {
@@ -32,7 +32,7 @@ namespace tec {
 	};
 
 	struct ObjectGroup final {
-		std::vector<unsigned int> indicies;
+		std::vector<unsigned int> indices;
 		std::vector<MaterialGroup> material_groups;
 	};
 

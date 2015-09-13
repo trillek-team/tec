@@ -16,7 +16,7 @@ namespace tec {
 		OBJ() { }
 		~OBJ() { }
 
-		// OBJ Helper struct for face vertex data indicies.
+		// OBJ Helper struct for face vertex data indices.
 		struct Face {
 			Face() {
 				this->pos[0] = 0; this->pos[1] = 0; this->pos[2] = 0;
