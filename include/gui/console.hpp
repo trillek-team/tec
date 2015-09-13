@@ -7,6 +7,7 @@
 #include <imgui.h>
 
 #include "os.hpp"
+#include "events.hpp"
 #include "event-system.hpp"
 #include "spdlog/sinks/sink.h"
 

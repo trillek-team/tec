@@ -11,7 +11,7 @@
 #include "entity.hpp"
 
 namespace tec {
-	class Mesh;
+	class MeshFile;
 
 	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, STATIC_MESH, DYNAMIC_MESH, NONE };
 
@@ -40,9 +40,9 @@ namespace tec {
 		eid entity_id;
 	};
 	struct CollisionMesh : public CollisionBody {
-		CollisionMesh(std::shared_ptr<Mesh> mesh, bool dynamic = false);
+		CollisionMesh(std::shared_ptr<MeshFile> mesh, bool dynamic = false);
 
 		std::shared_ptr<btTriangleMesh> mesh;
-		std::shared_ptr<Mesh> mesh_file;
+		std::shared_ptr<MeshFile> mesh_file;
 	};
 }

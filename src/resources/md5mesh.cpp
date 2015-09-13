@@ -123,18 +123,16 @@ namespace tec {
 		return w;
 	}
 
-	std::shared_ptr<MD5Mesh> MD5Mesh::Create(const std::string fname) {
+	std::shared_ptr<MD5Mesh> MD5Mesh::Create(const FilePath& fname) {
 		auto mesh = std::make_shared<MD5Mesh>();
-		mesh->fname = fname;
-
-		mesh->SetName(fname);
-
-		MeshMap::Set(fname, mesh);
+		mesh->SetFileName(fname);
+		mesh->SetName(fname.SubpathFrom("assets").toGenericString());
 
 		if (mesh->Parse()) {
 			mesh->CalculateVertexPositions();
 			mesh->CalculateVertexNormals();
 			mesh->UpdateIndexList();
+			MeshMap::Set(mesh->GetName(), mesh);
 			return mesh;
 		}
 
@@ -142,17 +140,13 @@ namespace tec {
 	}
 
 	bool MD5Mesh::Parse() {
-		std::ifstream f(this->fname, std::ios::in);
-
-		std::string file_path;
-
-		if (this->fname.find("/") != std::string::npos) {
-			file_path = this->fname.substr(0, this->fname.find_last_of("/") + 1);
+		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			// Can't open the file!
+			return false;
 		}
-		else if (this->fname.find("\"") != std::string::npos) {
-			file_path = this->fname.substr(0, this->fname.find_last_of("\"") + 1);
-		}
-
+		auto base_path = this->path.BasePath();
+		
+		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
 			return false;
 		}
@@ -179,7 +173,7 @@ namespace tec {
 			else if (identifier == "numMeshes") {
 				int nmeshes;
 				ss >> nmeshes;
-				this->meshes.reserve(nmeshes);
+				this->meshes_internal.reserve(nmeshes);
 			}
 			else if (identifier == "joints") {
 				while (std::getline(f, line)) {
@@ -196,7 +190,7 @@ namespace tec {
 				}
 			}
 			else if (identifier == "mesh") {
-				Mesh mesh;
+				InternalMesh mesh;
 				while (std::getline(f, line)) {
 					std::string line2 = CleanString(line);
 					ss.str(line2);
@@ -207,9 +201,9 @@ namespace tec {
 
 					if (identifier == "shader") {
 						ss >> mesh.shader;
-						mesh.shader = file_path + mesh.shader;
+						auto filename = base_path / mesh.shader;
 						if (!TextureMap::Has(mesh.shader)) {
-							auto pixbuf = PixelBuffer::Create(mesh.shader, mesh.shader);
+							auto pixbuf = PixelBuffer::Create(mesh.shader, filename);
 							auto tex = std::make_shared<TextureObject>(pixbuf);
 							TextureMap::Set(mesh.shader, tex);
 						}
@@ -241,7 +235,7 @@ namespace tec {
 					// Check if the line contained the closing brace. This is done after parsing
 					// as the line might have the ending brace on it.
 					if (line.find("}") != std::string::npos) {
-						this->meshes.push_back(std::move(mesh));
+						this->meshes_internal.push_back(std::move(mesh));
 						break;
 					}
 				}
@@ -252,32 +246,25 @@ namespace tec {
 	}
 
 	void MD5Mesh::CalculateVertexPositions() {
-		if (this->mesh_groups.size() < this->meshes.size()) {
-			this->mesh_groups.resize(this->meshes.size());
-			for (auto& mgruop : this->mesh_groups) {
-				if (!mgruop) {
-					mgruop = std::make_shared<MeshGroup>();
-				}
+		if (this->meshes.size() < this->meshes_internal.size()) {
+			this->meshes.reserve(this->meshes_internal.size());
+			for (size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
+				CreateMesh();
 			}
 		}
 
-		for (size_t i = 0; i < this->meshes.size(); ++i) {
-			if (this->mesh_groups[i]->verts.size() < this->meshes[i].verts.size()) {
-				this->mesh_groups[i]->verts.resize(this->meshes[i].verts.size());
+		for (size_t i = 0; i < this->meshes_internal.size(); ++i) {
+			Mesh* mesh = this->meshes[i];
+			InternalMesh& int_mesh = this->meshes_internal[i];
+			if (mesh->verts.size() < int_mesh.verts.size()) {
+				mesh->verts.resize(int_mesh.verts.size());
 			}
-			this->mesh_groups[i]->textures.push_back(this->meshes[i].shader);
-			auto material_name = this->meshes[i].shader;
-			this->mesh_groups[i]->material_name = material_name.substr(
-				material_name.find_last_of("/") + 1,
-				material_name.find_last_of(".") -
-				material_name.find_last_of("/") - 1)
-				+ "_material";
-			for (size_t j = 0; j < this->meshes[i].verts.size(); ++j) {
+			for (size_t j = 0; j < int_mesh.verts.size(); ++j) {
 				VertexData vdata;
 
 				// Compute vertex position based on joint position.
-				for (size_t k = 0; k < this->meshes[i].verts[j].weight_count; ++k) {
-					Weight& weight = this->meshes[i].weights[this->meshes[i].verts[j].startWeight + k];
+				for (size_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
+					Weight& weight = int_mesh.weights[int_mesh.verts[j].startWeight + k];
 
 					/* Calculate transformed vertex for this weight */
 					glm::vec3 wv = this->joints[weight.joint].orientation * weight.position;
@@ -289,51 +276,51 @@ namespace tec {
 				}
 
 				// Cache the calculated position for later
-				this->meshes[i].verts[j].position = vdata.position;
+				int_mesh.verts[j].position = vdata.position;
 
 				// Copy the texture coordinates
-				vdata.uv = this->meshes[i].verts[j].uv;
+				vdata.uv = int_mesh.verts[j].uv;
 
-				this->mesh_groups[i]->verts[j] = vdata;
+				mesh->verts[j] = vdata;
 			}
 		}
 	}
 
 	void MD5Mesh::CalculateVertexNormals() {
-		if (this->mesh_groups.size() < this->meshes.size()) {
-			this->mesh_groups.resize(this->meshes.size());
-			for (auto& mgruop : this->mesh_groups) {
-				if (!mgruop) {
-					mgruop = std::make_shared<MeshGroup>();
-				}
+		if (this->meshes.size() < this->meshes_internal.size()) {
+			this->meshes.reserve(this->meshes_internal.size());
+			for (size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
+				CreateMesh();
 			}
 		}
 
-		for (size_t i = 0; i < this->meshes.size(); ++i) {
-			if (this->mesh_groups[i]->verts.size() < this->meshes[i].verts.size()) {
-				this->mesh_groups[i]->verts.resize(this->meshes[i].verts.size());
+		for (size_t i = 0; i < this->meshes_internal.size(); ++i) {
+			Mesh* mesh = this->meshes[i];
+			InternalMesh& int_mesh = this->meshes_internal[i];
+			if (mesh->verts.size() < int_mesh.verts.size()) {
+				mesh->verts.resize(int_mesh.verts.size());
 				// If we need to resize here then we will need to calculate the vertex positions again.
 				CalculateVertexPositions();
 			}
 			// Loop through all triangles and calculate the normal of each triangle
-			for (size_t j = 0; j < this->meshes[i].tris.size(); ++j) {
-				glm::vec3 v0 = this->meshes[i].verts[this->meshes[i].tris[j].verts[0]].position;
-				glm::vec3 v1 = this->meshes[i].verts[this->meshes[i].tris[j].verts[1]].position;
-				glm::vec3 v2 = this->meshes[i].verts[this->meshes[i].tris[j].verts[2]].position;
+			for (size_t j = 0; j < int_mesh.tris.size(); ++j) {
+				glm::vec3 v0 = int_mesh.verts[int_mesh.tris[j].verts[0]].position;
+				glm::vec3 v1 = int_mesh.verts[int_mesh.tris[j].verts[1]].position;
+				glm::vec3 v2 = int_mesh.verts[int_mesh.tris[j].verts[2]].position;
 
 				glm::vec3 normal = glm::cross(v2 - v0, v1 - v0);
 
-				this->meshes[i].verts[this->meshes[i].tris[j].verts[0]].normal += normal;
-				this->meshes[i].verts[this->meshes[i].tris[j].verts[1]].normal += normal;
-				this->meshes[i].verts[this->meshes[i].tris[j].verts[2]].normal += normal;
+				int_mesh.verts[int_mesh.tris[j].verts[0]].normal += normal;
+				int_mesh.verts[int_mesh.tris[j].verts[1]].normal += normal;
+				int_mesh.verts[int_mesh.tris[j].verts[2]].normal += normal;
 			}
 
 			// Now normalize all the normals
-			for (size_t j = 0; j < this->meshes[i].verts.size(); ++j) {
-				Vertex& vert = this->meshes[i].verts[j];
+			for (size_t j = 0; j < int_mesh.verts.size(); ++j) {
+				Vertex& vert = int_mesh.verts[j];
 
 				glm::vec3 normal = glm::normalize(vert.normal);
-				this->mesh_groups[i]->verts[j].normal = normal;
+				mesh->verts[j].normal = normal;
 
 				// Reset the normal to calculate the bind-pose normal in joint space
 				vert.normal = glm::vec3(0);
@@ -341,7 +328,7 @@ namespace tec {
 				// Put the bind-pose normal into joint-local space
 				// so the animated normal can be computed faster later
 				for (size_t j = 0; j < vert.weight_count; ++j) {
-					const Weight& weight = this->meshes[i].weights[vert.startWeight + j];
+					const Weight& weight = int_mesh.weights[vert.startWeight + j];
 					vert.normal += (normal * this->joints[weight.joint].orientation) * weight.bias;
 				}
 			}
@@ -349,25 +336,36 @@ namespace tec {
 	}
 
 	void MD5Mesh::UpdateIndexList() {
-		if (this->mesh_groups.size() < this->meshes.size()) {
-			this->mesh_groups.resize(this->meshes.size());
-			for (auto& mgruop : this->mesh_groups) {
-				if (!mgruop) {
-					mgruop = std::make_shared<MeshGroup>();
-				}
+		if (this->meshes.size() < this->meshes_internal.size()) {
+			this->meshes.reserve(this->meshes_internal.size());
+			for (size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
+				CreateMesh();
 			}
 		}
 
-		// Copy the triangle indicies.
-		for (size_t i = 0; i < this->meshes.size(); ++i) {
-			if (this->mesh_groups[i]->indicies.size() < this->meshes[i].tris.size()) {
-				this->mesh_groups[i]->indicies.reserve(this->meshes[i].tris.size() * 3);
+		for (size_t i = 0; i < this->meshes_internal.size(); ++i) {
+			const InternalMesh& int_mesh = this->meshes_internal[i];
+			if (this->meshes[i]->object_groups.size() == 0) {
+				this->meshes[i]->object_groups.push_back(new ObjectGroup());
 			}
-			for (size_t j = 0; j < this->meshes[i].tris.size(); ++j) {
-				this->mesh_groups[i]->indicies.push_back(this->meshes[i].tris[j].verts[0]);
-				this->mesh_groups[i]->indicies.push_back(this->meshes[i].tris[j].verts[1]);
-				this->mesh_groups[i]->indicies.push_back(this->meshes[i].tris[j].verts[2]);
+			ObjectGroup* objgroup = this->meshes[i]->object_groups[0];
+			std::string material_name = int_mesh.shader;
+			material_name = material_name.substr(
+				material_name.find_last_of("/") + 1,
+				material_name.find_last_of(".") -
+				material_name.find_last_of("/") - 1)
+				+ "_material";
+			if (objgroup->indicies.size() < int_mesh.tris.size()) {
+				objgroup->indicies.reserve(int_mesh.tris.size() * 3);
 			}
+			for (size_t j = 0; j < int_mesh.tris.size(); ++j) {
+				objgroup->indicies.push_back(int_mesh.tris[j].verts[0]);
+				objgroup->indicies.push_back(int_mesh.tris[j].verts[1]);
+				objgroup->indicies.push_back(int_mesh.tris[j].verts[2]);
+			}
+			MaterialGroup mat_group = {0, objgroup->indicies.size(), material_name};
+			mat_group.textures.push_back(int_mesh.shader);
+			objgroup->material_groups.push_back(std::move(mat_group));
 		}
 	}
 }

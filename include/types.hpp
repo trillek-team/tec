@@ -60,6 +60,8 @@ namespace tec {
 	struct DirectionalLight;
 	MAKE_IDTYPE(DirectionalLight, 10);
 	MAKE_COMPONENTCASETYPE(DirectionalLight, proto::Component::kDirlight);
+	class VoxelVolume;
+	MAKE_IDTYPE(VoxelVolume, 11);
 
 	class MD5Mesh;
 	MAKE_EXTTYPE(MD5Mesh, "md5mesh");

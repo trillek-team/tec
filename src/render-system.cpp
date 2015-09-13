@@ -14,7 +14,7 @@
 #include "resources/mesh.hpp"
 #include "resources/obj.hpp"
 #include "entity.hpp"
-#include "os.hpp"
+#include "events.hpp"
 
 namespace tec {
 	RenderSystem::RenderSystem() : window_width(1024), window_height(768) {
@@ -27,8 +27,8 @@ namespace tec {
 		// Black is the safest clear color since this is a space game.
 		glClearColor(0.0, 0.0, 0.0, 0.0);
 
-		this->sphere_vbo.Load(OBJ::Create("assets/sphere/sphere.obj"));
-		this->quad_vbo.Load(OBJ::Create("assets/quad/quad.obj"));
+		this->sphere_vbo.Load(OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj")));
+		this->quad_vbo.Load(OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj")));
 
 		this->light_gbuffer.AddColorAttachments(4, this->window_width, this->window_height);
 		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_STENCIL,
@@ -222,7 +222,7 @@ namespace tec {
 		glUniform1i(def_pl_shader->GetUniformLocation("gPositionMap"), GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
 		glUniform1i(def_pl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glUniform1i(def_pl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-		glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), this->window_width, this->window_height);
+		glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), (GLfloat) this->window_width, (GLfloat) this->window_height);
 		GLint model_index = def_pl_shader->GetUniformLocation("model");
 		GLint Color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
 		GLint AmbientIntensity_index = def_pl_shader->GetUniformLocation("gPointLight.Base.AmbientIntensity");
@@ -307,7 +307,7 @@ namespace tec {
 		glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
 		glUniform1i(def_dl_shader->GetUniformLocation("gShadowMap"), GBuffer::GBUFFER_NUM_TEXTURES);
-		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), this->window_width, this->window_height);
+		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), (GLfloat) this->window_width, (GLfloat) this->window_height);
 		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), camera_matrix[3].x, camera_matrix[3].y, camera_matrix[3].z);
 		GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 		GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
@@ -437,6 +437,7 @@ namespace tec {
 				renderable->buffer = std::make_shared<VertexBufferObject>();
 				renderable->buffer->Load(renderable->mesh);
 				size_t group_count = renderable->buffer->GetVertexGroupCount();
+				renderable->vertex_groups.clear();
 				if (group_count > 0) {
 					for (size_t i = 0; i < group_count; ++i) {
 						renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
@@ -448,6 +449,7 @@ namespace tec {
 			}
 
 			if (renderable->buffer) {
+				renderable->buffer->Update();
 				RenderItem ri;
 				ri.model_matrix = &this->model_matricies[entity_id];
 				ri.vao = renderable->buffer->GetVAO();

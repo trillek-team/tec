@@ -6,6 +6,7 @@
 #include <string>
 
 #include "multiton.hpp"
+#include "filesystem.hpp"
 
 namespace tec {
 	class PixelBuffer;
@@ -24,10 +25,10 @@ namespace tec {
 		/**
 		 * \brief Returns a resource with the specified name.
 		 *
-		 * \param[in] const std::string filename The filename of the image file to load.
+		 * \param[in] const FilePath filename The filename of the image file to load.
 		 * \return bool True if initialization finished with no errors.
 		 */
-		bool Load(const std::string filename);
+		bool Load(const FilePath& filename);
 
 		PixelBuffer();
 		~PixelBuffer();
@@ -74,10 +75,10 @@ namespace tec {
 		 * PixelBufferMap under name.  It will optionally load a texture file
 		 * with the given filename.
 		 * \param const std::string name The name to store the PixelBuffer under.
-		 * \param const std::string filename The optional filename of the image to load.
+		 * \param const FilePath filename The optional filename of the image to load.
 		 * \return std::shared_ptr<PixelBuffer> The created PixelBuffer.
 		 */
-		static std::shared_ptr<PixelBuffer> Create(const std::string name, const std::string filename = "");
+		static std::shared_ptr<PixelBuffer> Create(const std::string name, const FilePath& filename = FilePath());
 
 		bool IsDirty() const;
 		/** \brief Mark dirty */

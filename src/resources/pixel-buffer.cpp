@@ -147,10 +147,10 @@ namespace tec {
 		return true;
 	}
 
-	std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string name, const std::string filename) {
+	std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string name, const FilePath& filename) {
 		auto pbuf = std::make_shared<PixelBuffer>();
 		PixelBufferMap::Set(name, pbuf);
-		if (filename != "") {
+		if (!filename.empty()) {
 			pbuf->Load(filename);
 		}
 		return pbuf;
@@ -188,10 +188,12 @@ namespace tec {
 #define STB_IMAGE_IMPLEMENTATION
 #include "resources/stb_image.h"
 
-	bool PixelBuffer::Load(const std::string filename) {
+	bool PixelBuffer::Load(const FilePath& filename) {
 		int num_components;
 		unsigned char *data;
-		data = stbi_load(filename.c_str(), &this->imagewidth, &this->imageheight, &num_components, 0);
+		// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a fopen to FileSystem ?
+		// Als we not are doing path valid or file existence check
+		data = stbi_load(filename.toString().c_str(), &this->imagewidth, &this->imageheight, &num_components, 0);
 		if (data) {
 			switch (num_components) {
 				case 3:

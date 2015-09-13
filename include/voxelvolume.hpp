@@ -8,11 +8,15 @@
 #include <cstdint>
 
 #include "multiton.hpp"
+#include "resources/mesh.hpp"
 #include "command-queue.hpp"
+#include "event-system.hpp"
+#include "reflection.hpp"
 
 namespace tec {
+	struct MouseClickEvent;
 	struct Vertex;
-	class Mesh;
+	class MeshFile;
 
 	struct Voxel {
 		enum NEIGHBORS { UP = 0, DOWN, LEFT, RIGHT, FRONT, BACK };
@@ -25,9 +29,10 @@ namespace tec {
 
 	typedef Command<VoxelVolume> VoxelCommand;
 
-	class VoxelVolume : public CommandQueue < VoxelVolume > {
+	class VoxelVolume : public CommandQueue < VoxelVolume >,
+		public EventQueue<MouseClickEvent> {
 	public:
-		VoxelVolume(const eid entity_id, std::weak_ptr<Mesh> mesh, const size_t submesh = 0);
+		VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh);
 		~VoxelVolume();
 	public:
 		// Iterates over all the actions queued before the call to update.
@@ -36,7 +41,7 @@ namespace tec {
 		// Generates a vertex (and index) buffer for the current voxel state.
 		void UpdateMesh();
 
-		std::weak_ptr<Mesh> GetMesh();
+		std::weak_ptr<MeshFile> GetMesh();
 
 		// All values are relative to the front orientation and centered on the root voxel.
 		// Slice is depth (away from the screen is positive). Row is up/down. Column is left/right.
@@ -47,15 +52,32 @@ namespace tec {
 		void RemoveVoxel(const std::int16_t row, const std::int16_t column, const std::int16_t slice);
 
 		// Creates a VoxelVolume for entity_id and uses a PolygonMeshData with name and into submesh.
-		static std::weak_ptr<VoxelVolume> Create(const eid entity_id,
-			const std::string name, const size_t submesh = 0);
+		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, const std::string name);
 		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into submesh.
-		static std::weak_ptr<VoxelVolume> Create(const eid entity_id,
-			std::weak_ptr<Mesh> mesh = std::weak_ptr<Mesh>(), const size_t submesh = 0);
+		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
+		
+		void On(eid entity_id, std::shared_ptr<MouseClickEvent> data);
+		
+		static ReflectionComponent Reflection(VoxelVolume* val) {
+			ReflectionComponent refcomp;
+			return std::move(refcomp);
+		}
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
-		std::weak_ptr<Mesh> mesh;
-		size_t submesh;
+		std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.
+		std::unordered_map<std::int64_t, size_t> vertex_index; // Used to update or remove voxels from the mesh.
+		std::weak_ptr<MeshFile> mesh;
 		eid entity_id;
+	};
+
+	class VoxelSystem {
+	public:
+		void Update(double delta) {
+			for (auto itr = VoxelVolumeMap::Begin(); itr != VoxelVolumeMap::End(); ++itr) {
+				itr->second->Update(delta);
+			}
+		}
+	private:
+		typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVolumeMap;
 	};
 }
