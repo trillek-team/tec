@@ -33,7 +33,7 @@ namespace tec {
 		size_t rom_size;
 		std::unique_ptr<VComputer> vc;
 		std::list<std::shared_ptr<Device>> devices;
-		
+
 		static ReflectionComponent Reflection(Computer* val) {
 			ReflectionComponent refcomp;
 			return std::move(refcomp);

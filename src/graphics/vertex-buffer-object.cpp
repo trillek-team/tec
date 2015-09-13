@@ -8,7 +8,7 @@
 namespace tec {
 	VertexBufferObject::VertexBufferObject() : vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0) { }
 
-	VertexBufferObject::VertexBufferObject(std::shared_ptr<Mesh> mesh) :
+	VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) :
 		vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0), source_mesh(mesh) {
 		Load(mesh);
 	}
@@ -19,8 +19,8 @@ namespace tec {
 
 	void VertexBufferObject::Destroy() {
 		glDeleteBuffers(1, &this->vbo);
-		glDeleteBuffers(1, &this->vao);
 		glDeleteBuffers(1, &this->ibo);
+		glDeleteVertexArrays(1, &this->vao);
 	}
 
 	const GLuint VertexBufferObject::GetVAO() { return this->vao; }
@@ -41,56 +41,48 @@ namespace tec {
 	bool VertexBufferObject::IsDynamic() const { return !this->source_mesh.expired(); }
 
 	void VertexBufferObject::Update() {
-		std::shared_ptr<Mesh> locked_ptr = this->source_mesh.lock();
+		std::shared_ptr<MeshFile> locked_ptr = this->source_mesh.lock();
 		if (locked_ptr) {
-			Load(*locked_ptr->GetVertexBuffer(), *locked_ptr->GetIndexBuffer());
+			if (locked_ptr->IsDirty()) {
+				Load(locked_ptr);
+				locked_ptr->Validate();
+			}
 		}
 	}
 
-	void VertexBufferObject::Load(std::shared_ptr<Mesh> mesh) {
+	void VertexBufferObject::Load(std::shared_ptr<MeshFile> mesh) {
 		if (mesh) {
 			this->source_mesh = mesh;
-			// TODO: Make a load method that takes offset and count to sub_buffer.
-			size_t vertex_goup_count = mesh->GetMeshGroupCount();
-			size_t total_verts = 0;
-			size_t total_indices = 0;
+			std::vector<GLuint> all_indices;
+			std::vector<VertexData> all_verts;
+			size_t vert_offset = 0;
 			this->vertex_groups.clear();
-			for (size_t i = 0; i < vertex_goup_count; ++i) {
-				auto submesh = mesh->GetMeshGroup(i).lock();
-				if (submesh) {
-					VertexGroup group;
-					group.index_count = submesh->indicies.size();
-					group.starting_offset = total_indices;
-					group.mesh_group_number = i;
-					if (MaterialMap::Has(submesh->material_name)) {
-						group.material = MaterialMap::Get(submesh->material_name);
-					}
-					else {
-						group.material = Material::Create(submesh->material_name);
-						group.material->SetDrawElementsMode(GL_TRIANGLES);
-						group.material->SetPolygonMode(GL_FILL);
-						for (auto texture : submesh->textures) {
-							if (TextureMap::Has(texture)) {
-								group.material->AddTexture(TextureMap::Get(texture));
+			for (size_t i = 0; i < mesh->GetMeshCount(); ++i) {
+				Mesh* mfmesh = mesh->GetMesh(i);
+				vert_offset = all_verts.size();
+				all_verts.insert(all_verts.end(), mfmesh->verts.begin(), mfmesh->verts.end());
+				for (ObjectGroup* objgroup : mfmesh->object_groups) {
+					for (auto mat_group : objgroup->material_groups) {
+						VertexGroup group;
+						group.index_count = mat_group.count;
+						group.starting_offset = mat_group.start + all_indices.size();
+						group.mesh_group_number = i;
+						if (MaterialMap::Has(mat_group.material_name)) {
+							group.material = MaterialMap::Get(mat_group.material_name);
+						}
+						else {
+							group.material = Material::Create(mat_group.material_name);
+							group.material->SetDrawElementsMode(GL_TRIANGLES);
+							group.material->SetPolygonMode(GL_FILL);
+							for (auto texture : mat_group.textures) {
+								if (TextureMap::Has(texture)) {
+									group.material->AddTexture(TextureMap::Get(texture));
+								}
 							}
 						}
+						this->vertex_groups.push_back(std::move(group));
 					}
-					this->vertex_groups.push_back(std::move(group));
-					total_verts += submesh->verts.size();
-					total_indices += submesh->indicies.size();
-				}
-			}
-			std::vector<VertexData> all_verts;
-			all_verts.reserve(total_verts);
-			std::vector<GLuint> all_indices;
-			all_indices.reserve(total_indices);
-			size_t vert_offset = 0;
-			for (size_t i = 0; i < vertex_goup_count; ++i) {
-				auto submesh = mesh->GetMeshGroup(i).lock();
-				if (submesh) {
-					vert_offset = all_verts.size();
-					all_verts.insert(all_verts.end(), submesh->verts.begin(), submesh->verts.end());
-					for (auto index : submesh->indicies) {
+					for (GLuint index : objgroup->indicies) {
 						all_indices.push_back(index + vert_offset);
 					}
 				}
@@ -114,10 +106,11 @@ namespace tec {
 		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 		// If the size hasn't changed we can call update
 		if (this->vertex_count >= verts.size()) {
-			auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, verts.size() *
+			auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, this->vertex_count *
 				sizeof(VertexData), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
+				std::memset((char*)buffer + verts.size() * sizeof(VertexData) - 1, 0, (this->vertex_count - verts.size()) * sizeof(VertexData));
 				glUnmapBuffer(GL_ARRAY_BUFFER);
 			}
 			else {
@@ -150,10 +143,11 @@ namespace tec {
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 		if (this->index_count >= indices.size()) {
-			auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() *
+			auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, this->index_count *
 				sizeof(GLuint), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
+				std::memset((char*)buffer + indices.size() * sizeof(GLuint) - 1, 0, (this->index_count - indices.size()) * sizeof(GLuint));
 				glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 			}
 			else {

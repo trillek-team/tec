@@ -9,7 +9,7 @@
 namespace tec {
 	Animation::Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f), frame_count(0) {
 		SetAnimationFile(animation);
-		this->animation_name = animation_file->GetFileName();
+		this->animation_name = animation_file->GetName();
 	}
 	void Animation::UpdateAnimation(const double delta) {
 		if (this->frame_count < 1) {

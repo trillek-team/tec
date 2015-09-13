@@ -1,13 +1,17 @@
 #include "os.hpp"
+#include "events.hpp"
+#include "filesystem.hpp"
 #include "reflection.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
+#include "voxelvolume.hpp"
 #include "vcomputer-system.hpp"
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 
+#include <iostream>
 #include <thread>
 #include <string>
 #include <sstream>
@@ -25,40 +29,49 @@ namespace tec {
 	ReflectionEntityList entity_list;
 	eid active_entity;
 
-	struct FileLisenter : public EventQueue < FileDropEvent > {
+	struct FileListener : public EventQueue < FileDropEvent > {
 		void Update(double delta) {
 			ProcessEventQueue();
 		}
 
 		void On(std::shared_ptr<FileDropEvent> fd_event) {
 			for (auto file : fd_event->filenames) {
-				if (file.find(".") != std::string::npos) {
-					std::string ext = file.substr(file.find_last_of(".") + 1);
-					if (file.find("assets/") != std::string::npos) {
-						std::string relative_filename = file.substr(file.find("assets/"));
-						if (file_factories.find(ext) != file_factories.end()) {
-							std::cout << "Loading: " << relative_filename << std::endl;
-							file_factories[ext](relative_filename);
-						}
-						else {
-							std::cout << "No loader for extension: " << ext << std::endl;
-						}
-					}
-					else {
-						std::cout << "Please place files in the assets/ folder." << std::endl;
-					}
+				FilePath path(file);
+				if (!path.isValidPath() || !path.FileExists()) {
+					std::cout << "Can't find file : " << path.FileName() << std::endl;
+					continue;
 				}
-				else {
-					std::cout << "No extension!." << std::endl;
+				auto ext = path.FileExtension();
+				if (ext.empty()) {
+					std::cout << "No extension!" << std::endl;
+					continue;
 				}
+				if (path.isAbsolutePath()) {
+					// We try to work always with relative paths to assets folder
+					path = path.SubpathFrom("assets");
+					auto fullpath = FilePath::GetAssetPath(path.toGenericString());
+					if (!fullpath.isValidPath() || !fullpath.FileExists()) {
+						std::cout << "File isn't on assets folder! Please copy/move it to the assets folder " << std::endl;
+						continue;
+					}
+					
+				}
+				if (file_factories.find(ext) == file_factories.end()) {
+					std::cout << "No loader for extension: " << ext << std::endl;
+					continue;
+				}
+
+				std::cout << "Loading: " << path << std::endl;
+				file_factories[ext](path.toString());
 			}
 		}
 	};
-}
 
+}
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
+
 	tec::OS os;
 
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
@@ -76,6 +89,8 @@ int main(int argc, char* argv[]) {
 
 	tec::VComputerSystem vcs;
 
+	tec::VoxelSystem vox_sys;
+
 	tec::IntializeComponents();
 	tec::IntializeFileFactories();
 	tec::BuildTestEntities();
@@ -83,7 +98,11 @@ int main(int argc, char* argv[]) {
 
 	tec::FPSController camera_controller(1);
 
-	tec::FileLisenter flistener;
+	tec::FileListener flistener;
+
+	gui.AddWindowDrawFunction("sample_window", [ ] () {
+		ImGui::ShowTestWindow();
+	});
 
 	gui.AddWindowDrawFunction("active_entity", [ ] () {
 		if (tec::active_entity != 0) {
@@ -354,6 +373,9 @@ int main(int argc, char* argv[]) {
 		std::thread ss_thread([&] () {
 			ss.Update(delta);
 		});
+		std::thread vv_thread([&] () {
+			vox_sys.Update(delta);
+		});
 
 		rs.Update(delta);
 
@@ -361,6 +383,7 @@ int main(int argc, char* argv[]) {
 
 		ps_thread.join();
 		ss_thread.join();
+		vv_thread.join();
 
 		camera_controller.Update(delta);
 

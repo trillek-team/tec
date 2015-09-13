@@ -1,6 +1,7 @@
 #include "vcomputer-system.hpp"
 #include "os.hpp"
 #include "entity.hpp"
+#include "events.hpp"
 
 #include "vcomputer.hpp"
 #include "auxiliar.hpp"
@@ -111,7 +112,7 @@ namespace tec {
 			this->computers[entity_id].vc->Off();
 		}
 	}
-	
+
 	extern eid active_entity;
 
 	void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {

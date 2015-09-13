@@ -10,6 +10,7 @@
 #include "entity.hpp"
 #include "multiton.hpp"
 #include "command-queue.hpp"
+#include "event-system.hpp"
 
 namespace tec {
 	struct CollisionBody;
@@ -80,8 +81,9 @@ namespace tec {
 			return std::move(refcomp);
 		}
 	};
+	struct MouseBtnEvent;
 
-	class PhysicsSystem : public CommandQueue < PhysicsSystem > {
+	class PhysicsSystem : public CommandQueue < PhysicsSystem >, EventQueue < MouseBtnEvent > {
 	public:
 		PhysicsSystem();
 		~PhysicsSystem();
@@ -108,6 +110,7 @@ namespace tec {
 		}
 
 		void DebugDraw();
+		void On(std::shared_ptr<MouseBtnEvent> data);
 	protected:
 		/** \brief Set a rigid body's gravity.
 		 *
@@ -140,5 +143,6 @@ namespace tec {
 		btVector3 last_raypos;
 		btVector3 last_raynorm;
 		bool last_rayvalid;
+		eid last_entity_hit;
 	};
 }

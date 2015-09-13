@@ -6,7 +6,7 @@
 
 namespace tec {
 	class Shader;
-	class Mesh;
+	class MeshFile;
 	class VertexBufferObject;
 	struct VertexGroup;
 	struct ReflectionComponent;
@@ -26,7 +26,7 @@ namespace tec {
 		std::set<VertexGroup*> vertex_groups;
 		std::shared_ptr<VertexBufferObject> buffer;
 		std::string mesh_name;
-		std::shared_ptr<Mesh> mesh;
+		std::shared_ptr<MeshFile> mesh;
 		std::string shader_name;
 		std::shared_ptr<Shader> shader;
 		bool hidden = false;

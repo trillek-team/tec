@@ -1,4 +1,5 @@
 #include "imgui-system.hpp"
+#include "filesystem.hpp"
 #include "os.hpp"
 
 #ifdef _MSC_VER
@@ -7,6 +8,7 @@
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
 #endif
+#include "events.hpp"
 
 namespace tec {
 	GLFWwindow* IMGUISystem::window = nullptr;
@@ -17,8 +19,17 @@ namespace tec {
 	unsigned int IMGUISystem::vbo = 0, IMGUISystem::vao = 0;
 	GLuint IMGUISystem::font_texture = 0;
 
+	std::string inifilename;
+	std::string logfilename;
+
 	IMGUISystem::IMGUISystem(GLFWwindow* window) : io(ImGui::GetIO()) {
 		IMGUISystem::window = window;
+		inifilename = (FilePath::GetUserSettingsPath() / "imgui.ini").toString();
+		logfilename = (FilePath::GetUserCachePath() / "imgui_log.txt").toString();
+		this->io.IniFilename = inifilename.c_str();
+#if defined(DEBUG) || defined(_DEBUG)
+		this->io.LogFilename = logfilename.c_str();
+#endif
 		this->io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
 		this->io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
 		this->io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
@@ -208,8 +219,9 @@ namespace tec {
 		glfwSetClipboardString(IMGUISystem::window, text);
 	}
 
-	void IMGUISystem::RenderDrawLists(ImDrawList** const cmd_lists, int cmd_lists_count) {
-		if (cmd_lists_count == 0) {
+	//void IMGUISystem::RenderDrawLists(ImDrawList** const cmd_lists, int cmd_lists_count) {
+	void IMGUISystem::RenderDrawLists(ImDrawData* draw_data) {
+		if (draw_data->CmdListsCount == 0) {
 			return;
 		}
 
@@ -234,12 +246,47 @@ namespace tec {
 		glUseProgram(shader_program);
 		glUniform1i(texture_attribute_location, 0);
 		glUniformMatrix4fv(projmtx_attribute_location, 1, GL_FALSE, &ortho_projection[0][0]);
+		glBindVertexArray(vao);
+		for (int n = 0; n < draw_data->CmdListsCount; n++)
+		{
+			const ImDrawList* cmd_list = draw_data->CmdLists[n];
+			const ImDrawIdx* idx_buffer = &cmd_list->IdxBuffer.front();
+
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			size_t needed_vtx_size = cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
+			if (vbo_size < needed_vtx_size) {
+				// Grow our buffer if needed
+				vbo_size = needed_vtx_size + 2000 * sizeof(ImDrawVert);
+				glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)vbo_size, NULL, GL_STREAM_DRAW);
+			}
+
+			unsigned char* vtx_data = (unsigned char*)glMapBufferRange(GL_ARRAY_BUFFER, 0, needed_vtx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			if (!vtx_data) {
+				continue;
+			}
+			memcpy(vtx_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
+			glUnmapBuffer(GL_ARRAY_BUFFER);
+
+			for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != cmd_list->CmdBuffer.end(); pcmd++) {
+				if (pcmd->UserCallback) {
+					pcmd->UserCallback(cmd_list, pcmd);
+				} else {
+					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
+					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
+					glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, GL_UNSIGNED_SHORT, idx_buffer);
+				}
+				idx_buffer += pcmd->ElemCount;
+			}
+		}
+
+		/*
 
 		// Grow our buffer according to what we need
-		size_t total_vtx_count = 0;
-		for (int n = 0; n < cmd_lists_count; n++)
-			total_vtx_count += cmd_lists[n]->vtx_buffer.size();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		size_t total_vtx_count = 0;
+		for (int n = 0; n < draw_data->CmdListsCount; n++) {
+			total_vtx_count += draw_data->CmdLists[n]->VtxBuffer.size();
+		}
 		size_t needed_vtx_size = total_vtx_count * sizeof(ImDrawVert);
 		if (vbo_size < needed_vtx_size) {
 			vbo_size = needed_vtx_size + 5000 * sizeof(ImDrawVert);  // Grow buffer
@@ -250,36 +297,38 @@ namespace tec {
 		unsigned char* buffer_data = (unsigned char*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 		if (!buffer_data)
 			return;
-		for (int n = 0; n < cmd_lists_count; n++) {
-			const ImDrawList* cmd_list = cmd_lists[n];
-			memcpy(buffer_data, &cmd_list->vtx_buffer[0], cmd_list->vtx_buffer.size() * sizeof(ImDrawVert));
-			buffer_data += cmd_list->vtx_buffer.size() * sizeof(ImDrawVert);
+		for (int n = 0; n < draw_data->CmdListsCount; n++) {
+			const ImDrawList* cmd_list = draw_data->CmdLists[n];
+			memcpy(buffer_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
+			buffer_data += cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
 		}
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(vao);
 
 		int cmd_offset = 0;
-		for (int n = 0; n < cmd_lists_count; n++) {
-			const ImDrawList* cmd_list = cmd_lists[n];
+		for (int n = 0; n < draw_data->CmdListsCount; n++) {
+			const ImDrawList* cmd_list = draw_data->CmdLists[n];
 			int vtx_offset = cmd_offset;
-			const ImDrawCmd* pcmd_end = cmd_list->commands.end();
-			for (const ImDrawCmd* pcmd = cmd_list->commands.begin(); pcmd != pcmd_end; pcmd++) {
-				if (pcmd->user_callback) {
-					pcmd->user_callback(cmd_list, pcmd);
+			const ImDrawCmd* pcmd_end = cmd_list->CmdBuffer.end();
+			for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != pcmd_end; pcmd++) {
+				if (pcmd->UserCallback) {
+					pcmd->UserCallback(cmd_list, pcmd);
 				}
 				else {
-					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->texture_id);
-					glScissor((int)pcmd->clip_rect.x, (int)(height - pcmd->clip_rect.w), (int)(pcmd->clip_rect.z - pcmd->clip_rect.x), (int)(pcmd->clip_rect.w - pcmd->clip_rect.y));
-					glDrawArrays(GL_TRIANGLES, vtx_offset, pcmd->vtx_count);
+					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
+					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), 
+						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
+					glDrawArrays(GL_TRIANGLES, vtx_offset, pcmd->ElemCount);
 				}
-				vtx_offset += pcmd->vtx_count;
+				vtx_offset += pcmd->ElemCount;
 			}
 			cmd_offset = vtx_offset;
 		}
-
+		*/
 		// Restore modified state
 		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glUseProgram(0);
 		glDisable(GL_SCISSOR_TEST);
 		glDisable(GL_BLEND);
