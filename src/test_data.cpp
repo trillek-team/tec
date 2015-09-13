@@ -84,6 +84,7 @@ namespace tec {
 		SetupComponent<AudioSource>();
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();
+		ComponentUpdateSystem<VoxelVolume>::Initialize();
 		ComponentUpdateSystem<ComputerScreen>::Initialize();
 		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
@@ -171,6 +172,7 @@ namespace tec {
 			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(mesh);
 			colbody->mass = 0.0;
 			voxel1.Add(colbody);
+			voxel1.Add(voxvol_shared);
 		}
 
 		{

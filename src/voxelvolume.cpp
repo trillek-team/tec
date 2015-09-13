@@ -1,5 +1,10 @@
 #include "voxelvolume.hpp"
 #include "graphics/vertex-buffer-object.hpp"
+#include "events.hpp"
+#include "entity.hpp"
+#include "components/transforms.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
 	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh) :
@@ -7,10 +12,10 @@ namespace tec {
 
 	VoxelVolume::~VoxelVolume() { }
 
-	void VoxelVolume::AddVoxel(const std::int16_t row, const std::int16_t column, const std::int16_t slice) {
+	void VoxelVolume::AddVoxel(const std::int16_t y, const std::int16_t x, const std::int16_t z) {
 		Voxel v;
-		std::int64_t index = (static_cast<std::uint64_t>(row & 0xFFFF) << 32) +
-			(static_cast<std::uint32_t>(column & 0xFFFF) << 16) + static_cast<std::uint16_t>(slice & 0xFFFF);
+		std::int64_t index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
+			(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
 		this->changed_queue.push(index);
 
 		if (this->voxels.find(index) == this->voxels.end()) {
@@ -18,18 +23,18 @@ namespace tec {
 
 			// Since we are adding a voxel we must set the new voxels neighbors.
 			std::int64_t up_index, down_index, left_index, right_index, back_index, front_index;
-			up_index = (static_cast<std::uint64_t>((row + 1) & 0xFFFF) << 32) +
-				(static_cast<std::uint32_t>(column & 0xFFFF) << 16) + static_cast<std::uint16_t>(slice & 0xFFFF);
-			down_index = (static_cast<std::uint64_t>((row - 1) & 0xFFFF) << 32) +
-				(static_cast<std::uint32_t>(column & 0xFFFF) << 16) + static_cast<std::uint16_t>(slice & 0xFFFF);
-			left_index = (static_cast<std::uint64_t>(row & 0xFFFF) << 32) +
-				(static_cast<std::uint32_t>((column - 1) & 0xFFFF) << 16) + static_cast<std::uint16_t>(slice & 0xFFFF);
-			right_index = (static_cast<std::uint64_t>(row & 0xFFFF) << 32) +
-				(static_cast<std::uint32_t>((column + 1) & 0xFFFF) << 16) + static_cast<std::uint16_t>(slice & 0xFFFF);
-			front_index = (static_cast<std::uint64_t>(row & 0xFFFF) << 32) +
-				(static_cast<std::uint32_t>(column & 0xFFFF) << 16) + static_cast<std::uint16_t>((slice - 1) & 0xFFFF);
-			back_index = (static_cast<std::uint64_t>(row & 0xFFFF) << 32) +
-				(static_cast<std::uint32_t>(column & 0xFFFF) << 16) + static_cast<std::uint16_t>((slice + 1) & 0xFFFF);
+			up_index = (static_cast<std::uint64_t>((y + 1) & 0xFFFF) << 32) +
+				(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
+			down_index = (static_cast<std::uint64_t>((y - 1) & 0xFFFF) << 32) +
+				(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
+			left_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
+				(static_cast<std::uint32_t>((x - 1) & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
+			right_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
+				(static_cast<std::uint32_t>((x + 1) & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
+			front_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
+				(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>((z - 1) & 0xFFFF);
+			back_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
+				(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>((z + 1) & 0xFFFF);
 
 			if (this->voxels.find(up_index) != this->voxels.end()) {
 				v.neighbors[Voxel::UP] = this->voxels[up_index];
@@ -58,9 +63,9 @@ namespace tec {
 		}
 	}
 
-	void VoxelVolume::RemoveVoxel(const std::int16_t row, const std::int16_t column, const std::int16_t slice) {
-		std::int64_t index = (static_cast<std::uint64_t>(row & 0xFFFF) << 32) +
-			(static_cast<std::uint32_t>(column & 0xFFFF) << 16) + static_cast<std::uint16_t>(slice & 0xFFFF);
+	void VoxelVolume::RemoveVoxel(const std::int16_t y, const std::int16_t x, const std::int16_t z) {
+		std::int64_t index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
+			(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
 		this->changed_queue.push(index);
 
 		if (this->voxels.find(index) != this->voxels.end()) {
@@ -71,48 +76,51 @@ namespace tec {
 
 	void VoxelVolume::Update(double delta) {
 		ProcessCommandQueue();
+		EventQueue<MouseClickEvent>::ProcessEventQueue();
 		UpdateMesh();
 	}
 
 	void VoxelVolume::UpdateMesh() {
 		static std::vector<VertexData> IdentityVerts({
 			// Front
-			VertexData(-1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
 			VertexData(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),		// Top right
-			VertexData(-1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
+			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
 			// Back
-			VertexData(1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(-1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(-1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
-			VertexData(1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top left
+			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top left
 			// Left
-			VertexData(-1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(-1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
-			VertexData(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
 			// Right
-			VertexData(1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
 			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),		// Top Left
 			// Top
-			VertexData(-1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
 			VertexData(1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),		// Bottom right
-			VertexData(1.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
-			VertexData(-1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
+			VertexData(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
 			// Bottom
-			VertexData(-1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(1.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
-			VertexData(-1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f)	// Top Left
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f)	// Top Left
 		});
 
 		// TODO: Sort voxels by material and update object group material groups.
 		// TODO: use object groups to do a sort of "chunk" grouping to reduce load?
 		auto m = this->mesh.lock();
 		if (m) {
-			m->Invalidate();
+			if (this->changed_queue.size() == 0) {
+				return;
+			}
 			Mesh* mesh = nullptr;
 			if (m->GetMeshCount() > 0) {
 				mesh = m->GetMesh(0);
@@ -129,17 +137,17 @@ namespace tec {
 				std::int64_t index = this->changed_queue.front();
 				this->changed_queue.pop();
 				if (this->voxels.find(index) != this->voxels.end()) {
-					std::int16_t row = static_cast<std::int16_t>((index & 0xFFFF00000000) >> 32);
-					std::int16_t column = static_cast<std::int16_t>((index & 0xFFFF0000) >> 16);
-					std::int16_t slice = static_cast<std::int16_t>(index & 0xFFFF);
+					std::int16_t y = static_cast<std::int16_t>((index & 0xFFFF00000000) >> 32);
+					std::int16_t x = static_cast<std::int16_t>((index & 0xFFFF0000) >> 16);
+					std::int16_t z = static_cast<std::int16_t>(index & 0xFFFF);
 					size_t vertex_offset = mesh->verts.size();
 					for (size_t i = 0; i < 24; ++i) {
-						mesh->verts.push_back(std::move(VertexData(IdentityVerts[i].position[0] + column * 2,
-							IdentityVerts[i].position[1] + row * 2, IdentityVerts[i].position[2] + slice * 2,
+						mesh->verts.push_back(std::move(VertexData(IdentityVerts[i].position[0] + x,
+							IdentityVerts[i].position[1] + y, IdentityVerts[i].position[2] + z,
 							IdentityVerts[i].color[0], IdentityVerts[i].color[1], IdentityVerts[i].color[2],
 							IdentityVerts[i].uv[0], IdentityVerts[i].uv[1])));
-						this->vertex_index[index] = mesh->verts.size() - 1;
 					}
+					this->vertex_index[index] = vertex_offset;
 					for (size_t i = 0; i < 6; ++i) {
 						objgroup->indicies.push_back(i * 4 + vertex_offset + 0);
 						objgroup->indicies.push_back(i * 4 + vertex_offset + 1);
@@ -153,18 +161,33 @@ namespace tec {
 					if (this->vertex_index.find(index) != this->vertex_index.end()) {
 						for (size_t i = 0; i < objgroup->indicies.size(); ++i) {
 							if (objgroup->indicies[i] == this->vertex_index[index]) {
-								for (int j = 35; j >= 0; --j) {
-									std::swap(objgroup->indicies[i + j], objgroup->indicies.back());
-									objgroup->indicies[i + j] = this->vertex_index[index] + j;
+								for (int j = 0; j < 36; ++j, ++i) {
 									objgroup->indicies.pop_back();
 								}
-								i += 35;
 							}
 						}
-						for (size_t i = 0; i < 24; i++) {
-							std::swap(mesh->verts[this->vertex_index[index] + i], mesh->verts.back());
-							mesh->verts.pop_back();
+						if (this->vertex_index[index] == mesh->verts.size() - 24) {
+							for (size_t i = 0; i < 24; i++) {
+								mesh->verts.pop_back();
+							}
 						}
+						else {
+							for (size_t i = 0; i < 24; i++) {
+								std::swap(mesh->verts[this->vertex_index[index] + i], mesh->verts.back());
+								mesh->verts.pop_back();
+							}
+							VertexData& vert = mesh->verts[this->vertex_index[index]];
+
+							std::int16_t x = floor(vert.position.x - IdentityVerts[0].position[0]);
+							std::int16_t y = floor(vert.position.y - IdentityVerts[0].position[1]);
+							std::int16_t z = floor(vert.position.z - IdentityVerts[0].position[2]);
+
+							std::int64_t changed_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
+								(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);		static_cast<std::uint16_t>((int)roundf((vert.position.z / 2.0f) - IdentityVerts[0].position[2]) & 0xFFFF);
+
+							this->vertex_index[changed_index] = this->vertex_index[index];
+						}
+						this->vertex_index.erase(index);
 					}
 				}
 			}
@@ -174,6 +197,7 @@ namespace tec {
 				objgroup->material_groups.push_back(std::move(mat_group));
 			}
 			objgroup->material_groups[0].count = objgroup->indicies.size();
+			m->Invalidate();
 		}
 	}
 
@@ -197,5 +221,36 @@ namespace tec {
 		auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh);
 		VoxelVoumeMap::Set(entity_id, voxvol);
 		return voxvol;
+	}
+
+	void VoxelVolume::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
+		if (data->button == MouseBtnEvent::LEFT) {
+			if (entity_id == this->entity_id) {
+				std::shared_ptr<Position> pos = Entity(entity_id).Get<Position>().lock();
+				std::shared_ptr<Orientation> orientation = Entity(entity_id).Get<Orientation>().lock();
+				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
+				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_piont_world, 1.0f);
+				int grid_x = floor(local_coords.x);
+				local_coords.y += FLT_EPSILON * (signbit(local_coords.y) ? -1.0f : 0.0f);
+				int grid_y = floor(local_coords.y);
+				int grid_z = floor(local_coords.z);
+
+				AddVoxel(grid_y, grid_x, grid_z);
+			}
+		}
+		else if (data->button == MouseBtnEvent::RIGHT) {
+			if (entity_id == this->entity_id) {
+				std::shared_ptr<Position> pos = Entity(entity_id).Get<Position>().lock();
+				std::shared_ptr<Orientation> orientation = Entity(entity_id).Get<Orientation>().lock();
+				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
+				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_piont_world, 1.0f);
+				int grid_x = floor(local_coords.x);
+				local_coords.y -= FLT_EPSILON * (signbit(local_coords.y) ? 0.0f : 1.0f);
+				int grid_y = floor(local_coords.y);
+				int grid_z = floor(local_coords.z);
+
+				RemoveVoxel(grid_y, grid_x, grid_z);
+			}
+		}
 	}
 }

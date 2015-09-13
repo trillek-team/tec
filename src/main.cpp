@@ -4,6 +4,7 @@
 #include "reflection.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
+#include "voxelvolume.hpp"
 #include "vcomputer-system.hpp"
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
@@ -80,6 +81,8 @@ int main(int argc, char* argv[]) {
 
 	tec::VComputerSystem vcs;
 
+	tec::VoxelSystem vox_sys;
+
 	tec::IntializeComponents();
 	tec::IntializeFileFactories();
 	tec::BuildTestEntities();
@@ -88,6 +91,10 @@ int main(int argc, char* argv[]) {
 	tec::FPSController camera_controller(1);
 
 	tec::FileLisenter flistener;
+
+	gui.AddWindowDrawFunction("sample_window", [ ] () {
+		ImGui::ShowTestWindow();
+	});
 
 	gui.AddWindowDrawFunction("active_entity", [ ] () {
 		if (tec::active_entity != 0) {
@@ -358,6 +365,9 @@ int main(int argc, char* argv[]) {
 		std::thread ss_thread([&] () {
 			ss.Update(delta);
 		});
+		std::thread vv_thread([&] () {
+			vox_sys.Update(delta);
+		});
 
 		rs.Update(delta);
 
@@ -365,6 +375,7 @@ int main(int argc, char* argv[]) {
 
 		ps_thread.join();
 		ss_thread.join();
+		vv_thread.join();
 
 		camera_controller.Update(delta);
 
