@@ -92,7 +92,12 @@ namespace tec {
 	template <typename T>
 	void AddFileFactory() {
 		file_factories[GetTypeEXT<T>()] = [ ] (std::string fname) {
-			T::Create(FilePath::GetAssetPath(fname));
+			FilePath path(fname);
+			if (path.isAbsolutePath()) {
+				T::Create(fname);
+			} else {
+				T::Create(FilePath::GetAssetPath(fname));
+			}
 		};
 	}
 

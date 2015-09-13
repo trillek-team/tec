@@ -29,37 +29,45 @@ namespace tec {
 	ReflectionEntityList entity_list;
 	eid active_entity;
 
-	struct FileLisenter : public EventQueue < FileDropEvent > {
+	struct FileListener : public EventQueue < FileDropEvent > {
 		void Update(double delta) {
 			ProcessEventQueue();
 		}
 
 		void On(std::shared_ptr<FileDropEvent> fd_event) {
 			for (auto file : fd_event->filenames) {
-				// TODO Use FilePath class !
-				if (file.find(".") == std::string::npos) {
+				FilePath path(file);
+				if (!path.isValidPath() || !path.FileExists()) {
+					std::cout << "Can't find file : " << path.FileName() << std::endl;
+					continue;
+				}
+				auto ext = path.FileExtension();
+				if (ext.empty()) {
 					std::cout << "No extension!" << std::endl;
 					continue;
 				}
-				/*
-				if (file.find("assets/") == std::string::npos) {
-					std::cout << "Please place files in the assets/ folder." << std::endl;
-					continue;
+				if (path.isAbsolutePath()) {
+					// We try to work always with relative paths to assets folder
+					path = path.SubpathFrom("assets");
+					auto fullpath = FilePath::GetAssetPath(path.toGenericString());
+					if (!fullpath.isValidPath() || !fullpath.FileExists()) {
+						std::cout << "File isn't on assets folder! Please copy/move it to the assets folder " << std::endl;
+						continue;
+					}
+					
 				}
-				std::string relative_filename = file.substr(file.find("assets/"));
-				*/
-				std::string ext = file.substr(file.find_last_of(".") + 1);
 				if (file_factories.find(ext) == file_factories.end()) {
 					std::cout << "No loader for extension: " << ext << std::endl;
 					continue;
 				}
-				std::cout << "Loading: " << file << std::endl;
-				file_factories[ext](file);
+
+				std::cout << "Loading: " << path << std::endl;
+				file_factories[ext](path.toString());
 			}
 		}
 	};
-}
 
+}
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
@@ -90,7 +98,7 @@ int main(int argc, char* argv[]) {
 
 	tec::FPSController camera_controller(1);
 
-	tec::FileLisenter flistener;
+	tec::FileListener flistener;
 
 	gui.AddWindowDrawFunction("sample_window", [ ] () {
 		ImGui::ShowTestWindow();
