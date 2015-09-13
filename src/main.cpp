@@ -63,22 +63,26 @@ std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::
 int main(int argc, char* argv[]) {
 	// Console and logging initialization
 	tec::Console console;
-
-	console.Print("Hello ");
-	console.Print("World");
-	console.Print("!\n");
 	
 	spdlog::set_async_mode(1048576);
 	std::vector<spdlog::sink_ptr> sinks;
-	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
+	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
 	sinks.push_back(std::make_shared<tec::ConsoleSink>(console));
 	auto log = std::make_shared<spdlog::logger>("log", begin(sinks), end(sinks));
 	log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
 	spdlog::register_logger(log);
 
+	log->warn("Fake warning");
+	
 	tec::OS os;
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
+	console.AddConsoleCommand( "exit", 
+		"exit : Exit from TEC",
+		[&os ] (const char* args) {
+			os.Quit();
+		});
 	log->info("Initialized OS and window system");
+	
 
 	tec::IMGUISystem gui(os.GetWindow());
 
