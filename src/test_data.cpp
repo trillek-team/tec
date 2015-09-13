@@ -101,7 +101,7 @@ namespace tec {
 		};
 	}
 
-	void IntializeFileFactories() {
+	void InitializeFileFactories() {
 		AddFileFactory<MD5Mesh>();
 		AddFileFactory<OBJ>();
 		AddFileFactory<VorbisStream>();

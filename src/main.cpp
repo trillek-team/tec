@@ -18,7 +18,7 @@
 
 namespace tec {
 	extern void InitializeComponents();
-	extern void IntializeFileFactories();
+	extern void InitializeFileFactories();
 	extern void BuildTestEntities();
 	extern void ProtoSave();
 	extern void ProtoLoad();
@@ -92,7 +92,7 @@ int main(int argc, char* argv[]) {
 	tec::VoxelSystem vox_sys;
 
 	tec::InitializeComponents();
-	tec::IntializeFileFactories();
+	tec::InitializeFileFactories();
 	tec::BuildTestEntities();
 	tec::ProtoLoad();
 
