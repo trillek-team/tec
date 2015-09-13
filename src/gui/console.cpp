@@ -1,5 +1,7 @@
 #include "gui/console.hpp"
 
+#include <string>
+#include <cstdio>
 #include <GLFW/glfw3.h>
 
 namespace tec {
@@ -16,22 +18,19 @@ namespace tec {
 		buf.clear();
 	}
 
-	void Console::Printf(const char* fmt, ...) IM_PRINTFARGS(2)
+	void Console::Print(const std::string& str)
 	{
-		va_list args;
-		va_start(args, fmt);
-		buf.appendv(fmt, args);
-		va_end(args);
+		buf.push_front(str);
+		
 		scrollToBottom = true;
 	}
 
-	void Console::Printfln(const char* fmt, ...) IM_PRINTFARGS(2)
+	void Console::Println(const std::string& str)
 	{
-		va_list args;
-		va_start(args, fmt);
-		buf.appendv(fmt, args);
-		va_end(args);
-		buf.append("\n");
+		std::string tmp( str);
+		tmp += "\n";
+		buf.push_front(tmp);
+		
 		scrollToBottom = true;
 	}
 
@@ -56,7 +55,9 @@ namespace tec {
 				ImGuiWindowFlags_NoScrollbar);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 			
-			ImGui::TextUnformatted(buf.begin());
+			for (auto it = buf.crbegin(); it != buf.crend(); it++) {
+				ImGui::TextUnformatted((*it).c_str());
+			}
 			if (scrollToBottom) {
 				ImGui::SetScrollHere(1.0f);
 				scrollToBottom = false;
@@ -110,20 +111,21 @@ namespace tec {
 		}
 	}
 
-	void Console::log(const spdlog::details::log_msg& msg) {
+	void ConsoleSink::log(const spdlog::details::log_msg& msg) {
 		switch (msg.level) {
-		case spdlog::level::emerg :
-		case spdlog::level::alert :
-		case spdlog::level::critical :
-		case spdlog::level::err :
-		case spdlog::level::warn :
-		case spdlog::level::notice :
-		case spdlog::level::info :
-		case spdlog::level::debug :
-		case spdlog::level::trace :
-			defaut:
+			case spdlog::level::emerg :
+			case spdlog::level::alert :
+			case spdlog::level::critical :
+			case spdlog::level::err :
+			case spdlog::level::warn :
+			case spdlog::level::notice :
+			case spdlog::level::info :
+			case spdlog::level::debug :
+			case spdlog::level::trace :
+				defaut:
+				;
 		}
-		Printfln(msg.raw.c_str()); // formatted.str().c_str());
+		console.Println(msg.raw.str()); 
 	}
-
+	
 }

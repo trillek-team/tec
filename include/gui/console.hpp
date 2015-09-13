@@ -1,5 +1,7 @@
 #pragma once
 
+#include <deque>
+
 #include <imgui.h>
 
 #include "os.hpp"
@@ -8,7 +10,6 @@
 
 namespace tec {
 	class Console :
-		public spdlog::sinks::sink,
 		public EventQueue <KeyboardEvent>,
 		public EventQueue <WindowResizedEvent> {
 	public:
@@ -18,20 +19,15 @@ namespace tec {
 
 		void Clear();
 
-		void Printf(const char* fmt, ...) IM_PRINTFARGS(2);
-		void Printfln(const char* fmt, ...) IM_PRINTFARGS(2);
+		void Print(const std::string& str);
+		void Println(const std::string& str);
 
 		void Draw();
 
-		// SPDLog sink interface
-		void log(const spdlog::details::log_msg& msg) override;
-		void flush() {};
 
 	private:
-		// TODO Store a ImVector<tuple<level, text> instead of raw text ?
-		// So we can put color
-		// or (perhaps better), preparse before call Text() searching [RRGGBB] to change of color of the text
-		ImGuiTextBuffer buf;
+		// TODO Store a deque<tuple<color, text> instead of raw text ?
+		std::deque<std::string> buf;
 		bool scrollToBottom = false;
 		bool show = true;
 		bool resize = true;
@@ -48,5 +44,18 @@ namespace tec {
 		void On(std::shared_ptr<WindowResizedEvent> data);
 
 		void On(std::shared_ptr<KeyboardEvent> data);
+	};
+
+	class ConsoleSink : 
+		public spdlog::sinks::sink {
+		public:
+			ConsoleSink(Console& c) : console(c) {};
+			
+			// SPDLog sink interface
+			void log(const spdlog::details::log_msg& msg) override;
+			
+			void flush() {};
+		private:
+			Console& console;
 	};
 }

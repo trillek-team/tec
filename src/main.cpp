@@ -62,13 +62,18 @@ std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::
 
 int main(int argc, char* argv[]) {
 	// Console and logging initialization
+	tec::Console console;
+
+	console.Print("Hello ");
+	console.Print("World");
+	console.Print("!\n");
+	
 	spdlog::set_async_mode(1048576);
-	auto console = std::make_shared<tec::Console>();
 	std::vector<spdlog::sink_ptr> sinks;
 	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_st>());
-	sinks.push_back(console);
+	sinks.push_back(std::make_shared<tec::ConsoleSink>(console));
 	auto log = std::make_shared<spdlog::logger>("log", begin(sinks), end(sinks));
-	log->set_pattern("[%l] [thread %t] %v");
+	log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
 	spdlog::register_logger(log);
 
 	tec::OS os;
@@ -357,7 +362,7 @@ int main(int argc, char* argv[]) {
 		}
 	});
 	gui.AddWindowDrawFunction("console", [&console]() {
-		console->Draw();
+		console.Draw();
 	});
 
 	double delta = os.GetDeltaTime();
@@ -391,7 +396,7 @@ int main(int argc, char* argv[]) {
 		ps.DebugDraw();
 
 		gui.Update(delta);
-		console->Update(delta);
+		console.Update(delta);
 
 		os.SwapBuffers();
 		if (camera_controller.mouse_look) {
