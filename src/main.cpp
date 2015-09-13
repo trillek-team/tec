@@ -17,7 +17,7 @@
 #include <sstream>
 
 namespace tec {
-	extern void IntializeComponents();
+	extern void InitializeComponents();
 	extern void IntializeFileFactories();
 	extern void BuildTestEntities();
 	extern void ProtoSave();
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
 
 	tec::VoxelSystem vox_sys;
 
-	tec::IntializeComponents();
+	tec::InitializeComponents();
 	tec::IntializeFileFactories();
 	tec::BuildTestEntities();
 	tec::ProtoLoad();

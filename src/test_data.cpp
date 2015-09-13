@@ -72,7 +72,7 @@ namespace tec {
 		ComponentUpdateSystem<T>::Initialize();
 	}
 
-	void IntializeComponents() {
+	void InitializeComponents() {
 		SetupComponent<Renderable>();
 		SetupComponent<Position>();
 		SetupComponent<Orientation>();
