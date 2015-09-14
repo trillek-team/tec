@@ -60,17 +60,23 @@ namespace tec {
 	}
 
 	void Console::Println(const std::string& str) {
-		buf.push_front(str);
-		while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
-			buf.pop_back();
+		{
+			std::lock_guard<std::mutex> lock(input_mutex);
+			buf.push_front(str);
+			while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
+				buf.pop_back();
+			}
 		}
 		scrollToBottom = true;
 	}
 
 	void Console::Println(const char* cstr) {
-		buf.push_front(std::string(cstr));
-		while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
-			buf.pop_back();
+		{
+			std::lock_guard<std::mutex> lock(input_mutex);
+			buf.push_front(std::string(cstr));
+			while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
+				buf.pop_back();
+			}
 		}
 		scrollToBottom = true;
 	}
@@ -83,9 +89,12 @@ namespace tec {
 		tmp[1023] = 0;
 		va_end(args);
 
-		buf.push_front(std::string(tmp));
-		while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
-			buf.pop_back();
+		{
+			std::lock_guard<std::mutex> lock(input_mutex);
+			buf.push_front(std::string(tmp));
+			while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
+				buf.pop_back();
+			}
 		}
 		scrollToBottom = true;
 	}
@@ -138,8 +147,7 @@ namespace tec {
 					input_end--;
 				}
 				*input_end = 0;
-				if (inputBuf[0] != '\0') {
-					// TODO Process here input
+				if (inputBuf[0] != '\0') { // Procesing input
 					const char* args = inputBuf;
 					std::size_t cmd_len = 0;
 					while (*args != '\0' && *args != ' ') {
@@ -153,6 +161,7 @@ namespace tec {
 					std::string command(inputBuf, cmd_len);
 					auto search = commands.find(command);
 					if(search != commands.end()) {
+						Printfln("]%s", command.c_str());
 						std::get<0>(search->second)(args);
 					} else {
 						this->Println("Unknow command");

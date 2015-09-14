@@ -3,6 +3,7 @@
 #include <deque>
 #include <map>
 #include <tuple>
+#include <mutex>
 
 #include <imgui.h>
 
@@ -52,6 +53,7 @@ namespace tec {
 	private:
 		// TODO Store a deque<tuple<color, text> instead of raw text ?
 		std::deque<std::string> buf;
+		std::mutex input_mutex; /// Mutex to serialize write to Console buffer
 		bool scrollToBottom = false;
 		char inputBuf[256];
 
