@@ -151,20 +151,20 @@ namespace tec {
 					}
 					this->vertex_index[index] = vertex_offset;
 					for (size_t i = 0; i < 6; ++i) {
-						objgroup->indicies.push_back(i * 4 + vertex_offset + 0);
-						objgroup->indicies.push_back(i * 4 + vertex_offset + 1);
-						objgroup->indicies.push_back(i * 4 + vertex_offset + 2);
-						objgroup->indicies.push_back(i * 4 + vertex_offset + 2);
-						objgroup->indicies.push_back(i * 4 + vertex_offset + 3);
-						objgroup->indicies.push_back(i * 4 + vertex_offset + 0);
+						objgroup->indices.push_back(i * 4 + vertex_offset + 0);
+						objgroup->indices.push_back(i * 4 + vertex_offset + 1);
+						objgroup->indices.push_back(i * 4 + vertex_offset + 2);
+						objgroup->indices.push_back(i * 4 + vertex_offset + 2);
+						objgroup->indices.push_back(i * 4 + vertex_offset + 3);
+						objgroup->indices.push_back(i * 4 + vertex_offset + 0);
 					}
 				}
 				else {
 					if (this->vertex_index.find(index) != this->vertex_index.end()) {
-						for (size_t i = 0; i < objgroup->indicies.size(); ++i) {
-							if (objgroup->indicies[i] == this->vertex_index[index]) {
+						for (size_t i = 0; i < objgroup->indices.size(); ++i) {
+							if (objgroup->indices[i] == this->vertex_index[index]) {
 								for (int j = 0; j < 36; ++j, ++i) {
-									objgroup->indicies.pop_back();
+									objgroup->indices.pop_back();
 								}
 							}
 						}
@@ -194,11 +194,11 @@ namespace tec {
 				}
 			}
 			if (objgroup->material_groups.size() == 0) {
-				MaterialGroup mat_group = {0, objgroup->indicies.size(), "voxel"};
+				MaterialGroup mat_group = {0, objgroup->indices.size(), "voxel"};
 				mat_group.textures.push_back("metal_wall");
 				objgroup->material_groups.push_back(std::move(mat_group));
 			}
-			objgroup->material_groups[0].count = objgroup->indicies.size();
+			objgroup->material_groups[0].count = objgroup->indices.size();
 			m->Invalidate();
 		}
 	}

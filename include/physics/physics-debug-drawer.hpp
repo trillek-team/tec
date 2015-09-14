@@ -31,6 +31,6 @@ namespace tec {
 		int m_debugMode;
 		std::shared_ptr<VertexBufferObject> vert_buffer;
 		std::vector<VertexData> verts;
-		std::vector<unsigned int> indicies;
+		std::vector<unsigned int> indices;
 	};
 }

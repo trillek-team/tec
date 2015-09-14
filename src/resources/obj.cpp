@@ -186,7 +186,7 @@ namespace tec {
 				Face face;
 				std::string faceLine;
 				std::getline(ss, faceLine);
-				// Check if we have 3 vertex indicies per face vertex.
+				// Check if we have 3 vertex indices per face vertex.
 				if (faceLine.find("/") != std::string::npos) {
 					// Check if the UV is ommited and replace it with 0 if it is.
 					while (faceLine.find("//") != std::string::npos) {
@@ -239,7 +239,7 @@ namespace tec {
 					objgroup->material_groups.reserve(vert_group->face_groups.size());
 				}
 				MaterialGroup mat_group;
-				mat_group.start = objgroup->indicies.size();
+				mat_group.start = objgroup->indices.size();
 				mat_group.material_name = "";
 				if (this->materials.find(face_group->mtl) != this->materials.end()) {
 					std::string material_name = this->materials[face_group->mtl]->diffuseMap;
@@ -268,7 +268,7 @@ namespace tec {
 					if (face_group->faces[k].norm[0] > 0 && face_group->faces[k].norm[0] <= this->normals.size()) {
 						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[0] - 1];
 					}
-					objgroup->indicies.push_back(j++);
+					objgroup->indices.push_back(j++);
 					if (face_group->faces[k].pos[1] > 0 && face_group->faces[k].pos[1] <= this->positions.size()) {
 						mesh->verts[j].position = this->positions[face_group->faces[k].pos[1] - 1];
 					}
@@ -278,7 +278,7 @@ namespace tec {
 					if (face_group->faces[k].norm[1] > 0 && face_group->faces[k].norm[1] <= this->normals.size()) {
 						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[1] - 1];
 					}
-					objgroup->indicies.push_back(j++);
+					objgroup->indices.push_back(j++);
 					if (face_group->faces[k].pos[2] > 0 && face_group->faces[k].pos[2] <= this->positions.size()) {
 						mesh->verts[j].position = this->positions[face_group->faces[k].pos[2] - 1];
 					}
@@ -288,9 +288,9 @@ namespace tec {
 					if (face_group->faces[k].norm[2] > 0 && face_group->faces[k].norm[2] <= this->normals.size()) {
 						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[2] - 1];
 					}
-					objgroup->indicies.push_back(j++);
+					objgroup->indices.push_back(j++);
 				}
-				mat_group.count = objgroup->indicies.size() - mat_group.start;
+				mat_group.count = objgroup->indices.size() - mat_group.start;
 				if (this->materials.find(face_group->mtl) != this->materials.end()) {
 					mat_group.textures.push_back(this->materials[face_group->mtl]->diffuseMap);
 				}

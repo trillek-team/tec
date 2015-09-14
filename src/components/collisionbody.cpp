@@ -16,11 +16,11 @@ namespace tec {
 			Mesh* mesh = mesh_file->GetMesh(mesh_i);
 			for (ObjectGroup* objgroup : mesh->object_groups) {
 				btmesh->preallocateVertices(mesh->verts.size());
-				btmesh->preallocateIndices(objgroup->indicies.size());
-				for (size_t face_i = 0; face_i < objgroup->indicies.size(); ++face_i) {
-					const VertexData& v1 = mesh->verts[objgroup->indicies[face_i]];
-					const VertexData& v2 = mesh->verts[objgroup->indicies[++face_i]];
-					const VertexData& v3 = mesh->verts[objgroup->indicies[++face_i]];
+				btmesh->preallocateIndices(objgroup->indices.size());
+				for (size_t face_i = 0; face_i < objgroup->indices.size(); ++face_i) {
+					const VertexData& v1 = mesh->verts[objgroup->indices[face_i]];
+					const VertexData& v2 = mesh->verts[objgroup->indices[++face_i]];
+					const VertexData& v3 = mesh->verts[objgroup->indices[++face_i]];
 					btmesh->addTriangle(
 						btVector3(v1.position.x, v1.position.y, v1.position.z),
 						btVector3(v2.position.x, v2.position.y, v2.position.z),

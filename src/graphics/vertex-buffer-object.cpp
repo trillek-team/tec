@@ -82,7 +82,7 @@ namespace tec {
 						}
 						this->vertex_groups.push_back(std::move(group));
 					}
-					for (GLuint index : objgroup->indicies) {
+					for (GLuint index : objgroup->indices) {
 						all_indices.push_back(index + vert_offset);
 					}
 				}
@@ -138,7 +138,7 @@ namespace tec {
 			(GLvoid*)offsetof(VertexData, bone_weights));
 		glEnableVertexAttribArray(4);
 		glVertexAttribIPointer((GLuint)5, 4, GL_UNSIGNED_INT, sizeof(VertexData),
-			(GLvoid*)offsetof(VertexData, bone_indicies));
+			(GLvoid*)offsetof(VertexData, bone_indices));
 		glEnableVertexAttribArray(5);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);

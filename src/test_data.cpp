@@ -72,7 +72,7 @@ namespace tec {
 		ComponentUpdateSystem<T>::Initialize();
 	}
 
-	void IntializeComponents() {
+	void InitializeComponents() {
 		SetupComponent<Renderable>();
 		SetupComponent<Position>();
 		SetupComponent<Orientation>();
@@ -101,7 +101,7 @@ namespace tec {
 		};
 	}
 
-	void IntializeFileFactories() {
+	void InitializeFileFactories() {
 		AddFileFactory<MD5Mesh>();
 		AddFileFactory<OBJ>();
 		AddFileFactory<VorbisStream>();

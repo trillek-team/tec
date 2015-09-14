@@ -271,7 +271,7 @@ namespace tec {
 
 					/* the sum of all weight->bias should be 1.0 */
 					vdata.position += (this->joints[weight.joint].position + wv) * weight.bias;
-					vdata.bone_indicies[k] = weight.joint;
+					vdata.bone_indices[k] = weight.joint;
 					vdata.bone_weights[k] = weight.bias;
 				}
 
@@ -355,15 +355,15 @@ namespace tec {
 				material_name.find_last_of(".") -
 				material_name.find_last_of("/") - 1)
 				+ "_material";
-			if (objgroup->indicies.size() < int_mesh.tris.size()) {
-				objgroup->indicies.reserve(int_mesh.tris.size() * 3);
+			if (objgroup->indices.size() < int_mesh.tris.size()) {
+				objgroup->indices.reserve(int_mesh.tris.size() * 3);
 			}
 			for (size_t j = 0; j < int_mesh.tris.size(); ++j) {
-				objgroup->indicies.push_back(int_mesh.tris[j].verts[0]);
-				objgroup->indicies.push_back(int_mesh.tris[j].verts[1]);
-				objgroup->indicies.push_back(int_mesh.tris[j].verts[2]);
+				objgroup->indices.push_back(int_mesh.tris[j].verts[0]);
+				objgroup->indices.push_back(int_mesh.tris[j].verts[1]);
+				objgroup->indices.push_back(int_mesh.tris[j].verts[2]);
 			}
-			MaterialGroup mat_group = {0, objgroup->indicies.size(), material_name};
+			MaterialGroup mat_group = {0, objgroup->indices.size(), material_name};
 			mat_group.textures.push_back(int_mesh.shader);
 			objgroup->material_groups.push_back(std::move(mat_group));
 		}
