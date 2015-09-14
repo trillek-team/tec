@@ -64,7 +64,7 @@ namespace tec {
 			| ImGuiWindowFlags_NoResize 
 			| ImGuiWindowFlags_NoMove
 			| ImGuiWindowFlags_NoSavedSettings 
-			| ImGuiWindowFlags_NoScrollbar
+			//| ImGuiWindowFlags_NoScrollbar
 			| ImGuiWindowFlags_NoCollapse;
 
 		std::map<std::string, std::tuple<std::function<void(const char*)>, std::string>> commands; /// Storage of commands and help info

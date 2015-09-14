@@ -11,6 +11,7 @@
 #include <OpenGL/gl3.h>
 #endif
 
+#include "spdlog/spdlog.h"
 #include "multiton.hpp"
 #include "types.hpp"
 #include "event-system.hpp"
@@ -51,6 +52,7 @@ namespace tec {
 
 		bool ActivateView(const eid entity_id);
 	private:
+		std::shared_ptr<spdlog::logger> _log;
 		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
 		void UpdateRenderList(double delta);
 		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;

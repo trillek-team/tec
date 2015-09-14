@@ -6,6 +6,7 @@
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "spdlog/spdlog.h"
 #include "resources/md5mesh.hpp"
 
 namespace tec {
@@ -63,17 +64,21 @@ namespace tec {
 			}
 		}
 
+		spdlog::get("console_log")->warn("[MD5Anim] Error parsing file {}", fname.toString());
 		return nullptr;
 	}
 
 	bool MD5Anim::Parse() {
+		auto _log = spdlog::get("console_log");
 		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			_log->error("[MD5Anim] Can't open the file {}. Invalid path or missing file.", path.toString());
 			// Can't open the file!
 			return false;
 		}
 		
 		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
+			_log->error("[MD5Anim] Error opening file {}", path.toString());
 			return false;
 		}
 

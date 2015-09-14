@@ -2,6 +2,8 @@
 #include <cstring>
 #include <fstream>
 
+#include "spdlog/spdlog.h"
+
 namespace tec {
 	PixelBuffer::PixelBuffer() :
 		imagewidth(0), imageheight(0), bufferpitch(0), imagebitdepth(0),
@@ -224,9 +226,11 @@ namespace tec {
 			this->blockptr.reset(data);
 			this->writelock.unlock();
 
+			spdlog::get("console_log")->trace("[Pixel-Buffer] Loaded image {}", filename.FileName());
 			return true;
 		}
 
+		spdlog::get("console_log")->warn("[Pixel-Buffer] Can't load image {}", filename.toString());
 		return false;
 	}
 

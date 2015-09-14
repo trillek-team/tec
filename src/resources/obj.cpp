@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "spdlog/spdlog.h"
 #include "graphics/texture-object.hpp"
 
 namespace tec {
@@ -21,7 +22,9 @@ namespace tec {
 	extern std::string CleanString(std::string str);
 
 	bool OBJ::ParseMTL(const FilePath& fname) {
+		auto _log = spdlog::get("console_log");
 		if (!fname.isValidPath() || !fname.FileExists()) {
+			_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", fname.toString());
 			// Can't open the file!
 			return false;
 		}
@@ -29,6 +32,7 @@ namespace tec {
 
 		std::ifstream f(fname.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
+			_log->error("[OBJ] Error opening file {}", fname.toString());
 			return false;
 		}
 
@@ -116,11 +120,14 @@ namespace tec {
 			return obj;
 		}
 
+		spdlog::get("console_log")->warn("[OBJ] Error parsing file {}", fname.toString());
 		return nullptr;
 	}
 
 	bool OBJ::Parse() {
+		auto _log = spdlog::get("console_log");
 		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", path.toString());
 			// Can't open the file!
 			return false;
 		}
@@ -128,6 +135,7 @@ namespace tec {
 
 		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
+			_log->error("[OBJ] Error opening file {}", path.toString());
 			return false;
 		}
 

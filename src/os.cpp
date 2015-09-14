@@ -1,7 +1,7 @@
 #include "os.hpp"
 
-#include <iostream>
 #include <algorithm>
+#include "spdlog/spdlog.h"
 #include "event-system.hpp"
 #include "events.hpp"
 
@@ -16,23 +16,19 @@ extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char *str);
 #endif
 
-#include <iostream>
-#include <algorithm>
-#include "event-system.hpp"
-
 namespace tec {
 	GLFWwindow* OS::focused_window;
 
 	// Error helper function used by GLFW for error messaging.
-	// Currently outputs to std::cout.
 	static void ErrorCallback(int error_no, const char* description) {
-		std::cout << "Error " << error_no << ": " << description << std::endl;
+		spdlog::get("console_log")->error() << "[OS] GLFW Error " << error_no << ": " << description;
 	}
 
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
 		const unsigned int glMajor /*= 3*/, const unsigned int glMinor /*= 2*/) {
 		glfwSetErrorCallback(ErrorCallback);
 
+		auto l = spdlog::get("console_log");
 		// Initialize the library.
 		if (glfwInit() != GL_TRUE) {
 			return false;
@@ -91,14 +87,14 @@ namespace tec {
 			if (glcx_major == "1") {
 				// still 1, higher versions probably not supported
 				glfwTerminate();
-				std::cerr << "Initializing OpenGL failed, unsupported version: " << glcx_version << '\n';
-				std::cerr << "Press \"Enter\" to exit\n";
+				l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
+					<< "Press \"Enter\" to exit\n";
 				std::cin.get();
 				return false;
 			}
 		}
 
-		std::cerr << "GL version string: " << glcx_version << std::endl;
+		l->info() << "GL version string: " << glcx_version;;
 
 		this->client_width = width;
 		this->client_height = height;
