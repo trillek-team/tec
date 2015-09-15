@@ -1,5 +1,7 @@
 #include "graphics/texture-object.hpp"
 
+#include "spdlog/spdlog.h"
+
 namespace tec {
 	TextureObject::~TextureObject() {
 		Destroy();
@@ -46,6 +48,7 @@ namespace tec {
 	}
 
 	void TextureObject::Load(const PixelBuffer & image) {
+		auto _log = spdlog::get("console_log");
 		auto err = glGetError();
 		if (err) {
 			return;
@@ -73,29 +76,34 @@ namespace tec {
 		}
 		const uint8_t * pixdata = image.GetBlockBase();
 		if (nullptr == pixdata) {
+			_log->error("[Texture-Object] Missing pixeldata");
 			return;
 		}
-		GLint magfilter = GL_LINEAR;
 		glBindTexture(GL_TEXTURE_2D, this->texture_id);
 		err = glGetError();
 		if (err) {
+			_log->trace("[Texture-Object] Error binding texture");
 			return;
 		}
+		GLint magfilter = GL_LINEAR; // TODO Add a get/set magfilter and add code to generate mipmaps
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		err = glGetError();
 		if (err) {
+			_log->trace("[Texture-Object] Error setting texture filters");
 			return;
 		}
 		glTexImage2D(GL_TEXTURE_2D, 0, gformat, image.Width(), image.Height(), 0, gformat, GL_UNSIGNED_BYTE, pixdata);
 		err = glGetError();
 		if (err) {
+			_log->trace("[Texture-Object] Error coping texture data to GPU");
 			return;
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void TextureObject::Load(const uint8_t * image, GLuint width, GLuint height) {
+		auto _log = spdlog::get("console_log");
 		auto err = glGetError();
 		if (err) {
 			return;
@@ -124,12 +132,19 @@ namespace tec {
 		glBindTexture(GL_TEXTURE_2D, this->texture_id);
 		err = glGetError();
 		if (err) {
+			_log->trace("[Texture-Object] Error binding texture");
 			return;
 		}
 		glTexImage2D(GL_TEXTURE_2D, 0, gformat, width, height, 0, gformat, GL_UNSIGNED_BYTE, image);
+		err = glGetError();
+		if (err) {
+			_log->trace("[Texture-Object] Error coping texture data to GPU");
+			return;
+		}
 	}
 
 	void TextureObject::Generate(GLuint width, GLuint height, bool usealpha) {
+		auto _log = spdlog::get("console_log");
 		auto err = glGetError();
 		if (err) {
 			return;
@@ -140,12 +155,14 @@ namespace tec {
 		glBindTexture(GL_TEXTURE_2D, this->texture_id);
 		err = glGetError();
 		if (err) {
+			_log->trace("[Texture-Object] Error binding texture");
 			return;
 		}
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		err = glGetError();
 		if (err) {
+			_log->trace("[Texture-Object] Error setting texture filters");
 			return;
 		}
 		if (usealpha) {
@@ -156,6 +173,7 @@ namespace tec {
 		}
 		err = glGetError();
 		if (err) {
+			_log->trace("[Texture-Object] Error writing texture data on GPU");
 			return;
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);

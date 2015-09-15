@@ -10,6 +10,8 @@
 #include "imgui-system.hpp"
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
+#include "gui/console.hpp"
+#include "spdlog/spdlog.h"
 
 #include <iostream>
 #include <thread>
@@ -35,15 +37,16 @@ namespace tec {
 		}
 
 		void On(std::shared_ptr<FileDropEvent> fd_event) {
+			auto _log = spdlog::get("console_log");
 			for (auto file : fd_event->filenames) {
 				FilePath path(file);
 				if (!path.isValidPath() || !path.FileExists()) {
-					std::cout << "Can't find file : " << path.FileName() << std::endl;
+					_log->error() << "Can't find file : " << path.FileName();
 					continue;
 				}
 				auto ext = path.FileExtension();
 				if (ext.empty()) {
-					std::cout << "No extension!" << std::endl;
+					_log->error() << "No extension!";
 					continue;
 				}
 				if (path.isAbsolutePath()) {
@@ -51,17 +54,17 @@ namespace tec {
 					path = path.SubpathFrom("assets");
 					auto fullpath = FilePath::GetAssetPath(path.toGenericString());
 					if (!fullpath.isValidPath() || !fullpath.FileExists()) {
-						std::cout << "File isn't on assets folder! Please copy/move it to the assets folder " << std::endl;
+						_log->error() << "File isn't on assets folder! Please copy/move it to the assets folder.";
 						continue;
 					}
 					
 				}
 				if (file_factories.find(ext) == file_factories.end()) {
-					std::cout << "No loader for extension: " << ext << std::endl;
+					_log->warn() << "No loader for extension: " << ext;
 					continue;
 				}
 
-				std::cout << "Loading: " << path << std::endl;
+				_log->info() << "Loading: " << path;
 				file_factories[ext](path.toString());
 			}
 		}
@@ -71,24 +74,56 @@ namespace tec {
 std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
-
+	auto loglevel = spdlog::level::info;
+	// TODO write a proper arguments parser
+	// Now only search for -v or -vv to set log level
+	for (int i = 1; i < argc; i++) {
+		if (std::string(argv[i]).compare("-v")) {
+			loglevel = spdlog::level::debug;
+		} else if (std::string(argv[i]).compare("-vv")) {
+			loglevel = spdlog::level::trace;
+		}
+	}
+	// Console and logging initialization
+	tec::Console console;
+	
+	spdlog::set_async_mode(1048576);
+	std::vector<spdlog::sink_ptr> sinks;
+	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+	sinks.push_back(std::make_shared<tec::ConsoleSink>(console));
+	auto log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
+	log->set_level(loglevel);
+	log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
+	spdlog::register_logger(log);
+	
+	log->info("Initializing OpenGL...");
 	tec::OS os;
-
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
-
+	console.AddConsoleCommand( "exit", 
+		"exit : Exit from TEC",
+		[&os ] (const char* args) {
+			os.Quit();
+		});
+	
+	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
-	tec::RenderSystem rs;
 
+	log->info("Initializing rendering system...");
+	tec::RenderSystem rs;
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
+	log->info("Initializing physics system...");
 	tec::PhysicsSystem ps;
 
+	log->info("Initializing sound system...");
 	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
 
+	log->info("Initializing virtual computer system...");
 	tec::VComputerSystem vcs;
 
+	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
 
 	tec::InitializeComponents();
@@ -357,6 +392,9 @@ int main(int argc, char* argv[]) {
 			ImGui::End();
 		}
 	});
+	gui.AddWindowDrawFunction("console", [&console]() {
+		console.Draw();
+	});
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
@@ -393,6 +431,7 @@ int main(int argc, char* argv[]) {
 		ps.DebugDraw();
 
 		gui.Update(delta);
+		console.Update(delta);
 
 		os.SwapBuffers();
 		if (camera_controller.mouse_look) {

@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <cctype>
+#include <algorithm>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -421,7 +422,12 @@ void FilePath::NormalizePath() {
 		path.erase(0, 2);
 	}
 #endif
-	// TODO Check multiple path separators (like "\\\\") and handled relative path stuff like "\foo\bar\..\shaders\debug.vert"
+	// Prune duplicate path separators (like "\\\\") 
+	path.erase(std::unique(path.begin(), path.end(), [] (const char& a, const char& b) {
+		return a == PATH_SEPARATOR_C && b == PATH_SEPARATOR_C;
+		}), path.end() );
+
+	// TODO handled relative path stuff like "\foo\bar\..\shaders\debug.vert"
 }
 
 bool  FilePath::isValidPath() const {

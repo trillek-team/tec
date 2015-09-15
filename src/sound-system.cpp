@@ -10,19 +10,21 @@ namespace tec {
 		ALCenum error;
 		error = alGetError();
 		if (error != AL_NO_ERROR) {
-			std::cout << error;
+			spdlog::get("console_log")->error("[Sound System] {}", error);
 		}
 	}
 
 	SoundSystem::SoundSystem() {
+		_log = spdlog::get("console_log");
+
 		this->device = alcOpenDevice(NULL); alCheckError();
 		if (!this->device) {
-			std::cout << "No OpenAL device selected.";
+			_log->warn() << "[Sound System] No OpenAL device selected.";
 		}
 
 		this->context = alcCreateContext(device, NULL); alCheckError();
 		if (!alcMakeContextCurrent(this->context)) {
-			std::cout << "No OpenAL context created.";
+			_log->warn() << "[Sound System] No OpenAL context created.";
 		}
 		alListener3f(AL_POSITION, 0, 0, 0);
 		alListener3f(AL_VELOCITY, 0, 0, 0);

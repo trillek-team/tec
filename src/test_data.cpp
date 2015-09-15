@@ -1,3 +1,4 @@
+#include "spdlog/spdlog.h"
 #include "graphics/shader.hpp"
 #include "graphics/material.hpp"
 #include "components/transforms.hpp"
@@ -218,11 +219,11 @@ namespace tec {
 	// NOTE : This would be change on a future, not ? Actually is loading/saving from assets (where not is supossed to be write by a user)
 
 	void ProtoLoadEntity(const FilePath& fname) {
+		auto _log = spdlog::get("console_log");
 		if (fname.isValidPath() && fname.FileExists()) {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 			proto::Entity entity;
 			entity.ParseFromIstream(&input);
-			//std::cout << "ProtoLoadEntity(): " << entity.DebugString() << "\n";
 			eid entity_id = entity.id();
 			for (int i = 0; i < entity.components_size(); ++i) {
 				const proto::Component& comp = entity.components(i);
@@ -231,30 +232,34 @@ namespace tec {
 					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
 				}
 			}
-		}
-		else {
-			std::clog << "Error opening "<< fname.FileName() <<" file. Can't find it\n";
+		} else {
+			_log->error() << "[ProtoLoadEntity] Error opening "<< fname.FileName() <<" file. Can't find it";
 		}
 	}
 
 	void ProtoLoad() {
-		FilePath fname = FilePath::GetAssetPath("test.proto");
+		const std::string file("test.proto");
+		
+		auto _log = spdlog::get("console_log");
+		FilePath fname = FilePath::GetAssetPath(file);
 		if (fname.isValidPath() && fname.FileExists()) {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 			proto::EntityFileList elist;
 			elist.ParseFromIstream(&input);
-			std::cout << "ProtoLoad(): " << elist.DebugString() << "\n";
+			_log->debug() << "[ProtoLoad] :\n" << elist.DebugString();
 			for (int i = 0; i < elist.entity_file_list_size(); i++) {
 				FilePath entity_filename = FilePath::GetAssetPath(elist.entity_file_list(i));
 				ProtoLoadEntity(entity_filename);
 			}
-		}
-		else {
-			std::clog << "Error opening test.proto file. Can't find it\n";
+		} else {
+			_log->error() << "[ProtoLoad] Error opening "<< fname.FileName() <<" file. Can't find it\n";
 		}
 	}
 
 	void ProtoSave() {
+		const std::string file("test.proto");
+		
+		auto _log = spdlog::get("console_log");
 		FilePath fname = FilePath::GetAssetPath("test.proto");
 		if (fname.isValidPath()) {
 			std::fstream output(fname.GetNativePath(), std::ios::out | std::ios::trunc | std::ios::binary);
@@ -273,9 +278,8 @@ namespace tec {
 				elist.add_entity_file_list(fname);
 			}
 			elist.SerializeToOstream(&output);
-		}
-		else {
-			std::clog << "Error opening test.proto file. Inavlid path: " << fname << "\n";
+		} else {
+			_log->error() << "Error opening test.proto file. Inavlid path: " << fname << "\n";
 		}
 		
 	}

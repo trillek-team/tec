@@ -23,3 +23,6 @@
 	path = modules/trillek-vcomputer
 	url = https://github.com/trillek-team/trillek-vcomputer-module.git
 	branch = releases/tag/v0.5.2-fix
+[submodule "modules/spdlog"]
+	path = modules/spdlog
+	url = git@github.com:gabime/spdlog.git

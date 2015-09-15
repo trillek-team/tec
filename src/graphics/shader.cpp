@@ -1,5 +1,6 @@
 #include "graphics/shader.hpp"
 
+#include "spdlog/spdlog.h"
 #include <iterator>
 
 namespace tec {
@@ -21,32 +22,30 @@ namespace tec {
 	}
 
 	void Shader::LoadFromFile(const ShaderType type, const tec::FilePath& fname) {
-		if (fname.isValidPath()) {
-			if (fname.FileExists()) {
-				std::ifstream fp;
-				fp.open(fname.GetNativePath(), std::ios_base::in);
-				if (fp.is_open()) {
-					std::string buffer(std::istreambuf_iterator<char>(fp), (std::istreambuf_iterator<char>()));
-					LoadFromString(type, buffer, fname.FileName());
-				}
-				else {
-					std::clog << "Error loading shader: " << fname.FileName() << " Can't open file.\n";
-				}
-			}
-			else {
-				std::clog << "Error loading shader: " << fname.FileName() << " File don't exists. Check assets folder.\n";
-			}
+		auto _log = spdlog::get("console_log");
+		if (!fname.isValidPath()) {
+			_log->error() << "[Shader] Error loading shader: " << fname.FileName() << " Invalid path: " << fname;
+			return;
 		}
-		else {
-			std::clog << "Error loading shader: " << fname.FileName() << " Invalid path: " << fname << "\n";
+		if (!fname.FileExists()) {
+			_log->error() << "[Shader] Error loading shader: " << fname.FileName() << " File don't exists. Check assets folder";
+			return;
 		}
+		std::ifstream fp(fname.GetNativePath(), std::ios_base::in);
+		if (! fp.is_open()) {
+			_log->error() << "[Shader] Error loading shader: " << fname.FileName() << " Can't open file.";
+			return;
+		}
+		std::string buffer(std::istreambuf_iterator<char>(fp), (std::istreambuf_iterator<char>()));
+		LoadFromString(type, buffer, fname.FileName());
 	}
 
 	void Shader::LoadFromString(const ShaderType type, const std::string& source, const std::string& filename) {
+		auto _log = spdlog::get("console_log");
 		glGetError();
 		GLuint shader = glCreateShader(type);
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			std::clog << "Error creating shader: " << filename << " " << error << "\n";
+			_log->error() << "[Shader] Error creating shader : " << filename << " : " << error;
 			return;
 		}
 
@@ -54,13 +53,13 @@ namespace tec {
 		const GLchar *str = source.data();
 		glShaderSource(shader, 1, &str, &length);
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			std::clog << "Error loading shader source: " << filename << " " << error << "\n";
+			_log->error() << "[Shader] Error loading shader source : " << filename << " : " << error;
 			return;
 		}
 
 		glCompileShader(shader);
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			std::clog << "Error compiling shader: " << filename << " " << error << "\n";
+			_log->error() << "[Shader] Error compiling shader : " << filename << " : " << error;
 			return;
 		}
 
@@ -71,12 +70,12 @@ namespace tec {
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
 			GLchar *info_log = new GLchar[log_length];
 			glGetShaderInfoLog(shader, log_length, NULL, info_log);
-			std::clog << "Error compiling shader: " << filename << " " << info_log;
+			_log->error() << "[Shader] Error compiling shader : " << filename << " : " << info_log;
 			delete[] info_log;
 		}
 
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			std::clog << "Error compiling shader: " << filename << " " << error << "\n";
+			_log->error() << "[Shader] Error compiling shader : " << filename << " : " << error;
 			return;
 		}
 		this->shaders.push_back(shader);
@@ -99,8 +98,10 @@ namespace tec {
 
 			std::vector<GLchar> info_log(max_length);
 			glGetProgramInfoLog(this->program, max_length, &max_length, &info_log[0]);
-			std::copy(info_log.begin(), info_log.end(), std::ostream_iterator<GLchar>(std::clog, ""));
-			std::clog << "\n";
+			std::string str;
+			str.copy(info_log.data(), info_log.size());
+			str[info_log.size() - 1] = '\0';
+			spdlog::get("console_log")->error("[Shader] Error linking : {}", str);
 
 			DeleteProgram();
 
