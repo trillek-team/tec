@@ -459,8 +459,18 @@ std::string FilePath::toGenericString() const {
 
 FilePath FilePath::GetAssetsBasePath() {
 	if (FilePath::assets_base.empty()) {
+		char cwd[FILENAME_MAX] = {0}; // Try to get current working directory (ie where theprogram was called)
+#if defined(WIN32)
+		if (! _getcwd(cwd, sizeof(cwd))) {
+#else
+		if (! getcwd(cwd, sizeof(cwd))) {
+#endif
+			std::strncpy(cwd, "./", 2);
+			cwd[2] = '\0';
+		}
 		// Search for the assets folder
-		FilePath tmp("./assets/");
+		FilePath tmp(cwd);
+		tmp /= "assets/";
 		if (tmp.DirExists()) {
 			FilePath::assets_base = tmp.toString();
 		} else {
