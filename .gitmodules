@@ -25,4 +25,4 @@
 	branch = releases/tag/v0.5.2-fix
 [submodule "modules/spdlog"]
 	path = modules/spdlog
-	url = git@github.com:gabime/spdlog.git
+	url = https://github.com/gabime/spdlog.git
