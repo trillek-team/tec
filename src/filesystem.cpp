@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <cctype>
+#include <cstring>
 #include <algorithm>
 
 #include <sys/types.h>
@@ -465,7 +466,7 @@ FilePath FilePath::GetAssetsBasePath() {
 #else
 		if (! getcwd(cwd, sizeof(cwd))) {
 #endif
-			std::strncpy(cwd, "./", 2);
+			std::strncpy(cwd, "./", 2); // Fallback to relative path if getcwd fails
 			cwd[2] = '\0';
 		}
 		// Search for the assets folder
