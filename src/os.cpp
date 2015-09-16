@@ -5,6 +5,7 @@
 #include "event-system.hpp"
 #include "events.hpp"
 
+
 #ifdef __APPLE__
 // Needed so we can disable retina support for our window.
 #define GLFW_EXPOSE_NATIVE_COCOA 1
@@ -94,8 +95,12 @@ namespace tec {
 			}
 		}
 
-		l->info() << "GL version string: " << glcx_version;;
-
+		const char* glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+		l->info() << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver; 
+		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
+		const char* glcx_renderer = (char*)glGetString(GL_RENDERER);
+		l->info() << glcx_vendor << " " << glcx_renderer;
+		
 		this->client_width = width;
 		this->client_height = height;
 
@@ -121,6 +126,17 @@ namespace tec {
 		}
 #endif
 
+		// Getting a list of the avail extensions
+		
+		std::string extensions = "";
+		GLint num_exts = 0;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
+		for (GLint e=0; e < num_exts; e++) {
+			const GLubyte* tmp = glGetStringi(GL_EXTENSIONS, e);
+			extensions += " " + std::string((const char *)tmp);
+		}
+		l->info() << "Extensions : " << extensions;
+		
 		// Associate a pointer for this instance with this window.
 		glfwSetWindowUserPointer(this->window, this);
 
