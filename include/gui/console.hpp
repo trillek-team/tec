@@ -63,7 +63,7 @@ namespace tec {
 		const ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar 
 			| ImGuiWindowFlags_NoResize 
 			| ImGuiWindowFlags_NoMove
-			| ImGuiWindowFlags_NoSavedSettings 
+			| ImGuiWindowFlags_NoSavedSettings
 			//| ImGuiWindowFlags_NoScrollbar
 			| ImGuiWindowFlags_NoCollapse;
 

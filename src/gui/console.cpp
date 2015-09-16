@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <GLFW/glfw3.h>
 
-#define MAX_BUFFER_ELEM (16384)
+#define MAX_BUFFER_ELEM (1024)
 
 namespace tec {
 	Console::Console() {

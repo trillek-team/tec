@@ -27,6 +27,7 @@ namespace tec {
 	class IMGUISystem :
 		public EventQueue < KeyboardEvent >,
 		public EventQueue < MouseMoveEvent >,
+		public EventQueue < MouseScrollEvent >,
 		public EventQueue < WindowResizedEvent > {
 	public:
 		IMGUISystem(GLFWwindow* window);
@@ -44,6 +45,7 @@ namespace tec {
 	private:
 		void On(std::shared_ptr<WindowResizedEvent> data);
 		void On(std::shared_ptr<MouseMoveEvent > data);
+		void On(std::shared_ptr<MouseScrollEvent > data);
 		void On(std::shared_ptr<KeyboardEvent> data);
 
 		ImGuiIO& io;
@@ -51,7 +53,7 @@ namespace tec {
 		int window_width, window_height;
 		bool mouse_pressed[3];
 		ImVec2 mouse_pos;
-		float g_MouseWheel = 0.0f;
+		ImVec2 mouse_wheel;
 
 		static GLuint font_texture;
 		static GLFWwindow* window;

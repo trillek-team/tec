@@ -25,6 +25,8 @@ namespace tec {
 	std::string logfilename;
 
 	IMGUISystem::IMGUISystem(GLFWwindow* window) : io(ImGui::GetIO()) {
+		this->mouse_pos.x = 0; this->mouse_pos.y = 0;
+		this->mouse_wheel.x = 0; this->mouse_wheel.y = 0;
 		IMGUISystem::window = window;
 		inifilename = (FilePath::GetUserSettingsPath() / "imgui.ini").toString();
 		logfilename = (FilePath::GetUserCachePath() / "imgui_log.txt").toString();
@@ -95,6 +97,7 @@ namespace tec {
 		this->io.DeltaTime = static_cast<float>(delta);
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
+		EventQueue<MouseScrollEvent>::ProcessEventQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 
 		if (!IMGUISystem::font_texture) {
@@ -102,11 +105,14 @@ namespace tec {
 		}
 
 		// Setup inputs
-		// (we already got mouse wheel, keyboard keys & characters from glfw callbacks polled in glfwPollEvents())
+		// (we already got mouse wheel, keyboard keys & characters from event system
 		if (glfwGetWindowAttrib(IMGUISystem::window, GLFW_FOCUSED)) {
-			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;                        // Convert mouse coordinates to pixels
+			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;  // Convert mouse coordinates to pixels
 			this->mouse_pos.y *= (float)this->framebuffer_height / this->window_height;
 			this->io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
+			this->io.MouseWheel += this->mouse_wheel.y; // ImGUI not support x axis scroll :(
+			this->mouse_wheel.y = 0;
+			this->mouse_wheel.x = 0;
 		}
 		else {
 			this->io.MousePos = ImVec2(-1, -1);
@@ -117,8 +123,6 @@ namespace tec {
 			mouse_pressed[i] = false;
 		}
 
-		this->io.MouseWheel = g_MouseWheel;
-		g_MouseWheel = 0.0f;
 
 		// Hide OS mouse cursor if ImGui is drawing it
 		glfwSetInputMode(IMGUISystem::window, GLFW_CURSOR, this->io.MouseDrawCursor ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL);
@@ -352,6 +356,12 @@ namespace tec {
 		this->mouse_pos.x = data->new_x;
 		this->mouse_pos.y = data->new_y;
 	}
+	
+	void IMGUISystem::On(std::shared_ptr<MouseScrollEvent> data) {
+		this->mouse_wheel.x = data->x_offset;
+		this->mouse_wheel.y = data->y_offset;
+	}
+	
 	
 	void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
 		if (data->action == KeyboardEvent::KEY_DOWN) {

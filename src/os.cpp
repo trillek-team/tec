@@ -131,11 +131,10 @@ namespace tec {
 		std::string extensions = "";
 		GLint num_exts = 0;
 		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
+		l->info("Extensions {} : ", num_exts);
 		for (GLint e=0; e < num_exts; e++) {
-			const GLubyte* tmp = glGetStringi(GL_EXTENSIONS, e);
-			extensions += " " + std::string((const char *)tmp);
+			l->info() << (const char*) glGetStringi(GL_EXTENSIONS, e);
 		}
-		l->info() << "Extensions : " << extensions;
 		
 		// Associate a pointer for this instance with this window.
 		glfwSetWindowUserPointer(this->window, this);
@@ -146,6 +145,7 @@ namespace tec {
 		glfwSetCursorPosCallback(this->window, &OS::MouseMoveEventCallback);
 		glfwSetCharCallback(this->window, &OS::CharacterEventCallback);
 		glfwSetMouseButtonCallback(this->window, &OS::MouseButtonEventCallback);
+		glfwSetScrollCallback(this->window, &OS::MouseScrollEventCallback);
 		glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
 		glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
@@ -242,6 +242,15 @@ namespace tec {
 		}
 	}
 
+	void OS::MouseScrollEventCallback(GLFWwindow* window, double x, double y) {
+		// Get the user pointer and cast it.
+		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+
+		if (os) {
+			os->DispatchMouseScrollEvent(x, y);
+		}
+	}
+
 	void OS::MouseButtonEventCallback(GLFWwindow* window, int button, int action, int mods) {
 		// Get the user pointer and cast it.
 		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
@@ -323,6 +332,16 @@ namespace tec {
 			this->old_mouse_x = x;
 			this->old_mouse_y = y;
 		}
+	}
+	
+	void OS::DispatchMouseScrollEvent(const double xoffset, const double yoffset) {
+		std::shared_ptr<MouseScrollEvent> mscroll_event = std::make_shared<MouseScrollEvent>(
+			MouseScrollEvent {
+			static_cast<double>(xoffset),
+			static_cast<double>(yoffset),
+		});
+		EventSystem<MouseScrollEvent>::Get()->Emit(mscroll_event);
+
 	}
 
 	void OS::DispatchMouseButtonEvent(const int button, const int action, const int mods) {
