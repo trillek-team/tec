@@ -354,14 +354,16 @@ FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
 	FilePath ret;
 	std::istringstream f(this->path);
 	std::string s;
-	bool found = false;
+	bool found = false; bool first = true;
 	while (std::getline(f, s, PATH_SEPARATOR_C)) {
 		if (found) {
-			ret /= s;
+			ret = first ? s : ret / s;
+			first = false;
 		} else if (s.compare(needle) == 0) {
 			found = true;
 			if (include) {
-				ret /= s;
+				ret = s;
+				first = false;
 			}
 		}
 	}
