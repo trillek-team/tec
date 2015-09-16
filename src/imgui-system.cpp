@@ -1,6 +1,9 @@
 #include "imgui-system.hpp"
+
+#include "spdlog/spdlog.h"
 #include "filesystem.hpp"
 #include "os.hpp"
+#include "events.hpp"
 
 #ifdef _MSC_VER
 #undef APIENTRY
@@ -8,7 +11,6 @@
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
 #endif
-#include "events.hpp"
 
 namespace tec {
 	GLFWwindow* IMGUISystem::window = nullptr;
@@ -92,6 +94,7 @@ namespace tec {
 	void IMGUISystem::Update(double delta) {
 		this->io.DeltaTime = static_cast<float>(delta);
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
+		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 
 		if (!IMGUISystem::font_texture) {
@@ -101,11 +104,9 @@ namespace tec {
 		// Setup inputs
 		// (we already got mouse wheel, keyboard keys & characters from glfw callbacks polled in glfwPollEvents())
 		if (glfwGetWindowAttrib(IMGUISystem::window, GLFW_FOCUSED)) {
-			double mouse_x, mouse_y;
-			glfwGetCursorPos(IMGUISystem::window, &mouse_x, &mouse_y);
-			mouse_x *= (float)this->framebuffer_width / this->window_width;                        // Convert mouse coordinates to pixels
-			mouse_y *= (float)this->framebuffer_height / this->window_height;
-			this->io.MousePos = ImVec2((float)mouse_x, (float)mouse_y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
+			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;                        // Convert mouse coordinates to pixels
+			this->mouse_pos.y *= (float)this->framebuffer_height / this->window_height;
+			this->io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
 		}
 		else {
 			this->io.MousePos = ImVec2(-1, -1);
@@ -347,6 +348,11 @@ namespace tec {
 		io.DisplaySize = ImVec2((float)this->framebuffer_width, (float)this->framebuffer_height);
 	}
 
+	void IMGUISystem::On(std::shared_ptr<MouseMoveEvent> data) {
+		this->mouse_pos.x = data->new_x;
+		this->mouse_pos.y = data->new_y;
+	}
+	
 	void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
 		if (data->action == KeyboardEvent::KEY_DOWN) {
 			io.KeysDown[data->key] = true;
