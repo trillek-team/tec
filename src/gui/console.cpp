@@ -120,7 +120,22 @@ namespace tec {
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 
 			for (auto it = buf.crbegin(); it != buf.crend(); it++) {
-				ImGui::TextUnformatted((*it).c_str());
+				ImGui::TextWrapped("%s", it->c_str());
+				//ImGui::TextUnformatted((*it).c_str());
+				/*
+				ImVec2 pos = ImGui::GetCursorScreenPos();
+				ImVec2 maxrect = ImGui::GetWindowContentRegionMax();
+				ImVec2 textrect = ImGui::CalcTextSize(it->c_str());
+				ImGui::GetWindowDrawList()->AddText(ImGui::GetWindowFont(), 
+					ImGui::GetWindowFontSize(),
+					pos, 
+					ImColor(ImGui::GetStyle().Colors[ImGuiCol_Text]), 
+					it->c_str(), 0,
+					maxrect.x, 
+					0);
+				pos.y += textrect.y;
+				ImGui::SetCursorScreenPos(pos);
+				*/
 			}
 			if (scrollToBottom) {
 				ImGui::SetScrollHere(1.0f);
