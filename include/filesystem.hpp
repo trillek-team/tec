@@ -258,8 +258,7 @@ public:
 		}
 
 		FilePath& operator= (const FilePath& rhs) {
-			this->path = rhs.path;
-			this->NormalizePath();
+			this->path = rhs.path; //Not necesary to normalice
 			return *this;
 		}
 

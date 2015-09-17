@@ -367,7 +367,6 @@ FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
 			}
 		}
 	}
-
 	return ret;
 }
 
@@ -468,8 +467,11 @@ FilePath FilePath::GetAssetsBasePath() {
 #else
 		if (! getcwd(cwd, sizeof(cwd))) {
 #endif
+#pragma warning(push)
+#pragma warning(disable: 4996)
 			std::strncpy(cwd, "./", 2); // Fallback to relative path if getcwd fails
 			cwd[2] = '\0';
+#pragma warning(pop)
 		}
 		// Search for the assets folder
 		FilePath tmp(cwd);
