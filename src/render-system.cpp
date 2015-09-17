@@ -1,10 +1,10 @@
 #include "render-system.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
-#include <iostream>
 #include <thread>
 #include <cmath>
 
+#include "spdlog/spdlog.h"
 #include "graphics/shader.hpp"
 #include "graphics/view.hpp"
 #include "graphics/material.hpp"
@@ -18,9 +18,12 @@
 
 namespace tec {
 	RenderSystem::RenderSystem() : window_width(1024), window_height(768) {
+		_log = spdlog::get("console_log");
+
 		GLenum err = glGetError();
 		// If there is an error that means something went wrong when creating the context.
 		if (err) {
+			_log->debug("[RenderSystem] Something went wrong when creating the context.");
 			return;
 		}
 
@@ -34,12 +37,12 @@ namespace tec {
 		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_STENCIL,
 			this->window_width, this->window_height);
 		if (!this->light_gbuffer.CheckCompletion()) {
-			std::cout << "Failed to create Light GBuffer." << std::endl;
+			_log->error() << "[RenderSystem] Failed to create Light GBuffer.";
 		}
 
 		this->shadow_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_SHADOW, 4096, 4096);
 		if (!this->shadow_gbuffer.CheckCompletion()) {
-			std::cout << "Failed to create Shadow GBuffer." << std::endl;
+			_log->error() << "[RenderSystem] Failed to create Shadow GBuffer.";
 		}
 	}
 

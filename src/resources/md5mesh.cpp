@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "spdlog/spdlog.h"
 #include "graphics/texture-object.hpp"
 
 namespace tec {
@@ -135,12 +136,15 @@ namespace tec {
 			MeshMap::Set(mesh->GetName(), mesh);
 			return mesh;
 		}
+		spdlog::get("console_log")->warn("[MD5Mesh] Error parsing file {}", fname.toString());
 
 		return nullptr;
 	}
 
 	bool MD5Mesh::Parse() {
+		auto _log = spdlog::get("console_log");
 		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			_log->error("[MD5Mesh] Can't open the file {}. Invalid path or missing file.", path.toString());
 			// Can't open the file!
 			return false;
 		}
@@ -148,6 +152,7 @@ namespace tec {
 		
 		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
+			_log->error("[MD5Mesh] Error opening file {}", path.toString());
 			return false;
 		}
 

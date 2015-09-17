@@ -1,9 +1,10 @@
 #include "os.hpp"
 
-#include <iostream>
 #include <algorithm>
+#include "spdlog/spdlog.h"
 #include "event-system.hpp"
 #include "events.hpp"
+
 
 #ifdef __APPLE__
 // Needed so we can disable retina support for our window.
@@ -16,23 +17,19 @@ extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char *str);
 #endif
 
-#include <iostream>
-#include <algorithm>
-#include "event-system.hpp"
-
 namespace tec {
 	GLFWwindow* OS::focused_window;
 
 	// Error helper function used by GLFW for error messaging.
-	// Currently outputs to std::cout.
 	static void ErrorCallback(int error_no, const char* description) {
-		std::cout << "Error " << error_no << ": " << description << std::endl;
+		spdlog::get("console_log")->error() << "[OS] GLFW Error " << error_no << ": " << description;
 	}
 
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
 		const unsigned int glMajor /*= 3*/, const unsigned int glMinor /*= 2*/) {
 		glfwSetErrorCallback(ErrorCallback);
 
+		auto l = spdlog::get("console_log");
 		// Initialize the library.
 		if (glfwInit() != GL_TRUE) {
 			return false;
@@ -91,15 +88,19 @@ namespace tec {
 			if (glcx_major == "1") {
 				// still 1, higher versions probably not supported
 				glfwTerminate();
-				std::cerr << "Initializing OpenGL failed, unsupported version: " << glcx_version << '\n';
-				std::cerr << "Press \"Enter\" to exit\n";
+				l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
+					<< "Press \"Enter\" to exit\n";
 				std::cin.get();
 				return false;
 			}
 		}
 
-		std::cerr << "GL version string: " << glcx_version << std::endl;
-
+		const char* glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+		l->info() << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver; 
+		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
+		const char* glcx_renderer = (char*)glGetString(GL_RENDERER);
+		l->info() << glcx_vendor << " " << glcx_renderer;
+		
 		this->client_width = width;
 		this->client_height = height;
 
@@ -125,6 +126,16 @@ namespace tec {
 		}
 #endif
 
+		// Getting a list of the avail extensions
+		
+		std::string extensions = "";
+		GLint num_exts = 0;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
+		l->info("Extensions {} : ", num_exts);
+		for (GLint e=0; e < num_exts; e++) {
+			l->info() << (const char*) glGetStringi(GL_EXTENSIONS, e);
+		}
+		
 		// Associate a pointer for this instance with this window.
 		glfwSetWindowUserPointer(this->window, this);
 
@@ -134,6 +145,7 @@ namespace tec {
 		glfwSetCursorPosCallback(this->window, &OS::MouseMoveEventCallback);
 		glfwSetCharCallback(this->window, &OS::CharacterEventCallback);
 		glfwSetMouseButtonCallback(this->window, &OS::MouseButtonEventCallback);
+		glfwSetScrollCallback(this->window, &OS::MouseScrollEventCallback);
 		glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
 		glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
@@ -230,6 +242,15 @@ namespace tec {
 		}
 	}
 
+	void OS::MouseScrollEventCallback(GLFWwindow* window, double x, double y) {
+		// Get the user pointer and cast it.
+		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+
+		if (os) {
+			os->DispatchMouseScrollEvent(x, y);
+		}
+	}
+
 	void OS::MouseButtonEventCallback(GLFWwindow* window, int button, int action, int mods) {
 		// Get the user pointer and cast it.
 		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
@@ -311,6 +332,16 @@ namespace tec {
 			this->old_mouse_x = x;
 			this->old_mouse_y = y;
 		}
+	}
+	
+	void OS::DispatchMouseScrollEvent(const double xoffset, const double yoffset) {
+		std::shared_ptr<MouseScrollEvent> mscroll_event = std::make_shared<MouseScrollEvent>(
+			MouseScrollEvent {
+			static_cast<double>(xoffset),
+			static_cast<double>(yoffset),
+		});
+		EventSystem<MouseScrollEvent>::Get()->Emit(mscroll_event);
+
 	}
 
 	void OS::DispatchMouseButtonEvent(const int button, const int action, const int mods) {

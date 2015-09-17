@@ -15,7 +15,9 @@
 namespace tec {
 	using namespace trillek::computer;
 
-	VComputerSystem::VComputerSystem() { };
+	VComputerSystem::VComputerSystem() {
+		_log = spdlog::get("console_log");
+	};
 
 	VComputerSystem::~VComputerSystem() { }
 
@@ -91,7 +93,7 @@ namespace tec {
 			auto& vc = this->computers[entity_id].vc;
 			int size = LoadROM(fname, this->computers[entity_id].rom);
 			if (size < 0) {
-				std::fprintf(stderr, "An error hapen when was reading the file %s\n", fname.c_str());
+				_log->error("An error hapen when was reading the file {}", fname);
 				return false;
 			}
 			this->computers[entity_id].rom_size = size;

@@ -1,0 +1,10 @@
+* text=auto
+
+#sources
+*.cpp text eol=lf
+*.cc text eol=lf
+*.c text eol=lf
+*.hpp text eol=lf
+*.hh text eold=lf
+*.h text eol=lf
+

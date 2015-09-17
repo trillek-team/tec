@@ -22,10 +22,16 @@ namespace tec {
 		MOUSE_BTN button;
 	};
 
+	/** Mouse change of positio event */
 	struct MouseMoveEvent {
-		double norm_x, norm_y; // Resolution independent new x, y (0-1) from upper-left to lower-right.
-		int old_x, old_y; // Client space old x, y.
-		int new_x, new_y; // Client space new x, y.
+		double norm_x, norm_y; /// Resolution independent new x, y (0-1) from upper-left to lower-right.
+		int old_x, old_y; /// Client space old x, y.
+		int new_x, new_y; /// Client space new x, y.
+	};
+
+	/** Mouse wheel event */
+	struct MouseScrollEvent {
+		double x_offset, y_offset; /// Delta x, y of mouse wheel.
 	};
 
 	struct MouseClickEvent {

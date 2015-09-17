@@ -1,4 +1,6 @@
 #include "resources/vorbis-stream.hpp"
+
+#include "spdlog/spdlog.h"
 #include "sound-system.hpp"
 
 #undef STB_VORBIS_HEADER_ONLY
@@ -50,6 +52,31 @@ namespace tec {
 		this->totalSamplesLeft = stb_vorbis_stream_length_in_samples(this->stream) * this->info.channels;
 	}
 
+	inline std::string VorbisErrorToString(int error) {
+		switch (error) {
+		case VORBIS__no_error:
+			return "No error";
+		case VORBIS_need_more_data:
+			return "Need more data";
+		case VORBIS_invalid_api_mixing:
+			return "Can't mix API modes";
+		case VORBIS_outofmem:
+			return "Out of memory!";
+		case VORBIS_too_many_channels:
+			return "Reached max number of channels";
+		case VORBIS_file_open_failure:
+			return "Can't open file";
+		case VORBIS_seek_without_length:
+			return "Unknow lenght of file";
+		case VORBIS_unexpected_eof:
+			return "File truncated or I/O error";
+		case VORBIS_seek_invalid:
+			return "Invalid seek. Corrupted file ?";
+		default:
+			return "Unknow Vorbis error";
+		}
+	}
+
 	std::shared_ptr<VorbisStream> VorbisStream::Create(const FilePath& filename) {
 		std::shared_ptr<VorbisStream> stream = std::make_shared<VorbisStream>();
 		//stream->SetFileName(fname);
@@ -69,8 +96,8 @@ namespace tec {
 			}
 			stream->totalSamplesLeft = stb_vorbis_stream_length_in_samples(stream->stream) * stream->info.channels;
 			SoundMap::Set(stream->GetName(), stream);
-		}
-		else {
+		} else {
+			spdlog::get("console_log")->warn("[Vorbis-Stream] Can't load file {} code {} : {}", filename.toString(), error, VorbisErrorToString(error));
 			stream.reset();
 		}
 		return stream;

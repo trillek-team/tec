@@ -1,14 +1,16 @@
 #pragma once
 
-#include "vcomputer.hpp"
-#include "types.hpp"
 #include <memory>
 #include <list>
 #include <cstdint>
-#include "resources/pixel-buffer.hpp"
+
+#include "vcomputer.hpp"
 #include "devices/tda.hpp"
 #include "devices/gkeyb.hpp"
 
+#include "spdlog/spdlog.h"
+#include "types.hpp"
+#include "resources/pixel-buffer.hpp"
 #include "event-system.hpp"
 #include "reflection.hpp"
 #include "command-queue.hpp"
@@ -138,6 +140,7 @@ namespace tec {
 		void On(std::shared_ptr<KeyboardEvent> data);
 		void On(std::shared_ptr<MouseBtnEvent> data);
 	private:
+		std::shared_ptr<spdlog::logger> _log;
 		typedef Multiton<eid, std::shared_ptr<ComputerScreen>> ScreenComponentMap;
 		typedef Multiton<eid, std::shared_ptr<ComputerKeyboard>> KeyboardComponentMap;
 

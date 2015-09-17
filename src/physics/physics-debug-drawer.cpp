@@ -1,10 +1,11 @@
 #include "physics/physics-debug-drawer.hpp"
+
+#include "spdlog/spdlog.h"
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/material.hpp"
 #include "graphics/shader.hpp"
 #include "components/renderable.hpp"
 #include "entity.hpp"
-#include "cstdio"
 
 namespace tec {
 	PhysicsDebugDrawer::PhysicsDebugDrawer() : m_debugMode(0) {
@@ -39,7 +40,7 @@ namespace tec {
 	}
 
 	void PhysicsDebugDrawer::reportErrorWarning(const char* warningString) {
-		std::printf("%s", warningString);
+		spdlog::get("console_log")->warn("[Physics-debug-drawer] {}", warningString);
 	}
 
 	void PhysicsDebugDrawer::drawContactPoint(const btVector3& pointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) {

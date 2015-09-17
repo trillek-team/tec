@@ -7,6 +7,7 @@
 #endif
 #endif
 
+#define GLFW_INCLUDE_GLU
 #include <GLFW/glfw3.h>
 #include <string>
 #include <chrono>
@@ -146,6 +147,15 @@ namespace tec {
 		static void MouseMoveEventCallback(GLFWwindow* window, double x, double y);
 
 		/**
+		* \brief Callback for mouse scroll events.
+		*
+		* \param[in] GLFWwindow* window
+		* \param[in] double x, y The delta x and y of the mouse wheel.
+		* \return void
+		*/
+		static void MouseScrollEventCallback(GLFWwindow* window, double x, double y);
+
+		/**
 		* \brief Callback for mouse button events.
 		*
 		* \param[in] GLFWwindow* window
@@ -235,6 +245,16 @@ namespace tec {
 		*/
 		void DispatchMouseMoveEvent(const double x, const double y);
 
+
+		/**
+		* \brief Dispatches mouse scroll events.
+		*
+		* It determines the changes in mouse position and stores the new position for later.
+		* \param[in] const double xoffset, yoffset The detal x and y coordinate of the mouse wheel.
+		* \return void
+		*/
+		void DispatchMouseScrollEvent(const double xoffset, const double yoffset);
+		
 		/**
 		* \brief Dispatches mouse button events from the callback.
 		*

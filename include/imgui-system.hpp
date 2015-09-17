@@ -17,6 +17,7 @@
 
 #include "multiton.hpp"
 #include "types.hpp"
+#include "events.hpp"
 #include "event-system.hpp"
 
 namespace tec {
@@ -25,6 +26,8 @@ namespace tec {
 
 	class IMGUISystem :
 		public EventQueue < KeyboardEvent >,
+		public EventQueue < MouseMoveEvent >,
+		public EventQueue < MouseScrollEvent >,
 		public EventQueue < WindowResizedEvent > {
 	public:
 		IMGUISystem(GLFWwindow* window);
@@ -41,14 +44,16 @@ namespace tec {
 		static void RenderDrawLists(ImDrawData* draw_data);
 	private:
 		void On(std::shared_ptr<WindowResizedEvent> data);
-
+		void On(std::shared_ptr<MouseMoveEvent > data);
+		void On(std::shared_ptr<MouseScrollEvent > data);
 		void On(std::shared_ptr<KeyboardEvent> data);
 
 		ImGuiIO& io;
 		int framebuffer_width, framebuffer_height;
 		int window_width, window_height;
 		bool mouse_pressed[3];
-		float g_MouseWheel = 0.0f;
+		ImVec2 mouse_pos;
+		ImVec2 mouse_wheel;
 
 		static GLuint font_texture;
 		static GLFWwindow* window;

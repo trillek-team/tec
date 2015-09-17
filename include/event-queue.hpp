@@ -33,7 +33,7 @@ namespace tec {
 			write_event_queue(new std::queue<Event<T>>()) {
 			EventSystem<T>::Get()->Subscribe(entity_id, this);
 		}
-		~EventQueue() { }
+		virtual ~EventQueue() { }
 
 		void ProcessEventQueue() {
 			this->read_event_queue = write_event_queue.exchange(this->read_event_queue);

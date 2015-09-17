@@ -6,6 +6,7 @@
 #include <al.h>
 #include <alc.h>
 
+#include "spdlog/spdlog.h"
 #include "multiton.hpp"
 #include "entity.hpp"
 #include "types.hpp"
@@ -101,6 +102,7 @@ namespace tec {
 
 		void Update(const double delta);
 	private:
+		std::shared_ptr<spdlog::logger> _log;
 		typedef Multiton<eid, std::shared_ptr<AudioSource>> AudioSourceComponentMap;
 		ALCdevice *device;
 		ALCcontext *context;

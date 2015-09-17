@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iostream>
 #include <cctype>
+#include <cstring>
+#include <algorithm>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -352,18 +354,19 @@ FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
 	FilePath ret;
 	std::istringstream f(this->path);
 	std::string s;
-	bool found = false;
+	bool found = false; bool first = true;
 	while (std::getline(f, s, PATH_SEPARATOR_C)) {
 		if (found) {
-			ret /= s;
+			ret = first ? s : ret / s;
+			first = false;
 		} else if (s.compare(needle) == 0) {
 			found = true;
 			if (include) {
-				ret /= s;
+				ret = s;
+				first = false;
 			}
 		}
 	}
-
 	return ret;
 }
 
@@ -421,7 +424,12 @@ void FilePath::NormalizePath() {
 		path.erase(0, 2);
 	}
 #endif
-	// TODO Check multiple path separators (like "\\\\") and handled relative path stuff like "\foo\bar\..\shaders\debug.vert"
+	// Prune duplicate path separators (like "\\\\") 
+	path.erase(std::unique(path.begin(), path.end(), [] (const char& a, const char& b) {
+		return a == PATH_SEPARATOR_C && b == PATH_SEPARATOR_C;
+		}), path.end() );
+
+	// TODO handled relative path stuff like "\foo\bar\..\shaders\debug.vert"
 }
 
 bool  FilePath::isValidPath() const {
@@ -453,8 +461,21 @@ std::string FilePath::toGenericString() const {
 
 FilePath FilePath::GetAssetsBasePath() {
 	if (FilePath::assets_base.empty()) {
+		char cwd[FILENAME_MAX] = {0}; // Try to get current working directory (ie where theprogram was called)
+#if defined(WIN32)
+		if (! _getcwd(cwd, sizeof(cwd))) {
+#else
+		if (! getcwd(cwd, sizeof(cwd))) {
+#endif
+#pragma warning(push)
+#pragma warning(disable: 4996)
+			std::strncpy(cwd, "./", 2); // Fallback to relative path if getcwd fails
+			cwd[2] = '\0';
+#pragma warning(pop)
+		}
 		// Search for the assets folder
-		FilePath tmp("./assets/");
+		FilePath tmp(cwd);
+		tmp /= "assets/";
 		if (tmp.DirExists()) {
 			FilePath::assets_base = tmp.toString();
 		} else {
