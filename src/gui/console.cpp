@@ -57,24 +57,24 @@ namespace tec {
 		buf.clear();
 	}
 
-	void Console::Println(const std::string& str) {
+	void Console::Println(const std::string& str, ImVec4 color) {
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
 			if (buf.full()) {
 				buf.pop_back();
 			}
-			buf.push_front(str);
+			buf.push_front(std::make_tuple(color, str));
 		}
 		scrollToBottom = true;
 	}
 
-	void Console::Println(const char* cstr) {
+	void Console::Println(const char* cstr, ImVec4 color) {
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
 			if (buf.full()) {
 				buf.pop_back();
 			}
-			buf.push_front(std::string(cstr));
+			buf.push_front(std::make_tuple(color, std::string(cstr)));
 		}
 		scrollToBottom = true;
 	}
@@ -92,7 +92,7 @@ namespace tec {
 			if (buf.full()) {
 				buf.pop_back();
 			}
-			buf.push_front(std::string(tmp));
+			buf.push_front(std::make_tuple(ImVec4(255, 255, 255, 255), std::string(tmp)));
 		}
 		scrollToBottom = true;
 	}
@@ -118,8 +118,9 @@ namespace tec {
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 
 			for (std::size_t i = 0; i < buf.size(); i++) {
-				ImGui::TextWrapped("%s", buf[i].c_str());
-				//ImGui::TextUnformatted((*it).c_str());
+				ImGui::PushStyleColor(ImGuiCol_Text, std::get<0>(buf[i]) );
+				ImGui::TextWrapped("%s", std::get<1>(buf[i]).c_str() );
+				ImGui::PopStyleColor();
 				/*
 				ImVec2 pos = ImGui::GetCursorScreenPos();
 				ImVec2 maxrect = ImGui::GetWindowContentRegionMax();
@@ -213,6 +214,7 @@ namespace tec {
 
 	void ConsoleSink::log(const spdlog::details::log_msg& msg) {
 		std::string str(msg.raw.str());
+		ImVec4 color(255, 255, 255, 255);
 		switch (msg.level) {
 			case spdlog::level::trace :
 				str = "trace " + str;
@@ -221,26 +223,31 @@ namespace tec {
 				str = "debug " + str;
 				break;
 			case spdlog::level::warn :
-				str = "Warning " + str;
+				str = "WARNING : " + str;
+				color = ImVec4(255, 48, 0, 255);
 				break;
 			case spdlog::level::err :
 				str = "ERROR! " + str;
+				color = ImVec4(255, 0, 0, 255);
 				break;
 			case spdlog::level::critical :
 				str = "CRITICAL ERROR! " + str;
+				color = ImVec4(255, 0, 0, 255);
 				break;
 			case spdlog::level::alert :
 				str = "ALERT! " + str;
+				color = ImVec4(255, 0, 0, 255);
 				break;
 			case spdlog::level::emerg :
 				str = "BLUE SCREEN OF DEATH! " + str;
+				color = ImVec4(255, 0, 0, 255);
 				break;
 			case spdlog::level::info :
 			case spdlog::level::notice :
 			defaut:
 				;
 		}
-		console.Println(str);
+		console.Println(str, color);
 	}
 
 }

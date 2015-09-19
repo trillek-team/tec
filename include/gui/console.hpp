@@ -27,8 +27,8 @@ namespace tec {
 		 */
 		void Clear();
 
-		void Println(const std::string& str);
-		void Println(const char* cstr);
+		void Println(const std::string& str, ImVec4 color = ImVec4(255, 255, 255, 255) );
+		void Println(const char* cstr, ImVec4 color = ImVec4(255, 255, 255, 255) );
 		
 		void Printfln(const char* cstr, ...) IM_PRINTFARGS(2);
 
@@ -53,7 +53,7 @@ namespace tec {
 
 	private:
 		// TODO Store a RingBuffer<tuple<color, text> instead of raw text ?
-		tec::RingBuffer<std::string, 4096> buf;
+		tec::RingBuffer< std::tuple< ImVec4, std::string >, 4096> buf;
 		std::mutex input_mutex; /// Mutex to serialize write to Console buffer
 		bool scrollToBottom = false;
 		char inputBuf[256];

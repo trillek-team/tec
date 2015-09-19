@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
 	log->set_level(loglevel);
 	log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
 	spdlog::register_logger(log);
-	
+
 	log->info("Initializing OpenGL...");
 	tec::OS os;
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
