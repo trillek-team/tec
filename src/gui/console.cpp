@@ -4,8 +4,6 @@
 #include <cstdio>
 #include <GLFW/glfw3.h>
 
-#define MAX_BUFFER_ELEM (1024)
-
 namespace tec {
 	Console::Console() {
 		inputBuf[0] = '\0';
@@ -62,10 +60,10 @@ namespace tec {
 	void Console::Println(const std::string& str) {
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
-			buf.push_front(str);
-			while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
+			if (buf.full()) {
 				buf.pop_back();
 			}
+			buf.push_front(str);
 		}
 		scrollToBottom = true;
 	}
@@ -73,10 +71,10 @@ namespace tec {
 	void Console::Println(const char* cstr) {
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
-			buf.push_front(std::string(cstr));
-			while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
+			if (buf.full()) {
 				buf.pop_back();
 			}
+			buf.push_front(std::string(cstr));
 		}
 		scrollToBottom = true;
 	}
@@ -91,10 +89,10 @@ namespace tec {
 
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
-			buf.push_front(std::string(tmp));
-			while (buf.size() > MAX_BUFFER_ELEM) { // Avoid to get infitine size
+			if (buf.full()) {
 				buf.pop_back();
 			}
+			buf.push_front(std::string(tmp));
 		}
 		scrollToBottom = true;
 	}
@@ -119,8 +117,8 @@ namespace tec {
 				ImGuiWindowFlags_NoScrollbar);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 
-			for (auto it = buf.crbegin(); it != buf.crend(); it++) {
-				ImGui::TextWrapped("%s", it->c_str());
+			for (std::size_t i = 0; i < buf.size(); i++) {
+				ImGui::TextWrapped("%s", buf[i].c_str());
 				//ImGui::TextUnformatted((*it).c_str());
 				/*
 				ImVec2 pos = ImGui::GetCursorScreenPos();
