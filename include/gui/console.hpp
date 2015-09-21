@@ -6,15 +6,17 @@
 #include <mutex>
 
 #include <imgui.h>
+#include <spdlog/sinks/sink.h>
 
 #include "ring_buffer.hpp"
 #include "os.hpp"
 #include "events.hpp"
 #include "event-system.hpp"
-#include "spdlog/sinks/sink.h"
+#include "gui/abs_window.hpp"
 
 namespace tec {
 	class Console :
+		public AbstractWindow,
 		public EventQueue <KeyboardEvent>,
 		public EventQueue <WindowResizedEvent> {
 	public:
@@ -33,14 +35,10 @@ namespace tec {
 		void Printfln(const char* cstr, ...) IM_PRINTFARGS(2);
 
 		void Draw();
-
-		void SetAlpha(float a) {
-			a = (a < 0)? 0 : a; // Clamp [0, 1.0]
-			a = (a > 1.0f)? 1.0f : a;
-			this->alpha = a;
-		}
 		
-		float GetAlpha() const { return alpha;}
+		bool isCollapsed() const {
+			return false;
+		}
 		
 		/**
 		 * Register a new command
@@ -58,10 +56,8 @@ namespace tec {
 		bool scrollToBottom = false;
 		char inputBuf[256];
 
-		bool show = true;
 		bool resize = true;
-		float alpha = 0.85f;
-		const ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar 
+		static const ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar 
 			| ImGuiWindowFlags_NoResize 
 			| ImGuiWindowFlags_NoMove
 			| ImGuiWindowFlags_NoSavedSettings
