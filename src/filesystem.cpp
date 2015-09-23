@@ -209,9 +209,15 @@ FilePath FilePath::GetUserCachePath() {
 
 bool FilePath::DirExists() const {
 #if defined(WIN32)
-	struct __stat64 s;
+	struct _stat s;
 	auto wtmp = this->GetNativePath();
-	int err = _wstat64((wchar_t*)wtmp.c_str() , &s);
+
+	// Trailing slashes break _wstat
+	wchar_t *p = &wtmp[wcslen(&wtmp[0]) - 1];
+	if (*p == L'/' || *p == L'\\') {
+		*p = 0;
+	}
+	int err = _wstat((wchar_t*)wtmp.c_str() , &s);
 #else
 	struct stat s;
 	int err = stat(path.c_str(), &s);
