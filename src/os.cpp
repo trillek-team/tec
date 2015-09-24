@@ -132,9 +132,15 @@ namespace tec {
 		GLint num_exts = 0;
 		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
 		l->info("Extensions {} : ", num_exts);
+		std::string ext("");
 		for (GLint e=0; e < num_exts; e++) {
-			l->info() << (const char*) glGetStringi(GL_EXTENSIONS, e);
+			ext += "[" + std::string((const char*) glGetStringi(GL_EXTENSIONS, e)) + "] ";
+			if (e != 0 && e % 5 == 0) {
+				l->info(ext);
+				ext = "";
+			}
 		}
+		l->info(ext);
 		
 		// Associate a pointer for this instance with this window.
 		glfwSetWindowUserPointer(this->window, this);
