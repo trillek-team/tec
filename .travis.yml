@@ -52,10 +52,10 @@ script:
   - echo "Building dependencies (bullet) and installing it"
   - cmake ..
   - make
-  - sudo make install
+  - make install DESTDIR="$HOME"
   - echo "Building TEC"
   - rm -f cmakecache.txt
-  - cmake -DBUILD_TESTS_TEC=True ..
+  - cmake -DCMAKE_INCLUDE_PATH=$HOME/usr/local/include -DCMAKE_LIBRARY_PATH=$HOME/usr/local/lib  -DBUILD_TESTS_TEC=True ..
   - make
   - ls
   - ./bin/UNIT_TEST
