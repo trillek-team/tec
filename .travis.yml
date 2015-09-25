@@ -1,10 +1,12 @@
 language: cpp
-
 os:
   - linux
 
-git:
-  submodules: false
+sudo: false
+
+cache:
+    directories:
+        - $HOME/cmake
 
 addons:
   apt:
@@ -15,6 +17,10 @@ addons:
       - g++-4.8
       - libx11-dev
       - libgl1-mesa-dev
+      - xorg-dev
+      - libglu1-mesa-dev
+      - libglew-dev
+      - libopenal-dev
 
 compiler:
   - gcc
@@ -22,22 +28,21 @@ compiler:
 # Bullet compiling fails with CLang, so we not use it yet..
 
 before_install:
-  - git submodule update --init
-  - echo $LANG
-  - echo $LC_ALL
   - sudo apt-get update -qq
-
-install:
-  # Install CMake 3.1
-  - (cd /tmp && wget http://www.cmake.org/files/v3.1/cmake-3.1.3.tar.gz && tar zxf cmake-3.1.3.tar.gz)
-  - (cd /tmp/cmake-3.1.3 && cmake . && make && sudo make install) > /dev/null 2>&1
-  - cmake --version
+  - git submodule update --init
   # Enforces GCC 4.8
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
   # Enforces CLang 3.7
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
-  # Install OpenAL and GLEW
-  - sudo apt-get -q -y install libglew-dev libopenal-dev
+  - echo $LANG
+  - echo $LC_ALL
+    # Grabs Cmake 3.2
+  - ./travis/install_cmake.sh
+  - ls $HOME/cmake/
+  - export PATH=$HOME/cmake/:$HOME/cmake/bin/:$PATH
+  - cmake --version
+
+install:
 
 before_script:
   - pwd
@@ -57,12 +62,9 @@ script:
   - ./bin/UNIT_TEST
 
 notifications:
-  #email:
-    #- my.mail@bar.com
-  # I can also set up Glitch to output build results as well if we don't want the travis bot join/part spam
-  irc:
-    channels:
-      - "chat.freenode.net#project-trillek"
-      - "chat.freenode.net#trillek"
-    on_success: change
-    on_failure: always
+#  irc:
+#    channels:
+#      - "chat.freenode.net#project-trillek"
+#      - "chat.freenode.net#trillek"
+#    on_success: change
+#    on_failure: always
