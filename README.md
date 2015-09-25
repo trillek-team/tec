@@ -1,5 +1,7 @@
 # Trillek Engine C
-[![Build Status](https://travis-ci.org/trillek-team/tec.svg)](https://travis-ci.org/trillek-team/tec)
+| GNU/Linux                                        | Windows (VStudio 2015)  |
+|--------------------------------------------------|-------------------------|
+|[![Build Status](https://travis-ci.org/trillek-team/tec.svg)](https://travis-ci.org/trillek-team/tec) | [![Build status](https://ci.appveyor.com/api/projects/status/n89l3qj4oo2v20th?svg=true)](https://ci.appveyor.com/project/Zardoz89/tec-ojmoq) |
 
 
 ## Building
