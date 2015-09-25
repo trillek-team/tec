@@ -15,6 +15,7 @@
 #include "gui/console.hpp"
 
 #include <spdlog/spdlog.h>
+#include <selene.h>
 #include <iostream>
 #include <thread>
 #include <string>
@@ -114,6 +115,24 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing rendering system...");
 	tec::RenderSystem rs;
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
+
+	sel::State lua_state; // Initiates LUA
+	
+	auto test_script = tec::FilePath::GetAssetPath("scripts/test.lua");
+	if (test_script.FileExists() ) {
+		if ( lua_state.Load(test_script.toString()) ) {
+			log->info() << "LUA: " << lua_state["foo"];
+			auto sel = lua_state["bar"][3];
+			std::string out = sel.operator std::string();
+			log->info() << "LUA: " << out;
+			std::string out2 = lua_state["bar"]["key"].operator std::string();
+			log->info() << "LUA: " << out2;
+		} else {
+			log->warn("Can't load Script file : {}", test_script.toGenericString());
+		}
+	} else {
+		log->warn("Script file not found : {}", test_script.toGenericString());
+	}
 
 	log->info("Initializing physics system...");
 	tec::PhysicsSystem ps;
