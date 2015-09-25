@@ -28,7 +28,6 @@ compiler:
 # Bullet compiling fails with CLang, so we not use it yet..
 
 before_install:
-  - sudo apt-get update -qq
   - git submodule update --init
   # Enforces GCC 4.8
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
