@@ -1,38 +1,52 @@
 language: cpp
-os:
-  - linux
 
 sudo: false
 
 cache:
-    directories:
+    - directories:
         - $HOME/cmake
+        - $HOME/lib
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-4.8
-      - g++-4.8
-      - libx11-dev
-      - libgl1-mesa-dev
-      - xorg-dev
-      - libglu1-mesa-dev
-      - libglew-dev
-      - libopenal-dev
+matrix:
+    include:
+        - os: linux
+          compiler: gcc
+          addons:
+              apt:
+                sources: ['ubuntu-toolchain-r-test']
+                packages:
+                  - gcc-4.9
+                  - g++-4.9
+                  - libx11-dev
+                  - libgl1-mesa-dev
+                  - xorg-dev
+                  - libglu1-mesa-dev
+                  - libglew-dev
+                  - libopenal-dev
+          env: COMPILER=g++-4.9
 
-compiler:
-  - gcc
-  #- clang
-# Bullet compiling fails with CLang, so we not use it yet..
+        - os: linux
+          compiler: clang
+          addons:
+              apt:
+                sources:
+                    - ubuntu-toolchain-r-test
+                    - llvm-toolchain-precise-3.7
+                packages:
+                  - clang-3.7
+                  - libx11-dev
+                  - libgl1-mesa-dev
+                  - xorg-dev
+                  - libglu1-mesa-dev
+                  - libglew-dev
+                  - libopenal-dev
+          env: COMPILER=clang++-3.7
+
 
 before_install:
   - git submodule update --init
-  # Enforces GCC 4.8
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  # Enforces CLang 3.7
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
+  - export CXX="$COMPILER"
+  - ${CXX} --version
   - echo $LANG
   - echo $LC_ALL
     # Grabs Cmake 3.2
@@ -49,21 +63,21 @@ before_script:
   - cd build
 
 script:
-  - echo "Building dependencies (bullet) and installing it"
-  - cmake ..
-  - make
-  - make install DESTDIR="$HOME"
+  - ../travis/build_deps.sh
+  #- cmake ..
+  #- make
+  #- make install DESTDIR="$HOME/lib/$COMPILER"
   - echo "Building TEC"
   - rm -f cmakecache.txt
-  - cmake -DCMAKE_INCLUDE_PATH=$HOME/usr/local/include -DCMAKE_LIBRARY_PATH=$HOME/usr/local/lib  -DBUILD_TESTS_TEC=True ..
+  - cmake -DCMAKE_INCLUDE_PATH=$HOME/lib/${COMPILER}/usr/local/include -DCMAKE_LIBRARY_PATH=$HOME/lib/${COMPILER}/usr/local/lib  -DBUILD_TESTS_TEC=True ..
   - make
   - ls
   - ./bin/UNIT_TEST
 
 notifications:
-#  irc:
-#    channels:
+  irc:
+    channels:
 #      - "chat.freenode.net#project-trillek"
-#      - "chat.freenode.net#trillek"
-#    on_success: change
-#    on_failure: always
+      - "chat.freenode.net#trillek"
+    on_success: change
+    on_failure: always
