@@ -1,43 +1,61 @@
 language: cpp
 
-os:
-  - linux
+sudo: false
 
-git:
-  submodules: false
+cache:
+    - directories:
+        - $HOME/cmake
+        - $HOME/lib
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-4.8
-      - g++-4.8
-      - libx11-dev
-      - libgl1-mesa-dev
+matrix:
+    include:
+        - os: linux
+          compiler: gcc
+          addons:
+              apt:
+                sources: ['ubuntu-toolchain-r-test']
+                packages:
+                  - gcc-4.9
+                  - g++-4.9
+                  - libx11-dev
+                  - libgl1-mesa-dev
+                  - xorg-dev
+                  - libglu1-mesa-dev
+                  - libglew-dev
+                  - libopenal-dev
+          env: COMPILER=g++-4.9
 
-compiler:
-  - gcc
-  #- clang
-# Bullet compiling fails with CLang, so we not use it yet..
+        - os: linux
+          compiler: clang
+          addons:
+              apt:
+                sources:
+                    - ubuntu-toolchain-r-test
+                    - llvm-toolchain-precise-3.7
+                packages:
+                  - clang-3.7
+                  - libx11-dev
+                  - libgl1-mesa-dev
+                  - xorg-dev
+                  - libglu1-mesa-dev
+                  - libglew-dev
+                  - libopenal-dev
+          env: COMPILER=clang++-3.7
+
 
 before_install:
   - git submodule update --init
+  - export CXX="$COMPILER"
+  - ${CXX} --version
   - echo $LANG
   - echo $LC_ALL
-  - sudo apt-get update -qq
+    # Grabs Cmake 3.2
+  - ./travis/install_cmake.sh
+  - ls $HOME/cmake/
+  - export PATH=$HOME/cmake/:$HOME/cmake/bin/:$PATH
+  - cmake --version
 
 install:
-  # Install CMake 3.1
-  - (cd /tmp && wget http://www.cmake.org/files/v3.1/cmake-3.1.3.tar.gz && tar zxf cmake-3.1.3.tar.gz)
-  - (cd /tmp/cmake-3.1.3 && cmake . && make && sudo make install) > /dev/null 2>&1
-  - cmake --version
-  # Enforces GCC 4.8
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  # Enforces CLang 3.7
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.7"; fi
-  # Install OpenAL and GLEW
-  - sudo apt-get -q -y install libglew-dev libopenal-dev
 
 before_script:
   - pwd
@@ -45,24 +63,21 @@ before_script:
   - cd build
 
 script:
-  - echo "Building dependencies (bullet) and installing it"
-  - cmake ..
-  - make
-  - sudo make install
+  - ../travis/build_deps.sh
+  #- cmake ..
+  #- make
+  #- make install DESTDIR="$HOME/lib/$COMPILER"
   - echo "Building TEC"
   - rm -f cmakecache.txt
-  - cmake -DBUILD_TESTS_TEC=True ..
+  - cmake -DCMAKE_INCLUDE_PATH=$HOME/lib/${COMPILER}/usr/local/include -DCMAKE_LIBRARY_PATH=$HOME/lib/${COMPILER}/usr/local/lib  -DBUILD_TESTS_TEC=True ..
   - make
   - ls
   - ./bin/UNIT_TEST
 
 notifications:
-  #email:
-    #- my.mail@bar.com
-  # I can also set up Glitch to output build results as well if we don't want the travis bot join/part spam
   irc:
     channels:
-      - "chat.freenode.net#project-trillek"
+#      - "chat.freenode.net#project-trillek"
       - "chat.freenode.net#trillek"
     on_success: change
     on_failure: always

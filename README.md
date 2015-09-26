@@ -1,5 +1,5 @@
 # Trillek Engine C
-| GNU/Linux                                        | Windows (VStudio 2015)  |
+| GNU/Linux (Gcc and CLang)                        | Windows (VStudio 2015)  |
 |--------------------------------------------------|-------------------------|
 |[![Build Status](https://travis-ci.org/trillek-team/tec.svg)](https://travis-ci.org/trillek-team/tec) | [![Build status](https://ci.appveyor.com/api/projects/status/n89l3qj4oo2v20th?svg=true)](https://ci.appveyor.com/project/Zardoz89/tec-ojmoq) |
 
@@ -19,7 +19,7 @@ Building takes a few steps to get everything set up for the first build.
 2. `mkdir build/` in to root directory
 3. `cd build/`
 4. Follow platform specific instructions 
-  1. Linux 
+  1. Linux (G++ 3.9 or CLang 3.7)
      - If you have Bullet, GLEW and OpenAL dev libs installed : 
        1. `cmake ..` in the build directory
        2. `make TEC` in the build directory
@@ -30,7 +30,7 @@ Building takes a few steps to get everything set up for the first build.
        4. `rm CMakeCache.txt` in the build directory
        5. `cmake ..` in the build directory
        6. `make TEC` in the build directory
-  2. Windows
+  2. Windows (VStudio 2015)
      1. Run cmake-gui setting the source line to the root directory and the build line to the build directory.
      2. Configure and Generate using non-x64 as the target, with native compiles selected.
      3. Build all dependencies in Release configuration (if it is just tec in the project list go to step 5).
