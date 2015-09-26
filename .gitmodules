@@ -26,3 +26,6 @@
 [submodule "modules/spdlog"]
 	path = modules/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "modules/asio"]
+	path = modules/asio
+	url = https://github.com/chriskohlhoff/asio/
