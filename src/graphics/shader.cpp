@@ -32,7 +32,7 @@ namespace tec {
 			return;
 		}
 		std::ifstream fp(fname.GetNativePath(), std::ios_base::in);
-		if (! fp.is_open()) {
+		if (!fp.is_open()) {
 			_log->error() << "[Shader] Error loading shader: " << fname.FileName() << " Can't open file.";
 			return;
 		}
@@ -98,9 +98,8 @@ namespace tec {
 
 			std::vector<GLchar> info_log(max_length);
 			glGetProgramInfoLog(this->program, max_length, &max_length, &info_log[0]);
-			std::string str;
-			str.copy(info_log.data(), info_log.size());
-			str[info_log.size() - 1] = '\0';
+			std::string str(info_log.data());
+			str += '\0';
 			spdlog::get("console_log")->error("[Shader] Error linking : {}", str);
 
 			DeleteProgram();

@@ -29,9 +29,22 @@ namespace tec {
 
 		// Black is the safest clear color since this is a space game.
 		glClearColor(0.0, 0.0, 0.0, 0.0);
-
-		this->sphere_vbo.Load(OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj")));
-		this->quad_vbo.Load(OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj")));
+		std::shared_ptr<OBJ> spehre = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
+		if (!spehre) {
+			_log->debug("[RenderSystem] Error loading sphere.obj.");
+			this->sphere_vbo.Load(std::vector<VertexData>(), std::vector<GLuint>());
+		}
+		else {
+			this->sphere_vbo.Load(spehre);
+		}
+		std::shared_ptr<OBJ> quad = OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj"));
+		if (!quad) {
+			_log->debug("[RenderSystem] Error loading quad.obj.");
+			this->quad_vbo.Load(std::vector<VertexData>(), std::vector<GLuint>());
+		}
+		else {
+			this->quad_vbo.Load(quad);
+		}
 
 		this->light_gbuffer.AddColorAttachments(4, this->window_width, this->window_height);
 		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_STENCIL,
