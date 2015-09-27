@@ -19,6 +19,7 @@
 #include <thread>
 #include <string>
 #include <sstream>
+#include "client/server_connection.hpp"
 
 namespace tec {
 	extern void InitializeComponents();
@@ -59,7 +60,7 @@ namespace tec {
 						_log->error() << "File isn't on assets folder! Please copy/move it to the assets folder.";
 						continue;
 					}
-					
+
 				}
 				if (file_factories.find(ext) == file_factories.end()) {
 					_log->warn() << "No loader for extension: " << ext;
@@ -82,13 +83,14 @@ int main(int argc, char* argv[]) {
 	for (int i = 1; i < argc; i++) {
 		if (std::string(argv[i]).compare("-v")) {
 			loglevel = spdlog::level::debug;
-		} else if (std::string(argv[i]).compare("-vv")) {
+		}
+		else if (std::string(argv[i]).compare("-vv")) {
 			loglevel = spdlog::level::trace;
 		}
 	}
 	// Console and logging initialization
 	tec::Console console;
-	
+
 	spdlog::set_async_mode(1048576);
 	std::vector<spdlog::sink_ptr> sinks;
 	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
@@ -101,12 +103,40 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing OpenGL...");
 	tec::OS os;
 	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
-	console.AddConsoleCommand( "exit", 
+	console.AddConsoleCommand("exit",
 		"exit : Exit from TEC",
-		[&os ] (const char* args) {
-			os.Quit();
-		});
-	
+		[&os] (const char* args) {
+		os.Quit();
+	});
+	std::thread* asio_thread = nullptr;
+	tec::networking::ServerConnection connection;
+	console.AddConsoleCommand("msg",
+		"msg : Send a message to all clients.",
+		[&connection] (const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0') {
+			end_arg++;
+		}
+		// Args now points were the arguments begins
+		std::string message(args, end_arg - args);
+		connection.Write(message);
+	});
+	connection.Connect();
+	asio_thread = new std::thread([&connection] () {
+		connection.StartRead();
+	});
+	console.AddConsoleCommand("connect",
+		"connect ip : Connects to the server at ip",
+		[&connection] (const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0' && *end_arg != ' ') {
+			end_arg++;
+		}
+		// Args now points were the arguments begins
+		std::string ip(args, end_arg - args);
+		connection.Connect(ip);
+	});
+
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
 	tec::EntityTree ent_tree_widget;
@@ -179,13 +209,13 @@ int main(int argc, char* argv[]) {
 			ImGui::EndMainMenuBar();
 		}
 	});
-	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget ] () {
+	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget] () {
 		ent_tree_widget.Draw();
 	});
 
 
 
-	gui.AddWindowDrawFunction("console", [&console]() {
+	gui.AddWindowDrawFunction("console", [&console] () {
 		console.Draw();
 	});
 
@@ -233,5 +263,10 @@ int main(int argc, char* argv[]) {
 		frame_id++;
 	}
 
+	connection.Disconnect();
+	connection.StopRead();
+	if (asio_thread) {
+		asio_thread->join();
+	}
 	return 0;
 }

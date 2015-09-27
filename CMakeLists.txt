@@ -49,6 +49,8 @@ SOURCE_GROUP("TEC\\GUI" ".*/gui/.*")
 SOURCE_GROUP("TEC\\Controllers" ".*/controllers/.*")
 SOURCE_GROUP("TEC\\Systems" ".*-system.*")
 
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
+
 # IMGUI setup
 FILE(GLOB IMGUI_SRC
   "modules/imgui/imgui.cpp"
@@ -159,8 +161,12 @@ ELSE (NOT ${OPENAL_FOUND})
   INCLUDE_DIRECTORIES (${OPENAL_INCLUDE_DIR})
 ENDIF (NOT ${OPENAL_FOUND})
 
-# Some definitions we need to use bullet and GLM.
-ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE)
+# Add ASIO as it is header only
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/asio/asio/include")
+INCLUDE_DIRECTORIES("modules/asio/asio/include")
+
+# Some definitions we need to use bullet, GLM, and ASIO.
+ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE -DASIO_STANDALONE )
 
 # Give these some dummy values and if the platform is LINUX or OSX they will be set accordingly.
 SET(X11_LIBRARIES "")
@@ -237,11 +243,32 @@ IF (NOT ${BUILD_DEPS_FIRST})
 
   ADD_EXECUTABLE("TEC"
     "src/main.cpp"
+    "client/server_connection.hpp"
+    "client/server_connection.cpp"
   )
+  #target_include_directories(TEC PUBLIC "client")
+  IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS( "TEC" PUBLIC _WIN32_WINNT=0x600 )
+  ENDIF (WIN32)
 
   SET_PROPERTY(TARGET TEC PROPERTY CXX_STANDARD 11)
 
   TARGET_LINK_LIBRARIES("TEC" TEC_LIB  ${TEC_ALL_LIBS})
+  
+  ADD_EXECUTABLE("Server"
+    "server/main.cpp"
+    "server/client_connection.hpp"
+    "server/client_connection.cpp"
+    "server/server.hpp"
+    "server/server.cpp"
+  )
+  #target_include_directories("Server" PUBLIC "server")
+  IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS( "Server" PUBLIC _WIN32_WINNT=0x600 )
+  ENDIF (WIN32)
+
+  TARGET_LINK_LIBRARIES("Server" TEC_LIB  ${TEC_ALL_LIBS})
+  SET_PROPERTY(TARGET Server PROPERTY CXX_STANDARD 11)
 
   IF(BUILD_TESTS_TEC)
     ADD_SUBDIRECTORY("tests")
