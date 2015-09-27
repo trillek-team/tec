@@ -129,8 +129,8 @@ namespace tec {
 			return;
 		}
 
-		float change_x = data->new_x - data->old_x;
-		float change_y = data->new_y - data->old_y;
+		float change_x = static_cast<float>(data->new_x - data->old_x);
+		float change_y = static_cast<float>(data->new_y - data->old_y);
 
 		static float pitch = 0.0f;
 

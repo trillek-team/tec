@@ -353,13 +353,13 @@ namespace tec {
 	}
 
 	void IMGUISystem::On(std::shared_ptr<MouseMoveEvent> data) {
-		this->mouse_pos.x = data->new_x;
-		this->mouse_pos.y = data->new_y;
+		this->mouse_pos.x = static_cast<float>(data->new_x);
+		this->mouse_pos.y = static_cast<float>(data->new_y);
 	}
 	
 	void IMGUISystem::On(std::shared_ptr<MouseScrollEvent> data) {
-		this->mouse_wheel.x = data->x_offset;
-		this->mouse_wheel.y = data->y_offset;
+		this->mouse_wheel.x = static_cast<float>(data->x_offset);
+		this->mouse_wheel.y = static_cast<float>(data->y_offset);
 	}
 	
 	

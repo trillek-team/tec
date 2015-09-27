@@ -43,7 +43,7 @@ namespace tec {
 		proto::CollisionBody* comp = target->mutable_collision_body();
 		comp->set_disable_deactivation(this->disable_deactivation);
 		comp->set_disable_rotation(this->disable_rotation);
-		comp->set_mass(this->mass);
+		comp->set_mass(static_cast<float>(this->mass));
 		switch (this->collision_shape) {
 			case COLLISION_SHAPE::BOX:
 				{
@@ -105,7 +105,7 @@ namespace tec {
 	ReflectionComponent CollisionBody::Reflection(CollisionBody* val) {
 		ReflectionComponent refcomp;
 		Property fprop(Property::FLOAT);
-		(refcomp.properties["Mass"] = fprop).Set<float>(val->mass);
+		(refcomp.properties["Mass"] = fprop).Set<float>(static_cast<float>(val->mass));
 		refcomp.properties["Mass"].update_func = [val] (Property& prop) { val->mass = prop.Get<float>(); };
 		static std::vector<std::string> choices = {"BOX", "SPHERE", "CAPSULE"};
 		std::string current_shape;
@@ -120,17 +120,17 @@ namespace tec {
 				break;
 			case BOX:
 				current_shape = "BOX";
-				(refcomp.properties["extent_x"] = fprop).Set<float>(val->half_extents.x());
+				(refcomp.properties["extent_x"] = fprop).Set<float>(static_cast<float>(val->half_extents.x()));
 				refcomp.properties["extent_x"].update_func = [val] (Property& prop) {
 					val->half_extents.setX(prop.Get<float>());
 					static_cast<btBoxShape*>(val->shape.get())->setImplicitShapeDimensions(val->half_extents);
 				};
-				(refcomp.properties["extent_y"] = fprop).Set<float>(val->half_extents.y());
+				(refcomp.properties["extent_y"] = fprop).Set<float>(static_cast<float>(val->half_extents.y()));
 				refcomp.properties["extent_y"].update_func = [val] (Property& prop) {
 					val->half_extents.setY(prop.Get<float>());
 					static_cast<btBoxShape*>(val->shape.get())->setImplicitShapeDimensions(val->half_extents);
 				};
-				(refcomp.properties["extent_z"] = fprop).Set<float>(val->half_extents.z());
+				(refcomp.properties["extent_z"] = fprop).Set<float>(static_cast<float>(val->half_extents.z()));
 				refcomp.properties["extent_z"].update_func = [val] (Property& prop) {
 					val->half_extents.setZ(prop.Get<float>());
 					static_cast<btBoxShape*>(val->shape.get())->setImplicitShapeDimensions(val->half_extents);

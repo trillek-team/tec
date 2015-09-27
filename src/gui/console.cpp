@@ -244,7 +244,7 @@ namespace tec {
 				break;
 			case spdlog::level::info :
 			case spdlog::level::notice :
-			defaut:
+			default:
 				;
 		}
 		console.Println(str, color);

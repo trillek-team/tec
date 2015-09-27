@@ -165,7 +165,7 @@ namespace tec {
 		return lRayDir_world;
 	}
 
-	eid PhysicsSystem::RayCastMousePick(eid source_entity, float mouse_x, float mouse_y, float screen_width, float screen_height) {
+	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
 		this->last_rayvalid = false;
 		this->last_entity_hit = 0;
 		glm::vec3 position;
@@ -186,8 +186,8 @@ namespace tec {
 			);
 		glm::mat4 view = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
 
-		glm::vec3 world_direction = position - GetRayDirection(mouse_x, mouse_y,
-			screen_width, screen_height, view, projection) * 100.0f;
+		glm::vec3 world_direction = position - GetRayDirection(static_cast<float>(mouse_x),
+			static_cast<float>(mouse_y), screen_width, screen_height, view, projection) * 100.0f;
 
 		btVector3 from(position.x, position.y, position.z), to(world_direction.x, world_direction.y, world_direction.z);
 		this->last_rayfrom = from;
