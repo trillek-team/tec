@@ -14,10 +14,10 @@
 namespace tec {
 	class VorbisStream {
 	public:
-		VorbisStream(size_t buffer_size = 32768);
+		VorbisStream(std::size_t buffer_size = 32768);
 		~VorbisStream();
 
-		size_t BufferStream(ALint buffer);
+		std::size_t BufferStream(ALint buffer);
 
 		void Reset();
 
@@ -41,8 +41,8 @@ namespace tec {
 		stb_vorbis* stream;
 		stb_vorbis_info info;
 		ALenum format;
-		size_t buffer_size;
-		size_t totalSamplesLeft;
+		std::size_t buffer_size;
+		std::size_t totalSamplesLeft;
 		ALshort* sbuffer;
 	};
 }

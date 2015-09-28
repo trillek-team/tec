@@ -32,7 +32,7 @@ namespace tec {
 			}
 		}
 		std::uint8_t *rom;
-		size_t rom_size;
+		std::size_t rom_size;
 		std::unique_ptr<VComputer> vc;
 		std::list<std::shared_ptr<Device>> devices;
 

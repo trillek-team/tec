@@ -65,7 +65,7 @@ namespace tec {
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
 		std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.
-		std::unordered_map<std::int64_t, size_t> vertex_index; // Used to update or remove voxels from the mesh.
+		std::unordered_map<std::int64_t, std::size_t> vertex_index; // Used to update or remove voxels from the mesh.
 		std::weak_ptr<MeshFile> mesh;
 		eid entity_id;
 	};

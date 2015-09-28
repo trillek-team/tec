@@ -229,12 +229,12 @@ namespace tec {
 	void OBJ::PopulateMeshGroups() {
 		if (this->MeshFile::meshes.size() < this->vertexGroups.size()) {
 			this->MeshFile::meshes.reserve(this->vertexGroups.size());
-			for (size_t i = this->MeshFile::meshes.size(); i < this->vertexGroups.size(); ++i) {
+			for (std::size_t i = this->MeshFile::meshes.size(); i < this->vertexGroups.size(); ++i) {
 				CreateMesh();
 			}
 		}
 
-		for (size_t i = 0; i < this->vertexGroups.size(); ++i) {
+		for (std::size_t i = 0; i < this->vertexGroups.size(); ++i) {
 			const OBJ::OBJGroup* vert_group = this->vertexGroups[i].get();
 			Mesh* mesh = this->MeshFile::meshes[i];
 			if (this->MeshFile::meshes[i]->object_groups.size() == 0) {
@@ -259,13 +259,13 @@ namespace tec {
 					mat_group.material_name = material_name;
 				}
 
-				size_t j = mesh->verts.size();
+				std::size_t j = mesh->verts.size();
 
 				if (mesh->verts.size() < (face_group->faces.size() * 3 + mesh->verts.size())) {
 					mesh->verts.resize(face_group->faces.size() * 3 + mesh->verts.size());
 				}
 
-				for (size_t k = 0; k < face_group->faces.size(); ++k) {
+				for (std::size_t k = 0; k < face_group->faces.size(); ++k) {
 					Face face;
 					if (face_group->faces[k].pos[0] > 0 && face_group->faces[k].pos[0] <= this->positions.size()) {
 						mesh->verts[j].position = this->positions[face_group->faces[k].pos[0] - 1];

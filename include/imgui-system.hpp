@@ -60,7 +60,7 @@ namespace tec {
 		static int shader_program, vertex_shader, fragment_shader;
 		static int texture_attribute_location, projmtx_attribute_location;
 		static int position_attribute_location, uv_attribute_location, color_attribute_location;
-		static size_t vbo_size;
+		static std::size_t vbo_size;
 		static unsigned int vbo, vao;
 
 		std::map<std::string, std::function<void()>> window_draw_funcs;

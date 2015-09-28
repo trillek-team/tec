@@ -142,15 +142,15 @@ namespace tec {
 					std::int16_t y = static_cast<std::int16_t>((index & 0xFFFF00000000) >> 32);
 					std::int16_t x = static_cast<std::int16_t>((index & 0xFFFF0000) >> 16);
 					std::int16_t z = static_cast<std::int16_t>(index & 0xFFFF);
-					size_t vertex_offset = mesh->verts.size();
-					for (size_t i = 0; i < 24; ++i) {
+					std::size_t vertex_offset = mesh->verts.size();
+					for (std::size_t i = 0; i < 24; ++i) {
 						mesh->verts.push_back(std::move(VertexData(IdentityVerts[i].position[0] + x,
 							IdentityVerts[i].position[1] + y, IdentityVerts[i].position[2] + z,
 							IdentityVerts[i].color[0], IdentityVerts[i].color[1], IdentityVerts[i].color[2],
 							IdentityVerts[i].uv[0], IdentityVerts[i].uv[1])));
 					}
 					this->vertex_index[index] = vertex_offset;
-					for (size_t i = 0; i < 6; ++i) {
+					for (std::size_t i = 0; i < 6; ++i) {
 						objgroup->indices.push_back(i * 4 + vertex_offset + 0);
 						objgroup->indices.push_back(i * 4 + vertex_offset + 1);
 						objgroup->indices.push_back(i * 4 + vertex_offset + 2);
@@ -161,7 +161,7 @@ namespace tec {
 				}
 				else {
 					if (this->vertex_index.find(index) != this->vertex_index.end()) {
-						for (size_t i = 0; i < objgroup->indices.size(); ++i) {
+						for (std::size_t i = 0; i < objgroup->indices.size(); ++i) {
 							if (objgroup->indices[i] == this->vertex_index[index]) {
 								for (int j = 0; j < 36; ++j, ++i) {
 									objgroup->indices.pop_back();
@@ -169,12 +169,12 @@ namespace tec {
 							}
 						}
 						if (this->vertex_index[index] == mesh->verts.size() - 24) {
-							for (size_t i = 0; i < 24; i++) {
+							for (std::size_t i = 0; i < 24; i++) {
 								mesh->verts.pop_back();
 							}
 						}
 						else {
-							for (size_t i = 0; i < 24; i++) {
+							for (std::size_t i = 0; i < 24; i++) {
 								std::swap(mesh->verts[this->vertex_index[index] + i], mesh->verts.back());
 								mesh->verts.pop_back();
 							}

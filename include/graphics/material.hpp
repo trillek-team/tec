@@ -42,7 +42,7 @@ namespace tec {
 		 * \param size_t index The index of the texture to grab (0-based).
 		 * \return std::shared_ptr<TextureObject> The request texture, or nullptr if index is invalid.
 		 */
-		std::shared_ptr<TextureObject> GetTexutre(size_t index);
+		std::shared_ptr<TextureObject> GetTexutre(std::size_t index);
 
 		/**
 		 * \brief Removes a TextureObject from this material.

@@ -31,7 +31,7 @@ public:
 		return data_;
 	}
 
-	size_t length() const {
+	std::size_t length() const {
 		return header_length + body_length_;
 	}
 
@@ -43,11 +43,11 @@ public:
 		return data_ + header_length;
 	}
 
-	size_t body_length() const {
+	std::size_t body_length() const {
 		return body_length_;
 	}
 
-	void body_length(size_t new_length) {
+	void body_length(std::size_t new_length) {
 		body_length_ = new_length;
 		if (body_length_ > max_body_length)
 			body_length_ = max_body_length;
@@ -74,7 +74,7 @@ public:
 
 private:
 	char data_[header_length + max_body_length];
-	size_t body_length_;
+	std::size_t body_length_;
 };
 
 #endif // CHAT_MESSAGE_HPP

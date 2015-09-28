@@ -128,7 +128,7 @@ namespace tec {
 											std::vector<std::string>& keys = key_func.first();
 											current_combo_item[current_combo_item_slot] = -1;
 											std::stringstream joinedValues;
-											for (size_t item = 0; item < keys.size(); ++item) {
+											for (std::size_t item = 0; item < keys.size(); ++item) {
 												joinedValues << keys[item] << '\0';
 												if (keys[item] == key_func.second) {
 													current_combo_item[current_combo_item_slot] = item;

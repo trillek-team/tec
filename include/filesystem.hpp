@@ -22,7 +22,7 @@ public:
 		typedef std::string NFilePath;  /// Native string format for paths
 #endif
 
-    static const size_t npos = -1;
+    static const std::size_t npos = -1;
 
 		/**
 		 * \brief Builds a empty path
@@ -152,7 +152,7 @@ public:
 		* f.Subpath(0, 2); // ==> "./assets/"
 		* \endcode
 		*/
-		FilePath Subpath(size_t begin, size_t end = FilePath::npos) const;
+		FilePath Subpath(std::size_t begin, std::size_t end = FilePath::npos) const;
 
 		/**
 		* \brief Return a subpath

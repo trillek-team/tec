@@ -55,7 +55,7 @@ namespace tec {
 
 		void ServerConnection::read_body() {
 			asio::error_code error = asio::error::eof;
-			size_t len = asio::read(this->socket, 
+			std::size_t len = asio::read(this->socket, 
 				asio::buffer(current_read_msg.body(), current_read_msg.body_length()), error);
 
 			if (!error) {
@@ -70,7 +70,7 @@ namespace tec {
 
 		void ServerConnection::read_header() {
 			asio::error_code error = asio::error::eof;
-			size_t len = asio::read(this->socket, 
+			std::size_t len = asio::read(this->socket, 
 				asio::buffer(this->current_read_msg.data(), chat_message::header_length), error);
 
 			if (!error && this->current_read_msg.decode_header()) {

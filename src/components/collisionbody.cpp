@@ -12,12 +12,12 @@ namespace tec {
 		if (!mesh_file) {
 			return nullptr;
 		}
-		for (size_t mesh_i = 0; mesh_i < mesh_file->GetMeshCount(); ++mesh_i) {
+		for (std::size_t mesh_i = 0; mesh_i < mesh_file->GetMeshCount(); ++mesh_i) {
 			Mesh* mesh = mesh_file->GetMesh(mesh_i);
 			for (ObjectGroup* objgroup : mesh->object_groups) {
 				btmesh->preallocateVertices(mesh->verts.size());
 				btmesh->preallocateIndices(objgroup->indices.size());
-				for (size_t face_i = 0; face_i < objgroup->indices.size(); ++face_i) {
+				for (std::size_t face_i = 0; face_i < objgroup->indices.size(); ++face_i) {
 					const VertexData& v1 = mesh->verts[objgroup->indices[face_i]];
 					const VertexData& v2 = mesh->verts[objgroup->indices[++face_i]];
 					const VertexData& v3 = mesh->verts[objgroup->indices[++face_i]];
