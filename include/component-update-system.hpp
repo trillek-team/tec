@@ -1,7 +1,8 @@
 #pragma once
 
-#include <map>
+#include <mutex>
 #include <list>
+#include <deque>
 #include <memory>
 #include <cstdint>
 #include <functional>
@@ -11,6 +12,11 @@
 namespace tec {
 	template <typename T>
 	struct ComponentUpdateList {
+		ComponentUpdateList() { }
+		ComponentUpdateList(ComponentUpdateList&& other) : frame(other.frame) {
+			updates = std::mvoe(other.updates);
+			removals = std::mvoe(other.removals);
+		}
 		frame_id_t frame = 0; // The frame id the changes are in.
 		std::map<eid, std::shared_ptr<T>> updates; // Components to be updated
 		std::list<eid> removals; // Components to be removed
@@ -54,78 +60,131 @@ namespace tec {
 
 		// Applies all future_update_lists up to and including frame_id
 		static void UpdateTo(frame_id_t frame_id) {
-			for (frame_id_t i = base_frame_id; i <= frame_id; ++i) {
-				if (future_update_lists.find(i) != future_update_lists.end()) {
-					auto current_frame_list = future_update_lists.at(i);
-
-					auto updates = current_frame_list->updates;
+			{
+				std::lock_guard<std::mutex> list_lock(list_mutex);
+				base_frame_id = frame_id;
+			}
+			while (!future_update_lists.empty()) {
+				std::unique_ptr<ComponentUpdateList<T>> front;
+				{
+					std::lock_guard<std::mutex> list_lock(list_mutex);
+					front = std::move(future_update_lists.front());
+					future_update_lists.pop_front();
+				}
+				if (front->frame <= frame_id) {
+					const std::map<eid, std::shared_ptr<T>>& updates = front->updates;
 					for (auto pair : updates) {
 						Multiton<eid, std::shared_ptr<T>>::Set(pair.first, pair.second);
 					}
 
-					auto removals = current_frame_list->removals;
+					const std::list<eid>& removals = front->removals;
 					for (auto entity_id : removals) {
 						Multiton<eid, std::shared_ptr<T>>::Remove(entity_id);
 					}
-					future_update_lists.erase(i);
+					front->frame = -1;
+					front->updates.clear();
+					front->removals.clear();
+					{
+						std::lock_guard<std::mutex> list_lock(list_mutex);
+						empty_update_lists.push_back(std::move(front));
+					}
+				}
+				else {
+					break;
 				}
 			}
-			base_frame_id = frame_id;
 		}
 
 		// Schedule a component update for frame_id or the most future if frame_id is 0.
 		static void SubmitUpdate(eid entity_id, std::shared_ptr<T> value, frame_id_t frame_id = 0) {
+			std::lock_guard<std::mutex> list_lock(list_mutex);
+			ComponentUpdateList<T>* list = nullptr;
+			auto it = future_update_lists.begin();
 			if (frame_id > base_frame_id) {
-				if (future_update_lists.find(frame_id) == future_update_lists.end()) {
-					future_update_lists[frame_id] = std::make_shared<ComponentUpdateList<T>>();
-					future_update_lists[frame_id]->frame = frame_id;
+				for (it; it != future_update_lists.end(); it++) {
+					if ((*it)->frame == frame_id) {
+						list = it->get();
+						break;
+					}
+					else if ((*it)->frame > frame_id) {
+						break;
+					}
 				}
-				future_update_lists[frame_id]->updates[entity_id] = value;
 			}
-			else if (frame_id == 0) {
-				if (future_update_lists.upper_bound(base_frame_id) == future_update_lists.end()) {
-					frame_id = base_frame_id + 1;
-					future_update_lists[frame_id] = std::make_shared<ComponentUpdateList<T>>();
-					future_update_lists[frame_id]->frame = frame_id;
+			if (!list) {
+				if (future_update_lists.empty()) {
+					if (empty_update_lists.size() > 0) {
+						it = future_update_lists.emplace(it, std::move(empty_update_lists.front()));
+						empty_update_lists.pop_front();
+					}
+					else {
+						it = future_update_lists.emplace(it, std::make_unique<ComponentUpdateList<T>>());
+					}
 				}
-				else {
-					frame_id = (*future_update_lists.upper_bound(base_frame_id)).first;
-				}
-				(*future_update_lists.upper_bound(base_frame_id)).second->updates[entity_id] = value;
 			}
+			list = it->get();
+			if (frame_id == 0) {
+				list->frame = base_frame_id + 1;
+			}
+			else {
+				list->frame = frame_id;
+			}
+			list->updates[entity_id] = value;
 		}
 
 		// Schedule a component removal for frame_id or the most future if frame_id is 0.
 		static void SubmitRemoval(eid entity_id, frame_id_t frame_id = 0) {
+			std::lock_guard<std::mutex> list_lock(list_mutex);
+			ComponentUpdateList<T>* list = nullptr;
+			auto it = future_update_lists.begin();
 			if (frame_id > base_frame_id) {
-				if (future_update_lists.find(frame_id) == future_update_lists.end()) {
-					future_update_lists[frame_id] = std::make_shared<ComponentUpdateList<T>>();
-					future_update_lists[frame_id]->frame = frame_id;
+				for (it; it != future_update_lists.end(); it++) {
+					if ((*it)->frame == frame_id) {
+						list = it->get();
+						break;
+					}
+					else if ((*it)->frame > frame_id) {
+						break;
+					}
 				}
-				future_update_lists[frame_id]->removals.push_back(entity_id);
 			}
-			else if (frame_id == 0) {
-				if (future_update_lists.upper_bound(base_frame_id) == future_update_lists.end()) {
-					frame_id = base_frame_id + 1;
-					future_update_lists[frame_id] = std::make_shared<ComponentUpdateList<T>>();
-					future_update_lists[frame_id]->frame = frame_id;
+			if (!list) {
+				if (future_update_lists.empty()) {
+					if (empty_update_lists.size() > 0) {
+						it = future_update_lists.emplace(it, std::move(empty_update_lists.front()));
+						empty_update_lists.pop_front();
+					}
+					else {
+						it = future_update_lists.emplace(it, std::make_unique<ComponentUpdateList<T>>());
+					}
+				}
+				list = it->get();
+				if (frame_id == 0) {
+					list->frame = base_frame_id + 1;
 				}
 				else {
-					frame_id = (*future_update_lists.upper_bound(base_frame_id)).first;
+					list->frame = frame_id;
 				}
-				future_update_lists[frame_id]->removals.push_back(entity_id);
 			}
+			list->removals.push_back(entity_id);
 		}
 	protected:
-		static std::map<frame_id_t, std::shared_ptr<ComponentUpdateList<T>>> future_update_lists;
+		static std::deque<std::unique_ptr<ComponentUpdateList<T>>> future_update_lists;
+		static std::list<std::unique_ptr<ComponentUpdateList<T>>> empty_update_lists;
+		static std::mutex list_mutex;
 
 		// The last confirmed frame_id
 		static frame_id_t base_frame_id;
 	};
 
 	template <typename T>
-	std::map<frame_id_t, std::shared_ptr<ComponentUpdateList<T>>> ComponentUpdateSystem<T>::future_update_lists;
+	std::deque<std::unique_ptr<ComponentUpdateList<T>>> ComponentUpdateSystem<T>::future_update_lists;
+	template <typename T>
+	std::list<std::unique_ptr<ComponentUpdateList<T>>> ComponentUpdateSystem<T>::empty_update_lists;
 
 	template <typename T>
-	frame_id_t ComponentUpdateSystem<T>::base_frame_id = 0;
+	frame_id_t ComponentUpdateSystem<T>::base_frame_id = -1;
+
+	template <typename T>
+	std::mutex ComponentUpdateSystem<T>::list_mutex;
 }
