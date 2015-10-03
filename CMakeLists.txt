@@ -1,14 +1,28 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT("TEC")
-
 SET(CMAKE_CXX_STANDARD_REQUIRED 11)
-
-# Test not enabled by default
-SET(BUILD_TESTS_TEC FALSE CACHE BOOL "Build TEC unit tests")
-
 # Set the directory of cmake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules")
+
+
+INCLUDE(ExternalProject)
+SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/ThirdParty)
+# Lib extension (used to link to ExternalProject
+if(MSVC)
+    set(LibSuffix ".lib")
+else()
+    set(LibSuffix ".a")
+endif()
+
+# Set the build type if it isn't already
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Release)
+ENDIF()
+
+# Test not enabled by default
+OPTION(BUILD_TESTS_TEC "Build TEC unit tests" FALSE)
+
 
 # Put the executable in the bin folder
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
@@ -92,7 +106,7 @@ FIND_PACKAGE(OpenGL REQUIRED)
 # GLFW3 check
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/glfw3/include")
 MESSAGE("GLFW3 will be built.")
-# We are turning off all the extra bullet options before adding it to reduce compiling.
+# We are turning off all the extra glfw options before adding it to reduce compiling.
 SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
 SET(GLFW_BUILD_TESTS OFF CACHE BOOL "Build the GLFW test programs")
 SET(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
@@ -120,29 +134,67 @@ INCLUDE_DIRECTORIES("modules/protobuf/src")
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/protobuf/src")
 ADD_SUBDIRECTORY("modules/protobuf/cmake")
 
-# Bullet check
+# Bullet
+SET(BULLET_CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs
+    -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs
+    -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+    -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+    -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+    -DCMAKE_DEBUG_POSTFIX=d
+    -DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON
+    -DUSE_DOUBLE_PRECISION=ON
+    -DBUILD_DEMOS=OFF
+    -DBUILD_CPU_DEMOS=OFF
+    -DBUILD_OPENGL3_DEMOS=OFF
+    -DBUILD_BULLET2_DEMOS=OFF
+    -DBUILD_BULLET3=OFF
+    -DBUILD_EXTRAS=OFF
+    -DBUILD_UNIT_TESTS=OFF
+    -DBUILD_STATIC_LIBS=ON
+)
+ExternalProject_Add(
+    Bullet
+    DOWNLOAD_COMMAND ""
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/modules/bullet3/
+    CMAKE_ARGS ${BULLET_CMAKE_ARGS}
+    INSTALL_COMMAND ""
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    )
+# Recover project paths for additional settings
+ExternalProject_Get_Property(Bullet BINARY_DIR )
+
+# Set properties as per FindModules
+SET( BULLET_FOUND
+    CACHE INTERNAL "" FORCE
+)
+
+SET( BULLET_INCLUDE_DIRS
+    "${CMAKE_SOURCE_DIR}/modules/bullet3/src/"
+    CACHE INTERNAL "" FORCE
+)
+
+SET( BULLET_LIBRARIES
+    debug ${BINARY_DIR}/src/BulletSoftBody/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletSoftBodyd${LibSuffix}
+    optimized ${BINARY_DIR}/src/BulletSoftBody/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletSoftBody${LibSuffix}
+    debug ${BINARY_DIR}/src/BulletDynamics/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletDynamicsd${LibSuffix}
+    optimized ${BINARY_DIR}/src/BulletDynamics/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletDynamics${LibSuffix}
+    debug ${BINARY_DIR}/src/BulletCollision/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletCollisiond${LibSuffix}
+    optimized ${BINARY_DIR}/src/BulletCollision/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletCollision${LibSuffix}
+    debug ${BINARY_DIR}/src/LinearMath/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}LinearMathd${LibSuffix}
+    optimized ${BINARY_DIR}/src/LinearMath/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}LinearMath${LibSuffix}
+    CACHE INTERNAL "" FORCE
+)
+
+SET( BULLET_DEFINITIONS
+    " -DBT_USE_DOUBLE_PRECISION "
+    CACHE INTERNAL "" FORCE
+)
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
-FIND_PACKAGE(Bullet)
-IF (NOT ${BULLET_FOUND})
-  SET(BUILD_DEPS_FIRST true)
-  MESSAGE("Bullet will be built.")
-  # We are turning off all the extra bullet options before adding it to reduce compiling.
-  SET(USE_DOUBLE_PRECISION ON CACHE BOOL "Use double precision")
-  SET(USE_GLUT OFF CACHE BOOL "Use Glut")
-  SET(USE_GRAPHICAL_BENCHMARK OFF CACHE BOOL "Use Graphical Benchmark")
-  SET(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "Set when you want to build the OpenGL3+ demos")
-  SET(BUILD_BULLET2_DEMOS OFF CACHE BOOL "Set when you want to build the Bullet 2 demos")
-  SET(BUILD_EXTRAS OFF CACHE BOOL "Set when you want to build the extras")
-  SET(BUILD_UNIT_TESTS OFF CACHE BOOL "Build Unit Tests")
-  SET(BUILD_CPU_DEMOS OFF CACHE BOOL "Build original Bullet CPU examples" )
-  SET(BUILD_BULLET3 OFF CACHE BOOL "Set when you want to build Bullet 3")
-  ADD_SUBDIRECTORY("modules/bullet3")
-  INCLUDE_DIRECTORIES("modules/bullet3/src")
-ELSE (NOT ${BULLET_FOUND})
-  MESSAGE("Bullet already found skipping build.")
-  INCLUDE_DIRECTORIES (${BULLET_INCLUDE_DIRS})
-ENDIF (NOT ${BULLET_FOUND})
- 
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/bullet3/src/)
+
 # OpenAL check
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/openal-soft/include/AL")
 FIND_PACKAGE(OpenAL)
@@ -234,6 +286,7 @@ IF (NOT ${BUILD_DEPS_FIRST})
     ${PB_FILES_INCLUDES}
   )
   SET_PROPERTY(TARGET TEC_LIB PROPERTY CXX_STANDARD 11)
+  ADD_DEPENDENCIES(TEC_LIB Bullet)
 
   ADD_EXECUTABLE("TEC"
     "src/main.cpp"
