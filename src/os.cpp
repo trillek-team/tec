@@ -34,6 +34,7 @@ namespace tec {
 		auto l = spdlog::get("console_log");
 		// Initialize the library.
 		if (glfwInit() != GL_TRUE) {
+			l->critical("[OS] Can initialize glfw");
 			return false;
 		}
 
@@ -55,6 +56,7 @@ namespace tec {
 			if (!this->window) {
 				// still not right, give up
 				glfwTerminate();
+				l->critical("[OS] Can't initialize window");
 				return false;
 			}
 		}
@@ -65,9 +67,9 @@ namespace tec {
 		// check the context version
 		std::string glcx_version((char*)glGetString(GL_VERSION));
 		std::string glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-		if (glcx_major == "1" || glcx_major == "2") {
-			// we got a version 1 context, that will not work
-			// so try again.
+		std::string glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
+		if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
+			// we got an older version of context, that will not work. So try again.
 			glfwMakeContextCurrent(nullptr);
 			glfwDestroyWindow(this->window);
 			// be more specific this time
@@ -79,6 +81,7 @@ namespace tec {
 
 			if (!this->window) {
 				glfwTerminate();
+				l->critical("[OS] Can't initialize window");
 				return false;
 			}
 			// attach the context
@@ -87,8 +90,9 @@ namespace tec {
 			// check the context version again
 			glcx_version = (char*)glGetString(GL_VERSION);
 			glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-			if (glcx_major == "1" || glcx_major == "2" ) {
-				// still 1 or 2, higher versions probably not supported
+			glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
+			if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
+				// still a invalid version. Higher versions probably not supported
 				glfwTerminate();
 				l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
 					<< "Press \"Enter\" to exit\n";
