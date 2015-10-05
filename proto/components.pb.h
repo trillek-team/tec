@@ -54,6 +54,7 @@ class AudioSource;
 class Light;
 class Light_Attenuation;
 class Light_Direction;
+class LuaScript;
 class Component;
 class Entity;
 class EntityFileList;
@@ -2064,6 +2065,100 @@ class Light : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class LuaScript : public ::google::protobuf::Message {
+ public:
+  LuaScript();
+  virtual ~LuaScript();
+
+  LuaScript(const LuaScript& from);
+
+  inline LuaScript& operator=(const LuaScript& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const LuaScript& default_instance();
+
+  void Swap(LuaScript* other);
+
+  // implements Message ----------------------------------------------
+
+  inline LuaScript* New() const { return New(NULL); }
+
+  LuaScript* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const LuaScript& from);
+  void MergeFrom(const LuaScript& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(LuaScript* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string script_name = 1;
+  bool has_script_name() const;
+  void clear_script_name();
+  static const int kScriptNameFieldNumber = 1;
+  const ::std::string& script_name() const;
+  void set_script_name(const ::std::string& value);
+  void set_script_name(const char* value);
+  void set_script_name(const char* value, size_t size);
+  ::std::string* mutable_script_name();
+  ::std::string* release_script_name();
+  void set_allocated_script_name(::std::string* script_name);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.LuaScript)
+ private:
+  inline void set_has_script_name();
+  inline void clear_has_script_name();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr script_name_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static LuaScript* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -2100,6 +2195,7 @@ class Component : public ::google::protobuf::Message {
     kLight = 10,
     kDirlight = 11,
     kSpotlight = 12,
+    kScript = 13,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -2252,6 +2348,15 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::Light* release_spotlight();
   void set_allocated_spotlight(::tec::proto::Light* spotlight);
 
+  // optional .tec.proto.LuaScript script = 13;
+  bool has_script() const;
+  void clear_script();
+  static const int kScriptFieldNumber = 13;
+  const ::tec::proto::LuaScript& script() const;
+  ::tec::proto::LuaScript* mutable_script();
+  ::tec::proto::LuaScript* release_script();
+  void set_allocated_script(::tec::proto::LuaScript* script);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
@@ -2267,6 +2372,7 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_light();
   inline void set_has_dirlight();
   inline void set_has_spotlight();
+  inline void set_has_script();
 
   inline bool has_component() const;
   void clear_component();
@@ -2289,6 +2395,7 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::Light* light_;
     ::tec::proto::Light* dirlight_;
     ::tec::proto::Light* spotlight_;
+    ::tec::proto::LuaScript* script_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -4254,6 +4361,63 @@ inline void Light::set_allocated_direction(::tec::proto::Light_Direction* direct
 
 // -------------------------------------------------------------------
 
+// LuaScript
+
+// optional string script_name = 1;
+inline bool LuaScript::has_script_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void LuaScript::set_has_script_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void LuaScript::clear_has_script_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void LuaScript::clear_script_name() {
+  script_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_script_name();
+}
+inline const ::std::string& LuaScript::script_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.LuaScript.script_name)
+  return script_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void LuaScript::set_script_name(const ::std::string& value) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.LuaScript.script_name)
+}
+inline void LuaScript::set_script_name(const char* value) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.LuaScript.script_name)
+}
+inline void LuaScript::set_script_name(const char* value, size_t size) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.LuaScript.script_name)
+}
+inline ::std::string* LuaScript::mutable_script_name() {
+  set_has_script_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.LuaScript.script_name)
+  return script_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* LuaScript::release_script_name() {
+  clear_has_script_name();
+  return script_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void LuaScript::set_allocated_script_name(::std::string* script_name) {
+  if (script_name != NULL) {
+    set_has_script_name();
+  } else {
+    clear_has_script_name();
+  }
+  script_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), script_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.LuaScript.script_name)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -4808,6 +4972,52 @@ inline void Component::set_allocated_spotlight(::tec::proto::Light* spotlight) {
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.spotlight)
 }
 
+// optional .tec.proto.LuaScript script = 13;
+inline bool Component::has_script() const {
+  return component_case() == kScript;
+}
+inline void Component::set_has_script() {
+  _oneof_case_[0] = kScript;
+}
+inline void Component::clear_script() {
+  if (has_script()) {
+    delete component_.script_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::LuaScript& Component::script() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.script)
+  return has_script() ? *component_.script_
+                      : ::tec::proto::LuaScript::default_instance();
+}
+inline ::tec::proto::LuaScript* Component::mutable_script() {
+  if (!has_script()) {
+    clear_component();
+    set_has_script();
+    component_.script_ = new ::tec::proto::LuaScript;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.script)
+  return component_.script_;
+}
+inline ::tec::proto::LuaScript* Component::release_script() {
+  if (has_script()) {
+    clear_has_component();
+    ::tec::proto::LuaScript* temp = component_.script_;
+    component_.script_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_script(::tec::proto::LuaScript* script) {
+  clear_component();
+  if (script) {
+    set_has_script();
+    component_.script_ = script;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.script)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -4934,6 +5144,8 @@ EntityFileList::mutable_entity_file_list() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

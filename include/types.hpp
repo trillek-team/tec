@@ -62,6 +62,9 @@ namespace tec {
 	MAKE_COMPONENTCASETYPE(DirectionalLight, proto::Component::kDirlight);
 	class VoxelVolume;
 	MAKE_IDTYPE(VoxelVolume, 11);
+	struct LuaScript;
+	MAKE_IDTYPE(LuaScript, 13);
+	MAKE_COMPONENTCASETYPE(LuaScript, proto::Component::kScript );
 
 	class MD5Mesh;
 	MAKE_EXTTYPE(MD5Mesh, "md5mesh");
@@ -69,4 +72,6 @@ namespace tec {
 	MAKE_EXTTYPE(OBJ, "obj");
 	class VorbisStream;
 	MAKE_EXTTYPE(VorbisStream, "ogg");
+	class ScriptFile;
+	MAKE_EXTTYPE(ScriptFile, "lua");
 }

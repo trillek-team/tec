@@ -107,6 +107,10 @@ message Light {
 	optional Direction direction = 8;
 }
 
+message LuaScript {
+	optional string script_name = 1;
+}
+
 message Component {
 	oneof component {
 		Renderable renderable = 1;
@@ -121,6 +125,7 @@ message Component {
 		Light light = 10;
 		Light dirlight = 11;
 		Light spotlight = 12;
+		LuaScript script = 13;
 	}
 }
 

@@ -77,6 +77,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Light_Direction_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Light_Direction_reflection_ = NULL;
+const ::google::protobuf::Descriptor* LuaScript_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  LuaScript_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Component_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Component_reflection_ = NULL;
@@ -93,6 +96,7 @@ struct ComponentOneofInstance {
   const ::tec::proto::Light* light_;
   const ::tec::proto::Light* dirlight_;
   const ::tec::proto::Light* spotlight_;
+  const ::tec::proto::LuaScript* script_;
 }* Component_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* Entity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
@@ -410,8 +414,23 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Light_Direction),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Light_Direction, _internal_metadata_),
       -1);
-  Component_descriptor_ = file->message_type(10);
-  static const int Component_offsets_[13] = {
+  LuaScript_descriptor_ = file->message_type(10);
+  static const int LuaScript_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LuaScript, script_name_),
+  };
+  LuaScript_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      LuaScript_descriptor_,
+      LuaScript::default_instance_,
+      LuaScript_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LuaScript, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(LuaScript),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LuaScript, _internal_metadata_),
+      -1);
+  Component_descriptor_ = file->message_type(11);
+  static const int Component_offsets_[14] = {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, renderable_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, position_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, orientation_),
@@ -424,6 +443,7 @@ void protobuf_AssignDesc_components_2eproto() {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, light_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, dirlight_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, spotlight_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, script_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, component_),
   };
   Component_reflection_ =
@@ -439,7 +459,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Component),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, _internal_metadata_),
       -1);
-  Entity_descriptor_ = file->message_type(11);
+  Entity_descriptor_ = file->message_type(12);
   static const int Entity_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, components_),
@@ -455,7 +475,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Entity),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, _internal_metadata_),
       -1);
-  EntityFileList_descriptor_ = file->message_type(12);
+  EntityFileList_descriptor_ = file->message_type(13);
   static const int EntityFileList_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, entity_file_list_),
   };
@@ -517,6 +537,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Light_Direction_descriptor_, &Light_Direction::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      LuaScript_descriptor_, &LuaScript::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Component_descriptor_, &Component::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Entity_descriptor_, &Entity::default_instance());
@@ -562,6 +584,8 @@ void protobuf_ShutdownFile_components_2eproto() {
   delete Light_Attenuation_reflection_;
   delete Light_Direction::default_instance_;
   delete Light_Direction_reflection_;
+  delete LuaScript::default_instance_;
+  delete LuaScript_reflection_;
   delete Component::default_instance_;
   delete Component_default_oneof_instance_;
   delete Component_reflection_;
@@ -614,22 +638,24 @@ void protobuf_AddDesc_components_2eproto() {
     "ection\032D\n\013Attenuation\022\020\n\010constant\030\001 \001(\002\022"
     "\016\n\006linear\030\002 \001(\002\022\023\n\013exponential\030\003 \001(\002\032,\n\t"
     "Direction\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001"
-    "(\002\"\211\004\n\tComponent\022+\n\nrenderable\030\001 \001(\0132\025.t"
-    "ec.proto.RenderableH\000\022\'\n\010position\030\002 \001(\0132"
-    "\023.tec.proto.PositionH\000\022-\n\013orientation\030\003 "
-    "\001(\0132\026.tec.proto.OrientationH\000\022\037\n\004view\030\004 "
-    "\001(\0132\017.tec.proto.ViewH\000\022)\n\tanimation\030\005 \001("
-    "\0132\024.tec.proto.AnimationH\000\022!\n\005Scale\030\006 \001(\013"
-    "2\020.tec.proto.ScaleH\000\0222\n\016collision_body\030\007"
-    " \001(\0132\030.tec.proto.CollisionBodyH\000\022\'\n\010velo"
-    "city\030\010 \001(\0132\023.tec.proto.VelocityH\000\022.\n\014aud"
-    "io_source\030\t \001(\0132\026.tec.proto.AudioSourceH"
-    "\000\022!\n\005light\030\n \001(\0132\020.tec.proto.LightH\000\022$\n\010"
-    "dirlight\030\013 \001(\0132\020.tec.proto.LightH\000\022%\n\tsp"
-    "otlight\030\014 \001(\0132\020.tec.proto.LightH\000B\013\n\tcom"
-    "ponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\ncomponen"
-    "ts\030\002 \003(\0132\024.tec.proto.Component\"*\n\016Entity"
-    "FileList\022\030\n\020entity_file_list\030\001 \003(\t", 2074);
+    "(\002\" \n\tLuaScript\022\023\n\013script_name\030\001 \001(\t\"\261\004\n"
+    "\tComponent\022+\n\nrenderable\030\001 \001(\0132\025.tec.pro"
+    "to.RenderableH\000\022\'\n\010position\030\002 \001(\0132\023.tec."
+    "proto.PositionH\000\022-\n\013orientation\030\003 \001(\0132\026."
+    "tec.proto.OrientationH\000\022\037\n\004view\030\004 \001(\0132\017."
+    "tec.proto.ViewH\000\022)\n\tanimation\030\005 \001(\0132\024.te"
+    "c.proto.AnimationH\000\022!\n\005Scale\030\006 \001(\0132\020.tec"
+    ".proto.ScaleH\000\0222\n\016collision_body\030\007 \001(\0132\030"
+    ".tec.proto.CollisionBodyH\000\022\'\n\010velocity\030\010"
+    " \001(\0132\023.tec.proto.VelocityH\000\022.\n\014audio_sou"
+    "rce\030\t \001(\0132\026.tec.proto.AudioSourceH\000\022!\n\005l"
+    "ight\030\n \001(\0132\020.tec.proto.LightH\000\022$\n\010dirlig"
+    "ht\030\013 \001(\0132\020.tec.proto.LightH\000\022%\n\tspotligh"
+    "t\030\014 \001(\0132\020.tec.proto.LightH\000\022&\n\006script\030\r "
+    "\001(\0132\024.tec.proto.LuaScriptH\000B\013\n\tcomponent"
+    "\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\ncomponents\030\002 \003"
+    "(\0132\024.tec.proto.Component\"*\n\016EntityFileLi"
+    "st\022\030\n\020entity_file_list\030\001 \003(\t", 2148);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
@@ -650,6 +676,7 @@ void protobuf_AddDesc_components_2eproto() {
   Light::default_instance_ = new Light();
   Light_Attenuation::default_instance_ = new Light_Attenuation();
   Light_Direction::default_instance_ = new Light_Direction();
+  LuaScript::default_instance_ = new LuaScript();
   Component::default_instance_ = new Component();
   Component_default_oneof_instance_ = new ComponentOneofInstance();
   Entity::default_instance_ = new Entity();
@@ -671,6 +698,7 @@ void protobuf_AddDesc_components_2eproto() {
   Light::default_instance_->InitAsDefaultInstance();
   Light_Attenuation::default_instance_->InitAsDefaultInstance();
   Light_Direction::default_instance_->InitAsDefaultInstance();
+  LuaScript::default_instance_->InitAsDefaultInstance();
   Component::default_instance_->InitAsDefaultInstance();
   Entity::default_instance_->InitAsDefaultInstance();
   EntityFileList::default_instance_->InitAsDefaultInstance();
@@ -8295,6 +8323,312 @@ void Light::clear_direction() {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int LuaScript::kScriptNameFieldNumber;
+#endif  // !_MSC_VER
+
+LuaScript::LuaScript()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.LuaScript)
+}
+
+void LuaScript::InitAsDefaultInstance() {
+}
+
+LuaScript::LuaScript(const LuaScript& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.LuaScript)
+}
+
+void LuaScript::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  script_name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+LuaScript::~LuaScript() {
+  // @@protoc_insertion_point(destructor:tec.proto.LuaScript)
+  SharedDtor();
+}
+
+void LuaScript::SharedDtor() {
+  script_name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void LuaScript::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* LuaScript::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return LuaScript_descriptor_;
+}
+
+const LuaScript& LuaScript::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+LuaScript* LuaScript::default_instance_ = NULL;
+
+LuaScript* LuaScript::New(::google::protobuf::Arena* arena) const {
+  LuaScript* n = new LuaScript;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void LuaScript::Clear() {
+  if (has_script_name()) {
+    script_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool LuaScript::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.LuaScript)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional string script_name = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_script_name()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->script_name().data(), this->script_name().length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "tec.proto.LuaScript.script_name");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.LuaScript)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.LuaScript)
+  return false;
+#undef DO_
+}
+
+void LuaScript::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.LuaScript)
+  // optional string script_name = 1;
+  if (has_script_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->script_name().data(), this->script_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.LuaScript.script_name");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->script_name(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.LuaScript)
+}
+
+::google::protobuf::uint8* LuaScript::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.LuaScript)
+  // optional string script_name = 1;
+  if (has_script_name()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->script_name().data(), this->script_name().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.LuaScript.script_name");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        1, this->script_name(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.LuaScript)
+  return target;
+}
+
+int LuaScript::ByteSize() const {
+  int total_size = 0;
+
+  // optional string script_name = 1;
+  if (has_script_name()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->script_name());
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void LuaScript::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const LuaScript* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const LuaScript>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void LuaScript::MergeFrom(const LuaScript& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_script_name()) {
+      set_has_script_name();
+      script_name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.script_name_);
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void LuaScript::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void LuaScript::CopyFrom(const LuaScript& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool LuaScript::IsInitialized() const {
+
+  return true;
+}
+
+void LuaScript::Swap(LuaScript* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void LuaScript::InternalSwap(LuaScript* other) {
+  script_name_.Swap(&other->script_name_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata LuaScript::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = LuaScript_descriptor_;
+  metadata.reflection = LuaScript_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// LuaScript
+
+// optional string script_name = 1;
+bool LuaScript::has_script_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void LuaScript::set_has_script_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void LuaScript::clear_has_script_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void LuaScript::clear_script_name() {
+  script_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_script_name();
+}
+ const ::std::string& LuaScript::script_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.LuaScript.script_name)
+  return script_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void LuaScript::set_script_name(const ::std::string& value) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.LuaScript.script_name)
+}
+ void LuaScript::set_script_name(const char* value) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.LuaScript.script_name)
+}
+ void LuaScript::set_script_name(const char* value, size_t size) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.LuaScript.script_name)
+}
+ ::std::string* LuaScript::mutable_script_name() {
+  set_has_script_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.LuaScript.script_name)
+  return script_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* LuaScript::release_script_name() {
+  clear_has_script_name();
+  return script_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void LuaScript::set_allocated_script_name(::std::string* script_name) {
+  if (script_name != NULL) {
+    set_has_script_name();
+  } else {
+    clear_has_script_name();
+  }
+  script_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), script_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.LuaScript.script_name)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int Component::kRenderableFieldNumber;
 const int Component::kPositionFieldNumber;
 const int Component::kOrientationFieldNumber;
@@ -8307,6 +8641,7 @@ const int Component::kAudioSourceFieldNumber;
 const int Component::kLightFieldNumber;
 const int Component::kDirlightFieldNumber;
 const int Component::kSpotlightFieldNumber;
+const int Component::kScriptFieldNumber;
 #endif  // !_MSC_VER
 
 Component::Component()
@@ -8328,6 +8663,7 @@ void Component::InitAsDefaultInstance() {
   Component_default_oneof_instance_->light_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
   Component_default_oneof_instance_->dirlight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
   Component_default_oneof_instance_->spotlight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
+  Component_default_oneof_instance_->script_ = const_cast< ::tec::proto::LuaScript*>(&::tec::proto::LuaScript::default_instance());
 }
 
 Component::Component(const Component& from)
@@ -8430,6 +8766,10 @@ void Component::clear_component() {
     }
     case kSpotlight: {
       delete component_.spotlight_;
+      break;
+    }
+    case kScript: {
+      delete component_.script_;
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -8609,6 +8949,19 @@ bool Component::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(106)) goto parse_script;
+        break;
+      }
+
+      // optional .tec.proto.LuaScript script = 13;
+      case 13: {
+        if (tag == 106) {
+         parse_script:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_script()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -8710,6 +9063,12 @@ void Component::SerializeWithCachedSizes(
       12, *component_.spotlight_, output);
   }
 
+  // optional .tec.proto.LuaScript script = 13;
+  if (has_script()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      13, *component_.script_, output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -8802,6 +9161,13 @@ void Component::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         12, *component_.spotlight_, target);
+  }
+
+  // optional .tec.proto.LuaScript script = 13;
+  if (has_script()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        13, *component_.script_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -8900,6 +9266,13 @@ int Component::ByteSize() const {
           *component_.spotlight_);
       break;
     }
+    // optional .tec.proto.LuaScript script = 13;
+    case kScript: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.script_);
+      break;
+    }
     case COMPONENT_NOT_SET: {
       break;
     }
@@ -8976,6 +9349,10 @@ void Component::MergeFrom(const Component& from) {
     }
     case kSpotlight: {
       mutable_spotlight()->::tec::proto::Light::MergeFrom(from.spotlight());
+      break;
+    }
+    case kScript: {
+      mutable_script()->::tec::proto::LuaScript::MergeFrom(from.script());
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -9583,6 +9960,52 @@ void Component::clear_spotlight() {
     component_.spotlight_ = spotlight;
   }
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.spotlight)
+}
+
+// optional .tec.proto.LuaScript script = 13;
+bool Component::has_script() const {
+  return component_case() == kScript;
+}
+void Component::set_has_script() {
+  _oneof_case_[0] = kScript;
+}
+void Component::clear_script() {
+  if (has_script()) {
+    delete component_.script_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::LuaScript& Component::script() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.script)
+  return has_script() ? *component_.script_
+                      : ::tec::proto::LuaScript::default_instance();
+}
+ ::tec::proto::LuaScript* Component::mutable_script() {
+  if (!has_script()) {
+    clear_component();
+    set_has_script();
+    component_.script_ = new ::tec::proto::LuaScript;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.script)
+  return component_.script_;
+}
+ ::tec::proto::LuaScript* Component::release_script() {
+  if (has_script()) {
+    clear_has_component();
+    ::tec::proto::LuaScript* temp = component_.script_;
+    component_.script_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_script(::tec::proto::LuaScript* script) {
+  clear_component();
+  if (script) {
+    set_has_script();
+    component_.script_ = script;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.script)
 }
 
 bool Component::has_component() const {
