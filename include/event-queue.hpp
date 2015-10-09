@@ -47,7 +47,7 @@ namespace tec {
 		}
 
 		void QueueEvent(Event<T>&& e) {
-			(*write_event_queue).push(std::move(e));
+			(*write_event_queue).emplace(std::move(e));
 		}
 
 		virtual void On(const eid entity_id, std::shared_ptr<T> data) { }

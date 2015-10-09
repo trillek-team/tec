@@ -177,6 +177,9 @@ namespace tec {
 			orientation = (Entity(source_entity).Get<Orientation>().lock())->value;
 		}
 
+		if (screen_height == 0.0f) {
+			return 0;
+		}
 		// TODO: This could be pulled from something but it seems unlikely to change.
 		static glm::mat4 projection = glm::perspective(
 			glm::radians(45.0f),
