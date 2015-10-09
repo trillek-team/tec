@@ -33,6 +33,7 @@ namespace tec {
 
 	ReflectionEntityList entity_list;
 	eid active_entity;
+	std::map<eid, std::shared_ptr<EnttityComponentUpdatedEvent>> entities_updated;
 
 	struct FileListener : public EventQueue < FileDropEvent > {
 		void Update(double delta) {
@@ -226,6 +227,10 @@ int main(int argc, char* argv[]) {
 		delta = os.GetDeltaTime();
 
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
+		
+		for (auto& comp_updated : tec::entities_updated) {
+			tec::EventSystem<tec::EnttityComponentUpdatedEvent>::Get()->Emit(comp_updated.second);
+		}
 
 		flistener.Update(delta);
 		std::thread ps_thread([&] () {

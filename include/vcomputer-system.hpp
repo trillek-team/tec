@@ -50,6 +50,11 @@ namespace tec {
 		std::shared_ptr<TextureObject> texture;
 		std::shared_ptr<tda::TDADev> device;
 
+		
+		void Out(proto::Component* target) {
+
+		}
+
 		static ReflectionComponent Reflection(ComputerScreen* val) {
 			ReflectionComponent refcomp;
 			return std::move(refcomp);
@@ -62,6 +67,10 @@ namespace tec {
 		}
 		bool has_focus;
 		std::shared_ptr<gkeyboard::GKeyboardDev> device;
+		
+		void Out(proto::Component* target) {
+
+		}
 
 		static ReflectionComponent Reflection(ComputerKeyboard* val) {
 			ReflectionComponent refcomp;

@@ -38,6 +38,11 @@ namespace tec {
 		// Iterates over all the actions queued before the call to update.
 		void Update(double delta);
 
+		
+		void Out(proto::Component* target) {
+
+		}
+
 		// Generates a vertex (and index) buffer for the current voxel state.
 		void UpdateMesh();
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "proto/components.pb.h"
 
 namespace tec {
 	struct MouseHover {
@@ -47,5 +48,9 @@ namespace tec {
 
 	struct FileDropEvent {
 		std::vector<std::string> filenames;
+	};
+
+	struct EnttityComponentUpdatedEvent {
+		proto::Entity entity;
 	};
 }
