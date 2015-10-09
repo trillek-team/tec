@@ -8,8 +8,11 @@
 #include <functional>
 #include "multiton.hpp"
 #include "types.hpp"
+#include "reflection.hpp"
 
 namespace tec {
+	extern ReflectionEntityList entity_list;
+
 	template <typename T>
 	struct ComponentUpdateList {
 		ComponentUpdateList() { }
@@ -73,13 +76,18 @@ namespace tec {
 				}
 				if (front->frame <= frame_id) {
 					const std::map<eid, std::shared_ptr<T>>& updates = front->updates;
+					const char* component_type_name = GetTypeName<T>();
 					for (auto pair : updates) {
 						Multiton<eid, std::shared_ptr<T>>::Set(pair.first, pair.second);
+						entity_list.entities[pair.first].components[component_type_name] = std::move(T::Reflection(pair.second.get()));
 					}
 
 					const std::list<eid>& removals = front->removals;
 					for (auto entity_id : removals) {
 						Multiton<eid, std::shared_ptr<T>>::Remove(entity_id);
+						if (entity_list.entities[entity_id].components.find(component_type_name) != entity_list.entities[entity_id].components.end()) {
+							entity_list.entities[entity_id].components.erase(component_type_name);
+						}
 					}
 					front->frame = -1;
 					front->updates.clear();
