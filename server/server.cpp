@@ -9,13 +9,14 @@ namespace tec {
 
 		Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
 			std::string message("Hello from server\n");
-			greeting_msg.body_length(message.size());
-			memcpy(greeting_msg.body(), message.c_str(), greeting_msg.body_length());
+			greeting_msg.SetBodyLength(message.size());
+			memcpy(greeting_msg.GetBodyPTR(), message.c_str(), greeting_msg.GetBodyLength());
 			greeting_msg.encode_header();
 			do_accept();
 		}
 
-		void Server::Deliver(const chat_message& msg) {
+		// TODO: Implement a method to deliver a message to all clients except the source.
+		void Server::Deliver(const ServerMessage& msg) {
 			this->recent_msgs.push_back(msg);
 			while (this->recent_msgs.size() > max_recent_msgs) {
 				this->recent_msgs.pop_front();
@@ -42,7 +43,7 @@ namespace tec {
 			acceptor.async_accept(socket,
 				[this] (std::error_code error) {
 				if (!error) {
-					asio::write(socket, asio::buffer(greeting_msg.data(), greeting_msg.length()));
+					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
 					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
 					clients.insert(client);
 					for (auto msg : this->recent_msgs) {

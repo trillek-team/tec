@@ -3,7 +3,7 @@
 #include <memory>
 #include <asio.hpp>
 #include <deque>
-#include "chat_message.hpp"
+#include "server-message.hpp"
 
 using asio::ip::tcp;
 
@@ -18,7 +18,7 @@ namespace tec {
 
 			void StartRead();
 
-			void QueueWrite(const chat_message& msg);
+			void QueueWrite(const ServerMessage& msg);
 
 		private:
 			void read_header();
@@ -28,8 +28,8 @@ namespace tec {
 			void do_write();
 
 			tcp::socket socket;
-			chat_message current_read_msg;
-			std::deque<chat_message> write_msgs_;
+			ServerMessage current_read_msg;
+			std::deque<ServerMessage> write_msgs_;
 			Server* server;
 		};
 	}

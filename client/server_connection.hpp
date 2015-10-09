@@ -7,17 +7,21 @@
 #include <chrono>
 #include <iostream>
 #include <atomic>
-#include "chat_message.hpp"
+#include "server-message.hpp"
+#include "event-system.hpp"
 
 using asio::ip::tcp;
 
 namespace tec {
+	struct EnttityComponentUpdatedEvent;
+	extern std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
+
 	namespace networking {
 		extern const char* SERVER_PORT_STR;
 		extern const char* LOCAL_HOST;
 
 		// Used to connect to a server.
-		class ServerConnection {
+		class ServerConnection : public EventQueue < EnttityComponentUpdatedEvent > {
 		public:
 			ServerConnection();
 
@@ -30,6 +34,10 @@ namespace tec {
 			void StartRead();
 
 			void Write(std::string message);
+
+			void Send(ServerMessage& msg);
+
+			void On(std::shared_ptr<EnttityComponentUpdatedEvent> data);
 		private:
 			void read_body();
 			void read_header();
@@ -38,7 +46,7 @@ namespace tec {
 			asio::io_service io_service;
 			asio::ip::tcp::socket socket;
 			std::atomic<bool> stopped;
-			chat_message current_read_msg;
+			ServerMessage current_read_msg;
 		};
 	}
 }
