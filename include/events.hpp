@@ -23,7 +23,7 @@ namespace tec {
 		MOUSE_BTN button;
 	};
 
-	/** Mouse change of positio event */
+	/** Mouse change of position event */
 	struct MouseMoveEvent {
 		double norm_x, norm_y; /// Resolution independent new x, y (0-1) from upper-left to lower-right.
 		int old_x, old_y; /// Client space old x, y.

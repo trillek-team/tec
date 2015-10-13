@@ -229,7 +229,7 @@ namespace tec {
 	}
 
 	eid PhysicsSystem::RayCastIgnore(eid ign) {
-		eid cam = 1; // TODO: This hardcoded number should be the active camera id.
+		eid cam = 1; // TODO: This hard-coded number should be the active camera id.
 		last_rayvalid = false;
 		glm::vec3 position;
 		if (Entity(cam).Has<Position>()) {

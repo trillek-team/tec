@@ -250,7 +250,7 @@ namespace tec {
 		* \brief Dispatches mouse scroll events.
 		*
 		* It determines the changes in mouse position and stores the new position for later.
-		* \param[in] const double xoffset, yoffset The detal x and y coordinate of the mouse wheel.
+		* \param[in] const double xoffset, yoffset The delta x and y coordinate of the mouse wheel.
 		* \return void
 		*/
 		void DispatchMouseScrollEvent(const double xoffset, const double yoffset);

@@ -56,9 +56,9 @@ namespace tec {
 		// See AddVoxel().
 		void RemoveVoxel(const std::int16_t row, const std::int16_t column, const std::int16_t slice);
 
-		// Creates a VoxelVolume for entity_id and uses a PolygonMeshData with name and into submesh.
+		// Creates a VoxelVolume for entity_id and uses a PolygonMeshData with name and into sub-mesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, const std::string name);
-		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into submesh.
+		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into sub-mesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 		
 		void On(eid entity_id, std::shared_ptr<MouseClickEvent> data);

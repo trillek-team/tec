@@ -134,7 +134,7 @@ namespace tec {
 		* \brief Loads the specified ShaderType from the source string provided..
 		* \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT, GEOMETRY).
 		* \param const std::string source The source string to load from.
-		* \param const std::string filename The filename from were the source comes (only for debug porpouses)
+		* \param const std::string filename The filename from were the source comes (only for debug purposes)
 		* \return void
 		*/
 		void LoadFromString(const ShaderType type, const std::string& source, const std::string& filename);

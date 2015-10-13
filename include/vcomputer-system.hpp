@@ -119,7 +119,7 @@ namespace tec {
 		 *
 		 * \param const eid entityID The entity ID the computer belongs to.
 		 * \param const std::string fname The name of the ROM file to load.
-		 * \return bool Wether or not the file loaded successfully (also returns false if no computer exists for the given entity_id).
+		 * \return bool Whether or not the file loaded successfully (also returns false if no computer exists for the given entity_id).
 		 */
 		bool LoadROMFile(const eid entity_id, std::string fname);
 

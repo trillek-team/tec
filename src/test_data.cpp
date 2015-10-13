@@ -222,7 +222,7 @@ namespace tec {
 		}
 	}
 	
-	// NOTE : This would be change on a future, not ? Actually is loading/saving from assets (where not is supossed to be write by a user)
+	// NOTE : This would be change on a future, not ? Actually is loading/saving from assets (where not is supposed to be write by a user)
 
 	void ProtoLoadEntity(const FilePath& fname) {
 		auto _log = spdlog::get("console_log");
@@ -285,7 +285,7 @@ namespace tec {
 			}
 			elist.SerializeToOstream(&output);
 		} else {
-			_log->error() << "Error opening test.proto file. Inavlid path: " << fname << "\n";
+			_log->error() << "Error opening test.proto file. Invalid path: " << fname << "\n";
 		}
 		
 	}

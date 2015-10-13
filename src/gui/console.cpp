@@ -30,7 +30,7 @@ namespace tec {
 			if(search != commands.end()) {
 				this->Println(std::get<1>(search->second));
 			} else {
-				this->Println("Unknow command. Please use cmdlist to list all commands.");
+				this->Println("Unknown command. Please use cmdlist to list all commands.");
 			}
 		});
 		
@@ -161,7 +161,7 @@ namespace tec {
 					input_end--;
 				}
 				*input_end = 0;
-				if (inputBuf[0] != '\0') { // Procesing input
+				if (inputBuf[0] != '\0') { // Processing input
 					const char* args = inputBuf;
 					std::size_t cmd_len = 0;
 					while (*args != '\0' && *args != ' ') {
@@ -178,7 +178,7 @@ namespace tec {
 						Printfln("]%s", command.c_str());
 						std::get<0>(search->second)(args);
 					} else {
-						this->Println("Unknow command");
+						this->Println("Unknown command");
 					}
 				}
 				inputBuf[0] = '\0';
@@ -201,7 +201,7 @@ namespace tec {
 
 	void Console::On(std::shared_ptr<KeyboardEvent> data) {
 		if (data->action == KeyboardEvent::KEY_DOWN
-			&& data->key == GLFW_KEY_ESCAPE) { // Togles console
+			&& data->key == GLFW_KEY_ESCAPE) { // Toggles console
 			show = !show;
 		}
 	}

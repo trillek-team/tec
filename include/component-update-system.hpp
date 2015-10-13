@@ -19,8 +19,8 @@ namespace tec {
 	struct ComponentUpdateList {
 		ComponentUpdateList() { }
 		ComponentUpdateList(ComponentUpdateList&& other) : frame(other.frame) {
-			updates = std::mvoe(other.updates);
-			removals = std::mvoe(other.removals);
+			updates = std::move(other.updates);
+			removals = std::move(other.removals);
 		}
 		frame_id_t frame = 0; // The frame id the changes are in.
 		std::map<eid, std::shared_ptr<T>> updates; // Components to be updated

@@ -1,6 +1,6 @@
 #pragma once
 /**
- * OS Filesystem abstraction stuff
+ * OS File system abstraction stuff
  */
 
 #include "string.hpp"
@@ -13,12 +13,12 @@ namespace tec {
 	class FilePath final {
 public:
 
-		const static std::string PATH_SEPARATOR;   /// OS Filesystem path separator
+		const static std::string PATH_SEPARATOR;   /// OS File system path separator
 #if defined(WIN32)
-		const static char PATH_SEPARATOR_C = '\\'; /// OS Filesystem path separator
+		const static char PATH_SEPARATOR_C = '\\'; /// OS File system path separator
 		typedef std::wstring NFilePath; /// Native string format for paths
 #else
-		const static char PATH_SEPARATOR_C = '/';  /// OS Filesystem path separator
+		const static char PATH_SEPARATOR_C = '/';  /// OS File system path separator
 		typedef std::string NFilePath;  /// Native string format for paths
 #endif
 
@@ -60,7 +60,7 @@ public:
 		static FilePath GetUserSettingsPath();
 
 		/**
-		 * \brief Returns the path to the User persitent data folder (for save files, for example)
+		 * \brief Returns the path to the User persistent data folder (for save files, for example)
 		 *
 		 * Usually this paths are :
 		 * *nix : /home/USER/.local/share/APPNAME/
@@ -130,8 +130,8 @@ public:
 		 * \brief Return base path of a full path
 		 *
 		 * If is a path of a file, returns the path to the dir that contains the file
-		 * If is a path of a directory, returns the path to the dir that contains the direcotory (like cd .. && pwd)
-		 * \retirm Empty string if is an invalid path. Returned path would have the final slash
+		 * If is a path of a directory, returns the path to the dir that contains the directory (like cd .. && pwd)
+		 * \return Empty string if is an invalid path. Returned path would have the final slash
 		 */
 		FilePath BasePath() const;
 
@@ -178,7 +178,7 @@ public:
 		/**
 		 * \brief Normalize path to the OS format
 		 *
-		 * - Convert slashs to the correct OS slash
+		 * - Convert slashes to the correct OS slash
 		 * - Remove drive unit if is a *NIX OS
 		 * \return normalized path
 		 */
@@ -258,7 +258,7 @@ public:
 		}
 
 		FilePath& operator= (const FilePath& rhs) {
-			this->path = rhs.path; //Not necesary to normalice
+			this->path = rhs.path; //Not necessary to normalize
 			return *this;
 		}
 
