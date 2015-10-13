@@ -28,4 +28,4 @@
 	url = https://github.com/gabime/spdlog.git
 [submodule "modules/selene"]
 	path = modules/selene
-	url = https://github.com/jeremyong/Selene.git
+	url = https://github.com/Zardoz89/Selene.git

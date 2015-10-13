@@ -100,7 +100,7 @@ struct ComponentOneofInstance {
   const ::tec::proto::Light* directionallight_;
   const ::tec::proto::Light* spotlight_;
   const ::tec::proto::VoxelVolumen* voxelvolume_;
-  const ::tec::proto::LuaScript* script_;
+  const ::tec::proto::LuaScript* luascript_;
 }* Component_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* Entity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
@@ -463,7 +463,7 @@ void protobuf_AssignDesc_components_2eproto() {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, directionallight_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, spotlight_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, voxelvolume_),
-    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, script_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, luascript_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, component_),
   };
   Component_reflection_ =
@@ -663,7 +663,7 @@ void protobuf_AddDesc_components_2eproto() {
     "\016\n\006linear\030\002 \001(\002\022\023\n\013exponential\030\003 \001(\002\032,\n\t"
     "Direction\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001"
     "(\002\" \n\tLuaScript\022\023\n\013script_name\030\001 \001(\t\"\035\n\014"
-    "VoxelVolumen\022\r\n\005dummy\030\001 \001(\002\"\356\004\n\tComponen"
+    "VoxelVolumen\022\r\n\005dummy\030\001 \001(\002\"\361\004\n\tComponen"
     "t\022+\n\nrenderable\030\001 \001(\0132\025.tec.proto.Render"
     "ableH\000\022\'\n\010position\030\002 \001(\0132\023.tec.proto.Pos"
     "itionH\000\022-\n\013orientation\030\003 \001(\0132\026.tec.proto"
@@ -678,10 +678,11 @@ void protobuf_AddDesc_components_2eproto() {
     "lLight\030\013 \001(\0132\020.tec.proto.LightH\000\022%\n\tspot"
     "Light\030\014 \001(\0132\020.tec.proto.LightH\000\022.\n\013voxel"
     "Volume\030\r \001(\0132\027.tec.proto.VoxelVolumenH\000\022"
-    "&\n\006script\030d \001(\0132\024.tec.proto.LuaScriptH\000B"
-    "\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\nco"
-    "mponents\030\002 \003(\0132\024.tec.proto.Component\"*\n\016"
-    "EntityFileList\022\030\n\020entity_file_list\030\001 \003(\t", 2240);
+    ")\n\tluaScript\030d \001(\0132\024.tec.proto.LuaScript"
+    "H\000B\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n"
+    "\ncomponents\030\002 \003(\0132\024.tec.proto.Component\""
+    "*\n\016EntityFileList\022\030\n\020entity_file_list\030\001 "
+    "\003(\t", 2243);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
@@ -8927,7 +8928,7 @@ const int Component::kPointLightFieldNumber;
 const int Component::kDirectionalLightFieldNumber;
 const int Component::kSpotLightFieldNumber;
 const int Component::kVoxelVolumeFieldNumber;
-const int Component::kScriptFieldNumber;
+const int Component::kLuaScriptFieldNumber;
 #endif  // !_MSC_VER
 
 Component::Component()
@@ -8950,7 +8951,7 @@ void Component::InitAsDefaultInstance() {
   Component_default_oneof_instance_->directionallight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
   Component_default_oneof_instance_->spotlight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
   Component_default_oneof_instance_->voxelvolume_ = const_cast< ::tec::proto::VoxelVolumen*>(&::tec::proto::VoxelVolumen::default_instance());
-  Component_default_oneof_instance_->script_ = const_cast< ::tec::proto::LuaScript*>(&::tec::proto::LuaScript::default_instance());
+  Component_default_oneof_instance_->luascript_ = const_cast< ::tec::proto::LuaScript*>(&::tec::proto::LuaScript::default_instance());
 }
 
 Component::Component(const Component& from)
@@ -9059,8 +9060,8 @@ void Component::clear_component() {
       delete component_.voxelvolume_;
       break;
     }
-    case kScript: {
-      delete component_.script_;
+    case kLuaScript: {
+      delete component_.luascript_;
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -9253,16 +9254,16 @@ bool Component::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
-        if (input->ExpectTag(802)) goto parse_script;
+        if (input->ExpectTag(802)) goto parse_luaScript;
         break;
       }
 
-      // optional .tec.proto.LuaScript script = 100;
+      // optional .tec.proto.LuaScript luaScript = 100;
       case 100: {
         if (tag == 802) {
-         parse_script:
+         parse_luaScript:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_script()));
+               input, mutable_luascript()));
         } else {
           goto handle_unusual;
         }
@@ -9373,10 +9374,10 @@ void Component::SerializeWithCachedSizes(
       13, *component_.voxelvolume_, output);
   }
 
-  // optional .tec.proto.LuaScript script = 100;
-  if (has_script()) {
+  // optional .tec.proto.LuaScript luaScript = 100;
+  if (has_luascript()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      100, *component_.script_, output);
+      100, *component_.luascript_, output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -9480,11 +9481,11 @@ void Component::SerializeWithCachedSizes(
         13, *component_.voxelvolume_, target);
   }
 
-  // optional .tec.proto.LuaScript script = 100;
-  if (has_script()) {
+  // optional .tec.proto.LuaScript luaScript = 100;
+  if (has_luascript()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        100, *component_.script_, target);
+        100, *component_.luascript_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -9590,11 +9591,11 @@ int Component::ByteSize() const {
           *component_.voxelvolume_);
       break;
     }
-    // optional .tec.proto.LuaScript script = 100;
-    case kScript: {
+    // optional .tec.proto.LuaScript luaScript = 100;
+    case kLuaScript: {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          *component_.script_);
+          *component_.luascript_);
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -9679,8 +9680,8 @@ void Component::MergeFrom(const Component& from) {
       mutable_voxelvolume()->::tec::proto::VoxelVolumen::MergeFrom(from.voxelvolume());
       break;
     }
-    case kScript: {
-      mutable_script()->::tec::proto::LuaScript::MergeFrom(from.script());
+    case kLuaScript: {
+      mutable_luascript()->::tec::proto::LuaScript::MergeFrom(from.luascript());
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -10336,50 +10337,50 @@ void Component::clear_voxelvolume() {
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.voxelVolume)
 }
 
-// optional .tec.proto.LuaScript script = 100;
-bool Component::has_script() const {
-  return component_case() == kScript;
+// optional .tec.proto.LuaScript luaScript = 100;
+bool Component::has_luascript() const {
+  return component_case() == kLuaScript;
 }
-void Component::set_has_script() {
-  _oneof_case_[0] = kScript;
+void Component::set_has_luascript() {
+  _oneof_case_[0] = kLuaScript;
 }
-void Component::clear_script() {
-  if (has_script()) {
-    delete component_.script_;
+void Component::clear_luascript() {
+  if (has_luascript()) {
+    delete component_.luascript_;
     clear_has_component();
   }
 }
- const ::tec::proto::LuaScript& Component::script() const {
-  // @@protoc_insertion_point(field_get:tec.proto.Component.script)
-  return has_script() ? *component_.script_
+ const ::tec::proto::LuaScript& Component::luascript() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.luaScript)
+  return has_luascript() ? *component_.luascript_
                       : ::tec::proto::LuaScript::default_instance();
 }
- ::tec::proto::LuaScript* Component::mutable_script() {
-  if (!has_script()) {
+ ::tec::proto::LuaScript* Component::mutable_luascript() {
+  if (!has_luascript()) {
     clear_component();
-    set_has_script();
-    component_.script_ = new ::tec::proto::LuaScript;
+    set_has_luascript();
+    component_.luascript_ = new ::tec::proto::LuaScript;
   }
-  // @@protoc_insertion_point(field_mutable:tec.proto.Component.script)
-  return component_.script_;
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.luaScript)
+  return component_.luascript_;
 }
- ::tec::proto::LuaScript* Component::release_script() {
-  if (has_script()) {
+ ::tec::proto::LuaScript* Component::release_luascript() {
+  if (has_luascript()) {
     clear_has_component();
-    ::tec::proto::LuaScript* temp = component_.script_;
-    component_.script_ = NULL;
+    ::tec::proto::LuaScript* temp = component_.luascript_;
+    component_.luascript_ = NULL;
     return temp;
   } else {
     return NULL;
   }
 }
- void Component::set_allocated_script(::tec::proto::LuaScript* script) {
+ void Component::set_allocated_luascript(::tec::proto::LuaScript* luascript) {
   clear_component();
-  if (script) {
-    set_has_script();
-    component_.script_ = script;
+  if (luascript) {
+    set_has_luascript();
+    component_.luascript_ = luascript;
   }
-  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.script)
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.luaScript)
 }
 
 bool Component::has_component() const {

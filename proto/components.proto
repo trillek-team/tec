@@ -131,7 +131,7 @@ message Component {
 		Light directionalLight = 11;
 		Light spotLight = 12;
 		VoxelVolumen voxelVolume = 13;
-		LuaScript script = 100;
+		LuaScript luaScript = 100;
 	}
 }
 

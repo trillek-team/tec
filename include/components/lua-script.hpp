@@ -16,13 +16,7 @@ namespace tec {
 	struct LuaScript {
 		
 		LuaScript(std::shared_ptr<ScriptFile> scriptfile);
-		LuaScript() : state(true) {
-/*			auto print = [](const char* str) {
-				spdlog::get("console_log")->info() << str;
-			};
-			this->state["print"] = &print;
-			*/
-		}
+		LuaScript();
 
 		
 		static ReflectionComponent Reflection(LuaScript* val);

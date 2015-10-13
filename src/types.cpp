@@ -26,7 +26,7 @@ namespace tec {
 		MAKE_MAPPAIR(PointLight) ,
 		MAKE_MAPPAIR(DirectionalLight) ,
 		// SpotLight
-		MAKE_MAPPAIR(VoxelVolume)
+		MAKE_MAPPAIR(VoxelVolume),
 		MAKE_MAPPAIR(LuaScript)
 	};
 
