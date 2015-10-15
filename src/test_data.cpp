@@ -28,8 +28,8 @@
 #include "../proto/components.pb.h"
 
 namespace tec {
-	std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
-	std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	std::map<tid, std::function<void(proto::Entity*)>> out_functors;
+	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
 	std::map<std::string, std::function<void(std::string)>> file_factories;
 	std::map<std::string, std::function<void(eid)>> component_factories;
@@ -37,7 +37,7 @@ namespace tec {
 
 	template <typename T>
 	void AddComponentFactory() {
-		proto::Component::ComponentCase component_case = GetComponentCase<T>();
+		auto component_case = GetTypeID<T>();
 		component_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
 			std::shared_ptr<T> comp = std::make_shared<T>();
 			Entity(entity_id).Add<T>(comp);
@@ -52,12 +52,12 @@ namespace tec {
 	}
 	template <typename T>
 	void AddInOutFunctors() {
-		in_functors[GetComponentCase<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
+		in_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
 			auto comp = std::make_shared<T>();
 			comp->In(proto_comp);
 			Entity(entity.id()).Add<T>(comp);
 		};
-		out_functors[GetComponentCase<T>()] = [ ] (proto::Entity* entity) {
+		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
 			Entity e(entity->id());
 			if (e.Has<T>()) {
 				proto::Component* comp = entity->add_components();
