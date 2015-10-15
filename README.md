@@ -38,7 +38,7 @@ Building takes a few steps to get everything set up for the first build.
      4. Return to cmake-gui and rerun configure and generate. If you see "All dependencies found now building tec.",
      you can delete your cache and rerun to clean up the cmake-gui window. 
      5. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
-     6. Download and install oalinst.zip (OpenAL installer) http://openal.org/creative-installers/ and install it.
+     6. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
 5. Run it from `tec/`
 
 ### Unit tests
