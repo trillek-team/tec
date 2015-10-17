@@ -55,6 +55,7 @@ class Light;
 class Light_Attenuation;
 class Light_Direction;
 class LuaScript;
+class VoxelVolumen;
 class Component;
 class Entity;
 class EntityFileList;
@@ -2159,6 +2160,95 @@ class LuaScript : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class VoxelVolumen : public ::google::protobuf::Message {
+ public:
+  VoxelVolumen();
+  virtual ~VoxelVolumen();
+
+  VoxelVolumen(const VoxelVolumen& from);
+
+  inline VoxelVolumen& operator=(const VoxelVolumen& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const VoxelVolumen& default_instance();
+
+  void Swap(VoxelVolumen* other);
+
+  // implements Message ----------------------------------------------
+
+  inline VoxelVolumen* New() const { return New(NULL); }
+
+  VoxelVolumen* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const VoxelVolumen& from);
+  void MergeFrom(const VoxelVolumen& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(VoxelVolumen* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float dummy = 1;
+  bool has_dummy() const;
+  void clear_dummy();
+  static const int kDummyFieldNumber = 1;
+  float dummy() const;
+  void set_dummy(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.VoxelVolumen)
+ private:
+  inline void set_has_dummy();
+  inline void clear_has_dummy();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float dummy_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static VoxelVolumen* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -2192,10 +2282,11 @@ class Component : public ::google::protobuf::Message {
     kCollisionBody = 7,
     kVelocity = 8,
     kAudioSource = 9,
-    kLight = 10,
-    kDirlight = 11,
-    kSpotlight = 12,
-    kScript = 13,
+    kPointLight = 10,
+    kDirectionalLight = 11,
+    kSpotLight = 12,
+    kVoxelVolume = 13,
+    kScript = 100,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -2321,37 +2412,46 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::AudioSource* release_audio_source();
   void set_allocated_audio_source(::tec::proto::AudioSource* audio_source);
 
-  // optional .tec.proto.Light light = 10;
-  bool has_light() const;
-  void clear_light();
-  static const int kLightFieldNumber = 10;
-  const ::tec::proto::Light& light() const;
-  ::tec::proto::Light* mutable_light();
-  ::tec::proto::Light* release_light();
-  void set_allocated_light(::tec::proto::Light* light);
+  // optional .tec.proto.Light pointLight = 10;
+  bool has_pointlight() const;
+  void clear_pointlight();
+  static const int kPointLightFieldNumber = 10;
+  const ::tec::proto::Light& pointlight() const;
+  ::tec::proto::Light* mutable_pointlight();
+  ::tec::proto::Light* release_pointlight();
+  void set_allocated_pointlight(::tec::proto::Light* pointlight);
 
-  // optional .tec.proto.Light dirlight = 11;
-  bool has_dirlight() const;
-  void clear_dirlight();
-  static const int kDirlightFieldNumber = 11;
-  const ::tec::proto::Light& dirlight() const;
-  ::tec::proto::Light* mutable_dirlight();
-  ::tec::proto::Light* release_dirlight();
-  void set_allocated_dirlight(::tec::proto::Light* dirlight);
+  // optional .tec.proto.Light directionalLight = 11;
+  bool has_directionallight() const;
+  void clear_directionallight();
+  static const int kDirectionalLightFieldNumber = 11;
+  const ::tec::proto::Light& directionallight() const;
+  ::tec::proto::Light* mutable_directionallight();
+  ::tec::proto::Light* release_directionallight();
+  void set_allocated_directionallight(::tec::proto::Light* directionallight);
 
-  // optional .tec.proto.Light spotlight = 12;
+  // optional .tec.proto.Light spotLight = 12;
   bool has_spotlight() const;
   void clear_spotlight();
-  static const int kSpotlightFieldNumber = 12;
+  static const int kSpotLightFieldNumber = 12;
   const ::tec::proto::Light& spotlight() const;
   ::tec::proto::Light* mutable_spotlight();
   ::tec::proto::Light* release_spotlight();
   void set_allocated_spotlight(::tec::proto::Light* spotlight);
 
-  // optional .tec.proto.LuaScript script = 13;
+  // optional .tec.proto.VoxelVolumen voxelVolume = 13;
+  bool has_voxelvolume() const;
+  void clear_voxelvolume();
+  static const int kVoxelVolumeFieldNumber = 13;
+  const ::tec::proto::VoxelVolumen& voxelvolume() const;
+  ::tec::proto::VoxelVolumen* mutable_voxelvolume();
+  ::tec::proto::VoxelVolumen* release_voxelvolume();
+  void set_allocated_voxelvolume(::tec::proto::VoxelVolumen* voxelvolume);
+
+  // optional .tec.proto.LuaScript script = 100;
   bool has_script() const;
   void clear_script();
-  static const int kScriptFieldNumber = 13;
+  static const int kScriptFieldNumber = 100;
   const ::tec::proto::LuaScript& script() const;
   ::tec::proto::LuaScript* mutable_script();
   ::tec::proto::LuaScript* release_script();
@@ -2369,9 +2469,10 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_collision_body();
   inline void set_has_velocity();
   inline void set_has_audio_source();
-  inline void set_has_light();
-  inline void set_has_dirlight();
+  inline void set_has_pointlight();
+  inline void set_has_directionallight();
   inline void set_has_spotlight();
+  inline void set_has_voxelvolume();
   inline void set_has_script();
 
   inline bool has_component() const;
@@ -2392,9 +2493,10 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::CollisionBody* collision_body_;
     ::tec::proto::Velocity* velocity_;
     ::tec::proto::AudioSource* audio_source_;
-    ::tec::proto::Light* light_;
-    ::tec::proto::Light* dirlight_;
+    ::tec::proto::Light* pointlight_;
+    ::tec::proto::Light* directionallight_;
     ::tec::proto::Light* spotlight_;
+    ::tec::proto::VoxelVolumen* voxelvolume_;
     ::tec::proto::LuaScript* script_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
@@ -4418,6 +4520,34 @@ inline void LuaScript::set_allocated_script_name(::std::string* script_name) {
 
 // -------------------------------------------------------------------
 
+// VoxelVolumen
+
+// optional float dummy = 1;
+inline bool VoxelVolumen::has_dummy() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void VoxelVolumen::set_has_dummy() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void VoxelVolumen::clear_has_dummy() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void VoxelVolumen::clear_dummy() {
+  dummy_ = 0;
+  clear_has_dummy();
+}
+inline float VoxelVolumen::dummy() const {
+  // @@protoc_insertion_point(field_get:tec.proto.VoxelVolumen.dummy)
+  return dummy_;
+}
+inline void VoxelVolumen::set_dummy(float value) {
+  set_has_dummy();
+  dummy_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.VoxelVolumen.dummy)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -4834,104 +4964,104 @@ inline void Component::set_allocated_audio_source(::tec::proto::AudioSource* aud
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.audio_source)
 }
 
-// optional .tec.proto.Light light = 10;
-inline bool Component::has_light() const {
-  return component_case() == kLight;
+// optional .tec.proto.Light pointLight = 10;
+inline bool Component::has_pointlight() const {
+  return component_case() == kPointLight;
 }
-inline void Component::set_has_light() {
-  _oneof_case_[0] = kLight;
+inline void Component::set_has_pointlight() {
+  _oneof_case_[0] = kPointLight;
 }
-inline void Component::clear_light() {
-  if (has_light()) {
-    delete component_.light_;
+inline void Component::clear_pointlight() {
+  if (has_pointlight()) {
+    delete component_.pointlight_;
     clear_has_component();
   }
 }
-inline const ::tec::proto::Light& Component::light() const {
-  // @@protoc_insertion_point(field_get:tec.proto.Component.light)
-  return has_light() ? *component_.light_
+inline const ::tec::proto::Light& Component::pointlight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.pointLight)
+  return has_pointlight() ? *component_.pointlight_
                       : ::tec::proto::Light::default_instance();
 }
-inline ::tec::proto::Light* Component::mutable_light() {
-  if (!has_light()) {
+inline ::tec::proto::Light* Component::mutable_pointlight() {
+  if (!has_pointlight()) {
     clear_component();
-    set_has_light();
-    component_.light_ = new ::tec::proto::Light;
+    set_has_pointlight();
+    component_.pointlight_ = new ::tec::proto::Light;
   }
-  // @@protoc_insertion_point(field_mutable:tec.proto.Component.light)
-  return component_.light_;
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.pointLight)
+  return component_.pointlight_;
 }
-inline ::tec::proto::Light* Component::release_light() {
-  if (has_light()) {
+inline ::tec::proto::Light* Component::release_pointlight() {
+  if (has_pointlight()) {
     clear_has_component();
-    ::tec::proto::Light* temp = component_.light_;
-    component_.light_ = NULL;
+    ::tec::proto::Light* temp = component_.pointlight_;
+    component_.pointlight_ = NULL;
     return temp;
   } else {
     return NULL;
   }
 }
-inline void Component::set_allocated_light(::tec::proto::Light* light) {
+inline void Component::set_allocated_pointlight(::tec::proto::Light* pointlight) {
   clear_component();
-  if (light) {
-    set_has_light();
-    component_.light_ = light;
+  if (pointlight) {
+    set_has_pointlight();
+    component_.pointlight_ = pointlight;
   }
-  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.light)
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.pointLight)
 }
 
-// optional .tec.proto.Light dirlight = 11;
-inline bool Component::has_dirlight() const {
-  return component_case() == kDirlight;
+// optional .tec.proto.Light directionalLight = 11;
+inline bool Component::has_directionallight() const {
+  return component_case() == kDirectionalLight;
 }
-inline void Component::set_has_dirlight() {
-  _oneof_case_[0] = kDirlight;
+inline void Component::set_has_directionallight() {
+  _oneof_case_[0] = kDirectionalLight;
 }
-inline void Component::clear_dirlight() {
-  if (has_dirlight()) {
-    delete component_.dirlight_;
+inline void Component::clear_directionallight() {
+  if (has_directionallight()) {
+    delete component_.directionallight_;
     clear_has_component();
   }
 }
-inline const ::tec::proto::Light& Component::dirlight() const {
-  // @@protoc_insertion_point(field_get:tec.proto.Component.dirlight)
-  return has_dirlight() ? *component_.dirlight_
+inline const ::tec::proto::Light& Component::directionallight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.directionalLight)
+  return has_directionallight() ? *component_.directionallight_
                       : ::tec::proto::Light::default_instance();
 }
-inline ::tec::proto::Light* Component::mutable_dirlight() {
-  if (!has_dirlight()) {
+inline ::tec::proto::Light* Component::mutable_directionallight() {
+  if (!has_directionallight()) {
     clear_component();
-    set_has_dirlight();
-    component_.dirlight_ = new ::tec::proto::Light;
+    set_has_directionallight();
+    component_.directionallight_ = new ::tec::proto::Light;
   }
-  // @@protoc_insertion_point(field_mutable:tec.proto.Component.dirlight)
-  return component_.dirlight_;
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.directionalLight)
+  return component_.directionallight_;
 }
-inline ::tec::proto::Light* Component::release_dirlight() {
-  if (has_dirlight()) {
+inline ::tec::proto::Light* Component::release_directionallight() {
+  if (has_directionallight()) {
     clear_has_component();
-    ::tec::proto::Light* temp = component_.dirlight_;
-    component_.dirlight_ = NULL;
+    ::tec::proto::Light* temp = component_.directionallight_;
+    component_.directionallight_ = NULL;
     return temp;
   } else {
     return NULL;
   }
 }
-inline void Component::set_allocated_dirlight(::tec::proto::Light* dirlight) {
+inline void Component::set_allocated_directionallight(::tec::proto::Light* directionallight) {
   clear_component();
-  if (dirlight) {
-    set_has_dirlight();
-    component_.dirlight_ = dirlight;
+  if (directionallight) {
+    set_has_directionallight();
+    component_.directionallight_ = directionallight;
   }
-  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.dirlight)
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.directionalLight)
 }
 
-// optional .tec.proto.Light spotlight = 12;
+// optional .tec.proto.Light spotLight = 12;
 inline bool Component::has_spotlight() const {
-  return component_case() == kSpotlight;
+  return component_case() == kSpotLight;
 }
 inline void Component::set_has_spotlight() {
-  _oneof_case_[0] = kSpotlight;
+  _oneof_case_[0] = kSpotLight;
 }
 inline void Component::clear_spotlight() {
   if (has_spotlight()) {
@@ -4940,7 +5070,7 @@ inline void Component::clear_spotlight() {
   }
 }
 inline const ::tec::proto::Light& Component::spotlight() const {
-  // @@protoc_insertion_point(field_get:tec.proto.Component.spotlight)
+  // @@protoc_insertion_point(field_get:tec.proto.Component.spotLight)
   return has_spotlight() ? *component_.spotlight_
                       : ::tec::proto::Light::default_instance();
 }
@@ -4950,7 +5080,7 @@ inline ::tec::proto::Light* Component::mutable_spotlight() {
     set_has_spotlight();
     component_.spotlight_ = new ::tec::proto::Light;
   }
-  // @@protoc_insertion_point(field_mutable:tec.proto.Component.spotlight)
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.spotLight)
   return component_.spotlight_;
 }
 inline ::tec::proto::Light* Component::release_spotlight() {
@@ -4969,10 +5099,56 @@ inline void Component::set_allocated_spotlight(::tec::proto::Light* spotlight) {
     set_has_spotlight();
     component_.spotlight_ = spotlight;
   }
-  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.spotlight)
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.spotLight)
 }
 
-// optional .tec.proto.LuaScript script = 13;
+// optional .tec.proto.VoxelVolumen voxelVolume = 13;
+inline bool Component::has_voxelvolume() const {
+  return component_case() == kVoxelVolume;
+}
+inline void Component::set_has_voxelvolume() {
+  _oneof_case_[0] = kVoxelVolume;
+}
+inline void Component::clear_voxelvolume() {
+  if (has_voxelvolume()) {
+    delete component_.voxelvolume_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::VoxelVolumen& Component::voxelvolume() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.voxelVolume)
+  return has_voxelvolume() ? *component_.voxelvolume_
+                      : ::tec::proto::VoxelVolumen::default_instance();
+}
+inline ::tec::proto::VoxelVolumen* Component::mutable_voxelvolume() {
+  if (!has_voxelvolume()) {
+    clear_component();
+    set_has_voxelvolume();
+    component_.voxelvolume_ = new ::tec::proto::VoxelVolumen;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.voxelVolume)
+  return component_.voxelvolume_;
+}
+inline ::tec::proto::VoxelVolumen* Component::release_voxelvolume() {
+  if (has_voxelvolume()) {
+    clear_has_component();
+    ::tec::proto::VoxelVolumen* temp = component_.voxelvolume_;
+    component_.voxelvolume_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_voxelvolume(::tec::proto::VoxelVolumen* voxelvolume) {
+  clear_component();
+  if (voxelvolume) {
+    set_has_voxelvolume();
+    component_.voxelvolume_ = voxelvolume;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.voxelVolume)
+}
+
+// optional .tec.proto.LuaScript script = 100;
 inline bool Component::has_script() const {
   return component_case() == kScript;
 }
@@ -5144,6 +5320,8 @@ EntityFileList::mutable_entity_file_list() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

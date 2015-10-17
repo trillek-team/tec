@@ -111,8 +111,13 @@ message LuaScript {
 	optional string script_name = 1;
 }
 
+message VoxelVolumen {
+	optional float dummy = 1; // WIP
+}
+
 message Component {
 	oneof component {
+		// keep name the same that the struct/class of the component!
 		Renderable renderable = 1;
 		Position position = 2;
 		Orientation orientation = 3;
@@ -122,10 +127,11 @@ message Component {
 		CollisionBody collision_body = 7;
 		Velocity velocity = 8;
 		AudioSource audio_source = 9;
-		Light light = 10;
-		Light dirlight = 11;
-		Light spotlight = 12;
-		LuaScript script = 13;
+		Light pointLight = 10;
+		Light directionalLight = 11;
+		Light spotLight = 12;
+		VoxelVolumen voxelVolume = 13;
+		LuaScript script = 100;
 	}
 }
 
