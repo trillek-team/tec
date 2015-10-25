@@ -3,6 +3,7 @@
 #include <memory>
 #include <asio.hpp>
 #include <deque>
+#include "types.hpp"
 #include "server-message.hpp"
 
 using asio::ip::tcp;
@@ -20,6 +21,14 @@ namespace tec {
 
 			void QueueWrite(const ServerMessage& msg);
 
+			eid GetID() {
+				return this->id;
+			}
+
+			void SetID(eid id) {
+				this->id = id;
+			}
+
 		private:
 			void read_header();
 
@@ -31,6 +40,7 @@ namespace tec {
 			ServerMessage current_read_msg;
 			std::deque<ServerMessage> write_msgs_;
 			Server* server;
+			eid id;
 		};
 	}
 }

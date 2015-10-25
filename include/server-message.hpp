@@ -6,12 +6,19 @@
 
 namespace tec {
 	namespace networking {
+		enum MessageType {
+			SYNC,
+			ENTITY_UPDATE,
+			CLIENT_ID,
+			CHAT_MESSAGE
+		};
+
 		class ServerMessage {
 		public:
-			enum { header_length = 5 };
+			enum { header_length = 8 };
 			enum { max_body_length = 512 };
 
-			ServerMessage() : body_length(0), entity_update_message(false) { }
+			ServerMessage() : body_length(0), message_type(CHAT_MESSAGE) { }
 
 			const char* GetDataPTR() const {
 				return data;
@@ -37,12 +44,12 @@ namespace tec {
 				return body_length;
 			}
 
-			void EntityUpdateMessage(bool value) {
-				this->entity_update_message = value;
+			void SetMessageType(MessageType value) {
+				this->message_type = value;
 			}
 
-			bool EntityUpdateMessage() {
-				return this->entity_update_message;
+			MessageType GetMessageType() {
+				return this->message_type;
 			}
 
 			void SetBodyLength(std::size_t new_length) {
@@ -53,32 +60,29 @@ namespace tec {
 			}
 
 			bool decode_header() {
-				char header[header_length + 1] = "";
-				std::strncat(header, data, header_length - 1);
-				body_length = std::atoi(header);
+				char length_header[5] = "";
+				std::strncat(length_header, data, 4);
+				body_length = std::atoi(length_header);
+				char type_header[5] = "";
+				std::strncat(type_header, data + 4, 4);
+				message_type = static_cast<MessageType>(std::atoi(type_header));
 				if (body_length > max_body_length) {
 					body_length = 0;
 					return false;
-				}
-				if (data[header_length - 1] == 't') {
-					this->entity_update_message = true;
-				}
-				else {
-					this->entity_update_message = false;
 				}
 				return true;
 			}
 
 			void encode_header() {
 				char header[header_length + 1] = "";
-				std::sprintf(header, "%4d%c", body_length, (entity_update_message ? 't' : 'f'));
+				std::sprintf(header, "%4d%4d", body_length, message_type);
 				std::memcpy(data, header, header_length);
 			}
 
 		private:
 			char data[header_length + max_body_length];
 			std::size_t body_length;
-			bool entity_update_message;
+			MessageType message_type;
 		};
 	}
 }

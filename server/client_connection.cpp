@@ -37,7 +37,7 @@ namespace tec {
 				[this, self] (std::error_code error, std::size_t /*length*/) {
 				if (!error) {
 					server->Deliver(current_read_msg);
-					if (!current_read_msg.EntityUpdateMessage()) {
+					if (current_read_msg.GetMessageType() == CHAT_MESSAGE) {
 						std::cout.write(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
 						std::cout << std::endl;
 					}

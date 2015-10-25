@@ -45,6 +45,14 @@ namespace tec {
 				if (!error) {
 					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
 					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
+					client->SetID(++base_id);
+					std::string message(std::to_string(client->GetID()));
+					static ServerMessage id_message;
+					id_message.SetMessageType(CLIENT_ID);
+					id_message.SetBodyLength(message.size());
+					memcpy(id_message.GetBodyPTR(), message.c_str(), id_message.GetBodyLength());
+					id_message.encode_header();
+					client->QueueWrite(id_message);
 					clients.insert(client);
 					for (auto msg : this->recent_msgs) {
 						client->QueueWrite(msg);

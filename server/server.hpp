@@ -33,6 +33,7 @@ namespace tec {
 			std::set<std::shared_ptr<ClientConnection>> clients;
 			enum { max_recent_msgs = 100 };
 			std::deque<ServerMessage> recent_msgs;
+			std::uint64_t base_id = 10000;
 		};
 	}
 }

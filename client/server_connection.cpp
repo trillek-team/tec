@@ -14,6 +14,7 @@ namespace tec {
 		}
 
 		bool ServerConnection::Connect(std::string ip) {
+			this->client_id = 0;
 			this->socket.close();
 			tcp::resolver resolver(this->io_service);
 			tcp::resolver::query query(ip, SERVER_PORT_STR);
@@ -69,21 +70,37 @@ namespace tec {
 				asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()), error);
 
 			if (!error) {
-				if (!current_read_msg.EntityUpdateMessage()) {
+				if (current_read_msg.GetMessageType() == SYNC) {
+					std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
+					if (this->recent_pings.size() >= 10) {
+						this->recent_pings.pop_front();
+					}
+					this->recent_pings.push_back(round_trip.count() / 2);
+					ping_time_t total_pings = 0;
+					for (ping_time_t ping : this->recent_pings) {
+						total_pings += ping;
+					}
+					this->average_ping = total_pings / 10;
+				}
+				else if (current_read_msg.GetMessageType() == CHAT_MESSAGE) {
 					std::string msg(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
 					_log->info(msg);
 				}
-				else {
+				else if (current_read_msg.GetMessageType() == ENTITY_UPDATE) {
 					proto::Entity entity;
 					entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
 					eid entity_id = entity.id();
 					for (int i = 0; i < entity.components_size(); ++i) {
 						const proto::Component& comp = entity.components(i);
 						if (update_functors.find(comp.component_case()) != update_functors.end()) {
-							// TODO: extract frame_id and pass it as the 3 param instead of 0.
+							// TODO: extract frame_id and pass it as the 3 parameter instead of 0.
 							update_functors[comp.component_case()](entity, comp, 0);
 						}
 					}
+				}
+				else if (current_read_msg.GetMessageType() == CLIENT_ID) {
+					std::string id_message(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
+					client_id = std::atoi(id_message.c_str());
 				}
 			}
 			else if (error) {
@@ -96,6 +113,7 @@ namespace tec {
 			asio::error_code error = asio::error::eof;
 			std::size_t len = asio::read(this->socket,
 				asio::buffer(this->current_read_msg.GetDataPTR(), ServerMessage::header_length), error);
+			this->recv_time = std::chrono::high_resolution_clock::now();
 
 			if (!error && this->current_read_msg.decode_header()) {
 				read_body();
@@ -125,14 +143,32 @@ namespace tec {
 			}
 		}
 
+		void ServerConnection::StartSync() {
+			ServerMessage sync_msg;
+
+			sync_msg.SetBodyLength(0);
+			sync_msg.SetMessageType(SYNC);
+			sync_msg.encode_header();
+			while (1) {
+				if (this->stopped) {
+					return;
+				}
+				Send(sync_msg);
+				this->sync_start = std::chrono::high_resolution_clock::now();
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			}
+		}
+
 		void ServerConnection::On(std::shared_ptr<EnttityComponentUpdatedEvent> data) {
-			ServerMessage msg;
-			msg.SetBodyLength(data->entity.ByteSize());
-			// TODO: encode frame_id into the message.
-			data->entity.SerializeToArray(msg.GetBodyPTR(), msg.GetBodyLength());
-			msg.EntityUpdateMessage(true);
-			msg.encode_header();
-			Send(msg);
+			if (data->entity.id() == client_id) {
+				ServerMessage msg;
+				msg.SetBodyLength(data->entity.ByteSize());
+				// TODO: encode frame_id into the message.
+				data->entity.SerializeToArray(msg.GetBodyPTR(), msg.GetBodyLength());
+				msg.SetMessageType(ENTITY_UPDATE);
+				msg.encode_header();
+				Send(msg);
+			}
 		}
 	}
 }

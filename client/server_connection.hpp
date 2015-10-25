@@ -15,10 +15,12 @@ using asio::ip::tcp;
 namespace tec {
 	struct EnttityComponentUpdatedEvent;
 	extern std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
+	extern eid client_id;
 
 	namespace networking {
 		extern const char* SERVER_PORT_STR;
 		extern const char* LOCAL_HOST;
+		typedef std::chrono::milliseconds::rep ping_time_t;
 
 		// Used to connect to a server.
 		class ServerConnection : public EventQueue < EnttityComponentUpdatedEvent > {
@@ -33,9 +35,23 @@ namespace tec {
 
 			void StartRead();
 
+			void StartSync();
+
 			void Write(std::string message);
 
 			void Send(ServerMessage& msg);
+
+			std::list<ping_time_t> GetRecentPings() {
+				return this->recent_pings;
+			}
+
+			ping_time_t GetAveragePing() {
+				return this->average_ping;
+			}
+
+			eid GetClientID() {
+				return this->client_id;
+			}
 
 			void On(std::shared_ptr<EnttityComponentUpdatedEvent> data);
 		private:
@@ -47,6 +63,11 @@ namespace tec {
 			asio::ip::tcp::socket socket;
 			std::atomic<bool> stopped;
 			ServerMessage current_read_msg;
+
+			std::chrono::high_resolution_clock::time_point sync_start, recv_time;
+			std::list<ping_time_t> recent_pings;
+			ping_time_t average_ping;
+			eid client_id = 0;
 		};
 	}
 }

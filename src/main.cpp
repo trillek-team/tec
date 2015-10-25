@@ -113,6 +113,7 @@ int main(int argc, char* argv[]) {
 		os.Quit();
 	});
 	std::thread* asio_thread = nullptr;
+	std::thread* sync_thread = nullptr;
 	tec::networking::ServerConnection connection;
 	console.AddConsoleCommand("msg",
 		"msg : Send a message to all clients.",
@@ -128,6 +129,9 @@ int main(int argc, char* argv[]) {
 	connection.Connect();
 	asio_thread = new std::thread([&connection] () {
 		connection.StartRead();
+	});
+	sync_thread = new std::thread([&connection] () {
+		connection.StartSync();
 	});
 	console.AddConsoleCommand("connect",
 		"connect ip : Connects to the server at ip",
@@ -220,6 +224,7 @@ int main(int argc, char* argv[]) {
 				}
 				ImGui::EndMenu();
 			}
+			ImGui::Text("Ping %i", connection.GetAveragePing());
 			ImGui::EndMainMenuBar();
 		}
 	});
@@ -296,6 +301,10 @@ int main(int argc, char* argv[]) {
 	if (asio_thread) {
 		asio_thread->join();
 	}
+	if (sync_thread) {
+		sync_thread->join();
+	}
+
 	if (camera_controller) {
 		delete camera_controller;
 	}
