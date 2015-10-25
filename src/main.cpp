@@ -79,6 +79,9 @@ std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::
 
 int main(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
+
+	tec::InitializeComponents();
+	tec::InitializeFileFactories();
 	// TODO write a proper arguments parser
 	// Now only search for -v or -vv to set log level
 	for (int i = 1; i < argc; i++) {
@@ -160,14 +163,11 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
 
-	tec::InitializeComponents();
-	tec::InitializeFileFactories();
 	tec::BuildTestEntities();
 	tec::ProtoLoad();
-
-	tec::FPSController camera_controller(1);
-
 	tec::FileListener flistener;
+
+	tec::FPSController* camera_controller = nullptr;
 
 	gui.AddWindowDrawFunction("sample_window", [ ] () {
 		ImGui::ShowTestWindow();
@@ -178,7 +178,8 @@ int main(int argc, char* argv[]) {
 			ImGui::SetTooltip("#%i", tec::active_entity);
 		}
 	});
-	gui.AddWindowDrawFunction("main_menu", [&os] () {
+	gui.ShowWindow("active_entity");
+	gui.AddWindowDrawFunction("main_menu", [&os, &connection, &gui] () {
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Load PROTO", "CTRL+L")) { }
@@ -207,18 +208,41 @@ int main(int argc, char* argv[]) {
 				if (ImGui::MenuItem("Paste", "CTRL+V")) { }
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Windows")) {
+				bool visible = gui.IsWindowVisible("entity_tree");
+				if (ImGui::MenuItem("Entity Tree", "", gui.IsWindowVisible("entity_tree"))) {
+					if (visible) {
+						gui.HideWindow("entity_tree");
+					}
+					else {
+						gui.ShowWindow("entity_tree");
+					}
+				}
+				ImGui::EndMenu();
+			}
 			ImGui::EndMainMenuBar();
 		}
+	});
+	gui.ShowWindow("main_menu");
+	gui.AddWindowDrawFunction("ping_times", [&connection] () {
+		ImGui::Begin("ping_times");
+		static float arr[10];
+		std::list<tec::networking::ping_time_t> recent_pings = connection.GetRecentPings();
+		std::size_t i = 0;
+		for (tec::networking::ping_time_t ping : recent_pings) {
+			arr[i++] = static_cast<float>(ping);
+		}
+		ImGui::PlotHistogram("Recent Ping Times", arr, 10, 0, nullptr, 0.0f, 100.0f);
+		ImGui::End();
 	});
 	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget] () {
 		ent_tree_widget.Draw();
 	});
 
-
-
 	gui.AddWindowDrawFunction("console", [&console] () {
 		console.Draw();
 	});
+	gui.ShowWindow("console");
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
@@ -227,7 +251,7 @@ int main(int argc, char* argv[]) {
 		delta = os.GetDeltaTime();
 
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
-		
+
 		for (auto& comp_updated : tec::entities_updated) {
 			tec::EventSystem<tec::EnttityComponentUpdatedEvent>::Get()->Emit(comp_updated.second);
 		}
@@ -251,7 +275,9 @@ int main(int argc, char* argv[]) {
 		ss_thread.join();
 		vv_thread.join();
 
-		camera_controller.Update(delta);
+		if (camera_controller) {
+			camera_controller->Update(delta);
+		}
 
 		os.GetMousePosition(&mouse_x, &mouse_y);
 		tec::active_entity = ps.RayCastMousePick(1, mouse_x, mouse_y,
@@ -262,9 +288,6 @@ int main(int argc, char* argv[]) {
 		console.Update(delta);
 
 		os.SwapBuffers();
-		if (camera_controller.mouse_look) {
-			//os.SetMousePosition(400, 300);
-		}
 		frame_id++;
 	}
 
@@ -273,5 +296,9 @@ int main(int argc, char* argv[]) {
 	if (asio_thread) {
 		asio_thread->join();
 	}
+	if (camera_controller) {
+		delete camera_controller;
+	}
+
 	return 0;
 }

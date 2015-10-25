@@ -94,6 +94,7 @@ namespace tec {
 	}
 
 	void IMGUISystem::Update(double delta) {
+		ProcessCommandQueue();
 		this->io.DeltaTime = static_cast<float>(delta);
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
@@ -130,8 +131,10 @@ namespace tec {
 		// Start the frame
 		ImGui::NewFrame();
 
-		for (auto draw_func : this->window_draw_funcs) {
-			draw_func.second();
+		for (auto window_name : this->visible_windows) {
+			if (this->window_draw_funcs.find(window_name) != this->window_draw_funcs.end()) {
+				this->window_draw_funcs.at(window_name)();
+			}
 		}
 		ImGui::Render();
 	}

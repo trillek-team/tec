@@ -44,7 +44,7 @@ namespace tec {
 		comp->set_disable_deactivation(this->disable_deactivation);
 		comp->set_disable_rotation(this->disable_rotation);
 		comp->set_mass(static_cast<float>(this->mass));
-		switch (this->collision_shape) {
+		switch (this->new_collision_shape) {
 			case COLLISION_SHAPE::BOX:
 				{
 					proto::CollisionBody::Box* box = comp->mutable_box();
@@ -73,17 +73,14 @@ namespace tec {
 		const proto::CollisionBody& comp = source.collision_body();
 		switch (comp.shape_case()) {
 			case proto::CollisionBody::ShapeCase::kBox:
-				this->collision_shape = BOX;
 				this->new_collision_shape = BOX;
 				this->half_extents = btVector3(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
 				break;
 			case proto::CollisionBody::ShapeCase::kSphere:
-				this->collision_shape = SPHERE;
 				this->new_collision_shape = SPHERE;
 				this->radius = comp.sphere().radius();
 				break;
 			case proto::CollisionBody::ShapeCase::kCapsule:
-				this->collision_shape = CAPSULE;
 				this->new_collision_shape = CAPSULE;
 				this->radius = comp.capsule().radius();
 				this->height = comp.capsule().height();

@@ -79,10 +79,14 @@ namespace tec {
 				this->bodies.erase(entity_id);
 				itr->second->shape.reset();
 				itr->second->collision_shape = itr->second->new_collision_shape;
-				if (CreateRigiedBody(entity_id, itr->second)) {
-					body = this->bodies[entity_id];
-					body->setWorldTransform(transform);
-					break;
+				if (itr->second->collision_shape != COLLISION_SHAPE::NONE) {
+					if (CreateRigiedBody(entity_id, itr->second)) {
+						body = this->bodies[entity_id];
+						body->setWorldTransform(transform);
+					}
+				}
+				else {
+					continue;
 				}
 			}
 			if (itr->second->mass != body->getInvMass()) {
