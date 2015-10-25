@@ -1,8 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT("TEC")
-SET(CMAKE_CXX_STANDARD_REQUIRED 14)
-SET(CMAKE_CXX_STANDARD 14)
 # Set the directory of cmake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules")
 
@@ -257,6 +255,8 @@ ENDIF (APPLE)
 
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD_REQUIRED 14)
 IF (NOT ${BUILD_DEPS_FIRST})
   MESSAGE("All dependencies found now building tec.")
   # Add the virtual computer
