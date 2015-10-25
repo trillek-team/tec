@@ -14,8 +14,8 @@ using asio::ip::tcp;
 
 namespace tec {
 	struct EnttityComponentUpdatedEvent;
-	extern std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	extern std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
+	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
 	extern eid client_id;
 
 	namespace networking {

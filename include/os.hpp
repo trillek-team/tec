@@ -24,10 +24,12 @@ namespace tec {
 		*
 		* \param[in] const unsigned int width, height The window's client width and height
 		* \param[in] const std::string title The title to show in the title bar and task manager.
+		* \param[in] const glMajor OpenGL major version number. Must be >= 3
+		* \param[in] const glMinor OpenGL minor version. If major = 3, must be 3 (OpenGL 3.3)
 		* \return bool If creation was successful or not.
 		*/
 		bool InitializeWindow(const int width, const int height, const std::string title,
-			const unsigned int glMajor = 3, const unsigned int glMinor = 2);
+			const unsigned int glMajor = 3, const unsigned int glMinor = 3);
 
 		/** \brief Make the context of the window current for the calling thread
 		*

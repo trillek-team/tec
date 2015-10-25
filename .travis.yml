@@ -25,6 +25,7 @@ matrix:
                   - libopenal-dev
           env: COMPILER=g++-4.9
 
+    allow_failures:
         - os: linux
           compiler: clang
           addons:

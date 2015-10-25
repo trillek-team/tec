@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing OpenGL...");
 	tec::OS os;
-	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
+	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 3);
 	console.AddConsoleCommand("exit",
 		"exit : Exit from TEC",
 		[&os] (const char* args) {
@@ -126,7 +126,6 @@ int main(int argc, char* argv[]) {
 		std::string message(args, end_arg - args);
 		connection.Write(message);
 	});
-	connection.Connect();
 	asio_thread = new std::thread([&connection] () {
 		connection.StartRead();
 	});
