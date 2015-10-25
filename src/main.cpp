@@ -172,6 +172,73 @@ int main(int argc, char* argv[]) {
 	tec::FileListener flistener;
 
 	tec::FPSController* camera_controller = nullptr;
+	gui.AddWindowDrawFunction("connect_window", [&camera_controller, &connection, &log, &gui] () {
+		ImGui::SetNextWindowPosCenter();
+		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+
+		static int octets[4] = {123, 123, 123, 123};
+
+		float width = ImGui::CalcItemWidth();
+		ImGui::PushID("IP");
+		ImGui::TextUnformatted("IP");
+		ImGui::SameLine();
+		for (int i = 0; i < 4; i++) {
+			ImGui::PushItemWidth(width / 4.0f);
+			ImGui::PushID(i);
+
+			bool invalid_octet = false;
+			if (octets[i] > 255) {
+				octets[i] = 255;
+				invalid_octet = true;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+			}
+			if (octets[i] < 0) {
+				octets[i] = 0;
+				invalid_octet = true;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+			}
+			ImGui::InputInt("##v", &octets[i], 0, 0, ImGuiInputTextFlags_CharsDecimal);
+			if (invalid_octet) {
+				ImGui::PopStyleColor();
+			}
+			ImGui::SameLine();
+			ImGui::PopID();
+			ImGui::PopItemWidth();
+		}
+		ImGui::PopID();
+		ImGui::SameLine();
+		if (ImGui::Button("Connect")) {
+			std::stringstream ip;
+			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
+			log->info("Connecting to " + ip.str());
+			if (connection.Connect(ip.str())) {
+				std::thread on_connect([&connection, &camera_controller, &log] () {
+					unsigned int tries = 0;
+					while (connection.GetClientID() == 0) {
+						tries++;
+						if (tries < 2000) {
+							std::this_thread::sleep_for(std::chrono::milliseconds(1));
+						}
+						else {
+							log->error("Failed to get client ID!");
+							return;
+						}
+					}
+					log->info("You are connected as client ID " + std::to_string(connection.GetClientID()));
+					camera_controller = new tec::FPSController(connection.GetClientID());
+					tec::Entity camera(connection.GetClientID());
+					camera.Add<tec::Velocity>();
+				});
+				on_connect.detach();
+				gui.HideWindow("connect_window");
+			}
+			else {
+				log->error("Failed to connect to " + ip.str());
+			}
+		}
+		ImGui::End();
+		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
+	});
 
 	gui.AddWindowDrawFunction("sample_window", [ ] () {
 		ImGui::ShowTestWindow();
@@ -213,7 +280,16 @@ int main(int argc, char* argv[]) {
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Windows")) {
-				bool visible = gui.IsWindowVisible("entity_tree");
+				bool visible = gui.IsWindowVisible("connect_window");
+				if (ImGui::MenuItem("Connect", "", visible)) {
+					if (visible) {
+						gui.HideWindow("connect_window");
+					}
+					else {
+						gui.ShowWindow("connect_window");
+					}
+				}
+				visible = gui.IsWindowVisible("entity_tree");
 				if (ImGui::MenuItem("Entity Tree", "", gui.IsWindowVisible("entity_tree"))) {
 					if (visible) {
 						gui.HideWindow("entity_tree");

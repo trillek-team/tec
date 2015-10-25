@@ -9,6 +9,7 @@ namespace tec {
 		enum MessageType {
 			SYNC,
 			ENTITY_UPDATE,
+			ENTITY_CREATE,
 			CLIENT_ID,
 			CHAT_MESSAGE
 		};

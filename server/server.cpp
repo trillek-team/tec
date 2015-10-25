@@ -1,5 +1,10 @@
 #include "server/server.hpp"
 #include "server/client_connection.hpp"
+#include "spdlog/spdlog.h"
+#include "../proto/components.pb.h"
+#include "filesystem.hpp"
+
+#include <fstream>
 
 using asio::ip::tcp;
 
@@ -39,12 +44,24 @@ namespace tec {
 			this->io_service.stop();
 		}
 
+		void LoadProtoPack(proto::Entity& entity, const FilePath& fname) {
+			if (fname.isValidPath() && fname.FileExists()) {
+				std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
+				entity.ParseFromIstream(&input);
+			}
+			else {
+				std::cout << "error loading protopack " << fname.toString() << std::endl;
+			}
+		}
+
 		void Server::do_accept() {
 			acceptor.async_accept(socket,
 				[this] (std::error_code error) {
 				if (!error) {
 					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
 					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
+					FilePath def_fps_protopack = FilePath::GetAssetPath("protopacks/default_fps.proto");
+					LoadProtoPack(client->GetEntity(), def_fps_protopack);
 					client->SetID(++base_id);
 					std::string message(std::to_string(client->GetID()));
 					static ServerMessage id_message;
@@ -53,6 +70,26 @@ namespace tec {
 					memcpy(id_message.GetBodyPTR(), message.c_str(), id_message.GetBodyLength());
 					id_message.encode_header();
 					client->QueueWrite(id_message);
+
+					ServerMessage client_create_msg;
+					proto::Entity& client_entity = client->GetEntity();
+					client_create_msg.SetBodyLength(client_entity.ByteSize());
+					client_entity.SerializeToArray(client_create_msg.GetBodyPTR(), client_create_msg.GetBodyLength());
+					client_create_msg.SetMessageType(ENTITY_CREATE);
+					client_create_msg.encode_header();
+					client->QueueWrite(client_create_msg);
+
+					for (auto other_client : clients) {
+						proto::Entity& other_client_entity = other_client->GetEntity();
+						ServerMessage other_client_entity_msg;
+						other_client_entity_msg.SetBodyLength(other_client_entity.ByteSize());
+						other_client_entity.SerializeToArray(other_client_entity_msg.GetBodyPTR(), other_client_entity_msg.GetBodyLength());
+						other_client_entity_msg.SetMessageType(ENTITY_CREATE);
+						other_client_entity_msg.encode_header();
+						client->QueueWrite(other_client_entity_msg);
+						other_client->QueueWrite(client_create_msg);
+					}
+
 					clients.insert(client);
 					for (auto msg : this->recent_msgs) {
 						client->QueueWrite(msg);

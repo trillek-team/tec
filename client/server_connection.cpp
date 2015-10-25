@@ -98,6 +98,17 @@ namespace tec {
 						}
 					}
 				}
+				else if (current_read_msg.GetMessageType() == ENTITY_CREATE) {
+					proto::Entity entity;
+					entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
+					eid entity_id = entity.id();
+					for (int i = 0; i < entity.components_size(); ++i) {
+						const proto::Component& comp = entity.components(i);
+						if (in_functors.find(comp.component_case()) != in_functors.end()) {
+							in_functors[comp.component_case()](entity, comp);
+						}
+					}
+				}
 				else if (current_read_msg.GetMessageType() == CLIENT_ID) {
 					std::string id_message(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
 					client_id = std::atoi(id_message.c_str());

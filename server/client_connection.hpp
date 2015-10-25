@@ -27,6 +27,11 @@ namespace tec {
 
 			void SetID(eid id) {
 				this->id = id;
+				this->entity.set_id(id);
+			}
+
+			proto::Entity& GetEntity() {
+				return this->entity;
 			}
 
 		private:
@@ -41,6 +46,7 @@ namespace tec {
 			std::deque<ServerMessage> write_msgs_;
 			Server* server;
 			eid id;
+			proto::Entity entity;
 		};
 	}
 }
