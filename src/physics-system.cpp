@@ -49,7 +49,8 @@ namespace tec {
 		}
 	}
 
-	void PhysicsSystem::Update(const double delta) {
+	std::set<eid> PhysicsSystem::Update(const double delta) {
+		std::set<eid> updated_entities;
 		ProcessCommandQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 
@@ -66,11 +67,11 @@ namespace tec {
 			btTransform transform(
 				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
 				btVector3(position.x, position.y, position.z));
+			itr->second->transform = transform;
 
 			if (this->bodies.find(entity_id) == this->bodies.end()) {
-				itr->second->motion_state = new btDefaultMotionState(transform);
-				if (CreateRigiedBody(entity_id, itr->second)) {
-					this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
+				if (!CreateRigiedBody(entity_id, itr->second)) {
+					continue;
 				}
 			}
 			btRigidBody* body = this->bodies[entity_id];
@@ -80,9 +81,8 @@ namespace tec {
 				itr->second->shape.reset();
 				itr->second->collision_shape = itr->second->new_collision_shape;
 				if (itr->second->collision_shape != COLLISION_SHAPE::NONE) {
-					if (CreateRigiedBody(entity_id, itr->second)) {
-						body = this->bodies[entity_id];
-						body->setWorldTransform(transform);
+					if (!CreateRigiedBody(entity_id, itr->second)) {
+						continue;
 					}
 				}
 				else {
@@ -108,8 +108,6 @@ namespace tec {
 			if (itr->second->disable_rotation) {
 				body->setAngularFactor(btVector3(0.0, 0, 0.0));
 			}
-
-			body->setWorldTransform(transform);
 			this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
 		}
 
@@ -133,28 +131,30 @@ namespace tec {
 
 		this->dynamicsWorld->stepSimulation(delta, 10);
 
-		for (auto body : this->bodies) {
-			auto entity_id = body.first;
-			if (body.second->getActivationState() == DISABLE_SIMULATION) {
-				continue;
-			}
-			Entity e(entity_id);
-			auto transform = body.second->getWorldTransform();
-			if (e.Has<Position>()) {
-				std::shared_ptr<Position> old_position = e.Get<Position>().lock();
-				auto pos = transform.getOrigin();
-				auto position = std::make_shared<Position>(*old_position);
-				position->value = glm::vec3(pos.x(), pos.y(), pos.z());
-				e.Update(position);
-			}
-			if (e.Has<Orientation>()) {
-				std::shared_ptr<Orientation> old_orientation = e.Get<Orientation>().lock();
-				auto rot = transform.getRotation();
-				auto orientation = std::make_shared<Orientation>(*old_orientation);
-				orientation->value = glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z());
-				e.Update(orientation);
+		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
+			auto entity_id = itr->first;
+			if (itr->second->transform_updated) {
+				updated_entities.insert(entity_id);
+				itr->second->transform_updated = false;
+				Entity e(entity_id);
+				if (e.Has<Position>()) {
+					std::shared_ptr<Position> old_position = e.Get<Position>().lock();
+					auto pos = itr->second->transform.getOrigin();
+					auto position = std::make_shared<Position>(*old_position);
+					position->value = glm::vec3(pos.x(), pos.y(), pos.z());
+					e.Update(position);
+				}
+				if (e.Has<Orientation>()) {
+					std::shared_ptr<Orientation> old_orientation = e.Get<Orientation>().lock();
+					auto rot = itr->second->transform.getRotation();
+					auto orientation = std::make_shared<Orientation>(*old_orientation);
+					orientation->value = glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z());
+					e.Update(orientation);
+				}
 			}
 		}
+
+		return std::move(updated_entities);
 	}
 
 	glm::vec3 GetRayDirection(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) {
@@ -314,7 +314,7 @@ namespace tec {
 			}
 		}
 		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
-			collision_body->motion_state, collision_body->shape.get(), fallInertia);
+			collision_body.get(), collision_body->shape.get(), fallInertia);
 		auto body = new btRigidBody(fallRigidBodyCI);
 
 		if (!body) {
@@ -349,5 +349,14 @@ namespace tec {
 				EventSystem<MouseClickEvent>::Get()->Emit(this->last_entity_hit, mce_event);
 			}
 		}
+	}
+
+	std::shared_ptr<Position> PhysicsSystem::GetPosition(eid entity_id) {
+		auto pos = CollisionBodyMap::Get(entity_id)->transform.getOrigin();
+		return std::make_shared<Position>(glm::vec3(pos.x(), pos.y(), pos.z()));
+	}
+	std::shared_ptr<Orientation> PhysicsSystem::GetOrientation(eid entity_id) {
+		auto rot = CollisionBodyMap::Get(entity_id)->transform.getRotation();
+		return std::make_shared<Orientation>(glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z()));
 	}
 }
