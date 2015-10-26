@@ -3,12 +3,13 @@
 #include <memory>
 #include <map>
 
+#include "types.hpp"
 #include "resources/script-file.hpp"
 #include "reflection.hpp"
 
 namespace tec {
-	extern std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
-	extern std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	extern std::map<tid, std::function<void(proto::Entity*)>> out_functors;
+	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 
 	LuaScript::LuaScript()
 		: state() {
@@ -37,20 +38,23 @@ namespace tec {
 	}
 
 	void LuaScript::ReloadScript()	{
+		auto _log = spdlog::get("console_log");
 		if (!this->script_name.empty()) {
 			this->state.ForceGC();
 			auto print = [](std::string str1){ //, std::string str2=std::string(), std::string str3=std::string(), std::string str4=std::string()) {
 				spdlog::get("console_log")->info(str1); //, str2, str3, str4);
 			};
 			this->state["print"] = print;
-/*
 			for (auto& add_kv : in_functors) {
-				this->state[add_kv.first] = add_kv.second;
+				std::string name = TypeName.at(add_kv.first);
+				name = "add" + name;
+				this->state[name.c_str()] = add_kv.second;
 			}
 			for (auto& get_kv : out_functors) {
-				this->state[get_kv.first] = get_kv.second;
+				std::string name = TypeName.at(get_kv.first);
+				name = "get" + name;
+				this->state[name.c_str()] = get_kv.second;
 			}
-			*/
 
 			this->state.LoadStr(this->script->GetScript());
 		}
