@@ -13,7 +13,6 @@
 
 namespace tec {
 	extern ReflectionEntityList entity_list;
-	extern std::map<eid, std::shared_ptr<EnttityComponentUpdatedEvent>> entities_updated;
 
 	template <typename T>
 	struct ComponentUpdateList {
@@ -79,15 +78,8 @@ namespace tec {
 				if (front->frame <= frame_id) {
 					const std::map<eid, std::shared_ptr<T>>& updates = front->updates;
 					const char* component_type_name = GetTypeName<T>();
-					entities_updated.clear();
 					for (auto pair : updates) {
 						Multiton<eid, std::shared_ptr<T>>::Set(pair.first, pair.second);
-						if (entities_updated[pair.first] == nullptr) {
-							entities_updated[pair.first] = std::make_shared<EnttityComponentUpdatedEvent>();
-							entities_updated[pair.first]->entity.set_id(pair.first);
-						}
-						proto::Component* comp = entities_updated[pair.first]->entity.add_components();
-						pair.second->Out(comp);
 						entity_list.entities[pair.first].components[component_type_name] = std::move(T::Reflection(pair.second.get()));
 					}
 

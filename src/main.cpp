@@ -8,6 +8,7 @@
 #include "vcomputer-system.hpp"
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
+#include "simulation.hpp"
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 
@@ -33,7 +34,6 @@ namespace tec {
 
 	ReflectionEntityList entity_list;
 	eid active_entity;
-	std::map<eid, std::shared_ptr<EnttityComponentUpdatedEvent>> entities_updated;
 
 	struct FileListener : public EventQueue < FileDropEvent > {
 		void Update(double delta) {
@@ -152,16 +152,14 @@ int main(int argc, char* argv[]) {
 	tec::RenderSystem rs;
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
-	log->info("Initializing physics system...");
-	tec::PhysicsSystem ps;
+	log->info("Initializing simulation system...");
+	tec::Simulation simulation;
+	tec::PhysicsSystem& ps = simulation.GetPhysicsSystem();
 
 	log->info("Initializing sound system...");
 	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
-
-	log->info("Initializing virtual computer system...");
-	tec::VComputerSystem vcs;
 
 	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
@@ -179,6 +177,7 @@ int main(int argc, char* argv[]) {
 
 		float width = ImGui::CalcItemWidth();
 		ImGui::PushID("IP");
+		ImGui::AlignFirstTextHeightToWidgets();
 		ImGui::TextUnformatted("IP");
 		ImGui::SameLine();
 		for (int i = 0; i < 4; i++) {
@@ -332,14 +331,6 @@ int main(int argc, char* argv[]) {
 
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
-		for (auto& comp_updated : tec::entities_updated) {
-			tec::EventSystem<tec::EnttityComponentUpdatedEvent>::Get()->Emit(comp_updated.second);
-		}
-
-		flistener.Update(delta);
-		std::thread ps_thread([&] () {
-			ps.Update(delta);
-		});
 		std::thread ss_thread([&] () {
 			ss.Update(delta);
 		});
@@ -347,11 +338,27 @@ int main(int argc, char* argv[]) {
 			vox_sys.Update(delta);
 		});
 
+		flistener.Update(delta);
+		simulation.Simulate(delta);
+
+		std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();
+		if (results.find(connection.GetClientID()) != results.end()) {
+			tec::proto::Entity entity;
+			entity.set_id(connection.GetClientID());
+			for (const auto& compoennt_update : results.at(connection.GetClientID())) {
+				tec::proto::Component* comp = entity.add_components();
+				*comp = compoennt_update.second;
+			}
+			tec::networking::ServerMessage msg;
+			msg.SetBodyLength(entity.ByteSize());
+			entity.SerializeToArray(msg.GetBodyPTR(), msg.GetBodyLength());
+			msg.SetMessageType(tec::networking::ENTITY_UPDATE);
+			msg.encode_header();
+			connection.Send(msg);
+		}
+
 		rs.Update(delta);
 
-		vcs.Update(delta);
-
-		ps_thread.join();
 		ss_thread.join();
 		vv_thread.join();
 
@@ -362,7 +369,7 @@ int main(int argc, char* argv[]) {
 		os.GetMousePosition(&mouse_x, &mouse_y);
 		tec::active_entity = ps.RayCastMousePick(1, mouse_x, mouse_y,
 			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
-		ps.DebugDraw();
+		//ps.DebugDraw();
 
 		gui.Update(delta);
 		console.Update(delta);

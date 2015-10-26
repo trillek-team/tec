@@ -56,7 +56,9 @@ namespace tec {
 				write_msgs_.front().length()),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
 				if (!error) {
-					write_msgs_.pop_front();
+					if (!write_msgs_.empty()) {
+						write_msgs_.pop_front();
+					}
 					if (!write_msgs_.empty()) {
 						do_write();
 					}

@@ -46,19 +46,18 @@ ENDIF ( MSVC )
 # find all source files in the src directory
 FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
 LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/main.cpp")
+LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/test_data.cpp")
 
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
 # Filters for VStudio
-SOURCE_GROUP("TEC" "src/.*[.]cpp")
-SOURCE_GROUP("TEC" "include/.*[.]hpp")
-SOURCE_GROUP("TEC\\Components" ".*/components/.*")
-SOURCE_GROUP("TEC\\Physics" ".*/physics/.*")
-SOURCE_GROUP("TEC\\Resources" ".*/resources/.*")
-SOURCE_GROUP("TEC\\Graphics" ".*/graphics/.*")
-SOURCE_GROUP("TEC\\GUI" ".*/gui/.*")
-SOURCE_GROUP("TEC\\Controllers" ".*/controllers/.*")
-SOURCE_GROUP("TEC\\Systems" ".*-system.*")
+SOURCE_GROUP("Components" ".*/components/.*")
+SOURCE_GROUP("Physics" ".*/physics/.*")
+SOURCE_GROUP("Resources" ".*/resources/.*")
+SOURCE_GROUP("Graphics" ".*/graphics/.*")
+SOURCE_GROUP("GUI" ".*/gui/.*")
+SOURCE_GROUP("Controllers" ".*/controllers/.*")
+SOURCE_GROUP("Systems" ".*-system.*")
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
 
@@ -294,6 +293,7 @@ IF (NOT ${BUILD_DEPS_FIRST})
 
   ADD_EXECUTABLE("TEC"
     "src/main.cpp"
+    "src/test_data.cpp"
     "client/server_connection.hpp"
     "client/server_connection.cpp"
   )

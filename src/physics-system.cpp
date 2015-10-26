@@ -136,21 +136,6 @@ namespace tec {
 			if (itr->second->transform_updated) {
 				updated_entities.insert(entity_id);
 				itr->second->transform_updated = false;
-				Entity e(entity_id);
-				if (e.Has<Position>()) {
-					std::shared_ptr<Position> old_position = e.Get<Position>().lock();
-					auto pos = itr->second->transform.getOrigin();
-					auto position = std::make_shared<Position>(*old_position);
-					position->value = glm::vec3(pos.x(), pos.y(), pos.z());
-					e.Update(position);
-				}
-				if (e.Has<Orientation>()) {
-					std::shared_ptr<Orientation> old_orientation = e.Get<Orientation>().lock();
-					auto rot = itr->second->transform.getRotation();
-					auto orientation = std::make_shared<Orientation>(*old_orientation);
-					orientation->value = glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z());
-					e.Update(orientation);
-				}
 			}
 		}
 

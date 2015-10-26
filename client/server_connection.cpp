@@ -60,7 +60,6 @@ namespace tec {
 				asio::write(this->socket, asio::buffer(msg.GetDataPTR(), msg.length()));
 			}
 			catch (std::exception& e) {
-				std::cerr << e.what() << std::endl;
 			}
 		}
 
@@ -89,7 +88,6 @@ namespace tec {
 				else if (current_read_msg.GetMessageType() == ENTITY_UPDATE) {
 					proto::Entity entity;
 					entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-					eid entity_id = entity.id();
 					for (int i = 0; i < entity.components_size(); ++i) {
 						const proto::Component& comp = entity.components(i);
 						if (update_functors.find(comp.component_case()) != update_functors.end()) {
@@ -101,7 +99,6 @@ namespace tec {
 				else if (current_read_msg.GetMessageType() == ENTITY_CREATE) {
 					proto::Entity entity;
 					entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-					eid entity_id = entity.id();
 					for (int i = 0; i < entity.components_size(); ++i) {
 						const proto::Component& comp = entity.components(i);
 						if (in_functors.find(comp.component_case()) != in_functors.end()) {
@@ -149,7 +146,6 @@ namespace tec {
 					}
 				}
 				catch (std::exception& e) {
-					std::cerr << e.what() << std::endl;
 				}
 			}
 		}
@@ -157,7 +153,7 @@ namespace tec {
 		void ServerConnection::StartSync() {
 			ServerMessage sync_msg;
 
-			sync_msg.SetBodyLength(0);
+			sync_msg.SetBodyLength(1);
 			sync_msg.SetMessageType(SYNC);
 			sync_msg.encode_header();
 			while (1) {
@@ -171,7 +167,7 @@ namespace tec {
 		}
 
 		void ServerConnection::On(std::shared_ptr<EnttityComponentUpdatedEvent> data) {
-			if (data->entity.id() == client_id) {
+			if (data->entity.id() == this->client_id) {
 				ServerMessage msg;
 				msg.SetBodyLength(data->entity.ByteSize());
 				// TODO: encode frame_id into the message.
