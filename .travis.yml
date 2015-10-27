@@ -23,6 +23,8 @@ matrix:
                   - libglu1-mesa-dev
                   - libglew-dev
                   - libopenal-dev
+                  - lua5.2
+                  - liblua5.2-dev
           env: COMPILER=g++-4.9
 
     allow_failures:
