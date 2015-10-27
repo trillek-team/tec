@@ -9,7 +9,7 @@
 
 using asio::ip::tcp;
 
-unsigned int UPDATE_RATE = 10; // Updates should be sent every this many milliseconds.
+std::uint64_t UPDATE_RATE = 10; // Updates should be sent every this many milliseconds.
 
 
 namespace tec {
@@ -21,7 +21,7 @@ int main() {
 	std::chrono::high_resolution_clock::time_point last_time, next_time;
 	std::chrono::milliseconds elapsed_seconds;
 	bool closing = false;
-	unsigned int delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
+	std::uint64_t delta_accumulator = 0; // Accumulated deltas since the last update was sent.
 
 	tec::Simulation simulation;
 	simulation.CreateDummyData();

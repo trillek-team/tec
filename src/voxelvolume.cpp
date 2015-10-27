@@ -180,12 +180,12 @@ namespace tec {
 							}
 							VertexData& vert = mesh->verts[this->vertex_index[index]];
 
-							std::int16_t x = floor(vert.position.x - IdentityVerts[0].position[0]);
-							std::int16_t y = floor(vert.position.y - IdentityVerts[0].position[1]);
-							std::int16_t z = floor(vert.position.z - IdentityVerts[0].position[2]);
+							std::int16_t x = static_cast<std::int16_t>(floor(vert.position.x - IdentityVerts[0].position[0]));
+							std::int16_t y = static_cast<std::int16_t>(floor(vert.position.y - IdentityVerts[0].position[1]));
+							std::int16_t z = static_cast<std::int16_t>(floor(vert.position.z - IdentityVerts[0].position[2]));
 
 							std::int64_t changed_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
-								(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);		static_cast<std::uint16_t>((int)roundf((vert.position.z / 2.0f) - IdentityVerts[0].position[2]) & 0xFFFF);
+								(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
 
 							this->vertex_index[changed_index] = this->vertex_index[index];
 						}
@@ -225,17 +225,17 @@ namespace tec {
 		return voxvol;
 	}
 
-	void VoxelVolume::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
+	void VoxelVolume::On(const eid entity_id, std::shared_ptr<MouseClickEvent> data) {
 		if (data->button == MouseBtnEvent::LEFT) {
 			if (entity_id == this->entity_id) {
 				std::shared_ptr<Position> pos = Entity(entity_id).Get<Position>().lock();
 				std::shared_ptr<Orientation> orientation = Entity(entity_id).Get<Orientation>().lock();
 				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
 				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_piont_world, 1.0f);
-				int grid_x = floor(local_coords.x);
+				std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
 				local_coords.y += FLT_EPSILON * (std::signbit(local_coords.y) ? -1.0f : 0.0f);
-				int grid_y = floor(local_coords.y);
-				int grid_z = floor(local_coords.z);
+				std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
+				std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
 
 				AddVoxel(grid_y, grid_x, grid_z);
 			}
@@ -246,10 +246,10 @@ namespace tec {
 				std::shared_ptr<Orientation> orientation = Entity(entity_id).Get<Orientation>().lock();
 				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
 				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_piont_world, 1.0f);
-				int grid_x = floor(local_coords.x);
+				std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
 				local_coords.y -= FLT_EPSILON * (std::signbit(local_coords.y) ? 0.0f : 1.0f);
-				int grid_y = floor(local_coords.y);
-				int grid_z = floor(local_coords.z);
+				std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
+				std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
 
 				RemoveVoxel(grid_y, grid_x, grid_z);
 			}

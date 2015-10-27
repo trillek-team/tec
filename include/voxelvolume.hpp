@@ -61,7 +61,7 @@ namespace tec {
 		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into sub-mesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 		
-		void On(eid entity_id, std::shared_ptr<MouseClickEvent> data);
+		void On(const eid entity_id, std::shared_ptr<MouseClickEvent> data);
 		
 		static ReflectionComponent Reflection(VoxelVolume* val) {
 			ReflectionComponent refcomp;

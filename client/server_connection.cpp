@@ -59,7 +59,7 @@ namespace tec {
 			try {
 				asio::write(this->socket, asio::buffer(msg.GetDataPTR(), msg.length()));
 			}
-			catch (std::exception& e) {
+			catch (std::exception) {
 			}
 		}
 
@@ -145,7 +145,7 @@ namespace tec {
 						return;
 					}
 				}
-				catch (std::exception& e) {
+				catch (std::exception) {
 				}
 			}
 		}

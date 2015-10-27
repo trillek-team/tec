@@ -267,7 +267,7 @@ bool FilePath::MkPath(const FilePath& path) {
 	auto base = path.BasePath();
 	if (! base.empty()) {
 		size_t len = base.path.size();
-		if (MkPath(base)) {
+		if (base.isValidPath()) {
 			return MkDir(path);
 		}
 	}
@@ -336,7 +336,9 @@ FilePath FilePath::Subpath(size_t begin, size_t end) const {
 	std::istringstream f(this->path);
 	std::string s;
 	size_t count = 0;
+#if defined(WIN32)
 	auto absoulte = this->isAbsolutePath();
+#endif
 	while (count < end && std::getline(f, s, PATH_SEPARATOR_C)) {
 		if (count >= begin && count < end) {
 #if defined(WIN32)
