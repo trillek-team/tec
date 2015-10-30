@@ -155,6 +155,7 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing simulation system...");
 	tec::Simulation simulation;
 	tec::PhysicsSystem& ps = simulation.GetPhysicsSystem();
+	tec::VComputerSystem vcs;
 
 	log->info("Initializing sound system...");
 	tec::SoundSystem ss;
@@ -340,6 +341,7 @@ int main(int argc, char* argv[]) {
 
 		flistener.Update(delta);
 		simulation.Simulate(delta);
+		vcs.Update(delta);
 
 		std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();
 		if (results.find(connection.GetClientID()) != results.end()) {

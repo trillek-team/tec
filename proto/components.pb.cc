@@ -80,6 +80,27 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* VoxelVolumen_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   VoxelVolumen_reflection_ = NULL;
+const ::google::protobuf::Descriptor* ComputerScreen_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  ComputerScreen_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Computer_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Computer_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Computer_Device_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Computer_Device_reflection_ = NULL;
+struct Computer_DeviceOneofInstance {
+  const ::tec::proto::ComputerScreen* computerscreen_;
+}* Computer_Device_default_oneof_instance_ = NULL;
+const ::google::protobuf::Descriptor* Computer_CPU_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Computer_CPU_reflection_ = NULL;
+struct Computer_CPUOneofInstance {
+  const ::tec::proto::Computer_CPU_TR3200* tr3200_;
+}* Computer_CPU_default_oneof_instance_ = NULL;
+const ::google::protobuf::Descriptor* Computer_CPU_TR3200_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Computer_CPU_TR3200_reflection_ = NULL;
 const ::google::protobuf::Descriptor* Component_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Component_reflection_ = NULL;
@@ -97,6 +118,7 @@ struct ComponentOneofInstance {
   const ::tec::proto::Light* directionallight_;
   const ::tec::proto::Light* spotlight_;
   const ::tec::proto::VoxelVolumen* voxelvolume_;
+  const ::tec::proto::Computer* computer_;
 }* Component_default_oneof_instance_ = NULL;
 const ::google::protobuf::Descriptor* Entity_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
@@ -429,8 +451,108 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(VoxelVolumen),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(VoxelVolumen, _internal_metadata_),
       -1);
-  Component_descriptor_ = file->message_type(11);
-  static const int Component_offsets_[14] = {
+  ComputerScreen_descriptor_ = file->message_type(11);
+  static const int ComputerScreen_offsets_[9] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, text_buffer_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, font_buffer_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, buffer_ptr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, font_ptr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, vsync_msg_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, a_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, b_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, d_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, e_),
+  };
+  ComputerScreen_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      ComputerScreen_descriptor_,
+      ComputerScreen::default_instance_,
+      ComputerScreen_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(ComputerScreen),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ComputerScreen, _internal_metadata_),
+      -1);
+  Computer_descriptor_ = file->message_type(12);
+  static const int Computer_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer, devices_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer, ram_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer, cpu_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer, rom_file_),
+  };
+  Computer_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Computer_descriptor_,
+      Computer::default_instance_,
+      Computer_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Computer),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer, _internal_metadata_),
+      -1);
+  Computer_Device_descriptor_ = Computer_descriptor_->nested_type(0);
+  static const int Computer_Device_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_Device, slot_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Computer_Device_default_oneof_instance_, computerscreen_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_Device, device_),
+  };
+  Computer_Device_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Computer_Device_descriptor_,
+      Computer_Device::default_instance_,
+      Computer_Device_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_Device, _has_bits_[0]),
+      -1,
+      -1,
+      Computer_Device_default_oneof_instance_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_Device, _oneof_case_[0]),
+      sizeof(Computer_Device),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_Device, _internal_metadata_),
+      -1);
+  Computer_CPU_descriptor_ = Computer_descriptor_->nested_type(1);
+  static const int Computer_CPU_offsets_[2] = {
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Computer_CPU_default_oneof_instance_, tr3200_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU, cpu_),
+  };
+  Computer_CPU_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Computer_CPU_descriptor_,
+      Computer_CPU::default_instance_,
+      Computer_CPU_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU, _has_bits_[0]),
+      -1,
+      -1,
+      Computer_CPU_default_oneof_instance_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU, _oneof_case_[0]),
+      sizeof(Computer_CPU),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU, _internal_metadata_),
+      -1);
+  Computer_CPU_TR3200_descriptor_ = Computer_CPU_descriptor_->nested_type(0);
+  static const int Computer_CPU_TR3200_offsets_[8] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, registers_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, pc_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, wait_cycles_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, int_msg_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, interrupt_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, step_mode_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, skiping_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, sleeping_),
+  };
+  Computer_CPU_TR3200_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      Computer_CPU_TR3200_descriptor_,
+      Computer_CPU_TR3200::default_instance_,
+      Computer_CPU_TR3200_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, _has_bits_[0]),
+      -1,
+      -1,
+      sizeof(Computer_CPU_TR3200),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Computer_CPU_TR3200, _internal_metadata_),
+      -1);
+  Component_descriptor_ = file->message_type(13);
+  static const int Component_offsets_[15] = {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, renderable_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, position_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, orientation_),
@@ -444,6 +566,7 @@ void protobuf_AssignDesc_components_2eproto() {
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, directionallight_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, spotlight_),
     PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, voxelvolume_),
+    PROTO2_GENERATED_DEFAULT_ONEOF_FIELD_OFFSET(Component_default_oneof_instance_, computer_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, component_),
   };
   Component_reflection_ =
@@ -459,7 +582,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Component),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Component, _internal_metadata_),
       -1);
-  Entity_descriptor_ = file->message_type(12);
+  Entity_descriptor_ = file->message_type(14);
   static const int Entity_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, components_),
@@ -475,7 +598,7 @@ void protobuf_AssignDesc_components_2eproto() {
       sizeof(Entity),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Entity, _internal_metadata_),
       -1);
-  EntityFileList_descriptor_ = file->message_type(13);
+  EntityFileList_descriptor_ = file->message_type(15);
   static const int EntityFileList_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(EntityFileList, entity_file_list_),
   };
@@ -539,6 +662,16 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       VoxelVolumen_descriptor_, &VoxelVolumen::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      ComputerScreen_descriptor_, &ComputerScreen::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Computer_descriptor_, &Computer::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Computer_Device_descriptor_, &Computer_Device::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Computer_CPU_descriptor_, &Computer_CPU::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      Computer_CPU_TR3200_descriptor_, &Computer_CPU_TR3200::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Component_descriptor_, &Component::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Entity_descriptor_, &Entity::default_instance());
@@ -586,6 +719,18 @@ void protobuf_ShutdownFile_components_2eproto() {
   delete Light_Direction_reflection_;
   delete VoxelVolumen::default_instance_;
   delete VoxelVolumen_reflection_;
+  delete ComputerScreen::default_instance_;
+  delete ComputerScreen_reflection_;
+  delete Computer::default_instance_;
+  delete Computer_reflection_;
+  delete Computer_Device::default_instance_;
+  delete Computer_Device_default_oneof_instance_;
+  delete Computer_Device_reflection_;
+  delete Computer_CPU::default_instance_;
+  delete Computer_CPU_default_oneof_instance_;
+  delete Computer_CPU_reflection_;
+  delete Computer_CPU_TR3200::default_instance_;
+  delete Computer_CPU_TR3200_reflection_;
   delete Component::default_instance_;
   delete Component_default_oneof_instance_;
   delete Component_reflection_;
@@ -638,25 +783,41 @@ void protobuf_AddDesc_components_2eproto() {
     "ection\032D\n\013Attenuation\022\020\n\010constant\030\001 \001(\002\022"
     "\016\n\006linear\030\002 \001(\002\022\023\n\013exponential\030\003 \001(\002\032,\n\t"
     "Direction\022\t\n\001x\030\001 \001(\002\022\t\n\001y\030\002 \001(\002\022\t\n\001z\030\003 \001"
-    "(\002\"\035\n\014VoxelVolumen\022\r\n\005dummy\030\001 \001(\002\"\306\004\n\tCo"
-    "mponent\022+\n\nrenderable\030\001 \001(\0132\025.tec.proto."
-    "RenderableH\000\022\'\n\010position\030\002 \001(\0132\023.tec.pro"
-    "to.PositionH\000\022-\n\013orientation\030\003 \001(\0132\026.tec"
-    ".proto.OrientationH\000\022\037\n\004view\030\004 \001(\0132\017.tec"
-    ".proto.ViewH\000\022)\n\tanimation\030\005 \001(\0132\024.tec.p"
-    "roto.AnimationH\000\022!\n\005Scale\030\006 \001(\0132\020.tec.pr"
-    "oto.ScaleH\000\0222\n\016collision_body\030\007 \001(\0132\030.te"
-    "c.proto.CollisionBodyH\000\022\'\n\010velocity\030\010 \001("
-    "\0132\023.tec.proto.VelocityH\000\022.\n\014audio_source"
-    "\030\t \001(\0132\026.tec.proto.AudioSourceH\000\022&\n\npoin"
-    "tLight\030\n \001(\0132\020.tec.proto.LightH\000\022,\n\020dire"
-    "ctionalLight\030\013 \001(\0132\020.tec.proto.LightH\000\022%"
-    "\n\tspotLight\030\014 \001(\0132\020.tec.proto.LightH\000\022.\n"
-    "\013voxelVolume\030\r \001(\0132\027.tec.proto.VoxelVolu"
-    "menH\000B\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004"
-    "\022(\n\ncomponents\030\002 \003(\0132\024.tec.proto.Compone"
-    "nt\"*\n\016EntityFileList\022\030\n\020entity_file_list"
-    "\030\001 \003(\t", 2166);
+    "(\002\"\035\n\014VoxelVolumen\022\r\n\005dummy\030\001 \001(\002\"\237\001\n\016Co"
+    "mputerScreen\022\023\n\013text_buffer\030\001 \002(\014\022\023\n\013fon"
+    "t_buffer\030\002 \002(\014\022\022\n\nbuffer_ptr\030\003 \002(\r\022\020\n\010fo"
+    "nt_ptr\030\004 \002(\r\022\021\n\tvsync_msg\030\005 \002(\r\022\t\n\001a\030\006 \002"
+    "(\r\022\t\n\001b\030\007 \002(\r\022\t\n\001d\030\010 \002(\r\022\t\n\001e\030\t \002(\r\"\255\003\n\010"
+    "Computer\022+\n\007devices\030\001 \003(\0132\032.tec.proto.Co"
+    "mputer.Device\022\013\n\003ram\030\002 \002(\014\022$\n\003cpu\030\003 \002(\0132"
+    "\027.tec.proto.Computer.CPU\022\020\n\010rom_file\030\004 \001"
+    "(\t\032U\n\006Device\022\014\n\004slot\030\001 \002(\r\0223\n\016computerSc"
+    "reen\030\002 \001(\0132\031.tec.proto.ComputerScreenH\000B"
+    "\010\n\006device\032\327\001\n\003CPU\0220\n\006tr3200\030\001 \001(\0132\036.tec."
+    "proto.Computer.CPU.TR3200H\000\032\226\001\n\006TR3200\022\021"
+    "\n\tregisters\030\001 \003(\r\022\n\n\002pc\030\002 \002(\r\022\023\n\013wait_cy"
+    "cles\030\003 \002(\r\022\017\n\007int_msg\030\004 \002(\r\022\021\n\tinterrupt"
+    "\030\005 \002(\010\022\021\n\tstep_mode\030\006 \002(\010\022\017\n\007skiping\030\007 \002"
+    "(\010\022\020\n\010sleeping\030\010 \002(\010B\005\n\003cpu\"\357\004\n\tComponen"
+    "t\022+\n\nrenderable\030\001 \001(\0132\025.tec.proto.Render"
+    "ableH\000\022\'\n\010position\030\002 \001(\0132\023.tec.proto.Pos"
+    "itionH\000\022-\n\013orientation\030\003 \001(\0132\026.tec.proto"
+    ".OrientationH\000\022\037\n\004view\030\004 \001(\0132\017.tec.proto"
+    ".ViewH\000\022)\n\tanimation\030\005 \001(\0132\024.tec.proto.A"
+    "nimationH\000\022!\n\005Scale\030\006 \001(\0132\020.tec.proto.Sc"
+    "aleH\000\0222\n\016collision_body\030\007 \001(\0132\030.tec.prot"
+    "o.CollisionBodyH\000\022\'\n\010velocity\030\010 \001(\0132\023.te"
+    "c.proto.VelocityH\000\022.\n\014audio_source\030\t \001(\013"
+    "2\026.tec.proto.AudioSourceH\000\022&\n\npointLight"
+    "\030\n \001(\0132\020.tec.proto.LightH\000\022,\n\020directiona"
+    "lLight\030\013 \001(\0132\020.tec.proto.LightH\000\022%\n\tspot"
+    "Light\030\014 \001(\0132\020.tec.proto.LightH\000\022.\n\013voxel"
+    "Volume\030\r \001(\0132\027.tec.proto.VoxelVolumenH\000\022"
+    "\'\n\010computer\030\016 \001(\0132\023.tec.proto.ComputerH\000"
+    "B\013\n\tcomponent\">\n\006Entity\022\n\n\002id\030\001 \002(\004\022(\n\nc"
+    "omponents\030\002 \003(\0132\024.tec.proto.Component\"*\n"
+    "\016EntityFileList\022\030\n\020entity_file_list\030\001 \003("
+    "\t", 2801);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "components.proto", &protobuf_RegisterTypes);
   Renderable::default_instance_ = new Renderable();
@@ -678,6 +839,13 @@ void protobuf_AddDesc_components_2eproto() {
   Light_Attenuation::default_instance_ = new Light_Attenuation();
   Light_Direction::default_instance_ = new Light_Direction();
   VoxelVolumen::default_instance_ = new VoxelVolumen();
+  ComputerScreen::default_instance_ = new ComputerScreen();
+  Computer::default_instance_ = new Computer();
+  Computer_Device::default_instance_ = new Computer_Device();
+  Computer_Device_default_oneof_instance_ = new Computer_DeviceOneofInstance();
+  Computer_CPU::default_instance_ = new Computer_CPU();
+  Computer_CPU_default_oneof_instance_ = new Computer_CPUOneofInstance();
+  Computer_CPU_TR3200::default_instance_ = new Computer_CPU_TR3200();
   Component::default_instance_ = new Component();
   Component_default_oneof_instance_ = new ComponentOneofInstance();
   Entity::default_instance_ = new Entity();
@@ -700,6 +868,11 @@ void protobuf_AddDesc_components_2eproto() {
   Light_Attenuation::default_instance_->InitAsDefaultInstance();
   Light_Direction::default_instance_->InitAsDefaultInstance();
   VoxelVolumen::default_instance_->InitAsDefaultInstance();
+  ComputerScreen::default_instance_->InitAsDefaultInstance();
+  Computer::default_instance_->InitAsDefaultInstance();
+  Computer_Device::default_instance_->InitAsDefaultInstance();
+  Computer_CPU::default_instance_->InitAsDefaultInstance();
+  Computer_CPU_TR3200::default_instance_->InitAsDefaultInstance();
   Component::default_instance_->InitAsDefaultInstance();
   Entity::default_instance_->InitAsDefaultInstance();
   EntityFileList::default_instance_->InitAsDefaultInstance();
@@ -8581,6 +8754,2951 @@ void VoxelVolumen::clear_dummy() {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int ComputerScreen::kTextBufferFieldNumber;
+const int ComputerScreen::kFontBufferFieldNumber;
+const int ComputerScreen::kBufferPtrFieldNumber;
+const int ComputerScreen::kFontPtrFieldNumber;
+const int ComputerScreen::kVsyncMsgFieldNumber;
+const int ComputerScreen::kAFieldNumber;
+const int ComputerScreen::kBFieldNumber;
+const int ComputerScreen::kDFieldNumber;
+const int ComputerScreen::kEFieldNumber;
+#endif  // !_MSC_VER
+
+ComputerScreen::ComputerScreen()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.ComputerScreen)
+}
+
+void ComputerScreen::InitAsDefaultInstance() {
+}
+
+ComputerScreen::ComputerScreen(const ComputerScreen& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.ComputerScreen)
+}
+
+void ComputerScreen::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  text_buffer_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  font_buffer_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  buffer_ptr_ = 0u;
+  font_ptr_ = 0u;
+  vsync_msg_ = 0u;
+  a_ = 0u;
+  b_ = 0u;
+  d_ = 0u;
+  e_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+ComputerScreen::~ComputerScreen() {
+  // @@protoc_insertion_point(destructor:tec.proto.ComputerScreen)
+  SharedDtor();
+}
+
+void ComputerScreen::SharedDtor() {
+  text_buffer_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  font_buffer_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+  }
+}
+
+void ComputerScreen::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* ComputerScreen::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ComputerScreen_descriptor_;
+}
+
+const ComputerScreen& ComputerScreen::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+ComputerScreen* ComputerScreen::default_instance_ = NULL;
+
+ComputerScreen* ComputerScreen::New(::google::protobuf::Arena* arena) const {
+  ComputerScreen* n = new ComputerScreen;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void ComputerScreen::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<ComputerScreen*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 255u) {
+    ZR_(buffer_ptr_, d_);
+    if (has_text_buffer()) {
+      text_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    }
+    if (has_font_buffer()) {
+      font_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    }
+  }
+  e_ = 0u;
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool ComputerScreen::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.ComputerScreen)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required bytes text_buffer = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_text_buffer()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_font_buffer;
+        break;
+      }
+
+      // required bytes font_buffer = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_font_buffer:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_font_buffer()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_buffer_ptr;
+        break;
+      }
+
+      // required uint32 buffer_ptr = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_buffer_ptr:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &buffer_ptr_)));
+          set_has_buffer_ptr();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_font_ptr;
+        break;
+      }
+
+      // required uint32 font_ptr = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_font_ptr:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &font_ptr_)));
+          set_has_font_ptr();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_vsync_msg;
+        break;
+      }
+
+      // required uint32 vsync_msg = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_vsync_msg:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &vsync_msg_)));
+          set_has_vsync_msg();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(48)) goto parse_a;
+        break;
+      }
+
+      // required uint32 a = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_a:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &a_)));
+          set_has_a();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(56)) goto parse_b;
+        break;
+      }
+
+      // required uint32 b = 7;
+      case 7: {
+        if (tag == 56) {
+         parse_b:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &b_)));
+          set_has_b();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(64)) goto parse_d;
+        break;
+      }
+
+      // required uint32 d = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_d:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &d_)));
+          set_has_d();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(72)) goto parse_e;
+        break;
+      }
+
+      // required uint32 e = 9;
+      case 9: {
+        if (tag == 72) {
+         parse_e:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &e_)));
+          set_has_e();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.ComputerScreen)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.ComputerScreen)
+  return false;
+#undef DO_
+}
+
+void ComputerScreen::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.ComputerScreen)
+  // required bytes text_buffer = 1;
+  if (has_text_buffer()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      1, this->text_buffer(), output);
+  }
+
+  // required bytes font_buffer = 2;
+  if (has_font_buffer()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      2, this->font_buffer(), output);
+  }
+
+  // required uint32 buffer_ptr = 3;
+  if (has_buffer_ptr()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->buffer_ptr(), output);
+  }
+
+  // required uint32 font_ptr = 4;
+  if (has_font_ptr()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->font_ptr(), output);
+  }
+
+  // required uint32 vsync_msg = 5;
+  if (has_vsync_msg()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(5, this->vsync_msg(), output);
+  }
+
+  // required uint32 a = 6;
+  if (has_a()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(6, this->a(), output);
+  }
+
+  // required uint32 b = 7;
+  if (has_b()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(7, this->b(), output);
+  }
+
+  // required uint32 d = 8;
+  if (has_d()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(8, this->d(), output);
+  }
+
+  // required uint32 e = 9;
+  if (has_e()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(9, this->e(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.ComputerScreen)
+}
+
+::google::protobuf::uint8* ComputerScreen::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.ComputerScreen)
+  // required bytes text_buffer = 1;
+  if (has_text_buffer()) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        1, this->text_buffer(), target);
+  }
+
+  // required bytes font_buffer = 2;
+  if (has_font_buffer()) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        2, this->font_buffer(), target);
+  }
+
+  // required uint32 buffer_ptr = 3;
+  if (has_buffer_ptr()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->buffer_ptr(), target);
+  }
+
+  // required uint32 font_ptr = 4;
+  if (has_font_ptr()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->font_ptr(), target);
+  }
+
+  // required uint32 vsync_msg = 5;
+  if (has_vsync_msg()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(5, this->vsync_msg(), target);
+  }
+
+  // required uint32 a = 6;
+  if (has_a()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(6, this->a(), target);
+  }
+
+  // required uint32 b = 7;
+  if (has_b()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(7, this->b(), target);
+  }
+
+  // required uint32 d = 8;
+  if (has_d()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(8, this->d(), target);
+  }
+
+  // required uint32 e = 9;
+  if (has_e()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(9, this->e(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.ComputerScreen)
+  return target;
+}
+
+int ComputerScreen::RequiredFieldsByteSizeFallback() const {
+  int total_size = 0;
+
+  if (has_text_buffer()) {
+    // required bytes text_buffer = 1;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->text_buffer());
+  }
+
+  if (has_font_buffer()) {
+    // required bytes font_buffer = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->font_buffer());
+  }
+
+  if (has_buffer_ptr()) {
+    // required uint32 buffer_ptr = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->buffer_ptr());
+  }
+
+  if (has_font_ptr()) {
+    // required uint32 font_ptr = 4;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->font_ptr());
+  }
+
+  if (has_vsync_msg()) {
+    // required uint32 vsync_msg = 5;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->vsync_msg());
+  }
+
+  if (has_a()) {
+    // required uint32 a = 6;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->a());
+  }
+
+  if (has_b()) {
+    // required uint32 b = 7;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->b());
+  }
+
+  if (has_d()) {
+    // required uint32 d = 8;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->d());
+  }
+
+  if (has_e()) {
+    // required uint32 e = 9;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->e());
+  }
+
+  return total_size;
+}
+int ComputerScreen::ByteSize() const {
+  int total_size = 0;
+
+  if (((_has_bits_[0] & 0x000001ff) ^ 0x000001ff) == 0) {  // All required fields are present.
+    // required bytes text_buffer = 1;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->text_buffer());
+
+    // required bytes font_buffer = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->font_buffer());
+
+    // required uint32 buffer_ptr = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->buffer_ptr());
+
+    // required uint32 font_ptr = 4;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->font_ptr());
+
+    // required uint32 vsync_msg = 5;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->vsync_msg());
+
+    // required uint32 a = 6;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->a());
+
+    // required uint32 b = 7;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->b());
+
+    // required uint32 d = 8;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->d());
+
+    // required uint32 e = 9;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->e());
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ComputerScreen::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const ComputerScreen* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const ComputerScreen>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void ComputerScreen::MergeFrom(const ComputerScreen& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_text_buffer()) {
+      set_has_text_buffer();
+      text_buffer_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.text_buffer_);
+    }
+    if (from.has_font_buffer()) {
+      set_has_font_buffer();
+      font_buffer_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.font_buffer_);
+    }
+    if (from.has_buffer_ptr()) {
+      set_buffer_ptr(from.buffer_ptr());
+    }
+    if (from.has_font_ptr()) {
+      set_font_ptr(from.font_ptr());
+    }
+    if (from.has_vsync_msg()) {
+      set_vsync_msg(from.vsync_msg());
+    }
+    if (from.has_a()) {
+      set_a(from.a());
+    }
+    if (from.has_b()) {
+      set_b(from.b());
+    }
+    if (from.has_d()) {
+      set_d(from.d());
+    }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_e()) {
+      set_e(from.e());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void ComputerScreen::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ComputerScreen::CopyFrom(const ComputerScreen& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ComputerScreen::IsInitialized() const {
+  if ((_has_bits_[0] & 0x000001ff) != 0x000001ff) return false;
+
+  return true;
+}
+
+void ComputerScreen::Swap(ComputerScreen* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ComputerScreen::InternalSwap(ComputerScreen* other) {
+  text_buffer_.Swap(&other->text_buffer_);
+  font_buffer_.Swap(&other->font_buffer_);
+  std::swap(buffer_ptr_, other->buffer_ptr_);
+  std::swap(font_ptr_, other->font_ptr_);
+  std::swap(vsync_msg_, other->vsync_msg_);
+  std::swap(a_, other->a_);
+  std::swap(b_, other->b_);
+  std::swap(d_, other->d_);
+  std::swap(e_, other->e_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata ComputerScreen::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = ComputerScreen_descriptor_;
+  metadata.reflection = ComputerScreen_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// ComputerScreen
+
+// required bytes text_buffer = 1;
+bool ComputerScreen::has_text_buffer() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void ComputerScreen::set_has_text_buffer() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void ComputerScreen::clear_has_text_buffer() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void ComputerScreen::clear_text_buffer() {
+  text_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_text_buffer();
+}
+ const ::std::string& ComputerScreen::text_buffer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.text_buffer)
+  return text_buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ComputerScreen::set_text_buffer(const ::std::string& value) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.text_buffer)
+}
+ void ComputerScreen::set_text_buffer(const char* value) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.ComputerScreen.text_buffer)
+}
+ void ComputerScreen::set_text_buffer(const void* value, size_t size) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.ComputerScreen.text_buffer)
+}
+ ::std::string* ComputerScreen::mutable_text_buffer() {
+  set_has_text_buffer();
+  // @@protoc_insertion_point(field_mutable:tec.proto.ComputerScreen.text_buffer)
+  return text_buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* ComputerScreen::release_text_buffer() {
+  clear_has_text_buffer();
+  return text_buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ComputerScreen::set_allocated_text_buffer(::std::string* text_buffer) {
+  if (text_buffer != NULL) {
+    set_has_text_buffer();
+  } else {
+    clear_has_text_buffer();
+  }
+  text_buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), text_buffer);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.ComputerScreen.text_buffer)
+}
+
+// required bytes font_buffer = 2;
+bool ComputerScreen::has_font_buffer() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void ComputerScreen::set_has_font_buffer() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void ComputerScreen::clear_has_font_buffer() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void ComputerScreen::clear_font_buffer() {
+  font_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_font_buffer();
+}
+ const ::std::string& ComputerScreen::font_buffer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.font_buffer)
+  return font_buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ComputerScreen::set_font_buffer(const ::std::string& value) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.font_buffer)
+}
+ void ComputerScreen::set_font_buffer(const char* value) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.ComputerScreen.font_buffer)
+}
+ void ComputerScreen::set_font_buffer(const void* value, size_t size) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.ComputerScreen.font_buffer)
+}
+ ::std::string* ComputerScreen::mutable_font_buffer() {
+  set_has_font_buffer();
+  // @@protoc_insertion_point(field_mutable:tec.proto.ComputerScreen.font_buffer)
+  return font_buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* ComputerScreen::release_font_buffer() {
+  clear_has_font_buffer();
+  return font_buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void ComputerScreen::set_allocated_font_buffer(::std::string* font_buffer) {
+  if (font_buffer != NULL) {
+    set_has_font_buffer();
+  } else {
+    clear_has_font_buffer();
+  }
+  font_buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), font_buffer);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.ComputerScreen.font_buffer)
+}
+
+// required uint32 buffer_ptr = 3;
+bool ComputerScreen::has_buffer_ptr() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void ComputerScreen::set_has_buffer_ptr() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void ComputerScreen::clear_has_buffer_ptr() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void ComputerScreen::clear_buffer_ptr() {
+  buffer_ptr_ = 0u;
+  clear_has_buffer_ptr();
+}
+ ::google::protobuf::uint32 ComputerScreen::buffer_ptr() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.buffer_ptr)
+  return buffer_ptr_;
+}
+ void ComputerScreen::set_buffer_ptr(::google::protobuf::uint32 value) {
+  set_has_buffer_ptr();
+  buffer_ptr_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.buffer_ptr)
+}
+
+// required uint32 font_ptr = 4;
+bool ComputerScreen::has_font_ptr() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void ComputerScreen::set_has_font_ptr() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void ComputerScreen::clear_has_font_ptr() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void ComputerScreen::clear_font_ptr() {
+  font_ptr_ = 0u;
+  clear_has_font_ptr();
+}
+ ::google::protobuf::uint32 ComputerScreen::font_ptr() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.font_ptr)
+  return font_ptr_;
+}
+ void ComputerScreen::set_font_ptr(::google::protobuf::uint32 value) {
+  set_has_font_ptr();
+  font_ptr_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.font_ptr)
+}
+
+// required uint32 vsync_msg = 5;
+bool ComputerScreen::has_vsync_msg() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void ComputerScreen::set_has_vsync_msg() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void ComputerScreen::clear_has_vsync_msg() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+void ComputerScreen::clear_vsync_msg() {
+  vsync_msg_ = 0u;
+  clear_has_vsync_msg();
+}
+ ::google::protobuf::uint32 ComputerScreen::vsync_msg() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.vsync_msg)
+  return vsync_msg_;
+}
+ void ComputerScreen::set_vsync_msg(::google::protobuf::uint32 value) {
+  set_has_vsync_msg();
+  vsync_msg_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.vsync_msg)
+}
+
+// required uint32 a = 6;
+bool ComputerScreen::has_a() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+void ComputerScreen::set_has_a() {
+  _has_bits_[0] |= 0x00000020u;
+}
+void ComputerScreen::clear_has_a() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+void ComputerScreen::clear_a() {
+  a_ = 0u;
+  clear_has_a();
+}
+ ::google::protobuf::uint32 ComputerScreen::a() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.a)
+  return a_;
+}
+ void ComputerScreen::set_a(::google::protobuf::uint32 value) {
+  set_has_a();
+  a_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.a)
+}
+
+// required uint32 b = 7;
+bool ComputerScreen::has_b() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+void ComputerScreen::set_has_b() {
+  _has_bits_[0] |= 0x00000040u;
+}
+void ComputerScreen::clear_has_b() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+void ComputerScreen::clear_b() {
+  b_ = 0u;
+  clear_has_b();
+}
+ ::google::protobuf::uint32 ComputerScreen::b() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.b)
+  return b_;
+}
+ void ComputerScreen::set_b(::google::protobuf::uint32 value) {
+  set_has_b();
+  b_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.b)
+}
+
+// required uint32 d = 8;
+bool ComputerScreen::has_d() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+void ComputerScreen::set_has_d() {
+  _has_bits_[0] |= 0x00000080u;
+}
+void ComputerScreen::clear_has_d() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+void ComputerScreen::clear_d() {
+  d_ = 0u;
+  clear_has_d();
+}
+ ::google::protobuf::uint32 ComputerScreen::d() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.d)
+  return d_;
+}
+ void ComputerScreen::set_d(::google::protobuf::uint32 value) {
+  set_has_d();
+  d_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.d)
+}
+
+// required uint32 e = 9;
+bool ComputerScreen::has_e() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+void ComputerScreen::set_has_e() {
+  _has_bits_[0] |= 0x00000100u;
+}
+void ComputerScreen::clear_has_e() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+void ComputerScreen::clear_e() {
+  e_ = 0u;
+  clear_has_e();
+}
+ ::google::protobuf::uint32 ComputerScreen::e() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.e)
+  return e_;
+}
+ void ComputerScreen::set_e(::google::protobuf::uint32 value) {
+  set_has_e();
+  e_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.e)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int Computer_Device::kSlotFieldNumber;
+const int Computer_Device::kComputerScreenFieldNumber;
+#endif  // !_MSC_VER
+
+Computer_Device::Computer_Device()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Computer.Device)
+}
+
+void Computer_Device::InitAsDefaultInstance() {
+  Computer_Device_default_oneof_instance_->computerscreen_ = const_cast< ::tec::proto::ComputerScreen*>(&::tec::proto::ComputerScreen::default_instance());
+}
+
+Computer_Device::Computer_Device(const Computer_Device& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Computer.Device)
+}
+
+void Computer_Device::SharedCtor() {
+  _cached_size_ = 0;
+  slot_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  clear_has_device();
+}
+
+Computer_Device::~Computer_Device() {
+  // @@protoc_insertion_point(destructor:tec.proto.Computer.Device)
+  SharedDtor();
+}
+
+void Computer_Device::SharedDtor() {
+  if (has_device()) {
+    clear_device();
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void Computer_Device::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Computer_Device::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Computer_Device_descriptor_;
+}
+
+const Computer_Device& Computer_Device::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Computer_Device* Computer_Device::default_instance_ = NULL;
+
+Computer_Device* Computer_Device::New(::google::protobuf::Arena* arena) const {
+  Computer_Device* n = new Computer_Device;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Computer_Device::clear_device() {
+  switch(device_case()) {
+    case kComputerScreen: {
+      delete device_.computerscreen_;
+      break;
+    }
+    case DEVICE_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = DEVICE_NOT_SET;
+}
+
+
+void Computer_Device::Clear() {
+  slot_ = 0u;
+  clear_device();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Computer_Device::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Computer.Device)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 slot = 1;
+      case 1: {
+        if (tag == 8) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &slot_)));
+          set_has_slot();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(18)) goto parse_computerScreen;
+        break;
+      }
+
+      // optional .tec.proto.ComputerScreen computerScreen = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_computerScreen:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_computerscreen()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Computer.Device)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Computer.Device)
+  return false;
+#undef DO_
+}
+
+void Computer_Device::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Computer.Device)
+  // required uint32 slot = 1;
+  if (has_slot()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->slot(), output);
+  }
+
+  // optional .tec.proto.ComputerScreen computerScreen = 2;
+  if (has_computerscreen()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      2, *device_.computerscreen_, output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Computer.Device)
+}
+
+::google::protobuf::uint8* Computer_Device::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Computer.Device)
+  // required uint32 slot = 1;
+  if (has_slot()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->slot(), target);
+  }
+
+  // optional .tec.proto.ComputerScreen computerScreen = 2;
+  if (has_computerscreen()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        2, *device_.computerscreen_, target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Computer.Device)
+  return target;
+}
+
+int Computer_Device::ByteSize() const {
+  int total_size = 0;
+
+  // required uint32 slot = 1;
+  if (has_slot()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->slot());
+  }
+  switch (device_case()) {
+    // optional .tec.proto.ComputerScreen computerScreen = 2;
+    case kComputerScreen: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *device_.computerscreen_);
+      break;
+    }
+    case DEVICE_NOT_SET: {
+      break;
+    }
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Computer_Device::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Computer_Device* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Computer_Device>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Computer_Device::MergeFrom(const Computer_Device& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  switch (from.device_case()) {
+    case kComputerScreen: {
+      mutable_computerscreen()->::tec::proto::ComputerScreen::MergeFrom(from.computerscreen());
+      break;
+    }
+    case DEVICE_NOT_SET: {
+      break;
+    }
+  }
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_slot()) {
+      set_slot(from.slot());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Computer_Device::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Computer_Device::CopyFrom(const Computer_Device& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Computer_Device::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+
+  if (has_computerscreen()) {
+    if (!this->computerscreen().IsInitialized()) return false;
+  }
+  return true;
+}
+
+void Computer_Device::Swap(Computer_Device* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Computer_Device::InternalSwap(Computer_Device* other) {
+  std::swap(slot_, other->slot_);
+  std::swap(device_, other->device_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Computer_Device::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Computer_Device_descriptor_;
+  metadata.reflection = Computer_Device_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#ifndef _MSC_VER
+const int Computer_CPU_TR3200::kRegistersFieldNumber;
+const int Computer_CPU_TR3200::kPcFieldNumber;
+const int Computer_CPU_TR3200::kWaitCyclesFieldNumber;
+const int Computer_CPU_TR3200::kIntMsgFieldNumber;
+const int Computer_CPU_TR3200::kInterruptFieldNumber;
+const int Computer_CPU_TR3200::kStepModeFieldNumber;
+const int Computer_CPU_TR3200::kSkipingFieldNumber;
+const int Computer_CPU_TR3200::kSleepingFieldNumber;
+#endif  // !_MSC_VER
+
+Computer_CPU_TR3200::Computer_CPU_TR3200()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Computer.CPU.TR3200)
+}
+
+void Computer_CPU_TR3200::InitAsDefaultInstance() {
+}
+
+Computer_CPU_TR3200::Computer_CPU_TR3200(const Computer_CPU_TR3200& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Computer.CPU.TR3200)
+}
+
+void Computer_CPU_TR3200::SharedCtor() {
+  _cached_size_ = 0;
+  pc_ = 0u;
+  wait_cycles_ = 0u;
+  int_msg_ = 0u;
+  interrupt_ = false;
+  step_mode_ = false;
+  skiping_ = false;
+  sleeping_ = false;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Computer_CPU_TR3200::~Computer_CPU_TR3200() {
+  // @@protoc_insertion_point(destructor:tec.proto.Computer.CPU.TR3200)
+  SharedDtor();
+}
+
+void Computer_CPU_TR3200::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void Computer_CPU_TR3200::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Computer_CPU_TR3200::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Computer_CPU_TR3200_descriptor_;
+}
+
+const Computer_CPU_TR3200& Computer_CPU_TR3200::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Computer_CPU_TR3200* Computer_CPU_TR3200::default_instance_ = NULL;
+
+Computer_CPU_TR3200* Computer_CPU_TR3200::New(::google::protobuf::Arena* arena) const {
+  Computer_CPU_TR3200* n = new Computer_CPU_TR3200;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Computer_CPU_TR3200::Clear() {
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<Computer_CPU_TR3200*>(16)->f)
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 254u) {
+    ZR_(pc_, sleeping_);
+  }
+
+#undef ZR_HELPER_
+#undef ZR_
+
+  registers_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Computer_CPU_TR3200::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Computer.CPU.TR3200)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated uint32 registers = 1;
+      case 1: {
+        if (tag == 8) {
+         parse_registers:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 1, 8, input, this->mutable_registers())));
+        } else if (tag == 10) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, this->mutable_registers())));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(8)) goto parse_registers;
+        if (input->ExpectTag(16)) goto parse_pc;
+        break;
+      }
+
+      // required uint32 pc = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_pc:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &pc_)));
+          set_has_pc();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_wait_cycles;
+        break;
+      }
+
+      // required uint32 wait_cycles = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_wait_cycles:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &wait_cycles_)));
+          set_has_wait_cycles();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_int_msg;
+        break;
+      }
+
+      // required uint32 int_msg = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_int_msg:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &int_msg_)));
+          set_has_int_msg();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(40)) goto parse_interrupt;
+        break;
+      }
+
+      // required bool interrupt = 5;
+      case 5: {
+        if (tag == 40) {
+         parse_interrupt:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &interrupt_)));
+          set_has_interrupt();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(48)) goto parse_step_mode;
+        break;
+      }
+
+      // required bool step_mode = 6;
+      case 6: {
+        if (tag == 48) {
+         parse_step_mode:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &step_mode_)));
+          set_has_step_mode();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(56)) goto parse_skiping;
+        break;
+      }
+
+      // required bool skiping = 7;
+      case 7: {
+        if (tag == 56) {
+         parse_skiping:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &skiping_)));
+          set_has_skiping();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(64)) goto parse_sleeping;
+        break;
+      }
+
+      // required bool sleeping = 8;
+      case 8: {
+        if (tag == 64) {
+         parse_sleeping:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   bool, ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>(
+                 input, &sleeping_)));
+          set_has_sleeping();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Computer.CPU.TR3200)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Computer.CPU.TR3200)
+  return false;
+#undef DO_
+}
+
+void Computer_CPU_TR3200::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Computer.CPU.TR3200)
+  // repeated uint32 registers = 1;
+  for (int i = 0; i < this->registers_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(
+      1, this->registers(i), output);
+  }
+
+  // required uint32 pc = 2;
+  if (has_pc()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->pc(), output);
+  }
+
+  // required uint32 wait_cycles = 3;
+  if (has_wait_cycles()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->wait_cycles(), output);
+  }
+
+  // required uint32 int_msg = 4;
+  if (has_int_msg()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->int_msg(), output);
+  }
+
+  // required bool interrupt = 5;
+  if (has_interrupt()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(5, this->interrupt(), output);
+  }
+
+  // required bool step_mode = 6;
+  if (has_step_mode()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(6, this->step_mode(), output);
+  }
+
+  // required bool skiping = 7;
+  if (has_skiping()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(7, this->skiping(), output);
+  }
+
+  // required bool sleeping = 8;
+  if (has_sleeping()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBool(8, this->sleeping(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Computer.CPU.TR3200)
+}
+
+::google::protobuf::uint8* Computer_CPU_TR3200::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Computer.CPU.TR3200)
+  // repeated uint32 registers = 1;
+  for (int i = 0; i < this->registers_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteUInt32ToArray(1, this->registers(i), target);
+  }
+
+  // required uint32 pc = 2;
+  if (has_pc()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->pc(), target);
+  }
+
+  // required uint32 wait_cycles = 3;
+  if (has_wait_cycles()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->wait_cycles(), target);
+  }
+
+  // required uint32 int_msg = 4;
+  if (has_int_msg()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->int_msg(), target);
+  }
+
+  // required bool interrupt = 5;
+  if (has_interrupt()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(5, this->interrupt(), target);
+  }
+
+  // required bool step_mode = 6;
+  if (has_step_mode()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(6, this->step_mode(), target);
+  }
+
+  // required bool skiping = 7;
+  if (has_skiping()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(7, this->skiping(), target);
+  }
+
+  // required bool sleeping = 8;
+  if (has_sleeping()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(8, this->sleeping(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Computer.CPU.TR3200)
+  return target;
+}
+
+int Computer_CPU_TR3200::RequiredFieldsByteSizeFallback() const {
+  int total_size = 0;
+
+  if (has_pc()) {
+    // required uint32 pc = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->pc());
+  }
+
+  if (has_wait_cycles()) {
+    // required uint32 wait_cycles = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->wait_cycles());
+  }
+
+  if (has_int_msg()) {
+    // required uint32 int_msg = 4;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->int_msg());
+  }
+
+  if (has_interrupt()) {
+    // required bool interrupt = 5;
+    total_size += 1 + 1;
+  }
+
+  if (has_step_mode()) {
+    // required bool step_mode = 6;
+    total_size += 1 + 1;
+  }
+
+  if (has_skiping()) {
+    // required bool skiping = 7;
+    total_size += 1 + 1;
+  }
+
+  if (has_sleeping()) {
+    // required bool sleeping = 8;
+    total_size += 1 + 1;
+  }
+
+  return total_size;
+}
+int Computer_CPU_TR3200::ByteSize() const {
+  int total_size = 0;
+
+  if (((_has_bits_[0] & 0x000000fe) ^ 0x000000fe) == 0) {  // All required fields are present.
+    // required uint32 pc = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->pc());
+
+    // required uint32 wait_cycles = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->wait_cycles());
+
+    // required uint32 int_msg = 4;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->int_msg());
+
+    // required bool interrupt = 5;
+    total_size += 1 + 1;
+
+    // required bool step_mode = 6;
+    total_size += 1 + 1;
+
+    // required bool skiping = 7;
+    total_size += 1 + 1;
+
+    // required bool sleeping = 8;
+    total_size += 1 + 1;
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
+  // repeated uint32 registers = 1;
+  {
+    int data_size = 0;
+    for (int i = 0; i < this->registers_size(); i++) {
+      data_size += ::google::protobuf::internal::WireFormatLite::
+        UInt32Size(this->registers(i));
+    }
+    total_size += 1 * this->registers_size() + data_size;
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Computer_CPU_TR3200::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Computer_CPU_TR3200* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Computer_CPU_TR3200>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Computer_CPU_TR3200::MergeFrom(const Computer_CPU_TR3200& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  registers_.MergeFrom(from.registers_);
+  if (from._has_bits_[1 / 32] & (0xffu << (1 % 32))) {
+    if (from.has_pc()) {
+      set_pc(from.pc());
+    }
+    if (from.has_wait_cycles()) {
+      set_wait_cycles(from.wait_cycles());
+    }
+    if (from.has_int_msg()) {
+      set_int_msg(from.int_msg());
+    }
+    if (from.has_interrupt()) {
+      set_interrupt(from.interrupt());
+    }
+    if (from.has_step_mode()) {
+      set_step_mode(from.step_mode());
+    }
+    if (from.has_skiping()) {
+      set_skiping(from.skiping());
+    }
+    if (from.has_sleeping()) {
+      set_sleeping(from.sleeping());
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Computer_CPU_TR3200::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Computer_CPU_TR3200::CopyFrom(const Computer_CPU_TR3200& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Computer_CPU_TR3200::IsInitialized() const {
+  if ((_has_bits_[0] & 0x000000fe) != 0x000000fe) return false;
+
+  return true;
+}
+
+void Computer_CPU_TR3200::Swap(Computer_CPU_TR3200* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Computer_CPU_TR3200::InternalSwap(Computer_CPU_TR3200* other) {
+  registers_.UnsafeArenaSwap(&other->registers_);
+  std::swap(pc_, other->pc_);
+  std::swap(wait_cycles_, other->wait_cycles_);
+  std::swap(int_msg_, other->int_msg_);
+  std::swap(interrupt_, other->interrupt_);
+  std::swap(step_mode_, other->step_mode_);
+  std::swap(skiping_, other->skiping_);
+  std::swap(sleeping_, other->sleeping_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Computer_CPU_TR3200::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Computer_CPU_TR3200_descriptor_;
+  metadata.reflection = Computer_CPU_TR3200_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#ifndef _MSC_VER
+const int Computer_CPU::kTr3200FieldNumber;
+#endif  // !_MSC_VER
+
+Computer_CPU::Computer_CPU()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Computer.CPU)
+}
+
+void Computer_CPU::InitAsDefaultInstance() {
+  Computer_CPU_default_oneof_instance_->tr3200_ = const_cast< ::tec::proto::Computer_CPU_TR3200*>(&::tec::proto::Computer_CPU_TR3200::default_instance());
+}
+
+Computer_CPU::Computer_CPU(const Computer_CPU& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Computer.CPU)
+}
+
+void Computer_CPU::SharedCtor() {
+  _cached_size_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  clear_has_cpu();
+}
+
+Computer_CPU::~Computer_CPU() {
+  // @@protoc_insertion_point(destructor:tec.proto.Computer.CPU)
+  SharedDtor();
+}
+
+void Computer_CPU::SharedDtor() {
+  if (has_cpu()) {
+    clear_cpu();
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void Computer_CPU::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Computer_CPU::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Computer_CPU_descriptor_;
+}
+
+const Computer_CPU& Computer_CPU::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Computer_CPU* Computer_CPU::default_instance_ = NULL;
+
+Computer_CPU* Computer_CPU::New(::google::protobuf::Arena* arena) const {
+  Computer_CPU* n = new Computer_CPU;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Computer_CPU::clear_cpu() {
+  switch(cpu_case()) {
+    case kTr3200: {
+      delete cpu_.tr3200_;
+      break;
+    }
+    case CPU_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[0] = CPU_NOT_SET;
+}
+
+
+void Computer_CPU::Clear() {
+  clear_cpu();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Computer_CPU::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Computer.CPU)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_tr3200()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Computer.CPU)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Computer.CPU)
+  return false;
+#undef DO_
+}
+
+void Computer_CPU::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Computer.CPU)
+  // optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+  if (has_tr3200()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, *cpu_.tr3200_, output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Computer.CPU)
+}
+
+::google::protobuf::uint8* Computer_CPU::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Computer.CPU)
+  // optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+  if (has_tr3200()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        1, *cpu_.tr3200_, target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Computer.CPU)
+  return target;
+}
+
+int Computer_CPU::ByteSize() const {
+  int total_size = 0;
+
+  switch (cpu_case()) {
+    // optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+    case kTr3200: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *cpu_.tr3200_);
+      break;
+    }
+    case CPU_NOT_SET: {
+      break;
+    }
+  }
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Computer_CPU::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Computer_CPU* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Computer_CPU>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Computer_CPU::MergeFrom(const Computer_CPU& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  switch (from.cpu_case()) {
+    case kTr3200: {
+      mutable_tr3200()->::tec::proto::Computer_CPU_TR3200::MergeFrom(from.tr3200());
+      break;
+    }
+    case CPU_NOT_SET: {
+      break;
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Computer_CPU::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Computer_CPU::CopyFrom(const Computer_CPU& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Computer_CPU::IsInitialized() const {
+
+  if (has_tr3200()) {
+    if (!this->tr3200().IsInitialized()) return false;
+  }
+  return true;
+}
+
+void Computer_CPU::Swap(Computer_CPU* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Computer_CPU::InternalSwap(Computer_CPU* other) {
+  std::swap(cpu_, other->cpu_);
+  std::swap(_oneof_case_[0], other->_oneof_case_[0]);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Computer_CPU::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Computer_CPU_descriptor_;
+  metadata.reflection = Computer_CPU_reflection_;
+  return metadata;
+}
+
+
+// -------------------------------------------------------------------
+
+#ifndef _MSC_VER
+const int Computer::kDevicesFieldNumber;
+const int Computer::kRamFieldNumber;
+const int Computer::kCpuFieldNumber;
+const int Computer::kRomFileFieldNumber;
+#endif  // !_MSC_VER
+
+Computer::Computer()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:tec.proto.Computer)
+}
+
+void Computer::InitAsDefaultInstance() {
+  cpu_ = const_cast< ::tec::proto::Computer_CPU*>(&::tec::proto::Computer_CPU::default_instance());
+}
+
+Computer::Computer(const Computer& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:tec.proto.Computer)
+}
+
+void Computer::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+  ram_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  cpu_ = NULL;
+  rom_file_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Computer::~Computer() {
+  // @@protoc_insertion_point(destructor:tec.proto.Computer)
+  SharedDtor();
+}
+
+void Computer::SharedDtor() {
+  ram_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  rom_file_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != default_instance_) {
+    delete cpu_;
+  }
+}
+
+void Computer::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Computer::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Computer_descriptor_;
+}
+
+const Computer& Computer::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_components_2eproto();
+  return *default_instance_;
+}
+
+Computer* Computer::default_instance_ = NULL;
+
+Computer* Computer::New(::google::protobuf::Arena* arena) const {
+  Computer* n = new Computer;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void Computer::Clear() {
+  if (_has_bits_[0 / 32] & 14u) {
+    if (has_ram()) {
+      ram_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    }
+    if (has_cpu()) {
+      if (cpu_ != NULL) cpu_->::tec::proto::Computer_CPU::Clear();
+    }
+    if (has_rom_file()) {
+      rom_file_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    }
+  }
+  devices_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  if (_internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->Clear();
+  }
+}
+
+bool Computer::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:tec.proto.Computer)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated .tec.proto.Computer.Device devices = 1;
+      case 1: {
+        if (tag == 10) {
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_devices:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+                input, add_devices()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(10)) goto parse_loop_devices;
+        input->UnsafeDecrementRecursionDepth();
+        if (input->ExpectTag(18)) goto parse_ram;
+        break;
+      }
+
+      // required bytes ram = 2;
+      case 2: {
+        if (tag == 18) {
+         parse_ram:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_ram()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(26)) goto parse_cpu;
+        break;
+      }
+
+      // required .tec.proto.Computer.CPU cpu = 3;
+      case 3: {
+        if (tag == 26) {
+         parse_cpu:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_cpu()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_rom_file;
+        break;
+      }
+
+      // optional string rom_file = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_rom_file:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_rom_file()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->rom_file().data(), this->rom_file().length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "tec.proto.Computer.rom_file");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:tec.proto.Computer)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:tec.proto.Computer)
+  return false;
+#undef DO_
+}
+
+void Computer::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:tec.proto.Computer)
+  // repeated .tec.proto.Computer.Device devices = 1;
+  for (unsigned int i = 0, n = this->devices_size(); i < n; i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->devices(i), output);
+  }
+
+  // required bytes ram = 2;
+  if (has_ram()) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      2, this->ram(), output);
+  }
+
+  // required .tec.proto.Computer.CPU cpu = 3;
+  if (has_cpu()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      3, *this->cpu_, output);
+  }
+
+  // optional string rom_file = 4;
+  if (has_rom_file()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->rom_file().data(), this->rom_file().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.Computer.rom_file");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      4, this->rom_file(), output);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+  // @@protoc_insertion_point(serialize_end:tec.proto.Computer)
+}
+
+::google::protobuf::uint8* Computer::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:tec.proto.Computer)
+  // repeated .tec.proto.Computer.Device devices = 1;
+  for (unsigned int i = 0, n = this->devices_size(); i < n; i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        1, this->devices(i), target);
+  }
+
+  // required bytes ram = 2;
+  if (has_ram()) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        2, this->ram(), target);
+  }
+
+  // required .tec.proto.Computer.CPU cpu = 3;
+  if (has_cpu()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        3, *this->cpu_, target);
+  }
+
+  // optional string rom_file = 4;
+  if (has_rom_file()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->rom_file().data(), this->rom_file().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "tec.proto.Computer.rom_file");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->rom_file(), target);
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:tec.proto.Computer)
+  return target;
+}
+
+int Computer::RequiredFieldsByteSizeFallback() const {
+  int total_size = 0;
+
+  if (has_ram()) {
+    // required bytes ram = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->ram());
+  }
+
+  if (has_cpu()) {
+    // required .tec.proto.Computer.CPU cpu = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->cpu_);
+  }
+
+  return total_size;
+}
+int Computer::ByteSize() const {
+  int total_size = 0;
+
+  if (((_has_bits_[0] & 0x00000006) ^ 0x00000006) == 0) {  // All required fields are present.
+    // required bytes ram = 2;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->ram());
+
+    // required .tec.proto.Computer.CPU cpu = 3;
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        *this->cpu_);
+
+  } else {
+    total_size += RequiredFieldsByteSizeFallback();
+  }
+  // optional string rom_file = 4;
+  if (has_rom_file()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->rom_file());
+  }
+
+  // repeated .tec.proto.Computer.Device devices = 1;
+  total_size += 1 * this->devices_size();
+  for (int i = 0; i < this->devices_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->devices(i));
+  }
+
+  if (_internal_metadata_.have_unknown_fields()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Computer::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const Computer* source = 
+      ::google::protobuf::internal::DynamicCastToGenerated<const Computer>(
+          &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Computer::MergeFrom(const Computer& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  devices_.MergeFrom(from.devices_);
+  if (from._has_bits_[1 / 32] & (0xffu << (1 % 32))) {
+    if (from.has_ram()) {
+      set_has_ram();
+      ram_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.ram_);
+    }
+    if (from.has_cpu()) {
+      mutable_cpu()->::tec::proto::Computer_CPU::MergeFrom(from.cpu());
+    }
+    if (from.has_rom_file()) {
+      set_has_rom_file();
+      rom_file_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.rom_file_);
+    }
+  }
+  if (from._internal_metadata_.have_unknown_fields()) {
+    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+  }
+}
+
+void Computer::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Computer::CopyFrom(const Computer& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Computer::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000006) != 0x00000006) return false;
+
+  if (!::google::protobuf::internal::AllAreInitialized(this->devices())) return false;
+  if (has_cpu()) {
+    if (!this->cpu_->IsInitialized()) return false;
+  }
+  return true;
+}
+
+void Computer::Swap(Computer* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void Computer::InternalSwap(Computer* other) {
+  devices_.UnsafeArenaSwap(&other->devices_);
+  ram_.Swap(&other->ram_);
+  std::swap(cpu_, other->cpu_);
+  rom_file_.Swap(&other->rom_file_);
+  std::swap(_has_bits_[0], other->_has_bits_[0]);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata Computer::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Computer_descriptor_;
+  metadata.reflection = Computer_reflection_;
+  return metadata;
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Computer_Device
+
+// required uint32 slot = 1;
+bool Computer_Device::has_slot() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+void Computer_Device::set_has_slot() {
+  _has_bits_[0] |= 0x00000001u;
+}
+void Computer_Device::clear_has_slot() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+void Computer_Device::clear_slot() {
+  slot_ = 0u;
+  clear_has_slot();
+}
+ ::google::protobuf::uint32 Computer_Device::slot() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.Device.slot)
+  return slot_;
+}
+ void Computer_Device::set_slot(::google::protobuf::uint32 value) {
+  set_has_slot();
+  slot_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.Device.slot)
+}
+
+// optional .tec.proto.ComputerScreen computerScreen = 2;
+bool Computer_Device::has_computerscreen() const {
+  return device_case() == kComputerScreen;
+}
+void Computer_Device::set_has_computerscreen() {
+  _oneof_case_[0] = kComputerScreen;
+}
+void Computer_Device::clear_computerscreen() {
+  if (has_computerscreen()) {
+    delete device_.computerscreen_;
+    clear_has_device();
+  }
+}
+ const ::tec::proto::ComputerScreen& Computer_Device::computerscreen() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.Device.computerScreen)
+  return has_computerscreen() ? *device_.computerscreen_
+                      : ::tec::proto::ComputerScreen::default_instance();
+}
+ ::tec::proto::ComputerScreen* Computer_Device::mutable_computerscreen() {
+  if (!has_computerscreen()) {
+    clear_device();
+    set_has_computerscreen();
+    device_.computerscreen_ = new ::tec::proto::ComputerScreen;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.Device.computerScreen)
+  return device_.computerscreen_;
+}
+ ::tec::proto::ComputerScreen* Computer_Device::release_computerscreen() {
+  if (has_computerscreen()) {
+    clear_has_device();
+    ::tec::proto::ComputerScreen* temp = device_.computerscreen_;
+    device_.computerscreen_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Computer_Device::set_allocated_computerscreen(::tec::proto::ComputerScreen* computerscreen) {
+  clear_device();
+  if (computerscreen) {
+    set_has_computerscreen();
+    device_.computerscreen_ = computerscreen;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.Device.computerScreen)
+}
+
+bool Computer_Device::has_device() const {
+  return device_case() != DEVICE_NOT_SET;
+}
+void Computer_Device::clear_has_device() {
+  _oneof_case_[0] = DEVICE_NOT_SET;
+}
+Computer_Device::DeviceCase Computer_Device::device_case() const {
+  return Computer_Device::DeviceCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// Computer_CPU_TR3200
+
+// repeated uint32 registers = 1;
+int Computer_CPU_TR3200::registers_size() const {
+  return registers_.size();
+}
+void Computer_CPU_TR3200::clear_registers() {
+  registers_.Clear();
+}
+ ::google::protobuf::uint32 Computer_CPU_TR3200::registers(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.registers)
+  return registers_.Get(index);
+}
+ void Computer_CPU_TR3200::set_registers(int index, ::google::protobuf::uint32 value) {
+  registers_.Set(index, value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.registers)
+}
+ void Computer_CPU_TR3200::add_registers(::google::protobuf::uint32 value) {
+  registers_.Add(value);
+  // @@protoc_insertion_point(field_add:tec.proto.Computer.CPU.TR3200.registers)
+}
+ const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+Computer_CPU_TR3200::registers() const {
+  // @@protoc_insertion_point(field_list:tec.proto.Computer.CPU.TR3200.registers)
+  return registers_;
+}
+ ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+Computer_CPU_TR3200::mutable_registers() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.Computer.CPU.TR3200.registers)
+  return &registers_;
+}
+
+// required uint32 pc = 2;
+bool Computer_CPU_TR3200::has_pc() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Computer_CPU_TR3200::set_has_pc() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Computer_CPU_TR3200::clear_has_pc() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Computer_CPU_TR3200::clear_pc() {
+  pc_ = 0u;
+  clear_has_pc();
+}
+ ::google::protobuf::uint32 Computer_CPU_TR3200::pc() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.pc)
+  return pc_;
+}
+ void Computer_CPU_TR3200::set_pc(::google::protobuf::uint32 value) {
+  set_has_pc();
+  pc_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.pc)
+}
+
+// required uint32 wait_cycles = 3;
+bool Computer_CPU_TR3200::has_wait_cycles() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Computer_CPU_TR3200::set_has_wait_cycles() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Computer_CPU_TR3200::clear_has_wait_cycles() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Computer_CPU_TR3200::clear_wait_cycles() {
+  wait_cycles_ = 0u;
+  clear_has_wait_cycles();
+}
+ ::google::protobuf::uint32 Computer_CPU_TR3200::wait_cycles() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.wait_cycles)
+  return wait_cycles_;
+}
+ void Computer_CPU_TR3200::set_wait_cycles(::google::protobuf::uint32 value) {
+  set_has_wait_cycles();
+  wait_cycles_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.wait_cycles)
+}
+
+// required uint32 int_msg = 4;
+bool Computer_CPU_TR3200::has_int_msg() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void Computer_CPU_TR3200::set_has_int_msg() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void Computer_CPU_TR3200::clear_has_int_msg() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void Computer_CPU_TR3200::clear_int_msg() {
+  int_msg_ = 0u;
+  clear_has_int_msg();
+}
+ ::google::protobuf::uint32 Computer_CPU_TR3200::int_msg() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.int_msg)
+  return int_msg_;
+}
+ void Computer_CPU_TR3200::set_int_msg(::google::protobuf::uint32 value) {
+  set_has_int_msg();
+  int_msg_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.int_msg)
+}
+
+// required bool interrupt = 5;
+bool Computer_CPU_TR3200::has_interrupt() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void Computer_CPU_TR3200::set_has_interrupt() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void Computer_CPU_TR3200::clear_has_interrupt() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+void Computer_CPU_TR3200::clear_interrupt() {
+  interrupt_ = false;
+  clear_has_interrupt();
+}
+ bool Computer_CPU_TR3200::interrupt() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.interrupt)
+  return interrupt_;
+}
+ void Computer_CPU_TR3200::set_interrupt(bool value) {
+  set_has_interrupt();
+  interrupt_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.interrupt)
+}
+
+// required bool step_mode = 6;
+bool Computer_CPU_TR3200::has_step_mode() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+void Computer_CPU_TR3200::set_has_step_mode() {
+  _has_bits_[0] |= 0x00000020u;
+}
+void Computer_CPU_TR3200::clear_has_step_mode() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+void Computer_CPU_TR3200::clear_step_mode() {
+  step_mode_ = false;
+  clear_has_step_mode();
+}
+ bool Computer_CPU_TR3200::step_mode() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.step_mode)
+  return step_mode_;
+}
+ void Computer_CPU_TR3200::set_step_mode(bool value) {
+  set_has_step_mode();
+  step_mode_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.step_mode)
+}
+
+// required bool skiping = 7;
+bool Computer_CPU_TR3200::has_skiping() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+void Computer_CPU_TR3200::set_has_skiping() {
+  _has_bits_[0] |= 0x00000040u;
+}
+void Computer_CPU_TR3200::clear_has_skiping() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+void Computer_CPU_TR3200::clear_skiping() {
+  skiping_ = false;
+  clear_has_skiping();
+}
+ bool Computer_CPU_TR3200::skiping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.skiping)
+  return skiping_;
+}
+ void Computer_CPU_TR3200::set_skiping(bool value) {
+  set_has_skiping();
+  skiping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.skiping)
+}
+
+// required bool sleeping = 8;
+bool Computer_CPU_TR3200::has_sleeping() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+void Computer_CPU_TR3200::set_has_sleeping() {
+  _has_bits_[0] |= 0x00000080u;
+}
+void Computer_CPU_TR3200::clear_has_sleeping() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+void Computer_CPU_TR3200::clear_sleeping() {
+  sleeping_ = false;
+  clear_has_sleeping();
+}
+ bool Computer_CPU_TR3200::sleeping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.sleeping)
+  return sleeping_;
+}
+ void Computer_CPU_TR3200::set_sleeping(bool value) {
+  set_has_sleeping();
+  sleeping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.sleeping)
+}
+
+// -------------------------------------------------------------------
+
+// Computer_CPU
+
+// optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+bool Computer_CPU::has_tr3200() const {
+  return cpu_case() == kTr3200;
+}
+void Computer_CPU::set_has_tr3200() {
+  _oneof_case_[0] = kTr3200;
+}
+void Computer_CPU::clear_tr3200() {
+  if (has_tr3200()) {
+    delete cpu_.tr3200_;
+    clear_has_cpu();
+  }
+}
+ const ::tec::proto::Computer_CPU_TR3200& Computer_CPU::tr3200() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.tr3200)
+  return has_tr3200() ? *cpu_.tr3200_
+                      : ::tec::proto::Computer_CPU_TR3200::default_instance();
+}
+ ::tec::proto::Computer_CPU_TR3200* Computer_CPU::mutable_tr3200() {
+  if (!has_tr3200()) {
+    clear_cpu();
+    set_has_tr3200();
+    cpu_.tr3200_ = new ::tec::proto::Computer_CPU_TR3200;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.CPU.tr3200)
+  return cpu_.tr3200_;
+}
+ ::tec::proto::Computer_CPU_TR3200* Computer_CPU::release_tr3200() {
+  if (has_tr3200()) {
+    clear_has_cpu();
+    ::tec::proto::Computer_CPU_TR3200* temp = cpu_.tr3200_;
+    cpu_.tr3200_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Computer_CPU::set_allocated_tr3200(::tec::proto::Computer_CPU_TR3200* tr3200) {
+  clear_cpu();
+  if (tr3200) {
+    set_has_tr3200();
+    cpu_.tr3200_ = tr3200;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.CPU.tr3200)
+}
+
+bool Computer_CPU::has_cpu() const {
+  return cpu_case() != CPU_NOT_SET;
+}
+void Computer_CPU::clear_has_cpu() {
+  _oneof_case_[0] = CPU_NOT_SET;
+}
+Computer_CPU::CpuCase Computer_CPU::cpu_case() const {
+  return Computer_CPU::CpuCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// Computer
+
+// repeated .tec.proto.Computer.Device devices = 1;
+int Computer::devices_size() const {
+  return devices_.size();
+}
+void Computer::clear_devices() {
+  devices_.Clear();
+}
+ const ::tec::proto::Computer_Device& Computer::devices(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.devices)
+  return devices_.Get(index);
+}
+ ::tec::proto::Computer_Device* Computer::mutable_devices(int index) {
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.devices)
+  return devices_.Mutable(index);
+}
+ ::tec::proto::Computer_Device* Computer::add_devices() {
+  // @@protoc_insertion_point(field_add:tec.proto.Computer.devices)
+  return devices_.Add();
+}
+ const ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >&
+Computer::devices() const {
+  // @@protoc_insertion_point(field_list:tec.proto.Computer.devices)
+  return devices_;
+}
+ ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >*
+Computer::mutable_devices() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.Computer.devices)
+  return &devices_;
+}
+
+// required bytes ram = 2;
+bool Computer::has_ram() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+void Computer::set_has_ram() {
+  _has_bits_[0] |= 0x00000002u;
+}
+void Computer::clear_has_ram() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+void Computer::clear_ram() {
+  ram_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_ram();
+}
+ const ::std::string& Computer::ram() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.ram)
+  return ram_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Computer::set_ram(const ::std::string& value) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.ram)
+}
+ void Computer::set_ram(const char* value) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Computer.ram)
+}
+ void Computer::set_ram(const void* value, size_t size) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Computer.ram)
+}
+ ::std::string* Computer::mutable_ram() {
+  set_has_ram();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.ram)
+  return ram_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Computer::release_ram() {
+  clear_has_ram();
+  return ram_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Computer::set_allocated_ram(::std::string* ram) {
+  if (ram != NULL) {
+    set_has_ram();
+  } else {
+    clear_has_ram();
+  }
+  ram_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ram);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.ram)
+}
+
+// required .tec.proto.Computer.CPU cpu = 3;
+bool Computer::has_cpu() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+void Computer::set_has_cpu() {
+  _has_bits_[0] |= 0x00000004u;
+}
+void Computer::clear_has_cpu() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+void Computer::clear_cpu() {
+  if (cpu_ != NULL) cpu_->::tec::proto::Computer_CPU::Clear();
+  clear_has_cpu();
+}
+ const ::tec::proto::Computer_CPU& Computer::cpu() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.cpu)
+  return cpu_ != NULL ? *cpu_ : *default_instance_->cpu_;
+}
+ ::tec::proto::Computer_CPU* Computer::mutable_cpu() {
+  set_has_cpu();
+  if (cpu_ == NULL) {
+    cpu_ = new ::tec::proto::Computer_CPU;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.cpu)
+  return cpu_;
+}
+ ::tec::proto::Computer_CPU* Computer::release_cpu() {
+  clear_has_cpu();
+  ::tec::proto::Computer_CPU* temp = cpu_;
+  cpu_ = NULL;
+  return temp;
+}
+ void Computer::set_allocated_cpu(::tec::proto::Computer_CPU* cpu) {
+  delete cpu_;
+  cpu_ = cpu;
+  if (cpu) {
+    set_has_cpu();
+  } else {
+    clear_has_cpu();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.cpu)
+}
+
+// optional string rom_file = 4;
+bool Computer::has_rom_file() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+void Computer::set_has_rom_file() {
+  _has_bits_[0] |= 0x00000008u;
+}
+void Computer::clear_has_rom_file() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+void Computer::clear_rom_file() {
+  rom_file_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_rom_file();
+}
+ const ::std::string& Computer::rom_file() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.rom_file)
+  return rom_file_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Computer::set_rom_file(const ::std::string& value) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.rom_file)
+}
+ void Computer::set_rom_file(const char* value) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Computer.rom_file)
+}
+ void Computer::set_rom_file(const char* value, size_t size) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Computer.rom_file)
+}
+ ::std::string* Computer::mutable_rom_file() {
+  set_has_rom_file();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.rom_file)
+  return rom_file_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Computer::release_rom_file() {
+  clear_has_rom_file();
+  return rom_file_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Computer::set_allocated_rom_file(::std::string* rom_file) {
+  if (rom_file != NULL) {
+    set_has_rom_file();
+  } else {
+    clear_has_rom_file();
+  }
+  rom_file_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), rom_file);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.rom_file)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int Component::kRenderableFieldNumber;
 const int Component::kPositionFieldNumber;
 const int Component::kOrientationFieldNumber;
@@ -8594,6 +11712,7 @@ const int Component::kPointLightFieldNumber;
 const int Component::kDirectionalLightFieldNumber;
 const int Component::kSpotLightFieldNumber;
 const int Component::kVoxelVolumeFieldNumber;
+const int Component::kComputerFieldNumber;
 #endif  // !_MSC_VER
 
 Component::Component()
@@ -8616,6 +11735,7 @@ void Component::InitAsDefaultInstance() {
   Component_default_oneof_instance_->directionallight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
   Component_default_oneof_instance_->spotlight_ = const_cast< ::tec::proto::Light*>(&::tec::proto::Light::default_instance());
   Component_default_oneof_instance_->voxelvolume_ = const_cast< ::tec::proto::VoxelVolumen*>(&::tec::proto::VoxelVolumen::default_instance());
+  Component_default_oneof_instance_->computer_ = const_cast< ::tec::proto::Computer*>(&::tec::proto::Computer::default_instance());
 }
 
 Component::Component(const Component& from)
@@ -8722,6 +11842,10 @@ void Component::clear_component() {
     }
     case kVoxelVolume: {
       delete component_.voxelvolume_;
+      break;
+    }
+    case kComputer: {
+      delete component_.computer_;
       break;
     }
     case COMPONENT_NOT_SET: {
@@ -8914,6 +12038,19 @@ bool Component::MergePartialFromCodedStream(
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(114)) goto parse_computer;
+        break;
+      }
+
+      // optional .tec.proto.Computer computer = 14;
+      case 14: {
+        if (tag == 114) {
+         parse_computer:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_computer()));
+        } else {
+          goto handle_unusual;
+        }
         if (input->ExpectAtEnd()) goto success;
         break;
       }
@@ -9021,6 +12158,12 @@ void Component::SerializeWithCachedSizes(
       13, *component_.voxelvolume_, output);
   }
 
+  // optional .tec.proto.Computer computer = 14;
+  if (has_computer()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      14, *component_.computer_, output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -9120,6 +12263,13 @@ void Component::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         13, *component_.voxelvolume_, target);
+  }
+
+  // optional .tec.proto.Computer computer = 14;
+  if (has_computer()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        14, *component_.computer_, target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -9225,6 +12375,13 @@ int Component::ByteSize() const {
           *component_.voxelvolume_);
       break;
     }
+    // optional .tec.proto.Computer computer = 14;
+    case kComputer: {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *component_.computer_);
+      break;
+    }
     case COMPONENT_NOT_SET: {
       break;
     }
@@ -9307,6 +12464,10 @@ void Component::MergeFrom(const Component& from) {
       mutable_voxelvolume()->::tec::proto::VoxelVolumen::MergeFrom(from.voxelvolume());
       break;
     }
+    case kComputer: {
+      mutable_computer()->::tec::proto::Computer::MergeFrom(from.computer());
+      break;
+    }
     case COMPONENT_NOT_SET: {
       break;
     }
@@ -9335,6 +12496,9 @@ bool Component::IsInitialized() const {
   }
   if (has_collision_body()) {
     if (!this->collision_body().IsInitialized()) return false;
+  }
+  if (has_computer()) {
+    if (!this->computer().IsInitialized()) return false;
   }
   return true;
 }
@@ -9958,6 +13122,52 @@ void Component::clear_voxelvolume() {
     component_.voxelvolume_ = voxelvolume;
   }
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.voxelVolume)
+}
+
+// optional .tec.proto.Computer computer = 14;
+bool Component::has_computer() const {
+  return component_case() == kComputer;
+}
+void Component::set_has_computer() {
+  _oneof_case_[0] = kComputer;
+}
+void Component::clear_computer() {
+  if (has_computer()) {
+    delete component_.computer_;
+    clear_has_component();
+  }
+}
+ const ::tec::proto::Computer& Component::computer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.computer)
+  return has_computer() ? *component_.computer_
+                      : ::tec::proto::Computer::default_instance();
+}
+ ::tec::proto::Computer* Component::mutable_computer() {
+  if (!has_computer()) {
+    clear_component();
+    set_has_computer();
+    component_.computer_ = new ::tec::proto::Computer;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.computer)
+  return component_.computer_;
+}
+ ::tec::proto::Computer* Component::release_computer() {
+  if (has_computer()) {
+    clear_has_component();
+    ::tec::proto::Computer* temp = component_.computer_;
+    component_.computer_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+ void Component::set_allocated_computer(::tec::proto::Computer* computer) {
+  clear_component();
+  if (computer) {
+    set_has_computer();
+    component_.computer_ = computer;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.computer)
 }
 
 bool Component::has_component() const {

@@ -91,8 +91,9 @@ namespace tec {
 		SetupComponent<AudioSource>();
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();
-		ComponentUpdateSystem<VoxelVolume>::Initialize();
+		SetupComponent<Computer>();
 		ComponentUpdateSystem<ComputerScreen>::Initialize();
+		ComponentUpdateSystem<VoxelVolume>::Initialize();
 		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
 
@@ -102,7 +103,8 @@ namespace tec {
 			FilePath path(fname);
 			if (path.isAbsolutePath()) {
 				T::Create(fname);
-			} else {
+			}
+			else {
 				T::Create(FilePath::GetAssetPath(fname));
 			}
 		};
@@ -116,8 +118,8 @@ namespace tec {
 
 	void BuildTestEntities() {
 		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
 		};
 		auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
 
@@ -126,31 +128,31 @@ namespace tec {
 		debug_fill->SetDrawElementsMode(GL_LINES);
 
 		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
 		};
 		auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
 
 		auto deferred_pl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
 		};
 		auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
 
 		auto deferred_dl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
 		};
 		auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
 
-		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > { 
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
+		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
 		};
 		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_pl_shader_files);
 
 		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
 		};
 		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 
@@ -196,32 +198,19 @@ namespace tec {
 
 		{
 			Entity vidstand(101);
-			std::shared_ptr<ComputerScreen> screen = std::make_shared<ComputerScreen>();
-			vidstand.Add(screen);
 			std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
 			vidstand.Add(keybaord);
 
 			VComputerCommand add_devoces(
-				[screen, keybaord] (VComputerSystem* vcomputer) {
-				vcomputer->AddComputer(101);
-				if (vcomputer->LoadROMFile(101, FilePath::GetAssetPath("asm/type1.ffi").toString() )) {
-					vcomputer->SetDevice(101, 5, screen->device);
-					vcomputer->SetDevice(101, 1, keybaord->device);
-					vcomputer->TurnComptuerOn(101);
-				}
-				else {
-					vcomputer->RemoveComputer(101);
+				[keybaord] (VComputerSystem* vcomputer) {
+				if (vcomputer->LoadROMFile(101, FilePath::GetAssetPath("asm/type1.ffi").toString())) {
+					vcomputer->SetDevice(101, 1, keybaord);
 				}
 			});
 			VComputerSystem::QueueCommand(std::move(add_devoces));
 		}
-
-		{
-			Entity camera(1);
-			camera.Add<Velocity>();
-		}
 	}
-	
+
 	// NOTE : This would be change on a future, not ? Actually is loading/saving from assets (where not is supposed to be write by a user)
 
 	void ProtoLoadEntity(const FilePath& fname) {
@@ -238,14 +227,15 @@ namespace tec {
 					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
 				}
 			}
-		} else {
-			_log->error() << "[ProtoLoadEntity] Error opening "<< fname.FileName() <<" file. Can't find it";
+		}
+		else {
+			_log->error() << "[ProtoLoadEntity] Error opening " << fname.FileName() << " file. Can't find it";
 		}
 	}
 
 	void ProtoLoad() {
 		const std::string file("test.proto");
-		
+
 		auto _log = spdlog::get("console_log");
 		FilePath fname = FilePath::GetAssetPath(file);
 		if (fname.isValidPath() && fname.FileExists()) {
@@ -257,14 +247,15 @@ namespace tec {
 				FilePath entity_filename = FilePath::GetAssetPath(elist.entity_file_list(i));
 				ProtoLoadEntity(entity_filename);
 			}
-		} else {
-			_log->error() << "[ProtoLoad] Error opening "<< fname.FileName() <<" file. Can't find it\n";
+		}
+		else {
+			_log->error() << "[ProtoLoad] Error opening " << fname.FileName() << " file. Can't find it\n";
 		}
 	}
 
 	void ProtoSave() {
 		const std::string file("test.proto");
-		
+
 		auto _log = spdlog::get("console_log");
 		FilePath fname = FilePath::GetAssetPath("test.proto");
 		if (fname.isValidPath()) {
@@ -284,9 +275,10 @@ namespace tec {
 				elist.add_entity_file_list(fname);
 			}
 			elist.SerializeToOstream(&output);
-		} else {
+		}
+		else {
 			_log->error() << "Error opening test.proto file. Invalid path: " << fname << "\n";
 		}
-		
+
 	}
 }

@@ -55,6 +55,11 @@ class Light;
 class Light_Attenuation;
 class Light_Direction;
 class VoxelVolumen;
+class ComputerScreen;
+class Computer;
+class Computer_Device;
+class Computer_CPU;
+class Computer_CPU_TR3200;
 class Component;
 class Entity;
 class EntityFileList;
@@ -2154,6 +2159,715 @@ class VoxelVolumen : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class ComputerScreen : public ::google::protobuf::Message {
+ public:
+  ComputerScreen();
+  virtual ~ComputerScreen();
+
+  ComputerScreen(const ComputerScreen& from);
+
+  inline ComputerScreen& operator=(const ComputerScreen& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ComputerScreen& default_instance();
+
+  void Swap(ComputerScreen* other);
+
+  // implements Message ----------------------------------------------
+
+  inline ComputerScreen* New() const { return New(NULL); }
+
+  ComputerScreen* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const ComputerScreen& from);
+  void MergeFrom(const ComputerScreen& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(ComputerScreen* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required bytes text_buffer = 1;
+  bool has_text_buffer() const;
+  void clear_text_buffer();
+  static const int kTextBufferFieldNumber = 1;
+  const ::std::string& text_buffer() const;
+  void set_text_buffer(const ::std::string& value);
+  void set_text_buffer(const char* value);
+  void set_text_buffer(const void* value, size_t size);
+  ::std::string* mutable_text_buffer();
+  ::std::string* release_text_buffer();
+  void set_allocated_text_buffer(::std::string* text_buffer);
+
+  // required bytes font_buffer = 2;
+  bool has_font_buffer() const;
+  void clear_font_buffer();
+  static const int kFontBufferFieldNumber = 2;
+  const ::std::string& font_buffer() const;
+  void set_font_buffer(const ::std::string& value);
+  void set_font_buffer(const char* value);
+  void set_font_buffer(const void* value, size_t size);
+  ::std::string* mutable_font_buffer();
+  ::std::string* release_font_buffer();
+  void set_allocated_font_buffer(::std::string* font_buffer);
+
+  // required uint32 buffer_ptr = 3;
+  bool has_buffer_ptr() const;
+  void clear_buffer_ptr();
+  static const int kBufferPtrFieldNumber = 3;
+  ::google::protobuf::uint32 buffer_ptr() const;
+  void set_buffer_ptr(::google::protobuf::uint32 value);
+
+  // required uint32 font_ptr = 4;
+  bool has_font_ptr() const;
+  void clear_font_ptr();
+  static const int kFontPtrFieldNumber = 4;
+  ::google::protobuf::uint32 font_ptr() const;
+  void set_font_ptr(::google::protobuf::uint32 value);
+
+  // required uint32 vsync_msg = 5;
+  bool has_vsync_msg() const;
+  void clear_vsync_msg();
+  static const int kVsyncMsgFieldNumber = 5;
+  ::google::protobuf::uint32 vsync_msg() const;
+  void set_vsync_msg(::google::protobuf::uint32 value);
+
+  // required uint32 a = 6;
+  bool has_a() const;
+  void clear_a();
+  static const int kAFieldNumber = 6;
+  ::google::protobuf::uint32 a() const;
+  void set_a(::google::protobuf::uint32 value);
+
+  // required uint32 b = 7;
+  bool has_b() const;
+  void clear_b();
+  static const int kBFieldNumber = 7;
+  ::google::protobuf::uint32 b() const;
+  void set_b(::google::protobuf::uint32 value);
+
+  // required uint32 d = 8;
+  bool has_d() const;
+  void clear_d();
+  static const int kDFieldNumber = 8;
+  ::google::protobuf::uint32 d() const;
+  void set_d(::google::protobuf::uint32 value);
+
+  // required uint32 e = 9;
+  bool has_e() const;
+  void clear_e();
+  static const int kEFieldNumber = 9;
+  ::google::protobuf::uint32 e() const;
+  void set_e(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.ComputerScreen)
+ private:
+  inline void set_has_text_buffer();
+  inline void clear_has_text_buffer();
+  inline void set_has_font_buffer();
+  inline void clear_has_font_buffer();
+  inline void set_has_buffer_ptr();
+  inline void clear_has_buffer_ptr();
+  inline void set_has_font_ptr();
+  inline void clear_has_font_ptr();
+  inline void set_has_vsync_msg();
+  inline void clear_has_vsync_msg();
+  inline void set_has_a();
+  inline void clear_has_a();
+  inline void set_has_b();
+  inline void clear_has_b();
+  inline void set_has_d();
+  inline void clear_has_d();
+  inline void set_has_e();
+  inline void clear_has_e();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr text_buffer_;
+  ::google::protobuf::internal::ArenaStringPtr font_buffer_;
+  ::google::protobuf::uint32 buffer_ptr_;
+  ::google::protobuf::uint32 font_ptr_;
+  ::google::protobuf::uint32 vsync_msg_;
+  ::google::protobuf::uint32 a_;
+  ::google::protobuf::uint32 b_;
+  ::google::protobuf::uint32 d_;
+  ::google::protobuf::uint32 e_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static ComputerScreen* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer_Device : public ::google::protobuf::Message {
+ public:
+  Computer_Device();
+  virtual ~Computer_Device();
+
+  Computer_Device(const Computer_Device& from);
+
+  inline Computer_Device& operator=(const Computer_Device& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer_Device& default_instance();
+
+  enum DeviceCase {
+    kComputerScreen = 2,
+    DEVICE_NOT_SET = 0,
+  };
+
+  void Swap(Computer_Device* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer_Device* New() const { return New(NULL); }
+
+  Computer_Device* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer_Device& from);
+  void MergeFrom(const Computer_Device& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer_Device* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 slot = 1;
+  bool has_slot() const;
+  void clear_slot();
+  static const int kSlotFieldNumber = 1;
+  ::google::protobuf::uint32 slot() const;
+  void set_slot(::google::protobuf::uint32 value);
+
+  // optional .tec.proto.ComputerScreen computerScreen = 2;
+  bool has_computerscreen() const;
+  void clear_computerscreen();
+  static const int kComputerScreenFieldNumber = 2;
+  const ::tec::proto::ComputerScreen& computerscreen() const;
+  ::tec::proto::ComputerScreen* mutable_computerscreen();
+  ::tec::proto::ComputerScreen* release_computerscreen();
+  void set_allocated_computerscreen(::tec::proto::ComputerScreen* computerscreen);
+
+  DeviceCase device_case() const;
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer.Device)
+ private:
+  inline void set_has_slot();
+  inline void clear_has_slot();
+  inline void set_has_computerscreen();
+
+  inline bool has_device() const;
+  void clear_device();
+  inline void clear_has_device();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 slot_;
+  union DeviceUnion {
+    DeviceUnion() {}
+    ::tec::proto::ComputerScreen* computerscreen_;
+  } device_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer_Device* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer_CPU_TR3200 : public ::google::protobuf::Message {
+ public:
+  Computer_CPU_TR3200();
+  virtual ~Computer_CPU_TR3200();
+
+  Computer_CPU_TR3200(const Computer_CPU_TR3200& from);
+
+  inline Computer_CPU_TR3200& operator=(const Computer_CPU_TR3200& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer_CPU_TR3200& default_instance();
+
+  void Swap(Computer_CPU_TR3200* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer_CPU_TR3200* New() const { return New(NULL); }
+
+  Computer_CPU_TR3200* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer_CPU_TR3200& from);
+  void MergeFrom(const Computer_CPU_TR3200& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer_CPU_TR3200* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint32 registers = 1;
+  int registers_size() const;
+  void clear_registers();
+  static const int kRegistersFieldNumber = 1;
+  ::google::protobuf::uint32 registers(int index) const;
+  void set_registers(int index, ::google::protobuf::uint32 value);
+  void add_registers(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      registers() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_registers();
+
+  // required uint32 pc = 2;
+  bool has_pc() const;
+  void clear_pc();
+  static const int kPcFieldNumber = 2;
+  ::google::protobuf::uint32 pc() const;
+  void set_pc(::google::protobuf::uint32 value);
+
+  // required uint32 wait_cycles = 3;
+  bool has_wait_cycles() const;
+  void clear_wait_cycles();
+  static const int kWaitCyclesFieldNumber = 3;
+  ::google::protobuf::uint32 wait_cycles() const;
+  void set_wait_cycles(::google::protobuf::uint32 value);
+
+  // required uint32 int_msg = 4;
+  bool has_int_msg() const;
+  void clear_int_msg();
+  static const int kIntMsgFieldNumber = 4;
+  ::google::protobuf::uint32 int_msg() const;
+  void set_int_msg(::google::protobuf::uint32 value);
+
+  // required bool interrupt = 5;
+  bool has_interrupt() const;
+  void clear_interrupt();
+  static const int kInterruptFieldNumber = 5;
+  bool interrupt() const;
+  void set_interrupt(bool value);
+
+  // required bool step_mode = 6;
+  bool has_step_mode() const;
+  void clear_step_mode();
+  static const int kStepModeFieldNumber = 6;
+  bool step_mode() const;
+  void set_step_mode(bool value);
+
+  // required bool skiping = 7;
+  bool has_skiping() const;
+  void clear_skiping();
+  static const int kSkipingFieldNumber = 7;
+  bool skiping() const;
+  void set_skiping(bool value);
+
+  // required bool sleeping = 8;
+  bool has_sleeping() const;
+  void clear_sleeping();
+  static const int kSleepingFieldNumber = 8;
+  bool sleeping() const;
+  void set_sleeping(bool value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer.CPU.TR3200)
+ private:
+  inline void set_has_pc();
+  inline void clear_has_pc();
+  inline void set_has_wait_cycles();
+  inline void clear_has_wait_cycles();
+  inline void set_has_int_msg();
+  inline void clear_has_int_msg();
+  inline void set_has_interrupt();
+  inline void clear_has_interrupt();
+  inline void set_has_step_mode();
+  inline void clear_has_step_mode();
+  inline void set_has_skiping();
+  inline void clear_has_skiping();
+  inline void set_has_sleeping();
+  inline void clear_has_sleeping();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > registers_;
+  ::google::protobuf::uint32 pc_;
+  ::google::protobuf::uint32 wait_cycles_;
+  ::google::protobuf::uint32 int_msg_;
+  bool interrupt_;
+  bool step_mode_;
+  bool skiping_;
+  bool sleeping_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer_CPU_TR3200* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer_CPU : public ::google::protobuf::Message {
+ public:
+  Computer_CPU();
+  virtual ~Computer_CPU();
+
+  Computer_CPU(const Computer_CPU& from);
+
+  inline Computer_CPU& operator=(const Computer_CPU& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer_CPU& default_instance();
+
+  enum CpuCase {
+    kTr3200 = 1,
+    CPU_NOT_SET = 0,
+  };
+
+  void Swap(Computer_CPU* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer_CPU* New() const { return New(NULL); }
+
+  Computer_CPU* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer_CPU& from);
+  void MergeFrom(const Computer_CPU& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer_CPU* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Computer_CPU_TR3200 TR3200;
+
+  // accessors -------------------------------------------------------
+
+  // optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+  bool has_tr3200() const;
+  void clear_tr3200();
+  static const int kTr3200FieldNumber = 1;
+  const ::tec::proto::Computer_CPU_TR3200& tr3200() const;
+  ::tec::proto::Computer_CPU_TR3200* mutable_tr3200();
+  ::tec::proto::Computer_CPU_TR3200* release_tr3200();
+  void set_allocated_tr3200(::tec::proto::Computer_CPU_TR3200* tr3200);
+
+  CpuCase cpu_case() const;
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer.CPU)
+ private:
+  inline void set_has_tr3200();
+
+  inline bool has_cpu() const;
+  void clear_cpu();
+  inline void clear_has_cpu();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  union CpuUnion {
+    CpuUnion() {}
+    ::tec::proto::Computer_CPU_TR3200* tr3200_;
+  } cpu_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer_CPU* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer : public ::google::protobuf::Message {
+ public:
+  Computer();
+  virtual ~Computer();
+
+  Computer(const Computer& from);
+
+  inline Computer& operator=(const Computer& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer& default_instance();
+
+  void Swap(Computer* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer* New() const { return New(NULL); }
+
+  Computer* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer& from);
+  void MergeFrom(const Computer& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Computer_Device Device;
+  typedef Computer_CPU CPU;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .tec.proto.Computer.Device devices = 1;
+  int devices_size() const;
+  void clear_devices();
+  static const int kDevicesFieldNumber = 1;
+  const ::tec::proto::Computer_Device& devices(int index) const;
+  ::tec::proto::Computer_Device* mutable_devices(int index);
+  ::tec::proto::Computer_Device* add_devices();
+  const ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >&
+      devices() const;
+  ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >*
+      mutable_devices();
+
+  // required bytes ram = 2;
+  bool has_ram() const;
+  void clear_ram();
+  static const int kRamFieldNumber = 2;
+  const ::std::string& ram() const;
+  void set_ram(const ::std::string& value);
+  void set_ram(const char* value);
+  void set_ram(const void* value, size_t size);
+  ::std::string* mutable_ram();
+  ::std::string* release_ram();
+  void set_allocated_ram(::std::string* ram);
+
+  // required .tec.proto.Computer.CPU cpu = 3;
+  bool has_cpu() const;
+  void clear_cpu();
+  static const int kCpuFieldNumber = 3;
+  const ::tec::proto::Computer_CPU& cpu() const;
+  ::tec::proto::Computer_CPU* mutable_cpu();
+  ::tec::proto::Computer_CPU* release_cpu();
+  void set_allocated_cpu(::tec::proto::Computer_CPU* cpu);
+
+  // optional string rom_file = 4;
+  bool has_rom_file() const;
+  void clear_rom_file();
+  static const int kRomFileFieldNumber = 4;
+  const ::std::string& rom_file() const;
+  void set_rom_file(const ::std::string& value);
+  void set_rom_file(const char* value);
+  void set_rom_file(const char* value, size_t size);
+  ::std::string* mutable_rom_file();
+  ::std::string* release_rom_file();
+  void set_allocated_rom_file(::std::string* rom_file);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer)
+ private:
+  inline void set_has_ram();
+  inline void clear_has_ram();
+  inline void set_has_cpu();
+  inline void clear_has_cpu();
+  inline void set_has_rom_file();
+  inline void clear_has_rom_file();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device > devices_;
+  ::google::protobuf::internal::ArenaStringPtr ram_;
+  ::tec::proto::Computer_CPU* cpu_;
+  ::google::protobuf::internal::ArenaStringPtr rom_file_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -2191,6 +2905,7 @@ class Component : public ::google::protobuf::Message {
     kDirectionalLight = 11,
     kSpotLight = 12,
     kVoxelVolume = 13,
+    kComputer = 14,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -2352,6 +3067,15 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::VoxelVolumen* release_voxelvolume();
   void set_allocated_voxelvolume(::tec::proto::VoxelVolumen* voxelvolume);
 
+  // optional .tec.proto.Computer computer = 14;
+  bool has_computer() const;
+  void clear_computer();
+  static const int kComputerFieldNumber = 14;
+  const ::tec::proto::Computer& computer() const;
+  ::tec::proto::Computer* mutable_computer();
+  ::tec::proto::Computer* release_computer();
+  void set_allocated_computer(::tec::proto::Computer* computer);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
@@ -2368,6 +3092,7 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_directionallight();
   inline void set_has_spotlight();
   inline void set_has_voxelvolume();
+  inline void set_has_computer();
 
   inline bool has_component() const;
   void clear_component();
@@ -2391,6 +3116,7 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::Light* directionallight_;
     ::tec::proto::Light* spotlight_;
     ::tec::proto::VoxelVolumen* voxelvolume_;
+    ::tec::proto::Computer* computer_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -4384,6 +5110,811 @@ inline void VoxelVolumen::set_dummy(float value) {
 
 // -------------------------------------------------------------------
 
+// ComputerScreen
+
+// required bytes text_buffer = 1;
+inline bool ComputerScreen::has_text_buffer() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void ComputerScreen::set_has_text_buffer() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void ComputerScreen::clear_has_text_buffer() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void ComputerScreen::clear_text_buffer() {
+  text_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_text_buffer();
+}
+inline const ::std::string& ComputerScreen::text_buffer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.text_buffer)
+  return text_buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_text_buffer(const ::std::string& value) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.text_buffer)
+}
+inline void ComputerScreen::set_text_buffer(const char* value) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.ComputerScreen.text_buffer)
+}
+inline void ComputerScreen::set_text_buffer(const void* value, size_t size) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.ComputerScreen.text_buffer)
+}
+inline ::std::string* ComputerScreen::mutable_text_buffer() {
+  set_has_text_buffer();
+  // @@protoc_insertion_point(field_mutable:tec.proto.ComputerScreen.text_buffer)
+  return text_buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* ComputerScreen::release_text_buffer() {
+  clear_has_text_buffer();
+  return text_buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_allocated_text_buffer(::std::string* text_buffer) {
+  if (text_buffer != NULL) {
+    set_has_text_buffer();
+  } else {
+    clear_has_text_buffer();
+  }
+  text_buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), text_buffer);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.ComputerScreen.text_buffer)
+}
+
+// required bytes font_buffer = 2;
+inline bool ComputerScreen::has_font_buffer() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void ComputerScreen::set_has_font_buffer() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void ComputerScreen::clear_has_font_buffer() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void ComputerScreen::clear_font_buffer() {
+  font_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_font_buffer();
+}
+inline const ::std::string& ComputerScreen::font_buffer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.font_buffer)
+  return font_buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_font_buffer(const ::std::string& value) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.font_buffer)
+}
+inline void ComputerScreen::set_font_buffer(const char* value) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.ComputerScreen.font_buffer)
+}
+inline void ComputerScreen::set_font_buffer(const void* value, size_t size) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.ComputerScreen.font_buffer)
+}
+inline ::std::string* ComputerScreen::mutable_font_buffer() {
+  set_has_font_buffer();
+  // @@protoc_insertion_point(field_mutable:tec.proto.ComputerScreen.font_buffer)
+  return font_buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* ComputerScreen::release_font_buffer() {
+  clear_has_font_buffer();
+  return font_buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_allocated_font_buffer(::std::string* font_buffer) {
+  if (font_buffer != NULL) {
+    set_has_font_buffer();
+  } else {
+    clear_has_font_buffer();
+  }
+  font_buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), font_buffer);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.ComputerScreen.font_buffer)
+}
+
+// required uint32 buffer_ptr = 3;
+inline bool ComputerScreen::has_buffer_ptr() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void ComputerScreen::set_has_buffer_ptr() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void ComputerScreen::clear_has_buffer_ptr() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void ComputerScreen::clear_buffer_ptr() {
+  buffer_ptr_ = 0u;
+  clear_has_buffer_ptr();
+}
+inline ::google::protobuf::uint32 ComputerScreen::buffer_ptr() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.buffer_ptr)
+  return buffer_ptr_;
+}
+inline void ComputerScreen::set_buffer_ptr(::google::protobuf::uint32 value) {
+  set_has_buffer_ptr();
+  buffer_ptr_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.buffer_ptr)
+}
+
+// required uint32 font_ptr = 4;
+inline bool ComputerScreen::has_font_ptr() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void ComputerScreen::set_has_font_ptr() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void ComputerScreen::clear_has_font_ptr() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void ComputerScreen::clear_font_ptr() {
+  font_ptr_ = 0u;
+  clear_has_font_ptr();
+}
+inline ::google::protobuf::uint32 ComputerScreen::font_ptr() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.font_ptr)
+  return font_ptr_;
+}
+inline void ComputerScreen::set_font_ptr(::google::protobuf::uint32 value) {
+  set_has_font_ptr();
+  font_ptr_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.font_ptr)
+}
+
+// required uint32 vsync_msg = 5;
+inline bool ComputerScreen::has_vsync_msg() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void ComputerScreen::set_has_vsync_msg() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void ComputerScreen::clear_has_vsync_msg() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void ComputerScreen::clear_vsync_msg() {
+  vsync_msg_ = 0u;
+  clear_has_vsync_msg();
+}
+inline ::google::protobuf::uint32 ComputerScreen::vsync_msg() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.vsync_msg)
+  return vsync_msg_;
+}
+inline void ComputerScreen::set_vsync_msg(::google::protobuf::uint32 value) {
+  set_has_vsync_msg();
+  vsync_msg_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.vsync_msg)
+}
+
+// required uint32 a = 6;
+inline bool ComputerScreen::has_a() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void ComputerScreen::set_has_a() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void ComputerScreen::clear_has_a() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void ComputerScreen::clear_a() {
+  a_ = 0u;
+  clear_has_a();
+}
+inline ::google::protobuf::uint32 ComputerScreen::a() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.a)
+  return a_;
+}
+inline void ComputerScreen::set_a(::google::protobuf::uint32 value) {
+  set_has_a();
+  a_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.a)
+}
+
+// required uint32 b = 7;
+inline bool ComputerScreen::has_b() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void ComputerScreen::set_has_b() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void ComputerScreen::clear_has_b() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void ComputerScreen::clear_b() {
+  b_ = 0u;
+  clear_has_b();
+}
+inline ::google::protobuf::uint32 ComputerScreen::b() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.b)
+  return b_;
+}
+inline void ComputerScreen::set_b(::google::protobuf::uint32 value) {
+  set_has_b();
+  b_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.b)
+}
+
+// required uint32 d = 8;
+inline bool ComputerScreen::has_d() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void ComputerScreen::set_has_d() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void ComputerScreen::clear_has_d() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void ComputerScreen::clear_d() {
+  d_ = 0u;
+  clear_has_d();
+}
+inline ::google::protobuf::uint32 ComputerScreen::d() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.d)
+  return d_;
+}
+inline void ComputerScreen::set_d(::google::protobuf::uint32 value) {
+  set_has_d();
+  d_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.d)
+}
+
+// required uint32 e = 9;
+inline bool ComputerScreen::has_e() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void ComputerScreen::set_has_e() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void ComputerScreen::clear_has_e() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void ComputerScreen::clear_e() {
+  e_ = 0u;
+  clear_has_e();
+}
+inline ::google::protobuf::uint32 ComputerScreen::e() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.e)
+  return e_;
+}
+inline void ComputerScreen::set_e(::google::protobuf::uint32 value) {
+  set_has_e();
+  e_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.e)
+}
+
+// -------------------------------------------------------------------
+
+// Computer_Device
+
+// required uint32 slot = 1;
+inline bool Computer_Device::has_slot() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Computer_Device::set_has_slot() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Computer_Device::clear_has_slot() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Computer_Device::clear_slot() {
+  slot_ = 0u;
+  clear_has_slot();
+}
+inline ::google::protobuf::uint32 Computer_Device::slot() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.Device.slot)
+  return slot_;
+}
+inline void Computer_Device::set_slot(::google::protobuf::uint32 value) {
+  set_has_slot();
+  slot_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.Device.slot)
+}
+
+// optional .tec.proto.ComputerScreen computerScreen = 2;
+inline bool Computer_Device::has_computerscreen() const {
+  return device_case() == kComputerScreen;
+}
+inline void Computer_Device::set_has_computerscreen() {
+  _oneof_case_[0] = kComputerScreen;
+}
+inline void Computer_Device::clear_computerscreen() {
+  if (has_computerscreen()) {
+    delete device_.computerscreen_;
+    clear_has_device();
+  }
+}
+inline const ::tec::proto::ComputerScreen& Computer_Device::computerscreen() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.Device.computerScreen)
+  return has_computerscreen() ? *device_.computerscreen_
+                      : ::tec::proto::ComputerScreen::default_instance();
+}
+inline ::tec::proto::ComputerScreen* Computer_Device::mutable_computerscreen() {
+  if (!has_computerscreen()) {
+    clear_device();
+    set_has_computerscreen();
+    device_.computerscreen_ = new ::tec::proto::ComputerScreen;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.Device.computerScreen)
+  return device_.computerscreen_;
+}
+inline ::tec::proto::ComputerScreen* Computer_Device::release_computerscreen() {
+  if (has_computerscreen()) {
+    clear_has_device();
+    ::tec::proto::ComputerScreen* temp = device_.computerscreen_;
+    device_.computerscreen_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Computer_Device::set_allocated_computerscreen(::tec::proto::ComputerScreen* computerscreen) {
+  clear_device();
+  if (computerscreen) {
+    set_has_computerscreen();
+    device_.computerscreen_ = computerscreen;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.Device.computerScreen)
+}
+
+inline bool Computer_Device::has_device() const {
+  return device_case() != DEVICE_NOT_SET;
+}
+inline void Computer_Device::clear_has_device() {
+  _oneof_case_[0] = DEVICE_NOT_SET;
+}
+inline Computer_Device::DeviceCase Computer_Device::device_case() const {
+  return Computer_Device::DeviceCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// Computer_CPU_TR3200
+
+// repeated uint32 registers = 1;
+inline int Computer_CPU_TR3200::registers_size() const {
+  return registers_.size();
+}
+inline void Computer_CPU_TR3200::clear_registers() {
+  registers_.Clear();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::registers(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.registers)
+  return registers_.Get(index);
+}
+inline void Computer_CPU_TR3200::set_registers(int index, ::google::protobuf::uint32 value) {
+  registers_.Set(index, value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.registers)
+}
+inline void Computer_CPU_TR3200::add_registers(::google::protobuf::uint32 value) {
+  registers_.Add(value);
+  // @@protoc_insertion_point(field_add:tec.proto.Computer.CPU.TR3200.registers)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+Computer_CPU_TR3200::registers() const {
+  // @@protoc_insertion_point(field_list:tec.proto.Computer.CPU.TR3200.registers)
+  return registers_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+Computer_CPU_TR3200::mutable_registers() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.Computer.CPU.TR3200.registers)
+  return &registers_;
+}
+
+// required uint32 pc = 2;
+inline bool Computer_CPU_TR3200::has_pc() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_pc() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Computer_CPU_TR3200::clear_has_pc() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Computer_CPU_TR3200::clear_pc() {
+  pc_ = 0u;
+  clear_has_pc();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::pc() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.pc)
+  return pc_;
+}
+inline void Computer_CPU_TR3200::set_pc(::google::protobuf::uint32 value) {
+  set_has_pc();
+  pc_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.pc)
+}
+
+// required uint32 wait_cycles = 3;
+inline bool Computer_CPU_TR3200::has_wait_cycles() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_wait_cycles() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Computer_CPU_TR3200::clear_has_wait_cycles() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Computer_CPU_TR3200::clear_wait_cycles() {
+  wait_cycles_ = 0u;
+  clear_has_wait_cycles();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::wait_cycles() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.wait_cycles)
+  return wait_cycles_;
+}
+inline void Computer_CPU_TR3200::set_wait_cycles(::google::protobuf::uint32 value) {
+  set_has_wait_cycles();
+  wait_cycles_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.wait_cycles)
+}
+
+// required uint32 int_msg = 4;
+inline bool Computer_CPU_TR3200::has_int_msg() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_int_msg() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Computer_CPU_TR3200::clear_has_int_msg() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Computer_CPU_TR3200::clear_int_msg() {
+  int_msg_ = 0u;
+  clear_has_int_msg();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::int_msg() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.int_msg)
+  return int_msg_;
+}
+inline void Computer_CPU_TR3200::set_int_msg(::google::protobuf::uint32 value) {
+  set_has_int_msg();
+  int_msg_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.int_msg)
+}
+
+// required bool interrupt = 5;
+inline bool Computer_CPU_TR3200::has_interrupt() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_interrupt() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Computer_CPU_TR3200::clear_has_interrupt() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Computer_CPU_TR3200::clear_interrupt() {
+  interrupt_ = false;
+  clear_has_interrupt();
+}
+inline bool Computer_CPU_TR3200::interrupt() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.interrupt)
+  return interrupt_;
+}
+inline void Computer_CPU_TR3200::set_interrupt(bool value) {
+  set_has_interrupt();
+  interrupt_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.interrupt)
+}
+
+// required bool step_mode = 6;
+inline bool Computer_CPU_TR3200::has_step_mode() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_step_mode() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Computer_CPU_TR3200::clear_has_step_mode() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Computer_CPU_TR3200::clear_step_mode() {
+  step_mode_ = false;
+  clear_has_step_mode();
+}
+inline bool Computer_CPU_TR3200::step_mode() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.step_mode)
+  return step_mode_;
+}
+inline void Computer_CPU_TR3200::set_step_mode(bool value) {
+  set_has_step_mode();
+  step_mode_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.step_mode)
+}
+
+// required bool skiping = 7;
+inline bool Computer_CPU_TR3200::has_skiping() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_skiping() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Computer_CPU_TR3200::clear_has_skiping() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void Computer_CPU_TR3200::clear_skiping() {
+  skiping_ = false;
+  clear_has_skiping();
+}
+inline bool Computer_CPU_TR3200::skiping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.skiping)
+  return skiping_;
+}
+inline void Computer_CPU_TR3200::set_skiping(bool value) {
+  set_has_skiping();
+  skiping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.skiping)
+}
+
+// required bool sleeping = 8;
+inline bool Computer_CPU_TR3200::has_sleeping() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_sleeping() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Computer_CPU_TR3200::clear_has_sleeping() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Computer_CPU_TR3200::clear_sleeping() {
+  sleeping_ = false;
+  clear_has_sleeping();
+}
+inline bool Computer_CPU_TR3200::sleeping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.sleeping)
+  return sleeping_;
+}
+inline void Computer_CPU_TR3200::set_sleeping(bool value) {
+  set_has_sleeping();
+  sleeping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.sleeping)
+}
+
+// -------------------------------------------------------------------
+
+// Computer_CPU
+
+// optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+inline bool Computer_CPU::has_tr3200() const {
+  return cpu_case() == kTr3200;
+}
+inline void Computer_CPU::set_has_tr3200() {
+  _oneof_case_[0] = kTr3200;
+}
+inline void Computer_CPU::clear_tr3200() {
+  if (has_tr3200()) {
+    delete cpu_.tr3200_;
+    clear_has_cpu();
+  }
+}
+inline const ::tec::proto::Computer_CPU_TR3200& Computer_CPU::tr3200() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.tr3200)
+  return has_tr3200() ? *cpu_.tr3200_
+                      : ::tec::proto::Computer_CPU_TR3200::default_instance();
+}
+inline ::tec::proto::Computer_CPU_TR3200* Computer_CPU::mutable_tr3200() {
+  if (!has_tr3200()) {
+    clear_cpu();
+    set_has_tr3200();
+    cpu_.tr3200_ = new ::tec::proto::Computer_CPU_TR3200;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.CPU.tr3200)
+  return cpu_.tr3200_;
+}
+inline ::tec::proto::Computer_CPU_TR3200* Computer_CPU::release_tr3200() {
+  if (has_tr3200()) {
+    clear_has_cpu();
+    ::tec::proto::Computer_CPU_TR3200* temp = cpu_.tr3200_;
+    cpu_.tr3200_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Computer_CPU::set_allocated_tr3200(::tec::proto::Computer_CPU_TR3200* tr3200) {
+  clear_cpu();
+  if (tr3200) {
+    set_has_tr3200();
+    cpu_.tr3200_ = tr3200;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.CPU.tr3200)
+}
+
+inline bool Computer_CPU::has_cpu() const {
+  return cpu_case() != CPU_NOT_SET;
+}
+inline void Computer_CPU::clear_has_cpu() {
+  _oneof_case_[0] = CPU_NOT_SET;
+}
+inline Computer_CPU::CpuCase Computer_CPU::cpu_case() const {
+  return Computer_CPU::CpuCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// Computer
+
+// repeated .tec.proto.Computer.Device devices = 1;
+inline int Computer::devices_size() const {
+  return devices_.size();
+}
+inline void Computer::clear_devices() {
+  devices_.Clear();
+}
+inline const ::tec::proto::Computer_Device& Computer::devices(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.devices)
+  return devices_.Get(index);
+}
+inline ::tec::proto::Computer_Device* Computer::mutable_devices(int index) {
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.devices)
+  return devices_.Mutable(index);
+}
+inline ::tec::proto::Computer_Device* Computer::add_devices() {
+  // @@protoc_insertion_point(field_add:tec.proto.Computer.devices)
+  return devices_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >&
+Computer::devices() const {
+  // @@protoc_insertion_point(field_list:tec.proto.Computer.devices)
+  return devices_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >*
+Computer::mutable_devices() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.Computer.devices)
+  return &devices_;
+}
+
+// required bytes ram = 2;
+inline bool Computer::has_ram() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Computer::set_has_ram() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Computer::clear_has_ram() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Computer::clear_ram() {
+  ram_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_ram();
+}
+inline const ::std::string& Computer::ram() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.ram)
+  return ram_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_ram(const ::std::string& value) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.ram)
+}
+inline void Computer::set_ram(const char* value) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Computer.ram)
+}
+inline void Computer::set_ram(const void* value, size_t size) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Computer.ram)
+}
+inline ::std::string* Computer::mutable_ram() {
+  set_has_ram();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.ram)
+  return ram_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Computer::release_ram() {
+  clear_has_ram();
+  return ram_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_allocated_ram(::std::string* ram) {
+  if (ram != NULL) {
+    set_has_ram();
+  } else {
+    clear_has_ram();
+  }
+  ram_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ram);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.ram)
+}
+
+// required .tec.proto.Computer.CPU cpu = 3;
+inline bool Computer::has_cpu() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Computer::set_has_cpu() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Computer::clear_has_cpu() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Computer::clear_cpu() {
+  if (cpu_ != NULL) cpu_->::tec::proto::Computer_CPU::Clear();
+  clear_has_cpu();
+}
+inline const ::tec::proto::Computer_CPU& Computer::cpu() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.cpu)
+  return cpu_ != NULL ? *cpu_ : *default_instance_->cpu_;
+}
+inline ::tec::proto::Computer_CPU* Computer::mutable_cpu() {
+  set_has_cpu();
+  if (cpu_ == NULL) {
+    cpu_ = new ::tec::proto::Computer_CPU;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.cpu)
+  return cpu_;
+}
+inline ::tec::proto::Computer_CPU* Computer::release_cpu() {
+  clear_has_cpu();
+  ::tec::proto::Computer_CPU* temp = cpu_;
+  cpu_ = NULL;
+  return temp;
+}
+inline void Computer::set_allocated_cpu(::tec::proto::Computer_CPU* cpu) {
+  delete cpu_;
+  cpu_ = cpu;
+  if (cpu) {
+    set_has_cpu();
+  } else {
+    clear_has_cpu();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.cpu)
+}
+
+// optional string rom_file = 4;
+inline bool Computer::has_rom_file() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Computer::set_has_rom_file() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Computer::clear_has_rom_file() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Computer::clear_rom_file() {
+  rom_file_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_rom_file();
+}
+inline const ::std::string& Computer::rom_file() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.rom_file)
+  return rom_file_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_rom_file(const ::std::string& value) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.rom_file)
+}
+inline void Computer::set_rom_file(const char* value) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Computer.rom_file)
+}
+inline void Computer::set_rom_file(const char* value, size_t size) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Computer.rom_file)
+}
+inline ::std::string* Computer::mutable_rom_file() {
+  set_has_rom_file();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.rom_file)
+  return rom_file_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Computer::release_rom_file() {
+  clear_has_rom_file();
+  return rom_file_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_allocated_rom_file(::std::string* rom_file) {
+  if (rom_file != NULL) {
+    set_has_rom_file();
+  } else {
+    clear_has_rom_file();
+  }
+  rom_file_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), rom_file);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.rom_file)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -4984,6 +6515,52 @@ inline void Component::set_allocated_voxelvolume(::tec::proto::VoxelVolumen* vox
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.voxelVolume)
 }
 
+// optional .tec.proto.Computer computer = 14;
+inline bool Component::has_computer() const {
+  return component_case() == kComputer;
+}
+inline void Component::set_has_computer() {
+  _oneof_case_[0] = kComputer;
+}
+inline void Component::clear_computer() {
+  if (has_computer()) {
+    delete component_.computer_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Computer& Component::computer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.computer)
+  return has_computer() ? *component_.computer_
+                      : ::tec::proto::Computer::default_instance();
+}
+inline ::tec::proto::Computer* Component::mutable_computer() {
+  if (!has_computer()) {
+    clear_component();
+    set_has_computer();
+    component_.computer_ = new ::tec::proto::Computer;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.computer)
+  return component_.computer_;
+}
+inline ::tec::proto::Computer* Component::release_computer() {
+  if (has_computer()) {
+    clear_has_component();
+    ::tec::proto::Computer* temp = component_.computer_;
+    component_.computer_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_computer(::tec::proto::Computer* computer) {
+  clear_component();
+  if (computer) {
+    set_has_computer();
+    component_.computer_ = computer;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.computer)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -5110,6 +6687,16 @@ EntityFileList::mutable_entity_file_list() {
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

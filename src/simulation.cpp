@@ -25,15 +25,15 @@ namespace tec {
 		std::future<std::set<eid>> phys_future = std::async(std::launch::async, [&] () -> std::set < eid > {
 			return std::move(phys_sys.Update(delta_time));
 		});
-		auto vcomp_future = std::async(std::launch::async, [&] () {
+		/*auto vcomp_future = std::async(std::launch::async, [&] () {
 			vcomp_sys.Update(delta_time);
-		});
+		});*/
 		entities_updated.clear();
 		std::set<eid> phys_results = phys_future.get();
 		for (eid entity_id : phys_results) {
 			this->phys_sys.GetPosition(entity_id)->Out(&entities_updated[entity_id][GetTypeID<Position>()]);
 			this->phys_sys.GetOrientation(entity_id)->Out(&entities_updated[entity_id][GetTypeID<Orientation>()]);
 		}
-		vcomp_future.get();
+		//vcomp_future.get();
 	}
 }
