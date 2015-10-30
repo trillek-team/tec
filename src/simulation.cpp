@@ -32,7 +32,7 @@ namespace tec {
 		std::set<eid> phys_results = phys_future.get();
 		for (eid entity_id : phys_results) {
 			this->phys_sys.GetPosition(entity_id)->Out(&entities_updated[entity_id][GetTypeID<Position>()]);
-			this->phys_sys.GetOrientation(entity_id)->Out(&entities_updated[entity_id][GetTypeID<Orientation>()]);
+			//this->phys_sys.GetOrientation(entity_id)->Out(&entities_updated[entity_id][GetTypeID<Orientation>()]);
 		}
 		//vcomp_future.get();
 	}

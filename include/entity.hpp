@@ -54,6 +54,10 @@ namespace tec {
 			auto comp = std::make_shared<T>(val);
 			Update(comp);
 		}
+
+		eid GetID() {
+			return this->id;
+		}
 	private:
 		eid id;
 	};

@@ -305,16 +305,21 @@ int main(int argc, char* argv[]) {
 	});
 	gui.ShowWindow("main_menu");
 	gui.AddWindowDrawFunction("ping_times", [&connection] () {
-		ImGui::Begin("ping_times");
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+		ImGui::Begin("ping_times", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
 		static float arr[10];
 		std::list<tec::networking::ping_time_t> recent_pings = connection.GetRecentPings();
 		std::size_t i = 0;
 		for (tec::networking::ping_time_t ping : recent_pings) {
 			arr[i++] = static_cast<float>(ping);
 		}
-		ImGui::PlotHistogram("Recent Ping Times", arr, 10, 0, nullptr, 0.0f, 100.0f);
+		ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
+		ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
 		ImGui::End();
+		ImGui::SetWindowSize("ping_times", ImVec2(0, 0));
+		ImGui::PopStyleColor();
 	});
+	gui.ShowWindow("ping_times");
 	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget] () {
 		ent_tree_widget.Draw();
 	});
@@ -340,6 +345,7 @@ int main(int argc, char* argv[]) {
 		});
 
 		flistener.Update(delta);
+
 		simulation.Simulate(delta);
 		vcs.Update(delta);
 
@@ -369,7 +375,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		os.GetMousePosition(&mouse_x, &mouse_y);
-		tec::active_entity = ps.RayCastMousePick(1, mouse_x, mouse_y,
+		tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
 			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 		//ps.DebugDraw();
 

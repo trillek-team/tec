@@ -67,7 +67,7 @@ namespace tec {
 
 			std::chrono::high_resolution_clock::time_point sync_start, recv_time;
 			std::list<ping_time_t> recent_pings;
-			ping_time_t average_ping;
+			ping_time_t average_ping = 0;
 			eid client_id = 0;
 		};
 	}
