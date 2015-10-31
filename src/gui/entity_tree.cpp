@@ -30,15 +30,20 @@ namespace tec {
 		if (ImGui::Button("Add")) {
 			ImGui::OpenPopup("AddEntity");
 		}
+		static int new_entity_id = 0;
 		if (ImGui::BeginPopup("AddEntity")) {
 			ImGui::Text("ID");
 			ImGui::SameLine();
-			static int new_entity_id = 0;
 			ImGui::InputInt("##labellessInputInt", &new_entity_id);
-			if (!ImGui::IsWindowFocused() && new_entity_id != 0) {
+			ImGui::EndPopup();
+		}
+		else {
+			if (new_entity_id != 0) {
 				if (tec::entity_list.entities.find(new_entity_id) == tec::entity_list.entities.end()) {
 					tec::ReflectionEntity refentity;
 					tec::entity_list.entities[new_entity_id] = std::move(refentity);
+					ImGui::CloseCurrentPopup();
+					new_entity_id = 0;
 				}
 				else {
 					ImGui::OpenPopup("EntityExists");
@@ -53,7 +58,6 @@ namespace tec {
 					}
 				}
 			}
-			ImGui::EndPopup();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Remove")) {

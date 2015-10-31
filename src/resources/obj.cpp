@@ -196,7 +196,8 @@ namespace tec {
 				current_face_group->mtl = mtlname;
 			}
 			else if (identifier == "f") {
-				Face face;
+				Face face, face2;
+				bool quad = false;
 				std::string faceLine;
 				std::getline(ss, faceLine);
 				// Check if we have 3 vertex indices per face vertex.
@@ -211,14 +212,27 @@ namespace tec {
 					face_ss >> face.pos[0]; face_ss >> face.uv[0]; face_ss >> face.norm[0];
 					face_ss >> face.pos[1]; face_ss >> face.uv[1]; face_ss >> face.norm[1];
 					face_ss >> face.pos[2]; face_ss >> face.uv[2]; face_ss >> face.norm[2];
+					if (!face_ss.eof()) {
+						quad = true;
+						face2.pos[0] = face.pos[2]; face2.uv[0] = face.uv[2]; face2.norm[0] = face.norm[2];
+						face_ss >> face2.pos[1]; face_ss >> face2.uv[1]; face_ss >> face2.norm[1];
+						face2.pos[2] = face.pos[0]; face2.uv[2] = face.uv[0]; face2.norm[2] = face.norm[0];
+					}
 				}
 				else {
 					std::stringstream face_ss(faceLine);
 					// There is only 1 vertex index per face vertex.
 					face_ss >> face.pos[0]; face_ss >> face.pos[1]; face_ss >> face.pos[2];
+					if (!face_ss.eof()) {
+						quad = true;
+						face2.pos[0] = face.pos[2]; face_ss >> face2.pos[1]; face2.pos[2] = face.pos[0];
+					}
 				}
 				if (current_face_group) {
 					current_face_group->faces.push_back(face);
+					if (quad) {
+						current_face_group->faces.push_back(face2);
+					}
 				}
 			}
 		}
