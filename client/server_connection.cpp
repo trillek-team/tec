@@ -8,6 +8,7 @@ namespace tec {
 		const char* SERVER_PORT_STR = "41228";
 		const char* LOCAL_HOST = "127.0.0.1";
 		std::shared_ptr<spdlog::logger> ServerConnection::_log;
+		std::mutex ServerConnection::recent_ping_mutex;
 
 		ServerConnection::ServerConnection() : socket(io_service) {
 			_log = spdlog::get("console_log");
@@ -71,15 +72,18 @@ namespace tec {
 			if (!error) {
 				if (current_read_msg.GetMessageType() == SYNC) {
 					std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
-					if (this->recent_pings.size() >= 10) {
-						this->recent_pings.pop_front();
+					{
+						std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
+						if (this->recent_pings.size() >= 10) {
+							this->recent_pings.pop_front();
+						}
+						this->recent_pings.push_back(round_trip.count() / 2);
+						ping_time_t total_pings = 0;
+						for (ping_time_t ping : this->recent_pings) {
+							total_pings += ping;
+						}
+						this->average_ping = total_pings / 10;
 					}
-					this->recent_pings.push_back(round_trip.count() / 2);
-					ping_time_t total_pings = 0;
-					for (ping_time_t ping : this->recent_pings) {
-						total_pings += ping;
-					}
-					this->average_ping = total_pings / 10;
 				}
 				else if (current_read_msg.GetMessageType() == CHAT_MESSAGE) {
 					std::string msg(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());

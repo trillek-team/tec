@@ -43,6 +43,7 @@ namespace tec {
 			void Send(ServerMessage& msg);
 
 			std::list<ping_time_t> GetRecentPings() {
+				std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
 				return this->recent_pings;
 			}
 
@@ -67,6 +68,7 @@ namespace tec {
 
 			std::chrono::high_resolution_clock::time_point sync_start, recv_time;
 			std::list<ping_time_t> recent_pings;
+			static std::mutex recent_ping_mutex;
 			ping_time_t average_ping = 0;
 			eid client_id = 0;
 		};

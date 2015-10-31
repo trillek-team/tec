@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <asio.hpp>
+#include <mutex>
 #include <deque>
 #include "types.hpp"
 #include "server-message.hpp"
@@ -47,6 +48,7 @@ namespace tec {
 			Server* server;
 			eid id;
 			proto::Entity entity;
+			static std::mutex write_msg_mutex;
 		};
 	}
 }

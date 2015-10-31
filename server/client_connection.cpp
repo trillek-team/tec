@@ -1,16 +1,22 @@
 #include "server/client_connection.hpp"
 #include "server/server.hpp"
 #include <iostream>
+#include <thread>
 
 namespace tec {
 	namespace networking {
+		std::mutex ClientConnection::write_msg_mutex;
 		void ClientConnection::StartRead() {
 			read_header();
 		}
 
 		void ClientConnection::QueueWrite(const ServerMessage& msg) {
-			bool write_in_progress = !write_msgs_.empty();
-			write_msgs_.push_back(msg);
+			bool write_in_progress;
+			{
+				std::lock_guard<std::mutex> lock(write_msg_mutex);
+				write_in_progress = !write_msgs_.empty();
+				write_msgs_.push_back(msg);
+			}
 			if (!write_in_progress) {
 				do_write();
 			}
@@ -51,15 +57,19 @@ namespace tec {
 
 		void ClientConnection::do_write() {
 			auto self(shared_from_this());
+			std::lock_guard<std::mutex> lock(write_msg_mutex);
 			asio::async_write(socket,
 				asio::buffer(write_msgs_.front().GetDataPTR(),
 				write_msgs_.front().length()),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
 				if (!error) {
-					if (!write_msgs_.empty()) {
+					bool more_to_write = false;
+					{
+						std::lock_guard<std::mutex> lock(write_msg_mutex);
 						write_msgs_.pop_front();
+						more_to_write = !write_msgs_.empty();
 					}
-					if (!write_msgs_.empty()) {
+					if (more_to_write) {
 						do_write();
 					}
 				}

@@ -108,6 +108,7 @@ namespace tec {
 			if (itr->second->disable_rotation) {
 				body->setAngularFactor(btVector3(0.0, 0, 0.0));
 			}
+			this->bodies[entity_id]->setWorldTransform(itr->second->transform);
 			this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
 		}
 

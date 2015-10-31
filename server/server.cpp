@@ -11,6 +11,7 @@ using asio::ip::tcp;
 namespace tec {
 	namespace networking {
 		const int SERVER_PORT = 0xa10c;
+		std::mutex Server::recent_msgs_mutex;
 
 		Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
 			std::string message("Hello from server\n");
@@ -22,9 +23,12 @@ namespace tec {
 
 		// TODO: Implement a method to deliver a message to all clients except the source.
 		void Server::Deliver(const ServerMessage& msg) {
-			this->recent_msgs.push_back(msg);
-			while (this->recent_msgs.size() > max_recent_msgs) {
-				this->recent_msgs.pop_front();
+			{
+				std::lock_guard<std::mutex> lock(recent_msgs_mutex);
+				this->recent_msgs.push_back(msg);
+				while (this->recent_msgs.size() > max_recent_msgs) {
+					this->recent_msgs.pop_front();
+				}
 			}
 
 			for (auto client : this->clients) {
@@ -91,8 +95,11 @@ namespace tec {
 					}
 
 					clients.insert(client);
-					for (auto msg : this->recent_msgs) {
-						client->QueueWrite(msg);
+					{
+						std::lock_guard<std::mutex> lock(recent_msgs_mutex);
+						for (auto msg : this->recent_msgs) {
+							client->QueueWrite(msg);
+						}
 					}
 					client->StartRead();
 				}

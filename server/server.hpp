@@ -3,6 +3,7 @@
 #include <set>
 #include <deque>
 #include <asio.hpp>
+#include <mutex>
 #include "server-message.hpp"
 
 using asio::ip::tcp;
@@ -33,6 +34,7 @@ namespace tec {
 			std::set<std::shared_ptr<ClientConnection>> clients;
 			enum { max_recent_msgs = 100 };
 			std::deque<ServerMessage> recent_msgs;
+			static std::mutex recent_msgs_mutex;
 			std::uint64_t base_id = 10000;
 		};
 	}
