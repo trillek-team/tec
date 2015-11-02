@@ -64,9 +64,12 @@ namespace tec {
 				if (!error) {
 					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
 					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
-					FilePath def_fps_protopack = FilePath::GetAssetPath("protopacks/default_fps.proto");
-					LoadProtoPack(client->GetEntity(), def_fps_protopack);
+					FilePath self_protopack = FilePath::GetAssetPath("protopacks/self.proto");
+					FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.proto");
+					LoadProtoPack(client->GetEntity(), self_protopack);
 					client->SetID(++base_id);
+					proto::Entity other_entity;
+					LoadProtoPack(other_entity, others_protopack);
 					std::string message(std::to_string(client->GetID()));
 					static ServerMessage id_message;
 					id_message.SetMessageType(CLIENT_ID);
@@ -82,16 +85,24 @@ namespace tec {
 					client_create_msg.SetMessageType(ENTITY_CREATE);
 					client_create_msg.encode_header();
 					client->QueueWrite(client_create_msg);
+					proto::Entity& other_client_entity = other_entity;
+
+					other_entity.set_id(client->GetID());
+					ServerMessage self_client_entity_msg;
+					self_client_entity_msg.SetBodyLength(other_client_entity.ByteSize());
+					other_client_entity.SerializeToArray(self_client_entity_msg.GetBodyPTR(), self_client_entity_msg.GetBodyLength());
+					self_client_entity_msg.SetMessageType(ENTITY_CREATE);
+					self_client_entity_msg.encode_header();
 
 					for (auto other_client : clients) {
-						proto::Entity& other_client_entity = other_client->GetEntity();
+						other_entity.set_id(other_client->GetID());
 						ServerMessage other_client_entity_msg;
 						other_client_entity_msg.SetBodyLength(other_client_entity.ByteSize());
 						other_client_entity.SerializeToArray(other_client_entity_msg.GetBodyPTR(), other_client_entity_msg.GetBodyLength());
 						other_client_entity_msg.SetMessageType(ENTITY_CREATE);
 						other_client_entity_msg.encode_header();
 						client->QueueWrite(other_client_entity_msg);
-						other_client->QueueWrite(client_create_msg);
+						other_client->QueueWrite(self_client_entity_msg);
 					}
 
 					clients.insert(client);
