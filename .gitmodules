@@ -26,3 +26,6 @@
 [submodule "modules/spdlog"]
 	path = modules/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "modules/selene"]
+	path = modules/selene
+	url = https://github.com/Zardoz89/Selene.git

@@ -1,24 +1,32 @@
-#include "spdlog/spdlog.h"
-#include "graphics/shader.hpp"
-#include "graphics/material.hpp"
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
 #include "components/renderable.hpp"
+#include "components/lua-script.hpp"
+
 #include "resources/md5mesh.hpp"
 #include "resources/obj.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
+#include "resources/script-file.hpp"
+
+#include "graphics/shader.hpp"
+#include "graphics/material.hpp"
 #include "graphics/texture-object.hpp"
 #include "graphics/animation.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/view.hpp"
+
 #include "entity.hpp"
+#include "types.hpp"
+
 #include "component-update-system.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
-#include "types.hpp"
+#include "lua-system.hpp"
+
+#include <spdlog/spdlog.h>
 
 #include <iostream>
 #include <map>
@@ -28,8 +36,8 @@
 #include "../proto/components.pb.h"
 
 namespace tec {
-	std::map<proto::Component::ComponentCase, std::function<void(proto::Entity*)>> out_functors;
-	std::map<proto::Component::ComponentCase, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	std::map<tid, std::function<void(proto::Entity*)>> out_functors;
+	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
 	std::map<std::string, std::function<void(std::string)>> file_factories;
 	std::map<std::string, std::function<void(eid)>> component_factories;
@@ -37,7 +45,7 @@ namespace tec {
 
 	template <typename T>
 	void AddComponentFactory() {
-		proto::Component::ComponentCase component_case = GetComponentCase<T>();
+		auto component_case = GetTypeID<T>();
 		component_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
 			std::shared_ptr<T> comp = std::make_shared<T>();
 			Entity(entity_id).Add<T>(comp);
@@ -52,12 +60,12 @@ namespace tec {
 	}
 	template <typename T>
 	void AddInOutFunctors() {
-		in_functors[GetComponentCase<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
+		in_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
 			auto comp = std::make_shared<T>();
 			comp->In(proto_comp);
 			Entity(entity.id()).Add<T>(comp);
 		};
-		out_functors[GetComponentCase<T>()] = [ ] (proto::Entity* entity) {
+		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
 			Entity e(entity->id());
 			if (e.Has<T>()) {
 				proto::Component* comp = entity->add_components();
@@ -85,6 +93,8 @@ namespace tec {
 		SetupComponent<AudioSource>();
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();
+		SetupComponent<LuaScript>();
+		
 		ComponentUpdateSystem<VoxelVolume>::Initialize();
 		ComponentUpdateSystem<ComputerScreen>::Initialize();
 		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
@@ -106,6 +116,7 @@ namespace tec {
 		AddFileFactory<MD5Mesh>();
 		AddFileFactory<OBJ>();
 		AddFileFactory<VorbisStream>();
+		AddFileFactory<ScriptFile>();
 	}
 
 	void BuildTestEntities() {
@@ -118,7 +129,7 @@ namespace tec {
 		auto debug_fill = Material::Create("material_debug");
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
-
+		
 		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
 			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")), 
 			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
@@ -186,6 +197,8 @@ namespace tec {
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create(FilePath::GetAssetPath("bob/bob.md5mesh"));
 			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create(FilePath::GetAssetPath("bob/bob.md5anim"), mesh1);
 			bob.Add<Animation>(anim1);
+			std::shared_ptr<ScriptFile> script1 = ScriptFile::Create("Script1", FilePath::GetAssetPath("scripts/test.lua"));
+			bob.Add<LuaScript>(script1);
 		}
 
 		{

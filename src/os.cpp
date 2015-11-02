@@ -26,12 +26,15 @@ namespace tec {
 	}
 
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
-		const unsigned int glMajor /*= 3*/, const unsigned int glMinor /*= 2*/) {
+		const unsigned int glMajor /*= 3*/, const unsigned int glMinor /*= 3*/) {
+		assert(glMajor >= 3);
+		assert(glMajor*10 + glMinor >= 33);
 		glfwSetErrorCallback(ErrorCallback);
 
 		auto l = spdlog::get("console_log");
 		// Initialize the library.
 		if (glfwInit() != GL_TRUE) {
+			l->critical("[OS] Can initialize glfw");
 			return false;
 		}
 
@@ -53,6 +56,7 @@ namespace tec {
 			if (!this->window) {
 				// still not right, give up
 				glfwTerminate();
+				l->critical("[OS] Can't initialize window");
 				return false;
 			}
 		}
@@ -63,9 +67,9 @@ namespace tec {
 		// check the context version
 		std::string glcx_version((char*)glGetString(GL_VERSION));
 		std::string glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-		if (glcx_major == "1" || glcx_major == "2") {
-			// we got a version 1 context, that will not work
-			// so try again.
+		std::string glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
+		if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
+			// we got an older version of context, that will not work. So try again.
 			glfwMakeContextCurrent(nullptr);
 			glfwDestroyWindow(this->window);
 			// be more specific this time
@@ -77,6 +81,7 @@ namespace tec {
 
 			if (!this->window) {
 				glfwTerminate();
+				l->critical("[OS] Can't initialize window");
 				return false;
 			}
 			// attach the context
@@ -85,8 +90,9 @@ namespace tec {
 			// check the context version again
 			glcx_version = (char*)glGetString(GL_VERSION);
 			glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-			if (glcx_major == "1") {
-				// still 1, higher versions probably not supported
+			glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
+			if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
+				// still a invalid version. Higher versions probably not supported
 				glfwTerminate();
 				l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
 					<< "Press \"Enter\" to exit\n";
@@ -95,11 +101,31 @@ namespace tec {
 			}
 		}
 
-		const char* glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-		l->info() << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver; 
 		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
 		const char* glcx_renderer = (char*)glGetString(GL_RENDERER);
-		l->info() << glcx_vendor << " " << glcx_renderer;
+		l->info() << glcx_vendor << " - " << glcx_renderer;
+	
+		// Check that GLSL is >= 3.30
+		std::string glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+		std::string glsl_major = glcx_glslver.substr(0, glcx_glslver.find('.', 0));
+		std::string glsl_minor = glcx_glslver.substr(glcx_glslver.find('.', 0)+1, 1);
+		if (glsl_major.at(0) < '3') {
+			l->critical() << "[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : " 
+						  << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver << "\n" 
+						  << "Press \"Enter\" to exit\n";
+			std::cin.get();
+			return false;
+		} else if (glsl_major.at(0) == '3') { 
+			if (glsl_minor.at(0) < '3') {
+				l->critical() << "[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : " 
+							<< "GL version : " << glcx_version << " GLSL version : " << glcx_glslver << "\n" 
+							<< "Press \"Enter\" to exit\n";
+				std::cin.get();
+				return false;
+			}
+		}
+		
+		l->info() << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver; 
 		
 		this->client_width = width;
 		this->client_height = height;

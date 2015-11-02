@@ -30,7 +30,7 @@ namespace tec {
 		}
 
 		void Out(proto::Component* target) {
-			proto::Light* comp = target->mutable_dirlight();
+			proto::Light* comp = target->mutable_directionallight();
 			comp->set_color_x(this->color.x);
 			comp->set_color_y(this->color.y);
 			comp->set_color_z(this->color.z);
@@ -43,7 +43,7 @@ namespace tec {
 		}
 
 		void In(const proto::Component& source) {
-			const proto::Light& comp = source.dirlight();
+			const proto::Light& comp = source.directionallight();
 			if (comp.has_color_x()) {
 				this->color.x = comp.color_x();
 			}
@@ -102,7 +102,7 @@ namespace tec {
 		}
 
 		void Out(proto::Component* target) {
-			proto::Light* comp = target->mutable_light();
+			proto::Light* comp = target->mutable_pointlight();
 			comp->set_color_x(this->color.x);
 			comp->set_color_y(this->color.y);
 			comp->set_color_z(this->color.z);
@@ -115,7 +115,7 @@ namespace tec {
 		}
 
 		void In(const proto::Component& source) {
-			const proto::Light& comp = source.light();
+			const proto::Light& comp = source.pointlight();
 			if (comp.has_color_x()) {
 				this->color.x = comp.color_x();
 			}

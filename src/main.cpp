@@ -10,6 +10,7 @@
 #include "imgui-system.hpp"
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
+#include "lua-system.hpp"
 
 #include "gui/entity_tree.hpp"
 #include "gui/console.hpp"
@@ -100,7 +101,7 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing OpenGL...");
 	tec::OS os;
-	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 2);
+	os.InitializeWindow(1024, 768, "TEC 0.1", 3,3);
 	console.AddConsoleCommand( "exit", 
 		"exit : Exit from TEC",
 		[&os ] (const char* args) {
@@ -128,6 +129,9 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
+	
+	log->info("Initializing script system...");
+	tec::LuaSystem lua_sys;
 
 	tec::InitializeComponents();
 	tec::InitializeFileFactories();
@@ -216,6 +220,8 @@ int main(int argc, char* argv[]) {
 		ss_thread.join();
 		vv_thread.join();
 
+		lua_sys.Update(delta);
+		
 		camera_controller.Update(delta);
 
 		os.GetMousePosition(&mouse_x, &mouse_y);
