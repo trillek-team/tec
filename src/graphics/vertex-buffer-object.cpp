@@ -27,14 +27,14 @@ namespace tec {
 
 	const GLuint VertexBufferObject::GetIBO() { return this->ibo; }
 
-	VertexGroup* VertexBufferObject::GetVertexGroup(const size_t vertex_group_number) {
+	VertexGroup* VertexBufferObject::GetVertexGroup(const std::size_t vertex_group_number) {
 		if (vertex_group_number < this->vertex_groups.size()) {
 			return &this->vertex_groups[vertex_group_number];
 		}
 		return nullptr;
 	}
 
-	size_t VertexBufferObject::GetVertexGroupCount() const {
+	std::size_t VertexBufferObject::GetVertexGroupCount() const {
 		return this->vertex_groups.size();
 	}
 
@@ -55,9 +55,9 @@ namespace tec {
 			this->source_mesh = mesh;
 			std::vector<GLuint> all_indices;
 			std::vector<VertexData> all_verts;
-			size_t vert_offset = 0;
+			std::size_t vert_offset = 0;
 			this->vertex_groups.clear();
-			for (size_t i = 0; i < mesh->GetMeshCount(); ++i) {
+			for (std::size_t i = 0; i < mesh->GetMeshCount(); ++i) {
 				Mesh* mfmesh = mesh->GetMesh(i);
 				vert_offset = all_verts.size();
 				all_verts.insert(all_verts.end(), mfmesh->verts.begin(), mfmesh->verts.end());

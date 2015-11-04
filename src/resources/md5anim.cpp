@@ -56,7 +56,7 @@ namespace tec {
 		anim->SetFileName(fname);
 
 		if (anim->Parse()) {
-			for (size_t i = 0; i < anim->frames.size(); ++i) {
+			for (std::size_t i = 0; i < anim->frames.size(); ++i) {
 				anim->BuildFrameSkeleton(i);
 			}
 			if (anim->CheckMesh(mesh)) {
@@ -148,7 +148,7 @@ namespace tec {
 				}
 			}
 			else if (identifier == "baseframe") {
-				size_t index = 0;
+				std::size_t index = 0;
 				while (std::getline(f, line)) {
 					if ((line.find("(") != std::string::npos) && (line.find(")") != std::string::npos)) {
 						ss.str(CleanString(line));
@@ -202,7 +202,7 @@ namespace tec {
 		return true;
 	}
 
-	void MD5Anim::BuildFrameSkeleton(size_t frame_index) {
+	void MD5Anim::BuildFrameSkeleton(std::size_t frame_index) {
 		auto& frame = this->frames[frame_index];
 
 		for (const auto& joint : this->joints) {
@@ -259,7 +259,7 @@ namespace tec {
 				return false;
 			}
 
-			for (size_t i = 0; i < this->joints.size(); ++i) {
+			for (std::size_t i = 0; i < this->joints.size(); ++i) {
 				// Make sure joint names and parents match up.
 				if ((this->joints[i].name != mesh->joints[i].name) ||
 					(this->joints[i].parent != mesh->joints[i].parent)) {
@@ -272,20 +272,20 @@ namespace tec {
 		return false;
 	}
 
-	MD5Anim::FrameSkeleton MD5Anim::InterpolateSkeletons(size_t frame_index_start,
-		size_t frame_index_end, float delta) {
+	MD5Anim::FrameSkeleton MD5Anim::InterpolateSkeletons(std::size_t frame_index_start,
+		std::size_t frame_index_end, float delta) {
 		const auto& skeleton0 = this->frames[frame_index_start].skeleton;
 		const auto& skeleton1 = this->frames[frame_index_end].skeleton;
 		FrameSkeleton final_skeleton;
 
-		size_t num_joints = this->joints.size();
+		std::size_t num_joints = this->joints.size();
 
 		final_skeleton.skeleton_joints.insert(final_skeleton.skeleton_joints.begin(),
 			num_joints, SkeletonJoint());
 		final_skeleton.bone_matricies.insert(final_skeleton.bone_matricies.begin(),
 			num_joints, glm::mat4(1.0f));
 
-		for (size_t i = 0; i < num_joints; ++i) {
+		for (std::size_t i = 0; i < num_joints; ++i) {
 			SkeletonJoint& finalJoint = final_skeleton.skeleton_joints[i];
 			glm::mat4& finalMatrix = final_skeleton.bone_matricies[i];
 

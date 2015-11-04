@@ -115,6 +115,46 @@ message VoxelVolumen {
 	optional float dummy = 1; // WIP
 }
 
+message ComputerScreen {
+	required bytes text_buffer = 1;
+	required bytes font_buffer = 2;
+	required uint32 buffer_ptr = 3;
+	required uint32 font_ptr = 4;
+	required uint32 vsync_msg = 5;
+	required uint32 a = 6;
+	required uint32 b = 7;
+	required uint32 d = 8;
+	required uint32 e = 9;
+}
+
+message Computer {
+	message Device {
+		required uint32 slot = 1;
+		oneof device {
+			ComputerScreen computerScreen = 2;
+		}
+	}
+	repeated Device devices = 1;
+	required bytes ram = 2;
+	message CPU {
+		message TR3200 {
+			repeated uint32 registers = 1;
+			required uint32 pc = 2;
+			required uint32 wait_cycles = 3;
+			required uint32 int_msg = 4;
+			required bool interrupt = 5;
+			required bool step_mode = 6;
+			required bool skiping = 7;
+			required bool sleeping = 8;
+		}
+		oneof cpu {
+			TR3200 tr3200 = 1;
+		}
+	}
+	required CPU cpu = 3;
+	optional string rom_file = 4;
+}
+
 message Component {
 	oneof component {
 		// keep name the same that the struct/class of the component!
@@ -131,6 +171,7 @@ message Component {
 		Light directionalLight = 11;
 		Light spotLight = 12;
 		VoxelVolumen voxelVolume = 13;
+		Computer computer = 14;
 		LuaScript luaScript = 100;
 	}
 }

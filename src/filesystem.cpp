@@ -34,9 +34,9 @@
 
 namespace tec {
 
-const std::string app_name("trillek"); // TODO Ask to tec::OS for the appname ?
-const char UNIX_PATH_SEPARATOR = '/';    /// *NIX filesystem path separator
-const char WIN_PATH_SEPARATOR = '\\';    /// Windows filesystem path separator
+const std::string app_name("trillek"); // TODO Ask to tec::OS for the app name ?
+const char UNIX_PATH_SEPARATOR = '/';    /// *NIX file system path separator
+const char WIN_PATH_SEPARATOR = '\\';    /// Windows file system path separator
 #if defined(__unix__)
 	const std::string FilePath::PATH_SEPARATOR = std::string("\\");
 #else
@@ -267,7 +267,7 @@ bool FilePath::MkPath(const FilePath& path) {
 	auto base = path.BasePath();
 	if (! base.empty()) {
 		size_t len = base.path.size();
-		if (MkPath(base)) {
+		if (base.isValidPath()) {
 			return MkDir(path);
 		}
 	}
@@ -336,7 +336,9 @@ FilePath FilePath::Subpath(size_t begin, size_t end) const {
 	std::istringstream f(this->path);
 	std::string s;
 	size_t count = 0;
+#if defined(WIN32)
 	auto absoulte = this->isAbsolutePath();
+#endif
 	while (count < end && std::getline(f, s, PATH_SEPARATOR_C)) {
 		if (count >= begin && count < end) {
 #if defined(WIN32)
@@ -426,7 +428,7 @@ void FilePath::NormalizePath() {
 #else
 	std::replace(path.begin(), path.end(), WIN_PATH_SEPARATOR, UNIX_PATH_SEPARATOR);
 	if (path.size() > 2 && std::isalpha(path.at(0)) && path.at(1) == ':') { // x: windows unit to remove
-		// This comparation it's safe on UTF-8 as isalpha would check [a-zA-Z] and Windows units are only letters
+		// This comparison it's safe on UTF-8 as isalpha would check [a-zA-Z] and Windows units are only letters
 		path.erase(0, 2);
 	}
 #endif
@@ -467,7 +469,7 @@ std::string FilePath::toGenericString() const {
 
 FilePath FilePath::GetAssetsBasePath() {
 	if (FilePath::assets_base.empty()) {
-		char cwd[FILENAME_MAX] = {0}; // Try to get current working directory (ie where theprogram was called)
+		char cwd[FILENAME_MAX] = {0}; // Try to get current working directory (IE where the program was called)
 #if defined(WIN32)
 		if (! _getcwd(cwd, sizeof(cwd))) {
 #else
@@ -475,7 +477,7 @@ FilePath FilePath::GetAssetsBasePath() {
 #endif
 #pragma warning(push)
 #pragma warning(disable: 4996)
-			std::strncpy(cwd, "./", 2); // Fallback to relative path if getcwd fails
+			std::strncpy(cwd, "./", 2); // Fall back to relative path if getcwd fails
 			cwd[2] = '\0';
 #pragma warning(pop)
 		}

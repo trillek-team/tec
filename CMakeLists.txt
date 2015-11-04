@@ -1,10 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT("TEC")
-SET(CMAKE_CXX_STANDARD_REQUIRED 11)
 # Set the directory of cmake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules")
-
 
 INCLUDE(ExternalProject)
 SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/ThirdParty)
@@ -23,7 +21,6 @@ ENDIF()
 # Test not enabled by default
 OPTION(BUILD_TESTS_TEC "Build TEC unit tests" FALSE)
 
-
 # Put the executable in the bin folder
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
@@ -38,7 +35,7 @@ IF ( MSVC )
     SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
     SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
   endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
-  # This is needed for OpenAL as the libaries were built using an older MSVC.
+  # This is needed for OpenAL as the libraries were built using an older MSVC.
   IF(${_MACHINE_ARCH_FLAG} MATCHES X86)
      SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
      SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
@@ -49,19 +46,20 @@ ENDIF ( MSVC )
 # find all source files in the src directory
 FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
 LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/main.cpp")
+LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/test_data.cpp")
 
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
 # Filters for VStudio
-SOURCE_GROUP("TEC" "src/.*[.]cpp")
-SOURCE_GROUP("TEC" "include/.*[.]hpp")
-SOURCE_GROUP("TEC\\Components" ".*/components/.*")
-SOURCE_GROUP("TEC\\Physics" ".*/physics/.*")
-SOURCE_GROUP("TEC\\Resources" ".*/resources/.*")
-SOURCE_GROUP("TEC\\Graphics" ".*/graphics/.*")
-SOURCE_GROUP("TEC\\GUI" ".*/gui/.*")
-SOURCE_GROUP("TEC\\Controllers" ".*/controllers/.*")
-SOURCE_GROUP("TEC\\Systems" ".*-system.*")
+SOURCE_GROUP("Components" ".*/components/.*")
+SOURCE_GROUP("Physics" ".*/physics/.*")
+SOURCE_GROUP("Resources" ".*/resources/.*")
+SOURCE_GROUP("Graphics" ".*/graphics/.*")
+SOURCE_GROUP("GUI" ".*/gui/.*")
+SOURCE_GROUP("Controllers" ".*/controllers/.*")
+SOURCE_GROUP("Systems" ".*-system.*")
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
 
 # IMGUI setup
 FILE(GLOB IMGUI_SRC
@@ -223,8 +221,12 @@ ELSE (NOT ${OPENAL_FOUND})
   INCLUDE_DIRECTORIES (${OPENAL_INCLUDE_DIR})
 ENDIF (NOT ${OPENAL_FOUND})
 
-# Some definitions we need to use bullet and GLM.
-ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE)
+# Add ASIO as it is header only
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/asio/asio/include")
+INCLUDE_DIRECTORIES("modules/asio/asio/include")
+
+# Some definitions we need to use bullet, GLM, and ASIO.
+ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE -DASIO_STANDALONE )
 
 # Give these some dummy values and if the platform is LINUX or OSX they will be set accordingly.
 SET(X11_LIBRARIES "")
@@ -264,6 +266,8 @@ ENDIF (APPLE)
 
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD_REQUIRED 14)
 IF (NOT ${BUILD_DEPS_FIRST})
   MESSAGE("All dependencies found now building tec.")
   # Add the virtual computer
@@ -300,16 +304,35 @@ IF (NOT ${BUILD_DEPS_FIRST})
     ${LUA_INCLUDE_DIR}
     ${SELENE_INCLUDES}
   )
-  SET_PROPERTY(TARGET TEC_LIB PROPERTY CXX_STANDARD 11)
   ADD_DEPENDENCIES(TEC_LIB Bullet)
 
   ADD_EXECUTABLE("TEC"
     "src/main.cpp"
+    "src/test_data.cpp"
+    "client/server_connection.hpp"
+    "client/server_connection.cpp"
   )
+  #target_include_directories(TEC PUBLIC "client")
+  IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS( "TEC" PUBLIC _WIN32_WINNT=0x600 )
+  ENDIF (WIN32)
 
-  SET_PROPERTY(TARGET TEC PROPERTY CXX_STANDARD 11)
 
   TARGET_LINK_LIBRARIES("TEC" TEC_LIB  ${TEC_ALL_LIBS})
+  
+  ADD_EXECUTABLE("Server"
+    "server/main.cpp"
+    "server/client_connection.hpp"
+    "server/client_connection.cpp"
+    "server/server.hpp"
+    "server/server.cpp"
+  )
+  #target_include_directories("Server" PUBLIC "server")
+  IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS( "Server" PUBLIC _WIN32_WINNT=0x600 )
+  ENDIF (WIN32)
+
+  TARGET_LINK_LIBRARIES("Server" TEC_LIB  ${TEC_ALL_LIBS})
 
   IF(BUILD_TESTS_TEC)
     ADD_SUBDIRECTORY("tests")

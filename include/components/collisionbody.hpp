@@ -15,7 +15,7 @@ namespace tec {
 
 	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, STATIC_MESH, DYNAMIC_MESH, NONE };
 
-	struct CollisionBody {
+	struct CollisionBody : public btMotionState {
 		CollisionBody(COLLISION_SHAPE collision_shape = NONE);
 		~CollisionBody();
 		
@@ -35,9 +35,21 @@ namespace tec {
 		float radius; // For SPHERE and CAPSULE shapes.
 		float height; // For CAPSULE shapes.
 
-		btMotionState* motion_state;
 		std::shared_ptr<btCollisionShape> shape;
 		eid entity_id;
+
+		btTransform transform;
+
+		bool transform_updated;
+		
+		void getWorldTransform(btTransform& worldTrans) const {
+			worldTrans = this->transform;
+		}
+
+		void setWorldTransform(const btTransform& worldTrans) {
+			this->transform_updated = true;
+			this->transform = worldTrans;
+		}
 	};
 	struct CollisionMesh : public CollisionBody {
 		CollisionMesh(std::shared_ptr<MeshFile> mesh, bool dynamic = false);

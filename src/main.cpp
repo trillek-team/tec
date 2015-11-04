@@ -8,6 +8,7 @@
 #include "vcomputer-system.hpp"
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
+#include "simulation.hpp"
 #include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include "lua-system.hpp"
@@ -20,6 +21,7 @@
 #include <thread>
 #include <string>
 #include <sstream>
+#include "client/server_connection.hpp"
 
 namespace tec {
 	extern void InitializeComponents();
@@ -60,7 +62,7 @@ namespace tec {
 						_log->error() << "File isn't on assets folder! Please copy/move it to the assets folder.";
 						continue;
 					}
-					
+
 				}
 				if (file_factories.find(ext) == file_factories.end()) {
 					_log->warn() << "No loader for extension: " << ext;
@@ -78,18 +80,22 @@ std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::
 
 int main(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
+
+	tec::InitializeComponents();
+	tec::InitializeFileFactories();
 	// TODO write a proper arguments parser
 	// Now only search for -v or -vv to set log level
 	for (int i = 1; i < argc; i++) {
 		if (std::string(argv[i]).compare("-v")) {
 			loglevel = spdlog::level::debug;
-		} else if (std::string(argv[i]).compare("-vv")) {
+		}
+		else if (std::string(argv[i]).compare("-vv")) {
 			loglevel = spdlog::level::trace;
 		}
 	}
 	// Console and logging initialization
 	tec::Console console;
-	
+
 	spdlog::set_async_mode(1048576);
 	std::vector<spdlog::sink_ptr> sinks;
 	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
@@ -101,13 +107,44 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing OpenGL...");
 	tec::OS os;
-	os.InitializeWindow(1024, 768, "TEC 0.1", 3,3);
-	console.AddConsoleCommand( "exit", 
+	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 3);
+	console.AddConsoleCommand("exit",
 		"exit : Exit from TEC",
-		[&os ] (const char* args) {
-			os.Quit();
-		});
-	
+		[&os] (const char* args) {
+		os.Quit();
+	});
+	std::thread* asio_thread = nullptr;
+	std::thread* sync_thread = nullptr;
+	tec::networking::ServerConnection connection;
+	console.AddConsoleCommand("msg",
+		"msg : Send a message to all clients.",
+		[&connection] (const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0') {
+			end_arg++;
+		}
+		// Args now points were the arguments begins
+		std::string message(args, end_arg - args);
+		connection.Write(message);
+	});
+	asio_thread = new std::thread([&connection] () {
+		connection.StartRead();
+	});
+	sync_thread = new std::thread([&connection] () {
+		connection.StartSync();
+	});
+	console.AddConsoleCommand("connect",
+		"connect ip : Connects to the server at ip",
+		[&connection] (const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0' && *end_arg != ' ') {
+			end_arg++;
+		}
+		// Args now points were the arguments begins
+		std::string ip(args, end_arg - args);
+		connection.Connect(ip);
+	});
+
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
 	tec::EntityTree ent_tree_widget;
@@ -116,16 +153,15 @@ int main(int argc, char* argv[]) {
 	tec::RenderSystem rs;
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
-	log->info("Initializing physics system...");
-	tec::PhysicsSystem ps;
+	log->info("Initializing simulation system...");
+	tec::Simulation simulation;
+	tec::PhysicsSystem& ps = simulation.GetPhysicsSystem();
+	tec::VComputerSystem vcs;
 
 	log->info("Initializing sound system...");
 	tec::SoundSystem ss;
 
 	std::int64_t frame_id = 1;
-
-	log->info("Initializing virtual computer system...");
-	tec::VComputerSystem vcs;
 
 	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
@@ -133,14 +169,79 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing script system...");
 	tec::LuaSystem lua_sys;
 
-	tec::InitializeComponents();
-	tec::InitializeFileFactories();
 	tec::BuildTestEntities();
 	tec::ProtoLoad();
-
-	tec::FPSController camera_controller(1);
-
 	tec::FileListener flistener;
+
+	tec::FPSController* camera_controller = nullptr;
+	gui.AddWindowDrawFunction("connect_window", [&camera_controller, &connection, &log, &gui] () {
+		ImGui::SetNextWindowPosCenter();
+		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+
+		static int octets[4] = {123, 123, 123, 123};
+
+		float width = ImGui::CalcItemWidth();
+		ImGui::PushID("IP");
+		ImGui::AlignFirstTextHeightToWidgets();
+		ImGui::TextUnformatted("IP");
+		ImGui::SameLine();
+		for (int i = 0; i < 4; i++) {
+			ImGui::PushItemWidth(width / 4.0f);
+			ImGui::PushID(i);
+
+			bool invalid_octet = false;
+			if (octets[i] > 255) {
+				octets[i] = 255;
+				invalid_octet = true;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+			}
+			if (octets[i] < 0) {
+				octets[i] = 0;
+				invalid_octet = true;
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+			}
+			ImGui::InputInt("##v", &octets[i], 0, 0, ImGuiInputTextFlags_CharsDecimal);
+			if (invalid_octet) {
+				ImGui::PopStyleColor();
+			}
+			ImGui::SameLine();
+			ImGui::PopID();
+			ImGui::PopItemWidth();
+		}
+		ImGui::PopID();
+		ImGui::SameLine();
+		if (ImGui::Button("Connect")) {
+			std::stringstream ip;
+			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
+			log->info("Connecting to " + ip.str());
+			if (connection.Connect(ip.str())) {
+				std::thread on_connect([&connection, &camera_controller, &log] () {
+					unsigned int tries = 0;
+					while (connection.GetClientID() == 0) {
+						tries++;
+						if (tries < 2000) {
+							std::this_thread::sleep_for(std::chrono::milliseconds(1));
+						}
+						else {
+							log->error("Failed to get client ID!");
+							return;
+						}
+					}
+					log->info("You are connected as client ID " + std::to_string(connection.GetClientID()));
+					camera_controller = new tec::FPSController(connection.GetClientID());
+					tec::Entity camera(connection.GetClientID());
+					camera.Add<tec::Velocity>();
+				});
+				on_connect.detach();
+				gui.HideWindow("connect_window");
+			}
+			else {
+				log->error("Failed to connect to " + ip.str());
+			}
+		}
+		ImGui::End();
+		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
+	});
 
 	gui.AddWindowDrawFunction("sample_window", [ ] () {
 		ImGui::ShowTestWindow();
@@ -151,7 +252,8 @@ int main(int argc, char* argv[]) {
 			ImGui::SetTooltip("#%i", tec::active_entity);
 		}
 	});
-	gui.AddWindowDrawFunction("main_menu", [&os] () {
+	gui.ShowWindow("active_entity");
+	gui.AddWindowDrawFunction("main_menu", [&os, &connection, &gui] () {
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Load PROTO", "CTRL+L")) { }
@@ -180,18 +282,56 @@ int main(int argc, char* argv[]) {
 				if (ImGui::MenuItem("Paste", "CTRL+V")) { }
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Windows")) {
+				bool visible = gui.IsWindowVisible("connect_window");
+				if (ImGui::MenuItem("Connect", "", visible)) {
+					if (visible) {
+						gui.HideWindow("connect_window");
+					}
+					else {
+						gui.ShowWindow("connect_window");
+					}
+				}
+				visible = gui.IsWindowVisible("entity_tree");
+				if (ImGui::MenuItem("Entity Tree", "", gui.IsWindowVisible("entity_tree"))) {
+					if (visible) {
+						gui.HideWindow("entity_tree");
+					}
+					else {
+						gui.ShowWindow("entity_tree");
+					}
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::Text("Ping %i", connection.GetAveragePing());
 			ImGui::EndMainMenuBar();
 		}
 	});
-	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget ] () {
+	gui.ShowWindow("main_menu");
+	gui.AddWindowDrawFunction("ping_times", [&connection] () {
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+		ImGui::Begin("ping_times", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
+		static float arr[10];
+		std::list<tec::networking::ping_time_t> recent_pings = connection.GetRecentPings();
+		std::size_t i = 0;
+		for (tec::networking::ping_time_t ping : recent_pings) {
+			arr[i++] = static_cast<float>(ping);
+		}
+		ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
+		ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
+		ImGui::End();
+		ImGui::SetWindowSize("ping_times", ImVec2(0, 0));
+		ImGui::PopStyleColor();
+	});
+	gui.ShowWindow("ping_times");
+	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget] () {
 		ent_tree_widget.Draw();
 	});
 
-
-
-	gui.AddWindowDrawFunction("console", [&console]() {
+	gui.AddWindowDrawFunction("console", [&console] () {
 		console.Draw();
 	});
+	gui.ShowWindow("console");
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
@@ -201,10 +341,6 @@ int main(int argc, char* argv[]) {
 
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
-		flistener.Update(delta);
-		std::thread ps_thread([&] () {
-			ps.Update(delta);
-		});
 		std::thread ss_thread([&] () {
 			ss.Update(delta);
 		});
@@ -212,31 +348,61 @@ int main(int argc, char* argv[]) {
 			vox_sys.Update(delta);
 		});
 
-		rs.Update(delta);
+		flistener.Update(delta);
 
+		simulation.Simulate(delta);
 		vcs.Update(delta);
 
-		ps_thread.join();
+		std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();
+		if (results.find(connection.GetClientID()) != results.end()) {
+			tec::proto::Entity entity;
+			entity.set_id(connection.GetClientID());
+			for (const auto& compoennt_update : results.at(connection.GetClientID())) {
+				tec::proto::Component* comp = entity.add_components();
+				*comp = compoennt_update.second;
+			}
+			tec::networking::ServerMessage msg;
+			msg.SetBodyLength(entity.ByteSize());
+			entity.SerializeToArray(msg.GetBodyPTR(), msg.GetBodyLength());
+			msg.SetMessageType(tec::networking::ENTITY_UPDATE);
+			msg.encode_header();
+			connection.Send(msg);
+		}
+
+		rs.Update(delta);
+
 		ss_thread.join();
 		vv_thread.join();
 
 		lua_sys.Update(delta);
-		
-		camera_controller.Update(delta);
+
+		if (camera_controller) {
+			camera_controller->Update(delta);
+		}
 
 		os.GetMousePosition(&mouse_x, &mouse_y);
-		tec::active_entity = ps.RayCastMousePick(1, mouse_x, mouse_y,
+		tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
 			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
-		ps.DebugDraw();
+		//ps.DebugDraw();
 
 		gui.Update(delta);
 		console.Update(delta);
 
 		os.SwapBuffers();
-		if (camera_controller.mouse_look) {
-			//os.SetMousePosition(400, 300);
-		}
 		frame_id++;
+	}
+
+	connection.Disconnect();
+	connection.StopRead();
+	if (asio_thread) {
+		asio_thread->join();
+	}
+	if (sync_thread) {
+		sync_thread->join();
+	}
+
+	if (camera_controller) {
+		delete camera_controller;
 	}
 
 	return 0;

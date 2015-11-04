@@ -85,7 +85,7 @@ namespace tec {
 		 * \param[in] const unsigned size_t index The index of the mesh to retrieve.
 		 * \return std::weak_ptr<MeshGroup> The requested mesh or null if the index is invalid.
 		 */
-		Mesh* GetMesh(const size_t index) {
+		Mesh* GetMesh(const std::size_t index) {
 			if (index < this->meshes.size()) {
 				return this->meshes.at(index);
 			}
@@ -98,7 +98,7 @@ namespace tec {
 		 *
 		 * \return size_t The number of meshes in this file.
 		 */
-		size_t GetMeshCount() const {
+		std::size_t GetMeshCount() const {
 			return this->meshes.size();
 		}
 

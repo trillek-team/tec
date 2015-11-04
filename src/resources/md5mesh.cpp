@@ -253,22 +253,22 @@ namespace tec {
 	void MD5Mesh::CalculateVertexPositions() {
 		if (this->meshes.size() < this->meshes_internal.size()) {
 			this->meshes.reserve(this->meshes_internal.size());
-			for (size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
+			for (std::size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
 				CreateMesh();
 			}
 		}
 
-		for (size_t i = 0; i < this->meshes_internal.size(); ++i) {
+		for (std::size_t i = 0; i < this->meshes_internal.size(); ++i) {
 			Mesh* mesh = this->meshes[i];
 			InternalMesh& int_mesh = this->meshes_internal[i];
 			if (mesh->verts.size() < int_mesh.verts.size()) {
 				mesh->verts.resize(int_mesh.verts.size());
 			}
-			for (size_t j = 0; j < int_mesh.verts.size(); ++j) {
+			for (std::size_t j = 0; j < int_mesh.verts.size(); ++j) {
 				VertexData vdata;
 
 				// Compute vertex position based on joint position.
-				for (size_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
+				for (std::size_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
 					Weight& weight = int_mesh.weights[int_mesh.verts[j].startWeight + k];
 
 					/* Calculate transformed vertex for this weight */
@@ -294,12 +294,12 @@ namespace tec {
 	void MD5Mesh::CalculateVertexNormals() {
 		if (this->meshes.size() < this->meshes_internal.size()) {
 			this->meshes.reserve(this->meshes_internal.size());
-			for (size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
+			for (std::size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
 				CreateMesh();
 			}
 		}
 
-		for (size_t i = 0; i < this->meshes_internal.size(); ++i) {
+		for (std::size_t i = 0; i < this->meshes_internal.size(); ++i) {
 			Mesh* mesh = this->meshes[i];
 			InternalMesh& int_mesh = this->meshes_internal[i];
 			if (mesh->verts.size() < int_mesh.verts.size()) {
@@ -308,7 +308,7 @@ namespace tec {
 				CalculateVertexPositions();
 			}
 			// Loop through all triangles and calculate the normal of each triangle
-			for (size_t j = 0; j < int_mesh.tris.size(); ++j) {
+			for (std::size_t j = 0; j < int_mesh.tris.size(); ++j) {
 				glm::vec3 v0 = int_mesh.verts[int_mesh.tris[j].verts[0]].position;
 				glm::vec3 v1 = int_mesh.verts[int_mesh.tris[j].verts[1]].position;
 				glm::vec3 v2 = int_mesh.verts[int_mesh.tris[j].verts[2]].position;
@@ -321,7 +321,7 @@ namespace tec {
 			}
 
 			// Now normalize all the normals
-			for (size_t j = 0; j < int_mesh.verts.size(); ++j) {
+			for (std::size_t j = 0; j < int_mesh.verts.size(); ++j) {
 				Vertex& vert = int_mesh.verts[j];
 
 				glm::vec3 normal = glm::normalize(vert.normal);
@@ -332,7 +332,7 @@ namespace tec {
 
 				// Put the bind-pose normal into joint-local space
 				// so the animated normal can be computed faster later
-				for (size_t j = 0; j < vert.weight_count; ++j) {
+				for (std::size_t j = 0; j < vert.weight_count; ++j) {
 					const Weight& weight = int_mesh.weights[vert.startWeight + j];
 					vert.normal += (normal * this->joints[weight.joint].orientation) * weight.bias;
 				}
@@ -343,12 +343,12 @@ namespace tec {
 	void MD5Mesh::UpdateIndexList() {
 		if (this->meshes.size() < this->meshes_internal.size()) {
 			this->meshes.reserve(this->meshes_internal.size());
-			for (size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
+			for (std::size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
 				CreateMesh();
 			}
 		}
 
-		for (size_t i = 0; i < this->meshes_internal.size(); ++i) {
+		for (std::size_t i = 0; i < this->meshes_internal.size(); ++i) {
 			const InternalMesh& int_mesh = this->meshes_internal[i];
 			if (this->meshes[i]->object_groups.size() == 0) {
 				this->meshes[i]->object_groups.push_back(new ObjectGroup());
@@ -363,7 +363,7 @@ namespace tec {
 			if (objgroup->indices.size() < int_mesh.tris.size()) {
 				objgroup->indices.reserve(int_mesh.tris.size() * 3);
 			}
-			for (size_t j = 0; j < int_mesh.tris.size(); ++j) {
+			for (std::size_t j = 0; j < int_mesh.tris.size(); ++j) {
 				objgroup->indices.push_back(int_mesh.tris[j].verts[0]);
 				objgroup->indices.push_back(int_mesh.tris[j].verts[1]);
 				objgroup->indices.push_back(int_mesh.tris[j].verts[2]);

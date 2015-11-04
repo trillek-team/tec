@@ -12,12 +12,12 @@ namespace tec {
 		if (!mesh_file) {
 			return nullptr;
 		}
-		for (size_t mesh_i = 0; mesh_i < mesh_file->GetMeshCount(); ++mesh_i) {
+		for (std::size_t mesh_i = 0; mesh_i < mesh_file->GetMeshCount(); ++mesh_i) {
 			Mesh* mesh = mesh_file->GetMesh(mesh_i);
 			for (ObjectGroup* objgroup : mesh->object_groups) {
 				btmesh->preallocateVertices(mesh->verts.size());
 				btmesh->preallocateIndices(objgroup->indices.size());
-				for (size_t face_i = 0; face_i < objgroup->indices.size(); ++face_i) {
+				for (std::size_t face_i = 0; face_i < objgroup->indices.size(); ++face_i) {
 					const VertexData& v1 = mesh->verts[objgroup->indices[face_i]];
 					const VertexData& v2 = mesh->verts[objgroup->indices[++face_i]];
 					const VertexData& v3 = mesh->verts[objgroup->indices[++face_i]];
@@ -33,18 +33,16 @@ namespace tec {
 	}
 	CollisionBody::CollisionBody(COLLISION_SHAPE collision_shape) : collision_shape(collision_shape),
 		new_collision_shape(collision_shape), mass(0.0), radius(1.0f), height(1.0f), disable_deactivation(false),
-		disable_rotation(false), motion_state(nullptr), half_extents(btVector3(1.0, 1.0, 1.0)) { }
+		disable_rotation(false), transform_updated(true), half_extents(btVector3(1.0, 1.0, 1.0)) { }
 
-	CollisionBody::~CollisionBody() {
-		delete this->motion_state;
-	}
+	CollisionBody::~CollisionBody() { }
 
 	void CollisionBody::Out(proto::Component* target) {
 		proto::CollisionBody* comp = target->mutable_collision_body();
 		comp->set_disable_deactivation(this->disable_deactivation);
 		comp->set_disable_rotation(this->disable_rotation);
 		comp->set_mass(static_cast<float>(this->mass));
-		switch (this->collision_shape) {
+		switch (this->new_collision_shape) {
 			case COLLISION_SHAPE::BOX:
 				{
 					proto::CollisionBody::Box* box = comp->mutable_box();
@@ -73,17 +71,14 @@ namespace tec {
 		const proto::CollisionBody& comp = source.collision_body();
 		switch (comp.shape_case()) {
 			case proto::CollisionBody::ShapeCase::kBox:
-				this->collision_shape = BOX;
 				this->new_collision_shape = BOX;
 				this->half_extents = btVector3(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
 				break;
 			case proto::CollisionBody::ShapeCase::kSphere:
-				this->collision_shape = SPHERE;
 				this->new_collision_shape = SPHERE;
 				this->radius = comp.sphere().radius();
 				break;
 			case proto::CollisionBody::ShapeCase::kCapsule:
-				this->collision_shape = CAPSULE;
 				this->new_collision_shape = CAPSULE;
 				this->radius = comp.capsule().radius();
 				this->height = comp.capsule().height();

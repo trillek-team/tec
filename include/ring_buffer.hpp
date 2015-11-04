@@ -42,7 +42,7 @@ namespace tec {
 		}
 
 		/**
-		 * Prepends the given element value to the begining of the buffer
+		 * Prepends the given element value to the beginning of the buffer
 		 */
 		void push_front(const T& value) {
 			if (! this->full()) {
@@ -53,14 +53,14 @@ namespace tec {
 		}
 
 		/**
-		 * Returns tru if there is not any element stored
+		 * Returns true if there is not any element stored
 		 */
 		bool empty() const {
 			return this->elements == 0;
 		}
 		
 		/**
-		 * Returns tru if there is not any element stored
+		 * Returns true if there is not any element stored
 		 */
 		bool full() const {
 			return this->elements == N;

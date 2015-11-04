@@ -30,15 +30,20 @@ namespace tec {
 		if (ImGui::Button("Add")) {
 			ImGui::OpenPopup("AddEntity");
 		}
+		static int new_entity_id = 0;
 		if (ImGui::BeginPopup("AddEntity")) {
 			ImGui::Text("ID");
 			ImGui::SameLine();
-			static int new_entity_id = 0;
 			ImGui::InputInt("##labellessInputInt", &new_entity_id);
-			if (!ImGui::IsWindowFocused() && new_entity_id != 0) {
+			ImGui::EndPopup();
+		}
+		else {
+			if (new_entity_id != 0) {
 				if (tec::entity_list.entities.find(new_entity_id) == tec::entity_list.entities.end()) {
 					tec::ReflectionEntity refentity;
 					tec::entity_list.entities[new_entity_id] = std::move(refentity);
+					ImGui::CloseCurrentPopup();
+					new_entity_id = 0;
 				}
 				else {
 					ImGui::OpenPopup("EntityExists");
@@ -53,7 +58,6 @@ namespace tec {
 					}
 				}
 			}
-			ImGui::EndPopup();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Remove")) {
@@ -128,7 +132,7 @@ namespace tec {
 											std::vector<std::string>& keys = key_func.first();
 											current_combo_item[current_combo_item_slot] = -1;
 											std::stringstream joinedValues;
-											for (size_t item = 0; item < keys.size(); ++item) {
+											for (std::size_t item = 0; item < keys.size(); ++item) {
 												joinedValues << keys[item] << '\0';
 												if (keys[item] == key_func.second) {
 													current_combo_item[current_combo_item_slot] = item;
