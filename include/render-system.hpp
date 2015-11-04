@@ -4,6 +4,7 @@
 #include <set>
 #include <map>
 #include <glm/mat4x4.hpp>
+#include <spdlog/spdlog.h>
 
 #ifndef __APPLE__
 #include <GL/glew.h>
@@ -11,7 +12,6 @@
 #include <OpenGL/gl3.h>
 #endif
 
-#include "spdlog/spdlog.h"
 #include "multiton.hpp"
 #include "types.hpp"
 #include "event-system.hpp"
