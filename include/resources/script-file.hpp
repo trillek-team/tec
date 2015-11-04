@@ -93,8 +93,13 @@ namespace tec {
 		ScriptFile(const ScriptFile &) = delete;
 		ScriptFile & operator=(const ScriptFile &) = delete;
 
-		ScriptFile(ScriptFile &&) = default;
-		ScriptFile & operator=(ScriptFile &&) = default;
+		ScriptFile(ScriptFile &&other) : name(std::move(other.name)), script(std::move(other.script)) { }
+
+		ScriptFile& operator=(ScriptFile &&other)  {
+			this->name = std::move(other.name);
+			this->script = std::move(other.script);
+			return *this;
+		}
 
 		/**
 		 * \brief Returns a reference to the script text for reading
