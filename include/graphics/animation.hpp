@@ -43,8 +43,8 @@ namespace tec {
 		std::string animation_name;
 		std::shared_ptr<MD5Anim> animation_file;
 
-		size_t current_frame_index;
-		size_t frame_count;
+		std::size_t current_frame_index;
+		std::size_t frame_count;
 
 		double animation_time;
 		double frame_duration;

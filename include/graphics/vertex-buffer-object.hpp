@@ -18,9 +18,9 @@ namespace tec {
 	struct VertexData;
 
 	struct VertexGroup {
-		size_t mesh_group_number;
-		size_t index_count;
-		size_t starting_offset;
+		std::size_t mesh_group_number;
+		std::size_t index_count;
+		std::size_t starting_offset;
 		std::shared_ptr<Material> material;
 	};
 
@@ -56,13 +56,13 @@ namespace tec {
 		 * \param size_t vertex_group_number Number of the vertex group to get.
 		 * \return VertexGroup& The specified VertexGroup.
 		 */
-		VertexGroup* GetVertexGroup(const size_t vertex_group_number);
+		VertexGroup* GetVertexGroup(const std::size_t vertex_group_number);
 
 		/**
 		 * \brief Gets the number of vertex groups store in the buffer.
 		 * \return size_t The number of vertex groups.
 		 */
-		size_t GetVertexGroupCount() const;
+		std::size_t GetVertexGroupCount() const;
 
 		/**
 		 * \return true If the vertex buffer object was created dynamic
@@ -88,8 +88,8 @@ namespace tec {
 		void Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices);
 	private:
 		GLuint vao, vbo, ibo;
-		size_t vertex_count; // Total vertex count.
-		size_t index_count; // Total index count.
+		std::size_t vertex_count; // Total vertex count.
+		std::size_t index_count; // Total index count.
 		std::vector<VertexGroup> vertex_groups;
 		std::weak_ptr<MeshFile> source_mesh;
 	};

@@ -255,7 +255,7 @@ namespace tec {
 
 		glBindVertexArray(this->sphere_vbo.GetVAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->sphere_vbo.GetIBO());
-		size_t index_count = this->sphere_vbo.GetVertexGroup(0)->index_count;
+		std::size_t index_count = this->sphere_vbo.GetVertexGroup(0)->index_count;
 
 		for (auto itr = PointLightMap::Begin(); itr != PointLightMap::End(); ++itr) {
 			eid entity_id = itr->first;
@@ -335,7 +335,7 @@ namespace tec {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_vbo.GetIBO());
 		glDisable(GL_CULL_FACE);
 
-		size_t index_count = this->quad_vbo.GetVertexGroup(0)->index_count;
+		std::size_t index_count = this->quad_vbo.GetVertexGroup(0)->index_count;
 		glm::mat4 depthModelMatrix = glm::mat4(1.0);
 		glm::mat4 depthProjectionMatrix = glm::ortho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
 		glm::mat4 biasMatrix(
@@ -452,10 +452,10 @@ namespace tec {
 			if (!renderable->buffer) {
 				renderable->buffer = std::make_shared<VertexBufferObject>();
 				renderable->buffer->Load(renderable->mesh);
-				size_t group_count = renderable->buffer->GetVertexGroupCount();
+				std::size_t group_count = renderable->buffer->GetVertexGroupCount();
 				renderable->vertex_groups.clear();
 				if (group_count > 0) {
-					for (size_t i = 0; i < group_count; ++i) {
+					for (std::size_t i = 0; i < group_count; ++i) {
 						renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
 					}
 				}

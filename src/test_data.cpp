@@ -1,24 +1,32 @@
-#include "spdlog/spdlog.h"
-#include "graphics/shader.hpp"
-#include "graphics/material.hpp"
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
 #include "components/renderable.hpp"
+#include "components/lua-script.hpp"
+
 #include "resources/md5mesh.hpp"
 #include "resources/obj.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/vorbis-stream.hpp"
+#include "resources/script-file.hpp"
+
+#include "graphics/shader.hpp"
+#include "graphics/material.hpp"
 #include "graphics/texture-object.hpp"
 #include "graphics/animation.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/view.hpp"
+
 #include "entity.hpp"
+#include "types.hpp"
+
 #include "component-update-system.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
-#include "types.hpp"
+#include "lua-system.hpp"
+
+#include <spdlog/spdlog.h>
 
 #include <iostream>
 #include <map>
@@ -30,6 +38,7 @@
 namespace tec {
 	std::map<tid, std::function<void(proto::Entity*)>> out_functors;
 	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
 	std::map<std::string, std::function<void(std::string)>> file_factories;
 	std::map<std::string, std::function<void(eid)>> component_factories;
@@ -56,6 +65,11 @@ namespace tec {
 			auto comp = std::make_shared<T>();
 			comp->In(proto_comp);
 			Entity(entity.id()).Add<T>(comp);
+		};
+		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const frame_id_t frame_id) {
+			auto comp = std::make_shared<T>();
+			comp->In(proto_comp);
+			ComponentUpdateSystem<T>::SubmitUpdate(entity.id(), comp, frame_id);
 		};
 		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
 			Entity e(entity->id());
@@ -85,8 +99,12 @@ namespace tec {
 		SetupComponent<AudioSource>();
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();
+		SetupComponent<LuaScript>();
+		
 		ComponentUpdateSystem<VoxelVolume>::Initialize();
+		SetupComponent<Computer>();
 		ComponentUpdateSystem<ComputerScreen>::Initialize();
+		ComponentUpdateSystem<VoxelVolume>::Initialize();
 		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
 
@@ -96,7 +114,8 @@ namespace tec {
 			FilePath path(fname);
 			if (path.isAbsolutePath()) {
 				T::Create(fname);
-			} else {
+			}
+			else {
 				T::Create(FilePath::GetAssetPath(fname));
 			}
 		};
@@ -106,45 +125,46 @@ namespace tec {
 		AddFileFactory<MD5Mesh>();
 		AddFileFactory<OBJ>();
 		AddFileFactory<VorbisStream>();
+		AddFileFactory<ScriptFile>();
 	}
 
 	void BuildTestEntities() {
 		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
 		};
 		auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
 
 		auto debug_fill = Material::Create("material_debug");
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
-
+		
 		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
 		};
 		auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
 
 		auto deferred_pl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
 		};
 		auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
 
 		auto deferred_dl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
 		};
 		auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
 
-		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > { 
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")), 
+		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
 		};
 		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_pl_shader_files);
 
 		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")), 
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
 		};
 		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 
@@ -186,37 +206,26 @@ namespace tec {
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create(FilePath::GetAssetPath("bob/bob.md5mesh"));
 			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create(FilePath::GetAssetPath("bob/bob.md5anim"), mesh1);
 			bob.Add<Animation>(anim1);
+			std::shared_ptr<ScriptFile> script1 = ScriptFile::Create("Script1", FilePath::GetAssetPath("scripts/test.lua"));
+			bob.Add<LuaScript>(script1);
 		}
 
 		{
 			Entity vidstand(101);
-			std::shared_ptr<ComputerScreen> screen = std::make_shared<ComputerScreen>();
-			vidstand.Add(screen);
 			std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
 			vidstand.Add(keybaord);
 
 			VComputerCommand add_devoces(
-				[screen, keybaord] (VComputerSystem* vcomputer) {
-				vcomputer->AddComputer(101);
-				if (vcomputer->LoadROMFile(101, FilePath::GetAssetPath("asm/type1.ffi").toString() )) {
-					vcomputer->SetDevice(101, 5, screen->device);
-					vcomputer->SetDevice(101, 1, keybaord->device);
-					vcomputer->TurnComptuerOn(101);
-				}
-				else {
-					vcomputer->RemoveComputer(101);
+				[keybaord] (VComputerSystem* vcomputer) {
+				if (vcomputer->LoadROMFile(101, FilePath::GetAssetPath("asm/type1.ffi").toString())) {
+					vcomputer->SetDevice(101, 1, keybaord);
 				}
 			});
 			VComputerSystem::QueueCommand(std::move(add_devoces));
 		}
-
-		{
-			Entity camera(1);
-			camera.Add<Velocity>();
-		}
 	}
-	
-	// NOTE : This would be change on a future, not ? Actually is loading/saving from assets (where not is supossed to be write by a user)
+
+	// NOTE : This would be change on a future, not ? Actually is loading/saving from assets (where not is supposed to be write by a user)
 
 	void ProtoLoadEntity(const FilePath& fname) {
 		auto _log = spdlog::get("console_log");
@@ -232,14 +241,15 @@ namespace tec {
 					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
 				}
 			}
-		} else {
-			_log->error() << "[ProtoLoadEntity] Error opening "<< fname.FileName() <<" file. Can't find it";
+		}
+		else {
+			_log->error() << "[ProtoLoadEntity] Error opening " << fname.FileName() << " file. Can't find it";
 		}
 	}
 
 	void ProtoLoad() {
 		const std::string file("test.proto");
-		
+
 		auto _log = spdlog::get("console_log");
 		FilePath fname = FilePath::GetAssetPath(file);
 		if (fname.isValidPath() && fname.FileExists()) {
@@ -251,14 +261,15 @@ namespace tec {
 				FilePath entity_filename = FilePath::GetAssetPath(elist.entity_file_list(i));
 				ProtoLoadEntity(entity_filename);
 			}
-		} else {
-			_log->error() << "[ProtoLoad] Error opening "<< fname.FileName() <<" file. Can't find it\n";
+		}
+		else {
+			_log->error() << "[ProtoLoad] Error opening " << fname.FileName() << " file. Can't find it\n";
 		}
 	}
 
 	void ProtoSave() {
 		const std::string file("test.proto");
-		
+
 		auto _log = spdlog::get("console_log");
 		FilePath fname = FilePath::GetAssetPath("test.proto");
 		if (fname.isValidPath()) {
@@ -278,9 +289,10 @@ namespace tec {
 				elist.add_entity_file_list(fname);
 			}
 			elist.SerializeToOstream(&output);
-		} else {
-			_log->error() << "Error opening test.proto file. Inavlid path: " << fname << "\n";
 		}
-		
+		else {
+			_log->error() << "Error opening test.proto file. Invalid path: " << fname << "\n";
+		}
+
 	}
 }

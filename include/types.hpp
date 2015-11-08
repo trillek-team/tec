@@ -2,7 +2,7 @@
 
 /**
  * @file types.hpp
- * Here we define some typedefs of some usual types used across the whole project, plus some 
+ * Here we define some typedefs of some usual types used across the whole project, plus some
  * templated helper functions for reflection
  */
 
@@ -75,16 +75,22 @@ namespace tec {
 	struct PointLight;
 	MAKE_IDTYPE(PointLight);
 
-	struct DirectionalLight; 
+	struct DirectionalLight;
 	MAKE_IDTYPE(DirectionalLight);
+
+	struct Computer;
+	MAKE_IDTYPE(Computer);
 
 	// SpotLight ??
 
 	class VoxelVolume;
 	MAKE_IDTYPE(VoxelVolume);
 
+	struct LuaScript;	
+	MAKE_IDTYPE(LuaScript);
 
-	// Register Resource filetypes
+
+	// Register Resource file types
 
 	class MD5Mesh;
 	MAKE_EXTTYPE(MD5Mesh, "md5mesh");
@@ -94,6 +100,9 @@ namespace tec {
 
 	class VorbisStream;
 	MAKE_EXTTYPE(VorbisStream, "ogg");
+
+	class ScriptFile;
+	MAKE_EXTTYPE(ScriptFile, "lua");
 
 
 	/// Maps on runtime the Type ID with the name

@@ -93,7 +93,7 @@ namespace tec {
 			else if (identifier == "map_Ka") {
 				std::string filename;
 				ss >> filename;
-				currentMTL->ambientMap = filename; 
+				currentMTL->ambientMap = filename;
 				//TODO Load ambient map to a PixelBuffer
 			}
 			else if (identifier == "map_Bump") {
@@ -126,7 +126,7 @@ namespace tec {
 
 	bool OBJ::Parse() {
 		auto _log = spdlog::get("console_log");
-		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+		if (!this->path.isValidPath() || !this->path.FileExists()) {
 			_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", path.toString());
 			// Can't open the file!
 			return false;
@@ -174,7 +174,12 @@ namespace tec {
 				ss >> name;
 				if (currentVGroup) {
 					currentVGroup->face_groups.push_back(current_face_group);
-					current_face_group = nullptr;
+					std::string last_mtlname = "";
+					if (current_face_group) {
+						last_mtlname = current_face_group->mtl;
+					}
+					current_face_group = new OBJGroup::FaceGroup();
+					current_face_group->mtl = last_mtlname;
 					this->vertexGroups.push_back(currentVGroup);
 				}
 				currentVGroup = std::make_shared<OBJGroup>();
@@ -191,29 +196,43 @@ namespace tec {
 				current_face_group->mtl = mtlname;
 			}
 			else if (identifier == "f") {
-				Face face;
+				Face face, face2;
+				bool quad = false;
 				std::string faceLine;
 				std::getline(ss, faceLine);
 				// Check if we have 3 vertex indices per face vertex.
 				if (faceLine.find("/") != std::string::npos) {
-					// Check if the UV is ommited and replace it with 0 if it is.
+					// Check if the UV is omitted and replace it with 0 if it is.
 					while (faceLine.find("//") != std::string::npos) {
 						faceLine = faceLine.replace(faceLine.find("//"), 2, " 0 ");
 					}
-					// Replace the / separators with spaces for stringstream ouput.
+					// Replace the / separators with spaces for stringstream output.
 					std::replace(faceLine.begin(), faceLine.end(), '/', ' ');
 					std::stringstream face_ss(faceLine);
 					face_ss >> face.pos[0]; face_ss >> face.uv[0]; face_ss >> face.norm[0];
 					face_ss >> face.pos[1]; face_ss >> face.uv[1]; face_ss >> face.norm[1];
 					face_ss >> face.pos[2]; face_ss >> face.uv[2]; face_ss >> face.norm[2];
+					if (!face_ss.eof()) {
+						quad = true;
+						face2.pos[0] = face.pos[2]; face2.uv[0] = face.uv[2]; face2.norm[0] = face.norm[2];
+						face_ss >> face2.pos[1]; face_ss >> face2.uv[1]; face_ss >> face2.norm[1];
+						face2.pos[2] = face.pos[0]; face2.uv[2] = face.uv[0]; face2.norm[2] = face.norm[0];
+					}
 				}
 				else {
 					std::stringstream face_ss(faceLine);
 					// There is only 1 vertex index per face vertex.
 					face_ss >> face.pos[0]; face_ss >> face.pos[1]; face_ss >> face.pos[2];
+					if (!face_ss.eof()) {
+						quad = true;
+						face2.pos[0] = face.pos[2]; face_ss >> face2.pos[1]; face2.pos[2] = face.pos[0];
+					}
 				}
 				if (current_face_group) {
 					current_face_group->faces.push_back(face);
+					if (quad) {
+						current_face_group->faces.push_back(face2);
+					}
 				}
 			}
 		}
@@ -229,12 +248,12 @@ namespace tec {
 	void OBJ::PopulateMeshGroups() {
 		if (this->MeshFile::meshes.size() < this->vertexGroups.size()) {
 			this->MeshFile::meshes.reserve(this->vertexGroups.size());
-			for (size_t i = this->MeshFile::meshes.size(); i < this->vertexGroups.size(); ++i) {
+			for (std::size_t i = this->MeshFile::meshes.size(); i < this->vertexGroups.size(); ++i) {
 				CreateMesh();
 			}
 		}
 
-		for (size_t i = 0; i < this->vertexGroups.size(); ++i) {
+		for (std::size_t i = 0; i < this->vertexGroups.size(); ++i) {
 			const OBJ::OBJGroup* vert_group = this->vertexGroups[i].get();
 			Mesh* mesh = this->MeshFile::meshes[i];
 			if (this->MeshFile::meshes[i]->object_groups.size() == 0) {
@@ -248,15 +267,18 @@ namespace tec {
 				}
 				MaterialGroup mat_group;
 				mat_group.start = objgroup->indices.size();
-				mat_group.material_name = "";
+				glm::vec4 diffuse_color;
 				if (this->materials.find(face_group->mtl) != this->materials.end()) {
-					std::string material_name = this->materials[face_group->mtl]->diffuseMap;
+					std::shared_ptr<MTL> material = this->materials[face_group->mtl];
+					std::string material_name = material->diffuseMap;
 					material_name = material_name.substr(
 						material_name.find_last_of("/") + 1,
 						material_name.find_last_of(".") -
 						material_name.find_last_of("/") - 1)
 						+ "_material";
 					mat_group.material_name = material_name;
+					mat_group.textures.push_back(this->materials[face_group->mtl]->diffuseMap);
+					diffuse_color = glm::vec4(material->kd, 1.0);
 				}
 
 				size_t j = mesh->verts.size();
@@ -265,43 +287,43 @@ namespace tec {
 					mesh->verts.resize(face_group->faces.size() * 3 + mesh->verts.size());
 				}
 
-				for (size_t k = 0; k < face_group->faces.size(); ++k) {
-					Face face;
-					if (face_group->faces[k].pos[0] > 0 && face_group->faces[k].pos[0] <= this->positions.size()) {
-						mesh->verts[j].position = this->positions[face_group->faces[k].pos[0] - 1];
+				for (std::size_t k = 0; k < face_group->faces.size(); ++k) {
+					const Face& face = face_group->faces[k];
+					if (face.pos[0] > 0 && face.pos[0] <= this->positions.size()) {
+						mesh->verts[j].position = this->positions[face.pos[0] - 1];
 					}
-					if (face_group->faces[k].uv[0] > 0 && face_group->faces[k].uv[0] <= this->normals.size()) {
-						mesh->verts[j].uv = this->uvs[face_group->faces[k].uv[0] - 1];
+					if (face.uv[0] > 0 && face.uv[0] <= this->normals.size()) {
+						mesh->verts[j].uv = this->uvs[face.uv[0] - 1];
 					}
-					if (face_group->faces[k].norm[0] > 0 && face_group->faces[k].norm[0] <= this->normals.size()) {
-						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[0] - 1];
+					if (face.norm[0] > 0 && face.norm[0] <= this->normals.size()) {
+						mesh->verts[j].normal = this->normals[face.norm[0] - 1];
 					}
+					mesh->verts[j].color = diffuse_color;
 					objgroup->indices.push_back(j++);
-					if (face_group->faces[k].pos[1] > 0 && face_group->faces[k].pos[1] <= this->positions.size()) {
-						mesh->verts[j].position = this->positions[face_group->faces[k].pos[1] - 1];
+					if (face.pos[1] > 0 && face.pos[1] <= this->positions.size()) {
+						mesh->verts[j].position = this->positions[face.pos[1] - 1];
 					}
-					if (face_group->faces[k].uv[1] > 0 && face_group->faces[k].uv[1] <= this->normals.size()) {
-						mesh->verts[j].uv = this->uvs[face_group->faces[k].uv[1] - 1];
+					if (face.uv[1] > 0 && face.uv[1] <= this->normals.size()) {
+						mesh->verts[j].uv = this->uvs[face.uv[1] - 1];
 					}
-					if (face_group->faces[k].norm[1] > 0 && face_group->faces[k].norm[1] <= this->normals.size()) {
-						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[1] - 1];
+					if (face.norm[1] > 0 && face.norm[1] <= this->normals.size()) {
+						mesh->verts[j].normal = this->normals[face.norm[1] - 1];
 					}
+					mesh->verts[j].color = diffuse_color;
 					objgroup->indices.push_back(j++);
-					if (face_group->faces[k].pos[2] > 0 && face_group->faces[k].pos[2] <= this->positions.size()) {
-						mesh->verts[j].position = this->positions[face_group->faces[k].pos[2] - 1];
+					if (face.pos[2] > 0 && face.pos[2] <= this->positions.size()) {
+						mesh->verts[j].position = this->positions[face.pos[2] - 1];
 					}
-					if (face_group->faces[k].uv[2] > 0 && face_group->faces[k].uv[2] <= this->normals.size()) {
-						mesh->verts[j].uv = this->uvs[face_group->faces[k].uv[2] - 1];
+					if (face.uv[2] > 0 && face.uv[2] <= this->normals.size()) {
+						mesh->verts[j].uv = this->uvs[face.uv[2] - 1];
 					}
-					if (face_group->faces[k].norm[2] > 0 && face_group->faces[k].norm[2] <= this->normals.size()) {
-						mesh->verts[j].normal = this->normals[face_group->faces[k].norm[2] - 1];
+					if (face.norm[2] > 0 && face.norm[2] <= this->normals.size()) {
+						mesh->verts[j].normal = this->normals[face.norm[2] - 1];
 					}
+					mesh->verts[j].color = diffuse_color;
 					objgroup->indices.push_back(j++);
 				}
 				mat_group.count = objgroup->indices.size() - mat_group.start;
-				if (this->materials.find(face_group->mtl) != this->materials.end()) {
-					mat_group.textures.push_back(this->materials[face_group->mtl]->diffuseMap);
-				}
 				objgroup->material_groups.push_back(std::move(mat_group));
 			}
 		}

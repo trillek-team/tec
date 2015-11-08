@@ -26,7 +26,7 @@ namespace tec {
 	}
 
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
-		const unsigned int glMajor /*= 3*/, const unsigned int glMinor /*= 3*/) {
+		const int glMajor /*= 3*/, const int glMinor /*= 3*/) {
 		assert(glMajor >= 3);
 		assert(glMajor*10 + glMinor >= 33);
 		glfwSetErrorCallback(ErrorCallback);

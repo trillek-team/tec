@@ -5,7 +5,7 @@
 
 
 ## Building
-TEC requires cmake 3.1 and a few libraries like GLEW, Bullet and OpenAL. Our CMake script can handle compiling and installing Bullet and OpenAL, but GLEW is necesary to be installed on your computer to build the engine properly.
+TEC requires cmake 3.1 and a few libraries like GLEW, Lua, Bullet and OpenAL. Our CMake script can handle compiling and installing Bullet and OpenAL, but GLEW and Lua is necesary to be installed on your computer to build the engine properly.
 
 If you do not have cmake 3.1 (try `cmake -version`), to install on Linux, use the same procedure that we do on Travis CI:
 
@@ -31,15 +31,22 @@ Building takes a few steps to get everything set up for the first build.
        5. `cmake ..` in the build directory
        6. `make TEC` in the build directory
   2. Windows (VStudio 2015)
-     1. Run cmake-gui setting the source line to the root directory and the build line to the build directory.
-     2. Configure and Generate using non-x64 as the target, with native compiles selected.
-     3. Build all dependencies in Release configuration (if it is just tec in the project list go to step 5).
+     1. Install Lua include files and library file. (For example on /lib )
+     2. Set LUA_DIR enviroment variable to the path were you download Lua.
+     3. Run cmake-gui setting the source line to the root directory and the build line to the build directory.
+     4. Configure and Generate using non-x64 as the target, with native compiles selected.
+     5. Build all dependencies in Release configuration (if it is just tec in the project list go to step 5).
      **You must build bullet in both debug and release configurations**
-     4. Return to cmake-gui and rerun configure and generate. If you see "All dependencies found now building tec.",
+     6. Return to cmake-gui and rerun configure and generate. If you see "All dependencies found now building tec.",
      you can delete your cache and rerun to clean up the cmake-gui window. 
-     5. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
-     6. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
+     7. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
+     8. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
 5. Run it from `tec/`
+
+### Depencies download (Windows)
+
+- Glew : Use nuget -> nuget install rxd_glew 
+- Lua 5.2 : http://sourceforge.net/projects/luabinaries/files/5.2.3/Windows%20Libraries/Static/
 
 ### Unit tests
 

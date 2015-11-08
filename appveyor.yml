@@ -34,6 +34,12 @@ install:
 - xcopy /E c:\projects\glew\rxd_glew.1.10.0.1\build\native\include c:\projects\tec\lib\include\
 - mkdir Release
 
+- cd c:\projects\
+- mkdir lua52
+- appveyor DownloadFile http://downloads.sourceforge.net/project/luabinaries/5.2.3/Windows%20Libraries/Static/lua-5.2.3_Win32_vc14_lib.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fluabinaries%2Ffiles%2F5.2.3%2FWindows%2520Libraries%2FStatic%2F&ts=1443734962&use_mirror=vorboss -FileName lua52.zip
+- 7z x -y lua52.zip -o"c:\projects\lua52"
+- setx LUA_DIR=c:\projects\lua52
+
 - cd c:\projects\tec\
 - mkdir build
 - cd build

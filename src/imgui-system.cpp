@@ -17,7 +17,7 @@ namespace tec {
 	int IMGUISystem::shader_program = 0, IMGUISystem::vertex_shader = 0, IMGUISystem::fragment_shader = 0;
 	int IMGUISystem::texture_attribute_location = 0, IMGUISystem::projmtx_attribute_location = 0;
 	int IMGUISystem::position_attribute_location = 0, IMGUISystem::uv_attribute_location = 0, IMGUISystem::color_attribute_location = 0;
-	size_t IMGUISystem::vbo_size = 0;
+	std::size_t IMGUISystem::vbo_size = 0;
 	unsigned int IMGUISystem::vbo = 0, IMGUISystem::vao = 0;
 	GLuint IMGUISystem::font_texture = 0;
 
@@ -94,6 +94,7 @@ namespace tec {
 	}
 
 	void IMGUISystem::Update(double delta) {
+		ProcessCommandQueue();
 		this->io.DeltaTime = static_cast<float>(delta);
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
@@ -130,8 +131,10 @@ namespace tec {
 		// Start the frame
 		ImGui::NewFrame();
 
-		for (auto draw_func : this->window_draw_funcs) {
-			draw_func.second();
+		for (auto window_name : this->visible_windows) {
+			if (this->window_draw_funcs.find(window_name) != this->window_draw_funcs.end()) {
+				this->window_draw_funcs.at(window_name)();
+			}
 		}
 		ImGui::Render();
 	}
@@ -189,7 +192,7 @@ namespace tec {
 		glEnableVertexAttribArray(IMGUISystem::uv_attribute_location);
 		glEnableVertexAttribArray(IMGUISystem::color_attribute_location);
 
-#define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
+#define OFFSETOF(TYPE, ELEMENT) ((std::size_t)&(((TYPE *)0)->ELEMENT))
 		glVertexAttribPointer(IMGUISystem::position_attribute_location, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
 		glVertexAttribPointer(IMGUISystem::uv_attribute_location, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
 		glVertexAttribPointer(IMGUISystem::color_attribute_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
@@ -258,7 +261,7 @@ namespace tec {
 			const ImDrawIdx* idx_buffer = &cmd_list->IdxBuffer.front();
 
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			size_t needed_vtx_size = cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
+			std::size_t needed_vtx_size = cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
 			if (vbo_size < needed_vtx_size) {
 				// Grow our buffer if needed
 				vbo_size = needed_vtx_size + 2000 * sizeof(ImDrawVert);
@@ -353,13 +356,13 @@ namespace tec {
 	}
 
 	void IMGUISystem::On(std::shared_ptr<MouseMoveEvent> data) {
-		this->mouse_pos.x = data->new_x;
-		this->mouse_pos.y = data->new_y;
+		this->mouse_pos.x = static_cast<float>(data->new_x);
+		this->mouse_pos.y = static_cast<float>(data->new_y);
 	}
 	
 	void IMGUISystem::On(std::shared_ptr<MouseScrollEvent> data) {
-		this->mouse_wheel.x = data->x_offset;
-		this->mouse_wheel.y = data->y_offset;
+		this->mouse_wheel.x = static_cast<float>(data->x_offset);
+		this->mouse_wheel.y = static_cast<float>(data->y_offset);
 	}
 	
 	

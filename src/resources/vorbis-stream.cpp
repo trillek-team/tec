@@ -7,7 +7,7 @@
 #include "resources/stb_vorbis.c"
 namespace tec {
 
-	VorbisStream::VorbisStream(size_t buffer_size) : buffer_size(buffer_size), stream(nullptr) {
+	VorbisStream::VorbisStream(std::size_t buffer_size) : buffer_size(buffer_size), stream(nullptr) {
 		this->sbuffer = new ALshort[this->buffer_size];
 	}
 
@@ -16,12 +16,12 @@ namespace tec {
 		delete this->stream;
 	}
 
-	size_t VorbisStream::BufferStream(ALint buffer) {
+	std::size_t VorbisStream::BufferStream(ALint buffer) {
 		if (!this->stream) {
 			return 0;
 		}
 
-		size_t  size = 0;
+		std::size_t  size = 0;
 		int  num_read = 0;
 
 		while (size < this->buffer_size) {

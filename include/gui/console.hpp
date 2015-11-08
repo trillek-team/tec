@@ -42,7 +42,7 @@ namespace tec {
 		
 		/**
 		 * Register a new command
-		 * @param name Name of the commad (case sensitive!)
+		 * @param name Name of the command (case sensitive!)
 		 * @param help String with help text
 		 * @param func Function to be executed when the command is called
 		 */

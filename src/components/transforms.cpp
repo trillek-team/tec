@@ -88,6 +88,7 @@ namespace tec {
 		if (comp.has_w()) {
 			this->value.w = comp.w();
 		}
+		this->rotation = glm::eulerAngles(this->value);
 		if (comp.has_offset()) {
 			const proto::Orientation::RotationOffset& offset = comp.offset();
 			if (offset.has_x()) {

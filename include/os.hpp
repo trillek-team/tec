@@ -29,7 +29,7 @@ namespace tec {
 		* \return bool If creation was successful or not.
 		*/
 		bool InitializeWindow(const int width, const int height, const std::string title,
-			const unsigned int glMajor = 3, const unsigned int glMinor = 3);
+			const int glMajor = 3, const int glMinor = 3);
 
 		/** \brief Make the context of the window current for the calling thread
 		*
@@ -252,7 +252,7 @@ namespace tec {
 		* \brief Dispatches mouse scroll events.
 		*
 		* It determines the changes in mouse position and stores the new position for later.
-		* \param[in] const double xoffset, yoffset The detal x and y coordinate of the mouse wheel.
+		* \param[in] const double xoffset, yoffset The delta x and y coordinate of the mouse wheel.
 		* \return void
 		*/
 		void DispatchMouseScrollEvent(const double xoffset, const double yoffset);

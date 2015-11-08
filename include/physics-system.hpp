@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <map>
+#include <set>
 
 #include <btBulletDynamicsCommon.h>
 #include <glm/glm.hpp>
@@ -94,9 +95,10 @@ namespace tec {
 		* function that can write data. This function is in the critical
 		* path, job done here must be simple.
 		*/
-		void Update(const double delta);
+		std::set<eid> Update(const double delta);
 
-		eid RayCastMousePick(eid source_entity, float mouse_x = 0.0f, float mouse_y = 0.0f, float screen_width = 1.0f, float screen_height = 1.0f);
+		eid RayCastMousePick(eid source_entity, double mouse_x = 0.0f, double mouse_y = 0.0f,
+			float screen_width = 1.0f, float screen_height = 1.0f);
 		eid RayCastIgnore(eid);
 		glm::vec3 GetLastRayPos() const {
 			btVector3 tmp = last_raypos; // grab a copy
@@ -111,6 +113,9 @@ namespace tec {
 
 		void DebugDraw();
 		void On(std::shared_ptr<MouseBtnEvent> data);
+
+		std::shared_ptr<Position> GetPosition(eid entity_id);
+		std::shared_ptr<Orientation> GetOrientation(eid entity_id);
 	protected:
 		/** \brief Set a rigid body's gravity.
 		 *

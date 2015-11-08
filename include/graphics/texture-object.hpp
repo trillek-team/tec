@@ -90,17 +90,17 @@ namespace tec {
 		void GenerateStencil(GLuint width, GLuint height);
 
 		/**
-		 * \brief create a blank multisample texture RGB or RGBA format
+		 * \brief create a blank multi-sample texture RGB or RGBA format
 		 */
 		void GenerateMultisample(GLuint width, GLuint height, GLuint samples);
 
 		/**
-		 * \brief create a blank multisample depth texture with or without stencil
+		 * \brief create a blank multi-sample depth texture with or without stencil
 		 */
 		void GenerateMultisampleDepth(GLuint width, GLuint height, GLuint samples, bool stencil);
 
 		/**
-		 * \brief create a blank multisample stencil texture
+		 * \brief create a blank multi-sample stencil texture
 		 */
 		void GenerateMultisampleStencil(GLuint width, GLuint height, GLuint samples);
 

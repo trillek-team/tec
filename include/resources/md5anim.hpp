@@ -99,14 +99,14 @@ namespace tec {
 		*
 		* \return bool size_t The number of frames.
 		*/
-		size_t GetFrameCount() const {
+		std::size_t GetFrameCount() const {
 			return this->frames.size();
 		}
 
 		/**
 		* \brief Returns the number of frame rate per second.
 		*
-		* \return bool size_t The frame rate per second.
+		* \return int The frame rate per second.
 		*/
 		int GetFrameRate() const {
 			return this->frame_rate;
@@ -118,7 +118,7 @@ namespace tec {
 		* \param[in] size_t frame_index Index of the frame to build/rebuild.
 		* \return void
 		*/
-		void BuildFrameSkeleton(size_t frame_index);
+		void BuildFrameSkeleton(std::size_t frame_index);
 
 		/**
 		* \brief Checks of a given mesh is valid for this animation.
@@ -136,7 +136,7 @@ namespace tec {
 		* \param[in] float delta The change in time since the last call.
 		* \return FrameSkeleton The current FrameSkeleton for the given delta.
 		*/
-		FrameSkeleton InterpolateSkeletons(size_t frame_index_start, size_t frame_index_end, float delta);
+		FrameSkeleton InterpolateSkeletons(std::size_t frame_index_start, std::size_t frame_index_end, float delta);
 	private:
 		FilePath path; // Relative filename
 		std::string name;

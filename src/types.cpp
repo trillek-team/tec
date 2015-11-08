@@ -4,6 +4,7 @@
  * Here defines the values of string typename of components, on runtime (ie when we can't use template T parameters )
  */
 
+#define __TYPES_CPP_
 #include "types.hpp"
 
 namespace tec {
@@ -22,11 +23,14 @@ namespace tec {
 		MAKE_MAPPAIR(Animation) ,
 		MAKE_MAPPAIR(Scale) ,
 		MAKE_MAPPAIR(CollisionBody) ,
+		MAKE_MAPPAIR(Velocity) ,
 		MAKE_MAPPAIR(AudioSource) ,
 		MAKE_MAPPAIR(PointLight) ,
 		MAKE_MAPPAIR(DirectionalLight) ,
 		// SpotLight
-		MAKE_MAPPAIR(VoxelVolume)
+		MAKE_MAPPAIR(VoxelVolume) ,
+		MAKE_MAPPAIR(Computer) ,
+		MAKE_MAPPAIR(LuaScript)
 	};
 
 #undef MAKE_MAPPAIR
