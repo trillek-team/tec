@@ -150,6 +150,15 @@ namespace tec {
 		if (error != GLEW_OK) {
 			return false;
 		}
+
+        /*Flush the error buffer. According to the OpenGL official
+        wiki, some version of GLEW generate a GL_INVALID_ENUM when
+        glewInit() is called which can be safely ignored. Do not remove
+        unless you know what you do.*/
+
+        glGetError();
+
+        //===================
 #endif
 
 		// Getting a list of the avail extensions
