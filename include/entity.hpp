@@ -6,7 +6,6 @@
 #include "component-update-system.hpp"
 
 namespace tec {
-	extern ReflectionEntityList entity_list;
 	class Entity {
 	public:
 		Entity(eid id) : id(id) { }
