@@ -4,7 +4,6 @@
 #include <set>
 #include <map>
 #include <glm/mat4x4.hpp>
-#include <spdlog/spdlog.h>
 
 #ifndef __APPLE__
 #include <GL/glew.h>
@@ -14,11 +13,15 @@
 
 #include "multiton.hpp"
 #include "types.hpp"
+#include "game-state.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
-#include "graphics/animation.hpp"
 #include "graphics/gbuffer.hpp"
 #include "graphics/vertex-buffer-object.hpp"
+
+namespace spdlog {
+	class logger;
+}
 
 namespace tec {
 	struct VertexGroup;
@@ -27,22 +30,29 @@ namespace tec {
 	struct DirectionalLight;
 	struct View;
 	class Shader;
+	class Animation;
 
 	class RenderSystem;
 	typedef Command<RenderSystem> RenderCommand;
 
-	struct KeyboardEvent;
 	struct WindowResizedEvent;
 
 	class RenderSystem : public CommandQueue < RenderSystem >,
-		public EventQueue < KeyboardEvent >,
 		public EventQueue < WindowResizedEvent > {
 	public:
 		RenderSystem();
 
 		void SetViewportSize(const unsigned int width, const unsigned int height);
 
-		void Update(const double delta);
+		void Update(const double delta, const GameState& state);
+
+		bool ActivateView(const eid entity_id);
+	private:
+		std::shared_ptr<spdlog::logger> _log;
+		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
+		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
+		typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
+
 		void ShadowPass();
 		void GeometryPass();
 		void PointLightPass();
@@ -50,15 +60,8 @@ namespace tec {
 		void FinalPass();
 		void RenderGbuffer();
 
-		bool ActivateView(const eid entity_id);
-	private:
-		std::shared_ptr<spdlog::logger> _log;
-		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
-		void UpdateRenderList(double delta);
-		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
-		typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
-
 		void On(std::shared_ptr<WindowResizedEvent> data);
+		void UpdateRenderList(double delta, const GameState& state);
 
 		glm::mat4 projection;
 		std::weak_ptr<View> current_view;

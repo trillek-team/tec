@@ -24,7 +24,6 @@ int main() {
 	std::uint64_t delta_accumulator = 0; // Accumulated deltas since the last update was sent.
 
 	tec::Simulation simulation;
-	simulation.CreateDummyData();
 
 	try {
 		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::SERVER_PORT);
@@ -40,7 +39,7 @@ int main() {
 				simulation.Simulate(elapsed_seconds.count() / 1000.0);
 				delta_accumulator += elapsed_seconds.count();
 				if (delta_accumulator >= UPDATE_RATE) {
-					std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();
+					/*std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();
 					for (const auto& entity_update_set : results) {
 						tec::proto::Entity entity;
 						entity.set_id(entity_update_set.first);
@@ -54,7 +53,7 @@ int main() {
 						msg.SetMessageType(tec::networking::ENTITY_UPDATE);
 						msg.encode_header();
 						server.Deliver(msg);
-					}
+					}*/
 					delta_accumulator -= UPDATE_RATE;
 				}
 			}

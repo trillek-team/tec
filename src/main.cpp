@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
-	
+
 	log->info("Initializing script system...");
 	tec::LuaSystem lua_sys;
 
@@ -174,6 +174,7 @@ int main(int argc, char* argv[]) {
 	tec::FileListener flistener;
 
 	tec::FPSController* camera_controller = nullptr;
+	simulation.AddController(camera_controller);
 	gui.AddWindowDrawFunction("connect_window", [&camera_controller, &connection, &log, &gui] () {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
@@ -335,6 +336,8 @@ int main(int argc, char* argv[]) {
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
+	tec::ComponentUpdateSystemList::UpdateAll(frame_id);
+	simulation.PopulateBaseState();
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
@@ -350,35 +353,16 @@ int main(int argc, char* argv[]) {
 
 		flistener.Update(delta);
 
+		simulation.Interpolate(delta);
 		simulation.Simulate(delta);
 		vcs.Update(delta);
 
-		std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();
-		if (results.find(connection.GetClientID()) != results.end()) {
-			tec::proto::Entity entity;
-			entity.set_id(connection.GetClientID());
-			for (const auto& compoennt_update : results.at(connection.GetClientID())) {
-				tec::proto::Component* comp = entity.add_components();
-				*comp = compoennt_update.second;
-			}
-			tec::networking::ServerMessage msg;
-			msg.SetBodyLength(entity.ByteSize());
-			entity.SerializeToArray(msg.GetBodyPTR(), msg.GetBodyLength());
-			msg.SetMessageType(tec::networking::ENTITY_UPDATE);
-			msg.encode_header();
-			connection.Send(msg);
-		}
-
-		rs.Update(delta);
+		rs.Update(delta, simulation.GetClientState());
 
 		ss_thread.join();
 		vv_thread.join();
 
 		lua_sys.Update(delta);
-
-		if (camera_controller) {
-			camera_controller->Update(delta);
-		}
 
 		os.GetMousePosition(&mouse_x, &mouse_y);
 		tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,

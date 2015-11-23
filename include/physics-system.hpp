@@ -12,6 +12,7 @@
 #include "multiton.hpp"
 #include "command-queue.hpp"
 #include "event-system.hpp"
+#include "game-state.hpp"
 #include "components/velocity.hpp"
 
 namespace tec {
@@ -29,7 +30,7 @@ namespace tec {
 		* function that can write data. This function is in the critical
 		* path, job done here must be simple.
 		*/
-		std::set<eid> Update(const double delta);
+		std::set<eid> Update(const double delta, const GameState& state);
 
 		eid RayCastMousePick(eid source_entity, double mouse_x = 0.0f, double mouse_y = 0.0f,
 			float screen_width = 1.0f, float screen_height = 1.0f);
@@ -48,8 +49,8 @@ namespace tec {
 		void DebugDraw();
 		void On(std::shared_ptr<MouseBtnEvent> data);
 
-		std::shared_ptr<Position> GetPosition(eid entity_id);
-		std::shared_ptr<Orientation> GetOrientation(eid entity_id);
+		Position GetPosition(eid entity_id);
+		Orientation GetOrientation(eid entity_id);
 	protected:
 		/** \brief Set a rigid body's gravity.
 		 *
@@ -68,7 +69,7 @@ namespace tec {
 
 		typedef Multiton<eid, std::shared_ptr<CollisionBody>> CollisionBodyMap;
 		typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
-		
+
 		btBroadphaseInterface* broadphase;
 		btCollisionConfiguration* collisionConfiguration;
 		btCollisionDispatcher* dispatcher;

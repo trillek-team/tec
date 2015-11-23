@@ -49,7 +49,7 @@ namespace tec {
 		}
 	}
 
-	std::set<eid> PhysicsSystem::Update(const double delta) {
+	std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) {
 		std::set<eid> updated_entities;
 		ProcessCommandQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
@@ -57,17 +57,16 @@ namespace tec {
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			glm::vec3 position(0.0);
-			if (Entity(entity_id).Has<Position>()) {
-				position = (Entity(entity_id).Get<Position>().lock())->value;
+			if (state.positions.find(entity_id) != state.positions.end()) {
+				position = state.positions.at(entity_id).value;
 			}
 			glm::quat orientation;
-			if (Entity(entity_id).Has<Orientation>()) {
-				orientation = (Entity(entity_id).Get<Orientation>().lock())->value;
+			if (state.orientations.find(entity_id) != state.orientations.end()) {
+				orientation = state.orientations.at(entity_id).value;
 			}
 			btTransform transform(
 				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
 				btVector3(position.x, position.y, position.z));
-			itr->second->transform = transform;
 
 			if (this->bodies.find(entity_id) == this->bodies.end()) {
 				if (!CreateRigiedBody(entity_id, itr->second)) {
@@ -76,6 +75,7 @@ namespace tec {
 			}
 			btRigidBody* body = this->bodies[entity_id];
 			this->dynamicsWorld->removeRigidBody(body);
+			itr->second->transform = transform;
 			if (itr->second->new_collision_shape != itr->second->collision_shape) {
 				this->bodies.erase(entity_id);
 				itr->second->shape.reset();
@@ -116,8 +116,11 @@ namespace tec {
 			auto entity_id = itr->first;
 			if (this->bodies.find(entity_id) != this->bodies.end()) {
 				auto body = this->bodies.at(entity_id);
-				body->setLinearVelocity(itr->second->GetLinear() + body->getGravity());
-				body->setAngularVelocity(itr->second->GetAngular());
+				if (state.velocties.find(entity_id) != state.velocties.end()) {
+					const Velocity& vel = state.velocties.at(entity_id);
+					body->setLinearVelocity(vel.GetLinear() + body->getGravity());
+					body->setAngularVelocity(vel.GetAngular());
+				}
 			}
 		}
 
@@ -139,7 +142,6 @@ namespace tec {
 				itr->second->transform_updated = false;
 			}
 		}
-
 		return std::move(updated_entities);
 	}
 
@@ -337,12 +339,25 @@ namespace tec {
 		}
 	}
 
-	std::shared_ptr<Position> PhysicsSystem::GetPosition(eid entity_id) {
+	Position PhysicsSystem::GetPosition(eid entity_id) {
 		auto pos = CollisionBodyMap::Get(entity_id)->transform.getOrigin();
-		return std::make_shared<Position>(glm::vec3(pos.x(), pos.y(), pos.z()));
+		Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
+
+		// TODO: remove this once center_offset is in renderable
+		if (Entity(entity_id).Has<Position>()) {
+			position.center_offset = Entity(entity_id).Get<Position>().lock()->center_offset;
+		}
+		return std::move(position);
 	}
-	std::shared_ptr<Orientation> PhysicsSystem::GetOrientation(eid entity_id) {
+
+	Orientation PhysicsSystem::GetOrientation(eid entity_id) {
 		auto rot = CollisionBodyMap::Get(entity_id)->transform.getRotation();
-		return std::make_shared<Orientation>(glm::highp_dquat(rot.w(), rot.x(), rot.y(), rot.z()));
+		Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
+
+		// TODO: remove this once rotation_offset is in renderable
+		if (Entity(entity_id).Has<Orientation>()) {
+			orientation.rotation_offset = Entity(entity_id).Get<Orientation>().lock()->rotation_offset;
+		}
+		return std::move(orientation);
 	}
 }
