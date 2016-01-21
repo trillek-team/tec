@@ -23,10 +23,10 @@ namespace tec {
 			if (Entity(entity_id).Has<LuaScript>()) {
 				if (auto lscript = Entity(entity_id).Get<LuaScript>().lock()) {
 					if (!lscript->script_name.empty() ) { // Check that have a asigned script with onUpdate function
-						lscript->state["this"].SetObj(Entity(entity_id) //,
+						//lscript->state["this"].SetObj(Entity(entity_id) //,
 							//"add", &Entity::Add,
 							//"has", &Entity::Has,
-							);
+						//	);
 							
 						lscript->state["onUpdate"](delta); // call to Lua onUpdate method
 					}
