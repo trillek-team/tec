@@ -158,6 +158,9 @@ namespace tec {
 	}
 
 	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
+		if (source_entity == 0) {
+			return 0;
+		}
 		this->last_rayvalid = false;
 		this->last_entity_hit = 0;
 		glm::vec3 position;

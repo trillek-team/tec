@@ -13,7 +13,7 @@ namespace tec {
 		std::unordered_map<eid, Velocity> velocties;
 		std::list<std::function<void(void)>> commands;
 
-		GameState() : state_sequence_number(0), delta_time(10.0) { }
+		GameState() : state_id(0), delta_time(10.0) { }
 
 		GameState(const GameState&) = delete;
 		GameState(GameState&& other) {
@@ -33,7 +33,7 @@ namespace tec {
 			}
 			return *this;
 		}
-		frame_id_t state_sequence_number;
+		state_id_t state_id;
 		double delta_time;
 	};
 

@@ -2,6 +2,7 @@
 #include "server/client_connection.hpp"
 #include "spdlog/spdlog.h"
 #include "../proto/components.pb.h"
+#include "simulation.hpp"
 #include "filesystem.hpp"
 
 #include <fstream>
@@ -13,7 +14,8 @@ namespace tec {
 		const int SERVER_PORT = 0xa10c;
 		std::mutex Server::recent_msgs_mutex;
 
-		Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
+		Server::Server(tcp::endpoint& endpoint, Simulation& simulation) :
+			acceptor(io_service, endpoint), socket(io_service), simulation(simulation) {
 			std::string message("Hello from server\n");
 			greeting_msg.SetBodyLength(message.size());
 			memcpy(greeting_msg.GetBodyPTR(), message.c_str(), greeting_msg.GetBodyLength());
@@ -63,7 +65,7 @@ namespace tec {
 				[this] (std::error_code error) {
 				if (!error) {
 					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
-					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
+					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this, this->simulation);
 					FilePath self_protopack = FilePath::GetAssetPath("protopacks/self.proto");
 					FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.proto");
 					LoadProtoPack(client->GetEntity(), self_protopack);

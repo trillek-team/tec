@@ -4,6 +4,7 @@
 #include <asio.hpp>
 #include <mutex>
 #include <deque>
+#include "simulation.hpp"
 #include "types.hpp"
 #include "server-message.hpp"
 
@@ -16,7 +17,8 @@ namespace tec {
 		// Used to represent a client connection to the server.
 		class ClientConnection : public std::enable_shared_from_this < ClientConnection > {
 		public:
-			ClientConnection(tcp::socket socket, Server* server) : socket(std::move(socket)), server(server) { }
+			ClientConnection(tcp::socket socket, Server* server, Simulation& simulation) : last_confirmed_state_id(0), 
+				socket(std::move(socket)), server(server), simulation(simulation) { }
 
 			void StartRead();
 
@@ -49,6 +51,9 @@ namespace tec {
 			eid id;
 			proto::Entity entity;
 			static std::mutex write_msg_mutex;
+
+			state_id_t last_confirmed_state_id; // That last state_id the client confirmed it received.
+			Simulation& simulation;
 		};
 	}
 }

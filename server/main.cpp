@@ -9,7 +9,7 @@
 
 using asio::ip::tcp;
 
-std::uint64_t UPDATE_RATE = 10; // Updates should be sent every this many milliseconds.
+const double UPDATE_RATE = 1.0 / 50.0;  // TODO: Make this configurable via a run-time property.
 
 
 namespace tec {
@@ -19,24 +19,24 @@ namespace tec {
 
 int main() {
 	std::chrono::high_resolution_clock::time_point last_time, next_time;
-	std::chrono::milliseconds elapsed_seconds;
+	std::chrono::duration<double> elapsed_seconds;
 	bool closing = false;
-	std::uint64_t delta_accumulator = 0; // Accumulated deltas since the last update was sent.
+	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 
 	tec::Simulation simulation;
 
 	try {
 		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::SERVER_PORT);
-		tec::networking::Server server(endpoint);
+		tec::networking::Server server(endpoint, simulation);
 		std::cout << "Server ready" << std::endl;
 
 		last_time = std::chrono::high_resolution_clock::now();
 		std::thread simulation_thread([&] () {
 			while (!closing) {
 				next_time = std::chrono::high_resolution_clock::now();
-				elapsed_seconds = std::chrono::duration_cast<std::chrono::milliseconds>(next_time - last_time);
+				elapsed_seconds = next_time - last_time;
 				last_time = next_time;
-				simulation.Simulate(elapsed_seconds.count() / 1000.0);
+				//std::cout << "delta " << elapsed_seconds.count() << " accumulator " << delta_accumulator << std::endl;
 				delta_accumulator += elapsed_seconds.count();
 				if (delta_accumulator >= UPDATE_RATE) {
 					/*std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();

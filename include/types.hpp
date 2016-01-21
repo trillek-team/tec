@@ -12,11 +12,11 @@
 #include "../proto/components.pb.h"
 
 namespace tec {
-	typedef std::int64_t frame_id_t;
+	typedef std::int64_t state_id_t;
 
 	typedef std::int64_t GUID; /// Global Unique ID
 
-	typedef std::int64_t eid; /// Entoty ID
+	typedef std::int64_t eid; /// Entity ID
 
 	typedef std::uint32_t tid; /// Type ID
 

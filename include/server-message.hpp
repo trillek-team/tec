@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include "types.hpp"
 
 namespace tec {
 	namespace networking {
@@ -11,15 +12,16 @@ namespace tec {
 			ENTITY_UPDATE,
 			ENTITY_CREATE,
 			CLIENT_ID,
+			GAME_STATE_UPDATE,
 			CHAT_MESSAGE
 		};
 
 		class ServerMessage {
 		public:
-			enum { header_length = 8 };
+			enum { header_length = 16 };
 			enum { max_body_length = 512 };
 
-			ServerMessage() : body_length(0), message_type(CHAT_MESSAGE) { }
+			ServerMessage() : body_length(0), message_type(CHAT_MESSAGE), last_recv_state_id(0) { }
 
 			const char* GetDataPTR() const {
 				return data;
@@ -39,6 +41,14 @@ namespace tec {
 
 			char* GetBodyPTR() {
 				return data + header_length;
+			}
+
+			state_id_t GetStateID() {
+				return this->last_recv_state_id;
+			}
+
+			void SetStateID(state_id_t state_id) {
+				this->last_recv_state_id = state_id;
 			}
 
 			std::size_t GetBodyLength() const {
@@ -67,6 +77,9 @@ namespace tec {
 				char type_header[5] = "";
 				std::strncat(type_header, data + 4, 4);
 				message_type = static_cast<MessageType>(std::atoi(type_header));
+				char state_id_header[9] = "";
+				std::strncat(state_id_header, data + 8, 8);
+				last_recv_state_id = static_cast<state_id_t>(std::atoi(state_id_header));
 				if (body_length > max_body_length) {
 					body_length = 0;
 					return false;
@@ -76,13 +89,14 @@ namespace tec {
 
 			void encode_header() {
 				char header[header_length + 1] = "";
-				std::sprintf(header, "%4d%4d", body_length, message_type);
+				std::sprintf(header, "%4d%4d%lld", body_length, message_type, last_recv_state_id);
 				std::memcpy(data, header, header_length);
 			}
 
 		private:
 			char data[header_length + max_body_length];
 			std::size_t body_length;
+			state_id_t last_recv_state_id;
 			MessageType message_type;
 		};
 	}

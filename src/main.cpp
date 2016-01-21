@@ -76,7 +76,7 @@ namespace tec {
 	};
 
 }
-std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
+std::list<std::function<void(tec::state_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
@@ -115,7 +115,8 @@ int main(int argc, char* argv[]) {
 	});
 	std::thread* asio_thread = nullptr;
 	std::thread* sync_thread = nullptr;
-	tec::networking::ServerConnection connection;
+	tec::Simulation simulation;
+	tec::networking::ServerConnection connection(simulation);
 	console.AddConsoleCommand("msg",
 		"msg : Send a message to all clients.",
 		[&connection] (const char* args) {
@@ -125,7 +126,7 @@ int main(int argc, char* argv[]) {
 		}
 		// Args now points were the arguments begins
 		std::string message(args, end_arg - args);
-		connection.Write(message);
+		connection.SendChatMessage(message);
 	});
 	asio_thread = new std::thread([&connection] () {
 		connection.StartRead();
@@ -154,7 +155,6 @@ int main(int argc, char* argv[]) {
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
 	log->info("Initializing simulation system...");
-	tec::Simulation simulation;
 	tec::PhysicsSystem& ps = simulation.GetPhysicsSystem();
 	tec::VComputerSystem vcs;
 
@@ -174,8 +174,7 @@ int main(int argc, char* argv[]) {
 	tec::FileListener flistener;
 
 	tec::FPSController* camera_controller = nullptr;
-	simulation.AddController(camera_controller);
-	gui.AddWindowDrawFunction("connect_window", [&camera_controller, &connection, &log, &gui] () {
+	gui.AddWindowDrawFunction("connect_window", [&simulation, &camera_controller, &connection, &log, &gui] () {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
@@ -216,7 +215,7 @@ int main(int argc, char* argv[]) {
 			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
 			log->info("Connecting to " + ip.str());
 			if (connection.Connect(ip.str())) {
-				std::thread on_connect([&connection, &camera_controller, &log] () {
+				std::thread on_connect([&simulation, &connection, &camera_controller, &log] () {
 					unsigned int tries = 0;
 					while (connection.GetClientID() == 0) {
 						tries++;
@@ -232,6 +231,7 @@ int main(int argc, char* argv[]) {
 					camera_controller = new tec::FPSController(connection.GetClientID());
 					tec::Entity camera(connection.GetClientID());
 					camera.Add<tec::Velocity>();
+					simulation.AddController(camera_controller);
 				});
 				on_connect.detach();
 				gui.HideWindow("connect_window");
@@ -355,9 +355,10 @@ int main(int argc, char* argv[]) {
 
 		simulation.Interpolate(delta);
 		simulation.Simulate(delta);
+		const tec::GameState& client_state = simulation.GetClientState();
 		vcs.Update(delta);
 
-		rs.Update(delta, simulation.GetClientState());
+		rs.Update(delta, client_state);
 
 		ss_thread.join();
 		vv_thread.join();
@@ -377,7 +378,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	connection.Disconnect();
-	connection.StopRead();
+	connection.Stop();
 	if (asio_thread) {
 		asio_thread->join();
 	}

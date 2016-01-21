@@ -1,5 +1,6 @@
 #include "server/client_connection.hpp"
 #include "server/server.hpp"
+#include "simulation.hpp"
 #include <iostream>
 #include <thread>
 
@@ -42,10 +43,14 @@ namespace tec {
 				asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
 				if (!error) {
-					server->Deliver(current_read_msg);
 					if (current_read_msg.GetMessageType() == CHAT_MESSAGE) {
-						std::cout.write(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
+						server->Deliver(current_read_msg);
+						std::cout.write(current_read_msg.GetBodyPTR(),
+							current_read_msg.GetBodyLength());
 						std::cout << std::endl;
+					}
+					else if (current_read_msg.GetMessageType() == SYNC) {
+						QueueWrite(current_read_msg);
 					}
 					read_header();
 				}

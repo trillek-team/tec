@@ -8,15 +8,14 @@
 #include <iostream>
 #include <atomic>
 #include "server-message.hpp"
-#include "event-system.hpp"
 
 using asio::ip::tcp;
 
 namespace tec {
-	struct EnttityComponentUpdatedEvent;
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
-	extern eid client_id;
+	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
+
+	class Simulation;
 
 	namespace networking {
 		extern const char* SERVER_PORT_STR;
@@ -24,53 +23,80 @@ namespace tec {
 		typedef std::chrono::milliseconds::rep ping_time_t;
 
 		// Used to connect to a server.
-		class ServerConnection : public EventQueue < EnttityComponentUpdatedEvent > {
+		class ServerConnection {
 		public:
-			ServerConnection();
+			ServerConnection(Simulation& simulation);
 
-			bool Connect(std::string ip = LOCAL_HOST);
+			bool Connect(std::string ip = LOCAL_HOST); // Connects to a server.
 
-			void Disconnect();
+			void Disconnect(); // Closes the socket connection and stops the read and sync loops.
 
-			void StopRead();
+			void Stop(); // Stop read and sync loops.
 
-			void StartRead();
+			void StartRead(); // Starts the read loop.
 
-			void StartSync();
+			void StartSync(); // Starts the sync loop.
 
-			void Write(std::string message);
+			void SendChatMessage(std::string message); // Send a ServerMessage with type CHAT_MESSAGE.
 
 			void Send(ServerMessage& msg);
 
+			// Gets the last received state ID.
+			state_id_t GetLastRecvStateID() {
+				return this->last_received_state_id;
+			}
+
+			// Get a list of recent pings.
 			std::list<ping_time_t> GetRecentPings() {
 				std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
 				return this->recent_pings;
 			}
 
+			// Returns the average ping.
 			ping_time_t GetAveragePing() {
 				return this->average_ping;
 			}
 
+			// Get the client ID assigned by the server.
 			eid GetClientID() {
 				return this->client_id;
 			}
 
-			void On(std::shared_ptr<EnttityComponentUpdatedEvent> data);
+			// Register a message handler for a given MessageType.
+			void RegisterMessageHandler(MessageType type, std::function<void(const ServerMessage&)> handler) {
+				this->message_handlers[type] = std::move(handler);
+			}
 		private:
-			void read_body();
-			void read_header();
+			void read_body(); // Used by the read loop. Calls read_header after the whole body is read.
+			void read_header(); // Used by the read lop. Calls read_body after the header section is read.
+
+			void SyncHandler(const ServerMessage& message);
+			void GameStateUpdateHandler(const ServerMessage& message);
 
 			static std::shared_ptr<spdlog::logger> _log;
+
+			// ASIO variables
 			asio::io_service io_service;
 			asio::ip::tcp::socket socket;
-			std::atomic<bool> stopped;
-			ServerMessage current_read_msg;
 
+			// Read loop variables
+			ServerMessage current_read_msg;
+			std::atomic<bool> stopped;
+
+			// Ping variables
 			std::chrono::high_resolution_clock::time_point sync_start, recv_time;
 			std::list<ping_time_t> recent_pings;
 			static std::mutex recent_ping_mutex;
 			ping_time_t average_ping = 0;
+
+			// Server-assigned client ID
 			eid client_id = 0;
+
+			// State management variables
+			state_id_t last_received_state_id;
+			Simulation& simulation;
+
+			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>> message_handlers;
 		};
 	}
 }

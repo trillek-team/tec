@@ -45,7 +45,6 @@ namespace tec {
 		VComputerSystem vcomp_sys;
 		CommandList current_command_list;
 		GameState client_state; // Post-simulation state (for rendering or such)
-		frame_id_t current_frame_id;
 		std::list<Controller*> controllers;
 	};
 }

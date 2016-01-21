@@ -9,13 +9,15 @@
 using asio::ip::tcp;
 
 namespace tec {
+	class Simulation;
+
 	namespace networking {
 		extern const int SERVER_PORT;
 		class ClientConnection;
 
 		class Server {
 		public:
-			Server(tcp::endpoint& endpoint);
+			Server(tcp::endpoint& endpoint, Simulation& simulation);
 
 			void Deliver(const ServerMessage& msg);
 
@@ -36,6 +38,7 @@ namespace tec {
 			std::deque<ServerMessage> recent_msgs;
 			static std::mutex recent_msgs_mutex;
 			std::uint64_t base_id = 10000;
+			Simulation& simulation;
 		};
 	}
 }

@@ -38,7 +38,7 @@
 namespace tec {
 	std::map<tid, std::function<void(proto::Entity*)>> out_functors;
 	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
+	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
 	std::map<std::string, std::function<void(std::string)>> file_factories;
 	std::map<std::string, std::function<void(eid)>> component_factories;
@@ -66,7 +66,7 @@ namespace tec {
 			comp->In(proto_comp);
 			Entity(entity.id()).Add<T>(comp);
 		};
-		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const frame_id_t frame_id) {
+		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t frame_id) {
 			auto comp = std::make_shared<T>();
 			comp->In(proto_comp);
 			ComponentUpdateSystem<T>::SubmitUpdate(entity.id(), comp, frame_id);
