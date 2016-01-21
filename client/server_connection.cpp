@@ -1,4 +1,5 @@
 #include "client/server_connection.hpp"
+#include "proto/game_state.pb.h"
 #include "events.hpp"
 #include "simulation.hpp"
 
@@ -162,7 +163,22 @@ namespace tec {
 		}
 
 		void ServerConnection::GameStateUpdateHandler(const ServerMessage& message) {
+			proto::GameStateUpdate gsu;
+			gsu.ParseFromArray(message.GetBodyPTR(), message.GetBodyLength());
+			state_id_t recv_state_id = gsu.state_id();
+			if (recv_state_id <= this->last_received_state_id) {
+				_log->warn("Received an older GameStateUpdate");
 			}
+			else {
+				this->last_received_state_id = gsu.state_id();
+				GameState next_state;
+				next_state.In(gsu);
+				next_state.positions.erase(this->client_id);
+				next_state.orientations.erase(this->client_id);
+				next_state.velocties.erase(this->client_id);
+				this->simulation.onServerStateUpdate(std::move(next_state));
+			}
+			//_log->info(last_received_state_id);
 		}
 	}
 }

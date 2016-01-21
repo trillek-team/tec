@@ -11,6 +11,8 @@
 using asio::ip::tcp;
 
 namespace tec {
+	class GameState;
+
 	namespace networking {
 		class Server;
 		
@@ -37,6 +39,20 @@ namespace tec {
 				return this->entity;
 			}
 
+			void DoJoin();
+
+			void ConfirmStateID(state_id_t state_id) {
+				this->last_confirmed_state_id = state_id;
+			}
+
+			state_id_t GetLastConfirmedStateID() {
+				return this->last_confirmed_state_id;
+			}
+
+			void UpdateGameState(std::set<eid> updated_entities, const GameState& full_state);
+
+			tec::networking::ServerMessage PrepareGameStateUpdateMessage(state_id_t current_state_id);
+
 		private:
 			void read_header();
 
@@ -53,6 +69,7 @@ namespace tec {
 			static std::mutex write_msg_mutex;
 
 			state_id_t last_confirmed_state_id; // That last state_id the client confirmed it received.
+			GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.
 			Simulation& simulation;
 		};
 	}

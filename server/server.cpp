@@ -37,6 +37,10 @@ namespace tec {
 				client->QueueWrite(msg);
 			}
 		}
+		
+		void Server::Deliver(std::shared_ptr<ClientConnection> client, const ServerMessage& msg) {
+				client->QueueWrite(msg);
+		}
 
 		void Server::Leave(std::shared_ptr<ClientConnection> client) {
 			this->clients.erase(client);
@@ -114,6 +118,7 @@ namespace tec {
 							client->QueueWrite(msg);
 						}
 					}
+					client->DoJoin();
 					client->StartRead();
 				}
 

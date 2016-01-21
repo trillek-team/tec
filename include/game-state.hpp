@@ -3,6 +3,7 @@
 #include <map>
 #include <list>
 #include "types.hpp"
+#include "proto/game_state.pb.h"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
 
@@ -32,6 +33,57 @@ namespace tec {
 				this->delta_time = other.delta_time;
 			}
 			return *this;
+		}
+
+		void In(const proto::GameStateUpdate& gsu) {
+			this->state_id = gsu.state_id();
+			for (int e = 0; e < gsu.entity_size(); ++e) {
+				const proto::Entity& entity = gsu.entity(e);
+				eid entity_id = entity.id();
+				for (int i = 0; i < entity.components_size(); ++i) {
+					const proto::Component& comp = entity.components(i);
+					switch (comp.component_case()) {
+						case proto::Component::kPosition:
+							{
+								Position pos;
+								pos.In(comp);
+								this->positions[entity_id] = pos;
+							}
+							break;
+						case proto::Component::kOrientation:
+							{
+								Orientation orientation;
+								orientation.In(comp);
+								this->orientations[entity_id] = orientation;
+							}
+							break;
+						case proto::Component::kVelocity:
+							{
+								Velocity vel;
+								vel.In(comp);
+								this->velocties[entity_id] = vel;
+							}
+							break;
+					}
+				}
+			}
+		}
+
+		void Out(proto::GameStateUpdate* gsu) const {
+			gsu->set_state_id(this->state_id);
+			for (auto pos : this->positions) {
+				tec::proto::Entity* entity = gsu->add_entity();
+				entity->set_id(pos.first);
+				pos.second.Out(entity->add_components());
+				if (this->orientations.find(pos.first) != this->orientations.end()) {
+					tec::Orientation ori = this->orientations.at(pos.first);
+					ori.Out(entity->add_components());
+				}
+				if (this->velocties.find(pos.first) != this->velocties.end()) {
+					tec::Velocity vel = this->velocties.at(pos.first);
+					vel.Out(entity->add_components());
+				}
+			}
 		}
 		state_id_t state_id;
 		double delta_time;

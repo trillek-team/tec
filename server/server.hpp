@@ -20,12 +20,18 @@ namespace tec {
 			Server(tcp::endpoint& endpoint, Simulation& simulation);
 
 			void Deliver(const ServerMessage& msg);
+			
+			void Deliver(std::shared_ptr<ClientConnection> client, const ServerMessage& msg);
 
 			void Leave(std::shared_ptr<ClientConnection> client);
 
 			void Start();
 
 			void Stop();
+
+			const std::set<std::shared_ptr<ClientConnection>>& GetClients() {
+				return this->clients;
+			}
 		private:
 			void do_accept();
 			

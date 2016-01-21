@@ -1,4 +1,5 @@
 #include "server/client_connection.hpp"
+#include "proto/game_state.pb.h"
 #include "server/server.hpp"
 #include "simulation.hpp"
 #include <iostream>
@@ -21,6 +22,9 @@ namespace tec {
 			if (!write_in_progress) {
 				do_write();
 			}
+		}
+		void ClientConnection::DoJoin() {
+			this->simulation.SetEntityState(this->entity);
 		}
 
 		void ClientConnection::read_header() {
@@ -52,6 +56,12 @@ namespace tec {
 					else if (current_read_msg.GetMessageType() == SYNC) {
 						QueueWrite(current_read_msg);
 					}
+					else if (current_read_msg.GetMessageType() == ENTITY_UPDATE) {
+						this->entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
+						this->last_confirmed_state_id = current_read_msg.GetStateID();
+						this->simulation.SetEntityState(this->entity);
+						//std::cout << "Client ID: " << this->id << " ACKD state: " << this->last_confirmed_state_id << std::endl;
+					}
 					read_header();
 				}
 				else {
@@ -82,6 +92,44 @@ namespace tec {
 					server->Leave(shared_from_this());
 				}
 			});
+		}
+
+		void ClientConnection::UpdateGameState(std::set<eid> updated_entities, const GameState& full_state) {
+			for (eid entity : updated_entities)  {
+				if (full_state.positions.find(entity) != full_state.positions.end()) {
+					this->state_changes_since_confirmed.positions[entity] = full_state.positions.at(entity);
+				}
+				if (full_state.orientations.find(entity) != full_state.orientations.end()) {
+					this->state_changes_since_confirmed.orientations[entity] = full_state.orientations.at(entity);
+				}
+				if (full_state.velocties.find(entity) != full_state.velocties.end()) {
+					this->state_changes_since_confirmed.velocties[entity] = full_state.velocties.at(entity);
+				}
+			}
+		}
+
+		tec::networking::ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id) {
+			tec::proto::GameStateUpdate gsu_msg;
+			gsu_msg.set_state_id(current_state_id);
+			for (auto pos : this->state_changes_since_confirmed.positions) {
+				tec::proto::Entity* entity = gsu_msg.add_entity();
+				entity->set_id(pos.first);
+				pos.second.Out(entity->add_components());
+				if (this->state_changes_since_confirmed.orientations.find(pos.first) != this->state_changes_since_confirmed.orientations.end()) {
+					tec::Orientation ori = this->state_changes_since_confirmed.orientations.at(pos.first);
+					ori.Out(entity->add_components());
+				}
+				if (this->state_changes_since_confirmed.velocties.find(pos.first) != this->state_changes_since_confirmed.velocties.end()) {
+					tec::Velocity vel = this->state_changes_since_confirmed.velocties.at(pos.first);
+					vel.Out(entity->add_components());
+				}
+			}
+			tec::networking::ServerMessage update_message;
+			update_message.SetMessageType(tec::networking::GAME_STATE_UPDATE);
+			update_message.SetBodyLength(gsu_msg.ByteSize());
+			gsu_msg.SerializeToArray(update_message.GetBodyPTR(), update_message.GetBodyLength());
+			update_message.encode_header();
+			return std::move(update_message);
 		}
 	}
 }

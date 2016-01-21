@@ -14,14 +14,15 @@
 namespace tec {
 	void Simulation::PopulateBaseState() {
 		for (auto itr = Multiton<eid, std::shared_ptr<Position>>::Begin(); itr != Multiton<eid, std::shared_ptr<Position>>::End(); ++itr) {
-			this->interpolation_state.positions[itr->first] = *itr->second.get();
+			this->client_state.positions[itr->first] = *itr->second.get();
 		}
 		for (auto itr = Multiton<eid, std::shared_ptr<Orientation>>::Begin(); itr != Multiton<eid, std::shared_ptr<Orientation>>::End(); ++itr) {
-			this->interpolation_state.orientations[itr->first] = *itr->second.get();
+			this->client_state.orientations[itr->first] = *itr->second.get();
 		}
 	}
 
-	void Simulation::Simulate(const double delta_time) {
+	std::set<eid> Simulation::Simulate(const double delta_time) {
+		ProcessCommandQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
@@ -32,14 +33,14 @@ namespace tec {
 			});*/
 
 		for (Controller* controller : this->controllers) {
-			controller->Update(delta_time, this->interpolation_state, this->current_command_list);
+			controller->Update(delta_time, this->client_state, this->current_command_list);
 		}
 		this->current_command_list.mouse_button_events.clear();
 		this->current_command_list.mouse_move_events.clear();
 		this->current_command_list.keyboard_events.clear();
 		this->current_command_list.mouse_click_events.clear();
 		std::future<std::set<eid>> phys_future = std::async(std::launch::async, [=] () -> std::set < eid > {
-			return std::move(phys_sys.Update(delta_time, this->interpolation_state));
+			return std::move(phys_sys.Update(delta_time, this->client_state));
 		});
 
 		std::set<eid> current_results = phys_future.get();
@@ -48,33 +49,130 @@ namespace tec {
 			for (eid entity_id : current_results) {
 				client_state.positions[entity_id] = this->phys_sys.GetPosition(entity_id);
 				client_state.orientations[entity_id] = this->phys_sys.GetOrientation(entity_id);
-				if (this->interpolation_state.velocties.find(entity_id) != this->interpolation_state.velocties.end()) {
-					client_state.velocties[entity_id] = this->interpolation_state.velocties[entity_id];
+				if (this->client_state.velocties.find(entity_id) != this->client_state.velocties.end()) {
+					client_state.velocties[entity_id] = this->client_state.velocties[entity_id];
 				}
 			}
 		}
 		//vcomp_future.get();
+
+		return std::move(current_results);
 	}
 
+
 	void Simulation::Interpolate(const double delta_time) {
-			// If we don't have a server update we will just use the last result of the local simulation.
-			for (const auto& position : this->client_state.positions) {
-				this->interpolation_state.positions[position.first] = position.second;
+		static const double INTERPOLATION_RATE = 1.0 / 100.0; // TODO: Make this configurable via a run-time property.
+		static double interpolation_accumulator = 0.0;
+
+		if (this->server_states.size() > 10) {
+			std::cout << "getting flooded by state updates" << std::endl;
+		}
+		if (this->server_states.size() > 2) {
+			interpolation_accumulator += delta_time;
+			if (interpolation_accumulator > INTERPOLATION_RATE) {
+				const GameState& to_state = this->server_states.front();
+				for (auto position : to_state.positions) {
+					this->base_state.positions[position.first] = position.second;
+				}
+				for (auto velocity : to_state.velocties) {
+					this->base_state.velocties[velocity.first] = velocity.second;
+				}
+				for (auto orientation : to_state.orientations) {
+					this->base_state.orientations[orientation.first] = orientation.second;
+				}
+				interpolation_accumulator -= INTERPOLATION_RATE;
+				this->server_states.pop();
 			}
-			for (const auto& orientation : this->client_state.orientations) {
-				this->interpolation_state.orientations[orientation.first] = orientation.second;
+			const GameState& to_state = this->server_states.front();
+			float lerp_percent = static_cast<float>(interpolation_accumulator / INTERPOLATION_RATE);
+			for (auto position : to_state.positions) {
+				this->client_state.positions[position.first].value = glm::lerp(
+					base_state.positions.at(position.first).value, position.second.value, lerp_percent);
 			}
-			for (const auto& velocity : this->client_state.velocties) {
-				this->interpolation_state.velocties[velocity.first] = velocity.second;
+			for (auto velocity : to_state.velocties) {
+				if (this->base_state.velocties.find(velocity.first) != this->base_state.velocties.end()) {
+					this->client_state.velocties[velocity.first].linear = glm::lerp(
+						base_state.velocties.at(velocity.first).linear, velocity.second.linear, lerp_percent);
+					this->client_state.velocties[velocity.first].angular = glm::lerp(
+						base_state.velocties.at(velocity.first).angular, velocity.second.angular, lerp_percent);
+				}
+				else {
+					this->client_state.velocties[velocity.first].linear = velocity.second.linear;
+					this->client_state.velocties[velocity.first].angular = velocity.second.angular;
+				}
 			}
+			for (auto orientation : to_state.orientations) {
+				this->client_state.orientations[orientation.first].value = glm::slerp(
+					base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
+			}
+		}
 	}
 
 	void Simulation::AddController(Controller* controller) {
 		this->controllers.push_back(controller);
 	}
 
+	void Simulation::onServerStateUpdate(GameState&& new_state) {
+		if (new_state.state_id > this->last_server_state_id) {
+			this->server_states.emplace(std::move(new_state));
+			this->last_server_state_id = new_state.state_id;
+		}
+	}
 
-	const GameState& Simulation::GetClientState() {
+	void Simulation::SetEntityState(proto::Entity& entity) {
+		QueueCommand(std::move([=] (Simulation* sim) {
+			sim->onSetEntityState(entity);
+		}));
+	}
+
+	void Simulation::onSetEntityState(const proto::Entity& entity) {
+		eid entity_id = entity.id();
+		for (int i = 0; i < entity.components_size(); ++i) {
+			const proto::Component& comp = entity.components(i);
+			switch (comp.component_case()) {
+				case proto::Component::kPosition:
+					{
+						Position pos;
+						pos.In(comp);
+						this->client_state.positions[entity_id] = pos;
+						this->base_state.positions[entity_id] = pos;
+					}
+					break;
+				case proto::Component::kOrientation:
+					{
+						Orientation orientation;
+						orientation.In(comp);
+						this->client_state.orientations[entity_id] = orientation;
+						this->base_state.orientations[entity_id] = orientation;
+					}
+					break;
+				case proto::Component::kVelocity:
+					{
+						Velocity vel;
+						vel.In(comp);
+						this->client_state.velocties[entity_id] = vel;
+						this->base_state.velocties[entity_id] = vel;
+					}
+					break;
+				case proto::Component::kCollisionBody:
+					{
+						std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionBody>();
+						colbody->In(comp);
+						Multiton<eid, std::shared_ptr<CollisionBody>>::Set(entity_id, colbody);
+					}
+				default:
+					if (in_functors.find(comp.component_case()) != in_functors.end()) {
+						in_functors[comp.component_case()](entity, comp);
+					}
+			}
+		}
+	}
+
+	void Simulation::onRemoveEntity(const eid entity_id) {
+
+	}
+
+	GameState& Simulation::GetClientState() {
 		return this->client_state;
 	}
 

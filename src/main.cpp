@@ -356,6 +356,30 @@ int main(int argc, char* argv[]) {
 		simulation.Interpolate(delta);
 		simulation.Simulate(delta);
 		const tec::GameState& client_state = simulation.GetClientState();
+		{
+			tec::proto::Entity self;
+			self.set_id(connection.GetClientID());
+			if (client_state.positions.find(connection.GetClientID()) != client_state.positions.end()) {
+				tec::Position pos = client_state.positions.at(connection.GetClientID());
+				pos.Out(self.add_components());
+			}
+			if (client_state.orientations.find(connection.GetClientID()) != client_state.orientations.end()) {
+				tec::Orientation ori = client_state.orientations.at(connection.GetClientID());
+				ori.Out(self.add_components());
+			}
+			if (client_state.velocties.find(connection.GetClientID()) != client_state.velocties.end()) {
+				tec::Velocity vel = client_state.velocties.at(connection.GetClientID());
+				vel.Out(self.add_components());
+			}
+			tec::networking::ServerMessage update_message;
+			update_message.SetStateID(connection.GetLastRecvStateID());
+			update_message.SetMessageType(tec::networking::ENTITY_UPDATE);
+			update_message.SetBodyLength(self.ByteSize());
+			self.SerializeToArray(update_message.GetBodyPTR(), update_message.GetBodyLength());
+			update_message.encode_header();
+			connection.Send(update_message);
+		}
+
 		vcs.Update(delta);
 
 		rs.Update(delta, client_state);
