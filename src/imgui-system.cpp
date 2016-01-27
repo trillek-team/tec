@@ -124,10 +124,6 @@ namespace tec {
 			mouse_pressed[i] = false;
 		}
 
-
-		// Hide OS mouse cursor if ImGui is drawing it
-		glfwSetInputMode(IMGUISystem::window, GLFW_CURSOR, this->io.MouseDrawCursor ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL);
-
 		// Start the frame
 		ImGui::NewFrame();
 

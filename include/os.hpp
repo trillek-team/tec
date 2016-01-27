@@ -187,12 +187,9 @@ namespace tec {
 		*/
 		static void FileDropCallback(GLFWwindow* window, int count, const char** paths);
 
-		/**
-		* \brief Toggles whether the mouse cursor should be locked to the current window.
-		*
-		* \return void
-		*/
-		void ToggleMouseLock();
+		void EanbleMouseLock();
+
+		void DisableMouseLock();
 
 		/**
 		* \brief Sets the mouse cursor position relative to the upper-left corner of the window.
@@ -282,7 +279,5 @@ namespace tec {
 		double old_mouse_x, old_mouse_y;
 		double last_time; // The time at the last call to GetDeltaTime().
 		bool mouse_lock; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
-
-
 	};
 }

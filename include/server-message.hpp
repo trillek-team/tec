@@ -43,7 +43,7 @@ namespace tec {
 				return data + header_length;
 			}
 
-			state_id_t GetStateID() {
+			state_id_t GetStateID() const {
 				return this->last_recv_state_id;
 			}
 

@@ -393,6 +393,14 @@ int main(int argc, char* argv[]) {
 		tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
 			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 		//ps.DebugDraw();
+		if (camera_controller != nullptr) {
+			if (camera_controller->mouse_look) {
+				os.EanbleMouseLock();
+			}
+			else {
+				os.DisableMouseLock();
+			}
+		}
 
 		gui.Update(delta);
 		console.Update(delta);

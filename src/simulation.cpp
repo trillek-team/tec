@@ -86,8 +86,13 @@ namespace tec {
 			const GameState& to_state = this->server_states.front();
 			float lerp_percent = static_cast<float>(interpolation_accumulator / INTERPOLATION_RATE);
 			for (auto position : to_state.positions) {
-				this->client_state.positions[position.first].value = glm::lerp(
-					base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+				if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
+					this->client_state.positions[position.first].value = glm::lerp(
+						base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+				}
+				else {
+					this->client_state.positions[position.first] = position.second;
+				}
 			}
 			for (auto velocity : to_state.velocties) {
 				if (this->base_state.velocties.find(velocity.first) != this->base_state.velocties.end()) {
@@ -102,8 +107,13 @@ namespace tec {
 				}
 			}
 			for (auto orientation : to_state.orientations) {
-				this->client_state.orientations[orientation.first].value = glm::slerp(
-					base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
+				if (this->base_state.orientations.find(orientation.first) != this->base_state.orientations.end()) {
+					this->client_state.orientations[orientation.first].value = glm::slerp(
+						base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
+				}
+				else {
+					this->client_state.orientations[orientation.first] = orientation.second;
+				}
 			}
 		}
 	}

@@ -295,11 +295,13 @@ namespace tec {
 	void OS::WindowFocusChangeCallback(GLFWwindow* window, int focused) {
 		if (focused == GL_FALSE) {
 			OS::focused_window = nullptr;
-			// Get the user pointer and cast it.
-			OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+			if (window != nullptr) {
+				// Get the user pointer and cast it.
+				OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
 
-			if (os) {
+				if (os) {
 
+				}
 			}
 		}
 		else if (focused == GL_TRUE) {
@@ -353,17 +355,8 @@ namespace tec {
 			static_cast<int>(y)
 		});
 		EventSystem<MouseMoveEvent>::Get()->Emit(mmov_event);
-
-		// If we are in mouse lock we will snap the mouse to the middle of the screen.
-		if (this->mouse_lock) {
-			this->old_mouse_x = this->client_width / 2;
-			this->old_mouse_y = this->client_height / 2;
-			glfwSetCursorPos(this->window, this->old_mouse_x, this->old_mouse_y);
-		}
-		else {
-			this->old_mouse_x = x;
-			this->old_mouse_y = y;
-		}
+		this->old_mouse_x = x;
+		this->old_mouse_y = y;
 	}
 	
 	void OS::DispatchMouseScrollEvent(const double xoffset, const double yoffset) {
@@ -406,15 +399,19 @@ namespace tec {
 		}
 		EventSystem<FileDropEvent>::Get()->Emit(fd_event);
 	}
-
-	void OS::ToggleMouseLock() {
-		this->mouse_lock = !this->mouse_lock;
-		if (this->mouse_lock) {
+	
+	void OS::EanbleMouseLock() {
+		if (!this->mouse_lock) {
 			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
-		else {
+		this->mouse_lock = true;
+	}
+	
+	void OS::DisableMouseLock() {
+		if (this->mouse_lock) {
 			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
+		this->mouse_lock = false;
 	}
 
 	void OS::SetMousePosition(const double x, const double y) {
