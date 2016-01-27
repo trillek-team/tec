@@ -40,7 +40,6 @@ int main() {
 				next_time = std::chrono::high_resolution_clock::now();
 				elapsed_seconds = next_time - last_time;
 				last_time = next_time;
-				//std::cout << "delta " << elapsed_seconds.count() << " accumulator " << delta_accumulator << std::endl;
 				delta_accumulator += elapsed_seconds.count();
 				if (delta_accumulator >= UPDATE_RATE) {
 					auto updated_entities = simulation.Simulate(UPDATE_RATE);
@@ -50,6 +49,7 @@ int main() {
 					tec::proto::GameStateUpdate full_state_update;
 					full_state.Out(&full_state_update);
 					tec::networking::ServerMessage full_state_update_message;
+					full_state_update_message.SetStateID(current_state_id);
 					full_state_update_message.SetMessageType(tec::networking::GAME_STATE_UPDATE);
 					full_state_update_message.SetBodyLength(full_state_update.ByteSize());
 					full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), full_state_update_message.GetBodyLength());

@@ -14,14 +14,13 @@ namespace tec {
 		std::unordered_map<eid, Velocity> velocties;
 		std::list<std::function<void(void)>> commands;
 
-		GameState() : state_id(0), delta_time(10.0) { }
+		GameState() : state_id(0) { }
 
 		GameState(const GameState&) = delete;
 		GameState(GameState&& other) {
 			this->positions = std::move(other.positions);
 			this->orientations = std::move(other.orientations);
 			this->velocties = std::move(other.velocties);
-			this->delta_time = other.delta_time;
 		}
 
 		GameState& operator=(const GameState& other) = delete;
@@ -30,7 +29,6 @@ namespace tec {
 				this->positions = std::move(other.positions);
 				this->orientations = std::move(other.orientations);
 				this->velocties = std::move(other.velocties);
-				this->delta_time = other.delta_time;
 			}
 			return *this;
 		}
@@ -86,7 +84,6 @@ namespace tec {
 			}
 		}
 		state_id_t state_id;
-		double delta_time;
 	};
 
 	struct CommandList {

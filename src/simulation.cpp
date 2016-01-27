@@ -7,8 +7,6 @@
 #include "components/transforms.hpp"
 #include "physics-system.hpp"
 #include "controllers/fps-controller.hpp"
-
-#include "components/collisionbody.hpp"
 #include <glm/gtx/compatibility.hpp>
 
 namespace tec {
@@ -52,6 +50,18 @@ namespace tec {
 				if (this->client_state.velocties.find(entity_id) != this->client_state.velocties.end()) {
 					client_state.velocties[entity_id] = this->client_state.velocties[entity_id];
 				}
+				// Update reflection
+				for (auto pos : client_state.positions) {
+					ComponentUpdateSystem<Position>::SubmitUpdate(pos.first, std::make_shared<Position>(pos.second), 0);
+					if (client_state.orientations.find(pos.first) != client_state.orientations.end()) {
+						tec::Orientation ori = client_state.orientations.at(pos.first);
+						ComponentUpdateSystem<Orientation>::SubmitUpdate(pos.first, std::make_shared<Orientation>(ori), 0);
+					}
+					if (client_state.velocties.find(pos.first) != client_state.velocties.end()) {
+						tec::Velocity vel = client_state.velocties.at(pos.first);
+						ComponentUpdateSystem<Velocity>::SubmitUpdate(pos.first, std::make_shared<Velocity>(vel), 0);
+					}
+				}
 			}
 		}
 		//vcomp_future.get();
@@ -62,9 +72,8 @@ namespace tec {
 
 	void Simulation::Interpolate(const double delta_time) {
 		static const double INTERPOLATION_RATE = 1.0 / 100.0; // TODO: Make this configurable via a run-time property.
-		static double interpolation_accumulator = 0.0;
 
-		if (this->server_states.size() > 10) {
+		if (this->server_states.size() > 5) {
 			std::cout << "getting flooded by state updates" << std::endl;
 		}
 		if (this->server_states.size() > 2) {
@@ -81,10 +90,11 @@ namespace tec {
 					this->base_state.orientations[orientation.first] = orientation.second;
 				}
 				interpolation_accumulator -= INTERPOLATION_RATE;
+				this->base_state.state_id = to_state.state_id;
 				this->server_states.pop();
 			}
 			const GameState& to_state = this->server_states.front();
-			float lerp_percent = static_cast<float>(interpolation_accumulator / INTERPOLATION_RATE);
+			float lerp_percent = static_cast<float>(interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
 			for (auto position : to_state.positions) {
 				if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
 					this->client_state.positions[position.first].value = glm::lerp(
@@ -164,16 +174,9 @@ namespace tec {
 						this->base_state.velocties[entity_id] = vel;
 					}
 					break;
-				case proto::Component::kCollisionBody:
-					{
-						std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionBody>();
-						colbody->In(comp);
-						Multiton<eid, std::shared_ptr<CollisionBody>>::Set(entity_id, colbody);
-					}
-				default:
-					if (in_functors.find(comp.component_case()) != in_functors.end()) {
-						in_functors[comp.component_case()](entity, comp);
-					}
+			}
+			if (in_functors.find(comp.component_case()) != in_functors.end()) {
+				in_functors[comp.component_case()](entity, comp);
 			}
 		}
 	}

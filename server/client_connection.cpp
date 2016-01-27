@@ -44,23 +44,24 @@ namespace tec {
 		void ClientConnection::read_body() {
 			auto self(shared_from_this());
 			asio::async_read(socket,
-				asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()),
+				asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
 				if (!error) {
-					if (current_read_msg.GetMessageType() == CHAT_MESSAGE) {
-						server->Deliver(current_read_msg);
-						std::cout.write(current_read_msg.GetBodyPTR(),
-							current_read_msg.GetBodyLength());
-						std::cout << std::endl;
-					}
-					else if (current_read_msg.GetMessageType() == SYNC) {
-						QueueWrite(current_read_msg);
-					}
-					else if (current_read_msg.GetMessageType() == ENTITY_UPDATE) {
-						this->entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-						this->last_confirmed_state_id = current_read_msg.GetStateID();
-						this->simulation.SetEntityState(this->entity);
-						//std::cout << "Client ID: " << this->id << " ACKD state: " << this->last_confirmed_state_id << std::endl;
+					switch (this->current_read_msg.GetMessageType()) {
+						case CHAT_MESSAGE:
+							server->Deliver(this->current_read_msg);
+							std::cout.write(this->current_read_msg.GetBodyPTR(),
+								this->current_read_msg.GetBodyLength()) << std::endl;
+							break;
+						case SYNC:
+							QueueWrite(this->current_read_msg);
+							break;
+						case ENTITY_UPDATE:
+							this->entity.ParseFromArray(current_read_msg.GetBodyPTR(),
+								current_read_msg.GetBodyLength());
+							this->last_confirmed_state_id = current_read_msg.GetStateID();
+							this->simulation.SetEntityState(this->entity);
+							break;
 					}
 					read_header();
 				}
@@ -95,7 +96,7 @@ namespace tec {
 		}
 
 		void ClientConnection::UpdateGameState(std::set<eid> updated_entities, const GameState& full_state) {
-			for (eid entity : updated_entities)  {
+			for (eid entity : updated_entities) {
 				if (full_state.positions.find(entity) != full_state.positions.end()) {
 					this->state_changes_since_confirmed.positions[entity] = full_state.positions.at(entity);
 				}

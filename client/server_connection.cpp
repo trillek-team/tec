@@ -170,7 +170,7 @@ namespace tec {
 				_log->warn("Received an older GameStateUpdate");
 			}
 			else {
-				this->last_received_state_id = gsu.state_id();
+				this->last_received_state_id = recv_state_id;
 				GameState next_state;
 				next_state.In(gsu);
 				next_state.positions.erase(this->client_id);
