@@ -337,15 +337,16 @@ int main(int argc, char* argv[]) {
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
 	tec::ComponentUpdateSystemList::UpdateAll(frame_id);
+
+	std::thread ss_thread([&] () {
+		ss.Update();
+	});
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
 
 		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
-
-		std::thread ss_thread([&] () {
-			ss.Update(delta);
-		});
+		ss.SetDelta(delta);
 		std::thread vv_thread([&] () {
 			vox_sys.Update(delta);
 		});
@@ -383,7 +384,6 @@ int main(int argc, char* argv[]) {
 
 		rs.Update(delta, client_state);
 
-		ss_thread.join();
 		vv_thread.join();
 
 		lua_sys.Update(delta);
@@ -407,7 +407,9 @@ int main(int argc, char* argv[]) {
 		os.SwapBuffers();
 		frame_id++;
 	}
-
+	
+	ss.Stop();
+	ss_thread.join();
 	connection.Disconnect();
 	connection.Stop();
 	if (asio_thread) {

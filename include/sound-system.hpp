@@ -100,8 +100,18 @@ namespace tec {
 	public:
 		SoundSystem();
 
-		void Update(const double delta);
+		void Update();
+
+		void SetDelta(const double delta) {
+			this->delta = delta;
+		}
+
+		void Stop() {
+			this->running = false;
+		}
 	private:
+		std::atomic<bool> running;
+		double delta;
 		std::shared_ptr<spdlog::logger> _log;
 		typedef Multiton<eid, std::shared_ptr<AudioSource>> AudioSourceComponentMap;
 		ALCdevice *device;
