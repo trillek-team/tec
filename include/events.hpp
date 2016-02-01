@@ -54,6 +54,10 @@ namespace tec {
 	struct EntityCreated {
 		proto::Entity entity;
 	};
+
+	struct EntityUpdated {
+		proto::Entity entity;
+	};
 	
 	struct EntityDestroyed {
 		eid entity_id;

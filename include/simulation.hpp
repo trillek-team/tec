@@ -18,6 +18,7 @@ namespace tec {
 	class Simulation final : public CommandQueue < Simulation >, 
 		public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
 		public EventQueue<MouseMoveEvent>, public EventQueue < MouseClickEvent >,
+		public EventQueue<EntityCreated>, public EventQueue<EntityUpdated>,
 		public EventQueue<EntityDestroyed>  {
 	public:
 		Simulation() : last_server_state_id(0) { }
@@ -44,6 +45,7 @@ namespace tec {
 		void On(std::shared_ptr<MouseMoveEvent> data);
 		void On(std::shared_ptr<MouseClickEvent> data);
 		void On(std::shared_ptr<EntityCreated> data);
+		void On(std::shared_ptr<EntityUpdated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
 
 		void SetEntityState(proto::Entity& entity);

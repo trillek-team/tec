@@ -106,7 +106,9 @@ namespace tec {
 							this->entity.ParseFromArray(current_read_msg.GetBodyPTR(),
 								current_read_msg.GetBodyLength());
 							this->last_confirmed_state_id = current_read_msg.GetStateID();
-							this->simulation.SetEntityState(this->entity);
+							std::shared_ptr<EntityUpdated> data = std::make_shared<EntityUpdated>();
+							data->entity = this->entity;
+							EventSystem<EntityUpdated>::Get()->Emit(data);
 							break;
 					}
 					read_header();

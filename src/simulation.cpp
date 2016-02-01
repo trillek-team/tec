@@ -18,6 +18,7 @@ namespace tec {
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 		EventQueue<MouseClickEvent>::ProcessEventQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
+		EventQueue<EntityUpdated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 		/*auto vcomp_future = std::async(std::launch::async, [&] () {
@@ -147,6 +148,39 @@ namespace tec {
 		onSetEntityState(data->entity);
 	}
 
+	void Simulation::On(std::shared_ptr<EntityUpdated> data) {
+		const proto::Entity& entity = data->entity;
+		eid entity_id = entity.id();
+		for (int i = 0; i < entity.components_size(); ++i) {
+			const proto::Component& comp = entity.components(i);
+			switch (comp.component_case()) {
+				case proto::Component::kPosition:
+					{
+						Position pos;
+						pos.In(comp);
+						this->client_state.positions[entity_id] = pos;
+						this->base_state.positions[entity_id] = pos;
+					}
+					break;
+				case proto::Component::kOrientation:
+					{
+						Orientation orientation;
+						orientation.In(comp);
+						this->client_state.orientations[entity_id] = orientation;
+						this->base_state.orientations[entity_id] = orientation;
+					}
+					break;
+				case proto::Component::kVelocity:
+					{
+						Velocity vel;
+						vel.In(comp);
+						this->client_state.velocties[entity_id] = vel;
+						this->base_state.velocties[entity_id] = vel;
+					}
+					break;
+			}
+		}
+	}
 
 	void Simulation::On(std::shared_ptr<EntityDestroyed> data) {
 		if (this->client_state.positions.find(data->entity_id) != this->client_state.positions.end()) {
