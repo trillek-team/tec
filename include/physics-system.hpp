@@ -19,25 +19,20 @@ namespace tec {
 	struct CollisionBody;
 	struct MouseBtnEvent;
 
-	class PhysicsSystem : public CommandQueue < PhysicsSystem >, EventQueue < MouseBtnEvent > {
+	class PhysicsSystem : public CommandQueue < PhysicsSystem >,
+		EventQueue < MouseBtnEvent >, EventQueue < EntityCreated >,
+		EventQueue < EntityDestroyed > {
 	public:
 		PhysicsSystem();
 		~PhysicsSystem();
 
-		/** \brief
-		*
-		* This function is called once every frame. It is the only
-		* function that can write data. This function is in the critical
-		* path, job done here must be simple.
-		*/
 		std::set<eid> Update(const double delta, const GameState& state);
 
 		eid RayCastMousePick(eid source_entity, double mouse_x = 0.0f, double mouse_y = 0.0f,
 			float screen_width = 1.0f, float screen_height = 1.0f);
 		eid RayCastIgnore(eid);
 		glm::vec3 GetLastRayPos() const {
-			btVector3 tmp = last_raypos; // grab a copy
-			return glm::vec3(tmp.getX(), tmp.getY(), tmp.getZ());
+			return glm::vec3(last_raypos.getX(), last_raypos.getY(), last_raypos.getZ());
 		}
 		double GetLastRayDistance() const {
 			return last_raydist;
@@ -48,6 +43,8 @@ namespace tec {
 
 		void DebugDraw();
 		void On(std::shared_ptr<MouseBtnEvent> data);
+		void On(std::shared_ptr<EntityCreated> data);
+		void On(std::shared_ptr<EntityDestroyed> data);
 
 		Position GetPosition(eid entity_id);
 		Orientation GetOrientation(eid entity_id);
@@ -65,9 +62,10 @@ namespace tec {
 		 */
 		void SetNormalGravity(const unsigned int entity_id);
 	private:
-		bool CreateRigiedBody(eid entity_id, std::shared_ptr<CollisionBody> collision_body);
+		bool CreateRigiedBody(eid entity_id, CollisionBody&& collision_body);
 
-		typedef Multiton<eid, std::shared_ptr<CollisionBody>> CollisionBodyMap;
+		bool UpdateCollisionShape(eid entity_id);
+
 		typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
 
 		btBroadphaseInterface* broadphase;
@@ -75,8 +73,9 @@ namespace tec {
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
 		btDynamicsWorld* dynamicsWorld;
-
+		
 		std::map<eid, btRigidBody*> bodies;
+		std::map<eid, CollisionBody> collidables;
 
 		btVector3 last_rayfrom;
 		double last_raydist;

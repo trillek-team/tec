@@ -53,63 +53,59 @@ namespace tec {
 		std::set<eid> updated_entities;
 		ProcessCommandQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
+		EventQueue<EntityCreated>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
-		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
-			auto entity_id = itr->first;
+		for (auto itr = collidables.begin(); itr != collidables.end(); ++itr) {
+			eid entity_id = itr->first;
+			CollisionBody& collidable = itr->second;
 			glm::vec3 position(0.0);
 			if (state.positions.find(entity_id) != state.positions.end()) {
-				position = state.positions.at(entity_id).value;
+				auto pos = state.positions.at(entity_id).value;
+				if (std::isfinite(pos.x) && std::isfinite(pos.x) && std::isfinite(pos.x)) {
+					position = pos;
+				}
 			}
 			glm::quat orientation;
 			if (state.orientations.find(entity_id) != state.orientations.end()) {
-				orientation = state.orientations.at(entity_id).value;
+				auto ori = state.orientations.at(entity_id).value;
+				if (std::isfinite(ori.x) && std::isfinite(ori.x) && std::isfinite(ori.x) && std::isfinite(ori.w)) {
+					orientation = ori;
+				}
 			}
 			btTransform transform(
 				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
 				btVector3(position.x, position.y, position.z));
 
-			if (this->bodies.find(entity_id) == this->bodies.end()) {
-				if (!CreateRigiedBody(entity_id, itr->second)) {
+			collidable.motion_state.transform = transform;
+			if (collidable.new_collision_shape != collidable.collision_shape) {
+				if (!UpdateCollisionShape(entity_id)) {
 					continue;
 				}
 			}
 			btRigidBody* body = this->bodies[entity_id];
 			this->dynamicsWorld->removeRigidBody(body);
-			itr->second->transform = transform;
-			if (itr->second->new_collision_shape != itr->second->collision_shape) {
-				this->bodies.erase(entity_id);
-				itr->second->shape.reset();
-				itr->second->collision_shape = itr->second->new_collision_shape;
-				if (itr->second->collision_shape != COLLISION_SHAPE::NONE) {
-					if (!CreateRigiedBody(entity_id, itr->second)) {
-						continue;
-					}
-				}
-				else {
-					continue;
-				}
-			}
-			if (itr->second->mass != body->getInvMass()) {
+			if (collidable.mass != body->getInvMass()) {
 				btVector3 fallInertia(0, 0, 0);
-				itr->second->shape->calculateLocalInertia(itr->second->mass, fallInertia);
-				body->setMassProps(itr->second->mass, fallInertia);
+				collidable.shape->calculateLocalInertia(collidable.mass, fallInertia);
+				body->setMassProps(collidable.mass, fallInertia);
 				body->updateInertiaTensor();
 				body->clearForces();
 			}
 
 			int state = body->getActivationState();
-			if (itr->second->disable_deactivation) {
+			if (collidable.disable_deactivation) {
 				body->forceActivationState(DISABLE_DEACTIVATION);
 			}
 			else if (state == DISABLE_DEACTIVATION) {
 				body->forceActivationState(ACTIVE_TAG);
 			}
 
-			if (itr->second->disable_rotation) {
+			if (collidable.disable_rotation) {
 				body->setAngularFactor(btVector3(0.0, 0, 0.0));
 			}
-			this->bodies[entity_id]->setWorldTransform(itr->second->transform);
-			this->dynamicsWorld->addRigidBody(this->bodies[entity_id]);
+			body->setWorldTransform(collidable.motion_state.transform);
+			this->dynamicsWorld->addRigidBody(body);
 		}
 
 		for (auto itr = VelocityMap::Begin(); itr != VelocityMap::End(); ++itr) {
@@ -118,28 +114,23 @@ namespace tec {
 				auto body = this->bodies.at(entity_id);
 				if (state.velocties.find(entity_id) != state.velocties.end()) {
 					const Velocity& vel = state.velocties.at(entity_id);
-					body->setLinearVelocity(vel.GetLinear() + body->getGravity());
-					body->setAngularVelocity(vel.GetAngular());
+					if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x)) {
+						body->setLinearVelocity(vel.GetLinear() + body->getGravity());
+					}
+					if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x)) {
+						body->setAngularVelocity(vel.GetAngular());
+					}
 				}
-			}
-		}
-
-		btCollisionObjectArray& obj_array = this->dynamicsWorld->getCollisionObjectArray();
-		for (int i = 0; i < obj_array.size(); ++i) {
-			const CollisionBody* colbody = static_cast<const CollisionBody*>(obj_array.at(i)->getUserPointer());
-			eid entity_id = colbody->entity_id;
-			if (this->bodies.find(entity_id) == this->bodies.end()) {
-				this->dynamicsWorld->removeCollisionObject(obj_array.at(i));
 			}
 		}
 
 		this->dynamicsWorld->stepSimulation(delta, 10);
 
-		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
+		for (auto itr = collidables.begin(); itr != collidables.end(); ++itr) {
 			auto entity_id = itr->first;
-			if (itr->second->transform_updated) {
+			if (itr->second.motion_state.transform_updated) {
 				updated_entities.insert(entity_id);
-				itr->second->transform_updated = false;
+				itr->second.motion_state.transform_updated = false;
 			}
 		}
 		return std::move(updated_entities);
@@ -286,46 +277,67 @@ namespace tec {
 		}
 	}
 
-	bool PhysicsSystem::CreateRigiedBody(eid entity_id, std::shared_ptr<CollisionBody> collision_body) {
-		btVector3 fallInertia(0, 0, 0);
-		switch (collision_body->collision_shape) {
-			case SPHERE:
-				collision_body->shape = std::make_shared<btSphereShape>(collision_body->radius);
-				break;
-			case BOX:
-				collision_body->shape = std::make_shared<btBoxShape>(collision_body->half_extents);
-				break;
-			case CAPSULE:
-				collision_body->shape = std::make_shared<btCapsuleShape>(collision_body->radius, collision_body->height);
-				break;
+	bool PhysicsSystem::CreateRigiedBody(eid entity_id, CollisionBody&& collidable) {
+		// If it already exists erase it before creating a new instance.
+		if (this->collidables.find(entity_id) != this->collidables.end()) {
+			if (this->bodies.find(entity_id) != this->bodies.end()) {
+				this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
+				delete this->bodies.at(entity_id);
+				this->bodies.erase(entity_id);
+			}
+			this->collidables.erase(entity_id);
 		}
-		if (collision_body->mass > 0.0) {
-			if (collision_body->shape) {
-				collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);
+		collidable.entity_id = entity_id;
+		this->collidables.emplace(entity_id, std::move(collidable));
+
+		return UpdateCollisionShape(entity_id);
+	}
+
+	bool PhysicsSystem::UpdateCollisionShape(eid entity_id) {
+		CollisionBody& collidable = this->collidables.at(entity_id);
+		if (collidable.collision_shape != collidable.new_collision_shape) {
+			if (this->bodies.find(entity_id) != this->bodies.end()) {
+				this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
+				delete this->bodies.at(entity_id);
+			}
+
+			switch (collidable.new_collision_shape) {
+				case SPHERE:
+					collidable.shape = std::make_shared<btSphereShape>(collidable.radius);
+					break;
+				case BOX:
+					collidable.shape = std::make_shared<btBoxShape>(collidable.half_extents);
+					break;
+				case CAPSULE:
+					collidable.shape = std::make_shared<btCapsuleShape>(collidable.radius, collidable.height);
+					break;
+			}
+			collidable.collision_shape = collidable.new_collision_shape;
+			btVector3 fallInertia(0, 0, 0);
+			if (collidable.mass > 0.0) {
+				if (collidable.shape) {
+					collidable.shape->calculateLocalInertia(collidable.mass, fallInertia);
+				}
+			}
+			btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collidable.mass,
+				&collidable.motion_state, collidable.shape.get(), fallInertia);
+			auto body = new btRigidBody(fallRigidBodyCI);
+
+			if (!body) {
+				return false;
+			}
+
+			this->bodies[entity_id] = body;
+
+			body->setUserPointer(&collidable);
+			if (collidable.disable_deactivation) {
+				body->forceActivationState(DISABLE_DEACTIVATION);
+			}
+
+			if (collidable.disable_rotation) {
+				body->setAngularFactor(btVector3(0.0, 0, 0.0));
 			}
 		}
-		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
-			collision_body.get(), collision_body->shape.get(), fallInertia);
-		auto body = new btRigidBody(fallRigidBodyCI);
-
-		if (!body) {
-			return false;
-		}
-		collision_body->entity_id = entity_id;
-		this->bodies[entity_id] = body;
-
-		body->setUserPointer(collision_body.get());
-
-		// Check if we want to disable automatic deactivation for this body.
-		if (collision_body->disable_deactivation) {
-			body->forceActivationState(DISABLE_DEACTIVATION);
-		}
-
-		// Prevent objects from rotating from physics system.
-		if (collision_body->disable_rotation) {
-			body->setAngularFactor(btVector3(0.0, 0, 0.0));
-		}
-
 		return true;
 	}
 
@@ -342,8 +354,33 @@ namespace tec {
 		}
 	}
 
+
+	void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
+		for (int i = 0; i < data->entity.components_size(); ++i) {
+			const proto::Component& comp = data->entity.components(i);
+			switch (comp.component_case()) {
+				case proto::Component::kCollisionBody:
+					CollisionBody colbody;
+					colbody.In(comp);
+					CreateRigiedBody(data->entity.id(), std::move(colbody));
+					break;
+			}
+		}
+	}
+
+	void PhysicsSystem::On(std::shared_ptr<EntityDestroyed> data) {
+		if (this->collidables.find(data->entity_id) != this->collidables.end()) {
+			if (this->bodies.find(data->entity_id) != this->bodies.end()) {
+				this->dynamicsWorld->removeRigidBody(this->bodies.at(data->entity_id));
+				delete this->bodies.at(data->entity_id);
+				this->bodies.erase(data->entity_id);
+			}
+			this->collidables.erase(data->entity_id);
+		}
+	}
+
 	Position PhysicsSystem::GetPosition(eid entity_id) {
-		auto pos = CollisionBodyMap::Get(entity_id)->transform.getOrigin();
+		auto pos = collidables.at(entity_id).motion_state.transform.getOrigin();
 		Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
 
 		// TODO: remove this once center_offset is in renderable
@@ -354,7 +391,7 @@ namespace tec {
 	}
 
 	Orientation PhysicsSystem::GetOrientation(eid entity_id) {
-		auto rot = CollisionBodyMap::Get(entity_id)->transform.getRotation();
+		auto rot = collidables.at(entity_id).motion_state.transform.getRotation();
 		Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
 
 		// TODO: remove this once rotation_offset is in renderable

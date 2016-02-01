@@ -337,7 +337,6 @@ int main(int argc, char* argv[]) {
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
 	tec::ComponentUpdateSystemList::UpdateAll(frame_id);
-	simulation.PopulateBaseState();
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();

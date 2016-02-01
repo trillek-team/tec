@@ -5,26 +5,20 @@
 #include <set>
 
 #include "components/transforms.hpp"
+#include "components/collisionbody.hpp"
 #include "physics-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include <glm/gtx/compatibility.hpp>
 
 namespace tec {
-	void Simulation::PopulateBaseState() {
-		for (auto itr = Multiton<eid, std::shared_ptr<Position>>::Begin(); itr != Multiton<eid, std::shared_ptr<Position>>::End(); ++itr) {
-			this->client_state.positions[itr->first] = *itr->second.get();
-		}
-		for (auto itr = Multiton<eid, std::shared_ptr<Orientation>>::Begin(); itr != Multiton<eid, std::shared_ptr<Orientation>>::End(); ++itr) {
-			this->client_state.orientations[itr->first] = *itr->second.get();
-		}
-	}
-
 	std::set<eid> Simulation::Simulate(const double delta_time) {
 		ProcessCommandQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 		EventQueue<MouseClickEvent>::ProcessEventQueue();
+		EventQueue<EntityCreated>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 		/*auto vcomp_future = std::async(std::launch::async, [&] () {
 			vcomp_sys.Update(delta_time);
@@ -91,38 +85,41 @@ namespace tec {
 				}
 				interpolation_accumulator -= INTERPOLATION_RATE;
 				this->base_state.state_id = to_state.state_id;
+				std::lock_guard<std::mutex> lock(this->server_state_mutex);
 				this->server_states.pop();
 			}
 			const GameState& to_state = this->server_states.front();
 			float lerp_percent = static_cast<float>(interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
-			for (auto position : to_state.positions) {
-				if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
-					this->client_state.positions[position.first].value = glm::lerp(
-						base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+			if (lerp_percent > 0.0) {
+				for (auto position : to_state.positions) {
+					if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
+						this->client_state.positions[position.first].value = glm::lerp(
+							base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+					}
+					else {
+						this->client_state.positions[position.first] = position.second;
+					}
 				}
-				else {
-					this->client_state.positions[position.first] = position.second;
+				for (auto velocity : to_state.velocties) {
+					if (this->base_state.velocties.find(velocity.first) != this->base_state.velocties.end()) {
+						this->client_state.velocties[velocity.first].linear = glm::lerp(
+							base_state.velocties.at(velocity.first).linear, velocity.second.linear, lerp_percent);
+						this->client_state.velocties[velocity.first].angular = glm::lerp(
+							base_state.velocties.at(velocity.first).angular, velocity.second.angular, lerp_percent);
+					}
+					else {
+						this->client_state.velocties[velocity.first].linear = velocity.second.linear;
+						this->client_state.velocties[velocity.first].angular = velocity.second.angular;
+					}
 				}
-			}
-			for (auto velocity : to_state.velocties) {
-				if (this->base_state.velocties.find(velocity.first) != this->base_state.velocties.end()) {
-					this->client_state.velocties[velocity.first].linear = glm::lerp(
-						base_state.velocties.at(velocity.first).linear, velocity.second.linear, lerp_percent);
-					this->client_state.velocties[velocity.first].angular = glm::lerp(
-						base_state.velocties.at(velocity.first).angular, velocity.second.angular, lerp_percent);
-				}
-				else {
-					this->client_state.velocties[velocity.first].linear = velocity.second.linear;
-					this->client_state.velocties[velocity.first].angular = velocity.second.angular;
-				}
-			}
-			for (auto orientation : to_state.orientations) {
-				if (this->base_state.orientations.find(orientation.first) != this->base_state.orientations.end()) {
-					this->client_state.orientations[orientation.first].value = glm::slerp(
-						base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
-				}
-				else {
-					this->client_state.orientations[orientation.first] = orientation.second;
+				for (auto orientation : to_state.orientations) {
+					if (this->base_state.orientations.find(orientation.first) != this->base_state.orientations.end()) {
+						this->client_state.orientations[orientation.first].value = glm::slerp(
+							base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
+					}
+					else {
+						this->client_state.orientations[orientation.first] = orientation.second;
+					}
 				}
 			}
 		}
@@ -134,8 +131,9 @@ namespace tec {
 
 	void Simulation::onServerStateUpdate(GameState&& new_state) {
 		if (new_state.state_id > this->last_server_state_id) {
-			this->server_states.emplace(std::move(new_state));
 			this->last_server_state_id = new_state.state_id;
+			std::lock_guard<std::mutex> lock(this->server_state_mutex);
+			this->server_states.emplace(std::move(new_state));
 		}
 	}
 
@@ -143,6 +141,26 @@ namespace tec {
 		QueueCommand(std::move([=] (Simulation* sim) {
 			sim->onSetEntityState(entity);
 		}));
+	}
+
+	void Simulation::On(std::shared_ptr<EntityCreated> data) {
+		onSetEntityState(data->entity);
+	}
+
+
+	void Simulation::On(std::shared_ptr<EntityDestroyed> data) {
+		if (this->client_state.positions.find(data->entity_id) != this->client_state.positions.end()) {
+			this->client_state.positions.erase(data->entity_id);
+			this->base_state.positions.erase(data->entity_id);
+		}
+		if (this->client_state.orientations.find(data->entity_id) != this->client_state.orientations.end()) {
+			this->client_state.orientations.erase(data->entity_id);
+			this->base_state.orientations.erase(data->entity_id);
+		}
+		if (this->client_state.velocties.find(data->entity_id) != this->client_state.velocties.end()) {
+			this->client_state.velocties.erase(data->entity_id);
+			this->base_state.velocties.erase(data->entity_id);
+		}
 	}
 
 	void Simulation::onSetEntityState(const proto::Entity& entity) {

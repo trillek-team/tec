@@ -31,7 +31,7 @@ int main() {
 
 	try {
 		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::SERVER_PORT);
-		tec::networking::Server server(endpoint, simulation);
+		tec::networking::Server server(endpoint);
 		std::cout << "Server ready" << std::endl;
 
 		last_time = std::chrono::high_resolution_clock::now();

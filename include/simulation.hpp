@@ -8,16 +8,17 @@
 #include "physics-system.hpp"
 #include "vcomputer-system.hpp"
 #include "proto/components.pb.h"
-#include "command-queue.hpp"
+#include "event-queue.hpp"
 
 namespace tec {
 	struct Controller;
 
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 
-	class Simulation final : public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
+	class Simulation final : public CommandQueue < Simulation >, 
+		public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
 		public EventQueue<MouseMoveEvent>, public EventQueue < MouseClickEvent >,
-		public CommandQueue < Simulation > {
+		public EventQueue<EntityDestroyed>  {
 	public:
 		Simulation() : last_server_state_id(0) { }
 		~Simulation() { }
@@ -25,9 +26,6 @@ namespace tec {
 		std::set<eid> Simulate(const double delta_time);
 
 		void Interpolate(const double delta_time);
-
-		// Used for testing only.
-		void PopulateBaseState();
 
 		PhysicsSystem& GetPhysicsSystem() {
 			return this->phys_sys;
@@ -45,6 +43,8 @@ namespace tec {
 		void On(std::shared_ptr<MouseBtnEvent> data);
 		void On(std::shared_ptr<MouseMoveEvent> data);
 		void On(std::shared_ptr<MouseClickEvent> data);
+		void On(std::shared_ptr<EntityCreated> data);
+		void On(std::shared_ptr<EntityDestroyed> data);
 
 		void SetEntityState(proto::Entity& entity);
 		void onServerStateUpdate(GameState&& new_frame);
@@ -57,6 +57,7 @@ namespace tec {
 		VComputerSystem vcomp_sys;
 
 		std::queue<GameState> server_states;
+		std::mutex server_state_mutex;
 		CommandList current_command_list;
 		GameState client_state; // Current client (interpolated) state
 		GameState base_state; // The base state we interpolate client state towards server_states.being()

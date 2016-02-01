@@ -6,6 +6,8 @@
 #include <imgui.h>
 
 #include "reflection.hpp"
+#include "event-system.hpp"
+#include "events.hpp"
 
 namespace tec {
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
@@ -21,7 +23,7 @@ namespace tec {
 		}
 
 		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
-		if (! ImGui::Begin("Entity Tree", &collapsed, window_flags)) {
+		if (!ImGui::Begin("Entity Tree", &collapsed, window_flags)) {
 			ImGui::End();
 			ImGui::PopStyleVar();
 			return;
@@ -69,6 +71,9 @@ namespace tec {
 					for (auto factory : component_removal_factories) {
 						factory.second(itr->first);
 					}
+					std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
+					data->entity_id = itr->first;
+					EventSystem<EntityDestroyed>::Get()->Emit(data);
 					entity_list.entities.erase(itr);
 					break;
 				}

@@ -100,7 +100,7 @@ namespace tec {
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();
 		SetupComponent<LuaScript>();
-		
+
 		ComponentUpdateSystem<VoxelVolume>::Initialize();
 		SetupComponent<Computer>();
 		ComponentUpdateSystem<ComputerScreen>::Initialize();
@@ -138,7 +138,7 @@ namespace tec {
 		auto debug_fill = Material::Create("material_debug");
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
-		
+
 		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
 			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
 				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
@@ -231,13 +231,14 @@ namespace tec {
 		auto _log = spdlog::get("console_log");
 		if (fname.isValidPath() && fname.FileExists()) {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
-			proto::Entity entity;
-			entity.ParseFromIstream(&input);
-			eid entity_id = entity.id();
-			for (int i = 0; i < entity.components_size(); ++i) {
-				const proto::Component& comp = entity.components(i);
+			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+			data->entity.ParseFromIstream(&input);
+			EventSystem<EntityCreated>::Get()->Emit(data);
+			eid entity_id = data->entity.id();
+			for (int i = 0; i < data->entity.components_size(); ++i) {
+				const proto::Component& comp = data->entity.components(i);
 				if (in_functors.find(comp.component_case()) != in_functors.end()) {
-					in_functors[comp.component_case()](entity, comp);
+					in_functors[comp.component_case()](data->entity, comp);
 					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
 				}
 			}

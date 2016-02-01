@@ -4,23 +4,21 @@
 #include <asio.hpp>
 #include <mutex>
 #include <deque>
-#include "simulation.hpp"
 #include "types.hpp"
 #include "server-message.hpp"
+#include "game-state.hpp"
 
 using asio::ip::tcp;
 
 namespace tec {
-	class GameState;
-
 	namespace networking {
 		class Server;
-		
+
 		// Used to represent a client connection to the server.
 		class ClientConnection : public std::enable_shared_from_this < ClientConnection > {
 		public:
-			ClientConnection(tcp::socket socket, Server* server, Simulation& simulation) : last_confirmed_state_id(0), 
-				socket(std::move(socket)), server(server), simulation(simulation) { }
+			ClientConnection(tcp::socket socket, Server* server) : last_confirmed_state_id(0),
+				socket(std::move(socket)), server(server) { }
 
 			void StartRead();
 
@@ -30,16 +28,19 @@ namespace tec {
 				return this->id;
 			}
 
-			void SetID(eid id) {
-				this->id = id;
-				this->entity.set_id(id);
-			}
+			// Sets the client id and sends it to this client.
+			void SetID(eid id);
 
 			proto::Entity& GetEntity() {
 				return this->entity;
 			}
 
-			void DoJoin();
+			void DoJoin(); // Emits an EntityCreated event and ENTITY_CREATE message to this client.
+
+			void DoLeave(); // Emits an EntityDestroyed event.
+
+			// Called when another client leaves.
+			void OnClientLeave(eid entity_id);
 
 			void ConfirmStateID(state_id_t state_id) {
 				this->last_confirmed_state_id = state_id;
@@ -70,7 +71,6 @@ namespace tec {
 
 			state_id_t last_confirmed_state_id; // That last state_id the client confirmed it received.
 			GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.
-			Simulation& simulation;
 		};
 	}
 }

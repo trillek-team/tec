@@ -1,7 +1,7 @@
 #include "server/client_connection.hpp"
 #include "proto/game_state.pb.h"
+#include "event-system.hpp"
 #include "server/server.hpp"
-#include "simulation.hpp"
 #include <iostream>
 #include <thread>
 
@@ -23,8 +23,54 @@ namespace tec {
 				do_write();
 			}
 		}
+
+		void ClientConnection::SetID(eid id) {
+			this->id = id;
+			this->entity.set_id(id);
+			std::string message(std::to_string(this->id));
+			static ServerMessage id_message;
+			id_message.SetMessageType(CLIENT_ID);
+			id_message.SetBodyLength(message.size());
+			memcpy(id_message.GetBodyPTR(), message.c_str(), id_message.GetBodyLength());
+			id_message.encode_header();
+			QueueWrite(id_message);
+		}
+
 		void ClientConnection::DoJoin() {
-			this->simulation.SetEntityState(this->entity);
+			ServerMessage entity_create_msg;
+			entity_create_msg.SetBodyLength(this->entity.ByteSize());
+			this->entity.SerializeToArray(entity_create_msg.GetBodyPTR(), entity_create_msg.GetBodyLength());
+			entity_create_msg.SetMessageType(ENTITY_CREATE);
+			entity_create_msg.encode_header();
+			QueueWrite(entity_create_msg);
+			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+			data->entity = this->entity;
+			EventSystem<EntityCreated>::Get()->Emit(data);
+		}
+
+		void ClientConnection::DoLeave() {
+			static ServerMessage leave_msg;
+			leave_msg.SetMessageType(CLIENT_LEAVE);
+			std::string message(std::to_string(this->id));
+			leave_msg.SetBodyLength(message.size());
+			memcpy(leave_msg.GetBodyPTR(), message.c_str(), leave_msg.GetBodyLength());
+			leave_msg.encode_header();
+			this->server->Deliver(leave_msg, false);
+			std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
+			data->entity_id = this->id;
+			EventSystem<EntityDestroyed>::Get()->Emit(data);
+		}
+
+		void ClientConnection::OnClientLeave(eid entity_id) {
+			if (this->state_changes_since_confirmed.positions.find(entity_id) != this->state_changes_since_confirmed.positions.end()) {
+				this->state_changes_since_confirmed.positions.erase(entity_id);
+			}
+			if (this->state_changes_since_confirmed.orientations.find(entity_id) != this->state_changes_since_confirmed.orientations.end()) {
+				this->state_changes_since_confirmed.orientations.erase(entity_id);
+			}
+			if (this->state_changes_since_confirmed.velocties.find(entity_id) != this->state_changes_since_confirmed.velocties.end()) {
+				this->state_changes_since_confirmed.velocties.erase(entity_id);
+			}
 		}
 
 		void ClientConnection::read_header() {

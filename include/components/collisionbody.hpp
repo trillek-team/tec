@@ -15,10 +15,24 @@ namespace tec {
 
 	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, STATIC_MESH, DYNAMIC_MESH, NONE };
 
-	struct CollisionBody : public btMotionState {
+	struct CollisionBody {
+		struct CollisionBodyMotionState : public btMotionState {
+			btTransform transform;
+
+			bool transform_updated;
+
+			void getWorldTransform(btTransform& worldTrans) const {
+				worldTrans = this->transform;
+			}
+
+			void setWorldTransform(const btTransform& worldTrans) {
+				this->transform_updated = true;
+				this->transform = worldTrans;
+			}
+		};
 		CollisionBody(COLLISION_SHAPE collision_shape = NONE);
 		~CollisionBody();
-		
+
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);
 
@@ -37,19 +51,7 @@ namespace tec {
 
 		std::shared_ptr<btCollisionShape> shape;
 		eid entity_id;
-
-		btTransform transform;
-
-		bool transform_updated;
-		
-		void getWorldTransform(btTransform& worldTrans) const {
-			worldTrans = this->transform;
-		}
-
-		void setWorldTransform(const btTransform& worldTrans) {
-			this->transform_updated = true;
-			this->transform = worldTrans;
-		}
+		CollisionBodyMotionState motion_state;
 	};
 	struct CollisionMesh : public CollisionBody {
 		CollisionMesh(std::shared_ptr<MeshFile> mesh, bool dynamic = false);

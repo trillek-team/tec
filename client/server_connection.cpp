@@ -28,10 +28,18 @@ namespace tec {
 				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
 				client_id = std::atoi(id_message.c_str());
 			});
+			RegisterMessageHandler(CLIENT_LEAVE, [this] (const ServerMessage& message) {
+				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
+				eid entity_id = std::atoi(id_message.c_str());
+				_log->info("Entity " + std::to_string(entity_id) + " left");
+				std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
+				data->entity_id = entity_id;
+				EventSystem<EntityDestroyed>::Get()->Emit(data);
+			});
 			RegisterMessageHandler(ENTITY_CREATE, [this] (const ServerMessage& message) {
-				proto::Entity entity;
-				entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-				this->simulation.SetEntityState(std::move(entity));
+				std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+				data->entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
+				EventSystem<EntityCreated>::Get()->Emit(data);
 			});
 		}
 

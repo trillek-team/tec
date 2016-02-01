@@ -21,6 +21,7 @@ namespace tec {
 			this->positions = std::move(other.positions);
 			this->orientations = std::move(other.orientations);
 			this->velocties = std::move(other.velocties);
+			this->state_id = other.state_id;
 		}
 
 		GameState& operator=(const GameState& other) = delete;
@@ -29,6 +30,7 @@ namespace tec {
 				this->positions = std::move(other.positions);
 				this->orientations = std::move(other.orientations);
 				this->velocties = std::move(other.velocties);
+				this->state_id = other.state_id;
 			}
 			return *this;
 		}
