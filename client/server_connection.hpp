@@ -5,6 +5,7 @@
 #include <memory>
 #include <thread>
 #include <chrono>
+#include <list>
 #include <iostream>
 #include <atomic>
 #include "server-message.hpp"

@@ -91,7 +91,7 @@ namespace tec {
 
 			void encode_header() {
 				char header[header_length + 1] = "";
-				std::sprintf(header, "%4d%4d%lld", body_length, message_type, last_recv_state_id);
+				std::sprintf(header, "%4zd%4d%lld", body_length, message_type, last_recv_state_id);
 				std::memcpy(data, header, header_length);
 			}
 
