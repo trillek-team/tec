@@ -6,6 +6,7 @@
 #include "proto/game_state.pb.h"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
+#include "events.hpp"
 
 namespace tec {
 	struct GameState {

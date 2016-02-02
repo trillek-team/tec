@@ -1,9 +1,9 @@
 #pragma once
 
 #include <glm/mat4x4.hpp>
-#include "entity.hpp"
 
 #include "../proto/components.pb.h"
+#include "reflection.hpp"
 
 namespace tec {
 	struct View {

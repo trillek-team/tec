@@ -7,6 +7,7 @@
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
 #include "physics-system.hpp"
+#include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include <glm/gtx/compatibility.hpp>
 

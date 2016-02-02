@@ -8,7 +8,6 @@
 #include <glm/glm.hpp>
 
 #include "types.hpp"
-#include "entity.hpp"
 #include "multiton.hpp"
 #include "command-queue.hpp"
 #include "event-system.hpp"

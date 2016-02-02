@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "entity.hpp"
+#include "types.hpp"
 #include "game-state.hpp"
 #include "events.hpp"
 
@@ -12,7 +12,7 @@ namespace tec {
 	};
 	// TODO: Remove this class as it is only for testing and should really be implemented in script.
 	struct FPSController : public Controller {
-		FPSController(eid entity_id) : e(entity_id), mouse_look(false) { }
+		FPSController(eid entity_id) : entity_id(entity_id), mouse_look(false) { }
 
 		void Handle(const KeyboardEvent& data, GameState& state);
 		void Handle(const MouseBtnEvent& data, GameState& state);
@@ -20,7 +20,7 @@ namespace tec {
 
 		void Update(double delta, GameState& state, const CommandList& commands);
 
-		Entity e;
+		eid entity_id;
 		double current_delta;
 		bool mouse_look;
 

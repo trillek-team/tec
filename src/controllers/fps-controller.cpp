@@ -3,6 +3,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include "os.hpp"
 #include "components/transforms.hpp"
+#include "events.hpp"
 
 namespace tec {
 	void FPSController::Update(double delta, GameState& state, const CommandList& commands) {
@@ -34,11 +35,11 @@ namespace tec {
 		}
 
 		glm::quat orientation;
-		if (state.orientations.find(this->e.GetID()) != state.orientations.end()) {
-			orientation = state.orientations.at(this->e.GetID()).value;
+		if (state.orientations.find(entity_id) != state.orientations.end()) {
+			orientation = state.orientations.at(entity_id).value;
 		}
 
-		state.velocties[this->e.GetID()].linear = glm::vec4(orientation * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
+		state.velocties[entity_id].linear = glm::vec4(orientation * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
 	}
 
 	void FPSController::Handle(const KeyboardEvent& data, GameState& state) {
@@ -106,8 +107,8 @@ namespace tec {
 			return;
 		}
 		glm::quat orientation;
-		if (state.orientations.find(this->e.GetID()) != state.orientations.end()) {
-			orientation = state.orientations.at(this->e.GetID()).value;
+		if (state.orientations.find(entity_id) != state.orientations.end()) {
+			orientation = state.orientations.at(entity_id).value;
 		}
 
 		float change_x = static_cast<float>(data.new_x - data.old_x);
@@ -137,8 +138,8 @@ namespace tec {
 			orientation = orientation * rotY;
 		}
 
-		if (state.orientations.find(this->e.GetID()) != state.orientations.end()) {
-			state.orientations[this->e.GetID()].value = orientation;
+		if (state.orientations.find(entity_id) != state.orientations.end()) {
+			state.orientations[entity_id].value = orientation;
 		}
 	}
 }

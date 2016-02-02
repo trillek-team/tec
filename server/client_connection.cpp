@@ -1,6 +1,7 @@
 #include "server/client_connection.hpp"
 #include "proto/game_state.pb.h"
 #include "event-system.hpp"
+#include "events.hpp"
 #include "server/server.hpp"
 #include <iostream>
 #include <thread>

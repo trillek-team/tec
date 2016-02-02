@@ -7,8 +7,8 @@
 #include <vector>
 #include <string>
 
+#include "reflection.hpp"
 #include "types.hpp"
-#include "entity.hpp"
 
 namespace tec {
 	class MeshFile;
@@ -53,6 +53,7 @@ namespace tec {
 		eid entity_id;
 		CollisionBodyMotionState motion_state;
 	};
+
 	struct CollisionMesh : public CollisionBody {
 		CollisionMesh(std::shared_ptr<MeshFile> mesh, bool dynamic = false);
 
