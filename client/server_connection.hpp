@@ -96,7 +96,7 @@ namespace tec {
 			state_id_t last_received_state_id;
 			Simulation& simulation;
 
-			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>> message_handlers;
+			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>, std::hash<std::underlying_type<MessageType>::type>> message_handlers;
 		};
 	}
 }
