@@ -3,7 +3,6 @@
 #include <glm/mat4x4.hpp>
 
 #include "../proto/components.pb.h"
-#include "reflection.hpp"
 
 namespace tec {
 	struct View {
@@ -20,14 +19,6 @@ namespace tec {
 			if (comp.has_active()) {
 				this->active = comp.active();
 			}
-		}
-
-		static ReflectionComponent Reflection(View* val) {
-			ReflectionComponent refcomp;
-			Property prop(Property::BOOLEAN);
-			(refcomp.properties["Active"] = prop).Set<bool>(val->active);
-			refcomp.properties["Active"].update_func = [val] (Property& prop) { val->active = prop.Get<bool>(); };
-			return std::move(refcomp);
 		}
 	};
 }

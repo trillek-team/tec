@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <functional>
 #include <list>
 #include "types.hpp"
 #include "proto/game_state.pb.h"

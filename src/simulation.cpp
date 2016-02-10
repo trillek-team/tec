@@ -7,7 +7,6 @@
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
 #include "physics-system.hpp"
-#include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include <glm/gtx/compatibility.hpp>
 
@@ -45,18 +44,6 @@ namespace tec {
 				client_state.orientations[entity_id] = this->phys_sys.GetOrientation(entity_id);
 				if (this->client_state.velocties.find(entity_id) != this->client_state.velocties.end()) {
 					client_state.velocties[entity_id] = this->client_state.velocties[entity_id];
-				}
-				// Update reflection
-				for (auto pos : client_state.positions) {
-					ComponentUpdateSystem<Position>::SubmitUpdate(pos.first, std::make_shared<Position>(pos.second), 0);
-					if (client_state.orientations.find(pos.first) != client_state.orientations.end()) {
-						tec::Orientation ori = client_state.orientations.at(pos.first);
-						ComponentUpdateSystem<Orientation>::SubmitUpdate(pos.first, std::make_shared<Orientation>(ori), 0);
-					}
-					if (client_state.velocties.find(pos.first) != client_state.velocties.end()) {
-						tec::Velocity vel = client_state.velocties.at(pos.first);
-						ComponentUpdateSystem<Velocity>::SubmitUpdate(pos.first, std::make_shared<Velocity>(vel), 0);
-					}
 				}
 			}
 		}

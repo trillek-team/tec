@@ -2,7 +2,6 @@
 
 #include "components/collisionbody.hpp"
 #include "components/transforms.hpp"
-#include "component-update-system.hpp"
 #include "entity.hpp"
 #include "events.hpp"
 
@@ -15,7 +14,7 @@ namespace tec {
 	PhysicsDebugDrawer debug_drawer;
 
 	PhysicsSystem::PhysicsSystem() {
-		last_rayvalid = false;
+		this->last_rayvalid = false;
 		this->collisionConfiguration = new btDefaultCollisionConfiguration();
 		this->dispatcher = new btCollisionDispatcher(this->collisionConfiguration);
 		this->broadphase = new btDbvtBroadphase();
@@ -23,9 +22,7 @@ namespace tec {
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
 		this->dynamicsWorld->setGravity(btVector3(0, -7.0, 0));
 
-		// Register the collision dispatcher with the GImpact algorithm for dynamic meshes.
-		btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(this->dynamicsWorld->getDispatcher());
-		btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
+		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
 
 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
@@ -77,12 +74,14 @@ namespace tec {
 				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
 				btVector3(position.x, position.y, position.z));
 
+			// TODO: this section could be moved to an event-based action
 			collidable.motion_state.transform = transform;
 			if (collidable.new_collision_shape != collidable.collision_shape) {
 				if (!UpdateCollisionShape(entity_id)) {
 					continue;
 				}
 			}
+
 			btRigidBody* body = this->bodies[entity_id];
 			this->dynamicsWorld->removeRigidBody(body);
 			if (collidable.mass != body->getInvMass()) {
@@ -93,11 +92,10 @@ namespace tec {
 				body->clearForces();
 			}
 
-			int state = body->getActivationState();
 			if (collidable.disable_deactivation) {
 				body->forceActivationState(DISABLE_DEACTIVATION);
 			}
-			else if (state == DISABLE_DEACTIVATION) {
+			else if (body->getActivationState() == DISABLE_DEACTIVATION) {
 				body->forceActivationState(ACTIVE_TAG);
 			}
 
@@ -106,20 +104,14 @@ namespace tec {
 			}
 			body->setWorldTransform(collidable.motion_state.transform);
 			this->dynamicsWorld->addRigidBody(body);
-		}
 
-		for (auto itr = VelocityMap::Begin(); itr != VelocityMap::End(); ++itr) {
-			auto entity_id = itr->first;
-			if (this->bodies.find(entity_id) != this->bodies.end()) {
-				auto body = this->bodies.at(entity_id);
-				if (state.velocties.find(entity_id) != state.velocties.end()) {
-					const Velocity& vel = state.velocties.at(entity_id);
-					if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x)) {
-						body->setLinearVelocity(vel.GetLinear() + body->getGravity());
-					}
-					if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x)) {
-						body->setAngularVelocity(vel.GetAngular());
-					}
+			if (state.velocties.find(entity_id) != state.velocties.end()) {
+				const Velocity& vel = state.velocties.at(entity_id);
+				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x)) {
+					body->setLinearVelocity(vel.GetLinear() + body->getGravity());
+				}
+				if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x)) {
+					body->setAngularVelocity(vel.GetAngular());
 				}
 			}
 		}
@@ -137,15 +129,17 @@ namespace tec {
 	}
 
 	glm::vec3 GetRayDirection(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) {
-		glm::vec4 lRayStart_NDC((mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, -1.0, 1.0f);
-		glm::vec4 lRayEnd_NDC((mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, 0.0, 1.0f);
+		glm::vec4 ray_start_NDC((mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, -1.0, 1.0f);
+		glm::vec4 ray_end_NDC((mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, 0.0, 1.0f);
 
 		glm::mat4 inverted_viewprojection = glm::inverse(projection * view);
-		glm::vec4 lRayStart_world = inverted_viewprojection * lRayStart_NDC; lRayStart_world /= lRayStart_world.w;
-		glm::vec4 lRayEnd_world = inverted_viewprojection * lRayEnd_NDC; lRayEnd_world /= lRayEnd_world.w;
-		glm::vec3 lRayDir_world(lRayEnd_world - lRayStart_world);
-		lRayDir_world = glm::normalize(lRayDir_world);
-		return lRayDir_world;
+		glm::vec4 ray_start_WORLD = inverted_viewprojection * ray_start_NDC;
+		ray_start_WORLD /= ray_start_WORLD.w;
+		glm::vec4 ray_end_WORLD = inverted_viewprojection * ray_end_NDC;
+		ray_end_WORLD /= ray_end_WORLD.w;
+		glm::vec3 ray_direction_WORLD(ray_end_WORLD - ray_start_WORLD);
+		ray_direction_WORLD = glm::normalize(ray_direction_WORLD);
+		return ray_direction_WORLD;
 	}
 
 	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
@@ -330,13 +324,6 @@ namespace tec {
 			this->bodies[entity_id] = body;
 
 			body->setUserPointer(&collidable);
-			if (collidable.disable_deactivation) {
-				body->forceActivationState(DISABLE_DEACTIVATION);
-			}
-
-			if (collidable.disable_rotation) {
-				body->setAngularFactor(btVector3(0.0, 0, 0.0));
-			}
 		}
 		return true;
 	}

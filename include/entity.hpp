@@ -3,7 +3,6 @@
 #include <memory>
 #include <tuple>
 #include "multiton.hpp"
-#include "component-update-system.hpp"
 
 namespace tec {
 	class Entity {
@@ -25,7 +24,7 @@ namespace tec {
 
 		template <typename T>
 		void Remove() {
-			ComponentUpdateSystem<T>::SubmitRemoval(this->id);
+			Multiton<eid, std::shared_ptr<T>>::Remove(this->id);
 		}
 
 		template <typename T>
@@ -45,7 +44,7 @@ namespace tec {
 
 		template <typename T>
 		void Update(std::shared_ptr<T> val) {
-			ComponentUpdateSystem<T>::SubmitUpdate(this->id, val);
+			Multiton<eid, std::shared_ptr<T>>::Set(this->id, val);
 		}
 
 		template <typename T>

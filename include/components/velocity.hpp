@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 
 #include "types.hpp"
-#include "reflection.hpp"
 
 namespace tec {
 	struct Velocity {
@@ -52,25 +51,6 @@ namespace tec {
 			if (comp.has_angular_z()) {
 				this->angular.z = comp.angular_z();
 			}
-		}
-
-		static ReflectionComponent Reflection(Velocity* val) {
-			ReflectionComponent refcomp;
-			Property prop(Property::FLOAT);
-			(refcomp.properties["Linear X"] = prop).Set<float>(val->linear.x);
-			refcomp.properties["Linear X"].update_func = [val] (Property& prop) { val->linear.x = prop.Get<float>(); };
-			(refcomp.properties["Linear Y"] = prop).Set<float>(val->linear.y);
-			refcomp.properties["Linear Y"].update_func = [val] (Property& prop) { val->linear.y = prop.Get<float>(); };
-			(refcomp.properties["Linear Z"] = prop).Set<float>(val->linear.z);
-			refcomp.properties["Linear Z"].update_func = [val] (Property& prop) { val->linear.z = prop.Get<float>(); };
-			(refcomp.properties["Angular X"] = prop).Set<float>(val->angular.x);
-			refcomp.properties["Angular X"].update_func = [val] (Property& prop) { val->angular.x = prop.Get<float>(); };
-			(refcomp.properties["Angular Y"] = prop).Set<float>(val->angular.y);
-			refcomp.properties["Angular Y"].update_func = [val] (Property& prop) { val->angular.y = prop.Get<float>(); };
-			(refcomp.properties["Angular Z"] = prop).Set<float>(val->angular.z);
-			refcomp.properties["Angular Z"].update_func = [val] (Property& prop) { val->angular.z = prop.Get<float>(); };
-
-			return std::move(refcomp);
 		}
 	};
 }

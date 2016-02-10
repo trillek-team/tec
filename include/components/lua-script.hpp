@@ -11,16 +11,12 @@
 namespace tec {
 	
 	class ScriptFile;
-	struct ReflectionComponent;
 	
 	struct LuaScript {
 		
 		LuaScript(std::shared_ptr<ScriptFile> scriptfile);
 		LuaScript();
-
 		
-		static ReflectionComponent Reflection(LuaScript* val);
-
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);
 	

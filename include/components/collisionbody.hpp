@@ -7,16 +7,13 @@
 #include <vector>
 #include <string>
 
-#include "reflection.hpp"
 #include "types.hpp"
 
 namespace tec {
-	class MeshFile;
-
-	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, STATIC_MESH, DYNAMIC_MESH, NONE };
+	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, NONE };
 
 	struct CollisionBody {
-		struct CollisionBodyMotionState : public btMotionState {
+		struct MotionState : public btMotionState {
 			btTransform transform;
 
 			bool transform_updated;
@@ -36,8 +33,6 @@ namespace tec {
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);
 
-		static ReflectionComponent Reflection(CollisionBody* val);
-
 		COLLISION_SHAPE collision_shape;
 		COLLISION_SHAPE new_collision_shape;
 
@@ -51,13 +46,6 @@ namespace tec {
 
 		std::shared_ptr<btCollisionShape> shape;
 		eid entity_id;
-		CollisionBodyMotionState motion_state;
-	};
-
-	struct CollisionMesh : public CollisionBody {
-		CollisionMesh(std::shared_ptr<MeshFile> mesh, bool dynamic = false);
-
-		std::shared_ptr<btTriangleMesh> mesh;
-		std::shared_ptr<MeshFile> mesh_file;
+		MotionState motion_state;
 	};
 }

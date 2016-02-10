@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "reflection.hpp"
 #include "proto/components.pb.h"
 
 namespace tec {
@@ -34,8 +33,6 @@ namespace tec {
 
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);
-
-		static ReflectionComponent Reflection(Animation* val);
 
 		friend class RenderSystem;
 	private:

@@ -54,34 +54,6 @@ namespace tec {
 			}
 		}
 
-		static ReflectionComponent Reflection(AudioSource* val) {
-			ReflectionComponent refcomp;
-			Property prop(Property::BOOLEAN);
-			(refcomp.properties["Looping"] = prop).Set<bool>(val->looping);
-			refcomp.properties["Looping"].update_func = [val] (Property& prop) { val->looping = prop.Get<bool>(); };
-			(refcomp.properties["Playing"] = prop).Set<bool>((val->source_state == PLAYING) ? true : false);
-			refcomp.properties["Playing"].update_func = [val] (Property& prop) {
-				if (prop.Get<bool>()) {
-					val->source_state = PLAYING;
-				}
-				else {
-					val->source_state = PAUSED;
-				}
-			};
-			Property dprop(Property::DROPDOWN);
-			dropdown_t key_func_mesh = std::make_pair(SoundMap::Keys, val->audio_name);
-			(refcomp.properties["Audio Picker"] = dprop).Set(key_func_mesh);
-			refcomp.properties["Audio Picker"].update_func = [val] (Property& prop) {
-				dropdown_t key_func = prop.Get<dropdown_t>();
-				val->audio_name = key_func.second;
-				val->vorbis_stream = SoundMap::Get(val->audio_name);
-			};
-			Property iprop(Property::INTEGER);
-			(refcomp.properties["Volume"] = iprop).Set<int>(val->gain);
-			refcomp.properties["Volume"].update_func = [val] (Property& prop) { val->gain = prop.Get<int>(); };
-			return std::move(refcomp);
-		}
-
 		ALuint source;
 		ALuint buffer[2];
 

@@ -135,11 +135,6 @@ namespace tec {
 		comp->set_e(state.e);
 	}
 
-	ReflectionComponent ComputerScreen::Reflection(ComputerScreen* val) {
-		ReflectionComponent refcomp;
-		return std::move(refcomp);
-	}
-
 	ComputerKeyboard::ComputerKeyboard() : has_focus(false) {
 		this->device = std::make_shared<gkeyboard::GKeyboardDev>();
 	}
@@ -147,11 +142,6 @@ namespace tec {
 	void ComputerKeyboard::In(const proto::Computer::Device& source) { }
 
 	void ComputerKeyboard::Out(proto::Computer::Device* target) { }
-
-	ReflectionComponent ComputerKeyboard::Reflection(ComputerKeyboard* val) {
-		ReflectionComponent refcomp;
-		return std::move(refcomp);
-	}
 
 	VComputerSystem::VComputerSystem() {
 		_log = spdlog::get("console_log");

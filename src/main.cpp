@@ -1,7 +1,6 @@
 #include "os.hpp"
 #include "events.hpp"
 #include "filesystem.hpp"
-#include "reflection.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
@@ -9,11 +8,9 @@
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
 #include "simulation.hpp"
-#include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include "lua-system.hpp"
 
-#include "gui/entity_tree.hpp"
 #include "gui/console.hpp"
 
 #include <spdlog/spdlog.h>
@@ -33,7 +30,6 @@ namespace tec {
 	extern std::map<std::string, std::function<void(eid)>> component_factories;
 	extern std::map<std::string, std::function<void(eid)>> component_removal_factories;
 
-	ReflectionEntityList entity_list;
 	eid active_entity;
 
 	struct FileListener : public EventQueue < FileDropEvent > {
@@ -76,7 +72,6 @@ namespace tec {
 	};
 
 }
-std::list<std::function<void(tec::state_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
@@ -148,7 +143,6 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
-	tec::EntityTree ent_tree_widget;
 
 	log->info("Initializing rendering system...");
 	tec::RenderSystem rs;
@@ -293,15 +287,6 @@ int main(int argc, char* argv[]) {
 						gui.ShowWindow("connect_window");
 					}
 				}
-				visible = gui.IsWindowVisible("entity_tree");
-				if (ImGui::MenuItem("Entity Tree", "", gui.IsWindowVisible("entity_tree"))) {
-					if (visible) {
-						gui.HideWindow("entity_tree");
-					}
-					else {
-						gui.ShowWindow("entity_tree");
-					}
-				}
 				ImGui::EndMenu();
 			}
 			ImGui::Text("Ping %i", connection.GetAveragePing());
@@ -325,9 +310,6 @@ int main(int argc, char* argv[]) {
 		ImGui::PopStyleColor();
 	});
 	gui.ShowWindow("ping_times");
-	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget] () {
-		ent_tree_widget.Draw();
-	});
 
 	gui.AddWindowDrawFunction("console", [&console] () {
 		console.Draw();
@@ -336,7 +318,6 @@ int main(int argc, char* argv[]) {
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
-	tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 
 	std::thread ss_thread([&] () {
 		ss.Update();
@@ -345,7 +326,6 @@ int main(int argc, char* argv[]) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
 
-		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
 		ss.SetDelta(delta);
 		std::thread vv_thread([&] () {
 			vox_sys.Update(delta);

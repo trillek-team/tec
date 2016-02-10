@@ -19,7 +19,6 @@
 #include "entity.hpp"
 #include "types.hpp"
 
-#include "component-update-system.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "physics-system.hpp"
@@ -69,7 +68,7 @@ namespace tec {
 		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t frame_id) {
 			auto comp = std::make_shared<T>();
 			comp->In(proto_comp);
-			ComponentUpdateSystem<T>::SubmitUpdate(entity.id(), comp, frame_id);
+			Entity(entity.id()).Update<T>(comp);
 		};
 		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
 			Entity e(entity->id());
@@ -84,7 +83,6 @@ namespace tec {
 	void SetupComponent() {
 		AddInOutFunctors<T>();
 		AddComponentFactory<T>();
-		ComponentUpdateSystem<T>::Initialize();
 	}
 
 	void InitializeComponents() {
@@ -100,12 +98,7 @@ namespace tec {
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();
 		SetupComponent<LuaScript>();
-
-		ComponentUpdateSystem<VoxelVolume>::Initialize();
 		SetupComponent<Computer>();
-		ComponentUpdateSystem<ComputerScreen>::Initialize();
-		ComponentUpdateSystem<VoxelVolume>::Initialize();
-		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
 
 	template <typename T>
@@ -194,10 +187,6 @@ namespace tec {
 		voxvol_shared->Update(0.0);
 		{
 			Entity voxel1(100);
-			std::shared_ptr<MeshFile> mesh = voxvol_shared->GetMesh().lock();
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(mesh);
-			colbody->mass = 0.0;
-			voxel1.Add(colbody);
 			voxel1.Add(voxvol_shared);
 		}
 
