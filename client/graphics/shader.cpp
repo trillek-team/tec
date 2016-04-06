@@ -1,4 +1,4 @@
-#include "graphics/shader.hpp"
+#include "shader.hpp"
 
 #include "spdlog/spdlog.h"
 #include <iterator>

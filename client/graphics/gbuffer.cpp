@@ -1,4 +1,4 @@
-#include "graphics/gbuffer.hpp"
+#include "gbuffer.hpp"
 
 namespace tec {
 	GBuffer::GBuffer() : num_color_textures(0) {

@@ -184,7 +184,7 @@ namespace tec {
 				next_state.positions.erase(this->client_id);
 				next_state.orientations.erase(this->client_id);
 				next_state.velocties.erase(this->client_id);
-				this->simulation.onServerStateUpdate(std::move(next_state));
+				this->simulation.PushServerState(std::move(next_state));
 			}
 			//_log->info(last_received_state_id);
 		}

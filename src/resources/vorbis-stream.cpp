@@ -1,12 +1,12 @@
 #include "resources/vorbis-stream.hpp"
 
 #include "spdlog/spdlog.h"
-#include "sound-system.hpp"
+#include "multiton.hpp"
 
 #undef STB_VORBIS_HEADER_ONLY
 #include "resources/stb_vorbis.c"
 namespace tec {
-
+	typedef Multiton<std::string, std::shared_ptr<VorbisStream>> SoundMap;
 	VorbisStream::VorbisStream(std::size_t buffer_size) : buffer_size(buffer_size), stream(nullptr) {
 		this->sbuffer = new ALshort[this->buffer_size];
 	}

@@ -11,7 +11,6 @@
 #include <OpenGL/gl3.h>
 #endif
 
-#include "multiton.hpp"
 #include "types.hpp"
 #include "game-state.hpp"
 #include "event-system.hpp"
@@ -25,9 +24,6 @@ namespace spdlog {
 
 namespace tec {
 	struct VertexGroup;
-	struct Renderable;
-	struct PointLight;
-	struct DirectionalLight;
 	struct View;
 	class Shader;
 	class Animation;
@@ -36,22 +32,18 @@ namespace tec {
 	typedef Command<RenderSystem> RenderCommand;
 
 	struct WindowResizedEvent;
+	struct EntityDestroyed;
 
 	class RenderSystem : public CommandQueue < RenderSystem >,
-		public EventQueue < WindowResizedEvent > {
+		public EventQueue < WindowResizedEvent >, public EventQueue < EntityDestroyed > {
 	public:
 		RenderSystem();
 
 		void SetViewportSize(const unsigned int width, const unsigned int height);
 
 		void Update(const double delta, const GameState& state);
-
-		bool ActivateView(const eid entity_id);
 	private:
 		std::shared_ptr<spdlog::logger> _log;
-		typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableComponentMap;
-		typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
-		typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
 
 		void ShadowPass();
 		void GeometryPass();
@@ -61,6 +53,7 @@ namespace tec {
 		void RenderGbuffer();
 
 		void On(std::shared_ptr<WindowResizedEvent> data);
+		void On(std::shared_ptr<EntityDestroyed> data);
 		void UpdateRenderList(double delta, const GameState& state);
 
 		glm::mat4 projection;

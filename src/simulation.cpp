@@ -118,7 +118,7 @@ namespace tec {
 		this->controllers.push_back(controller);
 	}
 
-	void Simulation::onServerStateUpdate(GameState&& new_state) {
+	void Simulation::PushServerState(GameState&& new_state) {
 		if (new_state.state_id > this->last_server_state_id) {
 			this->last_server_state_id = new_state.state_id;
 			std::lock_guard<std::mutex> lock(this->server_state_mutex);

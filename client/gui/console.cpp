@@ -1,4 +1,4 @@
-#include "gui/console.hpp"
+#include "console.hpp"
 
 #include <string>
 #include <cstdio>

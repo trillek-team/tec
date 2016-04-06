@@ -12,7 +12,7 @@
 #include "os.hpp"
 #include "events.hpp"
 #include "event-system.hpp"
-#include "gui/abs_window.hpp"
+#include "abs_window.hpp"
 
 namespace tec {
 	class Console :

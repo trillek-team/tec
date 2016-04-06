@@ -17,7 +17,7 @@ namespace tec {
 
 	class Simulation final : public CommandQueue < Simulation >, 
 		public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
-		public EventQueue<MouseMoveEvent>, public EventQueue < MouseClickEvent >,
+		public EventQueue<MouseMoveEvent>, public EventQueue<MouseClickEvent>,
 		public EventQueue<EntityCreated>, public EventQueue<EntityUpdated>,
 		public EventQueue<EntityDestroyed>  {
 	public:
@@ -49,7 +49,7 @@ namespace tec {
 		void On(std::shared_ptr<EntityDestroyed> data);
 
 		void SetEntityState(proto::Entity& entity);
-		void onServerStateUpdate(GameState&& new_frame);
+		void PushServerState(GameState&& new_frame);
 
 	private:
 		void onSetEntityState(const proto::Entity& entity);

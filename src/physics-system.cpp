@@ -5,13 +5,15 @@
 #include "entity.hpp"
 #include "events.hpp"
 
-#include "physics/physics-debug-drawer.hpp"
+#include "client/physics/physics-debug-drawer.hpp"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
+#ifdef CLIENT_STANDALONE
 	PhysicsDebugDrawer debug_drawer;
+#endif
 
 	PhysicsSystem::PhysicsSystem() {
 		this->last_rayvalid = false;
@@ -20,12 +22,14 @@ namespace tec {
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, -7.0, 0));
+		this->dynamicsWorld->setGravity(btVector3(0, 0.0, 0));
 
 		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
-
+		
+#ifdef CLIENT_STANDALONE
 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
+#endif
 	}
 
 	PhysicsSystem::~PhysicsSystem() {
@@ -256,7 +260,10 @@ namespace tec {
 
 	void PhysicsSystem::DebugDraw() {
 		this->dynamicsWorld->debugDrawWorld();
+		
+#ifdef CLIENT_STANDALONE
 		debug_drawer.UpdateVertexBuffer();
+#endif
 	}
 
 	void PhysicsSystem::SetGravity(const unsigned int entity_id, const btVector3& f) {

@@ -9,10 +9,10 @@
 #include "devices/tda.hpp"
 #include "devices/gkeyb.hpp"
 
-#include "graphics/texture-object.hpp"
-#include "graphics/material.hpp"
-#include "graphics/vertex-buffer-object.hpp"
-#include "components/renderable.hpp"
+#include "client/graphics/texture-object.hpp"
+#include "client/graphics/material.hpp"
+#include "client/graphics/vertex-buffer-object.hpp"
+#include "client/graphics/renderable.hpp"
 
 namespace tec {
 	using namespace trillek::computer;
@@ -183,6 +183,7 @@ namespace tec {
 		for (const auto& comp : this->computers) {
 			std::shared_ptr<ComputerScreen> comp_screen = std::static_pointer_cast<ComputerScreen>(comp.second->devices[5]);
 			comp.second->vc.Update(delta);
+#ifdef CLIENT_STANDALONE
 			std::static_pointer_cast<tda::TDADev>(comp_screen->device)->DumpScreen(screen);
 			tda::TDAtoRGBATexture(screen, (std::uint32_t*)local_pbuffer.LockWrite());
 			local_pbuffer.UnlockWrite();
@@ -200,6 +201,7 @@ namespace tec {
 					}
 				}
 			}
+#endif
 		}
 	}
 

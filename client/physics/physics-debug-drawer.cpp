@@ -1,10 +1,10 @@
-#include "physics/physics-debug-drawer.hpp"
+#include "physics-debug-drawer.hpp"
 
 #include "spdlog/spdlog.h"
-#include "graphics/vertex-buffer-object.hpp"
-#include "graphics/material.hpp"
-#include "graphics/shader.hpp"
-#include "components/renderable.hpp"
+#include "client/graphics/vertex-buffer-object.hpp"
+#include "client/graphics/material.hpp"
+#include "client/graphics/shader.hpp"
+#include "client/graphics/renderable.hpp"
 #include "entity.hpp"
 
 namespace tec {

@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "spdlog/spdlog.h"
-#include "graphics/texture-object.hpp"
+#include "client/graphics/texture-object.hpp"
 
 namespace tec {
 	/**

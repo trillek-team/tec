@@ -10,14 +10,18 @@
 #include "graphics/view.hpp"
 #include "graphics/material.hpp"
 #include "graphics/lights.hpp"
+#include "graphics/renderable.hpp"
 #include "components/transforms.hpp"
-#include "components/renderable.hpp"
 #include "resources/mesh.hpp"
 #include "resources/obj.hpp"
 #include "entity.hpp"
 #include "events.hpp"
+#include "multiton.hpp"
 
 namespace tec {
+	typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
+	typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
+
 	RenderSystem::RenderSystem() : window_width(1024), window_height(768) {
 		_log = spdlog::get("console_log");
 
@@ -82,6 +86,7 @@ namespace tec {
 	void RenderSystem::Update(const double delta, const GameState& state) {
 		ProcessCommandQueue();
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 		UpdateRenderList(delta, state);
 		this->light_gbuffer.StartFrame();
@@ -413,18 +418,13 @@ namespace tec {
 
 	}
 
-	bool RenderSystem::ActivateView(const eid entity_id) {
-		if (Entity(entity_id).Has<View>()) {
-			this->current_view = Entity(entity_id).Get<View>();;
-			return true;
-		}
-		return false;
-	}
-
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
 
+	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { }
+	
+	typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableMap;
 	void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		this->render_item_list.clear();
 
@@ -433,7 +433,7 @@ namespace tec {
 		}
 
 		// Loop through each renderbale and update its model matrix.
-		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
+		for (auto itr = RenderableMap::Begin(); itr != RenderableMap::End(); ++itr) {
 			eid entity_id = itr->first;
 			std::shared_ptr<Renderable> renderable = itr->second;
 			if (renderable->hidden) {

@@ -26,51 +26,7 @@ namespace tec {
 	extern void BuildTestEntities();
 	extern void ProtoSave();
 	extern void ProtoLoad();
-	extern std::map<std::string, std::function<void(std::string)>> file_factories;
-	extern std::map<std::string, std::function<void(eid)>> component_factories;
-	extern std::map<std::string, std::function<void(eid)>> component_removal_factories;
-
 	eid active_entity;
-
-	struct FileListener : public EventQueue < FileDropEvent > {
-		void Update(double delta) {
-			ProcessEventQueue();
-		}
-
-		void On(std::shared_ptr<FileDropEvent> fd_event) {
-			auto _log = spdlog::get("console_log");
-			for (auto file : fd_event->filenames) {
-				FilePath path(file);
-				if (!path.isValidPath() || !path.FileExists()) {
-					_log->error() << "Can't find file : " << path.FileName();
-					continue;
-				}
-				auto ext = path.FileExtension();
-				if (ext.empty()) {
-					_log->error() << "No extension!";
-					continue;
-				}
-				if (path.isAbsolutePath()) {
-					// We try to work always with relative paths to assets folder
-					path = path.SubpathFrom("assets");
-					auto fullpath = FilePath::GetAssetPath(path.toGenericString());
-					if (!fullpath.isValidPath() || !fullpath.FileExists()) {
-						_log->error() << "File isn't on assets folder! Please copy/move it to the assets folder.";
-						continue;
-					}
-
-				}
-				if (file_factories.find(ext) == file_factories.end()) {
-					_log->warn() << "No loader for extension: " << ext;
-					continue;
-				}
-
-				_log->info() << "Loading: " << path;
-				file_factories[ext](path.toString());
-			}
-		}
-	};
-
 }
 
 int main(int argc, char* argv[]) {
@@ -165,7 +121,6 @@ int main(int argc, char* argv[]) {
 
 	tec::BuildTestEntities();
 	tec::ProtoLoad();
-	tec::FileListener flistener;
 
 	tec::FPSController* camera_controller = nullptr;
 	gui.AddWindowDrawFunction("connect_window", [&simulation, &camera_controller, &connection, &log, &gui] () {
@@ -330,9 +285,7 @@ int main(int argc, char* argv[]) {
 		std::thread vv_thread([&] () {
 			vox_sys.Update(delta);
 		});
-
-		flistener.Update(delta);
-
+		
 		simulation.Interpolate(delta);
 		simulation.Simulate(delta);
 		const tec::GameState& client_state = simulation.GetClientState();

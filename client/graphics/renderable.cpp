@@ -1,7 +1,7 @@
-#include "components/renderable.hpp"
+#include "renderable.hpp"
 #include "resources/mesh.hpp"
-#include "graphics/shader.hpp"
-#include "graphics/vertex-buffer-object.hpp"
+#include "shader.hpp"
+#include "vertex-buffer-object.hpp"
 
 namespace tec {
 	Renderable::Renderable(std::shared_ptr<VertexBufferObject> buf,

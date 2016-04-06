@@ -1,4 +1,4 @@
-#include "graphics/animation.hpp"
+#include "animation.hpp"
 
 #include <vector>
 #include <functional>

@@ -17,6 +17,13 @@ namespace tec {
 				Update(comp);
 			}
 		}
+		
+		template <typename... T>
+		void Add() {
+			int _[] = {0, (Update(std::make_shared<T>()), 0)...};
+			(void)_;
+		}
+
 		template <typename T>
 		void Add(std::shared_ptr<T> comp) {
 			Update(comp);

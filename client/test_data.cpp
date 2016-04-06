@@ -1,6 +1,5 @@
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
-#include "components/renderable.hpp"
 #include "components/lua-script.hpp"
 
 #include "resources/md5mesh.hpp"
@@ -15,6 +14,7 @@
 #include "graphics/animation.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/view.hpp"
+#include "graphics/renderable.hpp"
 
 #include "entity.hpp"
 #include "types.hpp"
