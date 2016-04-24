@@ -28,11 +28,8 @@ namespace tec {
 		GLenum err = glGetError();
 		// If there is an error that means something went wrong when creating the context.
 		if (err) {
-			err = glGetError();
-			if (err) {
-				_log->debug("[RenderSystem] Something went wrong when creating the context.");
-				return;
-			}
+			_log->debug("[RenderSystem] Something went wrong when creating the context.");
+			return;
 		}
 
 		// Black is the safest clear color since this is a space game.
