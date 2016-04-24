@@ -58,7 +58,10 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing OpenGL...");
 	tec::OS os;
-	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 3);
+	if (!os.InitializeWindow(1024, 768, "TEC 0.1", 3, 3)) {
+		log->info("Exiting. The context wasn't created properly please update drivers and try again.");
+		exit(1);
+	}
 	console.AddConsoleCommand("exit",
 		"exit : Exit from TEC",
 		[&os] (const char* args) {
@@ -96,6 +99,7 @@ int main(int argc, char* argv[]) {
 		std::string ip(args, end_arg - args);
 		connection.Connect(ip);
 	});
+	log->info(std::string("Loading assets from: ") + tec::FilePath::GetAssetsBasePath());
 
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());

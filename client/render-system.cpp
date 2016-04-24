@@ -28,19 +28,22 @@ namespace tec {
 		GLenum err = glGetError();
 		// If there is an error that means something went wrong when creating the context.
 		if (err) {
-			_log->debug("[RenderSystem] Something went wrong when creating the context.");
-			return;
+			err = glGetError();
+			if (err) {
+				_log->debug("[RenderSystem] Something went wrong when creating the context.");
+				return;
+			}
 		}
 
 		// Black is the safest clear color since this is a space game.
 		glClearColor(0.0, 0.0, 0.0, 0.0);
-		std::shared_ptr<OBJ> spehre = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
-		if (!spehre) {
+		std::shared_ptr<OBJ> sphere = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
+		if (!sphere) {
 			_log->debug("[RenderSystem] Error loading sphere.obj.");
 			this->sphere_vbo.Load(std::vector<VertexData>(), std::vector<GLuint>());
 		}
 		else {
-			this->sphere_vbo.Load(spehre);
+			this->sphere_vbo.Load(sphere);
 		}
 		std::shared_ptr<OBJ> quad = OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj"));
 		if (!quad) {
