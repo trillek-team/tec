@@ -1,6 +1,6 @@
 #include "voxelvolume.hpp"
 
-#include "graphics/vertex-buffer-object.hpp"
+#include "client/graphics/vertex-buffer-object.hpp"
 #include "events.hpp"
 #include "entity.hpp"
 #include "components/transforms.hpp"

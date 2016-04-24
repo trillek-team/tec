@@ -1,7 +1,6 @@
 #include "os.hpp"
 #include "events.hpp"
 #include "filesystem.hpp"
-#include "reflection.hpp"
 #include "render-system.hpp"
 #include "physics-system.hpp"
 #include "voxelvolume.hpp"
@@ -9,11 +8,9 @@
 #include "sound-system.hpp"
 #include "imgui-system.hpp"
 #include "simulation.hpp"
-#include "component-update-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include "lua-system.hpp"
 
-#include "gui/entity_tree.hpp"
 #include "gui/console.hpp"
 
 #include <spdlog/spdlog.h>
@@ -29,54 +26,8 @@ namespace tec {
 	extern void BuildTestEntities();
 	extern void ProtoSave();
 	extern void ProtoLoad();
-	extern std::map<std::string, std::function<void(std::string)>> file_factories;
-	extern std::map<std::string, std::function<void(eid)>> component_factories;
-	extern std::map<std::string, std::function<void(eid)>> component_removal_factories;
-
-	ReflectionEntityList entity_list;
 	eid active_entity;
-
-	struct FileListener : public EventQueue < FileDropEvent > {
-		void Update(double delta) {
-			ProcessEventQueue();
-		}
-
-		void On(std::shared_ptr<FileDropEvent> fd_event) {
-			auto _log = spdlog::get("console_log");
-			for (auto file : fd_event->filenames) {
-				FilePath path(file);
-				if (!path.isValidPath() || !path.FileExists()) {
-					_log->error() << "Can't find file : " << path.FileName();
-					continue;
-				}
-				auto ext = path.FileExtension();
-				if (ext.empty()) {
-					_log->error() << "No extension!";
-					continue;
-				}
-				if (path.isAbsolutePath()) {
-					// We try to work always with relative paths to assets folder
-					path = path.SubpathFrom("assets");
-					auto fullpath = FilePath::GetAssetPath(path.toGenericString());
-					if (!fullpath.isValidPath() || !fullpath.FileExists()) {
-						_log->error() << "File isn't on assets folder! Please copy/move it to the assets folder.";
-						continue;
-					}
-
-				}
-				if (file_factories.find(ext) == file_factories.end()) {
-					_log->warn() << "No loader for extension: " << ext;
-					continue;
-				}
-
-				_log->info() << "Loading: " << path;
-				file_factories[ext](path.toString());
-			}
-		}
-	};
-
 }
-std::list<std::function<void(tec::frame_id_t)>> tec::ComponentUpdateSystemList::update_funcs;
 
 int main(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
@@ -107,7 +58,10 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing OpenGL...");
 	tec::OS os;
-	os.InitializeWindow(1024, 768, "TEC 0.1", 3, 3);
+	if (!os.InitializeWindow(1024, 768, "TEC 0.1", 3, 3)) {
+		log->info("Exiting. The context wasn't created properly please update drivers and try again.");
+		exit(1);
+	}
 	console.AddConsoleCommand("exit",
 		"exit : Exit from TEC",
 		[&os] (const char* args) {
@@ -115,7 +69,8 @@ int main(int argc, char* argv[]) {
 	});
 	std::thread* asio_thread = nullptr;
 	std::thread* sync_thread = nullptr;
-	tec::networking::ServerConnection connection;
+	tec::Simulation simulation;
+	tec::networking::ServerConnection connection(simulation);
 	console.AddConsoleCommand("msg",
 		"msg : Send a message to all clients.",
 		[&connection] (const char* args) {
@@ -125,7 +80,7 @@ int main(int argc, char* argv[]) {
 		}
 		// Args now points were the arguments begins
 		std::string message(args, end_arg - args);
-		connection.Write(message);
+		connection.SendChatMessage(message);
 	});
 	asio_thread = new std::thread([&connection] () {
 		connection.StartRead();
@@ -144,17 +99,16 @@ int main(int argc, char* argv[]) {
 		std::string ip(args, end_arg - args);
 		connection.Connect(ip);
 	});
+	log->info(std::string("Loading assets from: ") + tec::FilePath::GetAssetsBasePath());
 
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
-	tec::EntityTree ent_tree_widget;
 
 	log->info("Initializing rendering system...");
 	tec::RenderSystem rs;
 	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
 
 	log->info("Initializing simulation system...");
-	tec::Simulation simulation;
 	tec::PhysicsSystem& ps = simulation.GetPhysicsSystem();
 	tec::VComputerSystem vcs;
 
@@ -165,16 +119,15 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
-	
+
 	log->info("Initializing script system...");
 	tec::LuaSystem lua_sys;
 
 	tec::BuildTestEntities();
 	tec::ProtoLoad();
-	tec::FileListener flistener;
 
 	tec::FPSController* camera_controller = nullptr;
-	gui.AddWindowDrawFunction("connect_window", [&camera_controller, &connection, &log, &gui] () {
+	gui.AddWindowDrawFunction("connect_window", [&simulation, &camera_controller, &connection, &log, &gui] () {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
@@ -215,7 +168,7 @@ int main(int argc, char* argv[]) {
 			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
 			log->info("Connecting to " + ip.str());
 			if (connection.Connect(ip.str())) {
-				std::thread on_connect([&connection, &camera_controller, &log] () {
+				std::thread on_connect([&simulation, &connection, &camera_controller, &log] () {
 					unsigned int tries = 0;
 					while (connection.GetClientID() == 0) {
 						tries++;
@@ -231,6 +184,7 @@ int main(int argc, char* argv[]) {
 					camera_controller = new tec::FPSController(connection.GetClientID());
 					tec::Entity camera(connection.GetClientID());
 					camera.Add<tec::Velocity>();
+					simulation.AddController(camera_controller);
 				});
 				on_connect.detach();
 				gui.HideWindow("connect_window");
@@ -292,15 +246,6 @@ int main(int argc, char* argv[]) {
 						gui.ShowWindow("connect_window");
 					}
 				}
-				visible = gui.IsWindowVisible("entity_tree");
-				if (ImGui::MenuItem("Entity Tree", "", gui.IsWindowVisible("entity_tree"))) {
-					if (visible) {
-						gui.HideWindow("entity_tree");
-					}
-					else {
-						gui.ShowWindow("entity_tree");
-					}
-				}
 				ImGui::EndMenu();
 			}
 			ImGui::Text("Ping %i", connection.GetAveragePing());
@@ -324,9 +269,6 @@ int main(int argc, char* argv[]) {
 		ImGui::PopStyleColor();
 	});
 	gui.ShowWindow("ping_times");
-	gui.AddWindowDrawFunction("entity_tree", [&ent_tree_widget] () {
-		ent_tree_widget.Draw();
-	});
 
 	gui.AddWindowDrawFunction("console", [&console] () {
 		console.Draw();
@@ -335,55 +277,66 @@ int main(int argc, char* argv[]) {
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
+
+	std::thread ss_thread([&] () {
+		ss.Update();
+	});
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
 
-		tec::ComponentUpdateSystemList::UpdateAll(frame_id);
-
-		std::thread ss_thread([&] () {
-			ss.Update(delta);
-		});
+		ss.SetDelta(delta);
 		std::thread vv_thread([&] () {
 			vox_sys.Update(delta);
 		});
-
-		flistener.Update(delta);
-
+		
+		simulation.Interpolate(delta);
 		simulation.Simulate(delta);
-		vcs.Update(delta);
-
-		std::map<tec::eid, std::map<tec::tid, tec::proto::Component>>&& results = simulation.GetResults();
-		if (results.find(connection.GetClientID()) != results.end()) {
-			tec::proto::Entity entity;
-			entity.set_id(connection.GetClientID());
-			for (const auto& compoennt_update : results.at(connection.GetClientID())) {
-				tec::proto::Component* comp = entity.add_components();
-				*comp = compoennt_update.second;
+		const tec::GameState& client_state = simulation.GetClientState();
+		{
+			tec::proto::Entity self;
+			self.set_id(connection.GetClientID());
+			if (client_state.positions.find(connection.GetClientID()) != client_state.positions.end()) {
+				tec::Position pos = client_state.positions.at(connection.GetClientID());
+				pos.Out(self.add_components());
 			}
-			tec::networking::ServerMessage msg;
-			msg.SetBodyLength(entity.ByteSize());
-			entity.SerializeToArray(msg.GetBodyPTR(), msg.GetBodyLength());
-			msg.SetMessageType(tec::networking::ENTITY_UPDATE);
-			msg.encode_header();
-			connection.Send(msg);
+			if (client_state.orientations.find(connection.GetClientID()) != client_state.orientations.end()) {
+				tec::Orientation ori = client_state.orientations.at(connection.GetClientID());
+				ori.Out(self.add_components());
+			}
+			if (client_state.velocties.find(connection.GetClientID()) != client_state.velocties.end()) {
+				tec::Velocity vel = client_state.velocties.at(connection.GetClientID());
+				vel.Out(self.add_components());
+			}
+			tec::networking::ServerMessage update_message;
+			update_message.SetStateID(connection.GetLastRecvStateID());
+			update_message.SetMessageType(tec::networking::ENTITY_UPDATE);
+			update_message.SetBodyLength(self.ByteSize());
+			self.SerializeToArray(update_message.GetBodyPTR(), update_message.GetBodyLength());
+			update_message.encode_header();
+			connection.Send(update_message);
 		}
 
-		rs.Update(delta);
+		vcs.Update(delta);
 
-		ss_thread.join();
+		rs.Update(delta, client_state);
+
 		vv_thread.join();
 
 		lua_sys.Update(delta);
-
-		if (camera_controller) {
-			camera_controller->Update(delta);
-		}
 
 		os.GetMousePosition(&mouse_x, &mouse_y);
 		tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
 			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 		//ps.DebugDraw();
+		if (camera_controller != nullptr) {
+			if (camera_controller->mouse_look) {
+				os.EanbleMouseLock();
+			}
+			else {
+				os.DisableMouseLock();
+			}
+		}
 
 		gui.Update(delta);
 		console.Update(delta);
@@ -391,9 +344,11 @@ int main(int argc, char* argv[]) {
 		os.SwapBuffers();
 		frame_id++;
 	}
-
+	
+	ss.Stop();
+	ss_thread.join();
 	connection.Disconnect();
-	connection.StopRead();
+	connection.Stop();
 	if (asio_thread) {
 		asio_thread->join();
 	}

@@ -1,6 +1,7 @@
-#include "graphics/animation.hpp"
+#include "animation.hpp"
 
 #include <vector>
+#include <functional>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -74,16 +75,5 @@ namespace tec {
 			}
 			this->animation_file = AnimationMap::Get(this->animation_name);*/
 		}
-	}
-
-	ReflectionComponent Animation::Reflection(Animation* val) {
-		ReflectionComponent refcomp;
-		Property sprop(Property::STRING);
-		(refcomp.properties["Animation Name"] = sprop).Set<std::string>(val->animation_name);
-		refcomp.properties["Animation Name"].update_func = [val] (Property& prop) { val->animation_name = prop.Get<std::string>(); };
-		Property iprop(Property::INTEGER);
-		(refcomp.properties["Current Frame"] = sprop).Set<int>(val->current_frame_index);
-		refcomp.properties["Current Frame"].update_func = [val] (Property& prop) { val->current_frame_index = prop.Get<int>(); };
-		return std::move(refcomp);
 	}
 }

@@ -1,5 +1,7 @@
 #include "client/server_connection.hpp"
+#include "proto/game_state.pb.h"
 #include "events.hpp"
+#include "simulation.hpp"
 
 using asio::ip::tcp;
 
@@ -10,8 +12,35 @@ namespace tec {
 		std::shared_ptr<spdlog::logger> ServerConnection::_log;
 		std::mutex ServerConnection::recent_ping_mutex;
 
-		ServerConnection::ServerConnection() : socket(io_service) {
+		ServerConnection::ServerConnection(Simulation& simulation) : simulation(simulation), socket(io_service), last_received_state_id(0) {
 			_log = spdlog::get("console_log");
+			RegisterMessageHandler(SYNC, [this] (const ServerMessage& message) {
+				this->SyncHandler(message);
+			});
+			RegisterMessageHandler(GAME_STATE_UPDATE, [this] (const ServerMessage& message) {
+				this->GameStateUpdateHandler(message);
+			});
+			RegisterMessageHandler(CHAT_MESSAGE, [ ] (const ServerMessage& message) {
+				std::string msg(message.GetBodyPTR(), message.GetBodyLength());
+				_log->info(msg);
+			});
+			RegisterMessageHandler(CLIENT_ID, [this] (const ServerMessage& message) {
+				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
+				client_id = std::atoi(id_message.c_str());
+			});
+			RegisterMessageHandler(CLIENT_LEAVE, [this] (const ServerMessage& message) {
+				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
+				eid entity_id = std::atoi(id_message.c_str());
+				_log->info("Entity " + std::to_string(entity_id) + " left");
+				std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
+				data->entity_id = entity_id;
+				EventSystem<EntityDestroyed>::Get()->Emit(data);
+			});
+			RegisterMessageHandler(ENTITY_CREATE, [this] (const ServerMessage& message) {
+				std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+				data->entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
+				EventSystem<EntityCreated>::Get()->Emit(data);
+			});
 		}
 
 		bool ServerConnection::Connect(std::string ip) {
@@ -40,13 +69,14 @@ namespace tec {
 
 		void ServerConnection::Disconnect() {
 			this->socket.close();
-		}
-
-		void ServerConnection::StopRead() {
 			this->stopped = true;
 		}
 
-		void ServerConnection::Write(std::string message) {
+		void ServerConnection::Stop() {
+			this->stopped = true;
+		}
+
+		void ServerConnection::SendChatMessage(std::string message) {
 			if (this->socket.is_open()) {
 				ServerMessage msg;
 				msg.SetBodyLength(message.size());
@@ -70,50 +100,7 @@ namespace tec {
 				asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()), error);
 
 			if (!error) {
-				if (current_read_msg.GetMessageType() == SYNC) {
-					std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
-					{
-						std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
-						if (this->recent_pings.size() >= 10) {
-							this->recent_pings.pop_front();
-						}
-						this->recent_pings.push_back(round_trip.count() / 2);
-						ping_time_t total_pings = 0;
-						for (ping_time_t ping : this->recent_pings) {
-							total_pings += ping;
-						}
-						this->average_ping = total_pings / 10;
-					}
-				}
-				else if (current_read_msg.GetMessageType() == CHAT_MESSAGE) {
-					std::string msg(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-					_log->info(msg);
-				}
-				else if (current_read_msg.GetMessageType() == ENTITY_UPDATE) {
-					proto::Entity entity;
-					entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-					for (int i = 0; i < entity.components_size(); ++i) {
-						const proto::Component& comp = entity.components(i);
-						if (update_functors.find(comp.component_case()) != update_functors.end()) {
-							// TODO: extract frame_id and pass it as the 3 parameter instead of 0.
-							update_functors[comp.component_case()](entity, comp, 0);
-						}
-					}
-				}
-				else if (current_read_msg.GetMessageType() == ENTITY_CREATE) {
-					proto::Entity entity;
-					entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-					for (int i = 0; i < entity.components_size(); ++i) {
-						const proto::Component& comp = entity.components(i);
-						if (in_functors.find(comp.component_case()) != in_functors.end()) {
-							in_functors[comp.component_case()](entity, comp);
-						}
-					}
-				}
-				else if (current_read_msg.GetMessageType() == CLIENT_ID) {
-					std::string id_message(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
-					client_id = std::atoi(id_message.c_str());
-				}
+				this->message_handlers[current_read_msg.GetMessageType()](current_read_msg);
 			}
 			else if (error) {
 				throw asio::system_error(error);
@@ -140,7 +127,6 @@ namespace tec {
 			this->stopped = false;
 			asio::error_code error = asio::error::eof;
 			while (1) {
-				EventQueue<EnttityComponentUpdatedEvent>::ProcessEventQueue();
 				try {
 					if (this->socket.is_open() && this->socket.available()) {
 						read_header();
@@ -170,16 +156,37 @@ namespace tec {
 			}
 		}
 
-		void ServerConnection::On(std::shared_ptr<EnttityComponentUpdatedEvent> data) {
-			if (data->entity.id() == this->client_id) {
-				ServerMessage msg;
-				msg.SetBodyLength(data->entity.ByteSize());
-				// TODO: encode frame_id into the message.
-				data->entity.SerializeToArray(msg.GetBodyPTR(), msg.GetBodyLength());
-				msg.SetMessageType(ENTITY_UPDATE);
-				msg.encode_header();
-				Send(msg);
+		void ServerConnection::SyncHandler(const ServerMessage& message) {
+			std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
+			std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
+			if (this->recent_pings.size() >= 10) {
+				this->recent_pings.pop_front();
 			}
+			this->recent_pings.push_back(round_trip.count() / 2);
+			ping_time_t total_pings = 0;
+			for (ping_time_t ping : this->recent_pings) {
+				total_pings += ping;
+			}
+			this->average_ping = total_pings / 10;
+		}
+
+		void ServerConnection::GameStateUpdateHandler(const ServerMessage& message) {
+			proto::GameStateUpdate gsu;
+			gsu.ParseFromArray(message.GetBodyPTR(), message.GetBodyLength());
+			state_id_t recv_state_id = gsu.state_id();
+			if (recv_state_id <= this->last_received_state_id) {
+				_log->warn("Received an older GameStateUpdate");
+			}
+			else {
+				this->last_received_state_id = recv_state_id;
+				GameState next_state;
+				next_state.In(gsu);
+				next_state.positions.erase(this->client_id);
+				next_state.orientations.erase(this->client_id);
+				next_state.velocties.erase(this->client_id);
+				this->simulation.PushServerState(std::move(next_state));
+			}
+			//_log->info(last_received_state_id);
 		}
 	}
 }

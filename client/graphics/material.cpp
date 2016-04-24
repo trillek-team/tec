@@ -1,6 +1,6 @@
-#include "graphics/material.hpp"
-#include "graphics/texture-object.hpp"
-#include "graphics/shader.hpp"
+#include "material.hpp"
+#include "texture-object.hpp"
+#include "shader.hpp"
 
 namespace tec {
 	Material::Material() : polygon_mode(GL_FILL), draw_elements_mode(GL_TRIANGLES) { }

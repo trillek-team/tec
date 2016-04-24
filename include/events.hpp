@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "proto/components.pb.h"
+#include "types.hpp"
 
 namespace tec {
 	struct MouseHover {
@@ -50,7 +51,15 @@ namespace tec {
 		std::vector<std::string> filenames;
 	};
 
-	struct EnttityComponentUpdatedEvent {
+	struct EntityCreated {
 		proto::Entity entity;
+	};
+
+	struct EntityUpdated {
+		proto::Entity entity;
+	};
+	
+	struct EntityDestroyed {
+		eid entity_id;
 	};
 }

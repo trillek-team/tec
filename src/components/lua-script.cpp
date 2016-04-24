@@ -5,7 +5,6 @@
 
 #include "types.hpp"
 #include "resources/script-file.hpp"
-#include "reflection.hpp"
 
 namespace tec {
 	extern std::map<tid, std::function<void(proto::Entity*)>> out_functors;
@@ -19,22 +18,6 @@ namespace tec {
 	LuaScript::LuaScript (std::shared_ptr<ScriptFile> scriptfile)
 		: script_name(scriptfile->GetName()), script(scriptfile), state() {
 		this->ReloadScript();
-	}
-	
-	ReflectionComponent LuaScript::Reflection(LuaScript* val) {
-		ReflectionComponent refcomp;
-		Property dprop(Property::DROPDOWN);
-		dropdown_t key_func_script = std::make_pair(ScriptMap::Keys, val->script_name);
-		(refcomp.properties["Script Picker"] = dprop).Set(key_func_script);
-		refcomp.properties["Script Picker"].update_func = [val] (Property& prop) {
-			dropdown_t key_func = prop.Get<dropdown_t>();
-			val->script_name = key_func.second;
-			val->script = ScriptMap::Get(val->script_name);
-			spdlog::get("console_log")->info() << val->script->GetScript();
-			val->ReloadScript();
-		};
-
-		return std::move(refcomp);
 	}
 
 	void LuaScript::ReloadScript()	{

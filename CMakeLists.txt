@@ -44,9 +44,8 @@ IF ( MSVC )
 ENDIF ( MSVC )
 
 # find all source files in the src directory
-FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
-LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/main.cpp")
-LIST(REMOVE_ITEM TEC_SRC "${CMAKE_SOURCE_DIR}/src/test_data.cpp")
+FILE(GLOB_RECURSE TEC_LIB_SRC "src/*.cpp")
+FILE(GLOB_RECURSE TEC_CLIENT_SRC "client/*.cpp" "client/*.hpp")
 
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
@@ -294,7 +293,7 @@ IF (NOT ${BUILD_DEPS_FIRST})
   )
 
   ADD_LIBRARY(TEC_LIB STATIC
-    ${TEC_SRC}
+    ${TEC_LIB_SRC}
     ${TEC_INCLUDES}
     ${IMGUI_SRC}
     ${IMGUI_INCLUDES}
@@ -307,14 +306,11 @@ IF (NOT ${BUILD_DEPS_FIRST})
   ADD_DEPENDENCIES(TEC_LIB Bullet)
 
   ADD_EXECUTABLE("TEC"
-    "src/main.cpp"
-    "src/test_data.cpp"
-    "client/server_connection.hpp"
-    "client/server_connection.cpp"
+    ${TEC_CLIENT_SRC}
   )
-  #target_include_directories(TEC PUBLIC "client")
+  TARGET_COMPILE_DEFINITIONS( "TEC" PUBLIC CLIENT_STANDALONE )
   IF (WIN32)
-    TARGET_COMPILE_DEFINITIONS( "TEC" PUBLIC _WIN32_WINNT=0x600 )
+    TARGET_COMPILE_DEFINITIONS( "TEC" PUBLIC _WIN32_WINNT=0x600 CLIENT_STANDALONE )
   ENDIF (WIN32)
 
 

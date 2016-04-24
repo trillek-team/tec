@@ -1,4 +1,4 @@
-#include "graphics/texture-object.hpp"
+#include "texture-object.hpp"
 
 #include "spdlog/spdlog.h"
 

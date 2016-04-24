@@ -1,9 +1,9 @@
-#include "graphics/vertex-buffer-object.hpp"
+#include "vertex-buffer-object.hpp"
 
 #include "resources/mesh.hpp"
-#include "graphics/material.hpp"
-#include "graphics/shader.hpp"
-#include "graphics/texture-object.hpp"
+#include "material.hpp"
+#include "shader.hpp"
+#include "texture-object.hpp"
 
 namespace tec {
 	VertexBufferObject::VertexBufferObject() : vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0) { }

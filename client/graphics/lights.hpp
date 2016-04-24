@@ -7,7 +7,6 @@
 #endif
 
 #include <glm/vec3.hpp>
-#include "reflection.hpp"
 
 namespace tec {
 	struct BaseLight {
@@ -66,26 +65,6 @@ namespace tec {
 				this->direction.z = direction.z();
 			}
 		}
-
-		static ReflectionComponent Reflection(DirectionalLight* val) {
-			ReflectionComponent refcomp;
-			Property rgbprop(Property::RGB);
-			(refcomp.properties["Color"] = rgbprop).Set(val->color);
-			refcomp.properties["Color"].update_func = [val] (Property& prop) { val->color = prop.Get<glm::vec3>(); };
-			Property fprop(Property::FLOAT);
-			(refcomp.properties["Ambient Intensity"] = fprop).Set(val->ambient_intensity);
-			refcomp.properties["Ambient Intensity"].update_func = [val] (Property& prop) { val->ambient_intensity = prop.Get<float>(); };
-			(refcomp.properties["Diffuse Intensity"] = fprop).Set(val->diffuse_intensity);
-			refcomp.properties["Diffuse Intensity"].update_func = [val] (Property& prop) { val->diffuse_intensity = prop.Get<float>(); };
-			(refcomp.properties["Direction X"] = fprop).Set(val->direction.x);
-			refcomp.properties["Direction X"].update_func = [val] (Property& prop) { val->direction.x = prop.Get<float>(); };
-			(refcomp.properties["Direction Y"] = fprop).Set(val->direction.y);
-			refcomp.properties["Direction Y"].update_func = [val] (Property& prop) { val->direction.y = prop.Get<float>(); };
-			(refcomp.properties["Direction Z"] = fprop).Set(val->direction.z);
-			refcomp.properties["Direction Z"].update_func = [val] (Property& prop) { val->direction.z = prop.Get<float>(); };
-
-			return std::move(refcomp);
-		}
 	};
 
 	struct PointLight : public BaseLight {
@@ -143,28 +122,6 @@ namespace tec {
 					this->Attenuation.exponential = atten.exponential();
 				}
 			}
-		}
-
-		static ReflectionComponent Reflection(PointLight* val) {
-			ReflectionComponent refcomp;
-			Property rgbprop(Property::RGB);
-			(refcomp.properties["Color"] = rgbprop).Set(val->color);
-			refcomp.properties["Color"].update_func = [val] (Property& prop) { val->color = prop.Get<glm::vec3>(); };
-			Property fprop(Property::FLOAT);
-			(refcomp.properties["Ambient Intensity"] = fprop).Set(val->ambient_intensity);
-			refcomp.properties["Ambient Intensity"].update_func = [val] (Property& prop) { val->ambient_intensity = prop.Get<float>(); };
-			(refcomp.properties["Diffuse Intensity"] = fprop).Set(val->diffuse_intensity);
-			refcomp.properties["Diffuse Intensity"].update_func = [val] (Property& prop) { val->diffuse_intensity = prop.Get<float>(); };
-			(refcomp.properties["Attenuation.constant"] = fprop).Set(val->Attenuation.constant);
-			refcomp.properties["Attenuation.constant"].update_func = [val] (Property& prop) { val->Attenuation.constant = prop.Get<float>(); };
-			(refcomp.properties["Attenuation.linear"] = fprop).Set(val->Attenuation.linear);
-			refcomp.properties["Attenuation.linear"].update_func = [val] (Property& prop) { val->Attenuation.linear = prop.Get<float>(); };
-			(refcomp.properties["Attenuation.exponential"] = fprop).Set(val->Attenuation.exponential);
-			refcomp.properties["Attenuation.exponential"].update_func = [val] (Property& prop) { val->Attenuation.exponential = prop.Get<float>(); };
-			(refcomp.properties["Attenuation.exponential"] = fprop).Set(val->Attenuation.exponential);
-			refcomp.properties["Attenuation.exponential"].update_func = [val] (Property& prop) { val->Attenuation.exponential = prop.Get<float>(); };
-
-			return std::move(refcomp);
 		}
 
 		float UpdateBoundingRadius() {

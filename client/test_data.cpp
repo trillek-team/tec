@@ -1,6 +1,5 @@
 #include "components/transforms.hpp"
 #include "components/collisionbody.hpp"
-#include "components/renderable.hpp"
 #include "components/lua-script.hpp"
 
 #include "resources/md5mesh.hpp"
@@ -15,11 +14,11 @@
 #include "graphics/animation.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/view.hpp"
+#include "graphics/renderable.hpp"
 
 #include "entity.hpp"
 #include "types.hpp"
 
-#include "component-update-system.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "physics-system.hpp"
@@ -38,7 +37,7 @@
 namespace tec {
 	std::map<tid, std::function<void(proto::Entity*)>> out_functors;
 	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const frame_id_t)>> update_functors;
+	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
 	std::map<eid, std::set<std::function<void(proto::Entity*)>*>> entity_out_functors;
 	std::map<std::string, std::function<void(std::string)>> file_factories;
 	std::map<std::string, std::function<void(eid)>> component_factories;
@@ -66,10 +65,10 @@ namespace tec {
 			comp->In(proto_comp);
 			Entity(entity.id()).Add<T>(comp);
 		};
-		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const frame_id_t frame_id) {
+		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t frame_id) {
 			auto comp = std::make_shared<T>();
 			comp->In(proto_comp);
-			ComponentUpdateSystem<T>::SubmitUpdate(entity.id(), comp, frame_id);
+			Entity(entity.id()).Update<T>(comp);
 		};
 		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
 			Entity e(entity->id());
@@ -84,7 +83,6 @@ namespace tec {
 	void SetupComponent() {
 		AddInOutFunctors<T>();
 		AddComponentFactory<T>();
-		ComponentUpdateSystem<T>::Initialize();
 	}
 
 	void InitializeComponents() {
@@ -100,12 +98,7 @@ namespace tec {
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();
 		SetupComponent<LuaScript>();
-		
-		ComponentUpdateSystem<VoxelVolume>::Initialize();
 		SetupComponent<Computer>();
-		ComponentUpdateSystem<ComputerScreen>::Initialize();
-		ComponentUpdateSystem<VoxelVolume>::Initialize();
-		ComponentUpdateSystem<ComputerKeyboard>::Initialize();
 	}
 
 	template <typename T>
@@ -138,7 +131,7 @@ namespace tec {
 		auto debug_fill = Material::Create("material_debug");
 		debug_fill->SetPolygonMode(GL_LINE);
 		debug_fill->SetDrawElementsMode(GL_LINES);
-		
+
 		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
 			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
 				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
@@ -194,10 +187,6 @@ namespace tec {
 		voxvol_shared->Update(0.0);
 		{
 			Entity voxel1(100);
-			std::shared_ptr<MeshFile> mesh = voxvol_shared->GetMesh().lock();
-			std::shared_ptr<CollisionBody> colbody = std::make_shared<CollisionMesh>(mesh);
-			colbody->mass = 0.0;
-			voxel1.Add(colbody);
 			voxel1.Add(voxvol_shared);
 		}
 
@@ -231,13 +220,14 @@ namespace tec {
 		auto _log = spdlog::get("console_log");
 		if (fname.isValidPath() && fname.FileExists()) {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
-			proto::Entity entity;
-			entity.ParseFromIstream(&input);
-			eid entity_id = entity.id();
-			for (int i = 0; i < entity.components_size(); ++i) {
-				const proto::Component& comp = entity.components(i);
+			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+			data->entity.ParseFromIstream(&input);
+			EventSystem<EntityCreated>::Get()->Emit(data);
+			eid entity_id = data->entity.id();
+			for (int i = 0; i < data->entity.components_size(); ++i) {
+				const proto::Component& comp = data->entity.components(i);
 				if (in_functors.find(comp.component_case()) != in_functors.end()) {
-					in_functors[comp.component_case()](entity, comp);
+					in_functors[comp.component_case()](data->entity, comp);
 					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
 				}
 			}

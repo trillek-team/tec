@@ -11,7 +11,6 @@
 #include "resources/mesh.hpp"
 #include "command-queue.hpp"
 #include "event-system.hpp"
-#include "reflection.hpp"
 
 namespace tec {
 	struct MouseClickEvent;
@@ -62,11 +61,6 @@ namespace tec {
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 		
 		void On(const eid entity_id, std::shared_ptr<MouseClickEvent> data);
-		
-		static ReflectionComponent Reflection(VoxelVolume* val) {
-			ReflectionComponent refcomp;
-			return std::move(refcomp);
-		}
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
 		std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.

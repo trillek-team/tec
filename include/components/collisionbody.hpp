@@ -8,21 +8,30 @@
 #include <string>
 
 #include "types.hpp"
-#include "entity.hpp"
 
 namespace tec {
-	class MeshFile;
+	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, NONE };
 
-	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, STATIC_MESH, DYNAMIC_MESH, NONE };
+	struct CollisionBody {
+		struct MotionState : public btMotionState {
+			btTransform transform;
 
-	struct CollisionBody : public btMotionState {
+			bool transform_updated;
+
+			void getWorldTransform(btTransform& worldTrans) const {
+				worldTrans = this->transform;
+			}
+
+			void setWorldTransform(const btTransform& worldTrans) {
+				this->transform_updated = true;
+				this->transform = worldTrans;
+			}
+		};
 		CollisionBody(COLLISION_SHAPE collision_shape = NONE);
 		~CollisionBody();
-		
+
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);
-
-		static ReflectionComponent Reflection(CollisionBody* val);
 
 		COLLISION_SHAPE collision_shape;
 		COLLISION_SHAPE new_collision_shape;
@@ -37,24 +46,6 @@ namespace tec {
 
 		std::shared_ptr<btCollisionShape> shape;
 		eid entity_id;
-
-		btTransform transform;
-
-		bool transform_updated;
-		
-		void getWorldTransform(btTransform& worldTrans) const {
-			worldTrans = this->transform;
-		}
-
-		void setWorldTransform(const btTransform& worldTrans) {
-			this->transform_updated = true;
-			this->transform = worldTrans;
-		}
-	};
-	struct CollisionMesh : public CollisionBody {
-		CollisionMesh(std::shared_ptr<MeshFile> mesh, bool dynamic = false);
-
-		std::shared_ptr<btTriangleMesh> mesh;
-		std::shared_ptr<MeshFile> mesh_file;
+		MotionState motion_state;
 	};
 }

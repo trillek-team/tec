@@ -3,10 +3,8 @@
 #include <memory>
 #include <tuple>
 #include "multiton.hpp"
-#include "component-update-system.hpp"
 
 namespace tec {
-	extern ReflectionEntityList entity_list;
 	class Entity {
 	public:
 		Entity(eid id) : id(id) { }
@@ -19,6 +17,13 @@ namespace tec {
 				Update(comp);
 			}
 		}
+		
+		template <typename... T>
+		void Add() {
+			int _[] = {0, (Update(std::make_shared<T>()), 0)...};
+			(void)_;
+		}
+
 		template <typename T>
 		void Add(std::shared_ptr<T> comp) {
 			Update(comp);
@@ -26,7 +31,7 @@ namespace tec {
 
 		template <typename T>
 		void Remove() {
-			ComponentUpdateSystem<T>::SubmitRemoval(this->id);
+			Multiton<eid, std::shared_ptr<T>>::Remove(this->id);
 		}
 
 		template <typename T>
@@ -46,7 +51,7 @@ namespace tec {
 
 		template <typename T>
 		void Update(std::shared_ptr<T> val) {
-			ComponentUpdateSystem<T>::SubmitUpdate(this->id, val);
+			Multiton<eid, std::shared_ptr<T>>::Set(this->id, val);
 		}
 
 		template <typename T>

@@ -10,7 +10,6 @@
 #include "types.hpp"
 #include "resources/pixel-buffer.hpp"
 #include "event-system.hpp"
-#include "reflection.hpp"
 #include "command-queue.hpp"
 #include "multiton.hpp"
 
@@ -45,11 +44,6 @@ namespace tec {
 		void In(const proto::Component& source);
 
 		void Out(proto::Component* target);
-
-		static ReflectionComponent Reflection(Computer* val) {
-			ReflectionComponent refcomp;
-			return std::move(refcomp);
-		}
 	};
 
 	class TextureObject;
@@ -60,8 +54,6 @@ namespace tec {
 		void In(const proto::Computer::Device& source);
 
 		void Out(proto::Computer::Device* target);
-
-		static ReflectionComponent Reflection(ComputerScreen* val);
 	};
 
 	struct ComputerKeyboard : DeviceBase {
@@ -72,8 +64,6 @@ namespace tec {
 		void In(const proto::Computer::Device& source);
 
 		void Out(proto::Computer::Device* target);
-
-		static ReflectionComponent Reflection(ComputerKeyboard* val);
 	};
 
 	struct KeyboardEvent;

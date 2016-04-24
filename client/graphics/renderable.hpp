@@ -3,6 +3,7 @@
 #include <memory>
 #include <set>
 #include <map>
+#include <functional>
 
 #include "../proto/components.pb.h"
 
@@ -11,7 +12,6 @@ namespace tec {
 	class MeshFile;
 	class VertexBufferObject;
 	struct VertexGroup;
-	struct ReflectionComponent;
 
 	struct Renderable {
 		Renderable(std::shared_ptr<VertexBufferObject> buf,
@@ -19,8 +19,6 @@ namespace tec {
 		Renderable() {
 
 		}
-
-		static ReflectionComponent Reflection(Renderable* val);
 
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);

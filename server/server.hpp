@@ -17,25 +17,42 @@ namespace tec {
 		public:
 			Server(tcp::endpoint& endpoint);
 
-			void Deliver(const ServerMessage& msg);
+			// Deliver a message to all clients.
+			// save_to_recent is used to save a recent list of message each client gets when they connect.
+			void Deliver(const ServerMessage& msg, bool save_to_recent = true);
 
+			// Deliver a message to a specific client.
+			void Deliver(std::shared_ptr<ClientConnection> client, const ServerMessage& msg);
+
+			// Calls when a client leaves, usually when the connection is no longer valid.
 			void Leave(std::shared_ptr<ClientConnection> client);
 
 			void Start();
 
 			void Stop();
+
+			// Get a list of all connected clients.
+			const std::set<std::shared_ptr<ClientConnection>>& GetClients() {
+				return this->clients;
+			}
 		private:
-			void do_accept();
+			// Method that handles and accepts incoming connections.
+			void AcceptHandler();
 			
+			// ASIO variables
 			asio::io_service io_service;
 			tcp::acceptor acceptor;
 			tcp::socket socket;
-			ServerMessage greeting_msg;
-			std::set<std::shared_ptr<ClientConnection>> clients;
+
+			ServerMessage greeting_msg; // Greeting chat message.
+
+			std::set<std::shared_ptr<ClientConnection>> clients; // All connected clients.
+			std::uint64_t base_id = 10000; // Starting client_id
+
+			// Recent message list all clients get on connecting,
 			enum { max_recent_msgs = 100 };
 			std::deque<ServerMessage> recent_msgs;
 			static std::mutex recent_msgs_mutex;
-			std::uint64_t base_id = 10000;
 		};
 	}
 }

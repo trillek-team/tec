@@ -1,22 +1,27 @@
 #include "render-system.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <spdlog/spdlog.h>
 #include <thread>
 #include <cmath>
 
-#include "spdlog/spdlog.h"
 #include "graphics/shader.hpp"
+#include "graphics/animation.hpp"
 #include "graphics/view.hpp"
 #include "graphics/material.hpp"
 #include "graphics/lights.hpp"
+#include "graphics/renderable.hpp"
 #include "components/transforms.hpp"
-#include "components/renderable.hpp"
 #include "resources/mesh.hpp"
 #include "resources/obj.hpp"
 #include "entity.hpp"
 #include "events.hpp"
+#include "multiton.hpp"
 
 namespace tec {
+	typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
+	typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
+
 	RenderSystem::RenderSystem() : window_width(1024), window_height(768) {
 		_log = spdlog::get("console_log");
 
@@ -29,13 +34,13 @@ namespace tec {
 
 		// Black is the safest clear color since this is a space game.
 		glClearColor(0.0, 0.0, 0.0, 0.0);
-		std::shared_ptr<OBJ> spehre = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
-		if (!spehre) {
+		std::shared_ptr<OBJ> sphere = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
+		if (!sphere) {
 			_log->debug("[RenderSystem] Error loading sphere.obj.");
 			this->sphere_vbo.Load(std::vector<VertexData>(), std::vector<GLuint>());
 		}
 		else {
-			this->sphere_vbo.Load(spehre);
+			this->sphere_vbo.Load(sphere);
 		}
 		std::shared_ptr<OBJ> quad = OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj"));
 		if (!quad) {
@@ -78,11 +83,12 @@ namespace tec {
 		this->light_gbuffer.ResizeDepthAttachment(this->window_width, this->window_height);
 	}
 
-	void RenderSystem::Update(const double delta) {
+	void RenderSystem::Update(const double delta, const GameState& state) {
 		ProcessCommandQueue();
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
-		UpdateRenderList(delta);
+		UpdateRenderList(delta, state);
 		this->light_gbuffer.StartFrame();
 
 		// Set the common states here that hold don't change often.
@@ -118,9 +124,11 @@ namespace tec {
 		def_shader->Use();
 
 		glm::mat4 camera_matrix(1.0);
-		std::shared_ptr<View> view = this->current_view.lock();
-		if (view) {
-			camera_matrix = view->view_matrix;
+		{
+			std::shared_ptr<View> view = this->current_view.lock();
+			if (view) {
+				camera_matrix = view->view_matrix;
+			}
 		}
 
 		GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
@@ -168,9 +176,11 @@ namespace tec {
 		this->light_gbuffer.GeometyPass();
 
 		glm::mat4 camera_matrix(1.0);
-		std::shared_ptr<View> view = this->current_view.lock();
-		if (view) {
-			camera_matrix = view->view_matrix;
+		{
+			std::shared_ptr<View> view = this->current_view.lock();
+			if (view) {
+				camera_matrix = view->view_matrix;
+			}
 		}
 
 		std::shared_ptr<Shader> def_shader = ShaderMap::Get("deferred");
@@ -229,9 +239,11 @@ namespace tec {
 		def_pl_shader->Use();
 
 		glm::mat4 camera_matrix(1.0);
-		std::shared_ptr<View> view = this->current_view.lock();
-		if (view) {
-			camera_matrix = view->view_matrix;
+		{
+			std::shared_ptr<View> view = this->current_view.lock();
+			if (view) {
+				camera_matrix = view->view_matrix;
+			}
 		}
 		glUniformMatrix4fv(def_pl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniformMatrix4fv(def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
@@ -309,9 +321,11 @@ namespace tec {
 		def_dl_shader->Use();
 
 		glm::mat4 camera_matrix(1.0);
-		std::shared_ptr<View> view = this->current_view.lock();
-		if (view) {
-			camera_matrix = view->view_matrix;
+		{
+			std::shared_ptr<View> view = this->current_view.lock();
+			if (view) {
+				camera_matrix = view->view_matrix;
+			}
 		}
 
 		glm::mat4 ident;
@@ -404,20 +418,14 @@ namespace tec {
 
 	}
 
-	bool RenderSystem::ActivateView(const eid entity_id) {
-		if (Entity(entity_id).Has<View>()) {
-			this->current_view = Entity(entity_id).Get<View>();;
-			return true;
-		}
-		return false;
-	}
-
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
 
-
-	void RenderSystem::UpdateRenderList(double delta) {
+	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { }
+	
+	typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableMap;
+	void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		this->render_item_list.clear();
 
 		if (!this->default_shader) {
@@ -425,24 +433,22 @@ namespace tec {
 		}
 
 		// Loop through each renderbale and update its model matrix.
-		for (auto itr = RenderableComponentMap::Begin(); itr != RenderableComponentMap::End(); ++itr) {
+		for (auto itr = RenderableMap::Begin(); itr != RenderableMap::End(); ++itr) {
 			eid entity_id = itr->first;
 			std::shared_ptr<Renderable> renderable = itr->second;
 			if (renderable->hidden) {
 				continue;
 			}
 			glm::vec3 position;
+			if (state.positions.find(entity_id) != state.positions.end()) {
+				position = state.positions.at(entity_id).value + state.positions.at(entity_id).center_offset;
+			}
 			glm::quat orientation;
+			if (state.orientations.find(entity_id) != state.orientations.end()) {
+				orientation = state.orientations.at(entity_id).value * glm::quat(state.orientations.at(entity_id).rotation_offset);
+			}
 			glm::vec3 scale(1.0);
 			Entity e(entity_id);
-			if (e.Has<Position>()) {
-				std::shared_ptr<Position> pos = e.Get<Position>().lock();
-				position = pos->value + pos->center_offset;
-			}
-			if (e.Has<Orientation>()) {
-				std::shared_ptr<Orientation> rot = e.Get<Orientation>().lock();
-				orientation = rot->value * glm::quat(rot->rotation_offset);
-			}
 			if (e.Has<Scale>()) {
 				scale = e.Get<Scale>().lock()->value;
 			}
@@ -491,13 +497,12 @@ namespace tec {
 				std::shared_ptr<View> view = itr->second;
 
 				glm::vec3 position;
-				glm::quat orientation;
-				Entity e(entity_id);
-				if (e.Has<Position>()) {
-					position = e.Get<Position>().lock()->value;
+				if (state.positions.find(entity_id) != state.positions.end()) {
+					position = state.positions.at(entity_id).value;
 				}
-				if (e.Has<Orientation>()) {
-					orientation = e.Get<Orientation>().lock()->value;
+				glm::quat orientation;
+				if (state.orientations.find(entity_id) != state.orientations.end()) {
+					orientation = state.orientations.at(entity_id).value;
 				}
 
 				this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);
