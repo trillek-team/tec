@@ -427,6 +427,7 @@ namespace tec {
 	typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableMap;
 	void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		this->render_item_list.clear();
+		this->model_matricies.clear();
 
 		if (!this->default_shader) {
 			this->default_shader = ShaderMap::Get("debug");

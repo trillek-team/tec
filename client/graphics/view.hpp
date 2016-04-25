@@ -6,6 +6,7 @@
 
 namespace tec {
 	struct View {
+		View(bool active = false) : active(active) { }
 		glm::mat4 view_matrix;
 		bool active = false;
 

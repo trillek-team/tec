@@ -52,6 +52,7 @@ namespace tec {
 	};
 
 	struct EntityCreated {
+		eid entity_id;
 		proto::Entity entity;
 	};
 
