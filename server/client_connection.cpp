@@ -46,6 +46,7 @@ namespace tec {
 			QueueWrite(entity_create_msg);
 			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 			data->entity = this->entity;
+			data->entity_id = this->entity.id();
 			EventSystem<EntityCreated>::Get()->Emit(data);
 		}
 

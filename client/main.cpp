@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
-		static int octets[4] = {123, 123, 123, 123};
+		static int octets[4] = {127, 0, 0, 1};
 
 		float width = ImGui::CalcItemWidth();
 		ImGui::PushID("IP");
