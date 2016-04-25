@@ -1,6 +1,7 @@
 #include "simulation.hpp"
 
 #include <thread>
+#include <iostream>
 #include <future>
 #include <set>
 
