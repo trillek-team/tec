@@ -3,6 +3,10 @@
 #include "event-system.hpp"
 #include "events.hpp"
 #include "server/server.hpp"
+#include "entity.hpp"
+#include "components/transforms.hpp"
+#include "client/graphics/view.hpp"
+#include "components/collisionbody.hpp"
 #include <iostream>
 #include <thread>
 
@@ -38,6 +42,19 @@ namespace tec {
 		}
 
 		void ClientConnection::DoJoin() {
+			// Build an entity
+			Entity self(this->id);
+			self.Add<Position, Orientation, Velocity, View>(glm::vec3(10,10,10), Orientation(), Velocity(), true);
+			std::shared_ptr<CollisionBody> body = self.Add<CollisionBody>(COLLISION_SHAPE::CAPSULE);
+			body->radius = 0.6f;
+			body->height = 1.0f;
+			body->mass = 1.0f;
+			body->disable_deactivation = true;
+			body->disable_rotation = true;
+			body->entity_id = this->id;
+			self.Update(body);
+			self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
+					
 			ServerMessage entity_create_msg;
 			entity_create_msg.SetBodyLength(this->entity.ByteSize());
 			this->entity.SerializeToArray(entity_create_msg.GetBodyPTR(), entity_create_msg.GetBodyLength());
