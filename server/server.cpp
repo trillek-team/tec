@@ -46,7 +46,10 @@ namespace tec {
 		void Server::Leave(std::shared_ptr<ClientConnection> client) {
 			eid leaving_client_id = client->GetID();
 			client->DoLeave(); // Send out entity destroyed events and client leave messages.
+			
+			LockClientList();
 			this->clients.erase(client);
+			UnlockClientList();
 			
 			// Notify other clients that a client left.
 			for (auto client : this->clients) {
@@ -109,8 +112,10 @@ namespace tec {
 						client->QueueWrite(other_client_entity_msg);
 						other_client->QueueWrite(connecting_client_entity_msg);
 					}
-
+					
+					LockClientList();
 					clients.insert(client);
+					UnlockClientList();
 					{
 						std::lock_guard<std::mutex> lock(recent_msgs_mutex);
 						for (auto msg : this->recent_msgs) {

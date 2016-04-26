@@ -61,9 +61,7 @@ namespace tec {
 		 */
 		void SetNormalGravity(const unsigned int entity_id);
 	private:
-		bool CreateRigiedBody(eid entity_id, CollisionBody&& collision_body);
-
-		bool UpdateCollisionShape(eid entity_id);
+		bool UpdateRigidBody(std::shared_ptr<CollisionBody> collision_body);
 
 		typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
 
@@ -74,7 +72,6 @@ namespace tec {
 		btDynamicsWorld* dynamicsWorld;
 		
 		std::map<eid, btRigidBody*> bodies;
-		std::map<eid, CollisionBody> collidables;
 
 		btVector3 last_rayfrom;
 		double last_raydist;

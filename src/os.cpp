@@ -1,6 +1,7 @@
 #include "os.hpp"
 
 #include <algorithm>
+#include <iostream>
 #include "spdlog/spdlog.h"
 #include "event-system.hpp"
 #include "events.hpp"

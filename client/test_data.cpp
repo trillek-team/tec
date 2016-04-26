@@ -222,8 +222,9 @@ namespace tec {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 			data->entity.ParseFromIstream(&input);
-			EventSystem<EntityCreated>::Get()->Emit(data);
 			eid entity_id = data->entity.id();
+			data->entity_id = entity_id;
+			EventSystem<EntityCreated>::Get()->Emit(data);
 			for (int i = 0; i < data->entity.components_size(); ++i) {
 				const proto::Component& comp = data->entity.components(i);
 				if (in_functors.find(comp.component_case()) != in_functors.end()) {

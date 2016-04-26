@@ -54,6 +54,7 @@ int main() {
 					full_state_update_message.SetBodyLength(full_state_update.ByteSize());
 					full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), full_state_update_message.GetBodyLength());
 					full_state_update_message.encode_header();
+					server.LockClientList();
 					for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
 						client->UpdateGameState(updated_entities, full_state);
 						if (current_state_id - client->GetLastConfirmedStateID() > 10) {
@@ -64,6 +65,8 @@ int main() {
 							server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
 						}
 					}
+					
+					server.UnlockClientList();
 					delta_accumulator -= UPDATE_RATE;
 				}
 			}

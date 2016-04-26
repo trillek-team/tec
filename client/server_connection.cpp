@@ -39,6 +39,7 @@ namespace tec {
 			RegisterMessageHandler(ENTITY_CREATE, [this] (const ServerMessage& message) {
 				std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 				data->entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
+				data->entity_id = data->entity.id();
 				EventSystem<EntityCreated>::Get()->Emit(data);
 			});
 		}

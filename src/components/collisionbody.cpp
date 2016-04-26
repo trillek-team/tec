@@ -7,7 +7,7 @@
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 
 namespace tec {
-	CollisionBody::CollisionBody(COLLISION_SHAPE collision_shape) : collision_shape(collision_shape),
+	CollisionBody::CollisionBody(COLLISION_SHAPE collision_shape) : collision_shape(NONE),
 		new_collision_shape(collision_shape), mass(0.0), radius(1.0f), height(1.0f), disable_deactivation(false),
 		disable_rotation(false), half_extents(btVector3(1.0, 1.0, 1.0)) {
 		motion_state.transform_updated = true;
