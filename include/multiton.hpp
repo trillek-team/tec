@@ -21,29 +21,11 @@ namespace tec {
 	template <typename ID, typename T>
 	class Multiton {
 	public:
-		/**
-		* \brief Get the default instance.
-		*
-		* \return T The default instance.
-		*/
-		static T Default() {
-			return default_value;
-		}
-
-		/**
-		* \brief Set the default instance.
-		*
-		* \return void
-		*/
-		static void Default(const T value) {
-			default_value = value;
-		}
-
-		static typename std::map<ID, T>::const_iterator Begin() {
+		static typename std::map<ID, T>::iterator Begin() {
 			return instances.begin();
 		}
 
-		static typename std::map<ID, T>::const_iterator End() {
+		static typename std::map<ID, T>::iterator End() {
 			return instances.end();
 		}
 
@@ -89,7 +71,7 @@ namespace tec {
 		* \param[in] T instance The ID's instance.
 		* \return void
 		*/
-		static void Set(const ID id, const T instance) {
+		static void Set(const ID id, T instance) {
 			instances[id] = instance;
 		}
 

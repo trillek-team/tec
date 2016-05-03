@@ -78,11 +78,53 @@ namespace tec {
 			}
 		};
 	}
+	
+	template <typename T>
+	void AddPointerInOutFunctors() {
+		in_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
+			T* comp = new T();
+			comp->In(proto_comp);
+			Multiton<eid, T*>::Set(entity.id(), comp);
+		};
+		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t frame_id) {
+			T* comp = new T();
+			comp->In(proto_comp);
+			Multiton<eid, T*>::Set(entity.id(), comp);
+		};
+		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
+			Entity e(entity->id());
+			if (e.Has<T*>()) {
+				proto::Component* comp = entity->add_components();
+				Multiton<eid, T*>::Get(entity->id())->Out(comp);
+			}
+		};
+	}
+	template <typename T>
+	void AddPointerComponentFactory() {
+		auto component_case = GetTypeID<T>();
+		component_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
+			T* comp = new T();
+			Multiton<eid, T*>::Set(entity_id, comp);
+			entity_out_functors[entity_id].insert(&out_functors.at(component_case));
+		};
+		component_removal_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
+			Entity e(entity_id);
+			if (e.Has<T*>()) {
+				delete Multiton<eid, T*>::Get(entity_id);
+				e.Remove<T*>();
+			}
+		};
+	}
 
 	template <typename T>
 	void SetupComponent() {
 		AddInOutFunctors<T>();
 		AddComponentFactory<T>();
+	}
+	template <typename T>
+	void SetupComponentP() {
+		AddPointerInOutFunctors<T>();
+		AddPointerComponentFactory<T>();
 	}
 
 	void InitializeComponents() {
@@ -93,7 +135,7 @@ namespace tec {
 		SetupComponent<Velocity>();
 		SetupComponent<View>();
 		SetupComponent<Animation>();
-		SetupComponent<CollisionBody>();
+		SetupComponentP<CollisionBody>();
 		SetupComponent<AudioSource>();
 		SetupComponent<PointLight>();
 		SetupComponent<DirectionalLight>();

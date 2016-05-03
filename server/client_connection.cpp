@@ -45,15 +45,19 @@ namespace tec {
 			// Build an entity
 			Entity self(this->id);
 			self.Add<Position, Orientation, Velocity, View>(glm::vec3(10,10,10), Orientation(), Velocity(), true);
-			std::shared_ptr<CollisionBody> body = self.Add<CollisionBody>(COLLISION_SHAPE::CAPSULE);
-			body->radius = 0.6f;
-			body->height = 1.0f;
-			body->mass = 1.0f;
-			body->disable_deactivation = true;
-			body->disable_rotation = true;
+			CollisionBody* body = new CollisionBody();
+			proto::Component* component = this->entity.add_components();
+			proto::CollisionBody* body_component = component->mutable_collision_body();
+			body_component->set_mass(1.0f);
+			body_component->set_disable_deactivation(true);
+			body_component->set_disable_rotation(true);
+			proto::CollisionBody_Capsule* capsule_component = body_component->mutable_capsule();
+			capsule_component->set_height(1.0f);
+			capsule_component->set_radius(0.6f);
 			body->entity_id = this->id;
-			self.Update(body);
-			self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
+			body->In(*component);
+			Multiton<eid, CollisionBody*>::Set(this->id, body);
+			self.Out<Position, Orientation, Velocity, View>(this->entity);
 					
 			ServerMessage entity_create_msg;
 			entity_create_msg.SetBodyLength(this->entity.ByteSize());
