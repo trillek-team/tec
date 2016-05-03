@@ -153,11 +153,11 @@ namespace tec {
 		this->last_entity_hit = 0;
 		glm::vec3 position;
 		if (Entity(source_entity).Has<Position>()) {
-			position = (Entity(source_entity).Get<Position>().lock())->value;
+			position = (Entity(source_entity).Get<Position>())->value;
 		}
 		glm::quat orientation;
 		if (Entity(source_entity).Has<Orientation>()) {
-			orientation = (Entity(source_entity).Get<Orientation>().lock())->value;
+			orientation = (Entity(source_entity).Get<Orientation>())->value;
 		}
 
 		if (screen_height == 0.0f) {
@@ -216,11 +216,11 @@ namespace tec {
 		last_rayvalid = false;
 		glm::vec3 position;
 		if (Entity(cam).Has<Position>()) {
-			position = (Entity(cam).Get<Position>().lock())->value;
+			position = (Entity(cam).Get<Position>())->value;
 		}
 		glm::quat orientation;
 		if (Entity(cam).Has<Orientation>()) {
-			orientation = (Entity(cam).Get<Orientation>().lock())->value;
+			orientation = (Entity(cam).Get<Orientation>())->value;
 		}
 		auto fv = position + glm::rotate(orientation, FORWARD_VECTOR * 300.f);
 		btVector3 from(position.x, position.y, position.z), to(fv.x, fv.y, fv.z);
@@ -347,7 +347,7 @@ namespace tec {
 
 		// TODO: remove this once center_offset is in renderable
 		if (Entity(entity_id).Has<Position>()) {
-			position.center_offset = Entity(entity_id).Get<Position>().lock()->center_offset;
+			position.center_offset = Entity(entity_id).Get<Position>()->center_offset;
 		}
 		return std::move(position);
 	}
@@ -358,7 +358,7 @@ namespace tec {
 
 		// TODO: remove this once rotation_offset is in renderable
 		if (Entity(entity_id).Has<Orientation>()) {
-			orientation.rotation_offset = Entity(entity_id).Get<Orientation>().lock()->rotation_offset;
+			orientation.rotation_offset = Entity(entity_id).Get<Orientation>()->rotation_offset;
 		}
 		return std::move(orientation);
 	}

@@ -56,6 +56,7 @@ namespace tec {
 
 	void Simulation::Interpolate(const double delta_time) {
 		static const double INTERPOLATION_RATE = 1.0 / 100.0; // TODO: Make this configurable via a run-time property.
+		std::lock_guard<std::mutex> lock(this->server_state_mutex);
 
 		if (this->server_states.size() > 5) {
 			std::cout << "getting flooded by state updates" << std::endl;
@@ -75,7 +76,6 @@ namespace tec {
 				}
 				interpolation_accumulator -= INTERPOLATION_RATE;
 				this->base_state.state_id = to_state.state_id;
-				std::lock_guard<std::mutex> lock(this->server_state_mutex);
 				this->server_states.pop();
 			}
 			const GameState& to_state = this->server_states.front();

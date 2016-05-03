@@ -21,7 +21,7 @@ namespace tec {
 		for (auto itr = ScriptsMap::Begin(); itr != ScriptsMap::End(); itr++) {
 			auto entity_id = itr->first;
 			if (Entity(entity_id).Has<LuaScript>()) {
-				if (auto lscript = Entity(entity_id).Get<LuaScript>().lock()) {
+				if (LuaScript* lscript = Entity(entity_id).Get<LuaScript>()) {
 					if (!lscript->script_name.empty() ) { // Check that have a asigned script with onUpdate function
 						//lscript->state["this"].SetObj(Entity(entity_id) //,
 							//"add", &Entity::Add,

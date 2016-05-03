@@ -57,7 +57,7 @@ namespace tec {
 		void UpdateRenderList(double delta, const GameState& state);
 
 		glm::mat4 projection;
-		std::weak_ptr<View> current_view;
+		View* current_view;
 		unsigned int window_width, window_height;
 		std::map<eid, glm::mat4> model_matricies;
 		std::shared_ptr<Shader> default_shader;
@@ -72,7 +72,7 @@ namespace tec {
 			std::set<VertexGroup*>* vertex_groups;
 			GLuint vao, ibo;
 			bool animated = false;
-			std::shared_ptr<Animation> animation;
+			Animation* animation;
 
 			friend bool operator<(const RenderItem& a, const RenderItem& b) {
 				return a.vao < b.vao;

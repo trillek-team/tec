@@ -42,46 +42,10 @@ namespace tec {
 	std::map<std::string, std::function<void(std::string)>> file_factories;
 	std::map<std::string, std::function<void(eid)>> component_factories;
 	std::map<std::string, std::function<void(eid)>> component_removal_factories;
-
-	template <typename T>
-	void AddComponentFactory() {
-		auto component_case = GetTypeID<T>();
-		component_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
-			std::shared_ptr<T> comp = std::make_shared<T>();
-			Entity(entity_id).Add<T>(comp);
-			entity_out_functors[entity_id].insert(&out_functors.at(component_case));
-		};
-		component_removal_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
-			Entity e(entity_id);
-			if (e.Has<T>()) {
-				e.Remove<T>();
-			}
-		};
-	}
+	
 	template <typename T>
 	void AddInOutFunctors() {
 		in_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
-			auto comp = std::make_shared<T>();
-			comp->In(proto_comp);
-			Entity(entity.id()).Add<T>(comp);
-		};
-		update_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t frame_id) {
-			auto comp = std::make_shared<T>();
-			comp->In(proto_comp);
-			Entity(entity.id()).Update<T>(comp);
-		};
-		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
-			Entity e(entity->id());
-			if (e.Has<T>()) {
-				proto::Component* comp = entity->add_components();
-				e.Get<T>().lock()->Out(comp);
-			}
-		};
-	}
-	
-	template <typename T>
-	void AddPointerInOutFunctors() {
-		in_functors[GetTypeID<T>()] = [ ] (const proto::Entity& entity, const proto::Component& proto_comp) {
 			T* comp = new T();
 			comp->In(proto_comp);
 			Multiton<eid, T*>::Set(entity.id(), comp);
@@ -92,15 +56,14 @@ namespace tec {
 			Multiton<eid, T*>::Set(entity.id(), comp);
 		};
 		out_functors[GetTypeID<T>()] = [ ] (proto::Entity* entity) {
-			Entity e(entity->id());
-			if (e.Has<T*>()) {
+			if (Multiton<eid, Animation*>::Has(entity->id())) {
 				proto::Component* comp = entity->add_components();
 				Multiton<eid, T*>::Get(entity->id())->Out(comp);
 			}
 		};
 	}
 	template <typename T>
-	void AddPointerComponentFactory() {
+	void AddComponentFactory() {
 		auto component_case = GetTypeID<T>();
 		component_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
 			T* comp = new T();
@@ -108,10 +71,9 @@ namespace tec {
 			entity_out_functors[entity_id].insert(&out_functors.at(component_case));
 		};
 		component_removal_factories[GetTypeName<T>()] = [component_case] (eid entity_id) {
-			Entity e(entity_id);
-			if (e.Has<T*>()) {
+			if (Multiton<eid, Animation*>::Has(entity_id)) {
 				delete Multiton<eid, T*>::Get(entity_id);
-				e.Remove<T*>();
+				Multiton<eid, T*>::Remove(entity_id);
 			}
 		};
 	}
@@ -121,24 +83,19 @@ namespace tec {
 		AddInOutFunctors<T>();
 		AddComponentFactory<T>();
 	}
-	template <typename T>
-	void SetupComponentP() {
-		AddPointerInOutFunctors<T>();
-		AddPointerComponentFactory<T>();
-	}
 
 	void InitializeComponents() {
 		SetupComponent<Renderable>();
+		SetupComponent<CollisionBody>();
+		SetupComponent<Animation>();
+		SetupComponent<DirectionalLight>();
+		SetupComponent<PointLight>();
 		SetupComponent<Position>();
 		SetupComponent<Orientation>();
 		SetupComponent<Scale>();
 		SetupComponent<Velocity>();
 		SetupComponent<View>();
-		SetupComponent<Animation>();
-		SetupComponentP<CollisionBody>();
 		SetupComponent<AudioSource>();
-		SetupComponent<PointLight>();
-		SetupComponent<DirectionalLight>();
 		SetupComponent<LuaScript>();
 		SetupComponent<Computer>();
 	}
@@ -236,7 +193,7 @@ namespace tec {
 			Entity bob(99);
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create(FilePath::GetAssetPath("bob/bob.md5mesh"));
 			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create(FilePath::GetAssetPath("bob/bob.md5anim"), mesh1);
-			bob.Add<Animation>(anim1);
+			Multiton<eid, Animation*>::Set(99, new Animation(anim1));
 			std::shared_ptr<ScriptFile> script1 = ScriptFile::Create("Script1", FilePath::GetAssetPath("scripts/test.lua"));
 			bob.Add<LuaScript>(script1);
 		}

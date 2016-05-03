@@ -49,14 +49,14 @@ namespace tec {
 					alSourcef(itr->second->source, AL_PITCH, 1); alCheckError();
 					alSourcef(itr->second->source, AL_GAIN, itr->second->gain / 100.0f); alCheckError();
 					if (Entity(itr->first).Has<Position>()) {
-						std::shared_ptr<Position> pos = Entity(itr->first).Get<Position>().lock();
+						Position* pos = Entity(itr->first).Get<Position>();
 						alSource3f(itr->second->source, AL_POSITION, pos->value.x, pos->value.y, pos->value.z);
 					}
 					else {
 						alSource3f(itr->second->source, AL_POSITION, 0, 0, 0);
 					}
 					if (Entity(itr->first).Has<Velocity>()) {
-						std::shared_ptr<Velocity> vel = Entity(itr->first).Get<Velocity>().lock();
+						Velocity* vel = Entity(itr->first).Get<Velocity>();
 						alSource3f(itr->second->source, AL_VELOCITY, vel->linear.x, vel->linear.y, vel->linear.z);
 					}
 					else {
