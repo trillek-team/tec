@@ -28,10 +28,10 @@ TEST(FilePath_class_test, Constructor) {
 	ASSERT_STREQ(u8"/usr/local/share/", fp2.toString().c_str() );
 #endif
 
-	FilePath fp3 = std::wstring(L"c:/usr/local/share/\u20AC");
+	FilePath fp3 = std::wstring(L"c:/usr/local/share/\U20AC");
 #if defined(WIN32)
-	ASSERT_STREQ(u8"c:\\usr\\local\\share\\\u20AC", fp3.toString().c_str() );
-	ASSERT_STREQ(u8"c:/usr/local/share/\u20AC", fp3.toGenericString().c_str() );
+	ASSERT_STREQ(u8"c:\\usr\\local\\share\\\U20AC", fp3.toString().c_str() );
+	ASSERT_STREQ(u8"c:/usr/local/share/\U20AC", fp3.toGenericString().c_str() );
 #else
 	ASSERT_STREQ(u8"/usr/local/share/€", fp3.toString().c_str() );
 	ASSERT_STREQ(u8"/usr/local/share/€", fp3.toGenericString().c_str() );
@@ -223,10 +223,10 @@ TEST(FilePath_class_test, GetUserPaths) {
 TEST(FilePath_class_test, CreateDir) {
 	using namespace tec;
 #if defined(WIN32)
-	auto fp = FilePath(u8"c:/tmp/MyApp/blabla/foo");
+	auto fp = FilePath(u8"c:/foo");
 
 #else
-	auto fp = FilePath(u8"/tmp/MyApp/blabla/foo");
+	auto fp = FilePath(u8"/foo");
 #endif
 
 	ASSERT_TRUE(FilePath::MkPath(fp));
