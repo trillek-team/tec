@@ -68,7 +68,7 @@ namespace tec {
 #include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
 		};
 		std::shared_ptr<PixelBuffer> default_pbuffer = std::make_shared<PixelBuffer>(64, 64, 8, ImageColorMode::COLOR_RGBA);
-		std::copy_n(tmp_buff, sizeof(tmp_buff), default_pbuffer->LockWrite());
+		std::copy_n(tmp_buff, sizeof(tmp_buff) - 1, default_pbuffer->LockWrite());
 		default_pbuffer->UnlockWrite();
 		PixelBufferMap::Set("default", default_pbuffer);
 
