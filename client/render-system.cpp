@@ -11,6 +11,8 @@
 #include "graphics/material.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/renderable.hpp"
+#include "graphics/texture-object.hpp"
+#include "resources/pixel-buffer.hpp"
 #include "components/transforms.hpp"
 #include "resources/mesh.hpp"
 #include "resources/obj.hpp"
@@ -62,6 +64,16 @@ namespace tec {
 		if (!this->shadow_gbuffer.CheckCompletion()) {
 			_log->error() << "[RenderSystem] Failed to create Shadow GBuffer.";
 		}
+		std::uint8_t tmp_buff[] = {
+#include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
+		};
+		std::shared_ptr<PixelBuffer> default_pbuffer = std::make_shared<PixelBuffer>(64, 64, 8, ImageColorMode::COLOR_RGBA);
+		std::copy_n(tmp_buff, sizeof(tmp_buff), default_pbuffer->LockWrite());
+		default_pbuffer->UnlockWrite();
+		PixelBufferMap::Set("default", default_pbuffer);
+
+		std::shared_ptr<TextureObject> default_texture = std::make_shared<TextureObject>(default_pbuffer);
+		TextureMap::Set("default", default_texture);
 	}
 
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
@@ -423,7 +435,7 @@ namespace tec {
 	}
 
 	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { }
-	
+
 	typedef Multiton<eid, Renderable*> RenderableMap;
 	void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		this->render_item_list.clear();
