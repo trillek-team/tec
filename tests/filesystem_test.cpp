@@ -28,11 +28,12 @@ TEST(FilePath_class_test, Constructor) {
 	ASSERT_STREQ(u8"/usr/local/share/", fp2.toString().c_str() );
 #endif
 
-	FilePath fp3 = std::wstring(L"c:/usr/local/share/\U20AC");
 #if defined(WIN32)
-	ASSERT_STREQ(u8"c:\\usr\\local\\share\\\U20AC", fp3.toString().c_str() );
-	ASSERT_STREQ(u8"c:/usr/local/share/\U20AC", fp3.toGenericString().c_str() );
+	FilePath fp3 = std::wstring(L"c:/usr/local/share/\U20AC");
+	ASSERT_STREQ("c:\\usr\\local\\share\\\U20AC", fp3.toString().c_str() );
+	ASSERT_STREQ("c:/usr/local/share/\U20AC", fp3.toGenericString().c_str() );
 #else
+	FilePath fp3 = std::wstring(L"c:/usr/local/share/\u20AC");
 	ASSERT_STREQ(u8"/usr/local/share/€", fp3.toString().c_str() );
 	ASSERT_STREQ(u8"/usr/local/share/€", fp3.toGenericString().c_str() );
 #endif
