@@ -134,6 +134,7 @@ namespace tec {
 							EventSystem<EntityUpdated>::Get()->Emit(data);
 							break;
 					}
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 					read_header();
 				}
 				else {

@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 using asio::ip::tcp;
 
@@ -120,7 +121,8 @@ namespace tec {
 					}
 					client->StartRead();
 				}
-
+				
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				AcceptHandler();
 			});
 		}

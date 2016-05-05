@@ -69,6 +69,7 @@ int main() {
 					server.UnlockClientList();
 					delta_accumulator -= UPDATE_RATE;
 				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
 		});
 		std::cout << "Starting time: " << last_time.time_since_epoch().count() << std::endl;
