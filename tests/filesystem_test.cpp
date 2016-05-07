@@ -227,7 +227,7 @@ TEST(FilePath_class_test, CreateDir) {
 	auto fp = FilePath(u8"c:/foo");
 
 #else
-	auto fp = FilePath(u8"/foo");
+	auto fp = FilePath(u8"/tmp/foo");
 #endif
 
 	ASSERT_TRUE(FilePath::MkPath(fp));
