@@ -9,8 +9,10 @@
 #include "spdlog/spdlog.h"
 #include "multiton.hpp"
 #include "entity.hpp"
+#include "events.hpp"
 #include "types.hpp"
 #include "command-queue.hpp"
+#include "event-queue.hpp"
 
 namespace tec {
 	class VorbisStream;
@@ -68,7 +70,8 @@ namespace tec {
 		std::shared_ptr<VorbisStream> vorbis_stream;
 	};
 
-	class SoundSystem : public CommandQueue < SoundSystem > {
+	class SoundSystem : public CommandQueue < SoundSystem >,
+		public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
 	public:
 		SoundSystem();
 
@@ -81,14 +84,16 @@ namespace tec {
 		void Stop() {
 			this->running = false;
 		}
+		void On(std::shared_ptr<EntityCreated> data);
+		void On(std::shared_ptr<EntityDestroyed> data);
 	private:
 		std::atomic<bool> running;
 		double delta;
 		std::shared_ptr<spdlog::logger> _log;
-		typedef Multiton<eid, std::shared_ptr<AudioSource>> AudioSourceComponentMap;
+		typedef Multiton<eid, AudioSource*> AudioSourceComponentMap;
 		ALCdevice *device;
 		ALCcontext *context;
 
-		std::set<std::shared_ptr<AudioSource>> queued_sources;
+		std::set<AudioSource*> queued_sources;
 	};
 }

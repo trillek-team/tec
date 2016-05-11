@@ -37,49 +37,10 @@ namespace tec {
 				continue;
 			}
 			ProcessCommandQueue();
+			EventQueue<EntityCreated>::ProcessEventQueue();
 
 			for (auto itr = AudioSourceComponentMap::Begin(); itr != AudioSourceComponentMap::End(); ++itr) {
 				if (this->queued_sources.find(itr->second) == this->queued_sources.end()) {
-					// Make sure the stream is valid before we attempt to buffer it.
-					if (!itr->second->vorbis_stream) {
-						continue;
-					}
-					alGenSources(1, &itr->second->source); alCheckError();
-
-					alSourcef(itr->second->source, AL_PITCH, 1); alCheckError();
-					alSourcef(itr->second->source, AL_GAIN, itr->second->gain / 100.0f); alCheckError();
-					if (Entity(itr->first).Has<Position>()) {
-						Position* pos = Entity(itr->first).Get<Position>();
-						alSource3f(itr->second->source, AL_POSITION, pos->value.x, pos->value.y, pos->value.z);
-					}
-					else {
-						alSource3f(itr->second->source, AL_POSITION, 0, 0, 0);
-					}
-					if (Entity(itr->first).Has<Velocity>()) {
-						Velocity* vel = Entity(itr->first).Get<Velocity>();
-						alSource3f(itr->second->source, AL_VELOCITY, vel->linear.x, vel->linear.y, vel->linear.z);
-					}
-					else {
-						alSource3f(itr->second->source, AL_VELOCITY, 0, 0, 0);
-					}
-
-					// Don't use for looping or it will loop over the same segment, not the overall stream, use AudioSource::looping instead.
-					alSourcei(itr->second->source, AL_LOOPING, AL_FALSE);
-
-					alGenBuffers(2, &itr->second->buffer[0]); alCheckError();
-
-					itr->second->vorbis_stream->BufferStream(itr->second->buffer[0]);
-					itr->second->vorbis_stream->BufferStream(itr->second->buffer[1]);
-
-					alSourceQueueBuffers(itr->second->source, 2, itr->second->buffer); alCheckError();
-					switch (itr->second->source_state) {
-						case PLAYING:
-							alSourcei(itr->second->source, AL_SOURCE_STATE, AL_PLAYING);
-							break;
-						case PAUSED:
-							alSourcei(itr->second->source, AL_SOURCE_STATE, AL_PAUSED);
-							break;
-					}
 					this->queued_sources.insert(itr->second);
 				}
 			}
@@ -124,5 +85,55 @@ namespace tec {
 			this->delta = -1.0;
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+	void SoundSystem::On(std::shared_ptr<EntityCreated> data) {
+		const proto::Entity& entity = data->entity;
+		eid entity_id = entity.id();
+		if (AudioSourceComponentMap::Has(entity_id)) {
+			AudioSource* source = AudioSourceComponentMap::Get(entity_id);
+			if (!source->vorbis_stream) {
+				return;
+			}
+			alGenSources(1, &source->source); alCheckError();
+
+			alSourcef(source->source, AL_PITCH, 1); alCheckError();
+			alSourcef(source->source, AL_GAIN, source->gain / 100.0f); alCheckError();
+			if (Entity(entity_id).Has<Position>()) {
+				Position* pos = Entity(entity_id).Get<Position>();
+				alSource3f(source->source, AL_POSITION, pos->value.x, pos->value.y, pos->value.z);
+			}
+			else {
+				alSource3f(source->source, AL_POSITION, 0, 0, 0);
+			}
+			if (Entity(entity_id).Has<Velocity>()) {
+				Velocity* vel = Entity(entity_id).Get<Velocity>();
+				alSource3f(source->source, AL_VELOCITY, vel->linear.x, vel->linear.y, vel->linear.z);
+			}
+			else {
+				alSource3f(source->source, AL_VELOCITY, 0, 0, 0);
+			}
+
+			// Don't use for looping or it will loop over the same segment, not the overall stream, use AudioSource::looping instead.
+			alSourcei(source->source, AL_LOOPING, AL_FALSE);
+
+			alGenBuffers(2, &source->buffer[0]); alCheckError();
+
+			source->vorbis_stream->BufferStream(source->buffer[0]);
+			source->vorbis_stream->BufferStream(source->buffer[1]);
+
+			alSourceQueueBuffers(source->source, 2, source->buffer); alCheckError();
+			switch (source->source_state) {
+				case PLAYING:
+					alSourcei(source->source, AL_SOURCE_STATE, AL_PLAYING);
+					break;
+				case PAUSED:
+					alSourcei(source->source, AL_SOURCE_STATE, AL_PAUSED);
+					break;
+			}
+		}
+	}
+	void SoundSystem::On(std::shared_ptr<EntityDestroyed> data) {
+
 	}
 }

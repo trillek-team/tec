@@ -36,7 +36,7 @@ namespace tec {
 				{
 					proto::CollisionBody::Box* box = comp->mutable_box();
 					btVector3 half_extents = std::static_pointer_cast<btBoxShape>(this->shape)->getHalfExtentsWithMargin();
-					box->set_x_extent(half_extents.getX());
+					box->set_x_extent(static_cast<float>(half_extents.getX()));
 					box->set_y_extent(static_cast<float>(half_extents.getY()));
 					box->set_z_extent(static_cast<float>(half_extents.getZ()));
 				}
@@ -44,15 +44,15 @@ namespace tec {
 			case SPHERE_SHAPE_PROXYTYPE:
 				{
 					proto::CollisionBody::Sphere* sphere = comp->mutable_sphere();
-					sphere->set_radius(std::static_pointer_cast<btSphereShape>(this->shape)->getRadius());
+					sphere->set_radius(static_cast<float>(std::static_pointer_cast<btSphereShape>(this->shape)->getRadius()));
 				}
 				break;
 			case CAPSULE_SHAPE_PROXYTYPE:
 				{
 					proto::CollisionBody::Capsule* capsule = comp->mutable_capsule();
 					auto capsule_shape = std::static_pointer_cast<btCapsuleShape>(this->shape);
-					capsule->set_radius(capsule_shape->getRadius());
-					capsule->set_height(capsule_shape->getHalfHeight() * 2.0f);
+					capsule->set_radius(static_cast<float>(capsule_shape->getRadius()));
+					capsule->set_height(static_cast<float>(capsule_shape->getHalfHeight() * 2.0f));
 				}
 				break;
 		}

@@ -11,6 +11,11 @@
 #include <cstdio>
 #include <ctime>
 
+// Visual Studio 2013 doesn't understand u8
+#ifdef WIN32
+#define u8 
+#endif
+
 TEST(FilePath_class_test, Constructor) {
 	using namespace tec;
 	// Construction from strings

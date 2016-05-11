@@ -342,24 +342,30 @@ namespace tec {
 	}
 
 	Position PhysicsSystem::GetPosition(eid entity_id) {
-		auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getOrigin();
-		Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
+		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
+			auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getOrigin();
+			Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
 
-		// TODO: remove this once center_offset is in renderable
-		if (Entity(entity_id).Has<Position>()) {
-			position.center_offset = Entity(entity_id).Get<Position>()->center_offset;
+			// TODO: remove this once center_offset is in renderable
+			if (Entity(entity_id).Has<Position>()) {
+				position.center_offset = Entity(entity_id).Get<Position>()->center_offset;
+			}
+			return std::move(position);
 		}
-		return std::move(position);
+		return glm::vec3();
 	}
 
 	Orientation PhysicsSystem::GetOrientation(eid entity_id) {
-		auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getRotation();
-		Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
+		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
+			auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getRotation();
+			Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
 
-		// TODO: remove this once rotation_offset is in renderable
-		if (Entity(entity_id).Has<Orientation>()) {
-			orientation.rotation_offset = Entity(entity_id).Get<Orientation>()->rotation_offset;
+			// TODO: remove this once rotation_offset is in renderable
+			if (Entity(entity_id).Has<Orientation>()) {
+				orientation.rotation_offset = Entity(entity_id).Get<Orientation>()->rotation_offset;
+			}
+			return std::move(orientation);
 		}
-		return std::move(orientation);
+		return glm::quat();
 	}
 }
