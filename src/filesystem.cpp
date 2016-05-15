@@ -247,17 +247,13 @@ bool FilePath::MkDir(const FilePath& path) {
 	#else // Windows
 	int ret = _wmkdir(path.GetNativePath().c_str());
 	#endif
-	if (ret != 0 || errno == EEXIST) {
+	if (ret == 0 || errno == EEXIST) {
 		return true;
 	}
 	return false;
 }
 
 bool FilePath::MkPath(const FilePath& path) {
-	// Build the path on a recursive way
-	if (! path.isValidPath()) {
-		return false;
-	}
 #if defined(WIN32)
 	if (path.path.size() <= 3 && std::isalpha( path.path.at(0))) { // 'X:\'
 		return true;
@@ -267,14 +263,14 @@ bool FilePath::MkPath(const FilePath& path) {
 		return true;
 	}
 #endif
+
 	auto base = path.BasePath();
-	if (! base.empty()) {
-		size_t len = base.path.size();
-		if (base.isValidPath()) {
-			return MkDir(path);
-		}
-	}
-	return false;
+    //Recursively create the path
+	if (!base.empty() && !base.DirExists()) { 
+        MkPath(base);
+    }
+    //When the path is done
+    return MkDir(path);
 }
 
 std::string FilePath::FileName() const {
