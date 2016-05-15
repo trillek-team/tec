@@ -59,7 +59,7 @@ namespace tec {
 	}
 	void PhysicsDebugDrawer::UpdateVertexBuffer() {
 		if (!this->vert_buffer) {
-			std::shared_ptr<Renderable> ren = std::make_shared<Renderable>(std::make_shared<VertexBufferObject>());
+			Renderable* ren = new Renderable(std::make_shared<VertexBufferObject>());
 			this->vert_buffer = ren->buffer;
 			this->vert_buffer->Load(verts, indices);
 			this->verts.clear();

@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 using asio::ip::tcp;
 
@@ -81,10 +82,6 @@ namespace tec {
 				if (!error) {
 					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
 					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
-					
-					// self_protopack doesn't contain a renderable component
-					static FilePath self_protopack = FilePath::GetAssetPath("protopacks/self.proto");
-					LoadProtoPack(client->GetEntity(), self_protopack);
 
 					// self_protopack does contain a renderable component
 					static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.proto");
@@ -124,7 +121,8 @@ namespace tec {
 					}
 					client->StartRead();
 				}
-
+				
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				AcceptHandler();
 			});
 		}

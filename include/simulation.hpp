@@ -11,6 +11,8 @@
 #include "event-queue.hpp"
 
 namespace tec {
+	extern double UPDATE_RATE;
+
 	struct Controller;
 
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;

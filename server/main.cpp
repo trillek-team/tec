@@ -11,9 +11,7 @@
 
 using asio::ip::tcp;
 
-const double UPDATE_RATE = 1.0 / 50.0;  // TODO: Make this configurable via a run-time property.
 tec::state_id_t current_state_id = 0;
-
 
 namespace tec {
 	std::map<std::string, std::function<void(std::string)>> file_factories;
@@ -41,8 +39,8 @@ int main() {
 				elapsed_seconds = next_time - last_time;
 				last_time = next_time;
 				delta_accumulator += elapsed_seconds.count();
-				if (delta_accumulator >= UPDATE_RATE) {
-					auto updated_entities = simulation.Simulate(UPDATE_RATE);
+				if (delta_accumulator >= tec::UPDATE_RATE) {
+					auto updated_entities = simulation.Simulate(tec::UPDATE_RATE);
 					current_state_id++;
 					tec::GameState& full_state = simulation.GetClientState();
 					full_state.state_id = current_state_id;
@@ -57,9 +55,9 @@ int main() {
 					server.LockClientList();
 					for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
 						client->UpdateGameState(updated_entities, full_state);
-						if (current_state_id - client->GetLastConfirmedStateID() > 10) {
+						if (current_state_id - client->GetLastConfirmedStateID() > tec::UPDATE_RATE * 2.0) {
 							server.Deliver(client, full_state_update_message);
-							std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << std::endl;
+							std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
 						}
 						else {
 							server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
@@ -67,8 +65,9 @@ int main() {
 					}
 					
 					server.UnlockClientList();
-					delta_accumulator -= UPDATE_RATE;
+					delta_accumulator -= tec::UPDATE_RATE;
 				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
 		});
 		std::cout << "Starting time: " << last_time.time_since_epoch().count() << std::endl;

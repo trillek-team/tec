@@ -11,6 +11,11 @@
 #include <cstdio>
 #include <ctime>
 
+// Visual Studio 2013 doesn't understand u8
+#ifdef WIN32
+#define u8 
+#endif
+
 TEST(FilePath_class_test, Constructor) {
 	using namespace tec;
 	// Construction from strings
@@ -28,11 +33,12 @@ TEST(FilePath_class_test, Constructor) {
 	ASSERT_STREQ(u8"/usr/local/share/", fp2.toString().c_str() );
 #endif
 
-	FilePath fp3 = std::wstring(L"c:/usr/local/share/\u20AC");
 #if defined(WIN32)
-	ASSERT_STREQ(u8"c:\\usr\\local\\share\\\u20AC", fp3.toString().c_str() );
-	ASSERT_STREQ(u8"c:/usr/local/share/\u20AC", fp3.toGenericString().c_str() );
+	FilePath fp3 = std::wstring(L"c:/usr/local/share/\U20AC");
+	ASSERT_STREQ("c:\\usr\\local\\share\\\U20AC", fp3.toString().c_str() );
+	ASSERT_STREQ("c:/usr/local/share/\U20AC", fp3.toGenericString().c_str() );
 #else
+	FilePath fp3 = std::wstring(L"c:/usr/local/share/\u20AC");
 	ASSERT_STREQ(u8"/usr/local/share/€", fp3.toString().c_str() );
 	ASSERT_STREQ(u8"/usr/local/share/€", fp3.toGenericString().c_str() );
 #endif
@@ -223,10 +229,10 @@ TEST(FilePath_class_test, GetUserPaths) {
 TEST(FilePath_class_test, CreateDir) {
 	using namespace tec;
 #if defined(WIN32)
-	auto fp = FilePath(u8"c:/tmp/MyApp/blabla/foo");
+	auto fp = FilePath(u8"c:/foo");
 
 #else
-	auto fp = FilePath(u8"/tmp/MyApp/blabla/foo");
+	auto fp = FilePath(u8"/tmp/foo");
 #endif
 
 	ASSERT_TRUE(FilePath::MkPath(fp));

@@ -1,45 +1,58 @@
 #include "components/collisionbody.hpp"
-#include "physics-system.hpp"
-#include "resources/mesh.hpp"
-#include "entity.hpp"
-#include "components/transforms.hpp"
-
-#include <BulletCollision/Gimpact/btGImpactShape.h>
 
 namespace tec {
-	CollisionBody::CollisionBody(COLLISION_SHAPE collision_shape) : collision_shape(NONE),
-		new_collision_shape(collision_shape), mass(0.0), radius(1.0f), height(1.0f), disable_deactivation(false),
-		disable_rotation(false), half_extents(btVector3(1.0, 1.0, 1.0)) {
+	CollisionBody::CollisionBody() : mass(0.0),
+		disable_deactivation(false), disable_rotation(false) {
 		motion_state.transform_updated = true;
 	}
 
+	
+	CollisionBody::CollisionBody(CollisionBody&& other) : mass(other.mass),
+	disable_deactivation(other.disable_deactivation), disable_rotation(other.disable_rotation),
+	motion_state(std::move(other.motion_state)), shape(std::move(other.shape)),
+	entity_id(other.entity_id) {
+
+	}
+
 	CollisionBody::~CollisionBody() { }
+
+	CollisionBody& CollisionBody::operator=(CollisionBody&& other) {
+		mass = other.mass;
+		disable_deactivation = other.disable_deactivation;
+		disable_rotation = other.disable_rotation;
+		motion_state = std::move(other.motion_state);
+		shape = std::move(other.shape);
+		entity_id = other.entity_id;
+		return *this;
+	}
 
 	void CollisionBody::Out(proto::Component* target) {
 		proto::CollisionBody* comp = target->mutable_collision_body();
 		comp->set_disable_deactivation(this->disable_deactivation);
 		comp->set_disable_rotation(this->disable_rotation);
 		comp->set_mass(static_cast<float>(this->mass));
-		switch (this->new_collision_shape) {
-			case COLLISION_SHAPE::BOX:
+		switch (this->shape->getShapeType()) {
+			case BOX_SHAPE_PROXYTYPE:
 				{
 					proto::CollisionBody::Box* box = comp->mutable_box();
-					box->set_x_extent(static_cast<float>(this->half_extents.x()));
-					box->set_y_extent(static_cast<float>(this->half_extents.y()));
-					box->set_z_extent(static_cast<float>(this->half_extents.z()));
+					btVector3 half_extents = std::static_pointer_cast<btBoxShape>(this->shape)->getHalfExtentsWithMargin();
+					box->set_x_extent(static_cast<float>(half_extents.getX()));
+					box->set_y_extent(static_cast<float>(half_extents.getY()));
+					box->set_z_extent(static_cast<float>(half_extents.getZ()));
 				}
 				break;
-			case COLLISION_SHAPE::SPHERE:
+			case SPHERE_SHAPE_PROXYTYPE:
 				{
 					proto::CollisionBody::Sphere* sphere = comp->mutable_sphere();
-					sphere->set_radius(this->radius);
+					sphere->set_radius(static_cast<float>(std::static_pointer_cast<btSphereShape>(this->shape)->getRadius()));
 				}
 				break;
-			case COLLISION_SHAPE::CAPSULE:
+			case CAPSULE_SHAPE_PROXYTYPE:
 				{
 					proto::CollisionBody::Capsule* capsule = comp->mutable_capsule();
-					capsule->set_radius(this->radius);
-					capsule->set_height(this->height);
+					auto capsule_shape = std::static_pointer_cast<btCapsuleShape>(this->shape);
+					capsule->set_radius(static_cast<float>(capsule_shape->getRadius()));
+					capsule->set_height(static_cast<float>(capsule_shape->getHalfHeight() * 2.0f));
 				}
 				break;
 		}
@@ -49,19 +62,24 @@ namespace tec {
 		const proto::CollisionBody& comp = source.collision_body();
 		switch (comp.shape_case()) {
 			case proto::CollisionBody::ShapeCase::kBox:
-				this->new_collision_shape = BOX;
-				this->half_extents = btVector3(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
+				{
+					btVector3 half_extents = btVector3(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
+					this->shape = std::make_shared<btBoxShape>(half_extents);
+				}
 				break;
 			case proto::CollisionBody::ShapeCase::kSphere:
-				this->new_collision_shape = SPHERE;
-				this->radius = comp.sphere().radius();
+				{
+					float radius = comp.sphere().radius();
+					this->shape = std::make_shared<btSphereShape>(radius);
+				}
 				break;
 			case proto::CollisionBody::ShapeCase::kCapsule:
-				this->new_collision_shape = CAPSULE;
-				this->radius = comp.capsule().radius();
-				this->height = comp.capsule().height();
+				{
+					float radius = comp.capsule().radius();
+					float height = comp.capsule().height();
+					this->shape = std::make_shared<btCapsuleShape>(radius, height);
+				}
 				break;
-
 		}
 
 		if (comp.has_disable_deactivation()) {

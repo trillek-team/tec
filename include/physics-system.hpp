@@ -1,22 +1,21 @@
 #pragma once
 
-#include <memory>
 #include <map>
-#include <set>
+#include <memory>
 
 #include <btBulletDynamicsCommon.h>
 #include <glm/glm.hpp>
 
 #include "types.hpp"
-#include "multiton.hpp"
 #include "command-queue.hpp"
 #include "event-system.hpp"
 #include "game-state.hpp"
-#include "components/velocity.hpp"
 
 namespace tec {
 	struct CollisionBody;
 	struct MouseBtnEvent;
+	struct EntityCreated;
+	struct EntityDestroyed;
 
 	class PhysicsSystem : public CommandQueue < PhysicsSystem >,
 		EventQueue < MouseBtnEvent >, EventQueue < EntityCreated >,
@@ -61,9 +60,8 @@ namespace tec {
 		 */
 		void SetNormalGravity(const unsigned int entity_id);
 	private:
-		bool UpdateRigidBody(std::shared_ptr<CollisionBody> collision_body);
-
-		typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
+		bool AddRigidBody(CollisionBody* collision_body);
+		void RemoveRigidBody(eid entity_id);
 
 		btBroadphaseInterface* broadphase;
 		btCollisionConfiguration* collisionConfiguration;

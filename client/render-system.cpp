@@ -11,6 +11,8 @@
 #include "graphics/material.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/renderable.hpp"
+#include "graphics/texture-object.hpp"
+#include "resources/pixel-buffer.hpp"
 #include "components/transforms.hpp"
 #include "resources/mesh.hpp"
 #include "resources/obj.hpp"
@@ -19,10 +21,10 @@
 #include "multiton.hpp"
 
 namespace tec {
-	typedef Multiton<eid, std::shared_ptr<PointLight>> PointLightMap;
-	typedef Multiton<eid, std::shared_ptr<DirectionalLight>> DirectionalLightMap;
+	typedef Multiton<eid, PointLight*> PointLightMap;
+	typedef Multiton<eid, DirectionalLight*> DirectionalLightMap;
 
-	RenderSystem::RenderSystem() : window_width(1024), window_height(768) {
+	RenderSystem::RenderSystem() : window_width(1024), window_height(768), current_view(nullptr) {
 		_log = spdlog::get("console_log");
 
 		GLenum err = glGetError();
@@ -62,6 +64,16 @@ namespace tec {
 		if (!this->shadow_gbuffer.CheckCompletion()) {
 			_log->error() << "[RenderSystem] Failed to create Shadow GBuffer.";
 		}
+		std::uint8_t tmp_buff[] = {
+#include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
+		};
+		std::shared_ptr<PixelBuffer> default_pbuffer = std::make_shared<PixelBuffer>(64, 64, 8, ImageColorMode::COLOR_RGBA);
+		std::copy_n(tmp_buff, sizeof(tmp_buff) - 1, default_pbuffer->LockWrite());
+		default_pbuffer->UnlockWrite();
+		PixelBufferMap::Set("default", default_pbuffer);
+
+		std::shared_ptr<TextureObject> default_texture = std::make_shared<TextureObject>(default_pbuffer);
+		TextureMap::Set("default", default_texture);
 	}
 
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
@@ -125,7 +137,7 @@ namespace tec {
 
 		glm::mat4 camera_matrix(1.0);
 		{
-			std::shared_ptr<View> view = this->current_view.lock();
+			View* view = this->current_view;
 			if (view) {
 				camera_matrix = view->view_matrix;
 			}
@@ -140,7 +152,7 @@ namespace tec {
 		glm::mat4 depthModelMatrix = glm::mat4(1.0);
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
-			std::shared_ptr<DirectionalLight> light = itr->second;
+			DirectionalLight* light = itr->second;
 			glm::vec3 lightInvDir = light->direction * -1.0f;
 
 			// Compute the MVP matrix from the light's point of view
@@ -177,7 +189,7 @@ namespace tec {
 
 		glm::mat4 camera_matrix(1.0);
 		{
-			std::shared_ptr<View> view = this->current_view.lock();
+			View* view = this->current_view;
 			if (view) {
 				camera_matrix = view->view_matrix;
 			}
@@ -240,7 +252,7 @@ namespace tec {
 
 		glm::mat4 camera_matrix(1.0);
 		{
-			std::shared_ptr<View> view = this->current_view.lock();
+			View* view = this->current_view;
 			if (view) {
 				camera_matrix = view->view_matrix;
 			}
@@ -271,19 +283,19 @@ namespace tec {
 
 		for (auto itr = PointLightMap::Begin(); itr != PointLightMap::End(); ++itr) {
 			eid entity_id = itr->first;
-			std::shared_ptr<PointLight> light = itr->second;
+			PointLight* light = itr->second;
 
 			Entity e(entity_id);
 			glm::vec3 position, scale;
 			glm::quat orientation;
-			if (e.Has<Position>()) {
-				position = e.Get<Position>().lock()->value;
+			if (Multiton<eid, Position*>::Has(entity_id)) {
+				position = Multiton<eid, Position*>::Get(entity_id)->value;
 			}
-			if (e.Has<Orientation>()) {
-				orientation = e.Get<Orientation>().lock()->value;
+			if (Multiton<eid, Orientation*>::Has(entity_id)) {
+				orientation = Multiton<eid, Orientation*>::Get(entity_id)->value;
 			}
-			if (e.Has<Scale>()) {
-				scale = e.Get<Scale>().lock()->value;
+			if (Multiton<eid, Scale*>::Has(entity_id)) {
+				scale = Multiton<eid, Scale*>::Get(entity_id)->value;
 			}
 
 			glm::mat4 transform_matrix = glm::scale(glm::translate(glm::mat4(1.0), position) *
@@ -322,7 +334,7 @@ namespace tec {
 
 		glm::mat4 camera_matrix(1.0);
 		{
-			std::shared_ptr<View> view = this->current_view.lock();
+			View* view = this->current_view;
 			if (view) {
 				camera_matrix = view->view_matrix;
 			}
@@ -361,7 +373,7 @@ namespace tec {
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
 			eid entity_id = itr->first;
-			std::shared_ptr<DirectionalLight> light = itr->second;
+			DirectionalLight* light = itr->second;
 
 			glm::vec3 lightInvDir = light->direction * -1.0f;
 
@@ -423,8 +435,8 @@ namespace tec {
 	}
 
 	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { }
-	
-	typedef Multiton<eid, std::shared_ptr<Renderable>> RenderableMap;
+
+	typedef Multiton<eid, Renderable*> RenderableMap;
 	void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		this->render_item_list.clear();
 		this->model_matricies.clear();
@@ -436,7 +448,7 @@ namespace tec {
 		// Loop through each renderbale and update its model matrix.
 		for (auto itr = RenderableMap::Begin(); itr != RenderableMap::End(); ++itr) {
 			eid entity_id = itr->first;
-			std::shared_ptr<Renderable> renderable = itr->second;
+			Renderable* renderable = itr->second;
 			if (renderable->hidden) {
 				continue;
 			}
@@ -450,8 +462,8 @@ namespace tec {
 			}
 			glm::vec3 scale(1.0);
 			Entity e(entity_id);
-			if (e.Has<Scale>()) {
-				scale = e.Get<Scale>().lock()->value;
+			if (Multiton<eid, Scale*>::Has(entity_id)) {
+				scale = Multiton<eid, Scale*>::Get(entity_id)->value;
 			}
 
 			this->model_matricies[entity_id] = glm::scale(glm::translate(glm::mat4(1.0), position) *
@@ -479,8 +491,8 @@ namespace tec {
 				ri.ibo = renderable->buffer->GetIBO();
 				ri.vertex_groups = &renderable->vertex_groups;
 
-				if (e.Has<Animation>()) {
-					auto anim = e.Get<Animation>().lock();
+				if (Multiton<eid, Animation*>::Has(e.GetID())) {
+					Animation* anim = Multiton<eid, Animation*>::Get(e.GetID());
 					anim->UpdateAnimation(delta);
 					if (anim->animation_matrices.size() > 0) {
 						ri.animated = true;
@@ -492,10 +504,10 @@ namespace tec {
 				}
 			}
 
-			for (auto itr = Multiton<eid, std::shared_ptr<View>>::Begin();
-				itr != Multiton<eid, std::shared_ptr<View>>::End(); ++itr) {
+			for (auto itr = Multiton<eid, View*>::Begin();
+				itr != Multiton<eid, View*>::End(); ++itr) {
 				eid entity_id = itr->first;
-				std::shared_ptr<View> view = itr->second;
+				View* view = itr->second;
 
 				glm::vec3 position;
 				if (state.positions.find(entity_id) != state.positions.end()) {

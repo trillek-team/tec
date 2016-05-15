@@ -15,6 +15,7 @@
 
 #include <spdlog/spdlog.h>
 #include <iostream>
+#include <future>
 #include <thread>
 #include <string>
 #include <sstream>
@@ -82,12 +83,6 @@ int main(int argc, char* argv[]) {
 		std::string message(args, end_arg - args);
 		connection.SendChatMessage(message);
 	});
-	asio_thread = new std::thread([&connection] () {
-		connection.StartRead();
-	});
-	sync_thread = new std::thread([&connection] () {
-		connection.StartSync();
-	});
 	console.AddConsoleCommand("connect",
 		"connect ip : Connects to the server at ip",
 		[&connection] (const char* args) {
@@ -127,7 +122,7 @@ int main(int argc, char* argv[]) {
 	tec::ProtoLoad();
 
 	tec::FPSController* camera_controller = nullptr;
-	gui.AddWindowDrawFunction("connect_window", [&simulation, &camera_controller, &connection, &log, &gui] () {
+	gui.AddWindowDrawFunction("connect_window", [&] () {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
@@ -167,6 +162,7 @@ int main(int argc, char* argv[]) {
 			std::stringstream ip;
 			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
 			log->info("Connecting to " + ip.str());
+			connection.Disconnect();
 			if (connection.Connect(ip.str())) {
 				std::thread on_connect([&simulation, &connection, &camera_controller, &log] () {
 					unsigned int tries = 0;
@@ -188,6 +184,13 @@ int main(int argc, char* argv[]) {
 				});
 				on_connect.detach();
 				gui.HideWindow("connect_window");
+
+				asio_thread = new std::thread([&connection] () {
+					connection.StartRead();
+				});
+				sync_thread = new std::thread([&connection] () {
+					connection.StartSync();
+				});
 			}
 			else {
 				log->error("Failed to connect to " + ip.str());
@@ -286,14 +289,14 @@ int main(int argc, char* argv[]) {
 		delta = os.GetDeltaTime();
 
 		ss.SetDelta(delta);
-		std::thread vv_thread([&] () {
+		std::async(std::launch::async, [&vox_sys, delta] () {
 			vox_sys.Update(delta);
 		});
 		
 		simulation.Interpolate(delta);
 		simulation.Simulate(delta);
 		const tec::GameState& client_state = simulation.GetClientState();
-		{
+		if (connection.GetClientID() != 0) {
 			tec::proto::Entity self;
 			self.set_id(connection.GetClientID());
 			if (client_state.positions.find(connection.GetClientID()) != client_state.positions.end()) {
@@ -321,8 +324,6 @@ int main(int argc, char* argv[]) {
 
 		rs.Update(delta, client_state);
 
-		vv_thread.join();
-
 		lua_sys.Update(delta);
 
 		os.GetMousePosition(&mouse_x, &mouse_y);
@@ -343,8 +344,9 @@ int main(int argc, char* argv[]) {
 
 		os.SwapBuffers();
 		frame_id++;
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
-	
+
 	ss.Stop();
 	ss_thread.join();
 	connection.Disconnect();

@@ -30,24 +30,23 @@ Building takes a few steps to get everything set up for the first build.
        4. `rm CMakeCache.txt` in the build directory
        5. `cmake ..` in the build directory
        6. `make TEC` in the build directory
-  2. Windows (VStudio 2015)
+  2. Windows (Visual Studio 2013)
      1. Install Lua include files and library file. (For example on /lib )
      2. Set LUA_DIR enviroment variable to the path were you download Lua.
      3. Run cmake-gui setting the source line to the root directory and the build line to the build directory.
      4. Configure and Generate using non-x64 as the target, with native compiles selected.
-     5. Build all dependencies in Release configuration (if it is just tec in the project list go to step 5).
-     **You must build bullet in both debug and release configurations**
-     6. Return to cmake-gui and rerun configure and generate. If you see "All dependencies found now building tec.",
-     you can delete your cache and rerun to clean up the cmake-gui window. 
-     7. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
-     8. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
+     5. Build the solution
+     6. Return to cmake-gui and rerun configure and generate.
+     7. **OPTIONAL** If you see "All dependencies found now building tec.", you can delete your cache and rerun to clean up the cmake-gui window. 
+     8. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
+     9. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
 5. Run it from `tec/`
 
 ### Dependecies download (Windows)
 
 - Glew : Use nuget -> nuget install rxd_glew 
 - Lua 5.2 : http://sourceforge.net/projects/luabinaries/files/5.2.3/Windows%20Libraries/Static/
-- **OR** download https://www.dropbox.com/s/m7vzruxrq8f79zo/tec_win32_libs.zip?dl=0 and extract it into your root folder to get Lua 5.2 and glew.
+- **OR** for prebuilt (lua5.2 and glew lib files) download https://www.dropbox.com/s/m7vzruxrq8f79zo/tec_win32_libs.zip?dl=0 and extract it into the root repo folder.
 
 ### Unit tests
 

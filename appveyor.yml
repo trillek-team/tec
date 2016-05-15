@@ -34,13 +34,12 @@ install:
 - xcopy /E c:\projects\glew\rxd_glew.1.10.0.1\build\native\include c:\projects\tec\lib\include\
 - mkdir Release
 
-- cd c:\projects\
-- mkdir lua52
-- appveyor DownloadFile "http://downloads.sourceforge.net/project/luabinaries/5.2.3/Windows%20Libraries/Static/lua-5.2.3_Win32_vc14_lib.zip" -FileName lua52.zip
-- 7z x -y lua52.zip -o "c:\projects\lua52"
-- setx LUA_DIR=c:\projects\lua52
-
 - cd c:\projects\tec\
+
+- appveyor DownloadFile "https://www.dropbox.com/s/m7vzruxrq8f79zo/tec_win32_libs.zip?dl=1&pv=1" -FileName tec_win32_libs.zip
+- 7z x -y tec_win32_libs.zip -o"c:\projects\tec"
+- setx LUA_DIR=c:\projects\tec\lib\
+
 - mkdir build
 - cd build
 - cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True ..

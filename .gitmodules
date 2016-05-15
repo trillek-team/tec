@@ -12,7 +12,7 @@
 	url = https://github.com/bulletphysics/bullet3
 [submodule "modules/openal-soft"]
 	path = modules/openal-soft
-	url = git://repo.or.cz/openal-soft.git
+url=https://github.com/kcat/openal-soft
 [submodule "modules/imgui"]
 	path = modules/imgui
 	url = https://github.com/ocornut/imgui

@@ -2,8 +2,10 @@
 
 #include "components/collisionbody.hpp"
 #include "components/transforms.hpp"
+#include "components/velocity.hpp"
 #include "entity.hpp"
 #include "events.hpp"
+#include "multiton.hpp"
 
 #include "client/physics/physics-debug-drawer.hpp"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
@@ -11,6 +13,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
+	typedef Multiton<eid, CollisionBody*> CollisionBodyMap;
+	typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
 #ifdef CLIENT_STANDALONE
 	PhysicsDebugDrawer debug_drawer;
 #endif
@@ -50,7 +54,6 @@ namespace tec {
 		}
 	}
 
-	typedef Multiton<eid, std::shared_ptr<CollisionBody>> CollisionBodyMap;
 	std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) {
 		std::set<eid> updated_entities;
 		ProcessCommandQueue();
@@ -60,7 +63,7 @@ namespace tec {
 
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			eid entity_id = itr->first;
-			std::shared_ptr<CollisionBody> collidable = itr->second;
+			CollisionBody* collidable = itr->second;
 			glm::vec3 position(0.0);
 			if (state.positions.find(entity_id) != state.positions.end()) {
 				auto pos = state.positions.at(entity_id).value;
@@ -75,17 +78,9 @@ namespace tec {
 					orientation = ori;
 				}
 			}
-			btTransform transform(
-				btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w),
-				btVector3(position.x, position.y, position.z));
 
-			// TODO: this section could be moved to an event-based action
-			collidable->motion_state.transform = transform;
-			if (collidable->new_collision_shape != collidable->collision_shape) {
-				if (!UpdateRigidBody(collidable)) {
-					continue;
-				}
-			}
+			collidable->motion_state.transform.getBasis().setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+			collidable->motion_state.transform.setOrigin(btVector3(position.x, position.y, position.z));
 
 			btRigidBody* body = this->bodies[entity_id];
 			if (!body) {
@@ -158,11 +153,11 @@ namespace tec {
 		this->last_entity_hit = 0;
 		glm::vec3 position;
 		if (Entity(source_entity).Has<Position>()) {
-			position = (Entity(source_entity).Get<Position>().lock())->value;
+			position = (Entity(source_entity).Get<Position>())->value;
 		}
 		glm::quat orientation;
 		if (Entity(source_entity).Has<Orientation>()) {
-			orientation = (Entity(source_entity).Get<Orientation>().lock())->value;
+			orientation = (Entity(source_entity).Get<Orientation>())->value;
 		}
 
 		if (screen_height == 0.0f) {
@@ -221,11 +216,11 @@ namespace tec {
 		last_rayvalid = false;
 		glm::vec3 position;
 		if (Entity(cam).Has<Position>()) {
-			position = (Entity(cam).Get<Position>().lock())->value;
+			position = (Entity(cam).Get<Position>())->value;
 		}
 		glm::quat orientation;
 		if (Entity(cam).Has<Orientation>()) {
-			orientation = (Entity(cam).Get<Orientation>().lock())->value;
+			orientation = (Entity(cam).Get<Orientation>())->value;
 		}
 		auto fv = position + glm::rotate(orientation, FORWARD_VECTOR * 300.f);
 		btVector3 from(position.x, position.y, position.z), to(fv.x, fv.y, fv.z);
@@ -282,45 +277,41 @@ namespace tec {
 		}
 	}
 
-	bool PhysicsSystem::UpdateRigidBody(std::shared_ptr<CollisionBody> collision_body) {
+	bool PhysicsSystem::AddRigidBody(CollisionBody* collision_body) {
 		eid entity_id = collision_body->entity_id;
-		if (collision_body->collision_shape != collision_body->new_collision_shape) {
-			if (this->bodies.find(entity_id) != this->bodies.end()) {
-				this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
-				delete this->bodies.at(entity_id);
-			}
+		
+		RemoveRigidBody(entity_id);
 
-			switch (collision_body->new_collision_shape) {
-				case SPHERE:
-					collision_body->shape = std::make_shared<btSphereShape>(collision_body->radius);
-					break;
-				case BOX:
-					collision_body->shape = std::make_shared<btBoxShape>(collision_body->half_extents);
-					break;
-				case CAPSULE:
-					collision_body->shape = std::make_shared<btCapsuleShape>(collision_body->radius, collision_body->height);
-					break;
-			}
-			collision_body->collision_shape = collision_body->new_collision_shape;
-			btVector3 fallInertia(0, 0, 0);
-			if (collision_body->mass > 0.0) {
-				if (collision_body->shape) {
-					collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);
-				}
-			}
-			btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
-				&collision_body->motion_state, collision_body->shape.get(), fallInertia);
-			auto body = new btRigidBody(fallRigidBodyCI);
-
-			if (!body) {
-				return false;
-			}
-
-			this->bodies[entity_id] = body;
-
-			body->setUserPointer(collision_body.get());
+		if (!collision_body->shape) {
+			return false;
 		}
+
+		btVector3 fallInertia(0, 0, 0);
+		if (collision_body->mass > 0.0) {
+			if (collision_body->shape) {
+				collision_body->shape->calculateLocalInertia(collision_body->mass, fallInertia);
+			}
+		}
+
+		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
+			&collision_body->motion_state, collision_body->shape.get(), fallInertia);
+		auto body = new btRigidBody(fallRigidBodyCI);
+
+		if (!body) {
+			return false;
+		}
+
+		this->bodies[entity_id] = body;
+
+		body->setUserPointer(collision_body);
 		return true;
+	}
+	
+	void PhysicsSystem::RemoveRigidBody(eid entity_id) {
+		if (this->bodies.find(entity_id) != this->bodies.end()) {
+			this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
+			delete this->bodies.at(entity_id);
+		}
 	}
 
 	void PhysicsSystem::On(std::shared_ptr<MouseBtnEvent> data) {
@@ -338,41 +329,43 @@ namespace tec {
 
 
 	void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
-		Entity e(data->entity_id);
-		if (e.Has<CollisionBody>()) {
-			std::shared_ptr<CollisionBody> collision_body = e.Get<CollisionBody>().lock();
+		if (CollisionBodyMap::Has(data->entity_id)) {
+			CollisionBody* collision_body = CollisionBodyMap::Get(data->entity_id);
 			collision_body->entity_id = data->entity_id;
-			UpdateRigidBody(collision_body);
+			AddRigidBody(collision_body);
 		}
 	}
 
 	void PhysicsSystem::On(std::shared_ptr<EntityDestroyed> data) {
-		if (this->bodies.find(data->entity_id) != this->bodies.end()) {
-			this->dynamicsWorld->removeRigidBody(this->bodies.at(data->entity_id));
-			delete this->bodies.at(data->entity_id);
-			this->bodies.erase(data->entity_id);
-		}
+		RemoveRigidBody(data->entity_id);
+		this->bodies.erase(data->entity_id); // There isn't a chance it will be re-added.
 	}
 
 	Position PhysicsSystem::GetPosition(eid entity_id) {
-		auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getOrigin();
-		Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
+		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
+			auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getOrigin();
+			Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
 
-		// TODO: remove this once center_offset is in renderable
-		if (Entity(entity_id).Has<Position>()) {
-			position.center_offset = Entity(entity_id).Get<Position>().lock()->center_offset;
+			// TODO: remove this once center_offset is in renderable
+			if (Entity(entity_id).Has<Position>()) {
+				position.center_offset = Entity(entity_id).Get<Position>()->center_offset;
+			}
+			return std::move(position);
 		}
-		return std::move(position);
+		return glm::vec3();
 	}
 
 	Orientation PhysicsSystem::GetOrientation(eid entity_id) {
-		auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getRotation();
-		Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
+		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
+			auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getRotation();
+			Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
 
-		// TODO: remove this once rotation_offset is in renderable
-		if (Entity(entity_id).Has<Orientation>()) {
-			orientation.rotation_offset = Entity(entity_id).Get<Orientation>().lock()->rotation_offset;
+			// TODO: remove this once rotation_offset is in renderable
+			if (Entity(entity_id).Has<Orientation>()) {
+				orientation.rotation_offset = Entity(entity_id).Get<Orientation>()->rotation_offset;
+			}
+			return std::move(orientation);
 		}
-		return std::move(orientation);
+		return glm::quat();
 	}
 }

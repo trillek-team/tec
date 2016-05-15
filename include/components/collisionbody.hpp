@@ -4,16 +4,22 @@
 #include <btBulletDynamicsCommon.h>
 
 #include <memory>
-#include <vector>
-#include <string>
 
 #include "types.hpp"
 
 namespace tec {
-	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, NONE };
-
 	struct CollisionBody {
 		struct MotionState : public btMotionState {
+			MotionState() { }
+			MotionState(MotionState&& other) : transform(std::move(other.transform)),
+				transform_updated(other.transform_updated) {
+			}
+			
+			MotionState& operator=(MotionState&& other) {
+				transform_updated = other.transform_updated;
+				transform = std::move(transform);
+				return *this;
+			}
 			btTransform transform;
 
 			bool transform_updated;
@@ -27,25 +33,21 @@ namespace tec {
 				this->transform = worldTrans;
 			}
 		};
-		CollisionBody(COLLISION_SHAPE collision_shape = NONE);
+		CollisionBody();
+		CollisionBody(CollisionBody&& other);
 		~CollisionBody();
+
+		CollisionBody& operator=(CollisionBody&& other);
 
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);
-
-		COLLISION_SHAPE collision_shape;
-		COLLISION_SHAPE new_collision_shape;
 
 		btScalar mass; // For static objects mass must be 0.
 		bool disable_deactivation = false; // Whether to disable automatic deactivation.
 		bool disable_rotation; // prevent rotation from physics simulation.
 
-		btVector3 half_extents; // For BOX shapes.
-		float radius; // For SPHERE and CAPSULE shapes.
-		float height; // For CAPSULE shapes.
-
 		std::shared_ptr<btCollisionShape> shape;
-		eid entity_id;
+		eid entity_id; // Stored to use when doing lookups during collision
 		MotionState motion_state;
 	};
 }

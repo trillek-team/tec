@@ -12,6 +12,7 @@
 #include <glm/gtx/compatibility.hpp>
 
 namespace tec {
+	double UPDATE_RATE = 10.0;
 	std::set<eid> Simulation::Simulate(const double delta_time) {
 		ProcessCommandQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
@@ -33,14 +34,17 @@ namespace tec {
 		this->current_command_list.mouse_move_events.clear();
 		this->current_command_list.keyboard_events.clear();
 		this->current_command_list.mouse_click_events.clear();
+		
+		
 		std::future<std::set<eid>> phys_future = std::async(std::launch::async, [=] () -> std::set < eid > {
 			return std::move(phys_sys.Update(delta_time, this->client_state));
 		});
+		std::set<eid> phys_results = phys_future.get();
+		
 
-		std::set<eid> current_results = phys_future.get();
 
-		if (current_results.size() > 0) {
-			for (eid entity_id : current_results) {
+		if (phys_results.size() > 0) {
+			for (eid entity_id : phys_results) {
 				client_state.positions[entity_id] = this->phys_sys.GetPosition(entity_id);
 				client_state.orientations[entity_id] = this->phys_sys.GetOrientation(entity_id);
 				if (this->client_state.velocties.find(entity_id) != this->client_state.velocties.end()) {
@@ -50,12 +54,13 @@ namespace tec {
 		}
 		//vcomp_future.get();
 
-		return std::move(current_results);
+		return std::move(phys_results);
 	}
 
 
 	void Simulation::Interpolate(const double delta_time) {
-		static const double INTERPOLATION_RATE = 1.0 / 100.0; // TODO: Make this configurable via a run-time property.
+		std::lock_guard<std::mutex> lock(this->server_state_mutex);
+		static const double INTERPOLATION_RATE = 1.0 / UPDATE_RATE;
 
 		if (this->server_states.size() > 5) {
 			std::cout << "getting flooded by state updates" << std::endl;
@@ -75,7 +80,6 @@ namespace tec {
 				}
 				interpolation_accumulator -= INTERPOLATION_RATE;
 				this->base_state.state_id = to_state.state_id;
-				std::lock_guard<std::mutex> lock(this->server_state_mutex);
 				this->server_states.pop();
 			}
 			const GameState& to_state = this->server_states.front();
