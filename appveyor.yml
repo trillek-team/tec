@@ -38,14 +38,11 @@ install:
 
 - appveyor DownloadFile "https://www.dropbox.com/s/m7vzruxrq8f79zo/tec_win32_libs.zip?dl=1&pv=1" -FileName tec_win32_libs.zip
 - 7z x -y tec_win32_libs.zip -o"c:\projects\tec"
-- setx LUA_DIR=c:\projects\tec\lib\
+- setx LUA_DIR c:\projects\tec\lib\
 
 - mkdir build
 - cd build
 - cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True ..
-
-- rem We need to build depencies on Debug and Release
-- rem Except protobuf that don't like to be build on Release (weird)
 
 - msbuild "c:\projects\tec\build\TEC.sln" /p:Configuration=Debug /t:Clean;Build /verbosity:quiet /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
