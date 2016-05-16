@@ -371,7 +371,7 @@ namespace tec {
 				objgroup->indices.push_back(int_mesh.tris[j].verts[1]);
 				objgroup->indices.push_back(int_mesh.tris[j].verts[2]);
 			}
-			MaterialGroup mat_group = {0, objgroup->indices.size(), material_name};
+			MaterialGroup mat_group = {0, static_cast<unsigned int>(objgroup->indices.size()), material_name};
 			mat_group.textures.push_back(int_mesh.shader);
 			objgroup->material_groups.push_back(std::move(mat_group));
 		}
