@@ -42,7 +42,7 @@ Building takes a few steps to get everything set up for the first build.
      9. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
 5. Run it from `tec/`
 
-### Dependecies download (Windows)
+### Dependencies download (Windows)
 
 - Glew : Use nuget -> nuget install rxd_glew 
 - Lua 5.2 : http://sourceforge.net/projects/luabinaries/files/5.2.3/Windows%20Libraries/Static/
