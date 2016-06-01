@@ -141,22 +141,69 @@ namespace tec {
 			_log->error("[OBJ] Error opening file {}", path.toString());
 			return false;
 		}
+		std::ostringstream oss;
+		oss << f.rdbuf();
+		std::string buffer = oss.str();
 
-		std::shared_ptr<OBJGroup> currentVGroup;
+		std::shared_ptr<OBJGroup> currentVGroup = std::make_shared<OBJGroup>();
+		currentVGroup->name = "default";
 		OBJGroup::FaceGroup* current_face_group = nullptr;
 
+		// Pre-pass to get counts to avoid constant reallocation
+		unsigned int object_count = 0;
+		std::vector<unsigned int> object_face_count;
+		unsigned int vertex_count = 0, normal_count = 0, uv_count = 0;
 		std::string line;
-		while (std::getline(f, line)) {
-			std::stringstream ss(line);
-			std::string identifier;
+		std::size_t start = 0U;
+		std::size_t end = buffer.find('\n');
+		std::string identifier;
+		while (end != std::string::npos) {
+			line = buffer.substr(start, end - start);
+			start = end + 1;
+			end = buffer.find('\n', start);
 
-			ss >> identifier;
+			identifier = line.substr(0, line.find(' '));
 			if (identifier == "mtllib") {
-				std::string fname;
-				ss >> fname;
+				std::string fname = line.substr(line.find(' ') + 1);
 				ParseMTL(base_path / fname); // Path to MTL file
 			}
 			else if (identifier == "v") {
+				vertex_count++;
+			}
+			else if (identifier == "vt") {
+				uv_count++;
+			}
+			else if (identifier == "vn") {
+				normal_count++;
+			}
+			else if (identifier == "o") {
+				object_count++;
+			}
+			else if (identifier == "f") {
+				if (object_face_count.size() < object_count) {
+					object_face_count.push_back(0);
+				}
+				object_face_count[object_count - 1] += 3;
+			}
+		}
+		this->positions.reserve(vertex_count);
+		this->normals.reserve(normal_count);
+		this->uvs.reserve(uv_count);
+
+		start = 0U;
+		end = buffer.find('\n');
+		identifier = "";
+		std::stringstream face_ss;
+		std::stringstream ss;
+		while (end != std::string::npos) {
+			line = buffer.substr(start, end - start);
+			start = end + 1;
+			end = buffer.find('\n', start);
+			ss.clear();
+			ss.str(line);
+
+			ss >> identifier;
+			if (identifier == "v") {
 				glm::vec3 vert;
 				ss >> vert.x; ss >> vert.y; ss >> vert.z;
 				this->positions.push_back(vert);
@@ -172,37 +219,37 @@ namespace tec {
 				ss >> norm.x; ss >> norm.y; ss >> norm.z;
 				this->normals.push_back(norm);
 			}
-			else if ((identifier == "g") || (identifier == "o")) {
+			else if (identifier == "o") {
 				std::string name;
 				ss >> name;
 				if (currentVGroup) {
-					currentVGroup->face_groups.push_back(current_face_group);
-					std::string last_mtlname = "";
-					if (current_face_group) {
-						last_mtlname = current_face_group->mtl;
+					if (currentVGroup->face_groups.size() > 0) { // Empty groups are worth saving
+						this->vertexGroups.push_back(currentVGroup);
 					}
-					current_face_group = new OBJGroup::FaceGroup();
-					current_face_group->mtl = last_mtlname;
-					this->vertexGroups.push_back(currentVGroup);
 				}
 				currentVGroup = std::make_shared<OBJGroup>();
 				currentVGroup->name = name;
 			}
 			else if (identifier == "usemtl") {
+				current_face_group = nullptr;
 				std::string mtlname;
 				ss >> mtlname;
-				if (current_face_group) { // We have a new material so start a new FaceGroup.
-					currentVGroup->face_groups.push_back(current_face_group);
-					current_face_group = nullptr;
+				for (OBJGroup::FaceGroup* face_group : currentVGroup->face_groups) {
+					if (face_group->mtl == mtlname) {
+						current_face_group = face_group;
+					}
 				}
-				current_face_group = new OBJGroup::FaceGroup();
-				current_face_group->mtl = mtlname;
+				if (!current_face_group) {
+					current_face_group = new OBJGroup::FaceGroup();
+					current_face_group->faces.reserve(object_face_count[this->vertexGroups.size()] * 2);
+					current_face_group->mtl = mtlname;
+					currentVGroup->face_groups.push_back(current_face_group);
+				}
 			}
 			else if (identifier == "f") {
 				Face face, face2;
 				bool quad = false;
-				std::string faceLine;
-				std::getline(ss, faceLine);
+				std::string faceLine = line.substr(line.find(' ') + 1);
 				// Check if we have 3 vertex indices per face vertex.
 				if (faceLine.find("/") != std::string::npos) {
 					// Check if the UV is omitted and replace it with 0 if it is.
@@ -211,7 +258,8 @@ namespace tec {
 					}
 					// Replace the / separators with spaces for stringstream output.
 					std::replace(faceLine.begin(), faceLine.end(), '/', ' ');
-					std::stringstream face_ss(faceLine);
+					face_ss.clear();
+					face_ss.str(faceLine);
 					face_ss >> face.pos[0]; face_ss >> face.uv[0]; face_ss >> face.norm[0];
 					face_ss >> face.pos[1]; face_ss >> face.uv[1]; face_ss >> face.norm[1];
 					face_ss >> face.pos[2]; face_ss >> face.uv[2]; face_ss >> face.norm[2];
@@ -223,8 +271,9 @@ namespace tec {
 					}
 				}
 				else {
-					std::stringstream face_ss(faceLine);
-					// There is only 1 vertex index per face vertex.
+					face_ss.clear();
+					face_ss.str(faceLine);
+					//There is only 1 vertex index per face vertex.
 					face_ss >> face.pos[0]; face_ss >> face.pos[1]; face_ss >> face.pos[2];
 					if (!face_ss.eof()) {
 						quad = true;
@@ -232,17 +281,24 @@ namespace tec {
 					}
 				}
 				if (current_face_group) {
-					current_face_group->faces.push_back(face);
+					current_face_group->faces.emplace_back(face);
 					if (quad) {
-						current_face_group->faces.push_back(face2);
+						current_face_group->faces.emplace_back(face2);
 					}
 				}
 			}
 		}
 
 		if (currentVGroup) {
-			currentVGroup->face_groups.push_back(current_face_group);
 			this->vertexGroups.push_back(currentVGroup);
+		}
+
+		// Double the required space was reserved incase the mesh wasn't triangulated.
+		// Reduce its capacity to fit its size.
+		for (std::shared_ptr<OBJGroup> obj_group : this->vertexGroups) {
+			for (OBJGroup::FaceGroup* face_group : obj_group->face_groups) {
+				face_group->faces.shrink_to_fit();
+			}
 		}
 
 		return true;
