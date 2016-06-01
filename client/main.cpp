@@ -215,36 +215,9 @@ int main(int argc, char* argv[]) {
 	gui.ShowWindow("active_entity");
 	gui.AddWindowDrawFunction("main_menu", [&os, &connection, &gui] () {
 		if (ImGui::BeginMainMenuBar()) {
-			if (ImGui::BeginMenu("File")) {
-				if (ImGui::MenuItem("Load PROTO", "CTRL+L")) { }
-				if (ImGui::MenuItem("Reload PROTO", "CTRL+R")) {
-					//tec::ProtoLoad();
-				}
-				if (ImGui::MenuItem("Save PROTO", "CTRL+S")) {
-					tec::ProtoSave();
-				}
-				ImGui::Separator();
-				if (ImGui::MenuItem("Quit", "Alt+F4")) {
-					tec::ProtoSave();
-					os.Quit();
-				}
-				if (ImGui::MenuItem("Quit w/o Saving", "Alt+F4")) {
-					os.Quit();
-				}
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Edit")) {
-				if (ImGui::MenuItem("Undo", "CTRL+Z")) { }
-				if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) { }  // Disabled item
-				ImGui::Separator();
-				if (ImGui::MenuItem("Cut", "CTRL+X")) { }
-				if (ImGui::MenuItem("Copy", "CTRL+C")) { }
-				if (ImGui::MenuItem("Paste", "CTRL+V")) { }
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Windows")) {
+			if (ImGui::BeginMenu("Connect")) {
 				bool visible = gui.IsWindowVisible("connect_window");
-				if (ImGui::MenuItem("Connect", "", visible)) {
+				if (ImGui::MenuItem("Connect to server...", "", visible)) {
 					if (visible) {
 						gui.HideWindow("connect_window");
 					}
