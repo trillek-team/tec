@@ -1,7 +1,7 @@
 # Trillek Engine C
 | GNU/Linux (Gcc and CLang)                        | Windows (VStudio 2015)  |
 |--------------------------------------------------|-------------------------|
-|[![Build Status](https://travis-ci.org/trillek-team/tec.svg)](https://travis-ci.org/trillek-team/tec) | [![Build status](https://ci.appveyor.com/api/projects/status/n89l3qj4oo2v20th?svg=true)](https://ci.appveyor.com/project/Zardoz89/tec-ojmoq) |
+|[![Build Status](https://travis-ci.org/trillek-team/tec.svg)](https://travis-ci.org/trillek-team/tec) | [![Build status](https://ci.appveyor.com/api/projects/status/809xi9ukwo7sgsip?svg=true)](https://ci.appveyor.com/project/adam4813/tec-hem9u) |
 
 
 ## Building
@@ -19,7 +19,7 @@ Building takes a few steps to get everything set up for the first build.
 2. `mkdir build/` in to root directory
 3. `cd build/`
 4. Follow platform specific instructions 
-  1. Linux (G++ 3.9 or CLang 3.7)
+  1. Linux (G++ 5 or CLang 3.8)
      - If you have Bullet, GLEW and OpenAL dev libs installed : 
        1. `cmake ..` in the build directory
        2. `make TEC` in the build directory
@@ -42,7 +42,7 @@ Building takes a few steps to get everything set up for the first build.
      9. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
 5. Run it from `tec/`
 
-### Dependecies download (Windows)
+### Dependencies download (Windows)
 
 - Glew : Use nuget -> nuget install rxd_glew 
 - Lua 5.2 : http://sourceforge.net/projects/luabinaries/files/5.2.3/Windows%20Libraries/Static/

@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
 	tec::FPSController* camera_controller = nullptr;
 	gui.AddWindowDrawFunction("connect_window", [&] () {
 		ImGui::SetNextWindowPosCenter();
-		ImGui::Begin("Connect to Server", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
 		static int octets[4] = {127, 0, 0, 1};
 
@@ -261,7 +261,7 @@ int main(int argc, char* argv[]) {
 	gui.ShowWindow("main_menu");
 	gui.AddWindowDrawFunction("ping_times", [&connection] () {
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-		ImGui::Begin("ping_times", false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
+		ImGui::Begin("ping_times", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
 		static float arr[10];
 		std::list<tec::networking::ping_time_t> recent_pings = connection.GetRecentPings();
 		std::size_t i = 0;

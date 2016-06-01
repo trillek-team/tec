@@ -197,7 +197,7 @@ namespace tec {
 				}
 			}
 			if (objgroup->material_groups.size() == 0) {
-				MaterialGroup mat_group = {0, objgroup->indices.size(), "voxel"};
+				MaterialGroup mat_group = {0, static_cast<unsigned int>(objgroup->indices.size()), "voxel"};
 				mat_group.textures.push_back("metal_wall");
 				objgroup->material_groups.push_back(std::move(mat_group));
 			}

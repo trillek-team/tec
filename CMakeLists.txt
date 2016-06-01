@@ -272,7 +272,7 @@ ENDIF (APPLE)
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
 SET(CMAKE_CXX_STANDARD 14)
-SET(CMAKE_CXX_STANDARD_REQUIRED 14)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 IF (NOT ${BUILD_DEPS_FIRST})
   MESSAGE("All dependencies found now building tec.")
   # Add the virtual computer
