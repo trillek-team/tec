@@ -163,35 +163,6 @@ namespace tec {
 		};
 		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 
-		auto voxvol = VoxelVolume::Create(100, "bob");
-		auto voxvol_shared = voxvol.lock();
-		FilePath metal_wall_filename = FilePath::GetAssetPath("metal_wall.png");
-		auto pixbuf = PixelBuffer::Create("metal_wall", metal_wall_filename);
-		auto tex = std::make_shared<TextureObject>(pixbuf);
-		TextureMap::Set("metal_wall", tex);
-
-		VoxelCommand add_voxel(
-			[ ] (VoxelVolume* vox_vol) {
-			for (int i = -5; i <= 5; ++i) {
-				for (int j = -25; j <= 25; ++j) {
-					vox_vol->AddVoxel(-1, i, j);
-				}
-			}
-		});
-		VoxelVolume::QueueCommand(std::move(add_voxel));
-		voxvol_shared->Update(0.0);
-
-		VoxelCommand rem_voxel(
-			[ ] (VoxelVolume* vox_vol) {
-			vox_vol->RemoveVoxel(-1, 5, 5);
-		});
-		VoxelVolume::QueueCommand(std::move(rem_voxel));
-		voxvol_shared->Update(0.0);
-		{
-			Entity voxel1(100);
-			voxel1.Add(voxvol_shared);
-		}
-
 		{
 			Entity bob(99);
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create(FilePath::GetAssetPath("bob/bob.md5mesh"));
@@ -224,14 +195,13 @@ namespace tec {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 			data->entity.ParseFromIstream(&input);
-			eid entity_id = data->entity.id();
-			data->entity_id = entity_id;
+			data->entity_id = data->entity.id();;
 			EventSystem<EntityCreated>::Get()->Emit(data);
 			for (int i = 0; i < data->entity.components_size(); ++i) {
 				const proto::Component& comp = data->entity.components(i);
 				if (in_functors.find(comp.component_case()) != in_functors.end()) {
 					in_functors[comp.component_case()](data->entity, comp);
-					entity_out_functors[entity_id].insert(&out_functors.at(comp.component_case()));
+					entity_out_functors[data->entity_id].insert(&out_functors.at(comp.component_case()));
 				}
 			}
 		}

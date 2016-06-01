@@ -29,7 +29,7 @@ namespace tec {
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, 0.0, 0));
+		this->dynamicsWorld->setGravity(btVector3(0, -3.5, 0));
 
 		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
 
@@ -114,7 +114,7 @@ namespace tec {
 			if (state.velocties.find(entity_id) != state.velocties.end()) {
 				const Velocity& vel = state.velocties.at(entity_id);
 				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x)) {
-					body->setLinearVelocity(vel.GetLinear() + body->getGravity());
+					body->setLinearVelocity(vel.GetLinear() + btVector3(0.0, 1.0, 0.0) + body->getGravity());
 				}
 				if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x)) {
 					body->setAngularVelocity(vel.GetAngular());
