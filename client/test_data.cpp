@@ -14,6 +14,7 @@
 #include "graphics/shader.hpp"
 #include "graphics/material.hpp"
 #include "graphics/texture-object.hpp"
+#include "graphics/vertex-buffer-object.hpp"
 #include "graphics/animation.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/view.hpp"
@@ -34,6 +35,7 @@
 #include <map>
 #include <set>
 #include <memory>
+#include <BulletCollision/Gimpact/btGImpactShape.h>
 
 #include "../proto/components.pb.h"
 
@@ -123,6 +125,8 @@ namespace tec {
 		AddFileFactory<ScriptFile>();
 	}
 
+	std::unique_ptr<btTriangleMesh> btmesh;
+
 	void BuildTestEntities() {
 		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> > {
 			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")),
@@ -170,6 +174,53 @@ namespace tec {
 			Multiton<eid, Animation*>::Set(99, new Animation(anim1));
 			std::shared_ptr<ScriptFile> script1 = ScriptFile::Create("Script1", FilePath::GetAssetPath("scripts/test.lua"));
 			bob.Add<LuaScript>(script1);
+		}
+
+		{
+			Entity hub(105);
+			std::shared_ptr<OBJ> hub_mesh = OBJ::Create(FilePath::GetAssetPath("hub/hub.obj"));
+			Renderable* renderable = new Renderable();
+			renderable->mesh = hub_mesh;
+			renderable->shader = deferred_shader;
+			hub.Add<Renderable>(renderable);
+			Position* position = new Position(glm::vec3(0.0, -1.0, 0.0));
+			hub.Add<Position>(position);
+
+			CollisionBody* body = new CollisionBody();
+			btmesh = std::unique_ptr<btTriangleMesh>(new btTriangleMesh());
+			for (size_t mesh_i = 0; mesh_i < hub_mesh->GetMeshCount(); ++mesh_i) {
+				Mesh* mesh = hub_mesh->GetMesh(mesh_i);
+				for (ObjectGroup* objgroup : mesh->object_groups) {
+					btmesh->preallocateVertices(mesh->verts.size());
+					btmesh->preallocateIndices(objgroup->indices.size());
+					for (size_t face_i = 0; face_i < objgroup->indices.size(); ++face_i) {
+						const VertexData& v1 = mesh->verts[objgroup->indices[face_i]];
+						const VertexData& v2 = mesh->verts[objgroup->indices[++face_i]];
+						const VertexData& v3 = mesh->verts[objgroup->indices[++face_i]];
+						btmesh->addTriangle(
+							btVector3(v1.position.x, v1.position.y, v1.position.z),
+							btVector3(v2.position.x, v2.position.y, v2.position.z),
+							btVector3(v3.position.x, v3.position.y, v3.position.z), false);
+					}
+				}
+			}
+			body->mass = 0.0f;
+			auto shape = std::make_shared<btGImpactMeshShape>(btmesh.get());
+			shape->updateBound();
+			body->shape = shape;
+			body->shape->setLocalScaling(btVector3(1.0f, 1.0f, 1.0f));
+			body->entity_id = 105;
+			Multiton<eid, CollisionBody*>::Set(105, body);
+
+
+			proto::Entity e;
+			e.set_id(105);
+			hub.Out<Position>(e);
+
+			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+			data->entity = e;
+			data->entity_id = 105;
+			EventSystem<EntityCreated>::Get()->Emit(data);
 		}
 
 		{
