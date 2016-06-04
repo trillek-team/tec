@@ -39,7 +39,9 @@ void protobuf_ShutdownFile_components_2eproto();
 
 class Renderable;
 class Position;
+class Position_CenterOffset;
 class Orientation;
+class Orientation_RotationOffset;
 class View;
 class Animation;
 class Scale;
@@ -48,9 +50,20 @@ class CollisionBody_Box;
 class CollisionBody_Sphere;
 class CollisionBody_Capsule;
 class Velocity;
+class AudioSource;
+class Light;
+class Light_Attenuation;
+class Light_Direction;
+class LuaScript;
+class VoxelVolumen;
+class ComputerScreen;
+class Computer;
+class Computer_Device;
+class Computer_CPU;
+class Computer_CPU_TR3200;
 class Component;
 class Entity;
-class EntityList;
+class EntityFileList;
 
 // ===================================================================
 
@@ -173,6 +186,115 @@ class Renderable : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class Position_CenterOffset : public ::google::protobuf::Message {
+ public:
+  Position_CenterOffset();
+  virtual ~Position_CenterOffset();
+
+  Position_CenterOffset(const Position_CenterOffset& from);
+
+  inline Position_CenterOffset& operator=(const Position_CenterOffset& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Position_CenterOffset& default_instance();
+
+  void Swap(Position_CenterOffset* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Position_CenterOffset* New() const { return New(NULL); }
+
+  Position_CenterOffset* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Position_CenterOffset& from);
+  void MergeFrom(const Position_CenterOffset& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Position_CenterOffset* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float x = 1;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  float x() const;
+  void set_x(float value);
+
+  // optional float y = 2;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  float y() const;
+  void set_y(float value);
+
+  // optional float z = 3;
+  bool has_z() const;
+  void clear_z();
+  static const int kZFieldNumber = 3;
+  float z() const;
+  void set_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Position.CenterOffset)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_;
+  float y_;
+  float z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Position_CenterOffset* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Position : public ::google::protobuf::Message {
  public:
   Position();
@@ -235,6 +357,8 @@ class Position : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef Position_CenterOffset CenterOffset;
+
   // accessors -------------------------------------------------------
 
   // optional float x = 1;
@@ -258,6 +382,15 @@ class Position : public ::google::protobuf::Message {
   float z() const;
   void set_z(float value);
 
+  // optional .tec.proto.Position.CenterOffset offset = 4;
+  bool has_offset() const;
+  void clear_offset();
+  static const int kOffsetFieldNumber = 4;
+  const ::tec::proto::Position_CenterOffset& offset() const;
+  ::tec::proto::Position_CenterOffset* mutable_offset();
+  ::tec::proto::Position_CenterOffset* release_offset();
+  void set_allocated_offset(::tec::proto::Position_CenterOffset* offset);
+
   // @@protoc_insertion_point(class_scope:tec.proto.Position)
  private:
   inline void set_has_x();
@@ -266,6 +399,121 @@ class Position : public ::google::protobuf::Message {
   inline void clear_has_y();
   inline void set_has_z();
   inline void clear_has_z();
+  inline void set_has_offset();
+  inline void clear_has_offset();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_;
+  float y_;
+  ::tec::proto::Position_CenterOffset* offset_;
+  float z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Position* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Orientation_RotationOffset : public ::google::protobuf::Message {
+ public:
+  Orientation_RotationOffset();
+  virtual ~Orientation_RotationOffset();
+
+  Orientation_RotationOffset(const Orientation_RotationOffset& from);
+
+  inline Orientation_RotationOffset& operator=(const Orientation_RotationOffset& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Orientation_RotationOffset& default_instance();
+
+  void Swap(Orientation_RotationOffset* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Orientation_RotationOffset* New() const { return New(NULL); }
+
+  Orientation_RotationOffset* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Orientation_RotationOffset& from);
+  void MergeFrom(const Orientation_RotationOffset& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Orientation_RotationOffset* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required float x = 1;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  float x() const;
+  void set_x(float value);
+
+  // required float y = 2;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  float y() const;
+  void set_y(float value);
+
+  // required float z = 3;
+  bool has_z() const;
+  void clear_z();
+  static const int kZFieldNumber = 3;
+  float z() const;
+  void set_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Orientation.RotationOffset)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
@@ -278,7 +526,7 @@ class Position : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_components_2eproto();
 
   void InitAsDefaultInstance();
-  static Position* default_instance_;
+  static Orientation_RotationOffset* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -344,6 +592,8 @@ class Orientation : public ::google::protobuf::Message {
 
   // nested types ----------------------------------------------------
 
+  typedef Orientation_RotationOffset RotationOffset;
+
   // accessors -------------------------------------------------------
 
   // required float x = 1;
@@ -374,6 +624,15 @@ class Orientation : public ::google::protobuf::Message {
   float w() const;
   void set_w(float value);
 
+  // optional .tec.proto.Orientation.RotationOffset offset = 5;
+  bool has_offset() const;
+  void clear_offset();
+  static const int kOffsetFieldNumber = 5;
+  const ::tec::proto::Orientation_RotationOffset& offset() const;
+  ::tec::proto::Orientation_RotationOffset* mutable_offset();
+  ::tec::proto::Orientation_RotationOffset* release_offset();
+  void set_allocated_offset(::tec::proto::Orientation_RotationOffset* offset);
+
   // @@protoc_insertion_point(class_scope:tec.proto.Orientation)
  private:
   inline void set_has_x();
@@ -384,6 +643,8 @@ class Orientation : public ::google::protobuf::Message {
   inline void clear_has_z();
   inline void set_has_w();
   inline void clear_has_w();
+  inline void set_has_offset();
+  inline void clear_has_offset();
 
   // helper for ByteSize()
   int RequiredFieldsByteSizeFallback() const;
@@ -395,6 +656,7 @@ class Orientation : public ::google::protobuf::Message {
   float y_;
   float z_;
   float w_;
+  ::tec::proto::Orientation_RotationOffset* offset_;
   friend void  protobuf_AddDesc_components_2eproto();
   friend void protobuf_AssignDesc_components_2eproto();
   friend void protobuf_ShutdownFile_components_2eproto();
@@ -1301,6 +1563,1406 @@ class Velocity : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class AudioSource : public ::google::protobuf::Message {
+ public:
+  AudioSource();
+  virtual ~AudioSource();
+
+  AudioSource(const AudioSource& from);
+
+  inline AudioSource& operator=(const AudioSource& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AudioSource& default_instance();
+
+  void Swap(AudioSource* other);
+
+  // implements Message ----------------------------------------------
+
+  inline AudioSource* New() const { return New(NULL); }
+
+  AudioSource* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AudioSource& from);
+  void MergeFrom(const AudioSource& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(AudioSource* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bool looping = 1;
+  bool has_looping() const;
+  void clear_looping();
+  static const int kLoopingFieldNumber = 1;
+  bool looping() const;
+  void set_looping(bool value);
+
+  // optional string audio_name = 2;
+  bool has_audio_name() const;
+  void clear_audio_name();
+  static const int kAudioNameFieldNumber = 2;
+  const ::std::string& audio_name() const;
+  void set_audio_name(const ::std::string& value);
+  void set_audio_name(const char* value);
+  void set_audio_name(const char* value, size_t size);
+  ::std::string* mutable_audio_name();
+  ::std::string* release_audio_name();
+  void set_allocated_audio_name(::std::string* audio_name);
+
+  // optional bool playing = 3;
+  bool has_playing() const;
+  void clear_playing();
+  static const int kPlayingFieldNumber = 3;
+  bool playing() const;
+  void set_playing(bool value);
+
+  // optional uint32 volume = 4;
+  bool has_volume() const;
+  void clear_volume();
+  static const int kVolumeFieldNumber = 4;
+  ::google::protobuf::uint32 volume() const;
+  void set_volume(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.AudioSource)
+ private:
+  inline void set_has_looping();
+  inline void clear_has_looping();
+  inline void set_has_audio_name();
+  inline void clear_has_audio_name();
+  inline void set_has_playing();
+  inline void clear_has_playing();
+  inline void set_has_volume();
+  inline void clear_has_volume();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr audio_name_;
+  bool looping_;
+  bool playing_;
+  ::google::protobuf::uint32 volume_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static AudioSource* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Light_Attenuation : public ::google::protobuf::Message {
+ public:
+  Light_Attenuation();
+  virtual ~Light_Attenuation();
+
+  Light_Attenuation(const Light_Attenuation& from);
+
+  inline Light_Attenuation& operator=(const Light_Attenuation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Light_Attenuation& default_instance();
+
+  void Swap(Light_Attenuation* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Light_Attenuation* New() const { return New(NULL); }
+
+  Light_Attenuation* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Light_Attenuation& from);
+  void MergeFrom(const Light_Attenuation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Light_Attenuation* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float constant = 1;
+  bool has_constant() const;
+  void clear_constant();
+  static const int kConstantFieldNumber = 1;
+  float constant() const;
+  void set_constant(float value);
+
+  // optional float linear = 2;
+  bool has_linear() const;
+  void clear_linear();
+  static const int kLinearFieldNumber = 2;
+  float linear() const;
+  void set_linear(float value);
+
+  // optional float exponential = 3;
+  bool has_exponential() const;
+  void clear_exponential();
+  static const int kExponentialFieldNumber = 3;
+  float exponential() const;
+  void set_exponential(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Light.Attenuation)
+ private:
+  inline void set_has_constant();
+  inline void clear_has_constant();
+  inline void set_has_linear();
+  inline void clear_has_linear();
+  inline void set_has_exponential();
+  inline void clear_has_exponential();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float constant_;
+  float linear_;
+  float exponential_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Light_Attenuation* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Light_Direction : public ::google::protobuf::Message {
+ public:
+  Light_Direction();
+  virtual ~Light_Direction();
+
+  Light_Direction(const Light_Direction& from);
+
+  inline Light_Direction& operator=(const Light_Direction& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Light_Direction& default_instance();
+
+  void Swap(Light_Direction* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Light_Direction* New() const { return New(NULL); }
+
+  Light_Direction* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Light_Direction& from);
+  void MergeFrom(const Light_Direction& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Light_Direction* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float x = 1;
+  bool has_x() const;
+  void clear_x();
+  static const int kXFieldNumber = 1;
+  float x() const;
+  void set_x(float value);
+
+  // optional float y = 2;
+  bool has_y() const;
+  void clear_y();
+  static const int kYFieldNumber = 2;
+  float y() const;
+  void set_y(float value);
+
+  // optional float z = 3;
+  bool has_z() const;
+  void clear_z();
+  static const int kZFieldNumber = 3;
+  float z() const;
+  void set_z(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Light.Direction)
+ private:
+  inline void set_has_x();
+  inline void clear_has_x();
+  inline void set_has_y();
+  inline void clear_has_y();
+  inline void set_has_z();
+  inline void clear_has_z();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float x_;
+  float y_;
+  float z_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Light_Direction* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Light : public ::google::protobuf::Message {
+ public:
+  Light();
+  virtual ~Light();
+
+  Light(const Light& from);
+
+  inline Light& operator=(const Light& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Light& default_instance();
+
+  void Swap(Light* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Light* New() const { return New(NULL); }
+
+  Light* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Light& from);
+  void MergeFrom(const Light& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Light* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Light_Attenuation Attenuation;
+  typedef Light_Direction Direction;
+
+  // accessors -------------------------------------------------------
+
+  // optional float color_x = 1;
+  bool has_color_x() const;
+  void clear_color_x();
+  static const int kColorXFieldNumber = 1;
+  float color_x() const;
+  void set_color_x(float value);
+
+  // optional float color_y = 2;
+  bool has_color_y() const;
+  void clear_color_y();
+  static const int kColorYFieldNumber = 2;
+  float color_y() const;
+  void set_color_y(float value);
+
+  // optional float color_z = 3;
+  bool has_color_z() const;
+  void clear_color_z();
+  static const int kColorZFieldNumber = 3;
+  float color_z() const;
+  void set_color_z(float value);
+
+  // optional float ambient_intensity = 4;
+  bool has_ambient_intensity() const;
+  void clear_ambient_intensity();
+  static const int kAmbientIntensityFieldNumber = 4;
+  float ambient_intensity() const;
+  void set_ambient_intensity(float value);
+
+  // optional float diffuse_intensity = 5;
+  bool has_diffuse_intensity() const;
+  void clear_diffuse_intensity();
+  static const int kDiffuseIntensityFieldNumber = 5;
+  float diffuse_intensity() const;
+  void set_diffuse_intensity(float value);
+
+  // optional .tec.proto.Light.Attenuation attenuation = 6;
+  bool has_attenuation() const;
+  void clear_attenuation();
+  static const int kAttenuationFieldNumber = 6;
+  const ::tec::proto::Light_Attenuation& attenuation() const;
+  ::tec::proto::Light_Attenuation* mutable_attenuation();
+  ::tec::proto::Light_Attenuation* release_attenuation();
+  void set_allocated_attenuation(::tec::proto::Light_Attenuation* attenuation);
+
+  // optional float cutoff = 7;
+  bool has_cutoff() const;
+  void clear_cutoff();
+  static const int kCutoffFieldNumber = 7;
+  float cutoff() const;
+  void set_cutoff(float value);
+
+  // optional .tec.proto.Light.Direction direction = 8;
+  bool has_direction() const;
+  void clear_direction();
+  static const int kDirectionFieldNumber = 8;
+  const ::tec::proto::Light_Direction& direction() const;
+  ::tec::proto::Light_Direction* mutable_direction();
+  ::tec::proto::Light_Direction* release_direction();
+  void set_allocated_direction(::tec::proto::Light_Direction* direction);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Light)
+ private:
+  inline void set_has_color_x();
+  inline void clear_has_color_x();
+  inline void set_has_color_y();
+  inline void clear_has_color_y();
+  inline void set_has_color_z();
+  inline void clear_has_color_z();
+  inline void set_has_ambient_intensity();
+  inline void clear_has_ambient_intensity();
+  inline void set_has_diffuse_intensity();
+  inline void clear_has_diffuse_intensity();
+  inline void set_has_attenuation();
+  inline void clear_has_attenuation();
+  inline void set_has_cutoff();
+  inline void clear_has_cutoff();
+  inline void set_has_direction();
+  inline void clear_has_direction();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float color_x_;
+  float color_y_;
+  float color_z_;
+  float ambient_intensity_;
+  ::tec::proto::Light_Attenuation* attenuation_;
+  float diffuse_intensity_;
+  float cutoff_;
+  ::tec::proto::Light_Direction* direction_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Light* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class LuaScript : public ::google::protobuf::Message {
+ public:
+  LuaScript();
+  virtual ~LuaScript();
+
+  LuaScript(const LuaScript& from);
+
+  inline LuaScript& operator=(const LuaScript& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const LuaScript& default_instance();
+
+  void Swap(LuaScript* other);
+
+  // implements Message ----------------------------------------------
+
+  inline LuaScript* New() const { return New(NULL); }
+
+  LuaScript* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const LuaScript& from);
+  void MergeFrom(const LuaScript& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(LuaScript* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string script_name = 1;
+  bool has_script_name() const;
+  void clear_script_name();
+  static const int kScriptNameFieldNumber = 1;
+  const ::std::string& script_name() const;
+  void set_script_name(const ::std::string& value);
+  void set_script_name(const char* value);
+  void set_script_name(const char* value, size_t size);
+  ::std::string* mutable_script_name();
+  ::std::string* release_script_name();
+  void set_allocated_script_name(::std::string* script_name);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.LuaScript)
+ private:
+  inline void set_has_script_name();
+  inline void clear_has_script_name();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr script_name_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static LuaScript* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class VoxelVolumen : public ::google::protobuf::Message {
+ public:
+  VoxelVolumen();
+  virtual ~VoxelVolumen();
+
+  VoxelVolumen(const VoxelVolumen& from);
+
+  inline VoxelVolumen& operator=(const VoxelVolumen& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const VoxelVolumen& default_instance();
+
+  void Swap(VoxelVolumen* other);
+
+  // implements Message ----------------------------------------------
+
+  inline VoxelVolumen* New() const { return New(NULL); }
+
+  VoxelVolumen* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const VoxelVolumen& from);
+  void MergeFrom(const VoxelVolumen& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(VoxelVolumen* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float dummy = 1;
+  bool has_dummy() const;
+  void clear_dummy();
+  static const int kDummyFieldNumber = 1;
+  float dummy() const;
+  void set_dummy(float value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.VoxelVolumen)
+ private:
+  inline void set_has_dummy();
+  inline void clear_has_dummy();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  float dummy_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static VoxelVolumen* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class ComputerScreen : public ::google::protobuf::Message {
+ public:
+  ComputerScreen();
+  virtual ~ComputerScreen();
+
+  ComputerScreen(const ComputerScreen& from);
+
+  inline ComputerScreen& operator=(const ComputerScreen& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ComputerScreen& default_instance();
+
+  void Swap(ComputerScreen* other);
+
+  // implements Message ----------------------------------------------
+
+  inline ComputerScreen* New() const { return New(NULL); }
+
+  ComputerScreen* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const ComputerScreen& from);
+  void MergeFrom(const ComputerScreen& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(ComputerScreen* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required bytes text_buffer = 1;
+  bool has_text_buffer() const;
+  void clear_text_buffer();
+  static const int kTextBufferFieldNumber = 1;
+  const ::std::string& text_buffer() const;
+  void set_text_buffer(const ::std::string& value);
+  void set_text_buffer(const char* value);
+  void set_text_buffer(const void* value, size_t size);
+  ::std::string* mutable_text_buffer();
+  ::std::string* release_text_buffer();
+  void set_allocated_text_buffer(::std::string* text_buffer);
+
+  // required bytes font_buffer = 2;
+  bool has_font_buffer() const;
+  void clear_font_buffer();
+  static const int kFontBufferFieldNumber = 2;
+  const ::std::string& font_buffer() const;
+  void set_font_buffer(const ::std::string& value);
+  void set_font_buffer(const char* value);
+  void set_font_buffer(const void* value, size_t size);
+  ::std::string* mutable_font_buffer();
+  ::std::string* release_font_buffer();
+  void set_allocated_font_buffer(::std::string* font_buffer);
+
+  // required uint32 buffer_ptr = 3;
+  bool has_buffer_ptr() const;
+  void clear_buffer_ptr();
+  static const int kBufferPtrFieldNumber = 3;
+  ::google::protobuf::uint32 buffer_ptr() const;
+  void set_buffer_ptr(::google::protobuf::uint32 value);
+
+  // required uint32 font_ptr = 4;
+  bool has_font_ptr() const;
+  void clear_font_ptr();
+  static const int kFontPtrFieldNumber = 4;
+  ::google::protobuf::uint32 font_ptr() const;
+  void set_font_ptr(::google::protobuf::uint32 value);
+
+  // required uint32 vsync_msg = 5;
+  bool has_vsync_msg() const;
+  void clear_vsync_msg();
+  static const int kVsyncMsgFieldNumber = 5;
+  ::google::protobuf::uint32 vsync_msg() const;
+  void set_vsync_msg(::google::protobuf::uint32 value);
+
+  // required uint32 a = 6;
+  bool has_a() const;
+  void clear_a();
+  static const int kAFieldNumber = 6;
+  ::google::protobuf::uint32 a() const;
+  void set_a(::google::protobuf::uint32 value);
+
+  // required uint32 b = 7;
+  bool has_b() const;
+  void clear_b();
+  static const int kBFieldNumber = 7;
+  ::google::protobuf::uint32 b() const;
+  void set_b(::google::protobuf::uint32 value);
+
+  // required uint32 d = 8;
+  bool has_d() const;
+  void clear_d();
+  static const int kDFieldNumber = 8;
+  ::google::protobuf::uint32 d() const;
+  void set_d(::google::protobuf::uint32 value);
+
+  // required uint32 e = 9;
+  bool has_e() const;
+  void clear_e();
+  static const int kEFieldNumber = 9;
+  ::google::protobuf::uint32 e() const;
+  void set_e(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.ComputerScreen)
+ private:
+  inline void set_has_text_buffer();
+  inline void clear_has_text_buffer();
+  inline void set_has_font_buffer();
+  inline void clear_has_font_buffer();
+  inline void set_has_buffer_ptr();
+  inline void clear_has_buffer_ptr();
+  inline void set_has_font_ptr();
+  inline void clear_has_font_ptr();
+  inline void set_has_vsync_msg();
+  inline void clear_has_vsync_msg();
+  inline void set_has_a();
+  inline void clear_has_a();
+  inline void set_has_b();
+  inline void clear_has_b();
+  inline void set_has_d();
+  inline void clear_has_d();
+  inline void set_has_e();
+  inline void clear_has_e();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::internal::ArenaStringPtr text_buffer_;
+  ::google::protobuf::internal::ArenaStringPtr font_buffer_;
+  ::google::protobuf::uint32 buffer_ptr_;
+  ::google::protobuf::uint32 font_ptr_;
+  ::google::protobuf::uint32 vsync_msg_;
+  ::google::protobuf::uint32 a_;
+  ::google::protobuf::uint32 b_;
+  ::google::protobuf::uint32 d_;
+  ::google::protobuf::uint32 e_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static ComputerScreen* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer_Device : public ::google::protobuf::Message {
+ public:
+  Computer_Device();
+  virtual ~Computer_Device();
+
+  Computer_Device(const Computer_Device& from);
+
+  inline Computer_Device& operator=(const Computer_Device& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer_Device& default_instance();
+
+  enum DeviceCase {
+    kComputerScreen = 2,
+    DEVICE_NOT_SET = 0,
+  };
+
+  void Swap(Computer_Device* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer_Device* New() const { return New(NULL); }
+
+  Computer_Device* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer_Device& from);
+  void MergeFrom(const Computer_Device& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer_Device* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 slot = 1;
+  bool has_slot() const;
+  void clear_slot();
+  static const int kSlotFieldNumber = 1;
+  ::google::protobuf::uint32 slot() const;
+  void set_slot(::google::protobuf::uint32 value);
+
+  // optional .tec.proto.ComputerScreen computerScreen = 2;
+  bool has_computerscreen() const;
+  void clear_computerscreen();
+  static const int kComputerScreenFieldNumber = 2;
+  const ::tec::proto::ComputerScreen& computerscreen() const;
+  ::tec::proto::ComputerScreen* mutable_computerscreen();
+  ::tec::proto::ComputerScreen* release_computerscreen();
+  void set_allocated_computerscreen(::tec::proto::ComputerScreen* computerscreen);
+
+  DeviceCase device_case() const;
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer.Device)
+ private:
+  inline void set_has_slot();
+  inline void clear_has_slot();
+  inline void set_has_computerscreen();
+
+  inline bool has_device() const;
+  void clear_device();
+  inline void clear_has_device();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 slot_;
+  union DeviceUnion {
+    DeviceUnion() {}
+    ::tec::proto::ComputerScreen* computerscreen_;
+  } device_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer_Device* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer_CPU_TR3200 : public ::google::protobuf::Message {
+ public:
+  Computer_CPU_TR3200();
+  virtual ~Computer_CPU_TR3200();
+
+  Computer_CPU_TR3200(const Computer_CPU_TR3200& from);
+
+  inline Computer_CPU_TR3200& operator=(const Computer_CPU_TR3200& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer_CPU_TR3200& default_instance();
+
+  void Swap(Computer_CPU_TR3200* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer_CPU_TR3200* New() const { return New(NULL); }
+
+  Computer_CPU_TR3200* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer_CPU_TR3200& from);
+  void MergeFrom(const Computer_CPU_TR3200& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer_CPU_TR3200* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated uint32 registers = 1;
+  int registers_size() const;
+  void clear_registers();
+  static const int kRegistersFieldNumber = 1;
+  ::google::protobuf::uint32 registers(int index) const;
+  void set_registers(int index, ::google::protobuf::uint32 value);
+  void add_registers(::google::protobuf::uint32 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+      registers() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+      mutable_registers();
+
+  // required uint32 pc = 2;
+  bool has_pc() const;
+  void clear_pc();
+  static const int kPcFieldNumber = 2;
+  ::google::protobuf::uint32 pc() const;
+  void set_pc(::google::protobuf::uint32 value);
+
+  // required uint32 wait_cycles = 3;
+  bool has_wait_cycles() const;
+  void clear_wait_cycles();
+  static const int kWaitCyclesFieldNumber = 3;
+  ::google::protobuf::uint32 wait_cycles() const;
+  void set_wait_cycles(::google::protobuf::uint32 value);
+
+  // required uint32 int_msg = 4;
+  bool has_int_msg() const;
+  void clear_int_msg();
+  static const int kIntMsgFieldNumber = 4;
+  ::google::protobuf::uint32 int_msg() const;
+  void set_int_msg(::google::protobuf::uint32 value);
+
+  // required bool interrupt = 5;
+  bool has_interrupt() const;
+  void clear_interrupt();
+  static const int kInterruptFieldNumber = 5;
+  bool interrupt() const;
+  void set_interrupt(bool value);
+
+  // required bool step_mode = 6;
+  bool has_step_mode() const;
+  void clear_step_mode();
+  static const int kStepModeFieldNumber = 6;
+  bool step_mode() const;
+  void set_step_mode(bool value);
+
+  // required bool skiping = 7;
+  bool has_skiping() const;
+  void clear_skiping();
+  static const int kSkipingFieldNumber = 7;
+  bool skiping() const;
+  void set_skiping(bool value);
+
+  // required bool sleeping = 8;
+  bool has_sleeping() const;
+  void clear_sleeping();
+  static const int kSleepingFieldNumber = 8;
+  bool sleeping() const;
+  void set_sleeping(bool value);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer.CPU.TR3200)
+ private:
+  inline void set_has_pc();
+  inline void clear_has_pc();
+  inline void set_has_wait_cycles();
+  inline void clear_has_wait_cycles();
+  inline void set_has_int_msg();
+  inline void clear_has_int_msg();
+  inline void set_has_interrupt();
+  inline void clear_has_interrupt();
+  inline void set_has_step_mode();
+  inline void clear_has_step_mode();
+  inline void set_has_skiping();
+  inline void clear_has_skiping();
+  inline void set_has_sleeping();
+  inline void clear_has_sleeping();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::uint32 > registers_;
+  ::google::protobuf::uint32 pc_;
+  ::google::protobuf::uint32 wait_cycles_;
+  ::google::protobuf::uint32 int_msg_;
+  bool interrupt_;
+  bool step_mode_;
+  bool skiping_;
+  bool sleeping_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer_CPU_TR3200* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer_CPU : public ::google::protobuf::Message {
+ public:
+  Computer_CPU();
+  virtual ~Computer_CPU();
+
+  Computer_CPU(const Computer_CPU& from);
+
+  inline Computer_CPU& operator=(const Computer_CPU& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer_CPU& default_instance();
+
+  enum CpuCase {
+    kTr3200 = 1,
+    CPU_NOT_SET = 0,
+  };
+
+  void Swap(Computer_CPU* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer_CPU* New() const { return New(NULL); }
+
+  Computer_CPU* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer_CPU& from);
+  void MergeFrom(const Computer_CPU& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer_CPU* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Computer_CPU_TR3200 TR3200;
+
+  // accessors -------------------------------------------------------
+
+  // optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+  bool has_tr3200() const;
+  void clear_tr3200();
+  static const int kTr3200FieldNumber = 1;
+  const ::tec::proto::Computer_CPU_TR3200& tr3200() const;
+  ::tec::proto::Computer_CPU_TR3200* mutable_tr3200();
+  ::tec::proto::Computer_CPU_TR3200* release_tr3200();
+  void set_allocated_tr3200(::tec::proto::Computer_CPU_TR3200* tr3200);
+
+  CpuCase cpu_case() const;
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer.CPU)
+ private:
+  inline void set_has_tr3200();
+
+  inline bool has_cpu() const;
+  void clear_cpu();
+  inline void clear_has_cpu();
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  union CpuUnion {
+    CpuUnion() {}
+    ::tec::proto::Computer_CPU_TR3200* tr3200_;
+  } cpu_;
+  ::google::protobuf::uint32 _oneof_case_[1];
+
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer_CPU* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Computer : public ::google::protobuf::Message {
+ public:
+  Computer();
+  virtual ~Computer();
+
+  Computer(const Computer& from);
+
+  inline Computer& operator=(const Computer& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Computer& default_instance();
+
+  void Swap(Computer* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Computer* New() const { return New(NULL); }
+
+  Computer* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Computer& from);
+  void MergeFrom(const Computer& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Computer* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Computer_Device Device;
+  typedef Computer_CPU CPU;
+
+  // accessors -------------------------------------------------------
+
+  // repeated .tec.proto.Computer.Device devices = 1;
+  int devices_size() const;
+  void clear_devices();
+  static const int kDevicesFieldNumber = 1;
+  const ::tec::proto::Computer_Device& devices(int index) const;
+  ::tec::proto::Computer_Device* mutable_devices(int index);
+  ::tec::proto::Computer_Device* add_devices();
+  const ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >&
+      devices() const;
+  ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >*
+      mutable_devices();
+
+  // required bytes ram = 2;
+  bool has_ram() const;
+  void clear_ram();
+  static const int kRamFieldNumber = 2;
+  const ::std::string& ram() const;
+  void set_ram(const ::std::string& value);
+  void set_ram(const char* value);
+  void set_ram(const void* value, size_t size);
+  ::std::string* mutable_ram();
+  ::std::string* release_ram();
+  void set_allocated_ram(::std::string* ram);
+
+  // required .tec.proto.Computer.CPU cpu = 3;
+  bool has_cpu() const;
+  void clear_cpu();
+  static const int kCpuFieldNumber = 3;
+  const ::tec::proto::Computer_CPU& cpu() const;
+  ::tec::proto::Computer_CPU* mutable_cpu();
+  ::tec::proto::Computer_CPU* release_cpu();
+  void set_allocated_cpu(::tec::proto::Computer_CPU* cpu);
+
+  // optional string rom_file = 4;
+  bool has_rom_file() const;
+  void clear_rom_file();
+  static const int kRomFileFieldNumber = 4;
+  const ::std::string& rom_file() const;
+  void set_rom_file(const ::std::string& value);
+  void set_rom_file(const char* value);
+  void set_rom_file(const char* value, size_t size);
+  ::std::string* mutable_rom_file();
+  ::std::string* release_rom_file();
+  void set_allocated_rom_file(::std::string* rom_file);
+
+  // @@protoc_insertion_point(class_scope:tec.proto.Computer)
+ private:
+  inline void set_has_ram();
+  inline void clear_has_ram();
+  inline void set_has_cpu();
+  inline void clear_has_cpu();
+  inline void set_has_rom_file();
+  inline void clear_has_rom_file();
+
+  // helper for ByteSize()
+  int RequiredFieldsByteSizeFallback() const;
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::uint32 _has_bits_[1];
+  mutable int _cached_size_;
+  ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device > devices_;
+  ::google::protobuf::internal::ArenaStringPtr ram_;
+  ::tec::proto::Computer_CPU* cpu_;
+  ::google::protobuf::internal::ArenaStringPtr rom_file_;
+  friend void  protobuf_AddDesc_components_2eproto();
+  friend void protobuf_AssignDesc_components_2eproto();
+  friend void protobuf_ShutdownFile_components_2eproto();
+
+  void InitAsDefaultInstance();
+  static Computer* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class Component : public ::google::protobuf::Message {
  public:
   Component();
@@ -1333,6 +2995,13 @@ class Component : public ::google::protobuf::Message {
     kScale = 6,
     kCollisionBody = 7,
     kVelocity = 8,
+    kAudioSource = 9,
+    kPointLight = 10,
+    kDirectionalLight = 11,
+    kSpotLight = 12,
+    kVoxelVolume = 13,
+    kComputer = 14,
+    kLuaScript = 100,
     COMPONENT_NOT_SET = 0,
   };
 
@@ -1449,6 +3118,69 @@ class Component : public ::google::protobuf::Message {
   ::tec::proto::Velocity* release_velocity();
   void set_allocated_velocity(::tec::proto::Velocity* velocity);
 
+  // optional .tec.proto.AudioSource audio_source = 9;
+  bool has_audio_source() const;
+  void clear_audio_source();
+  static const int kAudioSourceFieldNumber = 9;
+  const ::tec::proto::AudioSource& audio_source() const;
+  ::tec::proto::AudioSource* mutable_audio_source();
+  ::tec::proto::AudioSource* release_audio_source();
+  void set_allocated_audio_source(::tec::proto::AudioSource* audio_source);
+
+  // optional .tec.proto.Light pointLight = 10;
+  bool has_pointlight() const;
+  void clear_pointlight();
+  static const int kPointLightFieldNumber = 10;
+  const ::tec::proto::Light& pointlight() const;
+  ::tec::proto::Light* mutable_pointlight();
+  ::tec::proto::Light* release_pointlight();
+  void set_allocated_pointlight(::tec::proto::Light* pointlight);
+
+  // optional .tec.proto.Light directionalLight = 11;
+  bool has_directionallight() const;
+  void clear_directionallight();
+  static const int kDirectionalLightFieldNumber = 11;
+  const ::tec::proto::Light& directionallight() const;
+  ::tec::proto::Light* mutable_directionallight();
+  ::tec::proto::Light* release_directionallight();
+  void set_allocated_directionallight(::tec::proto::Light* directionallight);
+
+  // optional .tec.proto.Light spotLight = 12;
+  bool has_spotlight() const;
+  void clear_spotlight();
+  static const int kSpotLightFieldNumber = 12;
+  const ::tec::proto::Light& spotlight() const;
+  ::tec::proto::Light* mutable_spotlight();
+  ::tec::proto::Light* release_spotlight();
+  void set_allocated_spotlight(::tec::proto::Light* spotlight);
+
+  // optional .tec.proto.VoxelVolumen voxelVolume = 13;
+  bool has_voxelvolume() const;
+  void clear_voxelvolume();
+  static const int kVoxelVolumeFieldNumber = 13;
+  const ::tec::proto::VoxelVolumen& voxelvolume() const;
+  ::tec::proto::VoxelVolumen* mutable_voxelvolume();
+  ::tec::proto::VoxelVolumen* release_voxelvolume();
+  void set_allocated_voxelvolume(::tec::proto::VoxelVolumen* voxelvolume);
+
+  // optional .tec.proto.Computer computer = 14;
+  bool has_computer() const;
+  void clear_computer();
+  static const int kComputerFieldNumber = 14;
+  const ::tec::proto::Computer& computer() const;
+  ::tec::proto::Computer* mutable_computer();
+  ::tec::proto::Computer* release_computer();
+  void set_allocated_computer(::tec::proto::Computer* computer);
+
+  // optional .tec.proto.LuaScript luaScript = 100;
+  bool has_luascript() const;
+  void clear_luascript();
+  static const int kLuaScriptFieldNumber = 100;
+  const ::tec::proto::LuaScript& luascript() const;
+  ::tec::proto::LuaScript* mutable_luascript();
+  ::tec::proto::LuaScript* release_luascript();
+  void set_allocated_luascript(::tec::proto::LuaScript* luascript);
+
   ComponentCase component_case() const;
   // @@protoc_insertion_point(class_scope:tec.proto.Component)
  private:
@@ -1460,6 +3192,13 @@ class Component : public ::google::protobuf::Message {
   inline void set_has_scale();
   inline void set_has_collision_body();
   inline void set_has_velocity();
+  inline void set_has_audio_source();
+  inline void set_has_pointlight();
+  inline void set_has_directionallight();
+  inline void set_has_spotlight();
+  inline void set_has_voxelvolume();
+  inline void set_has_computer();
+  inline void set_has_luascript();
 
   inline bool has_component() const;
   void clear_component();
@@ -1478,6 +3217,13 @@ class Component : public ::google::protobuf::Message {
     ::tec::proto::Scale* scale_;
     ::tec::proto::CollisionBody* collision_body_;
     ::tec::proto::Velocity* velocity_;
+    ::tec::proto::AudioSource* audio_source_;
+    ::tec::proto::Light* pointlight_;
+    ::tec::proto::Light* directionallight_;
+    ::tec::proto::Light* spotlight_;
+    ::tec::proto::VoxelVolumen* voxelvolume_;
+    ::tec::proto::Computer* computer_;
+    ::tec::proto::LuaScript* luascript_;
   } component_;
   ::google::protobuf::uint32 _oneof_case_[1];
 
@@ -1592,14 +3338,14 @@ class Entity : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class EntityList : public ::google::protobuf::Message {
+class EntityFileList : public ::google::protobuf::Message {
  public:
-  EntityList();
-  virtual ~EntityList();
+  EntityFileList();
+  virtual ~EntityFileList();
 
-  EntityList(const EntityList& from);
+  EntityFileList(const EntityFileList& from);
 
-  inline EntityList& operator=(const EntityList& from) {
+  inline EntityFileList& operator=(const EntityFileList& from) {
     CopyFrom(from);
     return *this;
   }
@@ -1613,19 +3359,19 @@ class EntityList : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const EntityList& default_instance();
+  static const EntityFileList& default_instance();
 
-  void Swap(EntityList* other);
+  void Swap(EntityFileList* other);
 
   // implements Message ----------------------------------------------
 
-  inline EntityList* New() const { return New(NULL); }
+  inline EntityFileList* New() const { return New(NULL); }
 
-  EntityList* New(::google::protobuf::Arena* arena) const;
+  EntityFileList* New(::google::protobuf::Arena* arena) const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const EntityList& from);
-  void MergeFrom(const EntityList& from);
+  void CopyFrom(const EntityFileList& from);
+  void MergeFrom(const EntityFileList& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -1640,7 +3386,7 @@ class EntityList : public ::google::protobuf::Message {
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const;
-  void InternalSwap(EntityList* other);
+  void InternalSwap(EntityFileList* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return _internal_metadata_.arena();
@@ -1656,31 +3402,35 @@ class EntityList : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated .tec.proto.Entity entities = 1;
-  int entities_size() const;
-  void clear_entities();
-  static const int kEntitiesFieldNumber = 1;
-  const ::tec::proto::Entity& entities(int index) const;
-  ::tec::proto::Entity* mutable_entities(int index);
-  ::tec::proto::Entity* add_entities();
-  const ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >&
-      entities() const;
-  ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >*
-      mutable_entities();
+  // repeated string entity_file_list = 1;
+  int entity_file_list_size() const;
+  void clear_entity_file_list();
+  static const int kEntityFileListFieldNumber = 1;
+  const ::std::string& entity_file_list(int index) const;
+  ::std::string* mutable_entity_file_list(int index);
+  void set_entity_file_list(int index, const ::std::string& value);
+  void set_entity_file_list(int index, const char* value);
+  void set_entity_file_list(int index, const char* value, size_t size);
+  ::std::string* add_entity_file_list();
+  void add_entity_file_list(const ::std::string& value);
+  void add_entity_file_list(const char* value);
+  void add_entity_file_list(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& entity_file_list() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_entity_file_list();
 
-  // @@protoc_insertion_point(class_scope:tec.proto.EntityList)
+  // @@protoc_insertion_point(class_scope:tec.proto.EntityFileList)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity > entities_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> entity_file_list_;
   friend void  protobuf_AddDesc_components_2eproto();
   friend void protobuf_AssignDesc_components_2eproto();
   friend void protobuf_ShutdownFile_components_2eproto();
 
   void InitAsDefaultInstance();
-  static EntityList* default_instance_;
+  static EntityFileList* default_instance_;
 };
 // ===================================================================
 
@@ -1822,6 +3572,82 @@ inline void Renderable::set_hidden(bool value) {
 
 // -------------------------------------------------------------------
 
+// Position_CenterOffset
+
+// optional float x = 1;
+inline bool Position_CenterOffset::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Position_CenterOffset::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Position_CenterOffset::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Position_CenterOffset::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline float Position_CenterOffset::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.x)
+  return x_;
+}
+inline void Position_CenterOffset::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.x)
+}
+
+// optional float y = 2;
+inline bool Position_CenterOffset::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Position_CenterOffset::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Position_CenterOffset::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Position_CenterOffset::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline float Position_CenterOffset::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.y)
+  return y_;
+}
+inline void Position_CenterOffset::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.y)
+}
+
+// optional float z = 3;
+inline bool Position_CenterOffset::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Position_CenterOffset::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Position_CenterOffset::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Position_CenterOffset::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline float Position_CenterOffset::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.CenterOffset.z)
+  return z_;
+}
+inline void Position_CenterOffset::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Position.CenterOffset.z)
+}
+
+// -------------------------------------------------------------------
+
 // Position
 
 // optional float x = 1;
@@ -1894,6 +3720,125 @@ inline void Position::set_z(float value) {
   set_has_z();
   z_ = value;
   // @@protoc_insertion_point(field_set:tec.proto.Position.z)
+}
+
+// optional .tec.proto.Position.CenterOffset offset = 4;
+inline bool Position::has_offset() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Position::set_has_offset() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Position::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Position::clear_offset() {
+  if (offset_ != NULL) offset_->::tec::proto::Position_CenterOffset::Clear();
+  clear_has_offset();
+}
+inline const ::tec::proto::Position_CenterOffset& Position::offset() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Position.offset)
+  return offset_ != NULL ? *offset_ : *default_instance_->offset_;
+}
+inline ::tec::proto::Position_CenterOffset* Position::mutable_offset() {
+  set_has_offset();
+  if (offset_ == NULL) {
+    offset_ = new ::tec::proto::Position_CenterOffset;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Position.offset)
+  return offset_;
+}
+inline ::tec::proto::Position_CenterOffset* Position::release_offset() {
+  clear_has_offset();
+  ::tec::proto::Position_CenterOffset* temp = offset_;
+  offset_ = NULL;
+  return temp;
+}
+inline void Position::set_allocated_offset(::tec::proto::Position_CenterOffset* offset) {
+  delete offset_;
+  offset_ = offset;
+  if (offset) {
+    set_has_offset();
+  } else {
+    clear_has_offset();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Position.offset)
+}
+
+// -------------------------------------------------------------------
+
+// Orientation_RotationOffset
+
+// required float x = 1;
+inline bool Orientation_RotationOffset::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Orientation_RotationOffset::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Orientation_RotationOffset::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Orientation_RotationOffset::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline float Orientation_RotationOffset::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.x)
+  return x_;
+}
+inline void Orientation_RotationOffset::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.x)
+}
+
+// required float y = 2;
+inline bool Orientation_RotationOffset::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Orientation_RotationOffset::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Orientation_RotationOffset::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Orientation_RotationOffset::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline float Orientation_RotationOffset::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.y)
+  return y_;
+}
+inline void Orientation_RotationOffset::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.y)
+}
+
+// required float z = 3;
+inline bool Orientation_RotationOffset::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Orientation_RotationOffset::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Orientation_RotationOffset::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Orientation_RotationOffset::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline float Orientation_RotationOffset::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.RotationOffset.z)
+  return z_;
+}
+inline void Orientation_RotationOffset::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Orientation.RotationOffset.z)
 }
 
 // -------------------------------------------------------------------
@@ -1994,6 +3939,49 @@ inline void Orientation::set_w(float value) {
   set_has_w();
   w_ = value;
   // @@protoc_insertion_point(field_set:tec.proto.Orientation.w)
+}
+
+// optional .tec.proto.Orientation.RotationOffset offset = 5;
+inline bool Orientation::has_offset() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Orientation::set_has_offset() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Orientation::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Orientation::clear_offset() {
+  if (offset_ != NULL) offset_->::tec::proto::Orientation_RotationOffset::Clear();
+  clear_has_offset();
+}
+inline const ::tec::proto::Orientation_RotationOffset& Orientation::offset() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Orientation.offset)
+  return offset_ != NULL ? *offset_ : *default_instance_->offset_;
+}
+inline ::tec::proto::Orientation_RotationOffset* Orientation::mutable_offset() {
+  set_has_offset();
+  if (offset_ == NULL) {
+    offset_ = new ::tec::proto::Orientation_RotationOffset;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Orientation.offset)
+  return offset_;
+}
+inline ::tec::proto::Orientation_RotationOffset* Orientation::release_offset() {
+  clear_has_offset();
+  ::tec::proto::Orientation_RotationOffset* temp = offset_;
+  offset_ = NULL;
+  return temp;
+}
+inline void Orientation::set_allocated_offset(::tec::proto::Orientation_RotationOffset* offset) {
+  delete offset_;
+  offset_ = offset;
+  if (offset) {
+    set_has_offset();
+  } else {
+    clear_has_offset();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Orientation.offset)
 }
 
 // -------------------------------------------------------------------
@@ -2686,6 +4674,1411 @@ inline void Velocity::set_angular_z(float value) {
 
 // -------------------------------------------------------------------
 
+// AudioSource
+
+// optional bool looping = 1;
+inline bool AudioSource::has_looping() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AudioSource::set_has_looping() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AudioSource::clear_has_looping() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AudioSource::clear_looping() {
+  looping_ = false;
+  clear_has_looping();
+}
+inline bool AudioSource::looping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.looping)
+  return looping_;
+}
+inline void AudioSource::set_looping(bool value) {
+  set_has_looping();
+  looping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.looping)
+}
+
+// optional string audio_name = 2;
+inline bool AudioSource::has_audio_name() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AudioSource::set_has_audio_name() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AudioSource::clear_has_audio_name() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AudioSource::clear_audio_name() {
+  audio_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_audio_name();
+}
+inline const ::std::string& AudioSource::audio_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.audio_name)
+  return audio_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void AudioSource::set_audio_name(const ::std::string& value) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.audio_name)
+}
+inline void AudioSource::set_audio_name(const char* value) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.AudioSource.audio_name)
+}
+inline void AudioSource::set_audio_name(const char* value, size_t size) {
+  set_has_audio_name();
+  audio_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.AudioSource.audio_name)
+}
+inline ::std::string* AudioSource::mutable_audio_name() {
+  set_has_audio_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.AudioSource.audio_name)
+  return audio_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* AudioSource::release_audio_name() {
+  clear_has_audio_name();
+  return audio_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void AudioSource::set_allocated_audio_name(::std::string* audio_name) {
+  if (audio_name != NULL) {
+    set_has_audio_name();
+  } else {
+    clear_has_audio_name();
+  }
+  audio_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), audio_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.AudioSource.audio_name)
+}
+
+// optional bool playing = 3;
+inline bool AudioSource::has_playing() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AudioSource::set_has_playing() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AudioSource::clear_has_playing() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AudioSource::clear_playing() {
+  playing_ = false;
+  clear_has_playing();
+}
+inline bool AudioSource::playing() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.playing)
+  return playing_;
+}
+inline void AudioSource::set_playing(bool value) {
+  set_has_playing();
+  playing_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.playing)
+}
+
+// optional uint32 volume = 4;
+inline bool AudioSource::has_volume() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void AudioSource::set_has_volume() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void AudioSource::clear_has_volume() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void AudioSource::clear_volume() {
+  volume_ = 0u;
+  clear_has_volume();
+}
+inline ::google::protobuf::uint32 AudioSource::volume() const {
+  // @@protoc_insertion_point(field_get:tec.proto.AudioSource.volume)
+  return volume_;
+}
+inline void AudioSource::set_volume(::google::protobuf::uint32 value) {
+  set_has_volume();
+  volume_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.AudioSource.volume)
+}
+
+// -------------------------------------------------------------------
+
+// Light_Attenuation
+
+// optional float constant = 1;
+inline bool Light_Attenuation::has_constant() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Light_Attenuation::set_has_constant() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Light_Attenuation::clear_has_constant() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Light_Attenuation::clear_constant() {
+  constant_ = 0;
+  clear_has_constant();
+}
+inline float Light_Attenuation::constant() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.constant)
+  return constant_;
+}
+inline void Light_Attenuation::set_constant(float value) {
+  set_has_constant();
+  constant_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.constant)
+}
+
+// optional float linear = 2;
+inline bool Light_Attenuation::has_linear() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Light_Attenuation::set_has_linear() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Light_Attenuation::clear_has_linear() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Light_Attenuation::clear_linear() {
+  linear_ = 0;
+  clear_has_linear();
+}
+inline float Light_Attenuation::linear() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.linear)
+  return linear_;
+}
+inline void Light_Attenuation::set_linear(float value) {
+  set_has_linear();
+  linear_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.linear)
+}
+
+// optional float exponential = 3;
+inline bool Light_Attenuation::has_exponential() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Light_Attenuation::set_has_exponential() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Light_Attenuation::clear_has_exponential() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Light_Attenuation::clear_exponential() {
+  exponential_ = 0;
+  clear_has_exponential();
+}
+inline float Light_Attenuation::exponential() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Attenuation.exponential)
+  return exponential_;
+}
+inline void Light_Attenuation::set_exponential(float value) {
+  set_has_exponential();
+  exponential_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Attenuation.exponential)
+}
+
+// -------------------------------------------------------------------
+
+// Light_Direction
+
+// optional float x = 1;
+inline bool Light_Direction::has_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Light_Direction::set_has_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Light_Direction::clear_has_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Light_Direction::clear_x() {
+  x_ = 0;
+  clear_has_x();
+}
+inline float Light_Direction::x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.x)
+  return x_;
+}
+inline void Light_Direction::set_x(float value) {
+  set_has_x();
+  x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.x)
+}
+
+// optional float y = 2;
+inline bool Light_Direction::has_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Light_Direction::set_has_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Light_Direction::clear_has_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Light_Direction::clear_y() {
+  y_ = 0;
+  clear_has_y();
+}
+inline float Light_Direction::y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.y)
+  return y_;
+}
+inline void Light_Direction::set_y(float value) {
+  set_has_y();
+  y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.y)
+}
+
+// optional float z = 3;
+inline bool Light_Direction::has_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Light_Direction::set_has_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Light_Direction::clear_has_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Light_Direction::clear_z() {
+  z_ = 0;
+  clear_has_z();
+}
+inline float Light_Direction::z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.Direction.z)
+  return z_;
+}
+inline void Light_Direction::set_z(float value) {
+  set_has_z();
+  z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.Direction.z)
+}
+
+// -------------------------------------------------------------------
+
+// Light
+
+// optional float color_x = 1;
+inline bool Light::has_color_x() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Light::set_has_color_x() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Light::clear_has_color_x() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Light::clear_color_x() {
+  color_x_ = 0;
+  clear_has_color_x();
+}
+inline float Light::color_x() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_x)
+  return color_x_;
+}
+inline void Light::set_color_x(float value) {
+  set_has_color_x();
+  color_x_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_x)
+}
+
+// optional float color_y = 2;
+inline bool Light::has_color_y() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Light::set_has_color_y() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Light::clear_has_color_y() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Light::clear_color_y() {
+  color_y_ = 0;
+  clear_has_color_y();
+}
+inline float Light::color_y() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_y)
+  return color_y_;
+}
+inline void Light::set_color_y(float value) {
+  set_has_color_y();
+  color_y_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_y)
+}
+
+// optional float color_z = 3;
+inline bool Light::has_color_z() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Light::set_has_color_z() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Light::clear_has_color_z() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Light::clear_color_z() {
+  color_z_ = 0;
+  clear_has_color_z();
+}
+inline float Light::color_z() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.color_z)
+  return color_z_;
+}
+inline void Light::set_color_z(float value) {
+  set_has_color_z();
+  color_z_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.color_z)
+}
+
+// optional float ambient_intensity = 4;
+inline bool Light::has_ambient_intensity() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Light::set_has_ambient_intensity() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Light::clear_has_ambient_intensity() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Light::clear_ambient_intensity() {
+  ambient_intensity_ = 0;
+  clear_has_ambient_intensity();
+}
+inline float Light::ambient_intensity() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.ambient_intensity)
+  return ambient_intensity_;
+}
+inline void Light::set_ambient_intensity(float value) {
+  set_has_ambient_intensity();
+  ambient_intensity_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.ambient_intensity)
+}
+
+// optional float diffuse_intensity = 5;
+inline bool Light::has_diffuse_intensity() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Light::set_has_diffuse_intensity() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Light::clear_has_diffuse_intensity() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Light::clear_diffuse_intensity() {
+  diffuse_intensity_ = 0;
+  clear_has_diffuse_intensity();
+}
+inline float Light::diffuse_intensity() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.diffuse_intensity)
+  return diffuse_intensity_;
+}
+inline void Light::set_diffuse_intensity(float value) {
+  set_has_diffuse_intensity();
+  diffuse_intensity_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.diffuse_intensity)
+}
+
+// optional .tec.proto.Light.Attenuation attenuation = 6;
+inline bool Light::has_attenuation() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Light::set_has_attenuation() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Light::clear_has_attenuation() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Light::clear_attenuation() {
+  if (attenuation_ != NULL) attenuation_->::tec::proto::Light_Attenuation::Clear();
+  clear_has_attenuation();
+}
+inline const ::tec::proto::Light_Attenuation& Light::attenuation() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.attenuation)
+  return attenuation_ != NULL ? *attenuation_ : *default_instance_->attenuation_;
+}
+inline ::tec::proto::Light_Attenuation* Light::mutable_attenuation() {
+  set_has_attenuation();
+  if (attenuation_ == NULL) {
+    attenuation_ = new ::tec::proto::Light_Attenuation;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Light.attenuation)
+  return attenuation_;
+}
+inline ::tec::proto::Light_Attenuation* Light::release_attenuation() {
+  clear_has_attenuation();
+  ::tec::proto::Light_Attenuation* temp = attenuation_;
+  attenuation_ = NULL;
+  return temp;
+}
+inline void Light::set_allocated_attenuation(::tec::proto::Light_Attenuation* attenuation) {
+  delete attenuation_;
+  attenuation_ = attenuation;
+  if (attenuation) {
+    set_has_attenuation();
+  } else {
+    clear_has_attenuation();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Light.attenuation)
+}
+
+// optional float cutoff = 7;
+inline bool Light::has_cutoff() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Light::set_has_cutoff() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Light::clear_has_cutoff() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void Light::clear_cutoff() {
+  cutoff_ = 0;
+  clear_has_cutoff();
+}
+inline float Light::cutoff() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.cutoff)
+  return cutoff_;
+}
+inline void Light::set_cutoff(float value) {
+  set_has_cutoff();
+  cutoff_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Light.cutoff)
+}
+
+// optional .tec.proto.Light.Direction direction = 8;
+inline bool Light::has_direction() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Light::set_has_direction() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Light::clear_has_direction() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Light::clear_direction() {
+  if (direction_ != NULL) direction_->::tec::proto::Light_Direction::Clear();
+  clear_has_direction();
+}
+inline const ::tec::proto::Light_Direction& Light::direction() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Light.direction)
+  return direction_ != NULL ? *direction_ : *default_instance_->direction_;
+}
+inline ::tec::proto::Light_Direction* Light::mutable_direction() {
+  set_has_direction();
+  if (direction_ == NULL) {
+    direction_ = new ::tec::proto::Light_Direction;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Light.direction)
+  return direction_;
+}
+inline ::tec::proto::Light_Direction* Light::release_direction() {
+  clear_has_direction();
+  ::tec::proto::Light_Direction* temp = direction_;
+  direction_ = NULL;
+  return temp;
+}
+inline void Light::set_allocated_direction(::tec::proto::Light_Direction* direction) {
+  delete direction_;
+  direction_ = direction;
+  if (direction) {
+    set_has_direction();
+  } else {
+    clear_has_direction();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Light.direction)
+}
+
+// -------------------------------------------------------------------
+
+// LuaScript
+
+// optional string script_name = 1;
+inline bool LuaScript::has_script_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void LuaScript::set_has_script_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void LuaScript::clear_has_script_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void LuaScript::clear_script_name() {
+  script_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_script_name();
+}
+inline const ::std::string& LuaScript::script_name() const {
+  // @@protoc_insertion_point(field_get:tec.proto.LuaScript.script_name)
+  return script_name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void LuaScript::set_script_name(const ::std::string& value) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.LuaScript.script_name)
+}
+inline void LuaScript::set_script_name(const char* value) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.LuaScript.script_name)
+}
+inline void LuaScript::set_script_name(const char* value, size_t size) {
+  set_has_script_name();
+  script_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.LuaScript.script_name)
+}
+inline ::std::string* LuaScript::mutable_script_name() {
+  set_has_script_name();
+  // @@protoc_insertion_point(field_mutable:tec.proto.LuaScript.script_name)
+  return script_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* LuaScript::release_script_name() {
+  clear_has_script_name();
+  return script_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void LuaScript::set_allocated_script_name(::std::string* script_name) {
+  if (script_name != NULL) {
+    set_has_script_name();
+  } else {
+    clear_has_script_name();
+  }
+  script_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), script_name);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.LuaScript.script_name)
+}
+
+// -------------------------------------------------------------------
+
+// VoxelVolumen
+
+// optional float dummy = 1;
+inline bool VoxelVolumen::has_dummy() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void VoxelVolumen::set_has_dummy() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void VoxelVolumen::clear_has_dummy() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void VoxelVolumen::clear_dummy() {
+  dummy_ = 0;
+  clear_has_dummy();
+}
+inline float VoxelVolumen::dummy() const {
+  // @@protoc_insertion_point(field_get:tec.proto.VoxelVolumen.dummy)
+  return dummy_;
+}
+inline void VoxelVolumen::set_dummy(float value) {
+  set_has_dummy();
+  dummy_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.VoxelVolumen.dummy)
+}
+
+// -------------------------------------------------------------------
+
+// ComputerScreen
+
+// required bytes text_buffer = 1;
+inline bool ComputerScreen::has_text_buffer() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void ComputerScreen::set_has_text_buffer() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void ComputerScreen::clear_has_text_buffer() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void ComputerScreen::clear_text_buffer() {
+  text_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_text_buffer();
+}
+inline const ::std::string& ComputerScreen::text_buffer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.text_buffer)
+  return text_buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_text_buffer(const ::std::string& value) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.text_buffer)
+}
+inline void ComputerScreen::set_text_buffer(const char* value) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.ComputerScreen.text_buffer)
+}
+inline void ComputerScreen::set_text_buffer(const void* value, size_t size) {
+  set_has_text_buffer();
+  text_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.ComputerScreen.text_buffer)
+}
+inline ::std::string* ComputerScreen::mutable_text_buffer() {
+  set_has_text_buffer();
+  // @@protoc_insertion_point(field_mutable:tec.proto.ComputerScreen.text_buffer)
+  return text_buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* ComputerScreen::release_text_buffer() {
+  clear_has_text_buffer();
+  return text_buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_allocated_text_buffer(::std::string* text_buffer) {
+  if (text_buffer != NULL) {
+    set_has_text_buffer();
+  } else {
+    clear_has_text_buffer();
+  }
+  text_buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), text_buffer);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.ComputerScreen.text_buffer)
+}
+
+// required bytes font_buffer = 2;
+inline bool ComputerScreen::has_font_buffer() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void ComputerScreen::set_has_font_buffer() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void ComputerScreen::clear_has_font_buffer() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void ComputerScreen::clear_font_buffer() {
+  font_buffer_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_font_buffer();
+}
+inline const ::std::string& ComputerScreen::font_buffer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.font_buffer)
+  return font_buffer_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_font_buffer(const ::std::string& value) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.font_buffer)
+}
+inline void ComputerScreen::set_font_buffer(const char* value) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.ComputerScreen.font_buffer)
+}
+inline void ComputerScreen::set_font_buffer(const void* value, size_t size) {
+  set_has_font_buffer();
+  font_buffer_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.ComputerScreen.font_buffer)
+}
+inline ::std::string* ComputerScreen::mutable_font_buffer() {
+  set_has_font_buffer();
+  // @@protoc_insertion_point(field_mutable:tec.proto.ComputerScreen.font_buffer)
+  return font_buffer_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* ComputerScreen::release_font_buffer() {
+  clear_has_font_buffer();
+  return font_buffer_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void ComputerScreen::set_allocated_font_buffer(::std::string* font_buffer) {
+  if (font_buffer != NULL) {
+    set_has_font_buffer();
+  } else {
+    clear_has_font_buffer();
+  }
+  font_buffer_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), font_buffer);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.ComputerScreen.font_buffer)
+}
+
+// required uint32 buffer_ptr = 3;
+inline bool ComputerScreen::has_buffer_ptr() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void ComputerScreen::set_has_buffer_ptr() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void ComputerScreen::clear_has_buffer_ptr() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void ComputerScreen::clear_buffer_ptr() {
+  buffer_ptr_ = 0u;
+  clear_has_buffer_ptr();
+}
+inline ::google::protobuf::uint32 ComputerScreen::buffer_ptr() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.buffer_ptr)
+  return buffer_ptr_;
+}
+inline void ComputerScreen::set_buffer_ptr(::google::protobuf::uint32 value) {
+  set_has_buffer_ptr();
+  buffer_ptr_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.buffer_ptr)
+}
+
+// required uint32 font_ptr = 4;
+inline bool ComputerScreen::has_font_ptr() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void ComputerScreen::set_has_font_ptr() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void ComputerScreen::clear_has_font_ptr() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void ComputerScreen::clear_font_ptr() {
+  font_ptr_ = 0u;
+  clear_has_font_ptr();
+}
+inline ::google::protobuf::uint32 ComputerScreen::font_ptr() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.font_ptr)
+  return font_ptr_;
+}
+inline void ComputerScreen::set_font_ptr(::google::protobuf::uint32 value) {
+  set_has_font_ptr();
+  font_ptr_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.font_ptr)
+}
+
+// required uint32 vsync_msg = 5;
+inline bool ComputerScreen::has_vsync_msg() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void ComputerScreen::set_has_vsync_msg() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void ComputerScreen::clear_has_vsync_msg() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void ComputerScreen::clear_vsync_msg() {
+  vsync_msg_ = 0u;
+  clear_has_vsync_msg();
+}
+inline ::google::protobuf::uint32 ComputerScreen::vsync_msg() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.vsync_msg)
+  return vsync_msg_;
+}
+inline void ComputerScreen::set_vsync_msg(::google::protobuf::uint32 value) {
+  set_has_vsync_msg();
+  vsync_msg_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.vsync_msg)
+}
+
+// required uint32 a = 6;
+inline bool ComputerScreen::has_a() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void ComputerScreen::set_has_a() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void ComputerScreen::clear_has_a() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void ComputerScreen::clear_a() {
+  a_ = 0u;
+  clear_has_a();
+}
+inline ::google::protobuf::uint32 ComputerScreen::a() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.a)
+  return a_;
+}
+inline void ComputerScreen::set_a(::google::protobuf::uint32 value) {
+  set_has_a();
+  a_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.a)
+}
+
+// required uint32 b = 7;
+inline bool ComputerScreen::has_b() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void ComputerScreen::set_has_b() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void ComputerScreen::clear_has_b() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void ComputerScreen::clear_b() {
+  b_ = 0u;
+  clear_has_b();
+}
+inline ::google::protobuf::uint32 ComputerScreen::b() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.b)
+  return b_;
+}
+inline void ComputerScreen::set_b(::google::protobuf::uint32 value) {
+  set_has_b();
+  b_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.b)
+}
+
+// required uint32 d = 8;
+inline bool ComputerScreen::has_d() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void ComputerScreen::set_has_d() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void ComputerScreen::clear_has_d() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void ComputerScreen::clear_d() {
+  d_ = 0u;
+  clear_has_d();
+}
+inline ::google::protobuf::uint32 ComputerScreen::d() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.d)
+  return d_;
+}
+inline void ComputerScreen::set_d(::google::protobuf::uint32 value) {
+  set_has_d();
+  d_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.d)
+}
+
+// required uint32 e = 9;
+inline bool ComputerScreen::has_e() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void ComputerScreen::set_has_e() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void ComputerScreen::clear_has_e() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void ComputerScreen::clear_e() {
+  e_ = 0u;
+  clear_has_e();
+}
+inline ::google::protobuf::uint32 ComputerScreen::e() const {
+  // @@protoc_insertion_point(field_get:tec.proto.ComputerScreen.e)
+  return e_;
+}
+inline void ComputerScreen::set_e(::google::protobuf::uint32 value) {
+  set_has_e();
+  e_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.ComputerScreen.e)
+}
+
+// -------------------------------------------------------------------
+
+// Computer_Device
+
+// required uint32 slot = 1;
+inline bool Computer_Device::has_slot() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Computer_Device::set_has_slot() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Computer_Device::clear_has_slot() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Computer_Device::clear_slot() {
+  slot_ = 0u;
+  clear_has_slot();
+}
+inline ::google::protobuf::uint32 Computer_Device::slot() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.Device.slot)
+  return slot_;
+}
+inline void Computer_Device::set_slot(::google::protobuf::uint32 value) {
+  set_has_slot();
+  slot_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.Device.slot)
+}
+
+// optional .tec.proto.ComputerScreen computerScreen = 2;
+inline bool Computer_Device::has_computerscreen() const {
+  return device_case() == kComputerScreen;
+}
+inline void Computer_Device::set_has_computerscreen() {
+  _oneof_case_[0] = kComputerScreen;
+}
+inline void Computer_Device::clear_computerscreen() {
+  if (has_computerscreen()) {
+    delete device_.computerscreen_;
+    clear_has_device();
+  }
+}
+inline const ::tec::proto::ComputerScreen& Computer_Device::computerscreen() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.Device.computerScreen)
+  return has_computerscreen() ? *device_.computerscreen_
+                      : ::tec::proto::ComputerScreen::default_instance();
+}
+inline ::tec::proto::ComputerScreen* Computer_Device::mutable_computerscreen() {
+  if (!has_computerscreen()) {
+    clear_device();
+    set_has_computerscreen();
+    device_.computerscreen_ = new ::tec::proto::ComputerScreen;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.Device.computerScreen)
+  return device_.computerscreen_;
+}
+inline ::tec::proto::ComputerScreen* Computer_Device::release_computerscreen() {
+  if (has_computerscreen()) {
+    clear_has_device();
+    ::tec::proto::ComputerScreen* temp = device_.computerscreen_;
+    device_.computerscreen_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Computer_Device::set_allocated_computerscreen(::tec::proto::ComputerScreen* computerscreen) {
+  clear_device();
+  if (computerscreen) {
+    set_has_computerscreen();
+    device_.computerscreen_ = computerscreen;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.Device.computerScreen)
+}
+
+inline bool Computer_Device::has_device() const {
+  return device_case() != DEVICE_NOT_SET;
+}
+inline void Computer_Device::clear_has_device() {
+  _oneof_case_[0] = DEVICE_NOT_SET;
+}
+inline Computer_Device::DeviceCase Computer_Device::device_case() const {
+  return Computer_Device::DeviceCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// Computer_CPU_TR3200
+
+// repeated uint32 registers = 1;
+inline int Computer_CPU_TR3200::registers_size() const {
+  return registers_.size();
+}
+inline void Computer_CPU_TR3200::clear_registers() {
+  registers_.Clear();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::registers(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.registers)
+  return registers_.Get(index);
+}
+inline void Computer_CPU_TR3200::set_registers(int index, ::google::protobuf::uint32 value) {
+  registers_.Set(index, value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.registers)
+}
+inline void Computer_CPU_TR3200::add_registers(::google::protobuf::uint32 value) {
+  registers_.Add(value);
+  // @@protoc_insertion_point(field_add:tec.proto.Computer.CPU.TR3200.registers)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >&
+Computer_CPU_TR3200::registers() const {
+  // @@protoc_insertion_point(field_list:tec.proto.Computer.CPU.TR3200.registers)
+  return registers_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::uint32 >*
+Computer_CPU_TR3200::mutable_registers() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.Computer.CPU.TR3200.registers)
+  return &registers_;
+}
+
+// required uint32 pc = 2;
+inline bool Computer_CPU_TR3200::has_pc() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_pc() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Computer_CPU_TR3200::clear_has_pc() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Computer_CPU_TR3200::clear_pc() {
+  pc_ = 0u;
+  clear_has_pc();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::pc() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.pc)
+  return pc_;
+}
+inline void Computer_CPU_TR3200::set_pc(::google::protobuf::uint32 value) {
+  set_has_pc();
+  pc_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.pc)
+}
+
+// required uint32 wait_cycles = 3;
+inline bool Computer_CPU_TR3200::has_wait_cycles() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_wait_cycles() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Computer_CPU_TR3200::clear_has_wait_cycles() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Computer_CPU_TR3200::clear_wait_cycles() {
+  wait_cycles_ = 0u;
+  clear_has_wait_cycles();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::wait_cycles() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.wait_cycles)
+  return wait_cycles_;
+}
+inline void Computer_CPU_TR3200::set_wait_cycles(::google::protobuf::uint32 value) {
+  set_has_wait_cycles();
+  wait_cycles_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.wait_cycles)
+}
+
+// required uint32 int_msg = 4;
+inline bool Computer_CPU_TR3200::has_int_msg() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_int_msg() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Computer_CPU_TR3200::clear_has_int_msg() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Computer_CPU_TR3200::clear_int_msg() {
+  int_msg_ = 0u;
+  clear_has_int_msg();
+}
+inline ::google::protobuf::uint32 Computer_CPU_TR3200::int_msg() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.int_msg)
+  return int_msg_;
+}
+inline void Computer_CPU_TR3200::set_int_msg(::google::protobuf::uint32 value) {
+  set_has_int_msg();
+  int_msg_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.int_msg)
+}
+
+// required bool interrupt = 5;
+inline bool Computer_CPU_TR3200::has_interrupt() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_interrupt() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Computer_CPU_TR3200::clear_has_interrupt() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Computer_CPU_TR3200::clear_interrupt() {
+  interrupt_ = false;
+  clear_has_interrupt();
+}
+inline bool Computer_CPU_TR3200::interrupt() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.interrupt)
+  return interrupt_;
+}
+inline void Computer_CPU_TR3200::set_interrupt(bool value) {
+  set_has_interrupt();
+  interrupt_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.interrupt)
+}
+
+// required bool step_mode = 6;
+inline bool Computer_CPU_TR3200::has_step_mode() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_step_mode() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Computer_CPU_TR3200::clear_has_step_mode() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Computer_CPU_TR3200::clear_step_mode() {
+  step_mode_ = false;
+  clear_has_step_mode();
+}
+inline bool Computer_CPU_TR3200::step_mode() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.step_mode)
+  return step_mode_;
+}
+inline void Computer_CPU_TR3200::set_step_mode(bool value) {
+  set_has_step_mode();
+  step_mode_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.step_mode)
+}
+
+// required bool skiping = 7;
+inline bool Computer_CPU_TR3200::has_skiping() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_skiping() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Computer_CPU_TR3200::clear_has_skiping() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void Computer_CPU_TR3200::clear_skiping() {
+  skiping_ = false;
+  clear_has_skiping();
+}
+inline bool Computer_CPU_TR3200::skiping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.skiping)
+  return skiping_;
+}
+inline void Computer_CPU_TR3200::set_skiping(bool value) {
+  set_has_skiping();
+  skiping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.skiping)
+}
+
+// required bool sleeping = 8;
+inline bool Computer_CPU_TR3200::has_sleeping() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Computer_CPU_TR3200::set_has_sleeping() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Computer_CPU_TR3200::clear_has_sleeping() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Computer_CPU_TR3200::clear_sleeping() {
+  sleeping_ = false;
+  clear_has_sleeping();
+}
+inline bool Computer_CPU_TR3200::sleeping() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.TR3200.sleeping)
+  return sleeping_;
+}
+inline void Computer_CPU_TR3200::set_sleeping(bool value) {
+  set_has_sleeping();
+  sleeping_ = value;
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.CPU.TR3200.sleeping)
+}
+
+// -------------------------------------------------------------------
+
+// Computer_CPU
+
+// optional .tec.proto.Computer.CPU.TR3200 tr3200 = 1;
+inline bool Computer_CPU::has_tr3200() const {
+  return cpu_case() == kTr3200;
+}
+inline void Computer_CPU::set_has_tr3200() {
+  _oneof_case_[0] = kTr3200;
+}
+inline void Computer_CPU::clear_tr3200() {
+  if (has_tr3200()) {
+    delete cpu_.tr3200_;
+    clear_has_cpu();
+  }
+}
+inline const ::tec::proto::Computer_CPU_TR3200& Computer_CPU::tr3200() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.CPU.tr3200)
+  return has_tr3200() ? *cpu_.tr3200_
+                      : ::tec::proto::Computer_CPU_TR3200::default_instance();
+}
+inline ::tec::proto::Computer_CPU_TR3200* Computer_CPU::mutable_tr3200() {
+  if (!has_tr3200()) {
+    clear_cpu();
+    set_has_tr3200();
+    cpu_.tr3200_ = new ::tec::proto::Computer_CPU_TR3200;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.CPU.tr3200)
+  return cpu_.tr3200_;
+}
+inline ::tec::proto::Computer_CPU_TR3200* Computer_CPU::release_tr3200() {
+  if (has_tr3200()) {
+    clear_has_cpu();
+    ::tec::proto::Computer_CPU_TR3200* temp = cpu_.tr3200_;
+    cpu_.tr3200_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Computer_CPU::set_allocated_tr3200(::tec::proto::Computer_CPU_TR3200* tr3200) {
+  clear_cpu();
+  if (tr3200) {
+    set_has_tr3200();
+    cpu_.tr3200_ = tr3200;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.CPU.tr3200)
+}
+
+inline bool Computer_CPU::has_cpu() const {
+  return cpu_case() != CPU_NOT_SET;
+}
+inline void Computer_CPU::clear_has_cpu() {
+  _oneof_case_[0] = CPU_NOT_SET;
+}
+inline Computer_CPU::CpuCase Computer_CPU::cpu_case() const {
+  return Computer_CPU::CpuCase(_oneof_case_[0]);
+}
+// -------------------------------------------------------------------
+
+// Computer
+
+// repeated .tec.proto.Computer.Device devices = 1;
+inline int Computer::devices_size() const {
+  return devices_.size();
+}
+inline void Computer::clear_devices() {
+  devices_.Clear();
+}
+inline const ::tec::proto::Computer_Device& Computer::devices(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.devices)
+  return devices_.Get(index);
+}
+inline ::tec::proto::Computer_Device* Computer::mutable_devices(int index) {
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.devices)
+  return devices_.Mutable(index);
+}
+inline ::tec::proto::Computer_Device* Computer::add_devices() {
+  // @@protoc_insertion_point(field_add:tec.proto.Computer.devices)
+  return devices_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >&
+Computer::devices() const {
+  // @@protoc_insertion_point(field_list:tec.proto.Computer.devices)
+  return devices_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::tec::proto::Computer_Device >*
+Computer::mutable_devices() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.Computer.devices)
+  return &devices_;
+}
+
+// required bytes ram = 2;
+inline bool Computer::has_ram() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Computer::set_has_ram() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Computer::clear_has_ram() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Computer::clear_ram() {
+  ram_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_ram();
+}
+inline const ::std::string& Computer::ram() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.ram)
+  return ram_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_ram(const ::std::string& value) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.ram)
+}
+inline void Computer::set_ram(const char* value) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Computer.ram)
+}
+inline void Computer::set_ram(const void* value, size_t size) {
+  set_has_ram();
+  ram_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Computer.ram)
+}
+inline ::std::string* Computer::mutable_ram() {
+  set_has_ram();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.ram)
+  return ram_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Computer::release_ram() {
+  clear_has_ram();
+  return ram_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_allocated_ram(::std::string* ram) {
+  if (ram != NULL) {
+    set_has_ram();
+  } else {
+    clear_has_ram();
+  }
+  ram_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ram);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.ram)
+}
+
+// required .tec.proto.Computer.CPU cpu = 3;
+inline bool Computer::has_cpu() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Computer::set_has_cpu() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Computer::clear_has_cpu() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Computer::clear_cpu() {
+  if (cpu_ != NULL) cpu_->::tec::proto::Computer_CPU::Clear();
+  clear_has_cpu();
+}
+inline const ::tec::proto::Computer_CPU& Computer::cpu() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.cpu)
+  return cpu_ != NULL ? *cpu_ : *default_instance_->cpu_;
+}
+inline ::tec::proto::Computer_CPU* Computer::mutable_cpu() {
+  set_has_cpu();
+  if (cpu_ == NULL) {
+    cpu_ = new ::tec::proto::Computer_CPU;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.cpu)
+  return cpu_;
+}
+inline ::tec::proto::Computer_CPU* Computer::release_cpu() {
+  clear_has_cpu();
+  ::tec::proto::Computer_CPU* temp = cpu_;
+  cpu_ = NULL;
+  return temp;
+}
+inline void Computer::set_allocated_cpu(::tec::proto::Computer_CPU* cpu) {
+  delete cpu_;
+  cpu_ = cpu;
+  if (cpu) {
+    set_has_cpu();
+  } else {
+    clear_has_cpu();
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.cpu)
+}
+
+// optional string rom_file = 4;
+inline bool Computer::has_rom_file() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Computer::set_has_rom_file() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Computer::clear_has_rom_file() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Computer::clear_rom_file() {
+  rom_file_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_rom_file();
+}
+inline const ::std::string& Computer::rom_file() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Computer.rom_file)
+  return rom_file_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_rom_file(const ::std::string& value) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:tec.proto.Computer.rom_file)
+}
+inline void Computer::set_rom_file(const char* value) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:tec.proto.Computer.rom_file)
+}
+inline void Computer::set_rom_file(const char* value, size_t size) {
+  set_has_rom_file();
+  rom_file_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.Computer.rom_file)
+}
+inline ::std::string* Computer::mutable_rom_file() {
+  set_has_rom_file();
+  // @@protoc_insertion_point(field_mutable:tec.proto.Computer.rom_file)
+  return rom_file_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Computer::release_rom_file() {
+  clear_has_rom_file();
+  return rom_file_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Computer::set_allocated_rom_file(::std::string* rom_file) {
+  if (rom_file != NULL) {
+    set_has_rom_file();
+  } else {
+    clear_has_rom_file();
+  }
+  rom_file_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), rom_file);
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Computer.rom_file)
+}
+
+// -------------------------------------------------------------------
+
 // Component
 
 // optional .tec.proto.Renderable renderable = 1;
@@ -3056,6 +6449,328 @@ inline void Component::set_allocated_velocity(::tec::proto::Velocity* velocity) 
   // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.velocity)
 }
 
+// optional .tec.proto.AudioSource audio_source = 9;
+inline bool Component::has_audio_source() const {
+  return component_case() == kAudioSource;
+}
+inline void Component::set_has_audio_source() {
+  _oneof_case_[0] = kAudioSource;
+}
+inline void Component::clear_audio_source() {
+  if (has_audio_source()) {
+    delete component_.audio_source_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::AudioSource& Component::audio_source() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.audio_source)
+  return has_audio_source() ? *component_.audio_source_
+                      : ::tec::proto::AudioSource::default_instance();
+}
+inline ::tec::proto::AudioSource* Component::mutable_audio_source() {
+  if (!has_audio_source()) {
+    clear_component();
+    set_has_audio_source();
+    component_.audio_source_ = new ::tec::proto::AudioSource;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.audio_source)
+  return component_.audio_source_;
+}
+inline ::tec::proto::AudioSource* Component::release_audio_source() {
+  if (has_audio_source()) {
+    clear_has_component();
+    ::tec::proto::AudioSource* temp = component_.audio_source_;
+    component_.audio_source_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_audio_source(::tec::proto::AudioSource* audio_source) {
+  clear_component();
+  if (audio_source) {
+    set_has_audio_source();
+    component_.audio_source_ = audio_source;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.audio_source)
+}
+
+// optional .tec.proto.Light pointLight = 10;
+inline bool Component::has_pointlight() const {
+  return component_case() == kPointLight;
+}
+inline void Component::set_has_pointlight() {
+  _oneof_case_[0] = kPointLight;
+}
+inline void Component::clear_pointlight() {
+  if (has_pointlight()) {
+    delete component_.pointlight_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Light& Component::pointlight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.pointLight)
+  return has_pointlight() ? *component_.pointlight_
+                      : ::tec::proto::Light::default_instance();
+}
+inline ::tec::proto::Light* Component::mutable_pointlight() {
+  if (!has_pointlight()) {
+    clear_component();
+    set_has_pointlight();
+    component_.pointlight_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.pointLight)
+  return component_.pointlight_;
+}
+inline ::tec::proto::Light* Component::release_pointlight() {
+  if (has_pointlight()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.pointlight_;
+    component_.pointlight_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_pointlight(::tec::proto::Light* pointlight) {
+  clear_component();
+  if (pointlight) {
+    set_has_pointlight();
+    component_.pointlight_ = pointlight;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.pointLight)
+}
+
+// optional .tec.proto.Light directionalLight = 11;
+inline bool Component::has_directionallight() const {
+  return component_case() == kDirectionalLight;
+}
+inline void Component::set_has_directionallight() {
+  _oneof_case_[0] = kDirectionalLight;
+}
+inline void Component::clear_directionallight() {
+  if (has_directionallight()) {
+    delete component_.directionallight_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Light& Component::directionallight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.directionalLight)
+  return has_directionallight() ? *component_.directionallight_
+                      : ::tec::proto::Light::default_instance();
+}
+inline ::tec::proto::Light* Component::mutable_directionallight() {
+  if (!has_directionallight()) {
+    clear_component();
+    set_has_directionallight();
+    component_.directionallight_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.directionalLight)
+  return component_.directionallight_;
+}
+inline ::tec::proto::Light* Component::release_directionallight() {
+  if (has_directionallight()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.directionallight_;
+    component_.directionallight_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_directionallight(::tec::proto::Light* directionallight) {
+  clear_component();
+  if (directionallight) {
+    set_has_directionallight();
+    component_.directionallight_ = directionallight;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.directionalLight)
+}
+
+// optional .tec.proto.Light spotLight = 12;
+inline bool Component::has_spotlight() const {
+  return component_case() == kSpotLight;
+}
+inline void Component::set_has_spotlight() {
+  _oneof_case_[0] = kSpotLight;
+}
+inline void Component::clear_spotlight() {
+  if (has_spotlight()) {
+    delete component_.spotlight_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Light& Component::spotlight() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.spotLight)
+  return has_spotlight() ? *component_.spotlight_
+                      : ::tec::proto::Light::default_instance();
+}
+inline ::tec::proto::Light* Component::mutable_spotlight() {
+  if (!has_spotlight()) {
+    clear_component();
+    set_has_spotlight();
+    component_.spotlight_ = new ::tec::proto::Light;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.spotLight)
+  return component_.spotlight_;
+}
+inline ::tec::proto::Light* Component::release_spotlight() {
+  if (has_spotlight()) {
+    clear_has_component();
+    ::tec::proto::Light* temp = component_.spotlight_;
+    component_.spotlight_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_spotlight(::tec::proto::Light* spotlight) {
+  clear_component();
+  if (spotlight) {
+    set_has_spotlight();
+    component_.spotlight_ = spotlight;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.spotLight)
+}
+
+// optional .tec.proto.VoxelVolumen voxelVolume = 13;
+inline bool Component::has_voxelvolume() const {
+  return component_case() == kVoxelVolume;
+}
+inline void Component::set_has_voxelvolume() {
+  _oneof_case_[0] = kVoxelVolume;
+}
+inline void Component::clear_voxelvolume() {
+  if (has_voxelvolume()) {
+    delete component_.voxelvolume_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::VoxelVolumen& Component::voxelvolume() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.voxelVolume)
+  return has_voxelvolume() ? *component_.voxelvolume_
+                      : ::tec::proto::VoxelVolumen::default_instance();
+}
+inline ::tec::proto::VoxelVolumen* Component::mutable_voxelvolume() {
+  if (!has_voxelvolume()) {
+    clear_component();
+    set_has_voxelvolume();
+    component_.voxelvolume_ = new ::tec::proto::VoxelVolumen;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.voxelVolume)
+  return component_.voxelvolume_;
+}
+inline ::tec::proto::VoxelVolumen* Component::release_voxelvolume() {
+  if (has_voxelvolume()) {
+    clear_has_component();
+    ::tec::proto::VoxelVolumen* temp = component_.voxelvolume_;
+    component_.voxelvolume_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_voxelvolume(::tec::proto::VoxelVolumen* voxelvolume) {
+  clear_component();
+  if (voxelvolume) {
+    set_has_voxelvolume();
+    component_.voxelvolume_ = voxelvolume;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.voxelVolume)
+}
+
+// optional .tec.proto.Computer computer = 14;
+inline bool Component::has_computer() const {
+  return component_case() == kComputer;
+}
+inline void Component::set_has_computer() {
+  _oneof_case_[0] = kComputer;
+}
+inline void Component::clear_computer() {
+  if (has_computer()) {
+    delete component_.computer_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::Computer& Component::computer() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.computer)
+  return has_computer() ? *component_.computer_
+                      : ::tec::proto::Computer::default_instance();
+}
+inline ::tec::proto::Computer* Component::mutable_computer() {
+  if (!has_computer()) {
+    clear_component();
+    set_has_computer();
+    component_.computer_ = new ::tec::proto::Computer;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.computer)
+  return component_.computer_;
+}
+inline ::tec::proto::Computer* Component::release_computer() {
+  if (has_computer()) {
+    clear_has_component();
+    ::tec::proto::Computer* temp = component_.computer_;
+    component_.computer_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_computer(::tec::proto::Computer* computer) {
+  clear_component();
+  if (computer) {
+    set_has_computer();
+    component_.computer_ = computer;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.computer)
+}
+
+// optional .tec.proto.LuaScript luaScript = 100;
+inline bool Component::has_luascript() const {
+  return component_case() == kLuaScript;
+}
+inline void Component::set_has_luascript() {
+  _oneof_case_[0] = kLuaScript;
+}
+inline void Component::clear_luascript() {
+  if (has_luascript()) {
+    delete component_.luascript_;
+    clear_has_component();
+  }
+}
+inline const ::tec::proto::LuaScript& Component::luascript() const {
+  // @@protoc_insertion_point(field_get:tec.proto.Component.luaScript)
+  return has_luascript() ? *component_.luascript_
+                      : ::tec::proto::LuaScript::default_instance();
+}
+inline ::tec::proto::LuaScript* Component::mutable_luascript() {
+  if (!has_luascript()) {
+    clear_component();
+    set_has_luascript();
+    component_.luascript_ = new ::tec::proto::LuaScript;
+  }
+  // @@protoc_insertion_point(field_mutable:tec.proto.Component.luaScript)
+  return component_.luascript_;
+}
+inline ::tec::proto::LuaScript* Component::release_luascript() {
+  if (has_luascript()) {
+    clear_has_component();
+    ::tec::proto::LuaScript* temp = component_.luascript_;
+    component_.luascript_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Component::set_allocated_luascript(::tec::proto::LuaScript* luascript) {
+  clear_component();
+  if (luascript) {
+    set_has_luascript();
+    component_.luascript_ = luascript;
+  }
+  // @@protoc_insertion_point(field_set_allocated:tec.proto.Component.luaScript)
+}
+
 inline bool Component::has_component() const {
   return component_case() != COMPONENT_NOT_SET;
 }
@@ -3125,39 +6840,89 @@ Entity::mutable_components() {
 
 // -------------------------------------------------------------------
 
-// EntityList
+// EntityFileList
 
-// repeated .tec.proto.Entity entities = 1;
-inline int EntityList::entities_size() const {
-  return entities_.size();
+// repeated string entity_file_list = 1;
+inline int EntityFileList::entity_file_list_size() const {
+  return entity_file_list_.size();
 }
-inline void EntityList::clear_entities() {
-  entities_.Clear();
+inline void EntityFileList::clear_entity_file_list() {
+  entity_file_list_.Clear();
 }
-inline const ::tec::proto::Entity& EntityList::entities(int index) const {
-  // @@protoc_insertion_point(field_get:tec.proto.EntityList.entities)
-  return entities_.Get(index);
+inline const ::std::string& EntityFileList::entity_file_list(int index) const {
+  // @@protoc_insertion_point(field_get:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Get(index);
 }
-inline ::tec::proto::Entity* EntityList::mutable_entities(int index) {
-  // @@protoc_insertion_point(field_mutable:tec.proto.EntityList.entities)
-  return entities_.Mutable(index);
+inline ::std::string* EntityFileList::mutable_entity_file_list(int index) {
+  // @@protoc_insertion_point(field_mutable:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_.Mutable(index);
 }
-inline ::tec::proto::Entity* EntityList::add_entities() {
-  // @@protoc_insertion_point(field_add:tec.proto.EntityList.entities)
-  return entities_.Add();
+inline void EntityFileList::set_entity_file_list(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:tec.proto.EntityFileList.entity_file_list)
+  entity_file_list_.Mutable(index)->assign(value);
 }
-inline const ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >&
-EntityList::entities() const {
-  // @@protoc_insertion_point(field_list:tec.proto.EntityList.entities)
-  return entities_;
+inline void EntityFileList::set_entity_file_list(int index, const char* value) {
+  entity_file_list_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:tec.proto.EntityFileList.entity_file_list)
 }
-inline ::google::protobuf::RepeatedPtrField< ::tec::proto::Entity >*
-EntityList::mutable_entities() {
-  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityList.entities)
-  return &entities_;
+inline void EntityFileList::set_entity_file_list(int index, const char* value, size_t size) {
+  entity_file_list_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+inline ::std::string* EntityFileList::add_entity_file_list() {
+  return entity_file_list_.Add();
+}
+inline void EntityFileList::add_entity_file_list(const ::std::string& value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:tec.proto.EntityFileList.entity_file_list)
+}
+inline void EntityFileList::add_entity_file_list(const char* value) {
+  entity_file_list_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:tec.proto.EntityFileList.entity_file_list)
+}
+inline void EntityFileList::add_entity_file_list(const char* value, size_t size) {
+  entity_file_list_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:tec.proto.EntityFileList.entity_file_list)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+EntityFileList::entity_file_list() const {
+  // @@protoc_insertion_point(field_list:tec.proto.EntityFileList.entity_file_list)
+  return entity_file_list_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+EntityFileList::mutable_entity_file_list() {
+  // @@protoc_insertion_point(field_mutable_list:tec.proto.EntityFileList.entity_file_list)
+  return &entity_file_list_;
 }
 
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

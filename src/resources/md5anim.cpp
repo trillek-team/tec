@@ -1,3 +1,6 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #include "resources/md5anim.hpp"
 
 #include <fstream>
@@ -6,6 +9,7 @@
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "spdlog/spdlog.h"
 #include "resources/md5mesh.hpp"
 
 namespace tec {
@@ -46,15 +50,16 @@ namespace tec {
 	*/
 	extern std::string CleanString(std::string str);
 
-	std::shared_ptr<MD5Anim> MD5Anim::Create(const std::string fname, std::shared_ptr<MD5Mesh> mesh) {
-		auto anim = std::make_shared<MD5Anim>();
+	std::shared_ptr<MD5Anim> MD5Anim::Create(const FilePath& fname, std::shared_ptr<MD5Mesh> mesh) {
 		if (!mesh) {
 			return nullptr;
 		}
-		anim->fname = fname;
+		auto anim = std::make_shared<MD5Anim>();
+		anim->SetName(fname.SubpathFrom("assets").toGenericString());
+		anim->SetFileName(fname);
 
 		if (anim->Parse()) {
-			for (size_t i = 0; i < anim->frames.size(); ++i) {
+			for (std::size_t i = 0; i < anim->frames.size(); ++i) {
 				anim->BuildFrameSkeleton(i);
 			}
 			if (anim->CheckMesh(mesh)) {
@@ -62,13 +67,21 @@ namespace tec {
 			}
 		}
 
+		spdlog::get("console_log")->warn("[MD5Anim] Error parsing file {}", fname.toString());
 		return nullptr;
 	}
 
 	bool MD5Anim::Parse() {
-		std::ifstream f(this->fname, std::ios::in);
-
+		auto _log = spdlog::get("console_log");
+		if (!this->path.isValidPath() || ! this->path.FileExists()) {
+			_log->error("[MD5Anim] Can't open the file {}. Invalid path or missing file.", path.toString());
+			// Can't open the file!
+			return false;
+		}
+		
+		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
+			_log->error("[MD5Anim] Error opening file {}", path.toString());
 			return false;
 		}
 
@@ -138,7 +151,7 @@ namespace tec {
 				}
 			}
 			else if (identifier == "baseframe") {
-				size_t index = 0;
+				std::size_t index = 0;
 				while (std::getline(f, line)) {
 					if ((line.find("(") != std::string::npos) && (line.find(")") != std::string::npos)) {
 						ss.str(CleanString(line));
@@ -192,7 +205,7 @@ namespace tec {
 		return true;
 	}
 
-	void MD5Anim::BuildFrameSkeleton(size_t frame_index) {
+	void MD5Anim::BuildFrameSkeleton(std::size_t frame_index) {
 		auto& frame = this->frames[frame_index];
 
 		for (const auto& joint : this->joints) {
@@ -249,7 +262,7 @@ namespace tec {
 				return false;
 			}
 
-			for (size_t i = 0; i < this->joints.size(); ++i) {
+			for (std::size_t i = 0; i < this->joints.size(); ++i) {
 				// Make sure joint names and parents match up.
 				if ((this->joints[i].name != mesh->joints[i].name) ||
 					(this->joints[i].parent != mesh->joints[i].parent)) {
@@ -262,20 +275,20 @@ namespace tec {
 		return false;
 	}
 
-	MD5Anim::FrameSkeleton MD5Anim::InterpolateSkeletons(size_t frame_index_start,
-		size_t frame_index_end, float delta) {
+	MD5Anim::FrameSkeleton MD5Anim::InterpolateSkeletons(std::size_t frame_index_start,
+		std::size_t frame_index_end, float delta) {
 		const auto& skeleton0 = this->frames[frame_index_start].skeleton;
 		const auto& skeleton1 = this->frames[frame_index_end].skeleton;
 		FrameSkeleton final_skeleton;
 
-		size_t num_joints = this->joints.size();
+		std::size_t num_joints = this->joints.size();
 
 		final_skeleton.skeleton_joints.insert(final_skeleton.skeleton_joints.begin(),
 			num_joints, SkeletonJoint());
 		final_skeleton.bone_matricies.insert(final_skeleton.bone_matricies.begin(),
 			num_joints, glm::mat4(1.0f));
 
-		for (size_t i = 0; i < num_joints; ++i) {
+		for (std::size_t i = 0; i < num_joints; ++i) {
 			SkeletonJoint& finalJoint = final_skeleton.skeleton_joints[i];
 			glm::mat4& finalMatrix = final_skeleton.bone_matricies[i];
 

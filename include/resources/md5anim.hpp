@@ -1,3 +1,6 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #pragma once
 
 #include <string>
@@ -6,6 +9,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+
+#include "filesystem.hpp"
 
 namespace tec {
 	class MD5Mesh;
@@ -60,7 +65,7 @@ namespace tec {
 		* \param[in] std::shared_ptr<MD5Mesh> mesh The mesh file this animation will be animating.
 		* \return std::shared_ptr<MD5Anim> The create MD5Anim resource.
 		*/
-		static std::shared_ptr<MD5Anim> Create(const std::string fname, std::shared_ptr<MD5Mesh> mesh);
+		static std::shared_ptr<MD5Anim> Create(const FilePath& fname, std::shared_ptr<MD5Mesh> mesh);
 
 		/**
 		* \brief Loads the MD5Anim file from disk and parses it.
@@ -76,27 +81,35 @@ namespace tec {
 		* \param[in] const std::string& fname The mesh filename.
 		* \return bool True if initialization finished with no errors.
 		*/
-		void SetFileName(const std::string& fname) {
-			this->fname = fname;
+		void SetFileName(const FilePath& fname) {
+			this->path = fname;
 		}
 
-		std::string GetFileName() {
-			return this->fname;
+		FilePath GetFileName() {
+			return this->path;
 		}
-
+		
+		const std::string GetName() const {
+			return this->name;
+		}
+		
+		void SetName(const std::string& name) {
+			this->name = name;
+		}
+		
 		/**
 		* \brief Returns the number of animation frames.
 		*
 		* \return bool size_t The number of frames.
 		*/
-		size_t GetFrameCount() const {
+		std::size_t GetFrameCount() const {
 			return this->frames.size();
 		}
 
 		/**
 		* \brief Returns the number of frame rate per second.
 		*
-		* \return bool size_t The frame rate per second.
+		* \return int The frame rate per second.
 		*/
 		int GetFrameRate() const {
 			return this->frame_rate;
@@ -108,7 +121,7 @@ namespace tec {
 		* \param[in] size_t frame_index Index of the frame to build/rebuild.
 		* \return void
 		*/
-		void BuildFrameSkeleton(size_t frame_index);
+		void BuildFrameSkeleton(std::size_t frame_index);
 
 		/**
 		* \brief Checks of a given mesh is valid for this animation.
@@ -126,9 +139,10 @@ namespace tec {
 		* \param[in] float delta The change in time since the last call.
 		* \return FrameSkeleton The current FrameSkeleton for the given delta.
 		*/
-		FrameSkeleton InterpolateSkeletons(size_t frame_index_start, size_t frame_index_end, float delta);
+		FrameSkeleton InterpolateSkeletons(std::size_t frame_index_start, std::size_t frame_index_end, float delta);
 	private:
-		std::string fname; // Relative filename
+		FilePath path; // Relative filename
+		std::string name;
 		std::vector<BoundingBox> bounds; // Bound box sizes for each join.
 		std::vector<Frame> frames;
 		std::vector<Joint> joints;

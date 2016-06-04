@@ -1,3 +1,6 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #include "components/transforms.hpp"
 
 namespace tec {
@@ -9,21 +12,39 @@ namespace tec {
 		this->value += orientation * amount;
 	}
 
-	void Position::Out(proto::Position* target) {
-		target->set_x(this->value.x);
-		target->set_y(this->value.y);
-		target->set_z(this->value.z);
+	void Position::Out(proto::Component* target) {
+		proto::Position* comp = target->mutable_position();
+		comp->set_x(this->value.x);
+		comp->set_y(this->value.y);
+		comp->set_z(this->value.z);
+		proto::Position::CenterOffset* offset = comp->mutable_offset();
+		offset->set_x(this->center_offset.x);
+		offset->set_y(this->center_offset.y);
+		offset->set_z(this->center_offset.z);
 	}
 
-	void Position::In(const proto::Position& source) {
-		if (source.has_x()) {
-			this->value.x = source.x();
+	void Position::In(const proto::Component& source) {
+		const proto::Position& comp = source.position();
+		if (comp.has_x()) {
+			this->value.x = comp.x();
 		}
-		if (source.has_y()) {
-			this->value.y = source.y();
+		if (comp.has_y()) {
+			this->value.y = comp.y();
 		}
-		if (source.has_z()) {
-			this->value.z = source.z();
+		if (comp.has_z()) {
+			this->value.z = comp.z();
+		}
+		if (comp.has_offset()) {
+			const proto::Position::CenterOffset& offset = comp.offset();
+			if (offset.has_x()) {
+				this->center_offset.x = offset.x();
+			}
+			if (offset.has_y()) {
+				this->center_offset.y = offset.y();
+			}
+			if (offset.has_z()) {
+				this->center_offset.z = offset.z();
+			}
 		}
 	}
 
@@ -44,17 +65,64 @@ namespace tec {
 		this->value = glm::normalize(change * this->value);
 	}
 
-	void Orientation::Out(proto::Orientation* target) {
-		target->set_x(this->value.x);
-		target->set_y(this->value.y);
-		target->set_z(this->value.z);
-		target->set_w(this->value.w);
+	void Orientation::Out(proto::Component* target) {
+		proto::Orientation* comp = target->mutable_orientation();
+		comp->set_x(this->value.x);
+		comp->set_y(this->value.y);
+		comp->set_z(this->value.z);
+		comp->set_w(this->value.w);
+		proto::Orientation::RotationOffset* offset = comp->mutable_offset();
+		offset->set_x(this->rotation_offset.x);
+		offset->set_y(this->rotation_offset.y);
+		offset->set_z(this->rotation_offset.z);
 	}
 
-	void Orientation::In(const proto::Orientation& source) {
-		this->value.x = source.x();
-		this->value.y = source.y();
-		this->value.z = source.z();
-		this->value.w = source.w();
+	void Orientation::In(const proto::Component& source) {
+		const proto::Orientation& comp = source.orientation();
+		if (comp.has_x()) {
+			this->value.x = comp.x();
+		}
+		if (comp.has_y()) {
+			this->value.y = comp.y();
+		}
+		if (comp.has_z()) {
+			this->value.z = comp.z();
+		}
+		if (comp.has_w()) {
+			this->value.w = comp.w();
+		}
+		this->rotation = glm::eulerAngles(this->value);
+		if (comp.has_offset()) {
+			const proto::Orientation::RotationOffset& offset = comp.offset();
+			if (offset.has_x()) {
+				this->rotation_offset.x = offset.x();
+			}
+			if (offset.has_y()) {
+				this->rotation_offset.y = offset.y();
+			}
+			if (offset.has_z()) {
+				this->rotation_offset.z = offset.z();
+			}
+		}
+	}
+
+	void Scale::Out(proto::Component* target) {
+		proto::Scale* comp = target->mutable_scale();
+		comp->set_x(this->value.x);
+		comp->set_y(this->value.y);
+		comp->set_z(this->value.z);
+	}
+
+	void Scale::In(const proto::Component& source) {
+		const proto::Scale& comp = source.scale();
+		if (comp.has_x()) {
+			this->value.x = comp.x();
+		}
+		if (comp.has_y()) {
+			this->value.y = comp.y();
+		}
+		if (comp.has_z()) {
+			this->value.z = comp.z();
+		}
 	}
 }

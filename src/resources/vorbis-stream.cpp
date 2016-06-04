@@ -1,10 +1,16 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #include "resources/vorbis-stream.hpp"
+
+#include "spdlog/spdlog.h"
+#include "multiton.hpp"
 
 #undef STB_VORBIS_HEADER_ONLY
 #include "resources/stb_vorbis.c"
 namespace tec {
-
-	VorbisStream::VorbisStream(size_t buffer_size) : buffer_size(buffer_size), stream(nullptr) {
+	typedef Multiton<std::string, std::shared_ptr<VorbisStream>> SoundMap;
+	VorbisStream::VorbisStream(std::size_t buffer_size) : buffer_size(buffer_size), stream(nullptr) {
 		this->sbuffer = new ALshort[this->buffer_size];
 	}
 
@@ -13,12 +19,12 @@ namespace tec {
 		delete this->stream;
 	}
 
-	size_t VorbisStream::BufferStream(ALint buffer) {
+	std::size_t VorbisStream::BufferStream(ALint buffer) {
 		if (!this->stream) {
 			return 0;
 		}
 
-		size_t  size = 0;
+		std::size_t  size = 0;
 		int  num_read = 0;
 
 		while (size < this->buffer_size) {
@@ -49,10 +55,40 @@ namespace tec {
 		this->totalSamplesLeft = stb_vorbis_stream_length_in_samples(this->stream) * this->info.channels;
 	}
 
-	std::shared_ptr<VorbisStream> VorbisStream::Create(std::string filename) {
+	inline std::string VorbisErrorToString(int error) {
+		switch (error) {
+		case VORBIS__no_error:
+			return "No error";
+		case VORBIS_need_more_data:
+			return "Need more data";
+		case VORBIS_invalid_api_mixing:
+			return "Can't mix API modes";
+		case VORBIS_outofmem:
+			return "Out of memory!";
+		case VORBIS_too_many_channels:
+			return "Reached max number of channels";
+		case VORBIS_file_open_failure:
+			return "Can't open file";
+		case VORBIS_seek_without_length:
+			return "Unknow lenght of file";
+		case VORBIS_unexpected_eof:
+			return "File truncated or I/O error";
+		case VORBIS_seek_invalid:
+			return "Invalid seek. Corrupted file ?";
+		default:
+			return "Unknow Vorbis error";
+		}
+	}
+
+	std::shared_ptr<VorbisStream> VorbisStream::Create(const FilePath& filename) {
 		std::shared_ptr<VorbisStream> stream = std::make_shared<VorbisStream>();
+		//stream->SetFileName(fname);
+		stream->SetName(filename.SubpathFrom("assets").toGenericString());
+		
 		int error;
-		stream->stream = stb_vorbis_open_filename(filename.c_str(), &error, NULL);
+		// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a fopen to FileSystem ?
+		// Als we not are doing path valid or file existence check
+		stream->stream = stb_vorbis_open_filename(filename.toString().c_str(), &error, NULL);
 		if (stream->stream) {
 			stream->info = stb_vorbis_get_info(stream->stream);
 			if (stream->info.channels == 2) {
@@ -62,8 +98,9 @@ namespace tec {
 				stream->format = AL_FORMAT_MONO16;
 			}
 			stream->totalSamplesLeft = stb_vorbis_stream_length_in_samples(stream->stream) * stream->info.channels;
-		}
-		else {
+			SoundMap::Set(stream->GetName(), stream);
+		} else {
+			spdlog::get("console_log")->warn("[Vorbis-Stream] Can't load file {} code {} : {}", filename.toString(), error, VorbisErrorToString(error));
 			stream.reset();
 		}
 		return stream;

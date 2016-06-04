@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package tec.proto;
+
+import "components.proto";
+
+message GameStateUpdate {
+	required uint64 state_id = 1;
+	repeated Entity entity = 2;
+}

@@ -8,7 +8,7 @@
 # Copyright 2012 Benjamin Eikel
 #
 # Distributed under the OSI-approved BSD License (the "License");
-# see accompanying file Copyright.txt for details.
+# see licenses/BSD.txt for the full text
 #
 # This software is distributed WITHOUT ANY WARRANTY; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -18,8 +18,8 @@
 #  License text for the above reference.)
 
 find_path(GLEW_INCLUDE_DIR GL/glew.h)
-SET(GLEW_DEBUG_NAMES glew32_debug)
-SET(GLEW_NAMES glew32 GLEW)
+SET(GLEW_DEBUG_NAMES glew32s_debug)
+SET(GLEW_NAMES glew32s GLEW)
 add_definitions(-DGLEW_STATIC)
 
 # Reset the variables so that find_library will rescan in case we changed from static to none (or vice versa).

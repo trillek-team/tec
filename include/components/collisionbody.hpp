@@ -1,45 +1,56 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #pragma once
 
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 
 #include <memory>
-#include <vector>
-#include <string>
 
 #include "types.hpp"
-#include "entity.hpp"
 
 namespace tec {
-	class Mesh;
-
-	enum COLLISION_SHAPE { SPHERE, CAPSULE, BOX, STATIC_MESH, DYNAMIC_MESH, NONE };
-
 	struct CollisionBody {
-		CollisionBody(COLLISION_SHAPE collision_shape = NONE);
+		struct MotionState : public btMotionState {
+			MotionState() { }
+			MotionState(MotionState&& other) : transform(std::move(other.transform)),
+				transform_updated(other.transform_updated) {
+			}
+			
+			MotionState& operator=(MotionState&& other) {
+				transform_updated = other.transform_updated;
+				transform = std::move(transform);
+				return *this;
+			}
+			btTransform transform;
+
+			bool transform_updated;
+
+			void getWorldTransform(btTransform& worldTrans) const {
+				worldTrans = this->transform;
+			}
+
+			void setWorldTransform(const btTransform& worldTrans) {
+				this->transform_updated = true;
+				this->transform = worldTrans;
+			}
+		};
+		CollisionBody();
+		CollisionBody(CollisionBody&& other);
 		~CollisionBody();
 
-		static ReflectionComponent Reflection(CollisionBody* val);
+		CollisionBody& operator=(CollisionBody&& other);
 
-		COLLISION_SHAPE collision_shape;
-		COLLISION_SHAPE new_collision_shape;
+		void Out(proto::Component* target);
+		void In(const proto::Component& source);
 
 		btScalar mass; // For static objects mass must be 0.
 		bool disable_deactivation = false; // Whether to disable automatic deactivation.
 		bool disable_rotation; // prevent rotation from physics simulation.
 
-		btVector3 half_extents; // For BOX shapes.
-		float radius; // For SPHERE and CAPSULE shapes.
-		float height; // For CAPSULE shapes.
-
-		btMotionState* motion_state;
 		std::shared_ptr<btCollisionShape> shape;
-		eid entity_id;
-	};
-	struct CollisionMesh : public CollisionBody {
-		CollisionMesh(std::shared_ptr<Mesh> mesh, bool dynamic = false);
-
-		std::shared_ptr<btTriangleMesh> mesh;
-		std::shared_ptr<Mesh> mesh_file;
+		eid entity_id; // Stored to use when doing lookups during collision
+		MotionState motion_state;
 	};
 }

@@ -1,72 +1,39 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #pragma once
 
-#include <memory>
 #include <map>
+#include <memory>
 
 #include <btBulletDynamicsCommon.h>
 #include <glm/glm.hpp>
 
 #include "types.hpp"
-#include "entity.hpp"
-#include "multiton.hpp"
 #include "command-queue.hpp"
+#include "event-system.hpp"
+#include "game-state.hpp"
 
 namespace tec {
 	struct CollisionBody;
+	struct MouseBtnEvent;
+	struct EntityCreated;
+	struct EntityDestroyed;
 
-	struct Velocity {
-		Velocity() : linear(0, 0, 0, 0), angular(0, 0, 0, 0) { };
-
-		Velocity(glm::vec4 linear, glm::vec4 angular)
-			: linear(linear), angular(angular) { };
-
-		glm::vec4 linear;
-		glm::vec4 angular;
-		btVector3 GetLinear() const {
-			return btVector3(linear.x, linear.y, linear.z);
-		}
-		btVector3 GetAngular() const {
-			return btVector3(angular.x, angular.y, angular.z);
-		}
-
-		static ReflectionComponent Reflection(Velocity* val) {
-			ReflectionComponent refcomp;
-			Property prop(Property::FLOAT);
-			(refcomp.properties["Linear X"] = prop).Set<float>(val->linear.x);
-			refcomp.properties["Linear X"].update_func = [val] (Property& prop) { val->linear.x = prop.Get<float>(); };
-			(refcomp.properties["Linear Y"] = prop).Set<float>(val->linear.y);
-			refcomp.properties["Linear Y"].update_func = [val] (Property& prop) { val->linear.y = prop.Get<float>(); };
-			(refcomp.properties["Linear Z"] = prop).Set<float>(val->linear.z);
-			refcomp.properties["Linear Z"].update_func = [val] (Property& prop) { val->linear.z = prop.Get<float>(); };
-			(refcomp.properties["Angular X"] = prop).Set<float>(val->angular.x);
-			refcomp.properties["Angular X"].update_func = [val] (Property& prop) { val->angular.x = prop.Get<float>(); };
-			(refcomp.properties["Angular Y"] = prop).Set<float>(val->angular.y);
-			refcomp.properties["Angular Y"].update_func = [val] (Property& prop) { val->angular.y = prop.Get<float>(); };
-			(refcomp.properties["Angular Z"] = prop).Set<float>(val->angular.z);
-			refcomp.properties["Angular Z"].update_func = [val] (Property& prop) { val->angular.z = prop.Get<float>(); };
-			
-			return std::move(refcomp);
-		}
-	};
-
-	class PhysicsSystem : public CommandQueue < PhysicsSystem > {
+	class PhysicsSystem : public CommandQueue < PhysicsSystem >,
+		EventQueue < MouseBtnEvent >, EventQueue < EntityCreated >,
+		EventQueue < EntityDestroyed > {
 	public:
 		PhysicsSystem();
 		~PhysicsSystem();
 
-		/** \brief
-		*
-		* This function is called once every frame. It is the only
-		* function that can write data. This function is in the critical
-		* path, job done here must be simple.
-		*/
-		void Update(const double delta);
+		std::set<eid> Update(const double delta, const GameState& state);
 
-		eid RayCast(eid source_entity);
+		eid RayCastMousePick(eid source_entity, double mouse_x = 0.0f, double mouse_y = 0.0f,
+			float screen_width = 1.0f, float screen_height = 1.0f);
 		eid RayCastIgnore(eid);
 		glm::vec3 GetLastRayPos() const {
-			btVector3 tmp = last_raypos; // grab a copy
-			return glm::vec3(tmp.getX(), tmp.getY(), tmp.getZ());
+			return glm::vec3(last_raypos.getX(), last_raypos.getY(), last_raypos.getZ());
 		}
 		double GetLastRayDistance() const {
 			return last_raydist;
@@ -76,6 +43,12 @@ namespace tec {
 		}
 
 		void DebugDraw();
+		void On(std::shared_ptr<MouseBtnEvent> data);
+		void On(std::shared_ptr<EntityCreated> data);
+		void On(std::shared_ptr<EntityDestroyed> data);
+
+		Position GetPosition(eid entity_id);
+		Orientation GetOrientation(eid entity_id);
 	protected:
 		/** \brief Set a rigid body's gravity.
 		 *
@@ -90,17 +63,15 @@ namespace tec {
 		 */
 		void SetNormalGravity(const unsigned int entity_id);
 	private:
-		bool CreateRigiedBody(eid entity_id, std::shared_ptr<CollisionBody> collision_body);
-
-		typedef Multiton<eid, std::shared_ptr<CollisionBody>> CollisionBodyMap;
-		typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
+		bool AddRigidBody(CollisionBody* collision_body);
+		void RemoveRigidBody(eid entity_id);
 
 		btBroadphaseInterface* broadphase;
 		btCollisionConfiguration* collisionConfiguration;
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
 		btDynamicsWorld* dynamicsWorld;
-
+		
 		std::map<eid, btRigidBody*> bodies;
 
 		btVector3 last_rayfrom;
@@ -108,5 +79,6 @@ namespace tec {
 		btVector3 last_raypos;
 		btVector3 last_raynorm;
 		bool last_rayvalid;
+		eid last_entity_hit;
 	};
 }

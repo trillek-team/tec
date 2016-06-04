@@ -1,8 +1,14 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #include "os.hpp"
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include "spdlog/spdlog.h"
 #include "event-system.hpp"
+#include "events.hpp"
+
 
 #ifdef __APPLE__
 // Needed so we can disable retina support for our window.
@@ -19,17 +25,20 @@ namespace tec {
 	GLFWwindow* OS::focused_window;
 
 	// Error helper function used by GLFW for error messaging.
-	// Currently outputs to std::cout.
 	static void ErrorCallback(int error_no, const char* description) {
-		std::cout << "Error " << error_no << ": " << description << std::endl;
+		spdlog::get("console_log")->error() << "[OS] GLFW Error " << error_no << ": " << description;
 	}
 
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
-		const unsigned int glMajor /*= 3*/, const unsigned int glMinor /*= 2*/) {
+		const int glMajor /*= 3*/, const int glMinor /*= 3*/) {
+		assert(glMajor >= 3);
+		assert(glMajor*10 + glMinor >= 33);
 		glfwSetErrorCallback(ErrorCallback);
 
+		auto l = spdlog::get("console_log");
 		// Initialize the library.
 		if (glfwInit() != GL_TRUE) {
+			l->critical("[OS] Can initialize glfw");
 			return false;
 		}
 
@@ -51,6 +60,7 @@ namespace tec {
 			if (!this->window) {
 				// still not right, give up
 				glfwTerminate();
+				l->critical("[OS] Can't initialize window");
 				return false;
 			}
 		}
@@ -61,9 +71,9 @@ namespace tec {
 		// check the context version
 		std::string glcx_version((char*)glGetString(GL_VERSION));
 		std::string glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-		if (glcx_major == "1" || glcx_major == "2") {
-			// we got a version 1 context, that will not work
-			// so try again.
+		std::string glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
+		if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
+			// we got an older version of context, that will not work. So try again.
 			glfwMakeContextCurrent(nullptr);
 			glfwDestroyWindow(this->window);
 			// be more specific this time
@@ -75,6 +85,7 @@ namespace tec {
 
 			if (!this->window) {
 				glfwTerminate();
+				l->critical("[OS] Can't initialize window");
 				return false;
 			}
 			// attach the context
@@ -83,18 +94,43 @@ namespace tec {
 			// check the context version again
 			glcx_version = (char*)glGetString(GL_VERSION);
 			glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-			if (glcx_major == "1") {
-				// still 1, higher versions probably not supported
+			glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
+			if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
+				// still a invalid version. Higher versions probably not supported
 				glfwTerminate();
-				std::cerr << "Initializing OpenGL failed, unsupported version: " << glcx_version << '\n';
-				std::cerr << "Press \"Enter\" to exit\n";
+				l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
+					<< "Press \"Enter\" to exit\n";
 				std::cin.get();
 				return false;
 			}
 		}
 
-		std::cerr << "GL version string: " << glcx_version << std::endl;
-
+		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
+		const char* glcx_renderer = (char*)glGetString(GL_RENDERER);
+		l->info() << glcx_vendor << " - " << glcx_renderer;
+	
+		// Check that GLSL is >= 3.30
+		std::string glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+		std::string glsl_major = glcx_glslver.substr(0, glcx_glslver.find('.', 0));
+		std::string glsl_minor = glcx_glslver.substr(glcx_glslver.find('.', 0)+1, 1);
+		if (glsl_major.at(0) < '3') {
+			l->critical() << "[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : " 
+						  << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver << "\n" 
+						  << "Press \"Enter\" to exit\n";
+			std::cin.get();
+			return false;
+		} else if (glsl_major.at(0) == '3') { 
+			if (glsl_minor.at(0) < '3') {
+				l->critical() << "[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : " 
+							<< "GL version : " << glcx_version << " GLSL version : " << glcx_glslver << "\n" 
+							<< "Press \"Enter\" to exit\n";
+				std::cin.get();
+				return false;
+			}
+		}
+		
+		l->info() << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver; 
+		
 		this->client_width = width;
 		this->client_height = height;
 
@@ -118,8 +154,33 @@ namespace tec {
 		if (error != GLEW_OK) {
 			return false;
 		}
+
+        /*Flush the error buffer. According to the OpenGL official
+        wiki, some version of GLEW generate a GL_INVALID_ENUM when
+        glewInit() is called which can be safely ignored. Do not remove
+        unless you know what you do.*/
+
+        glGetError();
+
+        //===================
 #endif
 
+		// Getting a list of the avail extensions
+		
+		std::string extensions = "";
+		GLint num_exts = 0;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
+		l->info("Extensions {} : ", num_exts);
+		std::string ext("");
+		for (GLint e=0; e < num_exts; e++) {
+			ext += "[" + std::string((const char*) glGetStringi(GL_EXTENSIONS, e)) + "] ";
+			if (e != 0 && e % 5 == 0) {
+				l->info(ext);
+				ext = "";
+			}
+		}
+		l->info(ext);
+		
 		// Associate a pointer for this instance with this window.
 		glfwSetWindowUserPointer(this->window, this);
 
@@ -129,6 +190,7 @@ namespace tec {
 		glfwSetCursorPosCallback(this->window, &OS::MouseMoveEventCallback);
 		glfwSetCharCallback(this->window, &OS::CharacterEventCallback);
 		glfwSetMouseButtonCallback(this->window, &OS::MouseButtonEventCallback);
+		glfwSetScrollCallback(this->window, &OS::MouseScrollEventCallback);
 		glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
 		glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
@@ -151,6 +213,10 @@ namespace tec {
 
 	void OS::Terminate() {
 		glfwTerminate();
+	}
+	
+	void OS::Quit() {
+		glfwSetWindowShouldClose(this->window, true);
 	}
 
 	bool OS::Closing() {
@@ -221,6 +287,15 @@ namespace tec {
 		}
 	}
 
+	void OS::MouseScrollEventCallback(GLFWwindow* window, double x, double y) {
+		// Get the user pointer and cast it.
+		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+
+		if (os) {
+			os->DispatchMouseScrollEvent(x, y);
+		}
+	}
+
 	void OS::MouseButtonEventCallback(GLFWwindow* window, int button, int action, int mods) {
 		// Get the user pointer and cast it.
 		OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
@@ -233,11 +308,13 @@ namespace tec {
 	void OS::WindowFocusChangeCallback(GLFWwindow* window, int focused) {
 		if (focused == GL_FALSE) {
 			OS::focused_window = nullptr;
-			// Get the user pointer and cast it.
-			OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
+			if (window != nullptr) {
+				// Get the user pointer and cast it.
+				OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));
 
-			if (os) {
+				if (os) {
 
+				}
 			}
 		}
 		else if (focused == GL_TRUE) {
@@ -291,17 +368,18 @@ namespace tec {
 			static_cast<int>(y)
 		});
 		EventSystem<MouseMoveEvent>::Get()->Emit(mmov_event);
+		this->old_mouse_x = x;
+		this->old_mouse_y = y;
+	}
+	
+	void OS::DispatchMouseScrollEvent(const double xoffset, const double yoffset) {
+		std::shared_ptr<MouseScrollEvent> mscroll_event = std::make_shared<MouseScrollEvent>(
+			MouseScrollEvent {
+			static_cast<double>(xoffset),
+			static_cast<double>(yoffset),
+		});
+		EventSystem<MouseScrollEvent>::Get()->Emit(mscroll_event);
 
-		// If we are in mouse lock we will snap the mouse to the middle of the screen.
-		if (this->mouse_lock) {
-			this->old_mouse_x = this->client_width / 2;
-			this->old_mouse_y = this->client_height / 2;
-			glfwSetCursorPos(this->window, this->old_mouse_x, this->old_mouse_y);
-		}
-		else {
-			this->old_mouse_x = x;
-			this->old_mouse_y = y;
-		}
 	}
 
 	void OS::DispatchMouseButtonEvent(const int button, const int action, const int mods) {
@@ -323,7 +401,7 @@ namespace tec {
 		}
 		EventSystem<MouseBtnEvent>::Get()->Emit(mbtn_event);
 	}
-	
+
 	void OS::DispatchFileDropEvent(const int count, const char** paths) {
 		std::shared_ptr<FileDropEvent> fd_event = std::make_shared<FileDropEvent>();
 		for (int i = 0; i < count; ++i) {
@@ -334,15 +412,19 @@ namespace tec {
 		}
 		EventSystem<FileDropEvent>::Get()->Emit(fd_event);
 	}
-
-	void OS::ToggleMouseLock() {
-		this->mouse_lock = !this->mouse_lock;
-		if (this->mouse_lock) {
+	
+	void OS::EanbleMouseLock() {
+		if (!this->mouse_lock) {
 			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
-		else {
+		this->mouse_lock = true;
+	}
+	
+	void OS::DisableMouseLock() {
+		if (this->mouse_lock) {
 			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
+		this->mouse_lock = false;
 	}
 
 	void OS::SetMousePosition(const double x, const double y) {
@@ -350,6 +432,9 @@ namespace tec {
 	}
 
 	void OS::GetMousePosition(double* x, double* y) {
-		glfwGetCursorPos(OS::focused_window, x, y);
+		if (focused_window) {
+			glfwGetCursorPos(OS::focused_window, x, y);
+		}
 	}
+
 }

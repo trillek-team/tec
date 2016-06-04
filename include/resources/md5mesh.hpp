@@ -1,3 +1,6 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #pragma once
 
 #include <string>
@@ -6,10 +9,11 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "filesystem.hpp"
 #include "mesh.hpp"
 
 namespace tec {
-	class MD5Mesh final : public Mesh {
+	class MD5Mesh final : public MeshFile {
 	public:
 		MD5Mesh() { }
 		~MD5Mesh() { }
@@ -59,7 +63,7 @@ namespace tec {
 		};
 
 		// Holds information about each mesh inside the file.
-		struct Mesh {
+		struct InternalMesh {
 			std::string shader; // MTR or texture filename.
 			std::vector<Vertex> verts;
 			std::vector<Triangle> tris;
@@ -73,7 +77,7 @@ namespace tec {
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
 		 * \return std::shared_ptr<MD5Mesh> The created MD5Mesh resource.
 		 */
-		static std::shared_ptr<MD5Mesh> Create(std::string fname);
+		static std::shared_ptr<MD5Mesh> Create(const FilePath& fname);
 
 		/**
 		 * \brief Loads the MD5Mesh file from disk and parses it.
@@ -116,15 +120,15 @@ namespace tec {
 		 * \param[in] const std::string& fname The mesh filename.
 		 * \return bool True if initialization finished with no errors.
 		 */
-		void SetFileName(const std::string& fname) {
-			this->fname = fname;
+		void SetFileName(const FilePath& fname) {
+			this->path = fname;
 		}
 
 		// Used for MD5Anim::CheckMesh().
 		friend class MD5Anim;
 	private:
-		std::string fname; // Relative filename
-		std::vector<Mesh> meshes;
+		std::vector<InternalMesh> meshes_internal;
+		FilePath path; // Path to MD5Mesh file
 		std::vector<Joint> joints;
 	};
 }

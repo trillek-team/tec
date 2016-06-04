@@ -1,0 +1,65 @@
+version: 0.1 b{build}
+
+branches:
+  only:
+  - develop
+
+os: Visual Studio 2015
+
+configuration: Debug
+
+clone_depth: 1
+
+clone_folder: c:\projects\tec
+
+init:
+- git config --global core.autocrlf input
+
+install:
+- cd c:\projects\tec
+- git submodule update --init
+- choco install glfw3 -y
+- cd c:\projects\
+- nuget install OpenAL-Soft -o c:\projects\
+- mkdir glew
+- nuget install rxd_glew -o c:\projects\glew
+- set PATH=%PATH%;c:\projects\glew
+
+- cd c:\projects\tec\
+- mkdir lib
+- 'copy c:\projects\glew\rxd_glew.1.10.0.1\build\native\lib\Win32\v120\dynamic\*.lib '
+- copy c:\projects\glew\rxd_glew.1.10.0.1\build\native\lib\Win32\v120\static\*.lib c:\projects\tec\lib\
+- cd lib
+- mkdir include
+- xcopy /E c:\projects\glew\rxd_glew.1.10.0.1\build\native\include c:\projects\tec\lib\include\
+- mkdir Release
+
+- cd c:\projects\tec\
+
+- appveyor DownloadFile "https://www.dropbox.com/s/m7vzruxrq8f79zo/tec_win32_libs.zip?dl=1&pv=1" -FileName tec_win32_libs.zip
+- 7z x -y tec_win32_libs.zip -o"c:\projects\tec"
+- setx LUA_DIR c:\projects\tec\lib\
+
+- mkdir build
+- cd build
+- cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True ..
+
+- msbuild "c:\projects\tec\build\TEC.sln" /p:Configuration=Debug /t:Clean;Build /verbosity:quiet /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+- msbuild "C:\projects\tec\build\modules\glfw3\GLFW.sln" /p:Configuration=Release /t:Clean;Build /verbosity:quiet /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+- msbuild "C:\projects\tec\build\modules\openal-soft\OpenAL.sln" /p:Configuration=Release /t:Clean;Build /verbosity:quiet /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+- del *.* /q
+
+- rem Now we prepare the real project
+- cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True ..
+
+build:
+  project: c:\projects\tec\build\TEC.sln
+  verbosity: minimal
+
+test_script:
+- cd C:\projects\tec\build\bin\Debug\
+- dir
+- cd C:\projects\tec\
+- .\build\bin\Debug\UNIT_TEST.exe

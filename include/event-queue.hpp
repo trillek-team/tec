@@ -1,3 +1,6 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #pragma once
 
 #include <queue>
@@ -33,7 +36,7 @@ namespace tec {
 			write_event_queue(new std::queue<Event<T>>()) {
 			EventSystem<T>::Get()->Subscribe(entity_id, this);
 		}
-		~EventQueue() { }
+		virtual ~EventQueue() { }
 
 		void ProcessEventQueue() {
 			this->read_event_queue = write_event_queue.exchange(this->read_event_queue);
@@ -47,7 +50,7 @@ namespace tec {
 		}
 
 		void QueueEvent(Event<T>&& e) {
-			(*write_event_queue).push(std::move(e));
+			(*write_event_queue).emplace(std::move(e));
 		}
 
 		virtual void On(const eid entity_id, std::shared_ptr<T> data) { }

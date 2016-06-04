@@ -9,16 +9,28 @@ message Renderable {
 }
 
 message Position {
+	message CenterOffset {
+		optional float x = 1;
+		optional float y = 2;
+		optional float z = 3;
+	}
 	optional float x = 1;
 	optional float y = 2;
 	optional float z = 3;
+	optional CenterOffset offset = 4;
 }
 
 message Orientation {
+	message RotationOffset {
+		required float x = 1;
+		required float y = 2;
+		required float z = 3;
+	}
 	required float x = 1;
 	required float y = 2;
 	required float z = 3;
 	required float w = 4;
+	optional RotationOffset offset = 5;
 }
 
 message View {
@@ -67,8 +79,85 @@ message Velocity {
 	optional float angular_z = 6;
 }
 
+message AudioSource {
+	optional bool looping = 1;
+	optional string audio_name = 2;
+	optional bool playing = 3;
+	optional uint32 volume = 4;
+}
+
+message Light {
+	optional float color_x = 1;
+	optional float color_y = 2;
+	optional float color_z = 3;
+	optional float ambient_intensity = 4;
+	optional float diffuse_intensity = 5;
+	message Attenuation {
+		optional float constant = 1;
+		optional float linear = 2;
+		optional float exponential = 3;
+	}
+	optional Attenuation attenuation = 6;
+	optional float cutoff = 7;
+	message Direction {
+		optional float x = 1;
+		optional float y = 2;
+		optional float z = 3;
+	}
+	optional Direction direction = 8;
+}
+
+message LuaScript {
+	optional string script_name = 1;
+}
+
+message VoxelVolumen {
+	optional float dummy = 1; // WIP
+}
+
+message ComputerScreen {
+	required bytes text_buffer = 1;
+	required bytes font_buffer = 2;
+	required uint32 buffer_ptr = 3;
+	required uint32 font_ptr = 4;
+	required uint32 vsync_msg = 5;
+	required uint32 a = 6;
+	required uint32 b = 7;
+	required uint32 d = 8;
+	required uint32 e = 9;
+}
+
+message Computer {
+	message Device {
+		required uint32 slot = 1;
+		oneof device {
+			ComputerScreen computerScreen = 2;
+		}
+	}
+	repeated Device devices = 1;
+	required bytes ram = 2;
+	message CPU {
+		message TR3200 {
+			repeated uint32 registers = 1;
+			required uint32 pc = 2;
+			required uint32 wait_cycles = 3;
+			required uint32 int_msg = 4;
+			required bool interrupt = 5;
+			required bool step_mode = 6;
+			required bool skiping = 7;
+			required bool sleeping = 8;
+		}
+		oneof cpu {
+			TR3200 tr3200 = 1;
+		}
+	}
+	required CPU cpu = 3;
+	optional string rom_file = 4;
+}
+
 message Component {
 	oneof component {
+		// keep name the same that the struct/class of the component!
 		Renderable renderable = 1;
 		Position position = 2;
 		Orientation orientation = 3;
@@ -77,6 +166,13 @@ message Component {
 		Scale Scale = 6;
 		CollisionBody collision_body = 7;
 		Velocity velocity = 8;
+		AudioSource audio_source = 9;
+		Light pointLight = 10;
+		Light directionalLight = 11;
+		Light spotLight = 12;
+		VoxelVolumen voxelVolume = 13;
+		Computer computer = 14;
+		LuaScript luaScript = 100;
 	}
 }
 
@@ -85,6 +181,6 @@ message Entity {
 	repeated Component components = 2;
 }
 
-message EntityList {
-	repeated Entity entities = 1;
+message EntityFileList {
+	repeated string entity_file_list = 1;
 }

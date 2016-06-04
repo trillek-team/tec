@@ -1,3 +1,6 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #pragma once
 
 #include <string>
@@ -7,15 +10,16 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "filesystem.hpp"
 #include "mesh.hpp"
 
 namespace tec {
-	class OBJ final : public Mesh {
+	class OBJ final : public MeshFile {
 	public:
 		OBJ() { }
 		~OBJ() { }
 
-		// OBJ Helper struct for face vertex data indicies.
+		// OBJ Helper struct for face vertex data indices.
 		struct Face {
 			Face() {
 				this->pos[0] = 0; this->pos[1] = 0; this->pos[2] = 0;
@@ -28,10 +32,20 @@ namespace tec {
 		};
 
 		// OBJ Helper struct for storing vertex groups
-		struct VertexGroup {
+		struct OBJGroup {
+			~OBJGroup() {
+				for (FaceGroup* face_group : this->face_groups) {
+					if (face_group) {
+						delete face_group;
+					}
+				}
+			}
 			std::string name;
-			std::string mtl;
-			std::vector<Face> faces;
+			struct FaceGroup {
+				std::string mtl;
+				std::vector<Face> faces;
+			};
+			std::vector<FaceGroup*> face_groups;
 		};
 
 		// MTL Helper struct describing mtl files
@@ -55,7 +69,7 @@ namespace tec {
 		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
 		 * \return std::shared_ptr<OBJ> The created OBJ resource.
 		 */
-		static std::shared_ptr<OBJ> Create(const std::string fname);
+		static std::shared_ptr<OBJ> Create(const FilePath& fname);
 
 		/**
 		 * \brief Loads the OBJ file from disk and parses it.
@@ -69,7 +83,7 @@ namespace tec {
 		 *
 		 * \return bool If the material was valid and loaded correctly.
 		 */
-		bool ParseMTL(std::string fname);
+		bool ParseMTL(const FilePath& fname);
 
 		/**
 		 * \brief Calculates the final vertex positions based on the bind-pose skeleton.
@@ -87,13 +101,12 @@ namespace tec {
 		 * \param[in] const std::string& fname The mesh filename.
 		 * \return bool True if initialization finished with no errors.
 		 */
-		void SetFileName(const std::string& fname) {
-			this->fname = fname;
+		void SetFileName(const FilePath& fname) {
+			this->path = fname;
 		}
 	private:
-		std::string fname; // Relative filename
-		std::vector<std::shared_ptr<VertexGroup>> vertexGroups;
-
+		std::vector<std::shared_ptr<OBJGroup>> vertexGroups;
+		FilePath path; // Path to OBJ file
 		std::vector<glm::vec3> positions;
 		std::vector<glm::vec3> normals;
 		std::vector<glm::vec2> uvs;

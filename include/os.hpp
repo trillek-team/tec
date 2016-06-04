@@ -1,3 +1,6 @@
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+
 #pragma once
 
 #ifndef __APPLE__
@@ -7,42 +10,13 @@
 #endif
 #endif
 
+#define GLFW_INCLUDE_GLU
 #include <GLFW/glfw3.h>
 #include <string>
 #include <chrono>
 #include <vector>
 
 namespace tec {
-	struct KeyboardEvent {
-		enum KEY_ACTION { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR };
-		int key;
-		int scancode;
-		KEY_ACTION action;
-		int mods;
-	};
-
-	struct MouseBtnEvent {
-		enum MOUSE_BTN_ACTION { DOWN, UP };
-		enum MOUSE_BTN { LEFT, RIGHT, MIDDLE };
-		MOUSE_BTN_ACTION action;
-		MOUSE_BTN button;
-	};
-
-	struct MouseMoveEvent {
-		double norm_x, norm_y; // Resolution independent new x, y (0-1) from upper-left to lower-right.
-		int old_x, old_y; // Client space old x, y.
-		int new_x, new_y; // Client space new x, y.
-	};
-
-	struct WindowResizedEvent {
-		int old_width, old_height; // Client space old width, height.
-		int new_width, new_height; // Client space new width, height.
-	};
-
-	struct FileDropEvent {
-		std::vector<std::string> filenames;
-	};
-
 	class OS {
 	public:
 		OS() : mouse_lock(false) { }
@@ -53,10 +27,12 @@ namespace tec {
 		*
 		* \param[in] const unsigned int width, height The window's client width and height
 		* \param[in] const std::string title The title to show in the title bar and task manager.
+		* \param[in] const glMajor OpenGL major version number. Must be >= 3
+		* \param[in] const glMinor OpenGL minor version. If major = 3, must be 3 (OpenGL 3.3)
 		* \return bool If creation was successful or not.
 		*/
 		bool InitializeWindow(const int width, const int height, const std::string title,
-			const unsigned int glMajor = 3, const unsigned int glMinor = 2);
+			const int glMajor = 3, const int glMinor = 3);
 
 		/** \brief Make the context of the window current for the calling thread
 		*
@@ -75,6 +51,15 @@ namespace tec {
 		* \return void
 		*/
 		static void Terminate();
+		
+		/**
+		* \brief Tells the OS that the active window should close.
+		*
+		* Since the main loop is based on that close status of that active window
+		* this effectively causes Closing() to return true during an upcoming message loop.
+		* \return void
+		*/
+		void Quit();
 
 		/**
 		* \brief Checks if the window is closing.
@@ -167,6 +152,15 @@ namespace tec {
 		static void MouseMoveEventCallback(GLFWwindow* window, double x, double y);
 
 		/**
+		* \brief Callback for mouse scroll events.
+		*
+		* \param[in] GLFWwindow* window
+		* \param[in] double x, y The delta x and y of the mouse wheel.
+		* \return void
+		*/
+		static void MouseScrollEventCallback(GLFWwindow* window, double x, double y);
+
+		/**
 		* \brief Callback for mouse button events.
 		*
 		* \param[in] GLFWwindow* window
@@ -196,12 +190,9 @@ namespace tec {
 		*/
 		static void FileDropCallback(GLFWwindow* window, int count, const char** paths);
 
-		/**
-		* \brief Toggles whether the mouse cursor should be locked to the current window.
-		*
-		* \return void
-		*/
-		void ToggleMouseLock();
+		void EanbleMouseLock();
+
+		void DisableMouseLock();
 
 		/**
 		* \brief Sets the mouse cursor position relative to the upper-left corner of the window.
@@ -218,6 +209,7 @@ namespace tec {
 		* \return void
 		*/
 		static void GetMousePosition(double* x, double* y);
+
 	private:
 		/**
 		* \brief Updates the internal size variables from the windowResized callback.
@@ -255,6 +247,16 @@ namespace tec {
 		*/
 		void DispatchMouseMoveEvent(const double x, const double y);
 
+
+		/**
+		* \brief Dispatches mouse scroll events.
+		*
+		* It determines the changes in mouse position and stores the new position for later.
+		* \param[in] const double xoffset, yoffset The delta x and y coordinate of the mouse wheel.
+		* \return void
+		*/
+		void DispatchMouseScrollEvent(const double xoffset, const double yoffset);
+		
 		/**
 		* \brief Dispatches mouse button events from the callback.
 		*

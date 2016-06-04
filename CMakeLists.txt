@@ -1,11 +1,25 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 PROJECT("TEC")
-
-SET(CMAKE_CXX_STANDARD_REQUIRED 11)
-
 # Set the directory of cmake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/modules")
+
+INCLUDE(ExternalProject)
+SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/ThirdParty)
+# Lib extension (used to link to ExternalProject
+if(MSVC)
+    set(LibSuffix ".lib")
+else()
+    set(LibSuffix ".a")
+endif()
+
+# Set the build type if it isn't already
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Release)
+ENDIF()
+
+# Test not enabled by default
+OPTION(BUILD_TESTS_TEC "Build TEC unit tests" FALSE)
 
 # Put the executable in the bin folder
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
@@ -21,7 +35,7 @@ IF ( MSVC )
     SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
     SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_SOURCE_DIR}/lib )
   endforeach( OUTPUTCONFIG CMAKE_CONFIGURATION_TYPES )
-  # This is needed for OpenAL as the libaries were built using an older MSVC.
+  # This is needed for OpenAL as the libraries were built using an older MSVC.
   IF(${_MACHINE_ARCH_FLAG} MATCHES X86)
      SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SAFESEH:NO")
      SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
@@ -30,15 +44,57 @@ IF ( MSVC )
 ENDIF ( MSVC )
 
 # find all source files in the src directory
-FILE(GLOB_RECURSE TEC_SRC "src/*.cpp")
+FILE(GLOB_RECURSE TEC_LIB_SRC "src/*.cpp")
+FILE(GLOB_RECURSE TEC_CLIENT_SRC "client/*.cpp" "client/*.hpp")
 
 # find all the files in the includes directory
 FILE(GLOB_RECURSE TEC_INCLUDES "include/*.h" "include/*.hpp")
+# Filters for VStudio
+SOURCE_GROUP("Components" ".*/components/.*")
+SOURCE_GROUP("Physics" ".*/physics/.*")
+SOURCE_GROUP("Resources" ".*/resources/.*")
+SOURCE_GROUP("Graphics" ".*/graphics/.*")
+SOURCE_GROUP("GUI" ".*/gui/.*")
+SOURCE_GROUP("Controllers" ".*/controllers/.*")
+SOURCE_GROUP("Systems" ".*-system.*")
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR})
 
 # IMGUI setup
-FILE(GLOB IMGUI_SRC "modules/imgui/imgui.cpp")
+FILE(GLOB IMGUI_SRC
+  "modules/imgui/imgui.cpp"
+  "modules/imgui/imgui_draw.cpp"
+  "modules/imgui/imgui_demo.cpp"
+  )
 FILE(GLOB IMGUI_INCLUDES "modules/imgui/*.h")
+SOURCE_GROUP(ImGui FILES ${IMGUI_SRC} ${IMGUI_INCLUDES})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/imgui/)
+
+
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/include/)
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include/")
+
+# SPDLOG setup
+FILE(GLOB SPDLOG_INCLUDES
+  "modules/spdlog/include/spdlog/*.h"
+  "modules/spdlog/include/spdlog/details/*.h"
+  "modules/spdlog/include/spdlog/sinks/*.h"
+  )
+LIST(REMOVE_ITEM SPDLOG_INCLUDES "modules/spdlog/include/spdlog/tweakme.h" )
+SOURCE_GROUP(SPDLog FILES ${SPDLOG_INCLUDES})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/spdlog/include/)
+
+# LUA setup
+FIND_PACKAGE(Lua REQUIRED)
+INCLUDE_DIRECTORIES (${LUA_INCLUDE_DIR})
+
+# Selene (LUA bindings) setup
+FILE(GLOB SELENE_INCLUDES
+  "modules/selene/include/*.h"
+  "modules/selene/include/selene/*.h"
+  )
+SOURCE_GROUP(SELENE FILES ${SELENE_INCLUDES})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/selene/include/)
 
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/include/)
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include/")
@@ -56,10 +112,14 @@ SET(BUILD_DEPS_FIRST false)
 
 FIND_PACKAGE(OpenGL REQUIRED)
 
+IF (WIN32)
+SET(BUILD_SHARED_LIBS ON CACHE BOOL "Build Shared Libraries")
+ENDIF (WIN32)
+
 # GLFW3 check
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/glfw3/include")
 MESSAGE("GLFW3 will be built.")
-# We are turning off all the extra bullet options before adding it to reduce compiling.
+# We are turning off all the extra glfw options before adding it to reduce compiling.
 SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
 SET(GLFW_BUILD_TESTS OFF CACHE BOOL "Build the GLFW test programs")
 SET(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
@@ -70,7 +130,7 @@ SET(GLFW_LIBRARIES glfw ${GLFW_LIBRARIES})
 
 # PThread check
 SET(CMAKE_THREAD_PREFER_PTHREAD TRUE)
-FIND_PACKAGE( Threads )
+FIND_PACKAGE( Threads REQUIRED)
 IF(CMAKE_USE_PTHREADS_INIT)
   SET(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-pthread")
 ENDIF(CMAKE_USE_PTHREADS_INIT)
@@ -87,47 +147,91 @@ INCLUDE_DIRECTORIES("modules/protobuf/src")
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/protobuf/src")
 ADD_SUBDIRECTORY("modules/protobuf/cmake")
 
-# Bullet check
+# Bullet
+SET(BULLET_CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs
+    -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs
+    -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+    -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+    -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
+    -DCMAKE_DEBUG_POSTFIX=d
+    -DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON
+    -DUSE_DOUBLE_PRECISION=ON
+    -DBUILD_DEMOS=OFF
+    -DBUILD_CPU_DEMOS=OFF
+    -DBUILD_OPENGL3_DEMOS=OFF
+    -DBUILD_BULLET2_DEMOS=OFF
+    -DBUILD_BULLET3=OFF
+    -DBUILD_EXTRAS=OFF
+    -DBUILD_UNIT_TESTS=OFF
+    -DBUILD_STATIC_LIBS=ON
+)
+ExternalProject_Add(
+    Bullet
+    DOWNLOAD_COMMAND ""
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/modules/bullet3/
+    CMAKE_ARGS ${BULLET_CMAKE_ARGS}
+    INSTALL_COMMAND ""
+    LOG_CONFIGURE ON
+    LOG_BUILD ON
+    )
+# Recover project paths for additional settings
+ExternalProject_Get_Property(Bullet BINARY_DIR )
+
+# Set properties as per FindModules
+SET( BULLET_FOUND
+    CACHE INTERNAL "" FORCE
+)
+
+SET( BULLET_INCLUDE_DIRS
+    "${CMAKE_SOURCE_DIR}/modules/bullet3/src/"
+    CACHE INTERNAL "" FORCE
+)
+
+SET( BULLET_LIBRARIES
+    debug ${BINARY_DIR}/src/BulletSoftBody/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletSoftBodyd${LibSuffix}
+    optimized ${BINARY_DIR}/src/BulletSoftBody/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletSoftBody${LibSuffix}
+    debug ${BINARY_DIR}/src/BulletDynamics/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletDynamicsd${LibSuffix}
+    optimized ${BINARY_DIR}/src/BulletDynamics/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletDynamics${LibSuffix}
+    debug ${BINARY_DIR}/src/BulletCollision/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletCollisiond${LibSuffix}
+    optimized ${BINARY_DIR}/src/BulletCollision/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}BulletCollision${LibSuffix}
+    debug ${BINARY_DIR}/src/LinearMath/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}LinearMathd${LibSuffix}
+    optimized ${BINARY_DIR}/src/LinearMath/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}LinearMath${LibSuffix}
+    CACHE INTERNAL "" FORCE
+)
+
+SET( BULLET_DEFINITIONS
+    " -DBT_USE_DOUBLE_PRECISION "
+    CACHE INTERNAL "" FORCE
+)
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/bullet3/src")
-FIND_PACKAGE(Bullet)
-IF (NOT ${BULLET_FOUND})
-  SET(BUILD_DEPS_FIRST true)
-  MESSAGE("Bullet will be built.")
-  # We are turning off all the extra bullet options before adding it to reduce compiling.
-  SET(USE_DOUBLE_PRECISION ON CACHE BOOL "Use double precision")
-  SET(USE_GLUT OFF CACHE BOOL "Use Glut")
-  SET(USE_GRAPHICAL_BENCHMARK OFF CACHE BOOL "Use Graphical Benchmark")
-  SET(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "Set when you want to build the OpenGL3+ demos")
-  SET(BUILD_BULLET2_DEMOS OFF CACHE BOOL "Set when you want to build the Bullet 2 demos")
-  SET(BUILD_EXTRAS OFF CACHE BOOL "Set when you want to build the extras")
-  SET(BUILD_UNIT_TESTS OFF CACHE BOOL "Build Unit Tests")
-  SET(BUILD_CPU_DEMOS OFF CACHE BOOL "Build original Bullet CPU examples" )
-  SET(BUILD_BULLET3 OFF CACHE BOOL "Set when you want to build Bullet 3")
-  ADD_SUBDIRECTORY("modules/bullet3")
-  INCLUDE_DIRECTORIES("modules/bullet3/src")
-ELSE (NOT ${BULLET_FOUND})
-  MESSAGE("Bullet already found skipping build.")
-  INCLUDE_DIRECTORIES (${BULLET_INCLUDE_DIRS})
-ENDIF (NOT ${BULLET_FOUND})
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/modules/bullet3/src/)
 
 # OpenAL check
 SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/openal-soft/include/AL")
 FIND_PACKAGE(OpenAL)
 IF (NOT ${OPENAL_FOUND})
   SET(BUILD_DEPS_FIRST true)
-  MESSAGE("Bullet will be built.")
+  MESSAGE("OpenAL will be built.")
   SET(ALSOFT_UTILS OFF CACHE BOOL "Build and install utility programs")
   SET(ALSOFT_EXAMPLES OFF CACHE BOOL "Build and install example programs")
+  IF (WIN32)
   SET(ALSOFT_REQUIRE_WINMM ON CACHE BOOL "Require Windows Multimedia backend")
+  ENDIF (WIN32)
   ADD_SUBDIRECTORY("modules/openal-soft")
-  INCLUDE_DIRECTORIES("modules//openal-soft/include")
+  INCLUDE_DIRECTORIES("modules/openal-soft/include")
 ELSE (NOT ${OPENAL_FOUND})
   MESSAGE("OpenAL already found skipping build.")
   INCLUDE_DIRECTORIES (${OPENAL_INCLUDE_DIR})
 ENDIF (NOT ${OPENAL_FOUND})
 
-# Some definitions we need to use bullet and GLM.
-ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE)
+# Add ASIO as it is header only
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "modules/asio/asio/include")
+INCLUDE_DIRECTORIES("modules/asio/asio/include")
+
+# Some definitions we need to use bullet, GLM, and ASIO.
+ADD_DEFINITIONS( -DBT_USE_DOUBLE_PRECISION -DGLM_FORCE_PURE -DASIO_STANDALONE )
 
 # Give these some dummy values and if the platform is LINUX or OSX they will be set accordingly.
 SET(X11_LIBRARIES "")
@@ -165,42 +269,87 @@ IF (APPLE) # Mac OSX
   SET(OSX_LIBRARIES "-framework CoreFoundation /usr/lib/libobjc.dylib")
 ENDIF (APPLE)
 
-# Add the virtual computer
-SET(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - static
-     version")
-SET(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
-SET(BUILD_TOOLS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tools")
-SET(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
-ADD_SUBDIRECTORY("modules/trillek-vcomputer")
-INCLUDE_DIRECTORIES("modules/trillek-vcomputer/include")
-
 # define all required external libraries
 # the use of raw names allows MSVC to pick-up debug version automatically
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 IF (NOT ${BUILD_DEPS_FIRST})
-MESSAGE("All dependencies found now building tec.")
-SET(TEC_ALL_LIBS
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${OPENGL_LIBRARIES}
-  ${X11_LIBRARIES}
-  ${OSX_LIBRARIES}
-  ${GLEW_LIBRARIES}
-  ${GLFW_LIBRARIES}
-  ${BULLET_LIBRARIES}
-  ${OPENAL_LIBRARY}
-  libprotobuf
-  VCOMPUTER_STATIC
-)
+  MESSAGE("All dependencies found now building tec.")
+  # Add the virtual computer
+  SET(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - static
+       version")
+  SET(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
+  SET(BUILD_TOOLS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tools")
+  SET(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
+  ADD_SUBDIRECTORY("modules/trillek-vcomputer")
+  INCLUDE_DIRECTORIES("modules/trillek-vcomputer/include")
 
-ADD_EXECUTABLE("TEC"
-  ${TEC_SRC}
-  ${TEC_INCLUDES}
-  ${IMGUI_SRC}
-  ${IMGUI_INCLUDES}
-  ${PB_FILES_SRC}
-  ${PB_FILES_INCLUDES}
-)
+  SET(TEC_ALL_LIBS
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${OPENGL_LIBRARIES}
+    ${X11_LIBRARIES}
+    ${OSX_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${GLFW_LIBRARIES}
+    ${BULLET_LIBRARIES}
+    ${OPENAL_LIBRARY}
+    libprotobuf
+    VCOMPUTER_STATIC
+    ${LUA_LIBRARIES}
+  )
 
-SET_PROPERTY(TARGET TEC PROPERTY CXX_STANDARD 11)
+  SET(TEC_SERVER_LIBS
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${OSX_LIBRARIES}
+    ${BULLET_LIBRARIES}
+    libprotobuf
+    VCOMPUTER_STATIC
+    ${LUA_LIBRARIES}
+  )
 
-TARGET_LINK_LIBRARIES("TEC" ${TEC_ALL_LIBS})
+  ADD_LIBRARY(TEC_LIB STATIC
+    ${TEC_LIB_SRC}
+    ${TEC_INCLUDES}
+    ${IMGUI_SRC}
+    ${IMGUI_INCLUDES}
+    ${SPDLOG_INCLUDES}
+    ${PB_FILES_SRC}
+    ${PB_FILES_INCLUDES}
+    ${LUA_INCLUDE_DIR}
+    ${SELENE_INCLUDES}
+  )
+  IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS( "TEC_LIB" PUBLIC PROTOBUF_USE_DLLS )
+  ENDIF (WIN32)
+  ADD_DEPENDENCIES(TEC_LIB Bullet)
+
+  ADD_EXECUTABLE("TEC"
+    ${TEC_CLIENT_SRC}
+  )
+  TARGET_COMPILE_DEFINITIONS( "TEC" PUBLIC CLIENT_STANDALONE )
+  IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS( "TEC" PUBLIC _WIN32_WINNT=0x600 CLIENT_STANDALONE PROTOBUF_USE_DLLS )
+  ENDIF (WIN32)
+
+
+  TARGET_LINK_LIBRARIES("TEC" TEC_LIB  ${TEC_ALL_LIBS})
+  
+  ADD_EXECUTABLE("Server"
+    "server/main.cpp"
+    "server/client_connection.hpp"
+    "server/client_connection.cpp"
+    "server/server.hpp"
+    "server/server.cpp"
+  )
+  #target_include_directories("Server" PUBLIC "server")
+  IF (WIN32)
+    TARGET_COMPILE_DEFINITIONS( "Server" PUBLIC _WIN32_WINNT=0x600 PROTOBUF_USE_DLLS )
+  ENDIF (WIN32)
+
+  TARGET_LINK_LIBRARIES("Server" TEC_LIB  ${TEC_SERVER_LIBS})
+
+  IF(BUILD_TESTS_TEC)
+    ADD_SUBDIRECTORY("tests")
+  ENDIF(BUILD_TESTS_TEC)
+
 ENDIF (NOT ${BUILD_DEPS_FIRST})

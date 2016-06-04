@@ -26,7 +26,20 @@
 *.exe
 *.out
 *.app
+*.pyc
+
+# IDE & editors stuff
+*~
+
+# KDevelop IDE stuff
+*.kdev4
+.kdev4/
+# VStudio IDE stuff
+*.sln
+# YouCompleteMe
+.ycm_extra_conf.py
 
 build/
 lib/
 bin/
+

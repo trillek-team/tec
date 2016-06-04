@@ -1,0 +1,95 @@
+--==The Trillek Contributors==--
+
+ *adam4813
+ *Zardoz
+ *Taneb
+ *DeVaukz
+ *ralian
+ *Shiroy
+ *Meisaka
+ *Acruid
+ *catageek
+ *fml-0
+ *lamogui
+ *TheOfficialStinger
+ *jmf
+
+--==General Licensing==--
+
+Copyright (c) 2013-2016 Trillek contributors
+
+*The code of the TEC engine is distributed under the terms of the
+GNU LESSER GENERAL PUBLIC LICENSE, Version 3.
+The license text is available in licenses/lgpl-3.0.txt
+
+*The assets in the assets/ folder are distributed under the terms of the
+Creative Commons Attribution-ShareAlike 4.0 International Public License (CC-BY-SA 4.0)
+The license text is available in licenses/cc-by-sa-4.0.txt
+
+
+
+--==Parts with other licensing==--
+
+*modules/FindGLEW.cmake
+Copyright 2012 Benjamin Eikel
+Distributed under the terms of the OSI-approved BSD license.
+The license text is available in licenses/bsd.txt
+
+*include/resources/stb_vorbis.c
+Released into public domain
+http://nothings.org/stb_vorbis/
+
+*include/resources/stb_image.h
+Released into public domain
+http://nothings.org/stb_image.h
+
+
+--==Dependencies in the modules/ folder as git submodules==--
+
+*asio
+Distributed under the terms of the Boost Software License, Version 1.0.
+The license text is available in licenses/bsl-1.0.txt
+
+*bullet3
+The files in that repository are licensed under the zlib license, except for the files under 'Extras' and examples/ThirdPartyLibs.
+The license text is available in licenses/zlib.txt
+
+*glfw3
+Copyright (c) 2002-2006 Marcus Geelnard
+Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
+The license text is available in licenses/glfw.txt
+
+*glm
+Copyright (c) 2005 - 2015 G-Truc Creation
+GLM can be distributed and/or modified under the terms of either
+a) The Happy Bunny License, or b) the MIT License.
+The Happy Bunny License text is available in licenses/hbl.txt
+The MIT license is available in licenses/mit.txt
+
+*imgui
+Copyright (c) 2014-2015 Omar Cornut and ImGui contributors
+Distributed under the terms of the MIT license.
+The MIT license is available in licenses/mit.txt
+
+*openal-soft
+Distributed under the terms of the GNU LESSER GENERAL PUBLIC LICENSE, Version 2.0.
+The license text is available in licenses/lgpl-2.0.txt
+
+*protobuf
+Copyright 2014, Google Inc.  All rights reserved.
+The license text is available in licenses/protobuf.txt
+
+*selene
+Copyright (c) 2013 Jeremy Ong
+Distributed under the terms of the zlib license.
+The license text is available in licenses/zlib.txt
+
+*spdlog
+Copyright (c) 2016 Gabi Melman
+Distributed under the terms of the MIT license.
+The license text is available in licenses/mit.txt
+
+*trillek-vcomputer
+Copyright (c) 2013-2016 Trillek contributors
+Distributed under the terms of the GNU LESSER GENERAL PUBLIC LICENSE, Version 3.
+The license text is available in licenses/lgpl-3.0.txt
