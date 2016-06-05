@@ -11,7 +11,9 @@
 #include <GL/wglew.h>
 #endif
 
+#ifdef __APPLE__
 #define GLFW_INCLUDE_GLCOREARB
+#endif
 #include <GLFW/glfw3.h>
 #include <string>
 #include <chrono>
