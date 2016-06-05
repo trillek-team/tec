@@ -340,8 +340,8 @@ IF (NOT ${BUILD_DEPS_FIRST})
   
   ADD_EXECUTABLE("Server"
     "server/main.cpp"
-    "server/client_connection.hpp"
-    "server/client_connection.cpp"
+    "server/client-connection.hpp"
+    "server/client-connection.cpp"
     "server/server.hpp"
     "server/server.cpp"
   )

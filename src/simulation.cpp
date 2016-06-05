@@ -9,7 +9,7 @@
 #include <set>
 
 #include "components/transforms.hpp"
-#include "components/collisionbody.hpp"
+#include "components/collision-body.hpp"
 #include "physics-system.hpp"
 #include "controllers/fps-controller.hpp"
 #include <glm/gtx/compatibility.hpp>

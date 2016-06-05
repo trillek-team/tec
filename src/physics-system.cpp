@@ -3,7 +3,7 @@
 
 #include "physics-system.hpp"
 
-#include "components/collisionbody.hpp"
+#include "components/collision-body.hpp"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
 #include "entity.hpp"

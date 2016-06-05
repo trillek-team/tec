@@ -8,7 +8,7 @@
 #include <thread>
 #include <map>
 #include "server/server.hpp"
-#include "server/client_connection.hpp"
+#include "server/client-connection.hpp"
 #include "proto/game_state.pb.h"
 #include "simulation.hpp"
 

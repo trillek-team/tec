@@ -2,7 +2,7 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "components/transforms.hpp"
-#include "components/collisionbody.hpp"
+#include "components/collision-body.hpp"
 #include "components/lua-script.hpp"
 
 #include "resources/md5mesh.hpp"
@@ -25,7 +25,7 @@
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "physics-system.hpp"
-#include "voxelvolume.hpp"
+#include "voxel-volume.hpp"
 #include "lua-system.hpp"
 
 #include <spdlog/spdlog.h>

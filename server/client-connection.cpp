@@ -1,7 +1,7 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "server/client_connection.hpp"
+#include "server/client-connection.hpp"
 #include "proto/game_state.pb.h"
 #include "event-system.hpp"
 #include "events.hpp"
@@ -9,7 +9,7 @@
 #include "entity.hpp"
 #include "components/transforms.hpp"
 #include "client/graphics/view.hpp"
-#include "components/collisionbody.hpp"
+#include "components/collision-body.hpp"
 #include <iostream>
 #include <thread>
 

@@ -8,7 +8,7 @@
 #include <imgui.h>
 #include <spdlog/sinks/sink.h>
 
-#include "ring_buffer.hpp"
+#include "ring-buffer.hpp"
 #include "os.hpp"
 #include "events.hpp"
 #include "event-system.hpp"
