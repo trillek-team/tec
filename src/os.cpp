@@ -413,7 +413,7 @@ namespace tec {
 		EventSystem<FileDropEvent>::Get()->Emit(fd_event);
 	}
 	
-	void OS::EanbleMouseLock() {
+	void OS::EnableMouseLock() {
 		if (!this->mouse_lock) {
 			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
