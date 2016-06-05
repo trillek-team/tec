@@ -308,7 +308,7 @@ int main(int argc, char* argv[]) {
 		//ps.DebugDraw();
 		if (camera_controller != nullptr) {
 			if (camera_controller->mouse_look) {
-				os.EanbleMouseLock();
+				os.EnableMouseLock();
 			}
 			else {
 				os.DisableMouseLock();

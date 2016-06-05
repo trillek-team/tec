@@ -19,6 +19,7 @@
 #include <limits.h>
 
 #if defined(__APPLE__)
+#include <mach-o/dyld.h>
 #include <CoreServices/CoreServices.h>
 #endif // __APPLE
 
@@ -78,16 +79,14 @@ FilePath FilePath::GetUserSettingsPath() {
 
 #if defined(__unix__)
 #if defined(__APPLE__)
-	FSRef ref;
-	FSFindFolder(kUserDomain, kApplicationSupportFolderType, kCreateFolder, &ref);
-	char home[PATH_MAX];
-	// FSMakeFSRefUnicode ?? This functions looks that are deprecated
-	FSRefMakePath(&ref, (UInt8 *)&home, PATH_MAX);
+	char *home = getenv("HOME");
 	ret = home;
+	ret /= "Library";
+	ret /= "Preferences";
 	ret /= app_name;
 	ret += PATH_SEPARATOR;
 #else
-	char* home = getenv("XDG_CONFIG_HOME");
+	char *home = getenv("XDG_CONFIG_HOME");
 	if (home == nullptr) {
 		home = getenv("HOME");
 		if (home == nullptr) {
@@ -388,7 +387,7 @@ FilePath FilePath::GetProgramPath() {
 	} else {
 		// Too small buffer
 		char* tmp2 = new char[size]();
-		_NSGetExecutablePath(tmp2, &size)
+		_NSGetExecutablePath(tmp2, &size);
 		return FilePath(tmp2);
 	}
 #elif defined(__linux__)

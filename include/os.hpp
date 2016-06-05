@@ -5,12 +5,15 @@
 
 #ifndef __APPLE__
 #include <GL/glew.h>
-#ifndef __unix
-#include <GL/wglew.h>
-#endif
 #endif
 
-#define GLFW_INCLUDE_GLU
+#ifdef WIN32
+#include <GL/wglew.h>
+#endif
+
+#ifdef __APPLE__
+#define GLFW_INCLUDE_GLCOREARB
+#endif
 #include <GLFW/glfw3.h>
 #include <string>
 #include <chrono>
@@ -190,7 +193,7 @@ namespace tec {
 		*/
 		static void FileDropCallback(GLFWwindow* window, int count, const char** paths);
 
-		void EanbleMouseLock();
+		void EnableMouseLock();
 
 		void DisableMouseLock();
 
