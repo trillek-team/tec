@@ -283,8 +283,8 @@ int main(int argc, char* argv[]) {
 				tec::Orientation ori = client_state.orientations.at(connection.GetClientID());
 				ori.Out(self.add_components());
 			}
-			if (client_state.velocties.find(connection.GetClientID()) != client_state.velocties.end()) {
-				tec::Velocity vel = client_state.velocties.at(connection.GetClientID());
+			if (client_state.velocities.find(connection.GetClientID()) != client_state.velocities.end()) {
+				tec::Velocity vel = client_state.velocities.at(connection.GetClientID());
 				vel.Out(self.add_components());
 			}
 			tec::networking::ServerMessage update_message;

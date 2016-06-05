@@ -94,8 +94,8 @@ namespace tec {
 			if (this->state_changes_since_confirmed.orientations.find(entity_id) != this->state_changes_since_confirmed.orientations.end()) {
 				this->state_changes_since_confirmed.orientations.erase(entity_id);
 			}
-			if (this->state_changes_since_confirmed.velocties.find(entity_id) != this->state_changes_since_confirmed.velocties.end()) {
-				this->state_changes_since_confirmed.velocties.erase(entity_id);
+			if (this->state_changes_since_confirmed.velocities.find(entity_id) != this->state_changes_since_confirmed.velocities.end()) {
+				this->state_changes_since_confirmed.velocities.erase(entity_id);
 			}
 		}
 
@@ -178,8 +178,8 @@ namespace tec {
 				if (full_state.orientations.find(entity) != full_state.orientations.end()) {
 					this->state_changes_since_confirmed.orientations[entity] = full_state.orientations.at(entity);
 				}
-				if (full_state.velocties.find(entity) != full_state.velocties.end()) {
-					this->state_changes_since_confirmed.velocties[entity] = full_state.velocties.at(entity);
+				if (full_state.velocities.find(entity) != full_state.velocities.end()) {
+					this->state_changes_since_confirmed.velocities[entity] = full_state.velocities.at(entity);
 				}
 			}
 		}
@@ -195,8 +195,8 @@ namespace tec {
 					tec::Orientation ori = this->state_changes_since_confirmed.orientations.at(pos.first);
 					ori.Out(entity->add_components());
 				}
-				if (this->state_changes_since_confirmed.velocties.find(pos.first) != this->state_changes_since_confirmed.velocties.end()) {
-					tec::Velocity vel = this->state_changes_since_confirmed.velocties.at(pos.first);
+				if (this->state_changes_since_confirmed.velocities.find(pos.first) != this->state_changes_since_confirmed.velocities.end()) {
+					tec::Velocity vel = this->state_changes_since_confirmed.velocities.at(pos.first);
 					vel.Out(entity->add_components());
 				}
 			}

@@ -50,8 +50,8 @@ namespace tec {
 			for (eid entity_id : phys_results) {
 				client_state.positions[entity_id] = this->phys_sys.GetPosition(entity_id);
 				client_state.orientations[entity_id] = this->phys_sys.GetOrientation(entity_id);
-				if (this->client_state.velocties.find(entity_id) != this->client_state.velocties.end()) {
-					client_state.velocties[entity_id] = this->client_state.velocties[entity_id];
+				if (this->client_state.velocities.find(entity_id) != this->client_state.velocities.end()) {
+					client_state.velocities[entity_id] = this->client_state.velocities[entity_id];
 				}
 			}
 		}
@@ -75,8 +75,8 @@ namespace tec {
 				for (auto position : to_state.positions) {
 					this->base_state.positions[position.first] = position.second;
 				}
-				for (auto velocity : to_state.velocties) {
-					this->base_state.velocties[velocity.first] = velocity.second;
+				for (auto velocity : to_state.velocities) {
+					this->base_state.velocities[velocity.first] = velocity.second;
 				}
 				for (auto orientation : to_state.orientations) {
 					this->base_state.orientations[orientation.first] = orientation.second;
@@ -97,16 +97,16 @@ namespace tec {
 						this->client_state.positions[position.first] = position.second;
 					}
 				}
-				for (auto velocity : to_state.velocties) {
-					if (this->base_state.velocties.find(velocity.first) != this->base_state.velocties.end()) {
-						this->client_state.velocties[velocity.first].linear = glm::lerp(
-							base_state.velocties.at(velocity.first).linear, velocity.second.linear, lerp_percent);
-						this->client_state.velocties[velocity.first].angular = glm::lerp(
-							base_state.velocties.at(velocity.first).angular, velocity.second.angular, lerp_percent);
+				for (auto velocity : to_state.velocities) {
+					if (this->base_state.velocities.find(velocity.first) != this->base_state.velocities.end()) {
+						this->client_state.velocities[velocity.first].linear = glm::lerp(
+							base_state.velocities.at(velocity.first).linear, velocity.second.linear, lerp_percent);
+						this->client_state.velocities[velocity.first].angular = glm::lerp(
+							base_state.velocities.at(velocity.first).angular, velocity.second.angular, lerp_percent);
 					}
 					else {
-						this->client_state.velocties[velocity.first].linear = velocity.second.linear;
-						this->client_state.velocties[velocity.first].angular = velocity.second.angular;
+						this->client_state.velocities[velocity.first].linear = velocity.second.linear;
+						this->client_state.velocities[velocity.first].angular = velocity.second.angular;
 					}
 				}
 				for (auto orientation : to_state.orientations) {
@@ -170,8 +170,8 @@ namespace tec {
 					{
 						Velocity vel;
 						vel.In(comp);
-						this->client_state.velocties[entity_id] = vel;
-						this->base_state.velocties[entity_id] = vel;
+						this->client_state.velocities[entity_id] = vel;
+						this->base_state.velocities[entity_id] = vel;
 					}
 					break;
 			}
@@ -187,9 +187,9 @@ namespace tec {
 			this->client_state.orientations.erase(data->entity_id);
 			this->base_state.orientations.erase(data->entity_id);
 		}
-		if (this->client_state.velocties.find(data->entity_id) != this->client_state.velocties.end()) {
-			this->client_state.velocties.erase(data->entity_id);
-			this->base_state.velocties.erase(data->entity_id);
+		if (this->client_state.velocities.find(data->entity_id) != this->client_state.velocities.end()) {
+			this->client_state.velocities.erase(data->entity_id);
+			this->base_state.velocities.erase(data->entity_id);
 		}
 	}
 
@@ -218,8 +218,8 @@ namespace tec {
 					{
 						Velocity vel;
 						vel.In(comp);
-						this->client_state.velocties[entity_id] = vel;
-						this->base_state.velocties[entity_id] = vel;
+						this->client_state.velocities[entity_id] = vel;
+						this->base_state.velocities[entity_id] = vel;
 					}
 					break;
 			}

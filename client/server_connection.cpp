@@ -188,7 +188,7 @@ namespace tec {
 				next_state.In(gsu);
 				next_state.positions.erase(this->client_id);
 				next_state.orientations.erase(this->client_id);
-				next_state.velocties.erase(this->client_id);
+				next_state.velocities.erase(this->client_id);
 				this->simulation.PushServerState(std::move(next_state));
 			}
 			//_log->info(last_received_state_id);
