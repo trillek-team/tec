@@ -69,6 +69,9 @@ namespace tec {
 								this->velocities[entity_id] = vel;
 							}
 							break;
+						default:
+							// intentionally not handling other cases.
+							break;
 					}
 				}
 			}
