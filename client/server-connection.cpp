@@ -1,9 +1,9 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "client/server_connection.hpp"
-#include "proto/game_state.pb.h"
+#include "client/server-connection.hpp"
 #include "events.hpp"
+#include "proto/game_state.pb.h"
 #include "simulation.hpp"
 
 using asio::ip::tcp;
@@ -188,7 +188,7 @@ namespace tec {
 				next_state.In(gsu);
 				next_state.positions.erase(this->client_id);
 				next_state.orientations.erase(this->client_id);
-				next_state.velocties.erase(this->client_id);
+				next_state.velocities.erase(this->client_id);
 				this->simulation.PushServerState(std::move(next_state));
 			}
 			//_log->info(last_received_state_id);

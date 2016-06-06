@@ -42,7 +42,7 @@ namespace tec {
 			orientation = state.orientations.at(entity_id).value;
 		}
 
-		state.velocties[entity_id].linear = glm::vec4(orientation * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
+		state.velocities[entity_id].linear = glm::vec4(orientation * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
 	}
 
 	void FPSController::Handle(const KeyboardEvent& data, GameState& state) {

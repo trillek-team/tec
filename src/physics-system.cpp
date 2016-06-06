@@ -3,7 +3,7 @@
 
 #include "physics-system.hpp"
 
-#include "components/collisionbody.hpp"
+#include "components/collision-body.hpp"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
 #include "entity.hpp"
@@ -111,8 +111,8 @@ namespace tec {
 			body->setWorldTransform(collidable->motion_state.transform);
 			this->dynamicsWorld->addRigidBody(body);
 
-			if (state.velocties.find(entity_id) != state.velocties.end()) {
-				const Velocity& vel = state.velocties.at(entity_id);
+			if (state.velocities.find(entity_id) != state.velocities.end()) {
+				const Velocity& vel = state.velocities.at(entity_id);
 				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x)) {
 					body->setLinearVelocity(vel.GetLinear() + btVector3(0.0, 1.0, 0.0) + body->getGravity());
 				}
