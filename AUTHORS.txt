@@ -13,6 +13,7 @@
  *lamogui
  *TheOfficialStinger
  *jmf
+ *Miles Rout <miles.rout@gmail.com>
 
 --==General Licensing==--
 
