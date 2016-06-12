@@ -11,7 +11,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "filesystem.hpp"
-#include "mesh.hpp"
+#include "resources/mesh.hpp"
 
 namespace tec {
 	class OBJ final : public MeshFile {

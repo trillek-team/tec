@@ -11,7 +11,6 @@
 
 #include "spdlog/spdlog.h"
 #include "types.hpp"
-#include "resources/pixel-buffer.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
 #include "multiton.hpp"

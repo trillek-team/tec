@@ -5,7 +5,7 @@
 
 #include <glm/mat4x4.hpp>
 
-#include "../proto/components.pb.h"
+#include "components.pb.h"
 
 namespace tec {
 	struct View {

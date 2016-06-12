@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include "../proto/components.pb.h"
+#include "components.pb.h"
 
 namespace tec {
 	typedef std::int64_t state_id_t;
@@ -27,7 +27,7 @@ namespace tec {
 	template<class TYPE> const char* GetTypeName(void) { return "UNKNOWN"; }
 	/// Returns the TypeID of a component on compile time
 	template<class TYPE> const tid GetTypeID(void) { return proto::Component::COMPONENT_NOT_SET; }
-	/// Returns the name of a resource type on Compile time 
+	/// Returns the name of a resource type on Compile time
 	template<class TYPE> const char* GetTypeEXT(void) { return "UNKNOWN"; }
 
 	/*
@@ -89,7 +89,7 @@ namespace tec {
 	class VoxelVolume;
 	MAKE_IDTYPE(VoxelVolume);
 
-	struct LuaScript;	
+	struct LuaScript;
 	MAKE_IDTYPE(LuaScript);
 
 

@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "proto/components.pb.h"
+#include "components.pb.h"
 
 namespace tec {
 	class MD5Anim;

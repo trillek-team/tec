@@ -35,7 +35,7 @@
 #include <set>
 #include <memory>
 
-#include "../proto/components.pb.h"
+#include "components.pb.h"
 
 namespace tec {
 	std::map<tid, std::function<void(proto::Entity*)>> out_functors;

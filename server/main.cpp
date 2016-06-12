@@ -9,7 +9,7 @@
 #include <map>
 #include "server/server.hpp"
 #include "server/client-connection.hpp"
-#include "proto/game_state.pb.h"
+#include "game_state.pb.h"
 #include "simulation.hpp"
 
 using asio::ip::tcp;

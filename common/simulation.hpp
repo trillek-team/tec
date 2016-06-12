@@ -10,7 +10,7 @@
 #include "game-state.hpp"
 #include "physics-system.hpp"
 #include "vcomputer-system.hpp"
-#include "proto/components.pb.h"
+#include "components.pb.h"
 #include "event-queue.hpp"
 
 namespace tec {
@@ -20,7 +20,7 @@ namespace tec {
 
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 
-	class Simulation final : public CommandQueue < Simulation >, 
+	class Simulation final : public CommandQueue < Simulation >,
 		public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
 		public EventQueue<MouseMoveEvent>, public EventQueue<MouseClickEvent>,
 		public EventQueue<EntityCreated>, public EventQueue<EntityUpdated>,

@@ -3,7 +3,7 @@
 
 #include "client/server-connection.hpp"
 #include "events.hpp"
-#include "proto/game_state.pb.h"
+#include "game_state.pb.h"
 #include "simulation.hpp"
 
 using asio::ip::tcp;

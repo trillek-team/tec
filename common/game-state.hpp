@@ -7,7 +7,7 @@
 #include <functional>
 #include <list>
 #include "types.hpp"
-#include "proto/game_state.pb.h"
+#include "game_state.pb.h"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
 #include "events.hpp"

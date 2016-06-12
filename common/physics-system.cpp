@@ -10,7 +10,7 @@
 #include "events.hpp"
 #include "multiton.hpp"
 
-#include "client/physics/physics-debug-drawer.hpp"
+// #include "physics/physics-debug-drawer.hpp"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,9 +18,9 @@
 namespace tec {
 	typedef Multiton<eid, CollisionBody*> CollisionBodyMap;
 	typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
-#ifdef CLIENT_STANDALONE
-	PhysicsDebugDrawer debug_drawer;
-#endif
+// #ifdef CLIENT_STANDALONE
+// 	PhysicsDebugDrawer debug_drawer;
+// #endif
 
 	PhysicsSystem::PhysicsSystem() {
 		this->last_rayvalid = false;
@@ -33,10 +33,10 @@ namespace tec {
 
 		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
 
-#ifdef CLIENT_STANDALONE
-		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
-		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
-#endif
+// #ifdef CLIENT_STANDALONE
+// 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
+// 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
+// #endif
 	}
 
 	PhysicsSystem::~PhysicsSystem() {
@@ -263,9 +263,9 @@ namespace tec {
 	void PhysicsSystem::DebugDraw() {
 		this->dynamicsWorld->debugDrawWorld();
 
-#ifdef CLIENT_STANDALONE
-		debug_drawer.UpdateVertexBuffer();
-#endif
+// #ifdef CLIENT_STANDALONE
+// 		debug_drawer.UpdateVertexBuffer();
+// #endif
 	}
 
 	void PhysicsSystem::SetGravity(const unsigned int entity_id, const btVector3& f) {
@@ -282,7 +282,7 @@ namespace tec {
 
 	bool PhysicsSystem::AddRigidBody(CollisionBody* collision_body) {
 		eid entity_id = collision_body->entity_id;
-		
+
 		RemoveRigidBody(entity_id);
 
 		if (!collision_body->shape) {
@@ -309,7 +309,7 @@ namespace tec {
 		body->setUserPointer(collision_body);
 		return true;
 	}
-	
+
 	void PhysicsSystem::RemoveRigidBody(eid entity_id) {
 		if (this->bodies.find(entity_id) != this->bodies.end()) {
 			this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
