@@ -1,34 +1,16 @@
-[submodule "modules/glm"]
-	path = modules/glm
-	url = https://github.com/g-truc/glm
-[submodule "modules/glfw3"]
-	path = modules/glfw3
-	url = https://github.com/glfw/glfw/
 [submodule "assets"]
 	path = assets
-	url=https://github.com/trillek-team/tec-assets.git
-[submodule "modules/bullet3"]
-	path = modules/bullet3
-	url = https://github.com/bulletphysics/bullet3
-[submodule "modules/openal-soft"]
-	path = modules/openal-soft
-url=https://github.com/kcat/openal-soft
-[submodule "modules/imgui"]
-	path = modules/imgui
+	url = https://github.com/trillek-team/tec-assets
+[submodule "deps/imgui"]
+	path = deps/imgui
 	url = https://github.com/ocornut/imgui
-[submodule "modules/protobuf"]
-	path = modules/protobuf
-	url = https://github.com/google/protobuf
-[submodule "modules/trillek-vcomputer"]
-	path = modules/trillek-vcomputer
-	url = https://github.com/trillek-team/trillek-vcomputer-module.git
+[submodule "deps/trillek-vcomputer"]
+	path = deps/trillek-vcomputer
+	url = https://github.com/trillek-team/trillek-vcomputer-module
 	branch = releases/tag/v0.5.2-fix
-[submodule "modules/spdlog"]
-	path = modules/spdlog
-	url = https://github.com/gabime/spdlog.git
-[submodule "modules/selene"]
-	path = modules/selene
-	url=https://github.com/adam4813/Selene.git
-[submodule "modules/asio"]
-	path = modules/asio
-	url = https://github.com/chriskohlhoff/asio/
+[submodule "deps/spdlog"]
+	path = deps/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "deps/selene"]
+	path = deps/selene
+	url = https://github.com/jeremyong/Selene

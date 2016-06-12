@@ -14,6 +14,7 @@
  *TheOfficialStinger
  *jmf
  *Miles Rout <miles.rout@gmail.com>
+ *Daniel Ekmann <daniel@ekmann.net>
 
 --==General Licensing==--
 

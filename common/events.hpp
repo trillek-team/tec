@@ -4,7 +4,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "proto/components.pb.h"
+#include "components.pb.h"
 #include "types.hpp"
 
 namespace tec {
@@ -62,7 +62,7 @@ namespace tec {
 	struct EntityUpdated {
 		proto::Entity entity;
 	};
-	
+
 	struct EntityDestroyed {
 		eid entity_id;
 	};

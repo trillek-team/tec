@@ -25,6 +25,12 @@ matrix:
                   - libopenal-dev
                   - lua5.2
                   - liblua5.2-dev
+                  - libglfw3
+                  - libglfw3-dev
+                  - libprotobuf
+                  - libprotobuf-dev
+                  - libbullet
+                  - libbullet-dev
           env: COMPILER=g++-4.9
 
     allow_failures:
@@ -43,6 +49,14 @@ matrix:
                   - libglu1-mesa-dev
                   - libglew-dev
                   - libopenal-dev
+                  - lua5.2
+                  - liblua5.2-dev
+                  - libglfw3
+                  - libglfw3-dev
+                  - libprotobuf
+                  - libprotobuf-dev
+                  - libbullet
+                  - libbullet-dev
           env: COMPILER=clang++-3.7
 
 
@@ -66,13 +80,7 @@ before_script:
   - cd build
 
 script:
-  - ../travis/build_deps.sh
-  #- cmake ..
-  #- make
-  #- make install DESTDIR="$HOME/lib/$COMPILER"
-  - echo "Building TEC"
-  - rm -f cmakecache.txt
-  - cmake -DCMAKE_INCLUDE_PATH=$HOME/lib/${COMPILER}/usr/local/include -DCMAKE_LIBRARY_PATH=$HOME/lib/${COMPILER}/usr/local/lib  -DBUILD_TESTS_TEC=True ..
+  - cmake -DCMAKE_INCLUDE_PATH=$HOME/lib/${COMPILER}/usr/local/include -DBUILD_TESTS_TEC=True ..
   - make
   - ls
   - ./bin/UNIT_TEST

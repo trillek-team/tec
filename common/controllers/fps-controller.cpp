@@ -4,7 +4,7 @@
 #include "controllers/fps-controller.hpp"
 
 #include <glm/gtx/quaternion.hpp>
-#include "os.hpp"
+#include <GLFW/glfw3.h> // TODO: included for key constants
 #include "components/transforms.hpp"
 #include "events.hpp"
 
