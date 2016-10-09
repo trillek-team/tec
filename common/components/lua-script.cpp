@@ -42,7 +42,7 @@ namespace tec {
 				this->state[name.c_str()] = get_kv.second;
 			}
 
-			this->state.LoadStr(this->script->GetScript());
+			//this->state.LoadStr(this->script->GetScript());
 		}
 	}
 

@@ -1,30 +1,41 @@
 version: 0.1 b{build}
-
+image: Visual Studio 2015
+configuration: Release
 clone_depth: 1
-
 clone_folder: c:\projects\tec
-
 init:
-- git config --global core.autocrlf input
+- cmd: >-
+    git config --global core.autocrlf input
 
-environment:
-  LUA_DIR: c:\projects\tec\lib\
-  
+    dir c:\
+
+    cd C:\
+
+    git clone https://github.com/adam4813/vcpkg
+
+    cd vcpkg
+
+    dir
+
+    powershell -exec bypass scripts\bootstrap.ps1
+
+    .\vcpkg integrate install
+
+    .\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
+
+    cd c:\projects\tec
 install:
-- cd c:\projects\tec
-- git submodule update --init
+- cmd: >-
+    git submodule update --init
+    
+    cd c:\projects\tec
 
-- appveyor DownloadFile "https://www.dropbox.com/s/m7vzruxrq8f79zo/tec_win32_libs.zip?dl=1&pv=1" -FileName tec_win32_libs.zip
-- 7z x -y tec_win32_libs.zip -o"c:\projects\tec"
+    mkdir build
 
-- mkdir build
-- cd build
-- cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True ..
-  
+    cd build
+
+    cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 build:
   project: c:\projects\tec\build\trillek.sln
   verbosity: minimal
-
-test_script:
-- .\build\bin\Debug\UNIT_TEST.exe
   
