@@ -12,14 +12,6 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${trillek_SOURCE_DIR}/common)
 
-if (WIN32) # Windows
-	# Library include directories for Lua and Protobuf
-	set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH}
-		${CMAKE_SOURCE_DIR}/lib/include/ ${trillek_SOURCE_DIR}/deps/protobuf/src)
-	set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${CMAKE_SOURCE_DIR}/lib/)
-	set(PROTOBUF_SRC_ROOT_FOLDER ${CMAKE_SOURCE_DIR}/lib/)
-endif ()
-
 add_subdirectory(common)
 if (BUILD_CLIENT)
 	add_subdirectory(client)

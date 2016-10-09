@@ -1,11 +1,11 @@
 # Trillek Engine C
-| GNU/Linux (Gcc and CLang)                        | Windows (VStudio 2015)  |
-|--------------------------------------------------|-------------------------|
-|[![Build Status](https://travis-ci.org/trillek-team/tec.svg)](https://travis-ci.org/trillek-team/tec) | [![Build status](https://ci.appveyor.com/api/projects/status/809xi9ukwo7sgsip?svg=true)](https://ci.appveyor.com/project/adam4813/tec-hem9u) |
+| Windows (VStudio 2015)  | Semaphore (GCC) |
+|-------------------------|-----------------|
+| [![Build status](https://ci.appveyor.com/api/projects/status/809xi9ukwo7sgsip?svg=true)](https://ci.appveyor.com/project/adam4813/tec-hem9u) | [![Build Status](https://semaphoreci.com/api/v1/adam4813/tec/branches/build-system/shields_badge.svg)](https://semaphoreci.com/adam4813/tec) |
 
 
 ## Building
-TEC requires cmake 3.1 and a few libraries like GLEW, Lua, Bullet and OpenAL. Our CMake script can handle compiling and installing Bullet and OpenAL, but GLEW and Lua is necesary to be installed on your computer to build the engine properly.
+TEC requires cmake 3.1 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua, Bullet and OpenAL.
 
 If you do not have cmake 3.1 (try `cmake -version`), to install on Linux, use the same procedure that we do on Travis CI:
 
@@ -20,34 +20,27 @@ Building takes a few steps to get everything set up for the first build.
 3. `cd build/`
 4. Follow platform specific instructions 
   1. Linux (G++ 5 or CLang 3.8)
-     - If you have Bullet, GLEW and OpenAL dev libs installed : 
-       1. `cmake ..` in the build directory
-       2. `make TEC` in the build directory
-     - If you do not have Bullet or OpenAL dev libs installed : 
-       1. `cmake ..` in the build directory
-       2. `make` in the build directory
-       3. `sudo make install` in the build directory (Warning! This will install Bullet and/or OpenAL on your /usr/local/)
-       4. `rm CMakeCache.txt` in the build directory
-       5. `cmake ..` in the build directory
-       6. `make TEC` in the build directory
-  2. Windows (Visual Studio 2013)
-     1. Install Lua include files and library file. (For example on /lib )
-     2. Set LUA_DIR enviroment variable to the path were you download Lua.
-     3. Run cmake-gui setting the source line to the root directory and the build line to the build directory.
-     4. Configure and Generate using non-x64 as the target, with native compiles selected.
-     5. Build the solution
-     6. Return to cmake-gui and rerun configure and generate.
-     7. **OPTIONAL** If you see "All dependencies found now building tec.", you can delete your cache and rerun to clean up the cmake-gui window. 
-     8. In the project properties for `TEC` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
-     9. Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
+       1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC.)
+            1. If you are on Ubuntu/Debian/etc. (something with `apt`):
+                1. Run `# apt-get install libglew-dev libglfw3 libglm-dev libasio-dev`
+                2. Run `# apt-get install liblua5.2-dev libopenal-dev  libbullet-dev`
+                3. Run `# apt-get install libprotobuf-dev protobuf-compiler`
+            2. If you are on Fedora/RHEL/etc. (something with `rpm`):
+            3. If you are on Arch/etc. (something with `pacman`):
+       2. `cmake ..` in the build directory
+       3. `make TEC` in the build directory
+  2. Windows (Visual Studio 2015)
+     1. Check out **VCPKG** from https://github.com/Microsoft/vcpkg (If you already have **VCPKG**, go to step 5)
+     2. Navigate to the `vcpkg/` directory.
+     3. Run `powershell -exec bypass scripts\bootstrap.ps1`
+     4. Run `.\vcpkg integrate install`
+     5. Run `.\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib`
+     6. Run cmake-gui setting the source line to the root directory and the build line to the build directory.
+     7. Hit configure and select `Specify toolchain file for cross-compiling` using `scripts/buildsystems/vcpkg.cmake` from the the `vcpkg/` directory
+     8. Click generate; then open and build the solution in Visual Studio.
+     9. In the project properties for `trillek-client` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
+     10. **Potentially** Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
 5. Run it from `tec/`
 
-### Dependencies download (Windows)
-
-- Glew : Use nuget -> nuget install rxd_glew 
-- Lua 5.2 : http://sourceforge.net/projects/luabinaries/files/5.2.3/Windows%20Libraries/Static/
-- **OR** for prebuilt (lua5.2 and glew lib files) download https://www.dropbox.com/s/m7vzruxrq8f79zo/tec_win32_libs.zip?dl=0 and extract it into the root repo folder.
-
 ### Unit tests
-
 To generate the unit tests, follow the same instructions that before, but set to true the flag BUILD_TESTS_TEC
