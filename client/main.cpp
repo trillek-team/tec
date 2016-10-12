@@ -1,28 +1,27 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "os.hpp"
+#include "client/server-connection.hpp"
+#include "controllers/fps-controller.hpp"
 #include "events.hpp"
 #include "filesystem.hpp"
-#include "render-system.hpp"
-#include "physics-system.hpp"
-#include "voxelvolume.hpp"
-#include "vcomputer-system.hpp"
-#include "sound-system.hpp"
-#include "imgui-system.hpp"
-#include "simulation.hpp"
-#include "controllers/fps-controller.hpp"
-#include "lua-system.hpp"
-
 #include "gui/console.hpp"
+#include "imgui-system.hpp"
+#include "lua-system.hpp"
+#include "os.hpp"
+#include "physics-system.hpp"
+#include "render-system.hpp"
+#include "simulation.hpp"
+#include "sound-system.hpp"
+#include "vcomputer-system.hpp"
+#include "voxel-volume.hpp"
 
-#include <spdlog/spdlog.h>
-#include <iostream>
 #include <future>
-#include <thread>
-#include <string>
+#include <iostream>
+#include <spdlog/spdlog.h>
 #include <sstream>
-#include "client/server_connection.hpp"
+#include <string>
+#include <thread>
 
 namespace tec {
 	extern void InitializeComponents();
@@ -283,8 +282,8 @@ int main(int argc, char* argv[]) {
 				tec::Orientation ori = client_state.orientations.at(connection.GetClientID());
 				ori.Out(self.add_components());
 			}
-			if (client_state.velocties.find(connection.GetClientID()) != client_state.velocties.end()) {
-				tec::Velocity vel = client_state.velocties.at(connection.GetClientID());
+			if (client_state.velocities.find(connection.GetClientID()) != client_state.velocities.end()) {
+				tec::Velocity vel = client_state.velocities.at(connection.GetClientID());
 				vel.Out(self.add_components());
 			}
 			tec::networking::ServerMessage update_message;
@@ -308,7 +307,7 @@ int main(int argc, char* argv[]) {
 		//ps.DebugDraw();
 		if (camera_controller != nullptr) {
 			if (camera_controller->mouse_look) {
-				os.EanbleMouseLock();
+				os.EnableMouseLock();
 			}
 			else {
 				os.DisableMouseLock();

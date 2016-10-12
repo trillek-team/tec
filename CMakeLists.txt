@@ -246,6 +246,10 @@ IF (APPLE) # Mac OSX
   SET(GLEW_LIBRARY "") # Set a dummy value for GLEW.
 
   SET(CMAKE_XCODE_ATTRIBUTE_SUPPORTED_PLATFORMS macosx)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+  ADD_DEFINITIONS(-D__unix__)
+
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++ -lc++abi")
 
   # Need the 10.7 SDK or later.
   EXECUTE_PROCESS(COMMAND xcodebuild -sdk macosx -version SDKVersion OUTPUT_VARIABLE OSX_SDK_VERSION)
@@ -336,8 +340,8 @@ IF (NOT ${BUILD_DEPS_FIRST})
   
   ADD_EXECUTABLE("Server"
     "server/main.cpp"
-    "server/client_connection.hpp"
-    "server/client_connection.cpp"
+    "server/client-connection.hpp"
+    "server/client-connection.cpp"
     "server/server.hpp"
     "server/server.cpp"
   )

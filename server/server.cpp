@@ -2,7 +2,7 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "server/server.hpp"
-#include "server/client_connection.hpp"
+#include "server/client-connection.hpp"
 #include "../proto/components.pb.h"
 #include "filesystem.hpp"
 

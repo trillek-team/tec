@@ -16,7 +16,7 @@ namespace tec {
 	struct GameState {
 		std::unordered_map<eid, Position> positions;
 		std::unordered_map<eid, Orientation> orientations;
-		std::unordered_map<eid, Velocity> velocties;
+		std::unordered_map<eid, Velocity> velocities;
 		std::list<std::function<void(void)>> commands;
 
 		GameState() : state_id(0) { }
@@ -25,7 +25,7 @@ namespace tec {
 		GameState(GameState&& other) {
 			this->positions = std::move(other.positions);
 			this->orientations = std::move(other.orientations);
-			this->velocties = std::move(other.velocties);
+			this->velocities = std::move(other.velocities);
 			this->state_id = other.state_id;
 		}
 
@@ -34,7 +34,7 @@ namespace tec {
 			if (this != &other) {
 				this->positions = std::move(other.positions);
 				this->orientations = std::move(other.orientations);
-				this->velocties = std::move(other.velocties);
+				this->velocities = std::move(other.velocities);
 				this->state_id = other.state_id;
 			}
 			return *this;
@@ -66,7 +66,7 @@ namespace tec {
 							{
 								Velocity vel;
 								vel.In(comp);
-								this->velocties[entity_id] = vel;
+								this->velocities[entity_id] = vel;
 							}
 							break;
 					}
@@ -84,8 +84,8 @@ namespace tec {
 					tec::Orientation ori = this->orientations.at(pos.first);
 					ori.Out(entity->add_components());
 				}
-				if (this->velocties.find(pos.first) != this->velocties.end()) {
-					tec::Velocity vel = this->velocties.at(pos.first);
+				if (this->velocities.find(pos.first) != this->velocities.end()) {
+					tec::Velocity vel = this->velocities.at(pos.first);
 					vel.Out(entity->add_components());
 				}
 			}
