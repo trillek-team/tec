@@ -24,27 +24,27 @@ namespace tec {
 	typedef std::uint32_t tid; /// Type ID
 
 	/// Returns the name of an component on compile time
-	template<class TYPE> const char* GetTypeName(void) { return "UNKNOWN"; }
+	template<class TYPE> constexpr const char* GetTypeName(void) { return "UNKNOWN"; }
 	/// Returns the TypeID of a component on compile time
-	template<class TYPE> const tid GetTypeID(void) { return proto::Component::COMPONENT_NOT_SET; }
+	template<class TYPE> constexpr tid GetTypeID(void) { return proto::Component::COMPONENT_NOT_SET; }
 	/// Returns the name of a resource type on Compile time
-	template<class TYPE> const char* GetTypeEXT(void) { return "UNKNOWN"; }
+	template<class TYPE> constexpr const char* GetTypeEXT(void) { return "UNKNOWN"; }
 
 	/*
 	 * Use this macro to associate a component to an type id and generat a string withthe name
 	 * Only works if the struct and component name on .proto file are the same (see the list on message Component )
 	 */
 #define MAKE_IDTYPE(a) \
-	template<> inline const char* GetTypeName<a>() { return #a; } \
-	template<> inline const tid GetTypeID<a>() { return proto::Component::k##a;}
+	template<> inline constexpr const char* GetTypeName<a>() { return #a; } \
+	template<> inline constexpr tid GetTypeID<a>() { return proto::Component::k##a;}
 
 #define MAKE_IDTYPE_NAMESPACE(ns, a, b) \
-	template<> inline const char* GetTypeName<ns::a>() { return #a; } \
-	template<> inline const tid GetTypeID<ns::a>() { return proto::Component::k##a;}
+	template<> inline constexpr const char* GetTypeName<ns::a>() { return #a; } \
+	template<> inline constexpr tid GetTypeID<ns::a>() { return proto::Component::k##a;}
 
 #define MAKE_EXTTYPE(a, b) \
-	template<> inline const char* GetTypeName<a>() { return #a; } \
-	template<> inline const char* GetTypeEXT<a>() { return b; }
+	template<> inline constexpr const char* GetTypeName<a>() { return #a; } \
+	template<> inline constexpr const char* GetTypeEXT<a>() { return b; }
 
 	// Registering components
 
