@@ -103,14 +103,14 @@ namespace tec {
 			alSourcef(source->source, AL_PITCH, 1); alCheckError();
 			alSourcef(source->source, AL_GAIN, source->gain / 100.0f); alCheckError();
 			if (Entity(entity_id).Has<Position>()) {
-				Position* pos = Entity(entity_id).Get<Position>();
+				const Position* pos = Entity(entity_id).Get<Position>();
 				alSource3f(source->source, AL_POSITION, pos->value.x, pos->value.y, pos->value.z);
 			}
 			else {
 				alSource3f(source->source, AL_POSITION, 0, 0, 0);
 			}
 			if (Entity(entity_id).Has<Velocity>()) {
-				Velocity* vel = Entity(entity_id).Get<Velocity>();
+				const Velocity* vel = Entity(entity_id).Get<Velocity>();
 				alSource3f(source->source, AL_VELOCITY, vel->linear.x, vel->linear.y, vel->linear.z);
 			}
 			else {

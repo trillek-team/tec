@@ -64,26 +64,26 @@ namespace tec {
 		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
-		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
-			eid entity_id = itr->first;
-			CollisionBody* collidable = itr->second;
-			glm::vec3 position(0.0);
-			if (state.positions.find(entity_id) != state.positions.end()) {
-				auto pos = state.positions.at(entity_id).value;
-				if (std::isfinite(pos.x) && std::isfinite(pos.x) && std::isfinite(pos.x)) {
-					position = pos;
-				}
-			}
-			glm::quat orientation;
-			if (state.orientations.find(entity_id) != state.orientations.end()) {
-				auto ori = state.orientations.at(entity_id).value;
-				if (std::isfinite(ori.x) && std::isfinite(ori.x) && std::isfinite(ori.x) && std::isfinite(ori.w)) {
-					orientation = ori;
-				}
-			}
 
-			collidable->motion_state.transform.getBasis().setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
-			collidable->motion_state.transform.setOrigin(btVector3(position.x, position.y, position.z));
+		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
+			const eid& entity_id = itr->first;
+
+			CollisionBody* collidable = itr->second;
+			if (!collidable) {
+				continue;
+			}
+			if (state.positions.find(entity_id) != state.positions.end()) {
+				glm::vec3 position = state.positions.at(entity_id).value;
+				if (std::isfinite(position.x) && std::isfinite(position.y) && std::isfinite(position.z)) {
+					collidable->motion_state.transform.setOrigin(btVector3(position.x, position.y, position.z));
+				}
+			}
+			if (state.orientations.find(entity_id) != state.orientations.end()) {
+				glm::quat orientation = state.orientations.at(entity_id).value;
+				if (std::isfinite(orientation.x) && std::isfinite(orientation.y) && std::isfinite(orientation.z) && std::isfinite(orientation.w)) {
+					collidable->motion_state.transform.getBasis().setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+				}
+			}
 
 			btRigidBody* body = this->bodies[entity_id];
 			if (!body) {
@@ -113,10 +113,10 @@ namespace tec {
 
 			if (state.velocities.find(entity_id) != state.velocities.end()) {
 				const Velocity& vel = state.velocities.at(entity_id);
-				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x) && std::isfinite(vel.linear.x)) {
+				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.y) && std::isfinite(vel.linear.z)) {
 					body->setLinearVelocity(vel.GetLinear() + btVector3(0.0, 1.0, 0.0) + body->getGravity());
 				}
-				if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x) && std::isfinite(vel.angular.x)) {
+				if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.y) && std::isfinite(vel.angular.z)) {
 					body->setAngularVelocity(vel.GetAngular());
 				}
 			}

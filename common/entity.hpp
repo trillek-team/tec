@@ -68,13 +68,13 @@ namespace tec {
 
 		// Get a specific component.
 		template <typename T>
-		T* Get() {
+		const T* Get() {
 			return Multiton<eid, T*>::Get(this->id);
 		}
 
 		// Get multiple components.
 		template <typename... T>
-		std::tuple<T*...> GetList() {
+		std::tuple<const T*...> GetList() {
 			return std::make_tuple(Multiton<eid, T*>::Get(this->id)...);
 		}
 
