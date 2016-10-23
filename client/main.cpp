@@ -12,6 +12,7 @@
 #include "physics-system.hpp"
 #include "render-system.hpp"
 #include "simulation.hpp"
+#include "game-state-queue.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "voxel-volume.hpp"
@@ -73,7 +74,8 @@ int main(int argc, char* argv[]) {
 	std::thread* asio_thread = nullptr;
 	std::thread* sync_thread = nullptr;
 	tec::Simulation simulation;
-	tec::networking::ServerConnection connection(simulation);
+	tec::GameStateQueue game_state_queue;
+	tec::networking::ServerConnection connection;
 	console.AddConsoleCommand("msg",
 		"msg : Send a message to all clients.",
 		[&connection] (const char* args) {
@@ -268,9 +270,9 @@ int main(int argc, char* argv[]) {
 			vox_sys.Update(delta);
 		});
 		
-		simulation.Interpolate(delta);
-		simulation.Simulate(delta);
-		const tec::GameState& client_state = simulation.GetClientState();
+		game_state_queue.Interpolate(delta);
+
+		const tec::GameState client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
 		if (connection.GetClientID() != 0) {
 			tec::proto::Entity self;
 			self.set_id(connection.GetClientID());

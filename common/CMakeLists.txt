@@ -27,6 +27,7 @@ add_subdirectory(${trillek_SOURCE_DIR}/deps/trillek-vcomputer ${trillek_BINARY_D
 set(trillek-common_LIBRARY "tec" CACHE STRING "Name of the library with code common to both the client and the server")
 set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/filesystem.cpp
+	${trillek-common_SOURCE_DIR}/game-state-queue.cpp
 	${trillek-common_SOURCE_DIR}/lua-system.cpp
 	${trillek-common_SOURCE_DIR}/physics-system.cpp
 	${trillek-common_SOURCE_DIR}/simulation.cpp

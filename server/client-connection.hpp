@@ -53,7 +53,7 @@ namespace tec {
 				return this->last_confirmed_state_id;
 			}
 
-			void UpdateGameState(std::set<eid> updated_entities, const GameState& full_state);
+			void UpdateGameState(const GameState& full_state);
 
 			tec::networking::ServerMessage PrepareGameStateUpdateMessage(state_id_t current_state_id);
 

@@ -18,9 +18,7 @@ using asio::ip::tcp;
 namespace tec {
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
-
-	class Simulation;
-
+	
 	namespace networking {
 		extern const char* SERVER_PORT_STR;
 		extern const char* LOCAL_HOST;
@@ -29,7 +27,7 @@ namespace tec {
 		// Used to connect to a server.
 		class ServerConnection {
 		public:
-			ServerConnection(Simulation& simulation);
+			ServerConnection();
 
 			bool Connect(std::string ip = LOCAL_HOST); // Connects to a server.
 
@@ -98,7 +96,6 @@ namespace tec {
 
 			// State management variables
 			state_id_t last_received_state_id;
-			Simulation& simulation;
 
 			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>, std::hash<std::underlying_type<MessageType>::type>> message_handlers;
 		};

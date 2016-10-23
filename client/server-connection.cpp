@@ -3,8 +3,8 @@
 
 #include "client/server-connection.hpp"
 #include "events.hpp"
-#include "game_state.pb.h"
-#include "simulation.hpp"
+#include "event-system.hpp"
+#include "game-state.hpp"
 
 using asio::ip::tcp;
 
@@ -15,7 +15,7 @@ namespace tec {
 		std::shared_ptr<spdlog::logger> ServerConnection::_log;
 		std::mutex ServerConnection::recent_ping_mutex;
 
-		ServerConnection::ServerConnection(Simulation& simulation) : simulation(simulation), socket(io_service), last_received_state_id(0) {
+		ServerConnection::ServerConnection() : socket(io_service), last_received_state_id(0) {
 			_log = spdlog::get("console_log");
 			RegisterMessageHandler(SYNC, [this] (const ServerMessage& message) {
 				this->SyncHandler(message);
@@ -189,7 +189,9 @@ namespace tec {
 				next_state.positions.erase(this->client_id);
 				next_state.orientations.erase(this->client_id);
 				next_state.velocities.erase(this->client_id);
-				this->simulation.PushServerState(std::move(next_state));
+				std::shared_ptr<NewGameStateEvent> new_game_state_msg = std::make_shared<NewGameStateEvent>();
+				new_game_state_msg->new_state = std::move(next_state);
+				EventSystem<NewGameStateEvent>::Get()->Emit((new_game_state_msg));
 			}
 			//_log->info(last_received_state_id);
 		}

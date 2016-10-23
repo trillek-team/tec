@@ -21,7 +21,15 @@ namespace tec {
 
 		GameState() : state_id(0) { }
 
-		GameState(const GameState&) = delete;
+		GameState(const GameState& other) {
+			if (&other == this) {
+				return;
+			}
+			this->positions = other.positions;
+			this->orientations = other.orientations;
+			this->velocities = other.velocities;
+			this->state_id = other.state_id;
+		}
 		GameState(GameState&& other) {
 			this->positions = std::move(other.positions);
 			this->orientations = std::move(other.orientations);
@@ -29,7 +37,16 @@ namespace tec {
 			this->state_id = other.state_id;
 		}
 
-		GameState& operator=(const GameState& other) = delete;
+		GameState& operator=(const GameState& other) {
+			if (&other == this) {
+				return *this;
+			}
+			this->positions = other.positions;
+			this->orientations = other.orientations;
+			this->velocities = other.velocities;
+			this->state_id = other.state_id;
+			return *this;
+		}
 		GameState& operator=(GameState&& other) {
 			if (this != &other) {
 				this->positions = std::move(other.positions);
@@ -49,29 +66,29 @@ namespace tec {
 					const proto::Component& comp = entity.components(i);
 					switch (comp.component_case()) {
 						case proto::Component::kPosition:
-							{
-								Position pos;
-								pos.In(comp);
-								this->positions[entity_id] = pos;
-							}
-							break;
+						{
+							Position pos;
+							pos.In(comp);
+							this->positions[entity_id] = pos;
+						}
+						break;
 						case proto::Component::kOrientation:
-							{
-								Orientation orientation;
-								orientation.In(comp);
-								this->orientations[entity_id] = orientation;
-							}
-							break;
+						{
+							Orientation orientation;
+							orientation.In(comp);
+							this->orientations[entity_id] = orientation;
+						}
+						break;
 						case proto::Component::kVelocity:
-							{
-								Velocity vel;
-								vel.In(comp);
-								this->velocities[entity_id] = vel;
-							}
-							break;
+						{
+							Velocity vel;
+							vel.In(comp);
+							this->velocities[entity_id] = vel;
+						}
+						break;
 						default:
-							// intentionally not handling other cases.
-							break;
+						// intentionally not handling other cases.
+						break;
 					}
 				}
 			}
@@ -94,6 +111,10 @@ namespace tec {
 			}
 		}
 		state_id_t state_id;
+	};
+
+	struct NewGameStateEvent {
+		GameState new_state;
 	};
 
 	struct CommandList {
