@@ -11,17 +11,17 @@
 namespace tec {
 	// TODO: Create Controller system that calls update on all controller instances.
 	struct Controller {
-		virtual void Update(double delta, GameState& state, const CommandList& commands) { }
+		virtual void Update(double delta, const GameState& state, const CommandList& commands) { }
 	};
 	// TODO: Remove this class as it is only for testing and should really be implemented in script.
 	struct FPSController : public Controller {
 		FPSController(eid entity_id) : entity_id(entity_id), mouse_look(false) { }
 
-		void Handle(const KeyboardEvent& data, GameState& state);
-		void Handle(const MouseBtnEvent& data, GameState& state);
-		void Handle(const MouseMoveEvent& data, GameState& state);
+		void Handle(const KeyboardEvent& data, const GameState& state);
+		void Handle(const MouseBtnEvent& data, const GameState& state);
+		void Handle(const MouseMoveEvent& data, const GameState& state);
 
-		void Update(double delta, GameState& state, const CommandList& commands);
+		void Update(double delta, const GameState& state, const CommandList& commands);
 
 		eid entity_id;
 		double current_delta;

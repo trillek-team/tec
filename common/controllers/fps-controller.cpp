@@ -9,7 +9,7 @@
 #include "events.hpp"
 
 namespace tec {
-	void FPSController::Update(double delta, GameState& state, const CommandList& commands) {
+	void FPSController::Update(double delta, const GameState& state, const CommandList& commands) {
 		this->current_delta = delta;
 		for (const KeyboardEvent& key_event : commands.keyboard_events) {
 			Handle(key_event, state);
@@ -42,10 +42,10 @@ namespace tec {
 			orientation = state.orientations.at(entity_id).value;
 		}
 
-		state.velocities[entity_id].linear = glm::vec4(orientation * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
+		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(orientation * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
 	}
 
-	void FPSController::Handle(const KeyboardEvent& data, GameState& state) {
+	void FPSController::Handle(const KeyboardEvent& data, const GameState& state) {
 		switch (data.action) {
 			case KeyboardEvent::KEY_DOWN:
 			case KeyboardEvent::KEY_REPEAT:
@@ -93,7 +93,7 @@ namespace tec {
 		}
 	}
 
-	void FPSController::Handle(const MouseBtnEvent& data, GameState& state) {
+	void FPSController::Handle(const MouseBtnEvent& data, const GameState& state) {
 		static double old_mouse_x;
 		static double old_mouse_Y;
 
@@ -105,7 +105,7 @@ namespace tec {
 		}
 	}
 
-	void FPSController::Handle(const MouseMoveEvent& data, GameState& state) {
+	void FPSController::Handle(const MouseMoveEvent& data, const GameState& state) {
 		if (!this->mouse_look) {
 			return;
 		}
@@ -142,7 +142,7 @@ namespace tec {
 		}
 
 		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			state.orientations[entity_id].value = orientation;
+			const_cast<GameState&>(state).orientations[entity_id].value = orientation;
 		}
 	}
 }

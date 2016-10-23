@@ -10,6 +10,7 @@
 #include "server/server.hpp"
 #include "server/client-connection.hpp"
 #include "game_state.pb.h"
+#include "game-state-queue.hpp"
 #include "simulation.hpp"
 
 using asio::ip::tcp;
@@ -28,6 +29,8 @@ int main() {
 	bool closing = false;
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 
+
+	tec::GameStateQueue game_state_queue;
 	tec::Simulation simulation;
 
 	try {
@@ -43,9 +46,9 @@ int main() {
 				last_time = next_time;
 				delta_accumulator += elapsed_seconds.count();
 				if (delta_accumulator >= tec::UPDATE_RATE) {
-					auto updated_entities = simulation.Simulate(tec::UPDATE_RATE);
 					current_state_id++;
-					tec::GameState& full_state = simulation.GetClientState();
+					game_state_queue.Interpolate(tec::UPDATE_RATE);
+					tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetInterpolatedState());
 					full_state.state_id = current_state_id;
 					tec::proto::GameStateUpdate full_state_update;
 					full_state.Out(&full_state_update);
@@ -57,7 +60,7 @@ int main() {
 					full_state_update_message.encode_header();
 					server.LockClientList();
 					for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
-						client->UpdateGameState(updated_entities, full_state);
+						client->UpdateGameState(full_state);
 						if (current_state_id - client->GetLastConfirmedStateID() > tec::UPDATE_RATE * 2.0) {
 							server.Deliver(client, full_state_update_message);
 							std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;

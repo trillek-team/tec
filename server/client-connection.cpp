@@ -170,16 +170,16 @@ namespace tec {
 			});
 		}
 
-		void ClientConnection::UpdateGameState(std::set<eid> updated_entities, const GameState& full_state) {
-			for (eid entity : updated_entities) {
-				if (full_state.positions.find(entity) != full_state.positions.end()) {
-					this->state_changes_since_confirmed.positions[entity] = full_state.positions.at(entity);
+		void ClientConnection::UpdateGameState(const GameState& full_state) {
+			for (auto pair : full_state.positions) {
+				if (full_state.positions.find(pair.first) != full_state.positions.end()) {
+					this->state_changes_since_confirmed.positions[pair.first] = full_state.positions.at(pair.first);
 				}
-				if (full_state.orientations.find(entity) != full_state.orientations.end()) {
-					this->state_changes_since_confirmed.orientations[entity] = full_state.orientations.at(entity);
+				if (full_state.orientations.find(pair.first) != full_state.orientations.end()) {
+					this->state_changes_since_confirmed.orientations[pair.first] = full_state.orientations.at(pair.first);
 				}
-				if (full_state.velocities.find(entity) != full_state.velocities.end()) {
-					this->state_changes_since_confirmed.velocities[entity] = full_state.velocities.at(entity);
+				if (full_state.velocities.find(pair.first) != full_state.velocities.end()) {
+					this->state_changes_since_confirmed.velocities[pair.first] = full_state.velocities.at(pair.first);
 				}
 			}
 		}
