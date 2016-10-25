@@ -6,16 +6,15 @@ clone_folder: c:\projects\tec
 init:
 - cmd: >-
     git config --global core.autocrlf input
-
+install:
+- cmd: >-
     dir c:\
 
-    cd C:\
-
-    git clone https://github.com/Microsoft/vcpkg
+    cd c:\
+    
+    IF NOT EXIST c:\vcpkg\ ( git clone https://github.com/Microsoft/vcpkg ) ELSE ( echo VCPKG is cached )
 
     cd vcpkg
-
-    dir
 
     powershell -exec bypass scripts\bootstrap.ps1
 
@@ -24,11 +23,8 @@ init:
     .\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
 
     cd c:\projects\tec
-install:
-- cmd: >-
-    git submodule update --init
     
-    cd c:\projects\tec
+    git submodule update --init
 
     mkdir build
 
@@ -38,4 +34,9 @@ install:
 build:
   project: c:\projects\tec\build\trillek.sln
   verbosity: minimal
-  
+artifacts:
+- path: build\client\Release\trillek-client.exe
+  name: trillek-client-win32
+- path: build\server\Release\trillek-server.exe
+  name: trillek-server-win32
+cache: c:\vcpkg\ -> appveyor.yml
