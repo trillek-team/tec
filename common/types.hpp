@@ -1,7 +1,8 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#pragma once
+#ifndef TRILLEK_COMMON_TYPES_HPP
+#define TRILLEK_COMMON_TYPES_HPP
 
 /**
  * @file types.hpp
@@ -16,10 +17,12 @@
 
 namespace tec {
 	typedef std::int64_t state_id_t;
+	#define PRI_STATE_ID_T PRId64
 
 	typedef std::int64_t GUID; /// Global Unique ID
 
 	typedef std::int64_t eid; /// Entity ID
+	#define PRI_EID PRId64
 
 	typedef std::uint32_t tid; /// Type ID
 
@@ -117,3 +120,4 @@ namespace tec {
 
 }
 
+#endif

@@ -1,13 +1,15 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#pragma once
+#ifndef TRILLEK_CLIENT_SERVER_CONNECTION_HPP
+#define TRILLEK_CLIENT_SERVER_CONNECTION_HPP
 
 #include <asio.hpp>
 #include <spdlog/spdlog.h>
 #include <memory>
 #include <thread>
 #include <chrono>
+#include <cinttypes>
 #include <list>
 #include <iostream>
 #include <atomic>
@@ -23,6 +25,9 @@ namespace tec {
 		extern const char* SERVER_PORT_STR;
 		extern const char* LOCAL_HOST;
 		typedef std::chrono::milliseconds::rep ping_time_t;
+		// std::chrono::milliseconds::rep is required to be signed and at least
+		// 45 bits, so it should be std::int64_t.
+		#define PRI_PING_TIME_T PRId64
 
 		// Used to connect to a server.
 		class ServerConnection {
@@ -101,3 +106,5 @@ namespace tec {
 		};
 	}
 }
+
+#endif

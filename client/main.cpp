@@ -210,7 +210,7 @@ int main(int argc, char* argv[]) {
 
 	gui.AddWindowDrawFunction("active_entity", [ ] () {
 		if (tec::active_entity != 0) {
-			ImGui::SetTooltip("#%i", tec::active_entity);
+			ImGui::SetTooltip("#%" PRI_EID, tec::active_entity);
 		}
 	});
 	gui.ShowWindow("active_entity");
@@ -228,7 +228,7 @@ int main(int argc, char* argv[]) {
 				}
 				ImGui::EndMenu();
 			}
-			ImGui::Text("Ping %i", connection.GetAveragePing());
+			ImGui::Text("Ping %" PRI_PING_TIME_T, connection.GetAveragePing());
 			ImGui::EndMainMenuBar();
 		}
 	});
