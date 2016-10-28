@@ -1,16 +1,18 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#pragma once
+#ifndef TRILLEK_COMMON_SERVER_MESSAGE_HPP
+#define TRILLEK_COMMON_SERVER_MESSAGE_HPP
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cinttypes>
 #include "types.hpp"
 
 namespace tec {
 	namespace networking {
-		enum MessageType {
+		enum MessageType: int {
 			SYNC,
 			ENTITY_UPDATE,
 			ENTITY_CREATE,
@@ -95,7 +97,7 @@ namespace tec {
 
 			void encode_header() {
 				char header[header_length + 1] = "";
-				std::sprintf(header, "%4d%4d%lld", body_length, message_type, last_recv_state_id);
+				std::sprintf(header, "%4zu%4d%" PRI_STATE_ID_T, body_length, message_type, last_recv_state_id);
 				std::memcpy(data, header, header_length);
 			}
 
@@ -107,3 +109,5 @@ namespace tec {
 		};
 	}
 }
+
+#endif
