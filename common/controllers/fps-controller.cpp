@@ -94,9 +94,6 @@ namespace tec {
 	}
 
 	void FPSController::Handle(const MouseBtnEvent& data, const GameState& state) {
-		static double old_mouse_x;
-		static double old_mouse_Y;
-
 		if ((data.action == MouseBtnEvent::DOWN) && (data.button == MouseBtnEvent::RIGHT)) {
 			this->mouse_look = true;
 		}

@@ -473,11 +473,16 @@ FilePath FilePath::GetAssetsBasePath() {
 #else
 		if (! getcwd(cwd, sizeof(cwd))) {
 #endif
-#pragma warning(push)
-#pragma warning(disable: 4996)
+
+#if defined(WIN32)
+  #pragma warning(push)
+  #pragma warning(disable: 4996)
+#endif
 			std::strncpy(cwd, "./", 2); // Fall back to relative path if getcwd fails
 			cwd[2] = '\0';
-#pragma warning(pop)
+#if defined(WIN32)
+  #pragma warning(pop)
+#endif
 		}
 		// Search for the assets folder
 		FilePath tmp(cwd);

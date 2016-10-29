@@ -54,6 +54,11 @@ set(trillek-client_SOURCES
 )
 
 add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCES})
+if (MSVC)
+	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
+else ()
+	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
+endif ()
 target_link_libraries(${trillek-client_PROGRAM} ${trillek-common_LIBRARY}
 	${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} ${OPENGL_gl_LIBRARY}
 	${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${GLEW_LIBRARIES} VCOMPUTER_STATIC)

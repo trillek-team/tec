@@ -10,10 +10,10 @@ namespace tec {
 	}
 
 	
-	CollisionBody::CollisionBody(CollisionBody&& other) : mass(other.mass),
-	disable_deactivation(other.disable_deactivation), disable_rotation(other.disable_rotation),
-	motion_state(std::move(other.motion_state)), shape(std::move(other.shape)),
-	entity_id(other.entity_id) {
+    CollisionBody::CollisionBody(CollisionBody&& other) : mass(other.mass),
+    disable_deactivation(other.disable_deactivation),
+    disable_rotation(other.disable_rotation), shape(std::move(other.shape)),
+    entity_id(other.entity_id), motion_state(std::move(other.motion_state)) {
 
 	}
 

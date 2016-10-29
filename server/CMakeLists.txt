@@ -25,5 +25,10 @@ set(trillek-server_SOURCES
 )
 
 add_executable(${trillek-server_PROGRAM} ${trillek-server_SOURCES})
+if (MSVC)
+	set_property(TARGET ${trillek-server_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
+else ()
+	set_property(TARGET ${trillek-server_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
+endif ()
 target_link_libraries(${trillek-server_PROGRAM} ${trillek-common_LIBRARY}
 	${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} VCOMPUTER_STATIC)
