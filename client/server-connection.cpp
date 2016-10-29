@@ -100,8 +100,9 @@ namespace tec {
 
 		void ServerConnection::read_body() {
 			asio::error_code error = asio::error::eof;
-			std::size_t len = asio::read(this->socket,
-				asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()), error);
+			asio::read(this->socket,
+				asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()),
+				error);
 
 			if (!error) {
 				this->message_handlers[current_read_msg.GetMessageType()](current_read_msg);
@@ -114,7 +115,7 @@ namespace tec {
 
 		void ServerConnection::read_header() {
 			asio::error_code error = asio::error::eof;
-			std::size_t len = asio::read(this->socket,
+			asio::read(this->socket,
 				asio::buffer(this->current_read_msg.GetDataPTR(), ServerMessage::header_length), error);
 			this->recv_time = std::chrono::high_resolution_clock::now();
 
@@ -129,7 +130,6 @@ namespace tec {
 
 		void ServerConnection::StartRead() {
 			this->stopped = false;
-			asio::error_code error = asio::error::eof;
 			while (1) {
 				try {
 					if (this->socket.is_open() && this->socket.available()) {

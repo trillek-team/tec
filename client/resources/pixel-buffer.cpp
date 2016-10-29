@@ -8,10 +8,10 @@
 #include "spdlog/spdlog.h"
 
 namespace tec {
-	PixelBuffer::PixelBuffer() :
-		imagewidth(0), imageheight(0), bufferpitch(0), imagebitdepth(0),
-		imagemode(ImageColorMode::MONOCHROME), imagepixelsize(0),
-		image_x(0), image_y(0), dirty(false) { }
+	PixelBuffer::PixelBuffer()
+		: image_x(0), image_y(0), imagewidth(0), imageheight(0),
+		  bufferpitch(0), imagepixelsize(0), imagebitdepth(0),
+		  imagemode(ImageColorMode::MONOCHROME), dirty(false) { }
 
 	PixelBuffer::~PixelBuffer() {
 

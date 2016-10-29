@@ -41,9 +41,9 @@ namespace tec {
 
 		struct Vertex {
 			Vertex() : startWeight(0), weight_count(0), uv(0.0f, 0.0f) { }
-			glm::vec2 uv; // Texture coordinates
 			int startWeight; // index
 			unsigned int weight_count;
+			glm::vec2 uv; // Texture coordinates
 			glm::vec3 position; // Calculated position (cached for later use)
 			glm::vec3 normal; // Calculated normal (cached for later use)
 		};

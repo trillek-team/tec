@@ -27,7 +27,8 @@ namespace tec {
 	typedef Multiton<eid, PointLight*> PointLightMap;
 	typedef Multiton<eid, DirectionalLight*> DirectionalLightMap;
 
-	RenderSystem::RenderSystem() : window_width(1024), window_height(768), current_view(nullptr) {
+	RenderSystem::RenderSystem() : current_view(nullptr),
+			window_width(1024), window_height(768) {
 		_log = spdlog::get("console_log");
 
 		GLenum err = glGetError();
@@ -375,7 +376,6 @@ namespace tec {
 			);
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
-			eid entity_id = itr->first;
 			DirectionalLight* light = itr->second;
 
 			glm::vec3 lightInvDir = light->direction * -1.0f;
@@ -410,26 +410,24 @@ namespace tec {
 
 		GLsizei HalfWidth = (GLsizei)(this->window_width / 2.0f);
 		GLsizei HalfHeight = (GLsizei)(this->window_height / 2.0f);
-		GLsizei QuaterWidth = (GLsizei)(this->window_width / 4.0f);
-		GLsizei QuaterHeight = (GLsizei)(this->window_height / 4.0f);
-		GLsizei EightWidth = (GLsizei)(this->window_width / 8.0f);
-		GLsizei EightHeight = (GLsizei)(this->window_height / 8.0f);
+		GLsizei QuarterWidth = (GLsizei)(this->window_width / 4.0f);
+		GLsizei QuarterHeight = (GLsizei)(this->window_height / 4.0f);
 
 		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuaterWidth, 0, this->window_width, QuaterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			this->window_width - QuarterWidth, 0, this->window_width, QuarterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuaterWidth, QuaterHeight, this->window_width, HalfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			this->window_width - QuarterWidth, QuarterHeight, this->window_width, HalfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuaterWidth, HalfHeight, this->window_width, HalfHeight + QuaterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			this->window_width - QuarterWidth, HalfHeight, this->window_width, HalfHeight + QuarterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_TEXCOORD);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuaterWidth, HalfHeight + QuaterHeight, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+			this->window_width - QuarterWidth, HalfHeight + QuarterHeight, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	}
 

@@ -12,8 +12,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
-	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh) :
-		entity_id(entity_id), mesh(mesh) { }
+	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh)
+		: mesh(mesh), entity_id(entity_id) { }
 
 	VoxelVolume::~VoxelVolume() { }
 

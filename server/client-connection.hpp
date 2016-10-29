@@ -18,10 +18,12 @@ namespace tec {
 		class Server;
 
 		// Used to represent a client connection to the server.
-		class ClientConnection : public std::enable_shared_from_this < ClientConnection > {
+		class ClientConnection
+			: public std::enable_shared_from_this<ClientConnection> {
 		public:
-			ClientConnection(tcp::socket socket, Server* server) : last_confirmed_state_id(0),
-				socket(std::move(socket)), server(server) { }
+			ClientConnection(tcp::socket socket, Server* server) :
+				socket(std::move(socket)), server(server),
+				last_confirmed_state_id(0) { }
 
 			void StartRead();
 
