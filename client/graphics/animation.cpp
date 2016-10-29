@@ -11,7 +11,8 @@
 #include "resources/md5anim.hpp"
 
 namespace tec {
-	Animation::Animation(std::shared_ptr<MD5Anim> animation) : animation_time(0.0f), frame_count(0) {
+	Animation::Animation(std::shared_ptr<MD5Anim> animation)
+			: frame_count(0), animation_time(0.0f) {
 		SetAnimationFile(animation);
 		if (animation) {
 			this->animation_name = animation_file->GetName();

@@ -124,7 +124,9 @@ namespace tec {
 	protected:
 		std::int32_t imagewidth;
 		std::int32_t imageheight;
-		std::uint32_t bufferpitch; /// number of bytes to move vertical 1 raster line
+
+		/// number of bytes to move vertical 1 raster line
+		std::uint32_t bufferpitch;
 		std::uint32_t imagepixelsize;
 		std::uint32_t imagebitdepth;
 		ImageColorMode imagemode;

@@ -15,7 +15,7 @@ namespace tec {
 
 	class Animation final {
 	public:
-		Animation() : animation_time(0.0f), frame_count(0) { }
+		Animation() : frame_count(0), animation_time(0.0f) { }
 		Animation(std::shared_ptr<MD5Anim> animation);
 		/**
 		* \brief Updates the current animation based on a change in time.
