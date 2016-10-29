@@ -12,7 +12,7 @@ include_directories(${BULLET_INCLUDE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIR})
 include_directories(${trillek_BINARY_DIR}/common) # Protobuf files are here
-include_directories(${trillek_SOURCE_DIR}/deps/selene/include)
+include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
 include_directories(${trillek_SOURCE_DIR}/deps/spdlog/include)
 include_directories(${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 protobuf_generate_cpp(COMPONENTS_SOURCES COMPONENTS_HEADERS ${trillek-common_SOURCE_DIR}/proto/components.proto)
@@ -43,4 +43,9 @@ set(trillek-common_SOURCES
 )
 
 add_library(${trillek-common_LIBRARY} STATIC ${COMPONENTS_SOURCES} ${GAME_STATE_SOURCES} ${trillek-common_SOURCES})
+if (MSVC)
+	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
+else ()
+	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
+endif ()
 target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} VCOMPUTER_STATIC)

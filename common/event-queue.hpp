@@ -56,7 +56,7 @@ namespace tec {
 		virtual void On(const eid entity_id, std::shared_ptr<T> data) { }
 		virtual void On(std::shared_ptr<T> data) { }
 	protected:
-		std::atomic<std::queue<Event<T>>*> write_event_queue;
 		std::queue<Event<T>>* read_event_queue;
+		std::atomic<std::queue<Event<T>>*> write_event_queue;
 	};
 }
