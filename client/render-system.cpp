@@ -191,6 +191,7 @@ namespace tec {
 	void RenderSystem::GeometryPass() {
 		this->light_gbuffer.GeometyPass();
 
+
 		glm::mat4 camera_matrix(1.0);
 		{
 			View* view = this->current_view;
@@ -401,6 +402,7 @@ namespace tec {
 
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
 			0, 0, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void RenderSystem::RenderGbuffer() {

@@ -170,11 +170,16 @@ namespace tec {
 		IMGUISystem::fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(IMGUISystem::vertex_shader, 1, &vertex_shader, 0);
 		glShaderSource(IMGUISystem::fragment_shader, 1, &fragment_shader, 0);
+		GLint success = 0;
 		glCompileShader(IMGUISystem::vertex_shader);
+		glGetShaderiv(IMGUISystem::vertex_shader, GL_COMPILE_STATUS, &success);
 		glCompileShader(IMGUISystem::fragment_shader);
+		glGetShaderiv(IMGUISystem::fragment_shader, GL_COMPILE_STATUS, &success);
 		glAttachShader(IMGUISystem::shader_program, IMGUISystem::vertex_shader);
 		glAttachShader(IMGUISystem::shader_program, IMGUISystem::fragment_shader);
 		glLinkProgram(IMGUISystem::shader_program);
+		GLint isLinked = 0;
+		glGetProgramiv(IMGUISystem::shader_program, GL_LINK_STATUS, (int *)&isLinked);
 
 		IMGUISystem::texture_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "Texture");
 		IMGUISystem::projmtx_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "ProjMtx");
@@ -268,6 +273,7 @@ namespace tec {
 			}
 
 			unsigned char* vtx_data = (unsigned char*)glMapBufferRange(GL_ARRAY_BUFFER, 0, needed_vtx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
 			if (!vtx_data) {
 				continue;
 			}

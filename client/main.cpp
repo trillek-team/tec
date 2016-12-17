@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 
 	log->info("Initializing OpenGL...");
 	tec::OS os;
-	if (!os.InitializeWindow(1024, 768, "TEC 0.1", 3, 3)) {
+	if (!os.InitializeWindow(1024, 768, "TEC 0.1", 3, 1)) {
 		log->info("Exiting. The context wasn't created properly please update drivers and try again.");
 		exit(1);
 	}
