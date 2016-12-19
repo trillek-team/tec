@@ -22,11 +22,13 @@ Building takes a few steps to get everything set up for the first build.
   1. Linux (G++ 5 or CLang 3.8)
        1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC.)
             1. If you are on Ubuntu/Debian/etc. (something with `apt`):
-                1. Run `# apt-get install libglew-dev libglfw3 libglm-dev libasio-dev`
-                2. Run `# apt-get install liblua5.2-dev libopenal-dev  libbullet-dev`
-                3. Run `# apt-get install libprotobuf-dev protobuf-compiler`
+                1. Run `apt-get install libglew-dev libglfw3 libglm-dev libasio-dev`
+                2. Run `apt-get install liblua5.2-dev libopenal-dev  libbullet-dev`
+                3. Run `apt-get install libprotobuf-dev protobuf-compiler`
             2. If you are on Fedora/RHEL/etc. (something with `rpm`):
+			    1. *instructions coming soon to a README near you*
             3. If you are on Arch/etc. (something with `pacman`):
+			    1. Run `pacman -S glew glfw-x11 glm asio lua52 openal bullet protobuf`
        2. `cmake ..` in the build directory
        3. `make TEC` in the build directory
   2. Windows (Visual Studio 2015)
