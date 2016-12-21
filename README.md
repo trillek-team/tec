@@ -30,7 +30,7 @@ Building takes a few steps to get everything set up for the first build.
             3. If you are on Arch/etc. (something with `pacman`):
 			    1. Run `pacman -S glew glfw-x11 glm asio lua52 openal bullet protobuf`
        2. `cmake ..` in the build directory
-       3. `make TEC` in the build directory
+       3. `make tec` in the build directory
   2. Windows (Visual Studio 2015)
      1. Check out **VCPKG** from https://github.com/Microsoft/vcpkg (If you already have **VCPKG**, go to step 5)
      2. Navigate to the `vcpkg/` directory.
