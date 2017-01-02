@@ -12,18 +12,22 @@
 #include <ostream>
 #include <algorithm>
 
+static const std::string app_name = "trillek"; // TODO Ask to tec::OS for the app name ?
+
 namespace tec {
 	class FilePath final {
 public:
+	const static std::string PATH_SEPARATOR;   /// OS File system path separator
+	const char UNIX_PATH_SEPARATOR = '/';    /// *NIX file system path separator
+	const char WIN_PATH_SEPARATOR = '\\';    /// Windows file system path separator
 
-		const static std::string PATH_SEPARATOR;   /// OS File system path separator
-#if defined(WIN32)
+	#if defined(WIN32)
 		const static char PATH_SEPARATOR_C = '\\'; /// OS File system path separator
 		typedef std::wstring NFilePath; /// Native string format for paths
-#else
+	#else
 		const static char PATH_SEPARATOR_C = '/';  /// OS File system path separator
 		typedef std::string NFilePath;  /// Native string format for paths
-#endif
+	#endif
 
     static const std::size_t npos = -1;
 
@@ -39,7 +43,7 @@ public:
 		 * \param pos Begin of the range to get a slice (default = 0)
 		 * \param count How many bytes to grab from other (default = size of other)
 		 */
-		FilePath( const std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
+		FilePath(const std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
 
 		/**
 		 * \brief Builds a path from a wstring or substring
@@ -48,7 +52,7 @@ public:
 		 * \param pos Begin of the range to get a slice (default = 0)
 		 * \param count How many bytes to grab from other (default = size of other)
 		 */
-		FilePath( const std::wstring& other, std::size_t pos = 0, std::size_t count = std::wstring::npos);
+		FilePath(const std::wstring& other, std::size_t pos = 0, std::size_t count = std::wstring::npos);
 
 		/**
 		 * \brief Returns the path to the User settings folder
@@ -62,6 +66,8 @@ public:
 		 */
 		static FilePath GetUserSettingsPath();
 
+		static void CacheUserSettingsPath();
+
 		/**
 		 * \brief Returns the path to the User persistent data folder (for save files, for example)
 		 *
@@ -74,6 +80,8 @@ public:
 		 */
 		static FilePath GetUserDataPath();
 
+		static void CacheUserDataPath();
+
 		/**
 		 * \brief Returns the path to the User cache folder
 		 *
@@ -85,6 +93,8 @@ public:
 		 * \return string with the full path. Empty string if fails
 		 */
 		static FilePath GetUserCachePath();
+
+		static void CacheUserCachePath();
 
 		/**
 		 * \brief Check if a directory exists
@@ -187,6 +197,8 @@ public:
 		 */
 		void NormalizePath();
 
+		void OsNormalizePath();
+
 		/**
 		 * \brief Check if the path is a valid absolute o relative path
 		 */
@@ -252,7 +264,7 @@ public:
 		 * \brief Returns a generic string representation of a path (uses \ as path separator ALWAYS)
 		 */
 		std::string toGenericString() const;
-		
+
 		/**
 		 * \brief Return if this FilePath is empty
 		 */
@@ -307,7 +319,7 @@ public:
 			this->operator+=(FilePath(lhs));
 			return *this;
 		}
-		
+
 		/**
 		 * \brief Concatenate a path
 		 */
@@ -355,7 +367,7 @@ public:
 			this->operator/=(FilePath(rhs));
 			return *this;
 		}
-		
+
 		/**
 		 * \brief Append a subdirectory or file
 		 */
@@ -363,7 +375,7 @@ public:
 			this->operator/=(FilePath(rhs));
 			return *this;
 		}
-		
+
 private:
 		std::string path; /// Stores path as an UTF8 string
 
@@ -371,7 +383,7 @@ private:
 		static std::string settings_folder;
 		static std::string udata_folder;
 		static std::string cache_folder;
-		
+
 		static std::string assets_base;
 
 	}; // End of FileSystem
@@ -382,58 +394,58 @@ private:
 	inline FilePath operator+ (const FilePath& lhs, const FilePath& rhs) {
 		return FilePath(lhs) += rhs;
 	}
-	
+
 	/**
 	 * \brief Concatenate a path
 	 */
 	inline FilePath operator+ (const FilePath& lhs, const std::string& str) {
 		return FilePath(lhs) += FilePath(str);
 	}
-	
+
 	/**
 	 * \brief Concatenate a path
 	 */
 	inline FilePath operator+ (const FilePath& lhs, const std::wstring& wstr) {
 		return FilePath(lhs) += FilePath(wstr);
 	}
-	
+
 	/**
 	 * \brief Concatenate a path
 	 */
 	inline FilePath operator+ (const FilePath& lhs, const char* str) {
 		return FilePath(lhs) += FilePath(str);
 	}
-	
+
 	/**
 	 * \brief Append a subdirectory or file
 	 */
 	inline FilePath operator/ (const FilePath& lhs, const FilePath& rhs) {
 		return FilePath(lhs) /= rhs;
 	}
-	
+
 	/**
 	 * \brief Append a subdirectory or file
 	 */
 	inline FilePath operator/ (const FilePath& lhs, const std::string& str) {
 		return FilePath(lhs) /= FilePath(str);
 	}
-	
+
 	/**
 	 * \brief Append a subdirectory or file
 	 */
 	inline FilePath operator/ (const FilePath& lhs, const std::wstring& wstr) {
 		return FilePath(lhs) /= FilePath(wstr);
 	}
-	
+
 	/**
 	 * \brief Append a subdirectory or file
 	 */
 	inline FilePath operator/ (const FilePath& lhs, const char* str) {
 		return FilePath(lhs) /= FilePath(str);
 	}
-	
-		
-	
+
+
+
 	/**
 	 * \brief Output to a stream
 	 */
@@ -455,4 +467,3 @@ private:
 	}
 
 }
-

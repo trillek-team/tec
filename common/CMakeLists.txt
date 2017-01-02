@@ -42,6 +42,16 @@ set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/resources/script-file.cpp
 )
 
+if (MSVC)
+	list(APPEND trillek-common_SOURCES ${trillek-common_SOURCE_DIR}/filesystem-win32.cpp)
+elseif (APPLE)
+	list(APPEND trillek-common_SOURCES ${trillek-common_SOURCE_DIR}/filesystem-macos.cpp)
+	list(APPEND trillek-common_SOURCES ${trillek-common_SOURCE_DIR}/filesystem-unix.cpp)
+else ()
+	list(APPEND trillek-common_SOURCES ${trillek-common_SOURCE_DIR}/filesystem-linux.cpp)
+	list(APPEND trillek-common_SOURCES ${trillek-common_SOURCE_DIR}/filesystem-unix.cpp)
+endif ()
+
 add_library(${trillek-common_LIBRARY} STATIC ${COMPONENTS_SOURCES} ${GAME_STATE_SOURCES} ${trillek-common_SOURCES})
 if (MSVC)
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
