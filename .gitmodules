@@ -13,4 +13,4 @@
 	url = https://github.com/gabime/spdlog
 [submodule "deps/selene"]
 	path = deps/selene
-url=https://github.com/adam4813/Selene
+	url = https://github.com/milesrout/Selene

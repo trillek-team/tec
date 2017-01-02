@@ -3,14 +3,15 @@
 
 #include "filesystem.hpp"
 
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <cctype>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
 
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #include <unistd.h>
 #include <limits.h>
@@ -25,11 +26,12 @@ namespace tec {
         if (home == nullptr) {
             home = getenv("HOME");
             if (home == nullptr) {
-                return FilePath();
+                throw std::runtime_error("cannot get $XDG_CONFIG_HOME or $HOME");
             }
         }
 
-        FilePath ret = home;
+        FilePath ret;
+        ret = home;
         ret /= ".config";
         ret /= app_name;
         ret += PATH_SEPARATOR;
@@ -47,7 +49,8 @@ namespace tec {
 			}
 		}
 
-		FilePath ret = home;
+		FilePath ret;
+        ret = home;
 		ret /= ".local";
 		ret /= "share";
 		ret /= app_name;
@@ -62,7 +65,7 @@ namespace tec {
     	if (home == nullptr) {
     		home = getenv("HOME");
     		if (home == nullptr) {
-    			return FilePath();
+    			throw std::runtime_error("cannot get $XDG_CACHE_HOME or $HOME");
     		}
     	}
     	FilePath path(home);
