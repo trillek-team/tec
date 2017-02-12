@@ -161,7 +161,12 @@ namespace tec {
 					input_end--;
 				}
 				*input_end = 0;
-				if (inputBuf[0] != '\0') { // Processing input
+				if (inputBuf[0] == '/') { // Processing input
+					const char* args = inputBuf;
+					args++;
+					this->slash_handler(args);
+				}
+				else if (inputBuf[0] != '\0') { // Processing input
 					const char* args = inputBuf;
 					std::size_t cmd_len = 0;
 					while (*args != '\0' && *args != ' ') {
@@ -211,6 +216,9 @@ namespace tec {
 		this->commands[name] = tmp;
 	}
 
+	void Console::AddSlashHandler(std::function<void(const char*)> && func) {
+		this->slash_handler = std::move(func);
+	}
 
 	void ConsoleSink::log(const spdlog::details::log_msg& msg) {
 		std::string str(msg.payload.data());

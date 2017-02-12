@@ -5,6 +5,3 @@
 	path = deps/trillek-vcomputer
 	url = https://github.com/trillek-team/trillek-vcomputer-module
 	branch = releases/tag/v0.5.2-fix
-[submodule "deps/selene"]
-	path = deps/selene
-	url = https://github.com/jeremyong/Selene
