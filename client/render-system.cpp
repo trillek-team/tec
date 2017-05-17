@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "render-system.hpp"
@@ -83,6 +83,7 @@ namespace tec {
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
 		this->window_height = height;
 		this->window_width = width;
+
 
 		float aspect_ratio = static_cast<float>(this->window_width) / static_cast<float>(this->window_height);
 		if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {

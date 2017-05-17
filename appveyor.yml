@@ -1,5 +1,5 @@
 version: 0.1 b{build}
-image: Visual Studio 2015
+image: Visual Studio 2017
 configuration: Release
 clone_depth: 1
 clone_folder: c:\projects\tec
@@ -16,7 +16,7 @@ install:
 
     cd vcpkg
 
-    powershell -exec bypass scripts\bootstrap.ps1
+    .\bootstrap-vcpkg.bat
 
     .\vcpkg integrate install
 
