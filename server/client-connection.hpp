@@ -14,6 +14,8 @@
 using asio::ip::tcp;
 
 namespace tec {
+	struct FPSController;
+
 	namespace networking {
 		class Server;
 
@@ -75,6 +77,8 @@ namespace tec {
 			eid id;
 			proto::Entity entity;
 			static std::mutex write_msg_mutex;
+
+			FPSController* controller = nullptr;
 
 			state_id_t last_confirmed_state_id; // That last state_id the client confirmed it received.
 			GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.

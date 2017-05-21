@@ -17,6 +17,7 @@ include_directories(${trillek_SOURCE_DIR}/deps/spdlog/include)
 include_directories(${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 protobuf_generate_cpp(COMPONENTS_SOURCES COMPONENTS_HEADERS ${trillek-common_SOURCE_DIR}/proto/components.proto)
 protobuf_generate_cpp(GAME_STATE_SOURCES GAME_STATE_HEADERS ${trillek-common_SOURCE_DIR}/proto/game_state.proto)
+protobuf_generate_cpp(COMMANDS_SOURCES COMMANDS_HEADERS ${trillek-common_SOURCE_DIR}/proto/commands.proto)
 
 set(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - static version")
 set(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
@@ -42,7 +43,7 @@ set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/resources/script-file.cpp
 )
 
-add_library(${trillek-common_LIBRARY} STATIC ${COMPONENTS_SOURCES} ${GAME_STATE_SOURCES} ${trillek-common_SOURCES})
+add_library(${trillek-common_LIBRARY} STATIC ${COMPONENTS_SOURCES} ${GAME_STATE_SOURCES} ${COMMANDS_SOURCES} ${trillek-common_SOURCES})
 if (MSVC)
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
 else ()

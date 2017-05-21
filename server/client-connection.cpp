@@ -3,11 +3,13 @@
 
 #include "client-connection.hpp"
 #include "game_state.pb.h"
+#include "commands.pb.h"
 #include "event-system.hpp"
 #include "events.hpp"
 #include "server.hpp"
 #include "entity.hpp"
 #include "components/transforms.hpp"
+#include "controllers/fps-controller.hpp"
 #include "client/graphics/view.hpp"
 #include "components/collision-body.hpp"
 #include <iostream>
@@ -17,6 +19,13 @@ namespace tec {
 	namespace networking {
 		std::mutex ClientConnection::write_msg_mutex;
 		ClientConnection::~ClientConnection() {
+			std::shared_ptr<ControllerRemovedEvent> data = std::make_shared<ControllerRemovedEvent>();
+			data->controller = this->controller;
+			EventSystem<ControllerRemovedEvent>::Get()->Emit(data);
+
+			if (this->controller) {
+				delete this->controller;
+			}
 		}
 		void ClientConnection::StartRead() {
 			read_header();
@@ -74,6 +83,11 @@ namespace tec {
 			data->entity = this->entity;
 			data->entity_id = this->entity.id();
 			EventSystem<EntityCreated>::Get()->Emit(data);
+
+			this->controller = new tec::FPSController(data->entity_id);
+			std::shared_ptr<ControllerAddedEvent> dataX = std::make_shared<ControllerAddedEvent>();
+			dataX->controller = controller;
+			EventSystem<ControllerAddedEvent>::Get()->Emit(dataX);
 		}
 
 		void ClientConnection::DoLeave() {
@@ -130,8 +144,21 @@ namespace tec {
 						case SYNC:
 							QueueWrite(this->current_read_msg);
 							break;
+						case CLIENT_COMMAND:
+						{
+							// Pass this along to be handled in simulation to allow for
+							// processing of string commands as well as movement.
+
+							// TODO: just apply movement commands here and split string commands
+							// to a different message.
+							proto::ClientCommands proto_client_commands;
+							proto_client_commands.ParseFromArray(current_read_msg.GetBodyPTR(),
 								current_read_msg.GetBodyLength());
 							this->last_confirmed_state_id = current_read_msg.GetStateID();
+							std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
+							data->client_commands = std::move(proto_client_commands);
+							EventSystem<ClientCommandsEvent>::Get()->Emit(data);
+						}
 							break;
 					}
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));

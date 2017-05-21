@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 #include "components.pb.h"
+#include "commands.pb.h"
 #include "types.hpp"
 
 namespace tec {
@@ -62,4 +63,17 @@ namespace tec {
 	struct EntityDestroyed {
 		eid entity_id;
 	};
+
+	struct ClientCommandsEvent {
+		proto::ClientCommands client_commands;
+	};
+
+	struct Controller;
+	struct ControllerAddedEvent {
+		Controller* controller;
+	};
+	struct ControllerRemovedEvent {
+		Controller* controller;
+	};
+
 }

@@ -10,6 +10,7 @@
 
 #include "components/transforms.hpp"
 #include "controllers/fps-controller.hpp"
+#include "commands.pb.h"
 
 namespace tec {
 	double UPDATE_RATE = 10.0 / 60.0;
@@ -20,6 +21,9 @@ namespace tec {
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 		EventQueue<MouseClickEvent>::ProcessEventQueue();
+		EventQueue<ClientCommandsEvent>::ProcessEventQueue();
+		EventQueue<ControllerAddedEvent>::ProcessEventQueue();
+		EventQueue<ControllerRemovedEvent>::ProcessEventQueue();
 
 		/*auto vcomp_future = std::async(std::launch::async, [&] () {
 			vcomp_sys.Update(delta_time);
@@ -58,6 +62,10 @@ namespace tec {
 		this->controllers.push_back(controller);
 	}
 
+	void Simulation::RemoveController(Controller* controller) {
+		this->controllers.remove(controller);
+	}
+
 	void Simulation::On(std::shared_ptr<KeyboardEvent> data) {
 		this->event_list.keyboard_events.push_back(*data.get());
 	}
@@ -72,5 +80,21 @@ namespace tec {
 
 	void Simulation::On(std::shared_ptr<MouseClickEvent> data) {
 		this->event_list.mouse_click_events.push_back(*data.get());
+	}
+
+	void Simulation::On(std::shared_ptr<ControllerAddedEvent> data) {
+		AddController(data->controller);
+	}
+
+	void Simulation::On(std::shared_ptr<ControllerRemovedEvent> data) {
+		RemoveController(data->controller);
+	}
+
+	void Simulation::On(std::shared_ptr<ClientCommandsEvent> data) {
+		for (Controller* controller : this->controllers) {
+			if (controller->entity_id == data->client_commands.id()) {
+				controller->ApplyClientCommands(data->client_commands);
+			}
+		}
 	}
 }

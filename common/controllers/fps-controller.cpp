@@ -25,17 +25,22 @@ namespace tec {
 		int forward = 0;
 		int strafe = 0;
 
-		if (this->KEY_W_DOWN && this->KEY_W_FIRST) {
+		// if (CLIENT_KEY_EVENT || SERVER_CLIENT_COMMAND)
+		if ((this->KEY_W_DOWN && this->KEY_W_FIRST) || this->forward) {
 			forward = -1;
+			this->forward = true;
 		}
-		else if (this->KEY_S_DOWN) {
+		else if (this->KEY_S_DOWN || this->backward) {
 			forward = 1;
+			this->backward = true;
 		}
-		if (this->KEY_A_DOWN && this->KEY_A_FIRST) {
+		if ((this->KEY_A_DOWN && this->KEY_A_FIRST) || this->left_strafe) {
 			strafe = -1;
+			this->left_strafe = true;
 		}
-		else if (this->KEY_D_DOWN) {
+		else if (this->KEY_D_DOWN || this->right_strafe) {
 			strafe = 1;
+			this->right_strafe = true;
 		}
 
 		glm::quat orientation;
@@ -46,51 +51,114 @@ namespace tec {
 		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(orientation * glm::vec3(3.0 * strafe, 0.0, 3.0 * forward), 1.0);
 	}
 
+	proto::ClientCommands FPSController::GetClientCommands() {
+		proto::ClientCommands proto_client_commands;
+		proto_client_commands.set_id(this->entity_id);
+		proto::MovementCommand* movement_command = nullptr;
+		if (this->forward) {
+			if (!movement_command) {
+				movement_command = proto_client_commands.mutable_movement();
+				movement_command->set_backward(false);
+				movement_command->set_leftstrafe(false);
+				movement_command->set_rightstrafe(false);
+			}
+			movement_command->set_forward(true);
+		}
+		else if (this->backward) {
+			if (!movement_command) {
+				movement_command = proto_client_commands.mutable_movement();
+				movement_command->set_forward(false);
+				movement_command->set_leftstrafe(false);
+				movement_command->set_rightstrafe(false);
+			}
+			movement_command->set_backward(true);
+		}
+		if (this->left_strafe) {
+			if (!movement_command) {
+				movement_command = proto_client_commands.mutable_movement();
+				movement_command->set_forward(false);
+				movement_command->set_backward(false);
+				movement_command->set_rightstrafe(false);
+			}
+			movement_command->set_leftstrafe(true);
+		}
+		else if (this->right_strafe) {
+			if (!movement_command) {
+				movement_command = proto_client_commands.mutable_movement();
+				movement_command->set_forward(false);
+				movement_command->set_backward(false);
+				movement_command->set_leftstrafe(false);
+			}
+			movement_command->set_rightstrafe(true);
+		}
+		return std::move(proto_client_commands);
+	}
+
+	void FPSController::ApplyClientCommands(proto::ClientCommands proto_client_commands) {
+		if (proto_client_commands.has_movement()) {
+			const proto::MovementCommand& movement_commands = proto_client_commands.movement();
+			this->forward = movement_commands.forward();
+			this->backward = movement_commands.backward();
+			this->left_strafe = movement_commands.leftstrafe();
+			this->right_strafe = movement_commands.rightstrafe();
+		}
+		else {
+			this->forward = false;
+			this->backward = false;
+			this->left_strafe = false;
+			this->right_strafe = false;
+		}
+	}
+
 	void FPSController::Handle(const KeyboardEvent& data, const GameState& state) {
 		switch (data.action) {
-			case KeyboardEvent::KEY_DOWN:
-			case KeyboardEvent::KEY_REPEAT:
-				switch (data.key) {
-					case GLFW_KEY_A:
-						if (!this->KEY_D_DOWN) {
-							this->KEY_A_FIRST = true;
-						}
-						this->KEY_A_DOWN = true;
-						break;
-					case GLFW_KEY_D:
-						this->KEY_D_DOWN = true;
-						break;
-					case GLFW_KEY_W:
-						if (!this->KEY_S_DOWN) {
-							this->KEY_W_FIRST = true;
-						}
-						this->KEY_W_DOWN = true;
-						break;
-					case GLFW_KEY_S:
-						this->KEY_S_DOWN = true;
-						break;
+		case KeyboardEvent::KEY_DOWN:
+		case KeyboardEvent::KEY_REPEAT:
+			switch (data.key) {
+			case GLFW_KEY_A:
+				if (!this->KEY_D_DOWN) {
+					this->KEY_A_FIRST = true;
 				}
+				this->KEY_A_DOWN = true;
 				break;
-			case KeyboardEvent::KEY_UP:
-				switch (data.key) {
-					case GLFW_KEY_A:
-						this->KEY_A_DOWN = false;
-						this->KEY_A_FIRST = false;
-						break;
-					case GLFW_KEY_D:
-						this->KEY_D_DOWN = false;
-						break;
-					case GLFW_KEY_W:
-						this->KEY_W_DOWN = false;
-						this->KEY_W_FIRST = false;
-						break;
-					case GLFW_KEY_S:
-						this->KEY_S_DOWN = false;
-						break;
+			case GLFW_KEY_D:
+				this->KEY_D_DOWN = true;
+				break;
+			case GLFW_KEY_W:
+				if (!this->KEY_S_DOWN) {
+					this->KEY_W_FIRST = true;
 				}
+				this->KEY_W_DOWN = true;
 				break;
-			default:
+			case GLFW_KEY_S:
+				this->KEY_S_DOWN = true;
 				break;
+			}
+			break;
+		case KeyboardEvent::KEY_UP:
+			switch (data.key) {
+			case GLFW_KEY_A:
+				this->KEY_A_DOWN = false;
+				this->KEY_A_FIRST = false;
+				this->left_strafe = false;
+				break;
+			case GLFW_KEY_D:
+				this->KEY_D_DOWN = false;
+				this->right_strafe = false;
+				break;
+			case GLFW_KEY_W:
+				this->KEY_W_DOWN = false;
+				this->KEY_W_FIRST = false;
+				this->forward = false;
+				break;
+			case GLFW_KEY_S:
+				this->KEY_S_DOWN = false;
+				this->backward = false;
+				break;
+			}
+			break;
+		default:
+			break;
 		}
 	}
 

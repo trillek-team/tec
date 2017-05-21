@@ -275,30 +275,18 @@ int main(int argc, char* argv[]) {
 
 		game_state_queue.Interpolate(delta);
 
-		if (connection.GetClientID() != 0) {
-			tec::proto::Entity self;
-			self.set_id(connection.GetClientID());
-			if (client_state.positions.find(connection.GetClientID()) != client_state.positions.end()) {
-				tec::Position pos = client_state.positions.at(connection.GetClientID());
-				pos.Out(self.add_components());
 		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
 		if (delta_accumulator >= tec::UPDATE_RATE) {
+			if (camera_controller) {
+				tec::networking::ServerMessage update_message;
+				tec::proto::ClientCommands client_commands = camera_controller->GetClientCommands();
+				update_message.SetStateID(connection.GetLastRecvStateID());
+				update_message.SetMessageType(tec::networking::CLIENT_COMMAND);
+				client_commands.SerializeToArray(update_message.GetBodyPTR(), client_commands.ByteSize());
+				update_message.SetBodyLength(client_commands.ByteSize());
+				update_message.encode_header();
+				connection.Send(update_message);
 			}
-			if (client_state.orientations.find(connection.GetClientID()) != client_state.orientations.end()) {
-				tec::Orientation ori = client_state.orientations.at(connection.GetClientID());
-				ori.Out(self.add_components());
-			}
-			if (client_state.velocities.find(connection.GetClientID()) != client_state.velocities.end()) {
-				tec::Velocity vel = client_state.velocities.at(connection.GetClientID());
-				vel.Out(self.add_components());
-			}
-			tec::networking::ServerMessage update_message;
-			update_message.SetStateID(connection.GetLastRecvStateID());
-			update_message.SetMessageType(tec::networking::ENTITY_UPDATE);
-			update_message.SetBodyLength(self.ByteSize());
-			self.SerializeToArray(update_message.GetBodyPTR(), update_message.GetBodyLength());
-			update_message.encode_header();
-			connection.Send(update_message);
 			delta_accumulator -= tec::UPDATE_RATE;
 		}
 

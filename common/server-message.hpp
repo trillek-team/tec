@@ -14,6 +14,7 @@ namespace tec {
 	namespace networking {
 		enum MessageType : int {
 			SYNC,
+			CLIENT_COMMAND,
 			ENTITY_CREATE,
 			ENTITY_DESTROY,
 			CLIENT_JOIN,

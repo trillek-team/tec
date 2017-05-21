@@ -6,6 +6,7 @@
 #include <memory>
 #include "types.hpp"
 #include "game-state.hpp"
+#include "commands.pb.h"
 #include "events.hpp"
 
 namespace tec {
@@ -18,6 +19,10 @@ namespace tec {
 			EventList& commands) { }
 
 		virtual ~Controller() = default;
+
+		virtual proto::ClientCommands GetClientCommands() = 0;
+
+		virtual void ApplyClientCommands(proto::ClientCommands) = 0;
 
 		eid entity_id;
 	};
@@ -36,6 +41,13 @@ namespace tec {
 		void Update(double delta, const GameState& state,
 			EventList& commands);
 
+		proto::ClientCommands GetClientCommands();
+
+		bool forward = false;
+		bool backward = false;
+		bool right_strafe = false;
+		bool left_strafe = false;
+
 		double current_delta;
 		bool mouse_look;
 
@@ -48,5 +60,7 @@ namespace tec {
 		bool KEY_A_DOWN = false;
 		bool KEY_S_DOWN = false;
 		bool KEY_D_DOWN = false;
+
+		void ApplyClientCommands(proto::ClientCommands proto_client_commands) override;
 	};
 }

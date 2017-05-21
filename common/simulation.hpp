@@ -18,7 +18,9 @@ namespace tec {
 
 	class Simulation final : public CommandQueue < Simulation >,
 		public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
-		public EventQueue<MouseMoveEvent>, public EventQueue<MouseClickEvent> {
+		public EventQueue<MouseMoveEvent>, public EventQueue<MouseClickEvent>,
+		public EventQueue<ClientCommandsEvent>, public EventQueue<ControllerAddedEvent>,
+		public EventQueue<ControllerRemovedEvent> {
 	public:
 		Simulation() { }
 		~Simulation() { }
@@ -34,11 +36,15 @@ namespace tec {
 		}
 
 		void AddController(Controller* controller);
+		void RemoveController(Controller* controller);
 
 		void On(std::shared_ptr<KeyboardEvent> data);
 		void On(std::shared_ptr<MouseBtnEvent> data);
 		void On(std::shared_ptr<MouseMoveEvent> data);
 		void On(std::shared_ptr<MouseClickEvent> data);
+		void On(std::shared_ptr<ClientCommandsEvent> data);
+		void On(std::shared_ptr<ControllerAddedEvent> data);
+		void On(std::shared_ptr<ControllerRemovedEvent> data);
 	private:
 		PhysicsSystem phys_sys;
 		VComputerSystem vcomp_sys;
