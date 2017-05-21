@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "client/server-connection.hpp"
@@ -17,21 +17,21 @@ namespace tec {
 
 		ServerConnection::ServerConnection() : socket(io_service), last_received_state_id(0) {
 			_log = spdlog::get("console_log");
-			RegisterMessageHandler(SYNC, [this] (const ServerMessage& message) {
+			RegisterMessageHandler(SYNC, [this](const ServerMessage& message) {
 				this->SyncHandler(message);
 			});
-			RegisterMessageHandler(GAME_STATE_UPDATE, [this] (const ServerMessage& message) {
+			RegisterMessageHandler(GAME_STATE_UPDATE, [this](const ServerMessage& message) {
 				this->GameStateUpdateHandler(message);
 			});
-			RegisterMessageHandler(CHAT_MESSAGE, [ ] (const ServerMessage& message) {
+			RegisterMessageHandler(CHAT_MESSAGE, [](const ServerMessage& message) {
 				std::string msg(message.GetBodyPTR(), message.GetBodyLength());
 				_log->info(msg);
 			});
-			RegisterMessageHandler(CLIENT_ID, [this] (const ServerMessage& message) {
+			RegisterMessageHandler(CLIENT_ID, [this](const ServerMessage& message) {
 				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
 				client_id = std::atoi(id_message.c_str());
 			});
-			RegisterMessageHandler(CLIENT_LEAVE, [this] (const ServerMessage& message) {
+			RegisterMessageHandler(CLIENT_LEAVE, [this](const ServerMessage& message) {
 				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
 				eid entity_id = std::atoi(id_message.c_str());
 				_log->info("Entity " + std::to_string(entity_id) + " left");
@@ -39,7 +39,7 @@ namespace tec {
 				data->entity_id = entity_id;
 				EventSystem<EntityDestroyed>::Get()->Emit(data);
 			});
-			RegisterMessageHandler(ENTITY_CREATE, [this] (const ServerMessage& message) {
+			RegisterMessageHandler(ENTITY_CREATE, [this](const ServerMessage& message) {
 				std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 				data->entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
 				data->entity_id = data->entity.id();
@@ -186,12 +186,9 @@ namespace tec {
 				this->last_received_state_id = recv_state_id;
 				GameState next_state;
 				next_state.In(gsu);
-				next_state.positions.erase(this->client_id);
-				next_state.orientations.erase(this->client_id);
-				next_state.velocities.erase(this->client_id);
 				std::shared_ptr<NewGameStateEvent> new_game_state_msg = std::make_shared<NewGameStateEvent>();
 				new_game_state_msg->new_state = std::move(next_state);
-				EventSystem<NewGameStateEvent>::Get()->Emit((new_game_state_msg));
+				EventSystem<NewGameStateEvent>::Get()->Emit(new_game_state_msg);
 			}
 			//_log->info(last_received_state_id);
 		}

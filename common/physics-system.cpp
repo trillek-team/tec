@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "physics-system.hpp"
@@ -18,9 +18,9 @@
 namespace tec {
 	typedef Multiton<eid, CollisionBody*> CollisionBodyMap;
 	typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
-// #ifdef CLIENT_STANDALONE
-// 	PhysicsDebugDrawer debug_drawer;
-// #endif
+	// #ifdef CLIENT_STANDALONE
+	// 	PhysicsDebugDrawer debug_drawer;
+	// #endif
 
 	PhysicsSystem::PhysicsSystem() {
 		this->last_rayvalid = false;
@@ -29,14 +29,14 @@ namespace tec {
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, -3.5, 0));
+		this->dynamicsWorld->setGravity(btVector3(0, -0.9, 0));
 
 		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
 
-// #ifdef CLIENT_STANDALONE
-// 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
-// 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
-// #endif
+		// #ifdef CLIENT_STANDALONE
+		// 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
+		// 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
+		// #endif
 	}
 
 	PhysicsSystem::~PhysicsSystem() {
@@ -172,7 +172,7 @@ namespace tec {
 			screen_width / screen_height,
 			-1.0f,
 			300.0f
-			);
+		);
 		glm::mat4 view = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
 
 		glm::vec3 world_direction = position - GetRayDirection(static_cast<float>(mouse_x),
@@ -263,9 +263,9 @@ namespace tec {
 	void PhysicsSystem::DebugDraw() {
 		this->dynamicsWorld->debugDrawWorld();
 
-// #ifdef CLIENT_STANDALONE
-// 		debug_drawer.UpdateVertexBuffer();
-// #endif
+		// #ifdef CLIENT_STANDALONE
+		// 		debug_drawer.UpdateVertexBuffer();
+		// #endif
 	}
 
 	void PhysicsSystem::SetGravity(const unsigned int entity_id, const btVector3& f) {

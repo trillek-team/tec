@@ -28,7 +28,7 @@ namespace tec {
 	typedef Multiton<eid, DirectionalLight*> DirectionalLightMap;
 
 	RenderSystem::RenderSystem() : current_view(nullptr),
-			window_width(1024), window_height(768) {
+		window_width(1024), window_height(768) {
 		_log = spdlog::get("console_log");
 
 		GLenum err = glGetError();
@@ -95,7 +95,7 @@ namespace tec {
 			aspect_ratio,
 			0.1f,
 			10000.0f
-			);
+		);
 		this->light_gbuffer.ResizeColorAttachments(this->window_width, this->window_height);
 		this->light_gbuffer.ResizeDepthAttachment(this->window_width, this->window_height);
 	}
@@ -375,7 +375,7 @@ namespace tec {
 			0.0, 0.5, 0.0, 0.0,
 			0.0, 0.0, 0.5, 0.0,
 			0.5, 0.5, 0.5, 1.0
-			);
+		);
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
 			DirectionalLight* light = itr->second;

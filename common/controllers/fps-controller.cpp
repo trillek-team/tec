@@ -1,15 +1,16 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "controllers/fps-controller.hpp"
 
 #include <glm/gtx/quaternion.hpp>
 #include <GLFW/glfw3.h> // TODO: included for key constants
+#include <iostream>
 #include "components/transforms.hpp"
 #include "events.hpp"
 
 namespace tec {
-	void FPSController::Update(double delta, const GameState& state, const CommandList& commands) {
+	void FPSController::Update(double delta, const GameState& state, EventList& commands) {
 		this->current_delta = delta;
 		for (const KeyboardEvent& key_event : commands.keyboard_events) {
 			Handle(key_event, state);
@@ -20,7 +21,7 @@ namespace tec {
 		for (const MouseMoveEvent& mouse_move_event : commands.mouse_move_events) {
 			Handle(mouse_move_event, state);
 		}
-		
+
 		int forward = 0;
 		int strafe = 0;
 
@@ -42,7 +43,7 @@ namespace tec {
 			orientation = state.orientations.at(entity_id).value;
 		}
 
-		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(orientation * glm::vec3(7.0 * strafe, 0.0, 7.0 * forward), 1.0);
+		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(orientation * glm::vec3(3.0 * strafe, 0.0, 3.0 * forward), 1.0);
 	}
 
 	void FPSController::Handle(const KeyboardEvent& data, const GameState& state) {

@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -12,6 +12,7 @@
 
 namespace tec {
 	extern double UPDATE_RATE;
+	extern double TICKS_PER_SECOND;
 
 	struct Controller;
 
@@ -42,7 +43,7 @@ namespace tec {
 		PhysicsSystem phys_sys;
 		VComputerSystem vcomp_sys;
 
-		CommandList current_command_list;
+		EventList event_list;
 
 		std::list<Controller*> controllers;
 	};

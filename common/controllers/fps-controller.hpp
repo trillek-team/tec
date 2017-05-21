@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -12,14 +12,20 @@ namespace tec {
 	// TODO: Create Controller system that calls update on all controller
 	// instances.
 	struct Controller {
+		Controller(eid entity_id) : entity_id(entity_id) { }
+
 		virtual void Update(double delta, const GameState& state,
-				const CommandList& commands) { }
+			EventList& commands) { }
+
 		virtual ~Controller() = default;
+
+		eid entity_id;
 	};
+
 	// TODO: Remove this class as it is only for testing and should really be
 	// implemented in script.
 	struct FPSController : public Controller {
-		FPSController(eid entity_id) : entity_id(entity_id), mouse_look(false)
+		FPSController(eid entity_id) : Controller(entity_id), mouse_look(false)
 		{ }
 		virtual ~FPSController() = default;
 
@@ -28,9 +34,8 @@ namespace tec {
 		void Handle(const MouseMoveEvent& data, const GameState& state);
 
 		void Update(double delta, const GameState& state,
-				const CommandList& commands);
+			EventList& commands);
 
-		eid entity_id;
 		double current_delta;
 		bool mouse_look;
 

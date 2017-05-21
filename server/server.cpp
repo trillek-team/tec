@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "server.hpp"
@@ -50,11 +50,11 @@ namespace tec {
 		void Server::Leave(std::shared_ptr<ClientConnection> client) {
 			eid leaving_client_id = client->GetID();
 			client->DoLeave(); // Send out entity destroyed events and client leave messages.
-			
+
 			LockClientList();
 			this->clients.erase(client);
 			UnlockClientList();
-			
+
 			// Notify other clients that a client left.
 			for (auto client : this->clients) {
 				client->OnClientLeave(leaving_client_id);
@@ -81,7 +81,7 @@ namespace tec {
 
 		void Server::AcceptHandler() {
 			acceptor.async_accept(socket,
-				[this] (std::error_code error) {
+				[this](std::error_code error) {
 				if (!error) {
 					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
 					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
@@ -93,14 +93,14 @@ namespace tec {
 
 					client->SetID(++base_id);
 					client->DoJoin();
-					
+
 					static ServerMessage connecting_client_entity_msg;
 					other_entity.set_id(client->GetID());
 					connecting_client_entity_msg.SetBodyLength(other_entity.ByteSize());
 					other_entity.SerializeToArray(connecting_client_entity_msg.GetBodyPTR(), connecting_client_entity_msg.GetBodyLength());
 					connecting_client_entity_msg.SetMessageType(ENTITY_CREATE);
 					connecting_client_entity_msg.encode_header();
-					
+
 					static ServerMessage other_client_entity_msg;
 					for (auto other_client : clients) {
 						other_entity.set_id(other_client->GetID());
@@ -112,7 +112,7 @@ namespace tec {
 						client->QueueWrite(other_client_entity_msg);
 						other_client->QueueWrite(connecting_client_entity_msg);
 					}
-					
+
 					LockClientList();
 					clients.insert(client);
 					UnlockClientList();
@@ -124,7 +124,7 @@ namespace tec {
 					}
 					client->StartRead();
 				}
-				
+
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				AcceptHandler();
 			});

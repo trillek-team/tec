@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include <iostream>
@@ -6,7 +6,6 @@
 #include <asio.hpp>
 #include <chrono>
 #include <thread>
-#include <map>
 #include "server/server.hpp"
 #include "server/client-connection.hpp"
 #include "game_state.pb.h"
@@ -18,8 +17,6 @@ using asio::ip::tcp;
 tec::state_id_t current_state_id = 0;
 
 namespace tec {
-	std::map<std::string, std::function<void(std::string)>> file_factories;
-	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 	eid active_entity;
 }
 
@@ -28,7 +25,6 @@ int main() {
 	std::chrono::duration<double> elapsed_seconds;
 	bool closing = false;
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
-
 
 	tec::GameStateQueue game_state_queue;
 	tec::Simulation simulation;
@@ -39,7 +35,7 @@ int main() {
 		std::cout << "Server ready" << std::endl;
 
 		last_time = std::chrono::high_resolution_clock::now();
-		std::thread simulation_thread([&] () {
+		std::thread simulation_thread([&]() {
 			while (!closing) {
 				next_time = std::chrono::high_resolution_clock::now();
 				elapsed_seconds = next_time - last_time;
@@ -48,7 +44,7 @@ int main() {
 				if (delta_accumulator >= tec::UPDATE_RATE) {
 					current_state_id++;
 					game_state_queue.Interpolate(tec::UPDATE_RATE);
-					tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetInterpolatedState());
+					tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetBaseState());
 					full_state.state_id = current_state_id;
 					tec::proto::GameStateUpdate full_state_update;
 					full_state.Out(&full_state_update);
@@ -61,7 +57,7 @@ int main() {
 					server.LockClientList();
 					for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
 						client->UpdateGameState(full_state);
-						if (current_state_id - client->GetLastConfirmedStateID() > tec::UPDATE_RATE * 2.0) {
+						if (current_state_id - client->GetLastConfirmedStateID() > tec::TICKS_PER_SECOND * 2.0) {
 							server.Deliver(client, full_state_update_message);
 							std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
 						}
@@ -69,9 +65,10 @@ int main() {
 							server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
 						}
 					}
-					
+
 					server.UnlockClientList();
 					delta_accumulator -= tec::UPDATE_RATE;
+					game_state_queue.SetBaseState(std::move(full_state));
 				}
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}

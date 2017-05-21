@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "client-connection.hpp"
@@ -16,6 +16,8 @@
 namespace tec {
 	namespace networking {
 		std::mutex ClientConnection::write_msg_mutex;
+		ClientConnection::~ClientConnection() {
+		}
 		void ClientConnection::StartRead() {
 			read_header();
 		}
@@ -128,13 +130,8 @@ namespace tec {
 						case SYNC:
 							QueueWrite(this->current_read_msg);
 							break;
-						case ENTITY_UPDATE:
-							this->entity.ParseFromArray(current_read_msg.GetBodyPTR(),
 								current_read_msg.GetBodyLength());
 							this->last_confirmed_state_id = current_read_msg.GetStateID();
-							std::shared_ptr<EntityUpdated> data = std::make_shared<EntityUpdated>();
-							data->entity = this->entity;
-							EventSystem<EntityUpdated>::Get()->Emit(data);
 							break;
 					}
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));

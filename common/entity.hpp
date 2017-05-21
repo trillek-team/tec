@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -27,7 +27,7 @@ namespace tec {
 		// Returns a tuple of each added component in the order they were specified in the template.
 		template <typename... T>
 		std::tuple<T*...> Add() {
-			int _[] = {0, (Update(new T()), 0)...};
+			int _[] = { 0, (Update(new T()), 0)... };
 			(void)_;
 			return std::make_tuple(Multiton<eid, T*>::Get(this->id)...);
 		}
@@ -36,7 +36,7 @@ namespace tec {
 		// Returns a tuple of each added component in the order they were specified in the template.
 		template <typename... T>
 		std::tuple<T*...> Add(T... args) {
-			int _[] = {0, (Update(new T(args)), 0)...};
+			int _[] = { 0, (Update(new T(args)), 0)... };
 			(void)_;
 			return std::make_tuple(Multiton<eid, T*>::Get(this->id)...);
 		}
@@ -44,7 +44,7 @@ namespace tec {
 		// Gets all the specified components and serializes them to a proto::Entity.
 		template <typename... T>
 		void Out(proto::Entity& entity) {
-			int _[] = {0, (Multiton<eid, T*>::Get(this->id)->Out(entity.add_components()), 0)...};
+			int _[] = { 0, (Multiton<eid, T*>::Get(this->id)->Out(entity.add_components()), 0)... };
 			(void)_;
 		}
 
@@ -53,7 +53,7 @@ namespace tec {
 		void Add(T* comp) {
 			Update(comp);
 		}
-		
+
 		// Remove a specific component from this entity.
 		template <typename T>
 		void Remove() {

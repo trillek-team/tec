@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "client/server-connection.hpp"
@@ -9,6 +9,7 @@
 #include "imgui-system.hpp"
 #include "lua-system.hpp"
 #include "os.hpp"
+#include "graphics/view.hpp"
 #include "physics-system.hpp"
 #include "render-system.hpp"
 #include "simulation.hpp"
@@ -68,7 +69,7 @@ int main(int argc, char* argv[]) {
 	}
 	console.AddConsoleCommand("exit",
 		"exit : Exit from TEC",
-		[&os] (const char* args) {
+		[&os](const char* args) {
 		os.Quit();
 	});
 	std::thread* asio_thread = nullptr;
@@ -78,7 +79,7 @@ int main(int argc, char* argv[]) {
 	tec::networking::ServerConnection connection;
 	console.AddConsoleCommand("msg",
 		"msg : Send a message to all clients.",
-		[&connection] (const char* args) {
+		[&connection](const char* args) {
 		const char* end_arg = args;
 		while (*end_arg != '\0') {
 			end_arg++;
@@ -89,7 +90,7 @@ int main(int argc, char* argv[]) {
 	});
 	console.AddConsoleCommand("connect",
 		"connect ip : Connects to the server at ip",
-		[&connection] (const char* args) {
+		[&connection](const char* args) {
 		const char* end_arg = args;
 		while (*end_arg != '\0' && *end_arg != ' ') {
 			end_arg++;
@@ -114,8 +115,6 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing sound system...");
 	tec::SoundSystem ss;
 
-	std::int64_t frame_id = 1;
-
 	log->info("Initializing voxel system...");
 	tec::VoxelSystem vox_sys;
 
@@ -126,11 +125,11 @@ int main(int argc, char* argv[]) {
 	tec::ProtoLoad();
 
 	tec::FPSController* camera_controller = nullptr;
-	gui.AddWindowDrawFunction("connect_window", [&] () {
+	gui.AddWindowDrawFunction("connect_window", [&]() {
 		ImGui::SetNextWindowPosCenter();
 		ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
-		static int octets[4] = {127, 0, 0, 1};
+		static int octets[4] = { 127, 0, 0, 1 };
 
 		float width = ImGui::CalcItemWidth();
 		ImGui::PushID("IP");
@@ -168,7 +167,7 @@ int main(int argc, char* argv[]) {
 			log->info("Connecting to " + ip.str());
 			connection.Disconnect();
 			if (connection.Connect(ip.str())) {
-				std::thread on_connect([&simulation, &connection, &camera_controller, &log] () {
+				std::thread on_connect([&simulation, &connection, &camera_controller, &log]() {
 					unsigned int tries = 0;
 					while (connection.GetClientID() == 0) {
 						tries++;
@@ -184,15 +183,16 @@ int main(int argc, char* argv[]) {
 					camera_controller = new tec::FPSController(connection.GetClientID());
 					tec::Entity camera(connection.GetClientID());
 					camera.Add<tec::Velocity>();
+					camera.Add<tec::View>(true);
 					simulation.AddController(camera_controller);
 				});
 				on_connect.detach();
 				gui.HideWindow("connect_window");
 
-				asio_thread = new std::thread([&connection] () {
+				asio_thread = new std::thread([&connection]() {
 					connection.StartRead();
 				});
-				sync_thread = new std::thread([&connection] () {
+				sync_thread = new std::thread([&connection]() {
 					connection.StartSync();
 				});
 			}
@@ -204,17 +204,17 @@ int main(int argc, char* argv[]) {
 		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
 	});
 
-	gui.AddWindowDrawFunction("sample_window", [ ] () {
+	gui.AddWindowDrawFunction("sample_window", []() {
 		ImGui::ShowTestWindow();
 	});
 
-	gui.AddWindowDrawFunction("active_entity", [ ] () {
+	gui.AddWindowDrawFunction("active_entity", []() {
 		if (tec::active_entity != 0) {
 			ImGui::SetTooltip("#%" PRI_EID, tec::active_entity);
 		}
 	});
 	gui.ShowWindow("active_entity");
-	gui.AddWindowDrawFunction("main_menu", [&os, &connection, &gui] () {
+	gui.AddWindowDrawFunction("main_menu", [&os, &connection, &gui]() {
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("Connect")) {
 				bool visible = gui.IsWindowVisible("connect_window");
@@ -233,7 +233,7 @@ int main(int argc, char* argv[]) {
 		}
 	});
 	gui.ShowWindow("main_menu");
-	gui.AddWindowDrawFunction("ping_times", [&connection] () {
+	gui.AddWindowDrawFunction("ping_times", [&connection]() {
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
 		ImGui::Begin("ping_times", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
 		static float arr[10];
@@ -250,7 +250,7 @@ int main(int argc, char* argv[]) {
 	});
 	gui.ShowWindow("ping_times");
 
-	gui.AddWindowDrawFunction("console", [&console] () {
+	gui.AddWindowDrawFunction("console", [&console]() {
 		console.Draw();
 	});
 	gui.ShowWindow("console");
@@ -258,27 +258,31 @@ int main(int argc, char* argv[]) {
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
 
-	std::thread ss_thread([&] () {
+	std::thread ss_thread([&]() {
 		ss.Update();
 	});
+
+	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
+		delta_accumulator += delta;
 
 		ss.SetDelta(delta);
-		std::async(std::launch::async, [&vox_sys, delta] () {
+		/*std::async(std::launch::async, [&vox_sys, delta] () {
 			vox_sys.Update(delta);
-		});
-		
+		});*/
+
 		game_state_queue.Interpolate(delta);
 
-		const tec::GameState client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
 		if (connection.GetClientID() != 0) {
 			tec::proto::Entity self;
 			self.set_id(connection.GetClientID());
 			if (client_state.positions.find(connection.GetClientID()) != client_state.positions.end()) {
 				tec::Position pos = client_state.positions.at(connection.GetClientID());
 				pos.Out(self.add_components());
+		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
+		if (delta_accumulator >= tec::UPDATE_RATE) {
 			}
 			if (client_state.orientations.find(connection.GetClientID()) != client_state.orientations.end()) {
 				tec::Orientation ori = client_state.orientations.at(connection.GetClientID());
@@ -295,6 +299,7 @@ int main(int argc, char* argv[]) {
 			self.SerializeToArray(update_message.GetBodyPTR(), update_message.GetBodyLength());
 			update_message.encode_header();
 			connection.Send(update_message);
+			delta_accumulator -= tec::UPDATE_RATE;
 		}
 
 		vcs.Update(delta);
@@ -320,7 +325,6 @@ int main(int argc, char* argv[]) {
 		console.Update(delta);
 
 		os.SwapBuffers();
-		frame_id++;
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 

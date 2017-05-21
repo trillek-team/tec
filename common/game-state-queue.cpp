@@ -1,16 +1,17 @@
-#include "game-state-queue.hpp"
+﻿#include "game-state-queue.hpp"
 
 #include <glm/gtx/compatibility.hpp>
 #include "components/transforms.hpp"
 
 namespace tec {
+	// TODO: Move ProcessEventQueue into ProcessEvents method.
 	void GameStateQueue::Interpolate(const double delta_time) {
 		EventQueue<EntityCreated>::ProcessEventQueue();
-		EventQueue<EntityUpdated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
+		EventQueue<NewGameStateEvent>::ProcessEventQueue();
 
 		std::lock_guard<std::mutex> lock(this->server_state_mutex);
-		static const double INTERPOLATION_RATE = 1.0 / update_rate;
+		static const double INTERPOLATION_RATE = 10.0 / 60.0;
 
 		if (this->server_states.size() > 5) {
 			std::cout << "getting flooded by state updates" << std::endl;
@@ -69,6 +70,11 @@ namespace tec {
 		}
 	}
 
+
+	void GameStateQueue::On(std::shared_ptr<NewGameStateEvent> data) {
+		QueueServerState(std::move(data->new_state));
+	}
+
 	void GameStateQueue::QueueServerState(GameState&& new_state) {
 		if (new_state.state_id > this->last_server_state_id) {
 			this->last_server_state_id = new_state.state_id;
@@ -93,42 +99,38 @@ namespace tec {
 	}
 
 	void GameStateQueue::On(std::shared_ptr<EntityCreated> data) {
-		SetEntityState(data->entity);
+		SetInitialEntityState(data->entity);
 	}
 
-	void GameStateQueue::On(std::shared_ptr<EntityUpdated> data) {
-		SetEntityState(data->entity);
-	}
-
-	void GameStateQueue::SetEntityState(const proto::Entity& entity) {
+	void GameStateQueue::SetInitialEntityState(const proto::Entity& entity) {
 		eid entity_id = entity.id();
 		for (int i = 0; i < entity.components_size(); ++i) {
 			const proto::Component& comp = entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kPosition:
-				{
-					Position pos;
-					pos.In(comp);
-					this->interpolated_state.positions[entity_id] = pos;
-					this->base_state.positions[entity_id] = pos;
-				}
-				break;
-				case proto::Component::kOrientation:
-				{
-					Orientation orientation;
-					orientation.In(comp);
-					this->interpolated_state.orientations[entity_id] = orientation;
-					this->base_state.orientations[entity_id] = orientation;
-				}
-				break;
-				case proto::Component::kVelocity:
-				{
-					Velocity vel;
-					vel.In(comp);
-					this->interpolated_state.velocities[entity_id] = vel;
-					this->base_state.velocities[entity_id] = vel;
-				}
-				break;
+			case proto::Component::kPosition:
+			{
+				Position pos;
+				pos.In(comp);
+				this->interpolated_state.positions[entity_id] = pos;
+				this->base_state.positions[entity_id] = pos;
+			}
+			break;
+			case proto::Component::kOrientation:
+			{
+				Orientation orientation;
+				orientation.In(comp);
+				this->interpolated_state.orientations[entity_id] = orientation;
+				this->base_state.orientations[entity_id] = orientation;
+			}
+			break;
+			case proto::Component::kVelocity:
+			{
+				Velocity vel;
+				vel.In(comp);
+				this->interpolated_state.velocities[entity_id] = vel;
+				this->base_state.velocities[entity_id] = vel;
+			}
+			break;
 			}
 		}
 	}
