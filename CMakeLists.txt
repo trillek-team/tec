@@ -12,6 +12,10 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${trillek_SOURCE_DIR}/common)
 
+if (MSVC)
+	add_definitions(-DPROTOBUF_USE_DLLS)
+endif ()
+
 add_subdirectory(common)
 if (BUILD_CLIENT)
 	add_subdirectory(client)
