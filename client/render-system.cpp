@@ -103,6 +103,7 @@ namespace tec {
 	void RenderSystem::Update(const double delta, const GameState& state) {
 		ProcessCommandQueue();
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
+		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 		UpdateRenderList(delta, state);
@@ -434,13 +435,32 @@ namespace tec {
 
 	}
 
+	typedef Multiton<eid, Renderable*> RenderableMap;
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
 
-	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { }
+	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) {
+		RenderableMap::Remove(data->entity_id);
+	}
 
-	typedef Multiton<eid, Renderable*> RenderableMap;
+	void RenderSystem::On(std::shared_ptr<EntityCreated> data) {
+		eid entity_id = data->entity.id();
+		for (int i = 0; i < data->entity.components_size(); ++i) {
+			const proto::Component& comp = data->entity.components(i);
+			switch (comp.component_case()) {
+			case proto::Component::kRenderable:
+			{
+				Renderable* renderable = new Renderable();
+				renderable->In(comp);
+
+				RenderableMap::Set(entity_id, renderable);
+			}
+			break;
+			}
+		}
+	}
+
 	void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		this->render_item_list.clear();
 		this->model_matricies.clear();

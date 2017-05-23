@@ -332,14 +332,25 @@ namespace tec {
 
 
 	void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
-		if (CollisionBodyMap::Has(data->entity_id)) {
-			CollisionBody* collision_body = CollisionBodyMap::Get(data->entity_id);
-			collision_body->entity_id = data->entity_id;
-			AddRigidBody(collision_body);
+		eid entity_id = data->entity.id();
+		for (int i = 0; i < data->entity.components_size(); ++i) {
+			const proto::Component& comp = data->entity.components(i);
+			switch (comp.component_case()) {
+			case proto::Component::kCollisionBody:
+			{
+				CollisionBody* collision_body = new CollisionBody();
+				collision_body->In(comp);
+				CollisionBodyMap::Set(entity_id, collision_body);
+				collision_body->entity_id = entity_id;
+				AddRigidBody(collision_body);
+			}
+			break;
+			}
 		}
 	}
 
 	void PhysicsSystem::On(std::shared_ptr<EntityDestroyed> data) {
+		CollisionBodyMap::Remove(data->entity_id);
 		RemoveRigidBody(data->entity_id);
 		this->bodies.erase(data->entity_id); // There isn't a chance it will be re-added.
 	}

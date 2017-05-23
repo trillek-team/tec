@@ -29,7 +29,6 @@ namespace tec {
 	extern void InitializeComponents();
 	extern void InitializeFileFactories();
 	extern void BuildTestEntities();
-	extern void ProtoSave();
 	extern void ProtoLoad();
 	eid active_entity;
 }
