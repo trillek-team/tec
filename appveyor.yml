@@ -12,19 +12,15 @@ install:
 
     cd c:\
     
-    IF NOT EXIST c:\vcpkg\ (^
-        git clone https://github.com/Microsoft/vcpkg^
-        cd vcpkg^
-        .\bootstrap-vcpkg.bat^
-        .\vcpkg integrate install^
-        .\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib^
-        .\vcpkg export asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib --zip^
-        move *.zip ..\vcpkg.zip^
-    ) ELSE (^
-        echo VCPKG is cached^
-        7z x vcpkg.zip^
-        move vcpkg* vcpkg^
-    )
+    IF NOT EXIST c:\vcpkg\ ( git clone https://github.com/Microsoft/vcpkg ) ELSE ( echo VCPKG is cached )
+
+    cd vcpkg
+
+    .\bootstrap-vcpkg.bat
+
+    .\vcpkg integrate install
+
+    .\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
 
     cd c:\projects\tec
     
@@ -43,4 +39,4 @@ artifacts:
   name: trillek-client-win32
 - path: build\server\Release\trillek-server.exe
   name: trillek-server-win32
-cache: c:\vcpkg.zip -> appveyor.yml
+cache: c:\vcpkg\ -> appveyor.yml
