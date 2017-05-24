@@ -38,7 +38,7 @@ after_build:
 - cmd: >-
     cd ..
   
-    7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe E:\vcpkg\installed\x86-windows\debug\bin\glew32d.dll
+    7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe c:\vcpkg\installed\x86-windows\debug\bin\glew32d.dll
 artifacts:
 - path: trillek-win32.zip
   name: trillek-win32
