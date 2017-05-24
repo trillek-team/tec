@@ -4,6 +4,7 @@
 #include "components/transforms.hpp"
 
 namespace tec {
+	static const double INTERPOLATION_RATE = 9.5 / 60.0;
 	// TODO: Move ProcessEventQueue into ProcessEvents method.
 	void GameStateQueue::Interpolate(const double delta_time) {
 		EventQueue<EntityCreated>::ProcessEventQueue();
@@ -11,12 +12,11 @@ namespace tec {
 		EventQueue<NewGameStateEvent>::ProcessEventQueue();
 
 		std::lock_guard<std::mutex> lock(this->server_state_mutex);
-		static const double INTERPOLATION_RATE = 10.0 / 60.0;
 
 		if (this->server_states.size() > 5) {
 			std::cout << "getting flooded by state updates" << std::endl;
 		}
-		if (this->server_states.size() > 2) {
+		if (this->server_states.size() >= 2) {
 			interpolation_accumulator += delta_time;
 			if (interpolation_accumulator > INTERPOLATION_RATE) {
 				const GameState& to_state = this->server_states.front();

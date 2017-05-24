@@ -275,7 +275,7 @@ int main(int argc, char* argv[]) {
 		game_state_queue.Interpolate(delta);
 
 		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
-		if (delta_accumulator >= tec::UPDATE_RATE) {
+		if (delta_accumulator >= tec::UPDATE_RATE / 2.0) {
 			if (camera_controller) {
 				tec::networking::ServerMessage update_message;
 				tec::proto::ClientCommands client_commands = camera_controller->GetClientCommands();
@@ -286,7 +286,8 @@ int main(int argc, char* argv[]) {
 				update_message.encode_header();
 				connection.Send(update_message);
 			}
-			delta_accumulator -= tec::UPDATE_RATE;
+
+			delta_accumulator -= tec::UPDATE_RATE / 2.0;
 		}
 
 		vcs.Update(delta);
@@ -310,7 +311,6 @@ int main(int argc, char* argv[]) {
 
 		gui.Update(delta);
 		console.Update(delta);
-
 		os.SwapBuffers();
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}

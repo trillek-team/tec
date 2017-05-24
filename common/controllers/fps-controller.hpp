@@ -51,6 +51,8 @@ namespace tec {
 		double current_delta;
 		bool mouse_look;
 
+		Orientation orientation;
+
 		// These tell us which was pressed first.
 		bool KEY_A_FIRST = false;
 		bool KEY_W_FIRST = false;

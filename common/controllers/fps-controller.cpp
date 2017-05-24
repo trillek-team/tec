@@ -43,12 +43,11 @@ namespace tec {
 			this->right_strafe = true;
 		}
 
-		glm::quat orientation;
 		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			orientation = state.orientations.at(entity_id).value;
+			const_cast<GameState&>(state).orientations[entity_id] = this->orientation;
 		}
 
-		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(orientation * glm::vec3(3.0 * strafe, 0.0, 3.0 * forward), 1.0);
+		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(this->orientation.value * glm::vec3(3.0 * strafe, 0.0, 3.0 * forward), 1.0);
 	}
 
 	proto::ClientCommands FPSController::GetClientCommands() {
@@ -91,6 +90,11 @@ namespace tec {
 			}
 			movement_command->set_rightstrafe(true);
 		}
+		auto orientation = proto_client_commands.mutable_orientation();
+		orientation->set_x(this->orientation.value.x);
+		orientation->set_y(this->orientation.value.y);
+		orientation->set_z(this->orientation.value.z);
+		orientation->set_w(this->orientation.value.w);
 		return std::move(proto_client_commands);
 	}
 
@@ -108,6 +112,11 @@ namespace tec {
 			this->left_strafe = false;
 			this->right_strafe = false;
 		}
+		const proto::OrientationCommand& orientation_command = proto_client_commands.orientation();
+		this->orientation.value.x = orientation_command.x();
+		this->orientation.value.y = orientation_command.y();
+		this->orientation.value.z = orientation_command.z();
+		this->orientation.value.w = orientation_command.w();
 	}
 
 	void FPSController::Handle(const KeyboardEvent& data, const GameState& state) {
@@ -175,10 +184,6 @@ namespace tec {
 		if (!this->mouse_look) {
 			return;
 		}
-		glm::quat orientation;
-		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			orientation = state.orientations.at(entity_id).value;
-		}
 
 		float change_x = static_cast<float>(data.new_x - data.old_x);
 		float change_y = static_cast<float>(data.new_y - data.old_y);
@@ -199,16 +204,12 @@ namespace tec {
 		if (change_x != 0) {
 			glm::quat rotX = glm::angleAxis(static_cast<float>(glm::radians(change_x * -50.0f *  this->current_delta)),
 				glm::vec3(0.0, 1.0, 0.0));
-			orientation = rotX * orientation;
+			this->orientation.value = rotX * this->orientation.value;
 		}
 		if (change_y != 0) {
 			glm::quat rotY = glm::angleAxis(static_cast<float>(glm::radians(change_y * -10.0f  * this->current_delta)),
 				glm::vec3(1.0, 0.0, 0.0));
-			orientation = orientation * rotY;
-		}
-
-		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			const_cast<GameState&>(state).orientations[entity_id].value = orientation;
+			this->orientation.value = this->orientation.value * rotY;
 		}
 	}
 }
