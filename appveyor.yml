@@ -34,9 +34,10 @@ install:
 build:
   project: c:\projects\tec\build\trillek.sln
   verbosity: minimal
+after_build:
+- cmd: 7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe
+
 artifacts:
-- path: build\client\Release\trillek-client.exe
-  name: trillek-client-win32
-- path: build\server\Release\trillek-server.exe
-  name: trillek-server-win32
+- path: trillek-win32.zip
+  name: trillek-win32
 cache: c:\vcpkg\ -> appveyor.yml
