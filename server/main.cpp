@@ -6,6 +6,9 @@
 #include <asio.hpp>
 #include <chrono>
 #include <thread>
+#include <fstream>
+#include <google/protobuf/util/json_util.h>
+#include "filesystem.hpp"
 #include "server/server.hpp"
 #include "server/client-connection.hpp"
 #include "game_state.pb.h"
@@ -18,6 +21,24 @@ tec::state_id_t current_state_id = 0;
 
 namespace tec {
 	eid active_entity;
+	std::string LoadJSON(const FilePath& fname) {
+		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
+		std::string in;
+		input.seekg(0, std::ios::end);
+		in.reserve(input.tellg());
+		input.seekg(0, std::ios::beg);
+		std::copy((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>(), std::back_inserter(in));
+		input.close();
+		return std::move(in);
+	}
+
+	void ProtoLoadEntity(const FilePath& fname) {
+		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+		std::string json_string = LoadJSON(fname);
+		google::protobuf::util::JsonStringToMessage(json_string, &data->entity);
+		data->entity_id = data->entity.id();
+		EventSystem<EntityCreated>::Get()->Emit(data);
+	}
 }
 
 int main() {
@@ -33,6 +54,8 @@ int main() {
 		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::SERVER_PORT);
 		tec::networking::Server server(endpoint);
 		std::cout << "Server ready" << std::endl;
+
+		tec::ProtoLoadEntity(tec::FilePath::GetAssetPath("json/1000.json"));
 
 		last_time = std::chrono::high_resolution_clock::now();
 		std::thread simulation_thread([&]() {
