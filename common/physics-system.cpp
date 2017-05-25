@@ -29,7 +29,7 @@ namespace tec {
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, -0.9, 0));
+		this->dynamicsWorld->setGravity(btVector3(0, -10.0, 0));
 
 		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
 
@@ -149,19 +149,16 @@ namespace tec {
 	}
 
 	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
-		if (source_entity == 0) {
+		if (source_entity == 0 || (this->bodies.find(source_entity) == this->bodies.end())) {
 			return 0;
 		}
 		this->last_rayvalid = false;
 		this->last_entity_hit = 0;
-		glm::vec3 position;
-		if (Entity(source_entity).Has<Position>()) {
-			position = (Entity(source_entity).Get<Position>())->value;
-		}
-		glm::quat orientation;
-		if (Entity(source_entity).Has<Orientation>()) {
-			orientation = (Entity(source_entity).Get<Orientation>())->value;
-		}
+
+		auto pos = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getOrigin();
+		glm::vec3 position(pos.x(), pos.y(), pos.z());
+		auto rot = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getRotation();
+		glm::quat orientation(rot.w(), rot.x(), rot.y(), rot.z());
 
 		if (screen_height == 0.0f) {
 			return 0;

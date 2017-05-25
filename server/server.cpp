@@ -79,9 +79,19 @@ namespace tec {
 			}
 		}
 
+		void Server::On(std::shared_ptr<EntityCreated> data) {
+			this->entities[data->entity_id] = data->entity;
+		}
+
+		void Server::On(std::shared_ptr<EntityDestroyed> data) {
+			this->entities.erase(data->entity_id);
+		}
+
 		void Server::AcceptHandler() {
 			acceptor.async_accept(socket,
 				[this](std::error_code error) {
+				EventQueue<EntityCreated>::ProcessEventQueue();
+				EventQueue<EntityDestroyed>::ProcessEventQueue();
 				if (!error) {
 					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
 					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
@@ -111,6 +121,14 @@ namespace tec {
 
 						client->QueueWrite(other_client_entity_msg);
 						other_client->QueueWrite(connecting_client_entity_msg);
+					}
+					for (auto entity : entities) {
+						other_client_entity_msg.SetBodyLength(entity.second.ByteSize());
+						entity.second.SerializeToArray(other_client_entity_msg.GetBodyPTR(), other_client_entity_msg.GetBodyLength());
+						other_client_entity_msg.SetMessageType(ENTITY_CREATE);
+						other_client_entity_msg.encode_header();
+
+						client->QueueWrite(other_client_entity_msg);
 					}
 
 					LockClientList();

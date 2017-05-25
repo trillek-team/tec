@@ -47,7 +47,7 @@ namespace tec {
 			const_cast<GameState&>(state).orientations[entity_id] = this->orientation;
 		}
 
-		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(this->orientation.value * glm::vec3(3.0 * strafe, 0.0, 3.0 * forward), 1.0);
+		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(this->orientation.value * glm::vec3(3.0 * strafe, 0.0, 7.5 * forward), 1.0);
 	}
 
 	proto::ClientCommands FPSController::GetClientCommands() {

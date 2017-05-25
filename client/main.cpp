@@ -296,16 +296,18 @@ int main(int argc, char* argv[]) {
 
 		lua_sys.Update(delta);
 
-		os.GetMousePosition(&mouse_x, &mouse_y);
-		tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
-			static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 		//ps.DebugDraw();
 		if (camera_controller != nullptr) {
 			if (camera_controller->mouse_look) {
 				os.EnableMouseLock();
+				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), static_cast<float>(os.GetWindowWidth()) / 2.0f, static_cast<float>(os.GetWindowHeight()) / 2.0f,
+					static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 			}
 			else {
 				os.DisableMouseLock();
+				os.GetMousePosition(&mouse_x, &mouse_y);
+				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
+					static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 			}
 		}
 

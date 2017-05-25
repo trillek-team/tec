@@ -62,7 +62,7 @@ namespace tec {
 			CollisionBody* body = new CollisionBody();
 			proto::Component* component = this->entity.add_components();
 			proto::CollisionBody* body_component = component->mutable_collision_body();
-			body_component->set_mass(1.0f);
+			body_component->set_mass(10.0f);
 			body_component->set_disable_deactivation(true);
 			body_component->set_disable_rotation(true);
 			proto::CollisionBody_Capsule* capsule_component = body_component->mutable_capsule();
@@ -71,7 +71,7 @@ namespace tec {
 			body->entity_id = this->id;
 			body->In(*component);
 			Multiton<eid, CollisionBody*>::Set(this->id, body);
-			self.Out<Position, Orientation, Velocity, View>(this->entity);
+			self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
 					
 			ServerMessage entity_create_msg;
 			entity_create_msg.SetBodyLength(this->entity.ByteSize());

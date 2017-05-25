@@ -293,7 +293,7 @@ namespace tec {
 			PointLight* light = itr->second;
 
 			Entity e(entity_id);
-			glm::vec3 position, scale;
+			glm::vec3 position, scale(1.0);
 			glm::quat orientation;
 			if (Multiton<eid, Position*>::Has(entity_id)) {
 				position = Multiton<eid, Position*>::Get(entity_id)->value;
