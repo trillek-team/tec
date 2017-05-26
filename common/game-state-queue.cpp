@@ -5,7 +5,6 @@
 
 namespace tec {
 	static const double INTERPOLATION_RATE = 10.0 / 60.0;
-	const unsigned int GameStateQueue::SERVER_STATES_ARRAY_SIZE;
 
 	void GameStateQueue::Interpolate(const double delta_time) {
 		std::lock_guard<std::mutex> lock(this->server_state_mutex);
