@@ -21,6 +21,8 @@ namespace tec {
 
 		void QueueServerState(GameState&& new_state);
 
+		void ProcessEventQueue();
+
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
 		void On(std::shared_ptr<NewGameStateEvent> data);
@@ -47,6 +49,5 @@ namespace tec {
 		std::mutex server_state_mutex;
 		state_id_t last_server_state_id;
 		double interpolation_accumulator = 0.0;
-		double update_rate = 10.0;
 	};
 }

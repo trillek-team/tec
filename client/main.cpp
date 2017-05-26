@@ -272,6 +272,7 @@ int main(int argc, char* argv[]) {
 			vox_sys.Update(delta);
 		});*/
 
+		game_state_queue.ProcessEventQueue();
 		game_state_queue.Interpolate(delta);
 
 		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());

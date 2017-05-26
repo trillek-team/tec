@@ -4,66 +4,66 @@
 #include "components/transforms.hpp"
 
 namespace tec {
-	static const double INTERPOLATION_RATE = 9.5 / 60.0;
-	// TODO: Move ProcessEventQueue into ProcessEvents method.
+	static const double INTERPOLATION_RATE = 10.0 / 60.0;
+	const unsigned int GameStateQueue::SERVER_STATES_ARRAY_SIZE;
+
 	void GameStateQueue::Interpolate(const double delta_time) {
-		EventQueue<EntityCreated>::ProcessEventQueue();
-		EventQueue<EntityDestroyed>::ProcessEventQueue();
-		EventQueue<NewGameStateEvent>::ProcessEventQueue();
-
 		std::lock_guard<std::mutex> lock(this->server_state_mutex);
-
 		if (this->server_states.size() > 5) {
 			std::cout << "getting flooded by state updates" << std::endl;
 		}
 		if (this->server_states.size() >= 2) {
 			interpolation_accumulator += delta_time;
-			if (interpolation_accumulator > INTERPOLATION_RATE) {
+			{
 				const GameState& to_state = this->server_states.front();
-				for (auto position : to_state.positions) {
-					this->base_state.positions[position.first] = position.second;
+				if (interpolation_accumulator > INTERPOLATION_RATE) {
+					for (auto position : to_state.positions) {
+						this->base_state.positions[position.first] = position.second;
+					}
+					for (auto velocity : to_state.velocities) {
+						this->base_state.velocities[velocity.first] = velocity.second;
+					}
+					for (auto orientation : to_state.orientations) {
+						this->base_state.orientations[orientation.first] = orientation.second;
+					}
+					interpolation_accumulator -= INTERPOLATION_RATE;
+					this->base_state.state_id = to_state.state_id;
+					this->server_states.pop();
 				}
-				for (auto velocity : to_state.velocities) {
-					this->base_state.velocities[velocity.first] = velocity.second;
-				}
-				for (auto orientation : to_state.orientations) {
-					this->base_state.orientations[orientation.first] = orientation.second;
-				}
-				interpolation_accumulator -= INTERPOLATION_RATE;
-				this->base_state.state_id = to_state.state_id;
-				this->server_states.pop();
 			}
-			const GameState& to_state = this->server_states.front();
-			float lerp_percent = static_cast<float>(interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
-			if (lerp_percent > 0.0) {
-				for (auto position : to_state.positions) {
-					if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
-						this->interpolated_state.positions[position.first].value = glm::lerp(
-							base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+			{
+				const GameState& to_state = this->server_states.front();
+				float lerp_percent = static_cast<float>(interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
+				if (lerp_percent > 0.0) {
+					for (auto position : to_state.positions) {
+						if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
+							this->interpolated_state.positions[position.first].value = glm::lerp(
+								base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+						}
+						else {
+							this->interpolated_state.positions[position.first] = position.second;
+						}
 					}
-					else {
-						this->interpolated_state.positions[position.first] = position.second;
+					for (auto velocity : to_state.velocities) {
+						if (this->base_state.velocities.find(velocity.first) != this->base_state.velocities.end()) {
+							this->interpolated_state.velocities[velocity.first].linear = glm::lerp(
+								base_state.velocities.at(velocity.first).linear, velocity.second.linear, lerp_percent);
+							this->interpolated_state.velocities[velocity.first].angular = glm::lerp(
+								base_state.velocities.at(velocity.first).angular, velocity.second.angular, lerp_percent);
+						}
+						else {
+							this->interpolated_state.velocities[velocity.first].linear = velocity.second.linear;
+							this->interpolated_state.velocities[velocity.first].angular = velocity.second.angular;
+						}
 					}
-				}
-				for (auto velocity : to_state.velocities) {
-					if (this->base_state.velocities.find(velocity.first) != this->base_state.velocities.end()) {
-						this->interpolated_state.velocities[velocity.first].linear = glm::lerp(
-							base_state.velocities.at(velocity.first).linear, velocity.second.linear, lerp_percent);
-						this->interpolated_state.velocities[velocity.first].angular = glm::lerp(
-							base_state.velocities.at(velocity.first).angular, velocity.second.angular, lerp_percent);
-					}
-					else {
-						this->interpolated_state.velocities[velocity.first].linear = velocity.second.linear;
-						this->interpolated_state.velocities[velocity.first].angular = velocity.second.angular;
-					}
-				}
-				for (auto orientation : to_state.orientations) {
-					if (this->base_state.orientations.find(orientation.first) != this->base_state.orientations.end()) {
-						this->interpolated_state.orientations[orientation.first].value = glm::slerp(
-							base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
-					}
-					else {
-						this->interpolated_state.orientations[orientation.first] = orientation.second;
+					for (auto orientation : to_state.orientations) {
+						if (this->base_state.orientations.find(orientation.first) != this->base_state.orientations.end()) {
+							this->interpolated_state.orientations[orientation.first].value = glm::slerp(
+								base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
+						}
+						else {
+							this->interpolated_state.orientations[orientation.first] = orientation.second;
+						}
 					}
 				}
 			}
@@ -81,6 +81,12 @@ namespace tec {
 			std::lock_guard<std::mutex> lock(this->server_state_mutex);
 			this->server_states.emplace(std::move(new_state));
 		}
+	}
+
+	void GameStateQueue::ProcessEventQueue() {
+		EventQueue<EntityCreated>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
+		EventQueue<NewGameStateEvent>::ProcessEventQueue();
 	}
 
 	void GameStateQueue::RemoveEntity(eid entity_id) {

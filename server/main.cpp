@@ -66,7 +66,7 @@ int main() {
 				delta_accumulator += elapsed_seconds.count();
 				if (delta_accumulator >= tec::UPDATE_RATE) {
 					current_state_id++;
-					game_state_queue.Interpolate(tec::UPDATE_RATE);
+					game_state_queue.ProcessEventQueue();
 					tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetBaseState());
 					full_state.state_id = current_state_id;
 					tec::proto::GameStateUpdate full_state_update;
