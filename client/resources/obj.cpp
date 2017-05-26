@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "resources/obj.hpp"
@@ -351,7 +351,7 @@ namespace tec {
 					if (face.pos[0] > 0 && face.pos[0] <= this->positions.size()) {
 						mesh->verts[j].position = this->positions[face.pos[0] - 1];
 					}
-					if (face.uv[0] > 0 && face.uv[0] <= this->normals.size()) {
+					if (face.uv[0] > 0 && face.uv[0] <= this->uvs.size()) {
 						mesh->verts[j].uv = this->uvs[face.uv[0] - 1];
 					}
 					if (face.norm[0] > 0 && face.norm[0] <= this->normals.size()) {
@@ -362,7 +362,7 @@ namespace tec {
 					if (face.pos[1] > 0 && face.pos[1] <= this->positions.size()) {
 						mesh->verts[j].position = this->positions[face.pos[1] - 1];
 					}
-					if (face.uv[1] > 0 && face.uv[1] <= this->normals.size()) {
+					if (face.uv[1] > 0 && face.uv[1] <= this->uvs.size()) {
 						mesh->verts[j].uv = this->uvs[face.uv[1] - 1];
 					}
 					if (face.norm[1] > 0 && face.norm[1] <= this->normals.size()) {
@@ -373,7 +373,7 @@ namespace tec {
 					if (face.pos[2] > 0 && face.pos[2] <= this->positions.size()) {
 						mesh->verts[j].position = this->positions[face.pos[2] - 1];
 					}
-					if (face.uv[2] > 0 && face.uv[2] <= this->normals.size()) {
+					if (face.uv[2] > 0 && face.uv[2] <= this->uvs.size()) {
 						mesh->verts[j].uv = this->uvs[face.uv[2] - 1];
 					}
 					if (face.norm[2] > 0 && face.norm[2] <= this->normals.size()) {

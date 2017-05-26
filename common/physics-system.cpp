@@ -309,8 +309,10 @@ namespace tec {
 
 	void PhysicsSystem::RemoveRigidBody(eid entity_id) {
 		if (this->bodies.find(entity_id) != this->bodies.end()) {
-			this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
-			delete this->bodies.at(entity_id);
+			if (this->bodies.at(entity_id)) {
+				this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
+				delete this->bodies.at(entity_id);
+			}
 		}
 	}
 
