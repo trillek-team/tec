@@ -3,16 +3,8 @@ image: Visual Studio 2017
 configuration: Release
 clone_depth: 1
 clone_folder: c:\projects\tec
-init:
-- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-- cmd: >-
-    git config --global core.autocrlf input
 install:
 - cmd: >-
-    dir c:\
-
-    cd c:\
-
     vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
 
     cd c:\projects\tec
@@ -23,15 +15,15 @@ install:
 
     cd build
 
-    cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    cmake -G "Visual Studio 15 2017" -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 build:
   project: c:\projects\tec\build\trillek.sln
   verbosity: minimal
 after_build:
 - cmd: >-
     cd ..
-  
-    7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe c:\vcpkg\installed\x86-windows\debug\bin\glew32d.dll
+
+    7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe
 artifacts:
 - path: trillek-win32.zip
   name: trillek-win32
