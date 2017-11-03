@@ -4,6 +4,7 @@ configuration: Release
 clone_depth: 1
 clone_folder: c:\projects\tec
 init:
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 - cmd: >-
     git config --global core.autocrlf input
 install:
@@ -11,16 +12,8 @@ install:
     dir c:\
 
     cd c:\
-    
-    IF NOT EXIST c:\vcpkg\ ( git clone https://github.com/Microsoft/vcpkg ) ELSE ( echo VCPKG is cached )
 
-    cd vcpkg
-
-    .\bootstrap-vcpkg.bat
-
-    .\vcpkg integrate install
-
-    .\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
+    vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
 
     cd c:\projects\tec
     
@@ -30,7 +23,7 @@ install:
 
     cd build
 
-    cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 build:
   project: c:\projects\tec\build\trillek.sln
   verbosity: minimal
@@ -49,4 +42,4 @@ deploy:
     secure: kL45ksPB9JGrbvgPjbKbTrnHV3gRj3XC52wu6cg8vhIy3iE8hcAzvR7tBBA8QRtO
   artifact: trillek-win32
 
-cache: c:\vcpkg\ -> vcpkg_cache.txt
+cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt
