@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "vcomputer-system.hpp"
@@ -157,7 +157,7 @@ namespace tec {
 		_log = spdlog::get("console_log");
 	};
 
-	VComputerSystem::~VComputerSystem() { }
+	VComputerSystem::~VComputerSystem() = default;
 
 	void VComputerSystem::SetDevice(const eid entity_id, const unsigned int slot, std::shared_ptr<DeviceBase> device) {
 		if (this->computers.find(entity_id) != this->computers.end()) {

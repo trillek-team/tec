@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "string.hpp"
@@ -19,7 +19,7 @@ namespace tec {
 
 //setup converter between UTF-8 <-> wstring encoding
 #if ! defined(__linux__)
-typedef std::codecvt_utf8<wchar_t> convert_utf8;
+using convert_utf8 = std::codecvt_utf8<wchar_t>;
 #endif
 
 std::string utf8_encode(const std::wstring &wstr) {

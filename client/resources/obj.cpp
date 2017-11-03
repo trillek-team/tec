@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "resources/obj.hpp"
@@ -293,7 +293,6 @@ namespace tec {
 			this->vertexGroups.push_back(currentVGroup);
 		}
 
-		// Double the required space was reserved incase the mesh wasn't triangulated.
 		// Reduce its capacity to fit its size.
 		for (std::shared_ptr<OBJGroup> obj_group : this->vertexGroups) {
 			for (OBJGroup::FaceGroup* face_group : obj_group->face_groups) {

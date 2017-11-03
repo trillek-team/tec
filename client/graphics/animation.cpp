@@ -34,10 +34,8 @@ namespace tec {
 
 		// Figure out which frame we're on
 		double frame_number = this->animation_time * frame_rate;
-		int frame_index0 = (int)floor(frame_number);
-		int frame_index1 = (int)ceil(frame_number);
-		frame_index0 = frame_index0 % frame_count;
-		frame_index1 = frame_index1 % frame_count;
+		int frame_index0 = static_cast<int>(floor(frame_number)) % frame_count;
+		int frame_index1 = static_cast<int>(ceil(frame_number)) % frame_count;
 		this->current_frame_index = frame_index0;
 
 		float fInterpolate = static_cast<float>(fmod(this->animation_time, this->frame_duration));
@@ -45,7 +43,7 @@ namespace tec {
 		if (this->animation_file) {
 			auto frame_skeleton = this->animation_file->InterpolateSkeletons(
 				frame_index0, frame_index1, fInterpolate);
-			this->animation_matrices.assign(frame_skeleton.bone_matricies.begin(), frame_skeleton.bone_matricies.end());
+			this->bone_matrices.assign(frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
 		}
 	}
 
@@ -58,7 +56,7 @@ namespace tec {
 
 			auto frame_skeleton = this->animation_file->InterpolateSkeletons(
 				0, 1, 0.0f);
-			this->animation_matrices.assign(frame_skeleton.bone_matricies.begin(), frame_skeleton.bone_matricies.end());
+			this->bone_matrices.assign(frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
 		}
 	}
 	void Animation::Out(proto::Component* target) {

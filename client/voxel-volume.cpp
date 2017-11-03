@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "voxel-volume.hpp"
@@ -88,36 +88,36 @@ namespace tec {
 	void VoxelVolume::UpdateMesh() {
 		static std::vector<VertexData> IdentityVerts({
 			// Front
-			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),		// Top right
+			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f),	// Top right
 			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
 			// Back
-			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f),	// Top right
 			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top left
 			// Left
-			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f),	// Top right
 			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
 			// Right
-			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
-			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),		// Top Left
+			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
 			// Top
-			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),		// Bottom right
-			VertexData(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f),	// Top right
 			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f),	// Top Left
 			// Bottom
-			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f),	// Bottom left
-			VertexData(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f),	// Bottom right
-			VertexData(1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f),	// Top right
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f),	// Bottom left
+			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f),	// Bottom right
+			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f),	// Top right
 			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f)	// Top Left
-		});
+			});
 
 		// TODO: Sort voxels by material and update object group material groups.
 		// TODO: use object groups to do a sort of "chunk" grouping to reduce load?
@@ -197,7 +197,7 @@ namespace tec {
 				}
 			}
 			if (objgroup->material_groups.size() == 0) {
-				MaterialGroup mat_group = {0, static_cast<unsigned int>(objgroup->indices.size()), "voxel"};
+				MaterialGroup mat_group = { 0, static_cast<unsigned int>(objgroup->indices.size()), "voxel" };
 				mat_group.textures.push_back("metal_wall");
 				objgroup->material_groups.push_back(std::move(mat_group));
 			}
@@ -228,9 +228,9 @@ namespace tec {
 		return voxvol;
 	}
 
-	void VoxelVolume::On(const eid entity_id, std::shared_ptr<MouseClickEvent> data) {
+	void VoxelVolume::On(std::shared_ptr<MouseClickEvent> data) {
 		if (data->button == MouseBtnEvent::LEFT) {
-			if (entity_id == this->entity_id) {
+			if (data->entity_id == this->entity_id) {
 				const Position* pos = Entity(entity_id).Get<Position>();
 				const Orientation* orientation = Entity(entity_id).Get<Orientation>();
 				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));

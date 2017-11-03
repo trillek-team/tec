@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "physics-system.hpp"
@@ -16,8 +16,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
-	typedef Multiton<eid, CollisionBody*> CollisionBodyMap;
-	typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
+	using CollisionBodyMap = Multiton<eid, CollisionBody*>;
+	using VelocityMap = Multiton<eid, std::shared_ptr<Velocity>>;
 	// #ifdef CLIENT_STANDALONE
 	// 	PhysicsDebugDrawer debug_drawer;
 	// #endif
@@ -63,7 +63,6 @@ namespace tec {
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
-
 
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			const eid& entity_id = itr->first;
@@ -321,10 +320,11 @@ namespace tec {
 			if (this->last_entity_hit) {
 				std::shared_ptr<MouseClickEvent> mce_event = std::make_shared<MouseClickEvent>();
 				mce_event->button = data->button;
+				mce_event->entity_id = this->last_entity_hit;
 				mce_event->ray_distance = this->last_raydist;
 				mce_event->ray_hit_piont_world = glm::vec3(this->last_raypos.getX(),
 					this->last_raypos.getY(), this->last_raypos.getZ());
-				EventSystem<MouseClickEvent>::Get()->Emit(this->last_entity_hit, mce_event);
+				EventSystem<MouseClickEvent>::Get()->Emit(mce_event);
 			}
 		}
 	}
@@ -335,31 +335,31 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kCollisionBody:
-				{
-					CollisionBody* collision_body = new CollisionBody();
-					collision_body->In(comp);
-					CollisionBodyMap::Set(entity_id, collision_body);
-					collision_body->entity_id = entity_id;
-					AddRigidBody(collision_body);
-				}
-                    break;
-                case proto::Component::kRenderable:
-                case proto::Component::kPosition:
-				case proto::Component::kOrientation:
-				case proto::Component::kView:
-				case proto::Component::kAnimation:
-				case proto::Component::kScale:
-                case proto::Component::kVelocity:
-				case proto::Component::kAudioSource:
-				case proto::Component::kPointLight:
-				case proto::Component::kDirectionalLight:
-				case proto::Component::kSpotLight:
-				case proto::Component::kVoxelVolume:
-				case proto::Component::kComputer:
-				case proto::Component::kLuaScript:
-				case proto::Component::COMPONENT_NOT_SET:
-					break;
+			case proto::Component::kCollisionBody:
+			{
+				CollisionBody* collision_body = new CollisionBody();
+				collision_body->In(comp);
+				CollisionBodyMap::Set(entity_id, collision_body);
+				collision_body->entity_id = entity_id;
+				AddRigidBody(collision_body);
+			}
+			break;
+			case proto::Component::kRenderable:
+			case proto::Component::kPosition:
+			case proto::Component::kOrientation:
+			case proto::Component::kView:
+			case proto::Component::kAnimation:
+			case proto::Component::kScale:
+			case proto::Component::kVelocity:
+			case proto::Component::kAudioSource:
+			case proto::Component::kPointLight:
+			case proto::Component::kDirectionalLight:
+			case proto::Component::kSpotLight:
+			case proto::Component::kVoxelVolume:
+			case proto::Component::kComputer:
+			case proto::Component::kLuaScript:
+			case proto::Component::COMPONENT_NOT_SET:
+				break;
 			}
 		}
 	}

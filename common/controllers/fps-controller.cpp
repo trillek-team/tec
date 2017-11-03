@@ -25,7 +25,6 @@ namespace tec {
 		int forward = 0;
 		int strafe = 0;
 
-		// if (CLIENT_KEY_EVENT || SERVER_CLIENT_COMMAND)
 		if ((this->KEY_W_DOWN && this->KEY_W_FIRST) || this->forward) {
 			forward = -1;
 			this->forward = true;

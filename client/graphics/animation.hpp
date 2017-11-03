@@ -39,7 +39,7 @@ namespace tec {
 
 		friend class RenderSystem;
 	private:
-		std::vector<glm::mat4x4> animation_matrices;
+		std::vector<glm::mat4x4> bone_matrices;
 
 		std::string animation_name;
 		std::shared_ptr<MD5Anim> animation_file;

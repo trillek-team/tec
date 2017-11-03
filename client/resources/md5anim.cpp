@@ -251,7 +251,7 @@ namespace tec {
 			glm::mat4 bone_rotate = glm::toMat4(skeleton_joint.orientation);
 			glm::mat4 bone_matrix = bone_translate * bone_rotate;
 
-			frame.skeleton.bone_matricies.push_back(bone_matrix);
+			frame.skeleton.bone_matrices.push_back(bone_matrix);
 		}
 	}
 
@@ -285,12 +285,12 @@ namespace tec {
 
 		final_skeleton.skeleton_joints.insert(final_skeleton.skeleton_joints.begin(),
 			num_joints, SkeletonJoint());
-		final_skeleton.bone_matricies.insert(final_skeleton.bone_matricies.begin(),
+		final_skeleton.bone_matrices.insert(final_skeleton.bone_matrices.begin(),
 			num_joints, glm::mat4(1.0f));
 
 		for (std::size_t i = 0; i < num_joints; ++i) {
 			SkeletonJoint& finalJoint = final_skeleton.skeleton_joints[i];
-			glm::mat4& finalMatrix = final_skeleton.bone_matricies[i];
+			glm::mat4& finalMatrix = final_skeleton.bone_matrices[i];
 
 			const SkeletonJoint& joint0 = skeleton0.skeleton_joints[i];
 			const SkeletonJoint& joint1 = skeleton1.skeleton_joints[i];

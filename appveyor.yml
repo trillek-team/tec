@@ -1,4 +1,5 @@
 version: 0.1 b{build}
+skip_tags: true
 image: Visual Studio 2017
 configuration: Release
 clone_depth: 1
@@ -33,5 +34,7 @@ deploy:
   auth_token:
     secure: kL45ksPB9JGrbvgPjbKbTrnHV3gRj3XC52wu6cg8vhIy3iE8hcAzvR7tBBA8QRtO
   artifact: trillek-win32
+  on:
+    branch: master
 
 cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt

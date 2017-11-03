@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "render-system.hpp"
@@ -24,8 +24,8 @@
 #include "multiton.hpp"
 
 namespace tec {
-	typedef Multiton<eid, PointLight*> PointLightMap;
-	typedef Multiton<eid, DirectionalLight*> DirectionalLightMap;
+	using PointLightMap = Multiton<eid, PointLight*>;
+	using DirectionalLightMap = Multiton<eid, DirectionalLight*>;
 
 	RenderSystem::RenderSystem() : current_view(nullptr),
 		window_width(1024), window_height(768) {
@@ -175,7 +175,7 @@ namespace tec {
 					glUniform1i(animated_loc, 0);
 					if (render_item.animated) {
 						glUniform1i(animated_loc, 1);
-						auto& animmatricies = render_item.animation->animation_matrices;
+						auto& animmatricies = render_item.animation->bone_matrices;
 						glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
 					}
 					for (VertexGroup* vertex_group : *render_item.vertex_groups) {
@@ -226,7 +226,7 @@ namespace tec {
 				glUniform1i(animated_loc, 0);
 				if (render_item.animated) {
 					glUniform1i(animated_loc, 1);
-					auto& animmatricies = render_item.animation->animation_matrices;
+					auto& animmatricies = render_item.animation->bone_matrices;
 					glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
 				}
 				for (VertexGroup* vertex_group : *render_item.vertex_groups) {
@@ -314,7 +314,7 @@ namespace tec {
 			this->light_gbuffer.StencilPass();
 			def_stencil_shader->Use();
 			glUniformMatrix4fv(stencil_model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
-			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 			def_stencil_shader->UnUse();
 
 			// Change state for light pass after the stencil pass. Stencil pass must happen for each light.
@@ -327,7 +327,7 @@ namespace tec {
 			glUniform1f(Atten_Linear_index, light->Attenuation.linear);
 			glUniform1f(Atten_Exp_index, light->Attenuation.exponential);
 			glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
-			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 		}
 
 		def_pl_shader->UnUse();
@@ -394,7 +394,7 @@ namespace tec {
 			glUniform1f(DiffuseIntensity_index, light->diffuse_intensity);
 			glUniform3f(direction_index, light->direction.x, light->direction.y, light->direction.z);
 
-			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 		}
 		def_dl_shader->UnUse();
 	}
@@ -435,7 +435,7 @@ namespace tec {
 
 	}
 
-	typedef Multiton<eid, Renderable*> RenderableMap;
+	using RenderableMap = Multiton<eid, Renderable*>;
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
@@ -534,7 +534,7 @@ namespace tec {
 				if (Multiton<eid, Animation*>::Has(e.GetID())) {
 					Animation* anim = Multiton<eid, Animation*>::Get(e.GetID());
 					anim->UpdateAnimation(delta);
-					if (anim->animation_matrices.size() > 0) {
+					if (anim->bone_matrices.size() > 0) {
 						ri.animated = true;
 						ri.animation = anim;
 					}

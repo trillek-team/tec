@@ -9,13 +9,9 @@
 
 namespace tec {
 	
-	LuaSystem::LuaSystem() {
-
-	}
+	LuaSystem::LuaSystem() = default;
 	
-	LuaSystem::~LuaSystem() {
-
-	}
+	LuaSystem::~LuaSystem() = default;
 	
 	void LuaSystem::Update(const double delta) {
 		auto _log = spdlog::get("console_log");
@@ -35,7 +31,6 @@ namespace tec {
 				}
 			}
 		}
-
 	}
 
 

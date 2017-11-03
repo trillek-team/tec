@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -63,7 +63,7 @@ namespace tec {
 		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into sub-mesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 		
-		void On(const eid entity_id, std::shared_ptr<MouseClickEvent> data);
+		void On(std::shared_ptr<MouseClickEvent> data);
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
 		std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.
