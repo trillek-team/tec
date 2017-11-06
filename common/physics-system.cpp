@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "physics-system.hpp"
@@ -18,9 +18,9 @@
 namespace tec {
 	typedef Multiton<eid, CollisionBody*> CollisionBodyMap;
 	typedef Multiton<eid, std::shared_ptr<Velocity>> VelocityMap;
-// #ifdef CLIENT_STANDALONE
-// 	PhysicsDebugDrawer debug_drawer;
-// #endif
+	// #ifdef CLIENT_STANDALONE
+	// 	PhysicsDebugDrawer debug_drawer;
+	// #endif
 
 	PhysicsSystem::PhysicsSystem() {
 		this->last_rayvalid = false;
@@ -29,14 +29,14 @@ namespace tec {
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
 		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
-		this->dynamicsWorld->setGravity(btVector3(0, -3.5, 0));
+		this->dynamicsWorld->setGravity(btVector3(0, -10.0, 0));
 
 		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
 
-// #ifdef CLIENT_STANDALONE
-// 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
-// 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
-// #endif
+		// #ifdef CLIENT_STANDALONE
+		// 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
+		// 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
+		// #endif
 	}
 
 	PhysicsSystem::~PhysicsSystem() {
@@ -149,19 +149,16 @@ namespace tec {
 	}
 
 	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
-		if (source_entity == 0) {
+		if (source_entity == 0 || (this->bodies.find(source_entity) == this->bodies.end())) {
 			return 0;
 		}
 		this->last_rayvalid = false;
 		this->last_entity_hit = 0;
-		glm::vec3 position;
-		if (Entity(source_entity).Has<Position>()) {
-			position = (Entity(source_entity).Get<Position>())->value;
-		}
-		glm::quat orientation;
-		if (Entity(source_entity).Has<Orientation>()) {
-			orientation = (Entity(source_entity).Get<Orientation>())->value;
-		}
+
+		auto pos = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getOrigin();
+		glm::vec3 position(pos.x(), pos.y(), pos.z());
+		auto rot = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getRotation();
+		glm::quat orientation(rot.w(), rot.x(), rot.y(), rot.z());
 
 		if (screen_height == 0.0f) {
 			return 0;
@@ -172,7 +169,7 @@ namespace tec {
 			screen_width / screen_height,
 			-1.0f,
 			300.0f
-			);
+		);
 		glm::mat4 view = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
 
 		glm::vec3 world_direction = position - GetRayDirection(static_cast<float>(mouse_x),
@@ -263,9 +260,9 @@ namespace tec {
 	void PhysicsSystem::DebugDraw() {
 		this->dynamicsWorld->debugDrawWorld();
 
-// #ifdef CLIENT_STANDALONE
-// 		debug_drawer.UpdateVertexBuffer();
-// #endif
+		// #ifdef CLIENT_STANDALONE
+		// 		debug_drawer.UpdateVertexBuffer();
+		// #endif
 	}
 
 	void PhysicsSystem::SetGravity(const unsigned int entity_id, const btVector3& f) {
@@ -312,8 +309,10 @@ namespace tec {
 
 	void PhysicsSystem::RemoveRigidBody(eid entity_id) {
 		if (this->bodies.find(entity_id) != this->bodies.end()) {
-			this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
-			delete this->bodies.at(entity_id);
+			if (this->bodies.at(entity_id)) {
+				this->dynamicsWorld->removeRigidBody(this->bodies.at(entity_id));
+				delete this->bodies.at(entity_id);
+			}
 		}
 	}
 
@@ -332,14 +331,25 @@ namespace tec {
 
 
 	void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
-		if (CollisionBodyMap::Has(data->entity_id)) {
-			CollisionBody* collision_body = CollisionBodyMap::Get(data->entity_id);
-			collision_body->entity_id = data->entity_id;
-			AddRigidBody(collision_body);
+		eid entity_id = data->entity.id();
+		for (int i = 0; i < data->entity.components_size(); ++i) {
+			const proto::Component& comp = data->entity.components(i);
+			switch (comp.component_case()) {
+			case proto::Component::kCollisionBody:
+			{
+				CollisionBody* collision_body = new CollisionBody();
+				collision_body->In(comp);
+				CollisionBodyMap::Set(entity_id, collision_body);
+				collision_body->entity_id = entity_id;
+				AddRigidBody(collision_body);
+			}
+			break;
+			}
 		}
 	}
 
 	void PhysicsSystem::On(std::shared_ptr<EntityDestroyed> data) {
+		CollisionBodyMap::Remove(data->entity_id);
 		RemoveRigidBody(data->entity_id);
 		this->bodies.erase(data->entity_id); // There isn't a chance it will be re-added.
 	}

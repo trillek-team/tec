@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -117,24 +117,24 @@ namespace tec {
 		GameState new_state;
 	};
 
-	struct CommandList {
+	struct EventList {
 		std::list<KeyboardEvent> keyboard_events;
 		std::list<MouseBtnEvent> mouse_button_events;
 		std::list<MouseMoveEvent> mouse_move_events;
 		std::list<MouseClickEvent> mouse_click_events;
 
-		CommandList() { }
+		EventList() { }
 
-		CommandList(const CommandList&) = delete;
-		CommandList(CommandList&& other) {
+		EventList(const EventList&) = delete;
+		EventList(EventList&& other) {
 			this->keyboard_events = std::move(other.keyboard_events);
 			this->mouse_button_events = std::move(other.mouse_button_events);
 			this->mouse_move_events = std::move(other.mouse_move_events);
 			this->mouse_click_events = std::move(other.mouse_click_events);
 		}
 
-		CommandList& operator=(const CommandList& other) = delete;
-		CommandList& operator=(CommandList&& other) {
+		EventList& operator=(const EventList& other) = delete;
+		EventList& operator=(EventList&& other) {
 			if (this != &other) {
 				this->keyboard_events = std::move(other.keyboard_events);
 				this->mouse_button_events = std::move(other.mouse_button_events);

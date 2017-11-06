@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #ifndef TRILLEK_COMMON_SERVER_MESSAGE_HPP
@@ -12,9 +12,9 @@
 
 namespace tec {
 	namespace networking {
-		enum MessageType: int {
+		enum MessageType : int {
 			SYNC,
-			ENTITY_UPDATE,
+			CLIENT_COMMAND,
 			ENTITY_CREATE,
 			ENTITY_DESTROY,
 			CLIENT_JOIN,

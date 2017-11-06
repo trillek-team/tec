@@ -32,7 +32,7 @@ namespace tec {
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
 		const int glMajor /*= 3*/, const int glMinor /*= 3*/) {
 		assert(glMajor >= 3);
-		assert(glMajor*10 + glMinor >= 33);
+		assert(glMajor*10 + glMinor >= 30);
 		glfwSetErrorCallback(ErrorCallback);
 
 		auto l = spdlog::get("console_log");
@@ -46,63 +46,37 @@ namespace tec {
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 
 		// Create a windowed mode window and its OpenGL context.
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
+		//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Only with GL 3.2
 		this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
 		if (!this->window) {
-			// creating a window with default hints failed
-			// try again with specific hints
-			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-			this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-
-			if (!this->window) {
-				// still not right, give up
-				glfwTerminate();
-				l->critical("[OS] Can't initialize window");
-				return false;
-			}
+			// still not right, give up
+			glfwTerminate();
+			l->critical("[OS] Can't initialize window");
+			return false;
 		}
 
 		// attach the context
 		glfwMakeContextCurrent(this->window);
 
+		if (glewInit() != GLEW_OK) {
+			l->critical("[OS] Can initialize glew");
+			return false;
+		}
+
 		// check the context version
 		std::string glcx_version((char*)glGetString(GL_VERSION));
-		std::string glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-		std::string glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
-		if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
-			// we got an older version of context, that will not work. So try again.
-			glfwMakeContextCurrent(nullptr);
-			glfwDestroyWindow(this->window);
-			// be more specific this time
-			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-			this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-
-			if (!this->window) {
-				glfwTerminate();
-				l->critical("[OS] Can't initialize window");
-				return false;
-			}
-			// attach the context
-			glfwMakeContextCurrent(this->window);
-
-			// check the context version again
-			glcx_version = (char*)glGetString(GL_VERSION);
-			glcx_major = glcx_version.substr(0, glcx_version.find('.', 0));
-			glcx_minor = glcx_version.substr(glcx_version.find('.', 0)+1, 1);
-			if ( glcx_major.at(0) < '0' + glMajor || ( glcx_major.at(0) == '0' + glMajor && glcx_minor.at(0) < '0' + glMinor) ) {
-				// still a invalid version. Higher versions probably not supported
-				glfwTerminate();
-				l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
-					<< "Press \"Enter\" to exit\n";
-				std::cin.get();
-				return false;
-			}
+		int glcx_major = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
+		int glcx_minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
+		if ( glcx_major < glMajor || ( glcx_major == glMajor && glcx_minor < glMinor) ) {
+			glfwTerminate();
+			l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
+				<< "Press \"Enter\" to exit\n";
+			std::cin.get();
+			return false;
 		}
 
 		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
@@ -141,32 +115,7 @@ namespace tec {
 		((void(*)(id, SEL, bool)) objc_msgSend)(cocoaGLView, sel_getUid("setWantsBestResolutionOpenGLSurface:"), false);
 #endif
 
-		// attach the context
-		glfwMakeContextCurrent(this->window);
-
-#ifndef __APPLE__
-		// setting glewExperimental fixes a glfw context problem
-		// (tested on Ubuntu 13.04)
-		glewExperimental = GL_TRUE;
-
-		// Init GLEW.
-		GLuint error = glewInit();
-		if (error != GLEW_OK) {
-			return false;
-		}
-
-        /*Flush the error buffer. According to the OpenGL official
-        wiki, some version of GLEW generate a GL_INVALID_ENUM when
-        glewInit() is called which can be safely ignored. Do not remove
-        unless you know what you do.*/
-
-        glGetError();
-
-        //===================
-#endif
-
 		// Getting a list of the avail extensions
-		
 		std::string extensions = "";
 		GLint num_exts = 0;
 		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);

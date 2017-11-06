@@ -1,26 +1,11 @@
 version: 0.1 b{build}
-image: Visual Studio 2015
+image: Visual Studio 2017
 configuration: Release
 clone_depth: 1
 clone_folder: c:\projects\tec
-init:
-- cmd: >-
-    git config --global core.autocrlf input
 install:
 - cmd: >-
-    dir c:\
-
-    cd c:\
-    
-    IF NOT EXIST c:\vcpkg\ ( git clone https://github.com/Microsoft/vcpkg ) ELSE ( echo VCPKG is cached )
-
-    cd vcpkg
-
-    powershell -exec bypass scripts\bootstrap.ps1
-
-    .\vcpkg integrate install
-
-    .\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
+    vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
 
     cd c:\projects\tec
     
@@ -30,13 +15,23 @@ install:
 
     cd build
 
-    cmake -G "Visual Studio 14 2015" -DBUILD_TESTS_TEC=True -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    cmake -G "Visual Studio 15 2017" -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 build:
   project: c:\projects\tec\build\trillek.sln
   verbosity: minimal
+after_build:
+- cmd: >-
+    cd ..
+
+    7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe
 artifacts:
-- path: build\client\Release\trillek-client.exe
-  name: trillek-client-win32
-- path: build\server\Release\trillek-server.exe
-  name: trillek-server-win32
-cache: c:\vcpkg\ -> appveyor.yml
+- path: trillek-win32.zip
+  name: trillek-win32
+deploy:
+- provider: GitHub
+  description: nightly
+  auth_token:
+    secure: kL45ksPB9JGrbvgPjbKbTrnHV3gRj3XC52wu6cg8vhIy3iE8hcAzvR7tBBA8QRtO
+  artifact: trillek-win32
+
+cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt

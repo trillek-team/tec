@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -39,7 +39,7 @@ namespace tec {
 
 	class RenderSystem : public CommandQueue<RenderSystem>,
 		public EventQueue<WindowResizedEvent>,
-		public EventQueue<EntityDestroyed> {
+		public EventQueue<EntityDestroyed>, public EventQueue<EntityCreated> {
 	public:
 		RenderSystem();
 
@@ -58,6 +58,7 @@ namespace tec {
 
 		void On(std::shared_ptr<WindowResizedEvent> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
+		void On(std::shared_ptr<EntityCreated> data);
 		void UpdateRenderList(double delta, const GameState& state);
 
 		glm::mat4 projection;

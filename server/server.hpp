@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -8,6 +8,10 @@
 #include <asio.hpp>
 #include <mutex>
 #include "server-message.hpp"
+#include "event-queue.hpp"
+#include "event-system.hpp"
+#include "events.hpp"
+#include "components.pb.h"
 
 using asio::ip::tcp;
 
@@ -16,7 +20,7 @@ namespace tec {
 		extern const int SERVER_PORT;
 		class ClientConnection;
 
-		class Server {
+		class Server : public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
 		public:
 			Server(tcp::endpoint& endpoint);
 
@@ -47,6 +51,9 @@ namespace tec {
 			const std::set<std::shared_ptr<ClientConnection>>& GetClients() {
 				return this->clients;
 			}
+
+			void On(std::shared_ptr<EntityCreated> data);
+			void On(std::shared_ptr<EntityDestroyed> data);
 		private:
 			// Method that handles and accepts incoming connections.
 			void AcceptHandler();
@@ -57,6 +64,8 @@ namespace tec {
 			tcp::socket socket;
 
 			ServerMessage greeting_msg; // Greeting chat message.
+
+			std::map<eid, proto::Entity> entities;
 
 			std::set<std::shared_ptr<ClientConnection>> clients; // All connected clients.
 			std::uint64_t base_id = 10000; // Starting client_id

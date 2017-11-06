@@ -1,0 +1,24 @@
+syntax = "proto2";
+
+package tec.proto;
+
+message MovementCommand {
+	optional bool forward = 1;
+	optional bool backward = 2;
+	optional bool leftStrafe = 3;
+	optional bool rightStrafe = 4;
+}
+
+message OrientationCommand {
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+	required float w = 4;
+}
+
+message ClientCommands {
+	required uint64 id = 1;
+	optional MovementCommand movement = 2;
+	optional OrientationCommand orientation = 3;
+	repeated string commandList = 4;
+}

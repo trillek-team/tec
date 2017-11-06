@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "sound-system.hpp"
@@ -86,8 +86,8 @@ namespace tec {
 				}
 			}
 			this->delta = -1.0;
+			std::this_thread::sleep_for(std::chrono::milliseconds(16));
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
 	void SoundSystem::On(std::shared_ptr<EntityCreated> data) {

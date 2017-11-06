@@ -1,13 +1,15 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "client-connection.hpp"
 #include "game_state.pb.h"
+#include "commands.pb.h"
 #include "event-system.hpp"
 #include "events.hpp"
 #include "server.hpp"
 #include "entity.hpp"
 #include "components/transforms.hpp"
+#include "controllers/fps-controller.hpp"
 #include "client/graphics/view.hpp"
 #include "components/collision-body.hpp"
 #include <iostream>
@@ -16,6 +18,15 @@
 namespace tec {
 	namespace networking {
 		std::mutex ClientConnection::write_msg_mutex;
+		ClientConnection::~ClientConnection() {
+			std::shared_ptr<ControllerRemovedEvent> data = std::make_shared<ControllerRemovedEvent>();
+			data->controller = this->controller;
+			EventSystem<ControllerRemovedEvent>::Get()->Emit(data);
+
+			if (this->controller) {
+				delete this->controller;
+			}
+		}
 		void ClientConnection::StartRead() {
 			read_header();
 		}
@@ -51,7 +62,7 @@ namespace tec {
 			CollisionBody* body = new CollisionBody();
 			proto::Component* component = this->entity.add_components();
 			proto::CollisionBody* body_component = component->mutable_collision_body();
-			body_component->set_mass(1.0f);
+			body_component->set_mass(10.0f);
 			body_component->set_disable_deactivation(true);
 			body_component->set_disable_rotation(true);
 			proto::CollisionBody_Capsule* capsule_component = body_component->mutable_capsule();
@@ -60,7 +71,7 @@ namespace tec {
 			body->entity_id = this->id;
 			body->In(*component);
 			Multiton<eid, CollisionBody*>::Set(this->id, body);
-			self.Out<Position, Orientation, Velocity, View>(this->entity);
+			self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
 					
 			ServerMessage entity_create_msg;
 			entity_create_msg.SetBodyLength(this->entity.ByteSize());
@@ -72,6 +83,11 @@ namespace tec {
 			data->entity = this->entity;
 			data->entity_id = this->entity.id();
 			EventSystem<EntityCreated>::Get()->Emit(data);
+
+			this->controller = new tec::FPSController(data->entity_id);
+			std::shared_ptr<ControllerAddedEvent> dataX = std::make_shared<ControllerAddedEvent>();
+			dataX->controller = controller;
+			EventSystem<ControllerAddedEvent>::Get()->Emit(dataX);
 		}
 
 		void ClientConnection::DoLeave() {
@@ -128,13 +144,21 @@ namespace tec {
 						case SYNC:
 							QueueWrite(this->current_read_msg);
 							break;
-						case ENTITY_UPDATE:
-							this->entity.ParseFromArray(current_read_msg.GetBodyPTR(),
+						case CLIENT_COMMAND:
+						{
+							// Pass this along to be handled in simulation to allow for
+							// processing of string commands as well as movement.
+
+							// TODO: just apply movement commands here and split string commands
+							// to a different message.
+							proto::ClientCommands proto_client_commands;
+							proto_client_commands.ParseFromArray(current_read_msg.GetBodyPTR(),
 								current_read_msg.GetBodyLength());
 							this->last_confirmed_state_id = current_read_msg.GetStateID();
-							std::shared_ptr<EntityUpdated> data = std::make_shared<EntityUpdated>();
-							data->entity = this->entity;
-							EventSystem<EntityUpdated>::Get()->Emit(data);
+							std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
+							data->client_commands = std::move(proto_client_commands);
+							EventSystem<ClientCommandsEvent>::Get()->Emit(data);
+						}
 							break;
 					}
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));

@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #ifndef TRILLEK_CLIENT_SOUND_SYSTEM_HPP
@@ -89,7 +89,7 @@ namespace tec {
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
 	private:
-		std::atomic<bool> running;
+		std::atomic_bool running;
 		double delta;
 		std::shared_ptr<spdlog::logger> _log;
 		typedef Multiton<eid, AudioSource*> AudioSourceComponentMap;

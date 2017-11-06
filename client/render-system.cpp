@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "render-system.hpp"
@@ -28,7 +28,7 @@ namespace tec {
 	typedef Multiton<eid, DirectionalLight*> DirectionalLightMap;
 
 	RenderSystem::RenderSystem() : current_view(nullptr),
-			window_width(1024), window_height(768) {
+		window_width(1024), window_height(768) {
 		_log = spdlog::get("console_log");
 
 		GLenum err = glGetError();
@@ -84,6 +84,7 @@ namespace tec {
 		this->window_height = height;
 		this->window_width = width;
 
+
 		float aspect_ratio = static_cast<float>(this->window_width) / static_cast<float>(this->window_height);
 		if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 			aspect_ratio = 4.0f / 3.0f;
@@ -94,7 +95,7 @@ namespace tec {
 			aspect_ratio,
 			0.1f,
 			10000.0f
-			);
+		);
 		this->light_gbuffer.ResizeColorAttachments(this->window_width, this->window_height);
 		this->light_gbuffer.ResizeDepthAttachment(this->window_width, this->window_height);
 	}
@@ -102,6 +103,7 @@ namespace tec {
 	void RenderSystem::Update(const double delta, const GameState& state) {
 		ProcessCommandQueue();
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
+		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 		UpdateRenderList(delta, state);
@@ -190,6 +192,7 @@ namespace tec {
 
 	void RenderSystem::GeometryPass() {
 		this->light_gbuffer.GeometyPass();
+
 
 		glm::mat4 camera_matrix(1.0);
 		{
@@ -290,7 +293,7 @@ namespace tec {
 			PointLight* light = itr->second;
 
 			Entity e(entity_id);
-			glm::vec3 position, scale;
+			glm::vec3 position, scale(1.0);
 			glm::quat orientation;
 			if (Multiton<eid, Position*>::Has(entity_id)) {
 				position = Multiton<eid, Position*>::Get(entity_id)->value;
@@ -373,7 +376,7 @@ namespace tec {
 			0.0, 0.5, 0.0, 0.0,
 			0.0, 0.0, 0.5, 0.0,
 			0.5, 0.5, 0.5, 1.0
-			);
+		);
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
 			DirectionalLight* light = itr->second;
@@ -401,6 +404,7 @@ namespace tec {
 
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
 			0, 0, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void RenderSystem::RenderGbuffer() {
@@ -431,13 +435,32 @@ namespace tec {
 
 	}
 
+	typedef Multiton<eid, Renderable*> RenderableMap;
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
 
-	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { }
+	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) {
+		RenderableMap::Remove(data->entity_id);
+	}
 
-	typedef Multiton<eid, Renderable*> RenderableMap;
+	void RenderSystem::On(std::shared_ptr<EntityCreated> data) {
+		eid entity_id = data->entity.id();
+		for (int i = 0; i < data->entity.components_size(); ++i) {
+			const proto::Component& comp = data->entity.components(i);
+			switch (comp.component_case()) {
+			case proto::Component::kRenderable:
+			{
+				Renderable* renderable = new Renderable();
+				renderable->In(comp);
+
+				RenderableMap::Set(entity_id, renderable);
+			}
+			break;
+			}
+		}
+	}
+
 	void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		this->render_item_list.clear();
 		this->model_matricies.clear();

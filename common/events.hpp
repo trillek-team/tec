@@ -1,10 +1,11 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
 
 #include <glm/glm.hpp>
 #include "components.pb.h"
+#include "commands.pb.h"
 #include "types.hpp"
 
 namespace tec {
@@ -59,11 +60,20 @@ namespace tec {
 		proto::Entity entity;
 	};
 
-	struct EntityUpdated {
-		proto::Entity entity;
-	};
-
 	struct EntityDestroyed {
 		eid entity_id;
 	};
+
+	struct ClientCommandsEvent {
+		proto::ClientCommands client_commands;
+	};
+
+	struct Controller;
+	struct ControllerAddedEvent {
+		Controller* controller;
+	};
+	struct ControllerRemovedEvent {
+		Controller* controller;
+	};
+
 }

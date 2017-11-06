@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -14,6 +14,8 @@
 using asio::ip::tcp;
 
 namespace tec {
+	struct FPSController;
+
 	namespace networking {
 		class Server;
 
@@ -24,6 +26,8 @@ namespace tec {
 			ClientConnection(tcp::socket socket, Server* server) :
 				socket(std::move(socket)), server(server),
 				last_confirmed_state_id(0) { }
+
+			~ClientConnection();
 
 			void StartRead();
 
@@ -73,6 +77,8 @@ namespace tec {
 			eid id;
 			proto::Entity entity;
 			static std::mutex write_msg_mutex;
+
+			FPSController* controller = nullptr;
 
 			state_id_t last_confirmed_state_id; // That last state_id the client confirmed it received.
 			GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.
