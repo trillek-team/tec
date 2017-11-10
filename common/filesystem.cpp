@@ -14,14 +14,14 @@
 #include <sys/stat.h>
 
 // Stuff to get OS libs for paths
-#if defined(__unix__)
-#include <unistd.h>
-#include <limits.h>
-
 #if defined(__APPLE__)
+#include <unistd.h>
 #include <mach-o/dyld.h>
 #include <CoreServices/CoreServices.h>
-#endif // __APPLE
+
+#elif defined(__unix__)
+#include <unistd.h>
+#include <limits.h>
 
 #elif defined(WIN32)
 #include <Windows.h>
@@ -77,15 +77,15 @@ FilePath FilePath::GetUserSettingsPath() {
 	}
 	FilePath ret;
 
-#if defined(__unix__)
 #if defined(__APPLE__)
-	char *home = getenv("HOME");
-	ret = home;
-	ret /= "Library";
-	ret /= "Preferences";
-	ret /= app_name;
-	ret += PATH_SEPARATOR;
-#else
+    char *home = getenv("HOME");
+    ret = home;
+    ret /= "Library";
+    ret /= "Preferences";
+    ret /= app_name;
+    ret += PATH_SEPARATOR;
+    
+#elif defined(__unix__)
 	char *home = getenv("XDG_CONFIG_HOME");
 	if (home == nullptr) {
 		home = getenv("HOME");
@@ -98,7 +98,6 @@ FilePath FilePath::GetUserSettingsPath() {
 	ret /= app_name;
 	ret += PATH_SEPARATOR;
 
-#endif // __APPLE
 #elif defined(WIN32)
 	LPWSTR wszPath = NULL;
 
@@ -166,15 +165,14 @@ FilePath FilePath::GetUserCachePath() {
 		return FilePath(FilePath::cache_folder);
 	}
 
-#if defined(__unix__)
 #if defined(__APPLE__)
-	auto path = GetUserSettingsPath();
-	if (path.empty()) {
-		return FilePath();
-	}
-	path /= "cache";
-	path += PATH_SEPARATOR ;
-#else
+    auto path = GetUserSettingsPath();
+    if (path.empty()) {
+        return FilePath();
+    }
+    path /= "cache";
+    path += PATH_SEPARATOR ;
+#elif defined(__unix__)
 	char* home = getenv("XDG_CACHE_HOME");
 	if (home == nullptr) {
 		home = getenv("HOME");
@@ -186,8 +184,6 @@ FilePath FilePath::GetUserCachePath() {
 	path /= ".cache";
 	path /= app_name;
 	path += PATH_SEPARATOR;
-
-#endif // __APPLE
 #elif defined(WIN32)
 	LPWSTR wszPath = NULL;
 
@@ -241,7 +237,7 @@ bool FilePath::MkDir(const FilePath& path) {
 	if (!path.isValidPath()) {
 		return false;
 	}
-	#if defined(__unix__)
+	#if defined(__unix__) || defined(__APPLE__)
 	int ret = mkdir(path.GetNativePath().c_str(), 0755);
 	#else // Windows
 	int ret = _wmkdir(path.GetNativePath().c_str());
@@ -377,8 +373,6 @@ FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
 }
 
 FilePath FilePath::GetProgramPath() {
-
-#if defined(__unix__)
 #if defined(__APPLE__)
 	char tmp[PATH_MAX];
 	uint32_t size = PATH_MAX;
@@ -399,16 +393,6 @@ FilePath FilePath::GetProgramPath() {
 	}
 
 	return FilePath(tmp);
-#endif
-	// Other *NIX have his proper API or changes on procfs
-	//  * Mac OS X: _NSGetExecutablePath() (man 3 dyld)
-	//  * Linux: readlink /proc/self/exe
-	//  * Solaris: getexecname()
-	//  * FreeBSD: sysctl CTL_KERN KERN_PROC KERN_PROC_PATHNAME -1
-	//  * FreeBSD if it has procfs: readlink /proc/curproc/file (FreeBSD doesn't have procfs by default)
-	//  * NetBSD: readlink /proc/curproc/exe
-	//  * DragonFly BSD: readlink /proc/curproc/file
-
 #elif defined(WIN32)
 	//LPWSTR buffer; //or wchar_t * buffer;
 	wchar_t buffer[MAX_PATH];
@@ -417,6 +401,15 @@ FilePath FilePath::GetProgramPath() {
 	}
 	std::wstring wstr(buffer);
 	return FilePath(wstr);
+#else
+    // Other *NIX have his proper API or changes on procfs
+    //  * Mac OS X: _NSGetExecutablePath() (man 3 dyld)
+    //  * Linux: readlink /proc/self/exe
+    //  * Solaris: getexecname()
+    //  * FreeBSD: sysctl CTL_KERN KERN_PROC KERN_PROC_PATHNAME -1
+    //  * FreeBSD if it has procfs: readlink /proc/curproc/file (FreeBSD doesn't have procfs by default)
+    //  * NetBSD: readlink /proc/curproc/exe
+    //  * DragonFly BSD: readlink /proc/curproc/file
 #endif
 }
 
