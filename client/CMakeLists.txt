@@ -53,6 +53,12 @@ set(trillek-client_SOURCES
 	${trillek-client_SOURCE_DIR}/resources/pixel-buffer.cpp
 )
 
+# macOS needs to link libobjc
+set(OSX_LIBRARIES "")
+if (APPLE)
+	set(OSX_LIBRARIES "/usr/lib/libobjc.dylib")
+endif (APPLE)
+
 add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCES})
 if (MSVC)
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
@@ -61,4 +67,4 @@ else ()
 endif ()
 target_link_libraries(${trillek-client_PROGRAM} ${trillek-common_LIBRARY}
 	${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} ${OPENGL_gl_LIBRARY}
-	${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${GLEW_LIBRARIES} VCOMPUTER_STATIC)
+	${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${GLEW_LIBRARIES} ${OSX_LIBRARIES} VCOMPUTER_STATIC)
