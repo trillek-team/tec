@@ -68,6 +68,11 @@ namespace tec {
 				std::cerr << e.what() << std::endl;
 				return false;
 			}
+
+			if (this->onConnect) {
+				this->onConnect();
+			}
+
 			return true;
 		}
 
@@ -96,6 +101,11 @@ namespace tec {
 			}
 			catch (std::exception) {
 			}
+		}
+
+		void ServerConnection::RegisterConnectFunc(std::function<void()> && func)
+		{
+			this->onConnect = func;
 		}
 
 		void ServerConnection::read_body() {
