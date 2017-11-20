@@ -24,6 +24,9 @@
 #include "event-system.hpp"
 #include "command-queue.hpp"
 
+#include "client/server-connection.hpp"
+#include "gui/console.hpp"
+
 namespace tec {
 	class IMGUISystem;
 	typedef Command<IMGUISystem> GUICommand;
@@ -39,6 +42,8 @@ namespace tec {
 	public:
 		IMGUISystem(GLFWwindow* window);
 		~IMGUISystem();
+
+		void CreateGUI(tec::OS* os, tec::networking::ServerConnection* connection, tec::Console* console);
 
 		void Update(double delta);
 
