@@ -47,15 +47,11 @@ namespace tec {
 
 		// Create a windowed mode window and its OpenGL context.
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    #ifdef __APPLE__
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Apple requires Core for modern GL
-        // Ignore the requested version.  macOS needs 3.3
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    #else
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
-    #endif
+		// Enable Core profile if the requested GL version is >= 3.2
+		if (glMajor > 3 || (glMajor >= 3 && glMinor >= 2))
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
 		if (!this->window) {
