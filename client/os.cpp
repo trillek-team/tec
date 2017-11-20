@@ -47,9 +47,11 @@ namespace tec {
 
 		// Create a windowed mode window and its OpenGL context.
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
-		//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Only with GL 3.2
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
+		// Enable Core profile if the requested GL version is >= 3.2
+		if (glMajor > 3 || (glMajor >= 3 && glMinor >= 2))
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
 		if (!this->window) {
@@ -62,10 +64,12 @@ namespace tec {
 		// attach the context
 		glfwMakeContextCurrent(this->window);
 
+    #ifndef __APPLE__
 		if (glewInit() != GLEW_OK) {
 			l->critical("[OS] Can initialize glew");
 			return false;
 		}
+    #endif
 
 		// check the context version
 		std::string glcx_version((char*)glGetString(GL_VERSION));

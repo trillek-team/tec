@@ -20,8 +20,8 @@ namespace tec {
 	int IMGUISystem::shader_program = 0, IMGUISystem::vertex_shader = 0, IMGUISystem::fragment_shader = 0;
 	int IMGUISystem::texture_attribute_location = 0, IMGUISystem::projmtx_attribute_location = 0;
 	int IMGUISystem::position_attribute_location = 0, IMGUISystem::uv_attribute_location = 0, IMGUISystem::color_attribute_location = 0;
-	std::size_t IMGUISystem::vbo_size = 0;
-	unsigned int IMGUISystem::vbo = 0, IMGUISystem::vao = 0;
+	std::size_t IMGUISystem::vbo_size = 0, IMGUISystem::ibo_size = 0;
+	unsigned int IMGUISystem::vbo = 0, IMGUISystem::ibo = 0, IMGUISystem::vao = 0;
 	GLuint IMGUISystem::font_texture = 0;
 
 	std::string inifilename;
@@ -292,10 +292,12 @@ namespace tec {
 		IMGUISystem::color_attribute_location = glGetAttribLocation(IMGUISystem::shader_program, "Color");
 
 		glGenBuffers(1, &IMGUISystem::vbo);
+        glGenBuffers(1, &IMGUISystem::ibo);
 
 		glGenVertexArrays(1, &IMGUISystem::vao);
 		glBindVertexArray(IMGUISystem::vao);
 		glBindBuffer(GL_ARRAY_BUFFER, IMGUISystem::vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IMGUISystem::ibo);
 		glEnableVertexAttribArray(IMGUISystem::position_attribute_location);
 		glEnableVertexAttribArray(IMGUISystem::uv_attribute_location);
 		glEnableVertexAttribArray(IMGUISystem::color_attribute_location);
@@ -307,6 +309,7 @@ namespace tec {
 #undef OFFSETOF
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		// Create the font texture.
 		unsigned char* pixels;
@@ -366,7 +369,7 @@ namespace tec {
 		for (int n = 0; n < draw_data->CmdListsCount; n++)
 		{
 			const ImDrawList* cmd_list = draw_data->CmdLists[n];
-			const ImDrawIdx* idx_buffer = &cmd_list->IdxBuffer.front();
+            ImDrawIdx* idx_buffer_offset = 0;
 
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
 			std::size_t needed_vtx_size = cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
@@ -383,6 +386,22 @@ namespace tec {
 			}
 			memcpy(vtx_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
 			glUnmapBuffer(GL_ARRAY_BUFFER);
+            
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+            std::size_t needed_idx_size = cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx);
+            if (ibo_size < needed_idx_size) {
+                // Grow our buffer if needed
+                ibo_size = needed_idx_size + 500 * sizeof(ImDrawIdx);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)ibo_size, NULL, GL_STREAM_DRAW);
+            }
+            
+            unsigned char* idx_data = (unsigned char*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, needed_idx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+            
+            if (!idx_data) {
+                continue;
+            }
+            memcpy(idx_data, &cmd_list->IdxBuffer[0], cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
+            glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
 			for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != cmd_list->CmdBuffer.end(); pcmd++) {
 				if (pcmd->UserCallback) {
@@ -390,9 +409,9 @@ namespace tec {
 				} else {
 					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
 					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
-					glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, GL_UNSIGNED_SHORT, idx_buffer);
+					glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, GL_UNSIGNED_SHORT, idx_buffer_offset);
 				}
-				idx_buffer += pcmd->ElemCount;
+				idx_buffer_offset += pcmd->ElemCount;
 			}
 		}
 
@@ -446,6 +465,7 @@ namespace tec {
 		// Restore modified state
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glUseProgram(0);
 		glDisable(GL_SCISSOR_TEST);
 		glDisable(GL_BLEND);

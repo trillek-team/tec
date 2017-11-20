@@ -6,6 +6,14 @@ project(trillek)
 option(BUILD_CLIENT "Build the client" ON)
 option(BUILD_SERVER "Build the server" ON)
 
+# TEMPRARY WORKAROUND - Figure out a better solution (TODO)
+#	asio does not include a CMake module so we have no easy way to locate it.
+#	As a workaround, include the MacPorts and Fink 'includes' directories.
+if (APPLE)
+	include_directories("/opt/local/include")
+	include_directories("/sw/include")
+endif (APPLE)
+
 # TODO: Perhaps add -pedantic -Wall -Wextra -Werror?
 list(APPEND CMAKE_MODULE_PATH ${trillek_SOURCE_DIR}/deps)
 set(CMAKE_CXX_STANDARD 14)

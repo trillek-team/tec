@@ -28,6 +28,9 @@
 *.app
 *.pyc
 
+# macOS stuff
+*.DS_Store
+
 # IDE & editors stuff
 *~
 
