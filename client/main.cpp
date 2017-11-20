@@ -76,6 +76,7 @@ int main(int argc, char* argv[]) {
 	tec::Simulation simulation;
 	tec::GameStateQueue game_state_queue;
 	tec::networking::ServerConnection connection;
+
 	console.AddConsoleCommand("msg",
 		"msg : Send a message to all clients.",
 		[&connection](const char* args) {
@@ -87,21 +88,28 @@ int main(int argc, char* argv[]) {
 		std::string message(args, end_arg - args);
 		connection.SendChatMessage(message);
 	});
+
 	console.AddConsoleCommand("connect",
 		"connect ip : Connects to the server at ip",
-		[&connection](const char* args) {
+		[&connection, &log](const char* args) {
 		const char* end_arg = args;
 		while (*end_arg != '\0' && *end_arg != ' ') {
 			end_arg++;
 		}
 		// Args now points were the arguments begins
 		std::string ip(args, end_arg - args);
-		connection.Connect(ip);
+
+		if (!connection.Connect(ip.c_str())) {
+			log->error("Failed to connect to " + ip);
+		}
 	});
+
 	log->info(std::string("Loading assets from: ") + tec::FilePath::GetAssetsBasePath());
 
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
+	
+	gui.CreateGUI(&os, &connection, &console);
 
 	log->info("Initializing rendering system...");
 	tec::RenderSystem rs;
@@ -124,141 +132,44 @@ int main(int argc, char* argv[]) {
 	tec::ProtoLoad();
 
 	tec::FPSController* camera_controller = nullptr;
-	gui.AddWindowDrawFunction("connect_window", [&]() {
-		ImGui::SetNextWindowPosCenter();
-		ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
-
-		static int octets[4] = { 127, 0, 0, 1 };
-
-		float width = ImGui::CalcItemWidth();
-		ImGui::PushID("IP");
-		ImGui::AlignFirstTextHeightToWidgets();
-		ImGui::TextUnformatted("IP");
-		ImGui::SameLine();
-		for (int i = 0; i < 4; i++) {
-			ImGui::PushItemWidth(width / 4.0f);
-			ImGui::PushID(i);
-
-			bool invalid_octet = false;
-			if (octets[i] > 255) {
-				octets[i] = 255;
-				invalid_octet = true;
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-			}
-			if (octets[i] < 0) {
-				octets[i] = 0;
-				invalid_octet = true;
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-			}
-			ImGui::InputInt("##v", &octets[i], 0, 0, ImGuiInputTextFlags_CharsDecimal);
-			if (invalid_octet) {
-				ImGui::PopStyleColor();
-			}
-			ImGui::SameLine();
-			ImGui::PopID();
-			ImGui::PopItemWidth();
-		}
-		ImGui::PopID();
-		ImGui::SameLine();
-		if (ImGui::Button("Connect")) {
-			std::stringstream ip;
-			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
-			log->info("Connecting to " + ip.str());
-			connection.Disconnect();
-			if (connection.Connect(ip.str())) {
-				std::thread on_connect([&simulation, &connection, &camera_controller, &log]() {
-					unsigned int tries = 0;
-					while (connection.GetClientID() == 0) {
-						tries++;
-						if (tries < 2000) {
-							std::this_thread::sleep_for(std::chrono::milliseconds(1));
-						}
-						else {
-							log->error("Failed to get client ID!");
-							return;
-						}
-					}
-					log->info("You are connected as client ID " + std::to_string(connection.GetClientID()));
-					camera_controller = new tec::FPSController(connection.GetClientID());
-					tec::Entity camera(connection.GetClientID());
-					camera.Add<tec::Velocity>();
-					camera.Add<tec::View>(true);
-					simulation.AddController(camera_controller);
-				});
-				on_connect.detach();
-				gui.HideWindow("connect_window");
-
-				asio_thread = new std::thread([&connection]() {
-					connection.StartRead();
-				});
-				sync_thread = new std::thread([&connection]() {
-					connection.StartSync();
-				});
-			}
-			else {
-				log->error("Failed to connect to " + ip.str());
-			}
-		}
-		ImGui::End();
-		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
-	});
-
-	gui.AddWindowDrawFunction("sample_window", []() {
-		ImGui::ShowTestWindow();
-	});
-
-	gui.AddWindowDrawFunction("active_entity", []() {
-		if (tec::active_entity != 0) {
-			ImGui::SetTooltip("#%" PRI_EID, tec::active_entity);
-		}
-	});
-	gui.ShowWindow("active_entity");
-	gui.AddWindowDrawFunction("main_menu", [&os, &connection, &gui]() {
-		if (ImGui::BeginMainMenuBar()) {
-			if (ImGui::BeginMenu("Connect")) {
-				bool visible = gui.IsWindowVisible("connect_window");
-				if (ImGui::MenuItem("Connect to server...", "", visible)) {
-					if (visible) {
-						gui.HideWindow("connect_window");
-					}
-					else {
-						gui.ShowWindow("connect_window");
-					}
-				}
-				ImGui::EndMenu();
-			}
-			ImGui::Text("Ping %" PRI_PING_TIME_T, connection.GetAveragePing());
-			ImGui::EndMainMenuBar();
-		}
-	});
-	gui.ShowWindow("main_menu");
-	gui.AddWindowDrawFunction("ping_times", [&connection]() {
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-		ImGui::Begin("ping_times", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
-		static float arr[10];
-		std::list<tec::networking::ping_time_t> recent_pings = connection.GetRecentPings();
-		std::size_t i = 0;
-		for (tec::networking::ping_time_t ping : recent_pings) {
-			arr[i++] = static_cast<float>(ping);
-		}
-		ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
-		ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
-		ImGui::End();
-		ImGui::SetWindowSize("ping_times", ImVec2(0, 0));
-		ImGui::PopStyleColor();
-	});
-	gui.ShowWindow("ping_times");
-
-	gui.AddWindowDrawFunction("console", [&console]() {
-		console.Draw();
-	});
-	gui.ShowWindow("console");
 
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
 
 	std::thread ss_thread([&]() {
 		ss.Update();
+	});
+
+	connection.RegisterConnectFunc([&simulation, &connection, &camera_controller, &log, &gui, &asio_thread, &sync_thread]() {
+		std::thread on_connect([&simulation, &connection, &camera_controller, &log, &gui]()
+		{
+			unsigned int tries = 0;
+			while (connection.GetClientID() == 0) {
+				tries++;
+				if (tries < 2000) {
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+				}
+				else {
+					log->error("Failed to get client ID!");
+					return;
+				}
+			}
+			log->info("You are connected as client ID " + std::to_string(connection.GetClientID()));
+			camera_controller = new tec::FPSController(connection.GetClientID());
+			tec::Entity camera(connection.GetClientID());
+			camera.Add<tec::Velocity>();
+			camera.Add<tec::View>(true);
+			simulation.AddController(camera_controller);
+		});
+		on_connect.detach();
+		gui.HideWindow("connect_window");
+
+		asio_thread = new std::thread([&connection]() {
+			connection.StartRead();
+		});
+		sync_thread = new std::thread([&connection]() {
+			connection.StartSync();
+		}); 
 	});
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.

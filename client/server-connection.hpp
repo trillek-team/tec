@@ -73,6 +73,9 @@ namespace tec {
 			void RegisterMessageHandler(MessageType type, std::function<void(const ServerMessage&)> handler) {
 				this->message_handlers[type] = std::move(handler);
 			}
+
+			void RegisterConnectFunc(std::function<void()> && func);
+
 		private:
 			void read_body(); // Used by the read loop. Calls read_header after the whole body is read.
 			void read_header(); // Used by the read lop. Calls read_body after the header section is read.
@@ -103,6 +106,8 @@ namespace tec {
 			state_id_t last_received_state_id;
 
 			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>, std::hash<std::underlying_type<MessageType>::type>> message_handlers;
+
+			std::function<void()> && onConnect = NULL;
 		};
 	}
 }
