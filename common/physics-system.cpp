@@ -335,15 +335,45 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-			case proto::Component::kCollisionBody:
-			{
-				CollisionBody* collision_body = new CollisionBody();
-				collision_body->In(comp);
-				CollisionBodyMap::Set(entity_id, collision_body);
-				collision_body->entity_id = entity_id;
-				AddRigidBody(collision_body);
-			}
-			break;
+				case proto::Component::kCollisionBody:
+				{
+					CollisionBody* collision_body = new CollisionBody();
+					collision_body->In(comp);
+					CollisionBodyMap::Set(entity_id, collision_body);
+					collision_body->entity_id = entity_id;
+					AddRigidBody(collision_body);
+				}
+                    break;
+                case proto::Component::kRenderable:
+                    break;
+                case proto::Component::kPosition:
+                    break;
+				case proto::Component::kOrientation:
+					break;
+				case proto::Component::kView:
+					break;
+				case proto::Component::kAnimation:
+					break;
+				case proto::Component::kScale:
+					break;
+                case proto::Component::kVelocity:
+                    break;
+				case proto::Component::kAudioSource:
+					break;
+				case proto::Component::kPointLight:
+					break;
+				case proto::Component::kDirectionalLight:
+					break;
+				case proto::Component::kSpotLight:
+					break;
+				case proto::Component::kVoxelVolume:
+					break;
+				case proto::Component::kComputer:
+					break;
+				case proto::Component::kLuaScript:
+					break;
+				case proto::Component::COMPONENT_NOT_SET:
+					break;
 			}
 		}
 	}

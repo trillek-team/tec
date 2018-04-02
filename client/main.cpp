@@ -169,8 +169,10 @@ int main(int argc, char* argv[]) {
 		});
 		sync_thread = new std::thread([&connection]() {
 			connection.StartSync();
-		}); 
+		});
 	});
+
+    connection.Connect("127.0.0.1");
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	while (!os.Closing()) {

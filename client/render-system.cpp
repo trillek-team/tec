@@ -449,14 +449,44 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-			case proto::Component::kRenderable:
-			{
-				Renderable* renderable = new Renderable();
-				renderable->In(comp);
+				case proto::Component::kRenderable:
+				{
+					Renderable* renderable = new Renderable();
+					renderable->In(comp);
 
-				RenderableMap::Set(entity_id, renderable);
-			}
-			break;
+					RenderableMap::Set(entity_id, renderable);
+				}
+					break;
+				case proto::Component::kPosition:
+					break;
+				case proto::Component::kOrientation:
+					break;
+				case proto::Component::kView:
+					break;
+				case proto::Component::kAnimation:
+					break;
+				case proto::Component::kScale:
+					break;
+				case proto::Component::kCollisionBody:
+					break;
+				case proto::Component::kVelocity:
+					break;
+				case proto::Component::kAudioSource:
+					break;
+				case proto::Component::kPointLight:
+					break;
+				case proto::Component::kDirectionalLight:
+					break;
+				case proto::Component::kSpotLight:
+					break;
+				case proto::Component::kVoxelVolume:
+					break;
+				case proto::Component::kComputer:
+					break;
+				case proto::Component::kLuaScript:
+					break;
+				case proto::Component::COMPONENT_NOT_SET:
+					break;
 			}
 		}
 	}

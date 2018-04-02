@@ -37,7 +37,7 @@ namespace tec {
 					for (auto position : to_state.positions) {
 						if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
 							this->interpolated_state.positions[position.first].value = glm::lerp(
-								base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+									base_state.positions.at(position.first).value, position.second.value, lerp_percent);
 						}
 						else {
 							this->interpolated_state.positions[position.first] = position.second;
@@ -46,9 +46,9 @@ namespace tec {
 					for (auto velocity : to_state.velocities) {
 						if (this->base_state.velocities.find(velocity.first) != this->base_state.velocities.end()) {
 							this->interpolated_state.velocities[velocity.first].linear = glm::lerp(
-								base_state.velocities.at(velocity.first).linear, velocity.second.linear, lerp_percent);
+									base_state.velocities.at(velocity.first).linear, velocity.second.linear, lerp_percent);
 							this->interpolated_state.velocities[velocity.first].angular = glm::lerp(
-								base_state.velocities.at(velocity.first).angular, velocity.second.angular, lerp_percent);
+									base_state.velocities.at(velocity.first).angular, velocity.second.angular, lerp_percent);
 						}
 						else {
 							this->interpolated_state.velocities[velocity.first].linear = velocity.second.linear;
@@ -58,7 +58,7 @@ namespace tec {
 					for (auto orientation : to_state.orientations) {
 						if (this->base_state.orientations.find(orientation.first) != this->base_state.orientations.end()) {
 							this->interpolated_state.orientations[orientation.first].value = glm::slerp(
-								base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
+									base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
 						}
 						else {
 							this->interpolated_state.orientations[orientation.first] = orientation.second;
@@ -112,30 +112,57 @@ namespace tec {
 		for (int i = 0; i < entity.components_size(); ++i) {
 			const proto::Component& comp = entity.components(i);
 			switch (comp.component_case()) {
-			case proto::Component::kPosition:
-			{
-				Position pos;
-				pos.In(comp);
-				this->interpolated_state.positions[entity_id] = pos;
-				this->base_state.positions[entity_id] = pos;
-			}
-			break;
-			case proto::Component::kOrientation:
-			{
-				Orientation orientation;
-				orientation.In(comp);
-				this->interpolated_state.orientations[entity_id] = orientation;
-				this->base_state.orientations[entity_id] = orientation;
-			}
-			break;
-			case proto::Component::kVelocity:
-			{
-				Velocity vel;
-				vel.In(comp);
-				this->interpolated_state.velocities[entity_id] = vel;
-				this->base_state.velocities[entity_id] = vel;
-			}
-			break;
+				case proto::Component::kPosition:
+				{
+					Position pos;
+					pos.In(comp);
+					this->interpolated_state.positions[entity_id] = pos;
+					this->base_state.positions[entity_id] = pos;
+				}
+					break;
+				case proto::Component::kOrientation:
+				{
+					Orientation orientation;
+					orientation.In(comp);
+					this->interpolated_state.orientations[entity_id] = orientation;
+					this->base_state.orientations[entity_id] = orientation;
+				}
+					break;
+				case proto::Component::kVelocity:
+				{
+					Velocity vel;
+					vel.In(comp);
+					this->interpolated_state.velocities[entity_id] = vel;
+					this->base_state.velocities[entity_id] = vel;
+					break;
+				}
+				case proto::Component::kRenderable:
+					break;
+				case proto::Component::kView:
+					break;
+				case proto::Component::kAnimation:
+					break;
+				case proto::Component::kScale:
+					break;
+                case proto::Component::kCollisionBody:
+                    break;
+				case proto::Component::kAudioSource:
+					break;
+				case proto::Component::kPointLight:
+					break;
+				case proto::Component::kDirectionalLight:
+					break;
+				case proto::Component::kSpotLight:
+					break;
+				case proto::Component::kVoxelVolume:
+					break;
+				case proto::Component::kComputer:
+					break;
+				case proto::Component::kLuaScript:
+					break;
+				case proto::Component::COMPONENT_NOT_SET:
+					break;
+
 			}
 		}
 	}

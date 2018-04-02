@@ -133,6 +133,8 @@ namespace tec {
 				case PAUSED:
 					alSourcei(source->source, AL_SOURCE_STATE, AL_PAUSED);
 					break;
+				case STOPPED:
+					break;
 			}
 		}
 	}
