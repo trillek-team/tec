@@ -44,8 +44,8 @@ namespace tec {
                 this->vc.SetCPU(std::move(trcpu));
                 this->vc.On();
                 this->vc.SetState(&state, sizeof(TR3200State));
-                break;
             }
+				break;
 			case proto::Computer::CPU::CPU_NOT_SET:
 				break;
 

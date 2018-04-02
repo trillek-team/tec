@@ -134,8 +134,8 @@ namespace tec {
 					vel.In(comp);
 					this->interpolated_state.velocities[entity_id] = vel;
 					this->base_state.velocities[entity_id] = vel;
-					break;
 				}
+					break;
 				case proto::Component::kRenderable:
 					break;
 				case proto::Component::kView:
