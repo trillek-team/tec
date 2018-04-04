@@ -87,9 +87,7 @@ namespace tec {
 				}
 				break;
 			case ImageColorMode::MONOCHROME:
-				break;
 			case ImageColorMode::MONOCHROME_A:
-				break;
 			case ImageColorMode::UNKNOWN_MODE:
 				break;
 		}
@@ -114,9 +112,7 @@ namespace tec {
 				}
 				break;
 			case ImageColorMode::MONOCHROME:
-				break;
 			case ImageColorMode::MONOCHROME_A:
-				break;
 			case ImageColorMode::UNKNOWN_MODE:
 				break;
 
