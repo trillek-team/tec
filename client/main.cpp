@@ -4,6 +4,7 @@
 #include "client/server-connection.hpp"
 #include "controllers/fps-controller.hpp"
 #include "events.hpp"
+#include "event-system.hpp"
 #include "filesystem.hpp"
 #include "gui/console.hpp"
 #include "imgui-system.hpp"
@@ -140,8 +141,8 @@ int main(int argc, char* argv[]) {
 		ss.Update();
 	});
 
-	connection.RegisterConnectFunc([&simulation, &connection, &camera_controller, &log, &gui, &asio_thread, &sync_thread]() {
-		std::thread on_connect([&simulation, &connection, &camera_controller, &log, &gui]()
+	connection.RegisterConnectFunc([&connection, &camera_controller, &log, &gui, &asio_thread, &sync_thread]() {
+		std::thread on_connect([&connection, &camera_controller, &log]()
 		{
 			unsigned int tries = 0;
 			while (connection.GetClientID() == 0) {
@@ -157,9 +158,12 @@ int main(int argc, char* argv[]) {
 			log->info("You are connected as client ID " + std::to_string(connection.GetClientID()));
 			camera_controller = new tec::FPSController(connection.GetClientID());
 			tec::Entity camera(connection.GetClientID());
-			camera.Add<tec::Velocity>();
+			//camera.Add<tec::Velocity>();
 			camera.Add<tec::View>(true);
-			simulation.AddController(camera_controller);
+			std::shared_ptr<tec::ControllerAddedEvent> cae_event = std::make_shared<tec::ControllerAddedEvent>();
+			cae_event->controller = camera_controller;
+			tec::EventSystem<tec::ControllerAddedEvent>::Get()->Emit(cae_event);
+			//simulation.AddController(camera_controller);
 		});
 		on_connect.detach();
 		gui.HideWindow("connect_window");

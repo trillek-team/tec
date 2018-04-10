@@ -1,4 +1,4 @@
-﻿#include "game-state-queue.hpp"
+#include "game-state-queue.hpp"
 
 #include <glm/gtx/compatibility.hpp>
 #include "components/transforms.hpp"
@@ -14,8 +14,8 @@ namespace tec {
 		if (this->server_states.size() >= 2) {
 			interpolation_accumulator += delta_time;
 			{
-				const GameState& to_state = this->server_states.front();
 				if (interpolation_accumulator > INTERPOLATION_RATE) {
+					const GameState& to_state = this->server_states.front();
 					for (auto position : to_state.positions) {
 						this->base_state.positions[position.first] = position.second;
 					}
