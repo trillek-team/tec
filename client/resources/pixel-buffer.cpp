@@ -86,6 +86,10 @@ namespace tec {
 					if (b < 3) std::fputc(p[i], stderr); // only output RGB
 				}
 				break;
+			case ImageColorMode::MONOCHROME:
+			case ImageColorMode::MONOCHROME_A:
+			case ImageColorMode::UNKNOWN_MODE:
+				break;
 		}
 	}
 	void PixelBuffer::PPMDebug(const char * ofile) {
@@ -107,6 +111,11 @@ namespace tec {
 					file.write((char*)(p + i), 3); // only output RGB
 				}
 				break;
+			case ImageColorMode::MONOCHROME:
+			case ImageColorMode::MONOCHROME_A:
+			case ImageColorMode::UNKNOWN_MODE:
+				break;
+
 		}
 	}
 

@@ -27,23 +27,28 @@ namespace tec {
 		const proto::Computer::CPU& cpu = comp.cpu();
 		switch (cpu.cpu_case()) {
 			case proto::Computer::CPU::kTr3200:
-				const proto::Computer::CPU::TR3200& tr3200 = cpu.tr3200();
-				TR3200State state;
-				for (int i = 0; i < tr3200.registers_size(); ++i) {
-					state.r[i] = tr3200.registers(i);
-				}
-				state.pc = tr3200.pc();
-				state.wait_cycles = tr3200.wait_cycles();
-				state.int_msg = tr3200.int_msg();
-				state.interrupt = tr3200.interrupt();
-				state.step_mode = tr3200.step_mode();
-				state.skiping = tr3200.skiping();
-				state.sleeping = tr3200.sleeping();
-				std::unique_ptr<TR3200> trcpu = std::make_unique<TR3200>();
-				this->vc.SetCPU(std::move(trcpu));
-				this->vc.On();
-				this->vc.SetState(&state, sizeof(TR3200State));
+            {
+                const proto::Computer::CPU::TR3200 &tr3200 = cpu.tr3200();
+                TR3200State state;
+                for (int i = 0; i < tr3200.registers_size(); ++i) {
+                    state.r[i] = tr3200.registers(i);
+                }
+                state.pc = tr3200.pc();
+                state.wait_cycles = tr3200.wait_cycles();
+                state.int_msg = tr3200.int_msg();
+                state.interrupt = tr3200.interrupt();
+                state.step_mode = tr3200.step_mode();
+                state.skiping = tr3200.skiping();
+                state.sleeping = tr3200.sleeping();
+                std::unique_ptr <TR3200> trcpu = std::make_unique<TR3200>();
+                this->vc.SetCPU(std::move(trcpu));
+                this->vc.On();
+                this->vc.SetState(&state, sizeof(TR3200State));
+            }
 				break;
+			case proto::Computer::CPU::CPU_NOT_SET:
+				break;
+
 		}
 		std::string buf = comp.ram();
 		trillek::Byte* ram = this->vc.Ram();
@@ -60,6 +65,8 @@ namespace tec {
 						this->vc.AddDevice(device.slot(), screen->device);
 						this->devices[device.slot()] = screen;
 					}
+					break;
+                case proto::Computer::Device::DEVICE_NOT_SET:
 					break;
 			}
 		}

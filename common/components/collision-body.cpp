@@ -83,6 +83,8 @@ namespace tec {
 					this->shape = std::make_shared<btCapsuleShape>(radius, height);
 				}
 				break;
+			case proto::CollisionBody::ShapeCase::SHAPE_NOT_SET:
+				break;
 		}
 
 		if (comp.has_disable_deactivation()) {

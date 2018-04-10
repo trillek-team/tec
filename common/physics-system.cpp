@@ -335,15 +335,31 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-			case proto::Component::kCollisionBody:
-			{
-				CollisionBody* collision_body = new CollisionBody();
-				collision_body->In(comp);
-				CollisionBodyMap::Set(entity_id, collision_body);
-				collision_body->entity_id = entity_id;
-				AddRigidBody(collision_body);
-			}
-			break;
+				case proto::Component::kCollisionBody:
+				{
+					CollisionBody* collision_body = new CollisionBody();
+					collision_body->In(comp);
+					CollisionBodyMap::Set(entity_id, collision_body);
+					collision_body->entity_id = entity_id;
+					AddRigidBody(collision_body);
+				}
+                    break;
+                case proto::Component::kRenderable:
+                case proto::Component::kPosition:
+				case proto::Component::kOrientation:
+				case proto::Component::kView:
+				case proto::Component::kAnimation:
+				case proto::Component::kScale:
+                case proto::Component::kVelocity:
+				case proto::Component::kAudioSource:
+				case proto::Component::kPointLight:
+				case proto::Component::kDirectionalLight:
+				case proto::Component::kSpotLight:
+				case proto::Component::kVoxelVolume:
+				case proto::Component::kComputer:
+				case proto::Component::kLuaScript:
+				case proto::Component::COMPONENT_NOT_SET:
+					break;
 			}
 		}
 	}
