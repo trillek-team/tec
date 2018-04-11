@@ -16,6 +16,13 @@ namespace tec {
 
 	struct Controller;
 
+	// Predicted client state after simulation
+	struct PredictedClientState {
+		Position pos;
+		Orientation ori;
+		Velocity vel;
+	};
+
 	class Simulation final : public CommandQueue < Simulation >,
 		public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
 		public EventQueue<MouseMoveEvent>, public EventQueue<MouseClickEvent>,

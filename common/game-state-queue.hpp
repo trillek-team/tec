@@ -38,10 +38,20 @@ namespace tec {
 		void SetBaseState(GameState&& new_state) {
 			this->base_state = std::move(new_state);
 		}
+
+		GameState* GetGameState(int offset) {
+			return &this->server_states_array[(server_state_array_index - offset) % SERVER_STATES_ARRAY_SIZE];
+		}
 	private:
+		static const unsigned int SERVER_STATES_ARRAY_SIZE = 5;
 
 		void SetInitialEntityState(const proto::Entity& entity);
 		void RemoveEntity(eid entity_id);
+
+		GameState server_states_array[SERVER_STATES_ARRAY_SIZE];
+		int server_state_array_index = SERVER_STATES_ARRAY_SIZE - 1;
+		GameState predicted_states[SERVER_STATES_ARRAY_SIZE];
+		int predicted_states_array_index = 0;
 
 		GameState base_state;
 		GameState interpolated_state;
