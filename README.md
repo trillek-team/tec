@@ -1,7 +1,7 @@
 # Trillek Engine C
 | Windows (VStudio 2015)  | Semaphore (GCC) |
 |-------------------------|-----------------|
-| [![Build status](https://ci.appveyor.com/api/projects/status/809xi9ukwo7sgsip?svg=true)](https://ci.appveyor.com/project/adam4813/tec-hem9u) | [![Build Status](https://semaphoreci.com/api/v1/adam4813/trillek-team-tec/branches/master/shields_badge.svg)](https://semaphoreci.com/adam4813/trillek-team-tec) |
+| [![Build status](https://ci.appveyor.com/api/projects/status/809xi9ukwo7sgsip?svg=true)](https://ci.appveyor.com/project/adam4813/tec-hem9u) | [![Build Status](https://semaphoreci.com/api/v1/trillek-team/tec/branches/master/shields_badge.svg)](https://semaphoreci.com/trillek-team/tec) |
 
 
 ## Building
