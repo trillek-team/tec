@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -15,7 +15,7 @@ namespace tec {
 	struct Controller {
 		Controller(eid entity_id) : entity_id(entity_id) { }
 
-		virtual void Update(double delta, const GameState& state,
+		virtual void Update(double delta, GameState& state,
 			EventList& commands) { }
 
 		virtual ~Controller() = default;
@@ -38,7 +38,7 @@ namespace tec {
 		void Handle(const MouseBtnEvent& data, const GameState& state);
 		void Handle(const MouseMoveEvent& data, const GameState& state);
 
-		void Update(double delta, const GameState& state,
+		void Update(double delta, GameState& state,
 			EventList& commands);
 
 		proto::ClientCommands GetClientCommands();

@@ -141,8 +141,8 @@ int main(int argc, char* argv[]) {
 		ss.Update();
 	});
 
-	connection.RegisterConnectFunc([&connection, &camera_controller, &log, &gui, &asio_thread, &sync_thread]() {
-		std::thread on_connect([&connection, &camera_controller, &log]()
+	connection.RegisterConnectFunc([&game_state_queue,&connection, &camera_controller, &log, &gui, &asio_thread, &sync_thread]() {
+		std::thread on_connect([&game_state_queue, &connection, &camera_controller, &log]()
 		{
 			unsigned int tries = 0;
 			while (connection.GetClientID() == 0) {
@@ -164,6 +164,7 @@ int main(int argc, char* argv[]) {
 			cae_event->controller = camera_controller;
 			tec::EventSystem<tec::ControllerAddedEvent>::Get()->Emit(cae_event);
 			//simulation.AddController(camera_controller);
+			game_state_queue.SetClientID(connection.GetClientID());
 		});
 		on_connect.detach();
 		gui.HideWindow("connect_window");
@@ -177,6 +178,7 @@ int main(int argc, char* argv[]) {
 	});
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
+	tec::state_id_t command_id = 0;
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
@@ -191,19 +193,21 @@ int main(int argc, char* argv[]) {
 		game_state_queue.Interpolate(delta);
 
 		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
-		if (delta_accumulator >= tec::UPDATE_RATE / 2.0) {
+		if (delta_accumulator >= tec::UPDATE_RATE) {
 			if (camera_controller) {
 				tec::networking::ServerMessage update_message;
 				tec::proto::ClientCommands client_commands = camera_controller->GetClientCommands();
+				client_commands.set_commandid(command_id++);
 				update_message.SetStateID(connection.GetLastRecvStateID());
 				update_message.SetMessageType(tec::networking::CLIENT_COMMAND);
 				client_commands.SerializeToArray(update_message.GetBodyPTR(), client_commands.ByteSize());
 				update_message.SetBodyLength(client_commands.ByteSize());
 				update_message.encode_header();
 				connection.Send(update_message);
+				game_state_queue.SetCommandID(command_id);
 			}
 
-			delta_accumulator -= tec::UPDATE_RATE / 2.0;
+			delta_accumulator -= tec::UPDATE_RATE;
 		}
 
 		vcs.Update(delta);

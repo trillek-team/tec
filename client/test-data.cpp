@@ -58,16 +58,9 @@ namespace tec {
 	}
 
 	void InitializeComponents() {
-		//AddInOutFunctors<Renderable>();
-		//AddInOutFunctors<CollisionBody>();
-		//AddInOutFunctors<Animation>();
 		AddInOutFunctors<DirectionalLight>();
 		AddInOutFunctors<PointLight>();
-		//AddInOutFunctors<Position>();
-		//AddInOutFunctors<Orientation>();
 		AddInOutFunctors<Scale>();
-		//AddInOutFunctors<Velocity>();
-		//AddInOutFunctors<View>();
 		AddInOutFunctors<AudioSource>();
 		AddInOutFunctors<LuaScript>();
 		AddInOutFunctors<Computer>();
@@ -138,9 +131,26 @@ namespace tec {
 			std::shared_ptr<MD5Mesh> mesh1 = MD5Mesh::Create(FilePath::GetAssetPath("bob/bob.md5mesh"));
 			std::shared_ptr<MD5Anim> anim1 = MD5Anim::Create(FilePath::GetAssetPath("bob/bob.md5anim"), mesh1);
 			Multiton<eid, Animation*>::Set(99, new Animation(anim1));
-			std::shared_ptr<ScriptFile> script1 = ScriptFile::Create("Script1", FilePath::GetAssetPath("scripts/test.lua"));
-			bob.Add<LuaScript>(script1);
+			//std::shared_ptr<ScriptFile> script1 = ScriptFile::Create("Script1", FilePath::GetAssetPath("scripts/test.lua"));
+			//bob.Add<LuaScript>(script1);
 		}
+
+		auto voxvol = VoxelVolume::Create(1000, "bob");
+		auto voxvol_shared = voxvol.lock();
+		auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"));
+		auto tex = std::make_shared<TextureObject>(pixbuf);
+		TextureMap::Set("metal_wall", tex);
+
+		VoxelCommand add_voxel(
+			[](VoxelVolume* vox_vol) {
+			for (int i = -25; i <= 25; ++i) {
+				for (int j = -25; j <= 25; ++j) {
+					vox_vol->AddVoxel(-1, i, j);
+				}
+			}
+		});
+		VoxelVolume::QueueCommand(std::move(add_voxel));
+		voxvol_shared->Update(0.0);
 
 		{
 			Entity vidstand(101);

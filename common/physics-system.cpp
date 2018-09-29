@@ -17,7 +17,6 @@
 
 namespace tec {
 	using CollisionBodyMap = Multiton<eid, CollisionBody*>;
-	using VelocityMap = Multiton<eid, std::shared_ptr<Velocity>>;
 	// #ifdef CLIENT_STANDALONE
 	// 	PhysicsDebugDrawer debug_drawer;
 	// #endif

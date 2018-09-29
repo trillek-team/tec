@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -32,7 +32,7 @@ namespace tec {
 		Simulation() { }
 		~Simulation() { }
 
-		GameState Simulate(const double delta_time, const GameState& interpolated_state);
+		GameState Simulate(const double delta_time, GameState& interpolated_state);
 
 		PhysicsSystem& GetPhysicsSystem() {
 			return this->phys_sys;

@@ -14,16 +14,25 @@ namespace tec {
 		if (this->server_states.size() >= 2) {
 			interpolation_accumulator += delta_time;
 			{
-				if (interpolation_accumulator > INTERPOLATION_RATE) {
+				if (interpolation_accumulator >= INTERPOLATION_RATE) {
 					const GameState& to_state = this->server_states.front();
+					if (this->client_id != 0) {
+						this->predictions.emplace(std::make_pair(this->command_id, this->interpolated_state.positions[this->client_id]));
+					}
 					for (auto position : to_state.positions) {
 						this->base_state.positions[position.first] = position.second;
+						this->interpolated_state.positions[position.first] = position.second;
+					}
+					if (this->client_id != 0) {
+						this->base_state.positions[this->client_id] = this->predictions.at(this->command_id);
 					}
 					for (auto velocity : to_state.velocities) {
 						this->base_state.velocities[velocity.first] = velocity.second;
+						this->interpolated_state.velocities[velocity.first] = velocity.second;
 					}
 					for (auto orientation : to_state.orientations) {
 						this->base_state.orientations[orientation.first] = orientation.second;
+						this->interpolated_state.orientations[orientation.first] = orientation.second;
 					}
 					interpolation_accumulator -= INTERPOLATION_RATE;
 					this->base_state.state_id = to_state.state_id;
@@ -37,7 +46,7 @@ namespace tec {
 					for (auto position : to_state.positions) {
 						if (this->base_state.positions.find(position.first) != this->base_state.positions.end()) {
 							this->interpolated_state.positions[position.first].value = glm::lerp(
-									base_state.positions.at(position.first).value, position.second.value, lerp_percent);
+								base_state.positions.at(position.first).value, position.second.value, lerp_percent);
 						}
 						else {
 							this->interpolated_state.positions[position.first] = position.second;
@@ -46,9 +55,9 @@ namespace tec {
 					for (auto velocity : to_state.velocities) {
 						if (this->base_state.velocities.find(velocity.first) != this->base_state.velocities.end()) {
 							this->interpolated_state.velocities[velocity.first].linear = glm::lerp(
-									base_state.velocities.at(velocity.first).linear, velocity.second.linear, lerp_percent);
+								base_state.velocities.at(velocity.first).linear, velocity.second.linear, lerp_percent);
 							this->interpolated_state.velocities[velocity.first].angular = glm::lerp(
-									base_state.velocities.at(velocity.first).angular, velocity.second.angular, lerp_percent);
+								base_state.velocities.at(velocity.first).angular, velocity.second.angular, lerp_percent);
 						}
 						else {
 							this->interpolated_state.velocities[velocity.first].linear = velocity.second.linear;
@@ -58,7 +67,7 @@ namespace tec {
 					for (auto orientation : to_state.orientations) {
 						if (this->base_state.orientations.find(orientation.first) != this->base_state.orientations.end()) {
 							this->interpolated_state.orientations[orientation.first].value = glm::slerp(
-									base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
+								base_state.orientations.at(orientation.first).value, orientation.second.value, lerp_percent);
 						}
 						else {
 							this->interpolated_state.orientations[orientation.first] = orientation.second;
@@ -69,6 +78,11 @@ namespace tec {
 		}
 	}
 
+	void GameStateQueue::ProcessEventQueue() {
+		EventQueue<EntityCreated>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
+		EventQueue<NewGameStateEvent>::ProcessEventQueue();
+	}
 
 	void GameStateQueue::On(std::shared_ptr<NewGameStateEvent> data) {
 		QueueServerState(std::move(data->new_state));
@@ -80,84 +94,88 @@ namespace tec {
 			server_state_array_index++;
 			this->last_server_state_id = new_state.state_id;
 			std::lock_guard<std::mutex> lock(this->server_state_mutex);
+			CheckPredictionResult(new_state);
 			this->server_states.emplace(std::move(new_state));
 		}
 	}
 
-	void GameStateQueue::ProcessEventQueue() {
-		EventQueue<EntityCreated>::ProcessEventQueue();
-		EventQueue<EntityDestroyed>::ProcessEventQueue();
-		EventQueue<NewGameStateEvent>::ProcessEventQueue();
-	}
-
-	void GameStateQueue::RemoveEntity(eid entity_id) {
-		if (this->interpolated_state.positions.find(entity_id) != this->interpolated_state.positions.end()) {
-			this->interpolated_state.positions.erase(entity_id);
-			this->base_state.positions.erase(entity_id);
-		}
-		if (this->interpolated_state.orientations.find(entity_id) != this->interpolated_state.orientations.end()) {
-			this->interpolated_state.orientations.erase(entity_id);
-			this->base_state.orientations.erase(entity_id);
-		}
-		if (this->interpolated_state.velocities.find(entity_id) != this->interpolated_state.velocities.end()) {
-			this->interpolated_state.velocities.erase(entity_id);
-			this->base_state.velocities.erase(entity_id);
+	void GameStateQueue::CheckPredictionResult(GameState& new_state) {
+		if (this->client_id != 0) {
+			state_id_t command_id = new_state.command_id;// new_state.command_id;
+			std::cout << "Client command id: " << this->command_id << " server ack: " << new_state.command_id << std::endl;
+			for (auto itr = this->predictions.begin(); itr != this->predictions.end(); ) {
+				if ((itr->first + 1) < command_id) {
+					itr = this->predictions.erase(itr);
+				}
+				else {
+					++itr;
+				}
+			}
+			if (this->predictions.find(command_id) != this->predictions.end()) {
+				if (new_state.positions.find(this->client_id) != new_state.positions.end()) {
+					auto dif = new_state.positions[this->client_id].value - this->predictions[new_state.state_id].value;
+					std::cout << "Diff (" << dif.x << ", " << dif.y << ", " << dif.z << ") <> Predictions size = " << this->predictions.size() << std::endl;
+				}
+				this->predictions.erase(new_state.state_id);
+			}
 		}
 	}
 
 	void GameStateQueue::On(std::shared_ptr<EntityCreated> data) {
-		SetInitialEntityState(data->entity);
-	}
-
-	void GameStateQueue::SetInitialEntityState(const proto::Entity& entity) {
+		const proto::Entity& entity = data->entity;
 		eid entity_id = entity.id();
 		for (int i = 0; i < entity.components_size(); ++i) {
 			const proto::Component& comp = entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kPosition:
-				{
-					Position pos;
-					pos.In(comp);
-					this->interpolated_state.positions[entity_id] = pos;
-					this->base_state.positions[entity_id] = pos;
-				}
-					break;
-				case proto::Component::kOrientation:
-				{
-					Orientation orientation;
-					orientation.In(comp);
-					this->interpolated_state.orientations[entity_id] = orientation;
-					this->base_state.orientations[entity_id] = orientation;
-				}
-					break;
-				case proto::Component::kVelocity:
-				{
-					Velocity vel;
-					vel.In(comp);
-					this->interpolated_state.velocities[entity_id] = vel;
-					this->base_state.velocities[entity_id] = vel;
-				}
-					break;
-				case proto::Component::kRenderable:
-				case proto::Component::kView:
-				case proto::Component::kAnimation:
-				case proto::Component::kScale:
-                case proto::Component::kCollisionBody:
-				case proto::Component::kAudioSource:
-				case proto::Component::kPointLight:
-				case proto::Component::kDirectionalLight:
-				case proto::Component::kSpotLight:
-				case proto::Component::kVoxelVolume:
-				case proto::Component::kComputer:
-				case proto::Component::kLuaScript:
-				case proto::Component::COMPONENT_NOT_SET:
-					break;
-
+			case proto::Component::kPosition:
+			{
+				Position pos;
+				pos.In(comp);
+				this->interpolated_state.positions[entity_id] = pos;
+				this->base_state.positions[entity_id] = pos;
+			}
+			break;
+			case proto::Component::kOrientation:
+			{
+				Orientation orientation;
+				orientation.In(comp);
+				this->interpolated_state.orientations[entity_id] = orientation;
+				this->base_state.orientations[entity_id] = orientation;
+			}
+			break;
+			case proto::Component::kVelocity:
+			{
+				Velocity vel;
+				vel.In(comp);
+				this->interpolated_state.velocities[entity_id] = vel;
+				this->base_state.velocities[entity_id] = vel;
+			}
+			break;
+			case proto::Component::kRenderable:
+			case proto::Component::kView:
+			case proto::Component::kAnimation:
+			case proto::Component::kScale:
+			case proto::Component::kCollisionBody:
+			case proto::Component::kAudioSource:
+			case proto::Component::kPointLight:
+			case proto::Component::kDirectionalLight:
+			case proto::Component::kSpotLight:
+			case proto::Component::kVoxelVolume:
+			case proto::Component::kComputer:
+			case proto::Component::kLuaScript:
+			case proto::Component::COMPONENT_NOT_SET:
+				break;
 			}
 		}
 	}
 
 	void GameStateQueue::On(std::shared_ptr<EntityDestroyed> data) {
-		RemoveEntity(data->entity_id);
+		const eid entity_id = data->entity_id;
+		this->interpolated_state.positions.erase(entity_id);
+		this->base_state.positions.erase(entity_id);
+		this->interpolated_state.orientations.erase(entity_id);
+		this->base_state.orientations.erase(entity_id);
+		this->interpolated_state.velocities.erase(entity_id);
+		this->base_state.velocities.erase(entity_id);
 	}
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "controllers/fps-controller.hpp"
@@ -10,7 +10,7 @@
 #include "events.hpp"
 
 namespace tec {
-	void FPSController::Update(double delta, const GameState& state, EventList& commands) {
+	void FPSController::Update(double delta, GameState& state, EventList& commands) {
 		this->current_delta = delta;
 		for (const KeyboardEvent& key_event : commands.keyboard_events) {
 			Handle(key_event, state);
@@ -43,10 +43,10 @@ namespace tec {
 		}
 
 		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			const_cast<GameState&>(state).orientations[entity_id] = this->orientation;
+			state.orientations[entity_id] = this->orientation;
 		}
 
-		const_cast<GameState&>(state).velocities[entity_id].linear = glm::vec4(this->orientation.value * glm::vec3(3.0 * strafe, 0.0, 7.5 * forward), 1.0);
+		state.velocities[entity_id].linear = glm::vec4(this->orientation.value * glm::vec3(3.0 * strafe, 0.0, 7.5 * forward), 1.0);
 	}
 
 	proto::ClientCommands FPSController::GetClientCommands() {

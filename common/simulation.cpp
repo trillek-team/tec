@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "simulation.hpp"
@@ -15,7 +15,7 @@
 namespace tec {
 	double UPDATE_RATE = 10.0 / 60.0;
 	double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
-	GameState Simulation::Simulate(const double delta_time, const GameState& interpolated_state) {
+	GameState Simulation::Simulate(const double delta_time, GameState& interpolated_state) {
 		ProcessCommandQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();

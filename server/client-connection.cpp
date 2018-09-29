@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "client-connection.hpp"
@@ -157,6 +157,7 @@ namespace tec {
 							this->last_confirmed_state_id = current_read_msg.GetStateID();
 							std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
 							data->client_commands = std::move(proto_client_commands);
+							this->last_recv_command_id = proto_client_commands.commandid();
 							EventSystem<ClientCommandsEvent>::Get()->Emit(data);
 						}
 							break;
@@ -211,6 +212,7 @@ namespace tec {
 		tec::networking::ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id) {
 			tec::proto::GameStateUpdate gsu_msg;
 			gsu_msg.set_state_id(current_state_id);
+			gsu_msg.set_command_id(this->last_recv_command_id);
 			for (auto pos : this->state_changes_since_confirmed.positions) {
 				tec::proto::Entity* entity = gsu_msg.add_entity();
 				entity->set_id(pos.first);

@@ -28,12 +28,14 @@ namespace tec {
 			this->orientations = other.orientations;
 			this->velocities = other.velocities;
 			this->state_id = other.state_id;
+			this->command_id = other.command_id;
 		}
 		GameState(GameState&& other) {
 			this->positions = std::move(other.positions);
 			this->orientations = std::move(other.orientations);
 			this->velocities = std::move(other.velocities);
 			this->state_id = other.state_id;
+			this->command_id = other.command_id;
 		}
 
 		GameState& operator=(const GameState& other) {
@@ -44,6 +46,7 @@ namespace tec {
 			this->orientations = other.orientations;
 			this->velocities = other.velocities;
 			this->state_id = other.state_id;
+			this->command_id = other.command_id;
 			return *this;
 		}
 		GameState& operator=(GameState&& other) {
@@ -52,12 +55,14 @@ namespace tec {
 				this->orientations = std::move(other.orientations);
 				this->velocities = std::move(other.velocities);
 				this->state_id = other.state_id;
+				this->command_id = other.command_id;
 			}
 			return *this;
 		}
 
 		void In(const proto::GameStateUpdate& gsu) {
 			this->state_id = gsu.state_id();
+			this->command_id = gsu.command_id();
 			for (int e = 0; e < gsu.entity_size(); ++e) {
 				const proto::Entity& entity = gsu.entity(e);
 				eid entity_id = entity.id();
@@ -110,6 +115,7 @@ namespace tec {
 			}
 		}
 		state_id_t state_id;
+		state_id_t command_id;
 	};
 
 	struct NewGameStateEvent {
