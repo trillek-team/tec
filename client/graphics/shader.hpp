@@ -142,7 +142,6 @@ namespace tec {
 		*/
 		void LoadFromString(const ShaderType type, const std::string& source, const std::string& filename);
 
-		std::string filename;
 		GLuint program;
 		std::vector<GLuint> shaders;
 		std::map<std::string, GLint> attributes;

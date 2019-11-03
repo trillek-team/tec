@@ -61,12 +61,12 @@ namespace tec {
 		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_STENCIL,
 			this->window_width, this->window_height);
 		if (!this->light_gbuffer.CheckCompletion()) {
-			_log->error() << "[RenderSystem] Failed to create Light GBuffer.";
+			_log->error("[RenderSystem] Failed to create Light GBuffer.");
 		}
 
 		this->shadow_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_SHADOW, 4096, 4096);
 		if (!this->shadow_gbuffer.CheckCompletion()) {
-			_log->error() << "[RenderSystem] Failed to create Shadow GBuffer.";
+			_log->error("[RenderSystem] Failed to create Shadow GBuffer.");
 		}
 		std::uint8_t tmp_buff[] = {
 #include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
@@ -412,7 +412,7 @@ namespace tec {
 
 		this->light_gbuffer.BindForRendering();
 
-		GLsizei HalfWidth = (GLsizei)(this->window_width / 2.0f);
+		//GLsizei HalfWidth = (GLsizei)(this->window_width / 2.0f);
 		GLsizei HalfHeight = (GLsizei)(this->window_height / 2.0f);
 		GLsizei QuarterWidth = (GLsizei)(this->window_width / 4.0f);
 		GLsizei QuarterHeight = (GLsizei)(this->window_height / 4.0f);
@@ -539,31 +539,28 @@ namespace tec {
 						ri.animation = anim;
 					}
 				}
-				for (VertexGroup* group : renderable->vertex_groups) {
-					this->render_item_list[renderable->shader].insert(std::move(ri));
-				}
+				this->render_item_list[renderable->shader].insert(std::move(ri));
+			}
+		}
+
+		for (auto itr = Multiton<eid, View*>::Begin(); itr != Multiton<eid, View*>::End(); ++itr) {
+			eid entity_id = itr->first;
+			View* view = itr->second;
+
+			glm::vec3 position;
+			if (state.positions.find(entity_id) != state.positions.end()) {
+				position = state.positions.at(entity_id).value;
+			}
+			glm::quat orientation;
+			if (state.orientations.find(entity_id) != state.orientations.end()) {
+				orientation = state.orientations.at(entity_id).value;
 			}
 
-			for (auto itr = Multiton<eid, View*>::Begin();
-				itr != Multiton<eid, View*>::End(); ++itr) {
-				eid entity_id = itr->first;
-				View* view = itr->second;
+			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);
 
-				glm::vec3 position;
-				if (state.positions.find(entity_id) != state.positions.end()) {
-					position = state.positions.at(entity_id).value;
-				}
-				glm::quat orientation;
-				if (state.orientations.find(entity_id) != state.orientations.end()) {
-					orientation = state.orientations.at(entity_id).value;
-				}
-
-				this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);
-
-				view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
-				if (view->active) {
-					this->current_view = view;
-				}
+			view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
+			if (view->active) {
+				this->current_view = view;
 			}
 		}
 	}

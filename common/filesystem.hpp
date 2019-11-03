@@ -25,7 +25,7 @@ public:
 		typedef std::string NFilePath;  /// Native string format for paths
 #endif
 
-    static const std::size_t npos = -1;
+    static const std::size_t npos = std::string::npos;
 
 		/**
 		 * \brief Builds a empty path

@@ -18,7 +18,7 @@ namespace tec {
 		std::unordered_map<eid, Orientation> orientations;
 		std::unordered_map<eid, Velocity> velocities;
 
-		GameState() : state_id(0) { }
+		GameState() = default;
 
 		GameState(const GameState& other) {
 			if (&other == this) {
@@ -30,7 +30,7 @@ namespace tec {
 			this->state_id = other.state_id;
 			this->command_id = other.command_id;
 		}
-		GameState(GameState&& other) {
+		GameState(GameState&& other) noexcept {
 			this->positions = std::move(other.positions);
 			this->orientations = std::move(other.orientations);
 			this->velocities = std::move(other.velocities);
@@ -49,7 +49,7 @@ namespace tec {
 			this->command_id = other.command_id;
 			return *this;
 		}
-		GameState& operator=(GameState&& other) {
+		GameState& operator=(GameState&& other) noexcept {
 			if (this != &other) {
 				this->positions = std::move(other.positions);
 				this->orientations = std::move(other.orientations);
@@ -114,8 +114,8 @@ namespace tec {
 				}
 			}
 		}
-		state_id_t state_id;
-		state_id_t command_id;
+		state_id_t state_id = 0;
+		state_id_t command_id = 0;
 	};
 
 	struct NewGameStateEvent {
@@ -128,10 +128,10 @@ namespace tec {
 		std::list<MouseMoveEvent> mouse_move_events;
 		std::list<MouseClickEvent> mouse_click_events;
 
-		EventList() { }
+		EventList() {}
 
 		EventList(const EventList&) = delete;
-		EventList(EventList&& other) {
+		EventList(EventList&& other) noexcept {
 			this->keyboard_events = std::move(other.keyboard_events);
 			this->mouse_button_events = std::move(other.mouse_button_events);
 			this->mouse_move_events = std::move(other.mouse_move_events);
@@ -139,7 +139,7 @@ namespace tec {
 		}
 
 		EventList& operator=(const EventList& other) = delete;
-		EventList& operator=(EventList&& other) {
+		EventList& operator=(EventList&& other) noexcept {
 			if (this != &other) {
 				this->keyboard_events = std::move(other.keyboard_events);
 				this->mouse_button_events = std::move(other.mouse_button_events);

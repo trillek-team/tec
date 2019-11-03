@@ -12,7 +12,7 @@ namespace tec {
 	template <class T>
 	struct Command {
 		Command(std::function<void(T*)>&& command) : command(std::move(command)) { }
-		Command(Command&& c) : command(std::move(c.command)) { }
+		Command(Command&& c) noexcept : command(std::move(c.command)) { }
 		std::function<void(T*)> command;
 	};
 

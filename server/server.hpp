@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -17,7 +17,7 @@ using asio::ip::tcp;
 
 namespace tec {
 	namespace networking {
-		extern const int SERVER_PORT;
+		extern unsigned short SERVER_PORT;
 		class ClientConnection;
 
 		class Server : public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {

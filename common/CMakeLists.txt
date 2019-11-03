@@ -13,7 +13,6 @@ include_directories(${LUA_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIR})
 include_directories(${trillek_BINARY_DIR}/common) # Protobuf files are here
 include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
-include_directories(${trillek_SOURCE_DIR}/deps/spdlog/include)
 include_directories(${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 protobuf_generate_cpp(COMPONENTS_SOURCES COMPONENTS_HEADERS ${trillek-common_SOURCE_DIR}/proto/components.proto)
 protobuf_generate_cpp(GAME_STATE_SOURCES GAME_STATE_HEADERS ${trillek-common_SOURCE_DIR}/proto/game_state.proto)

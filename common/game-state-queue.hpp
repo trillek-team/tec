@@ -14,8 +14,7 @@ namespace tec {
 	class GameStateQueue : public EventQueue<EntityCreated>,
 		public EventQueue<EntityDestroyed>, public EventQueue<NewGameStateEvent> {
 	public:
-		GameStateQueue() : last_server_state_id(0), client_id(0) { }
-		~GameStateQueue() { }
+		~GameStateQueue() {}
 
 		void Interpolate(const double delta_time);
 
@@ -25,12 +24,12 @@ namespace tec {
 
 		void ProcessEventQueue();
 
-		void SetClientID(eid client_id) {
-			this->client_id = client_id;
+		void SetClientID(eid _client_id) {
+			this->client_id = _client_id;
 		}
 
-		void SetCommandID(state_id_t command_id) {
-			this->command_id = command_id;
+		void SetCommandID(state_id_t _command_id) {
+			this->command_id = _command_id;
 		}
 
 		void On(std::shared_ptr<EntityCreated> data);
@@ -64,10 +63,10 @@ namespace tec {
 		GameState interpolated_state;
 		std::queue<GameState> server_states;
 		std::mutex server_state_mutex;
-		state_id_t last_server_state_id;
-		state_id_t command_id;
+		state_id_t last_server_state_id = 0;
+		state_id_t command_id = 0;
 		double interpolation_accumulator = 0.0;
-		eid client_id;
+		eid client_id = 0;
 		std::map<state_id_t, Position> predictions;
 	};
 }

@@ -7,7 +7,7 @@
 #include <iterator>
 
 namespace tec {
-	Shader::Shader() : program(0) { }
+	Shader::Shader() : program(0) {}
 
 	Shader::~Shader() {
 		DeleteProgram();
@@ -27,16 +27,16 @@ namespace tec {
 	void Shader::LoadFromFile(const ShaderType type, const tec::FilePath& fname) {
 		auto _log = spdlog::get("console_log");
 		if (!fname.isValidPath()) {
-			_log->error() << "[Shader] Error loading shader: " << fname.FileName() << " Invalid path: " << fname;
+			_log->error("[Shader] Error loading shader: {} Invalid path: {}", fname.FileName(), fname.toString());
 			return;
 		}
 		if (!fname.FileExists()) {
-			_log->error() << "[Shader] Error loading shader: " << fname.FileName() << " File don't exists. Check assets folder";
+			_log->error("[Shader] Error loading shader: {} File don't exists. Check assets folder", fname.FileName());
 			return;
 		}
 		std::ifstream fp(fname.GetNativePath(), std::ios_base::in);
 		if (!fp.is_open()) {
-			_log->error() << "[Shader] Error loading shader: " << fname.FileName() << " Can't open file.";
+			_log->error("[Shader] Error loading shader: {} File don't exists. Check open file.", fname.FileName());
 			return;
 		}
 		std::string buffer(std::istreambuf_iterator<char>(fp), (std::istreambuf_iterator<char>()));
@@ -48,21 +48,21 @@ namespace tec {
 		glGetError();
 		GLuint shader = glCreateShader(type);
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			_log->error() << "[Shader] Error creating shader : " << filename << " : " << error;
+			_log->error("[Shader] Error creating shader : {} : {}", filename, error);
 			return;
 		}
 
 		GLint length = source.length();
-		const GLchar *str = source.data();
+		const GLchar* str = source.data();
 		glShaderSource(shader, 1, &str, &length);
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			_log->error() << "[Shader] Error loading shader source : " << filename << " : " << error;
+			_log->error("[Shader] Error loading shader source : {} : {}", filename, error);
 			return;
 		}
 
 		glCompileShader(shader);
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			_log->error() << "[Shader] Error compiling shader : " << filename << " : " << error;
+			_log->error("[Shader] Error compiling shader : {} : {}", filename, error);
 			return;
 		}
 
@@ -71,14 +71,14 @@ namespace tec {
 		if (status == GL_FALSE) {
 			GLint log_length;
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
-			GLchar *info_log = new GLchar[log_length];
+			GLchar* info_log = new GLchar[log_length];
 			glGetShaderInfoLog(shader, log_length, NULL, info_log);
-			_log->error() << "[Shader] Error compiling shader : " << filename << " : " << info_log;
+			_log->error("[Shader] Error compiling shader : {} : {}", filename, info_log);
 			delete[] info_log;
 		}
 
 		if (auto error = glGetError() != GL_NO_ERROR) {
-			_log->error() << "[Shader] Error compiling shader : " << filename << " : " << error;
+			_log->error("[Shader] Error compiling shader : {} : {}", filename, error);
 			return;
 		}
 		this->shaders.push_back(shader);
@@ -94,7 +94,7 @@ namespace tec {
 		glLinkProgram(this->program);
 
 		GLint is_linked = 0;
-		glGetProgramiv(this->program, GL_LINK_STATUS, (int *)&is_linked);
+		glGetProgramiv(this->program, GL_LINK_STATUS, (int*)&is_linked);
 		if (is_linked == GL_FALSE) {
 			GLint max_length = 0;
 			glGetProgramiv(this->program, GL_INFO_LOG_LENGTH, &max_length);
@@ -163,7 +163,7 @@ namespace tec {
 	}
 
 	std::shared_ptr<Shader> Shader::CreateFromFile(const std::string name,
-		std::list<std::pair<Shader::ShaderType, FilePath>> filenames) {
+												   std::list<std::pair<Shader::ShaderType, FilePath>> filenames) {
 		auto s = std::make_shared<Shader>();
 		for (auto pair : filenames) {
 			s->LoadFromFile(pair.first, pair.second);
@@ -174,7 +174,7 @@ namespace tec {
 	}
 
 	std::shared_ptr<Shader> Shader::CreateFromString(const std::string name,
-		std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
+													 std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
 		auto s = std::make_shared<Shader>();
 		for (auto pair : source_code) {
 			s->LoadFromString(pair.first, pair.second);

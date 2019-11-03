@@ -112,7 +112,7 @@ namespace tec {
 			if (state.velocities.find(entity_id) != state.velocities.end()) {
 				const Velocity& vel = state.velocities.at(entity_id);
 				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.y) && std::isfinite(vel.linear.z)) {
-					body->setLinearVelocity(vel.GetLinear() + btVector3(0.0, 1.0, 0.0) + body->getGravity());
+					body->setLinearVelocity(vel.GetLinear() + body->getGravity());
 				}
 				if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.y) && std::isfinite(vel.angular.z)) {
 					body->setAngularVelocity(vel.GetAngular());
@@ -120,7 +120,7 @@ namespace tec {
 			}
 		}
 
-		this->dynamicsWorld->stepSimulation(delta, 10);
+		this->dynamicsWorld->stepSimulation(static_cast<btScalar>(delta), 10);
 
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
@@ -171,7 +171,7 @@ namespace tec {
 		glm::mat4 view = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
 
 		glm::vec3 world_direction = position - GetRayDirection(static_cast<float>(mouse_x),
-			static_cast<float>(mouse_y), screen_width, screen_height, view, projection) * 100.0f;
+															   static_cast<float>(mouse_y), screen_width, screen_height, view, projection) * 100.0f;
 
 		btVector3 from(position.x, position.y, position.z), to(world_direction.x, world_direction.y, world_direction.z);
 		this->last_rayfrom = from;
@@ -292,7 +292,7 @@ namespace tec {
 		}
 
 		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
-			&collision_body->motion_state, collision_body->shape.get(), fallInertia);
+																 &collision_body->motion_state, collision_body->shape.get(), fallInertia);
 		auto body = new btRigidBody(fallRigidBodyCI);
 
 		if (!body) {
@@ -322,7 +322,7 @@ namespace tec {
 				mce_event->entity_id = this->last_entity_hit;
 				mce_event->ray_distance = this->last_raydist;
 				mce_event->ray_hit_piont_world = glm::vec3(this->last_raypos.getX(),
-					this->last_raypos.getY(), this->last_raypos.getZ());
+														   this->last_raypos.getY(), this->last_raypos.getZ());
 				EventSystem<MouseClickEvent>::Get()->Emit(mce_event);
 			}
 		}
@@ -334,30 +334,30 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-			case proto::Component::kCollisionBody:
-			{
-				CollisionBody* collision_body = new CollisionBody();
-				collision_body->In(comp);
-				CollisionBodyMap::Set(entity_id, collision_body);
-				collision_body->entity_id = entity_id;
-				AddRigidBody(collision_body);
-			}
-			break;
-			case proto::Component::kRenderable:
-			case proto::Component::kPosition:
-			case proto::Component::kOrientation:
-			case proto::Component::kView:
-			case proto::Component::kAnimation:
-			case proto::Component::kScale:
-			case proto::Component::kVelocity:
-			case proto::Component::kAudioSource:
-			case proto::Component::kPointLight:
-			case proto::Component::kDirectionalLight:
-			case proto::Component::kSpotLight:
-			case proto::Component::kVoxelVolume:
-			case proto::Component::kComputer:
-			case proto::Component::kLuaScript:
-			case proto::Component::COMPONENT_NOT_SET:
+				case proto::Component::kCollisionBody:
+				{
+					CollisionBody* collision_body = new CollisionBody();
+					collision_body->In(comp);
+					CollisionBodyMap::Set(entity_id, collision_body);
+					collision_body->entity_id = entity_id;
+					AddRigidBody(collision_body);
+				}
+				break;
+				case proto::Component::kRenderable:
+				case proto::Component::kPosition:
+				case proto::Component::kOrientation:
+				case proto::Component::kView:
+				case proto::Component::kAnimation:
+				case proto::Component::kScale:
+				case proto::Component::kVelocity:
+				case proto::Component::kAudioSource:
+				case proto::Component::kPointLight:
+				case proto::Component::kDirectionalLight:
+				case proto::Component::kSpotLight:
+				case proto::Component::kVoxelVolume:
+				case proto::Component::kComputer:
+				case proto::Component::kLuaScript:
+				case proto::Component::COMPONENT_NOT_SET:
 				break;
 			}
 		}

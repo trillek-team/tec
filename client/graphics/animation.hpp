@@ -15,7 +15,6 @@ namespace tec {
 
 	class Animation final {
 	public:
-		Animation() : frame_count(0), animation_time(0.0f) { }
 		Animation(std::shared_ptr<MD5Anim> animation);
 		/**
 		* \brief Updates the current animation based on a change in time.
@@ -44,12 +43,12 @@ namespace tec {
 		std::string animation_name;
 		std::shared_ptr<MD5Anim> animation_file;
 
-		std::size_t current_frame_index;
-		std::size_t frame_count;
+		std::size_t current_frame_index = 0;
+		std::size_t frame_count = 0;
 
-		double animation_time;
-		double frame_duration;
-		double frame_rate;
+		double animation_time = 0.0f;
+		double frame_duration = 0.0f;
+		double frame_rate = 0.0f;
 	};
 
 }

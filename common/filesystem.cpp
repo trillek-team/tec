@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "filesystem.hpp"
@@ -66,7 +66,7 @@ FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count)
 
 FilePath::FilePath(const std::wstring& other, std::size_t pos, std::size_t count) {
 	auto ustr = tec::utf8_encode(other);
-	this->path = ustr;
+	this->path = ustr.substr(pos, count);
 	this->NormalizePath();
 }
 

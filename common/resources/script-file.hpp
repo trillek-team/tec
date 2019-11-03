@@ -59,12 +59,12 @@ namespace tec {
 				std::fstream file(filename.GetNativePath(), std::ios_base::in);
 				if (file.is_open()) {
 					file.seekg(0, std::ios::end);
-					script.reserve(file.tellg()); // Allocate string to the file size
+					script.reserve(static_cast<std::size_t>(file.tellg())); // Allocate string to the file size
 					file.seekg(0, std::ios::beg);
 					
 					script = std::string((std::istreambuf_iterator<char>(file)),
 									std::istreambuf_iterator<char>());
-					_log->trace("[Script] Read script file {} of {} bytes", filename, script.length());
+					_log->trace("[Script] Read script file {} of {} bytes", filename.FileName(), script.length());
 				} else {
 					_log->warn("[Script] Error loading scriptfile {}", filename.FileName());
 					return false;
@@ -122,8 +122,8 @@ namespace tec {
 		const std::string GetName() const {
 			return this->name;
 		}
-		void SetName(const std::string& name) {
-			this->name = name;
+		void SetName(const std::string& _name) {
+			this->name = _name;
 		}
 
 		bool IsDirty() const {

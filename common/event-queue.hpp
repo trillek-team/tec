@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -12,8 +12,8 @@ namespace tec {
 	// Container to hold event data. This is stored in the queue rather than raw event data.
 	template <class T>
 	struct Event {
-		Event(eid entity_id, std::shared_ptr<T> data) : entity_id(entity_id), data(data) { }
-		Event(Event&& other) : entity_id(other.entity_id), data(other.data) { }
+		Event(eid entity_id, std::shared_ptr<T> data) : entity_id(entity_id), data(data) {}
+		Event(Event&& other) noexcept : entity_id(other.entity_id), data(other.data) {}
 		eid entity_id;
 		std::shared_ptr<T> data;
 	};
@@ -36,7 +36,7 @@ namespace tec {
 			write_event_queue(new std::queue<Event<T>>()) {
 			EventSystem<T>::Get()->Subscribe(entity_id, this);
 		}
-		virtual ~EventQueue() { }
+		virtual ~EventQueue() {}
 
 		void ProcessEventQueue() {
 			this->read_event_queue = write_event_queue.exchange(this->read_event_queue);
@@ -53,8 +53,8 @@ namespace tec {
 			(*write_event_queue).emplace(std::move(e));
 		}
 
-		virtual void On(const eid entity_id, std::shared_ptr<T> data) { }
-		virtual void On(std::shared_ptr<T> data) { }
+		virtual void On(const eid, std::shared_ptr<T>) {}
+		virtual void On(std::shared_ptr<T>) {}
 	protected:
 		std::queue<Event<T>>* read_event_queue;
 		std::atomic<std::queue<Event<T>>*> write_event_queue;

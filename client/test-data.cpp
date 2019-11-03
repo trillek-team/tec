@@ -50,7 +50,7 @@ namespace tec {
 			comp->In(proto_comp);
 			Multiton<eid, T*>::Set(entity.id(), comp);
 		};
-		update_functors[GetTypeID<T>()] = [](const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t frame_id) {
+		update_functors[GetTypeID<T>()] = [](const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t) {
 			T* comp = new T();
 			comp->In(proto_comp);
 			Multiton<eid, T*>::Set(entity.id(), comp);
@@ -143,8 +143,8 @@ namespace tec {
 
 		VoxelCommand add_voxel(
 			[](VoxelVolume* vox_vol) {
-			for (int i = -25; i <= 25; ++i) {
-				for (int j = -25; j <= 25; ++j) {
+			for (int16_t i = -25; i <= 25; ++i) {
+				for (int16_t j = -25; j <= 25; ++j) {
 					vox_vol->AddVoxel(-1, i, j);
 				}
 			}
@@ -171,7 +171,7 @@ namespace tec {
 		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 		std::string in;
 		input.seekg(0, std::ios::end);
-		in.reserve(input.tellg());
+		in.reserve(static_cast<std::size_t>(input.tellg()));
 		input.seekg(0, std::ios::beg);
 		std::copy((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>(), std::back_inserter(in));
 		input.close();
@@ -201,19 +201,19 @@ namespace tec {
 			std::string json_string = LoadJSON(fname);
 			proto::EntityFileList elist;
 			google::protobuf::util::JsonStringToMessage(json_string, &elist);
-			_log->debug() << "[ProtoLoad] :\n" << elist.DebugString();
+			_log->debug("[ProtoLoad] :\n {}", elist.DebugString());
 			for (int i = 0; i < elist.entity_file_list_size(); i++) {
 				FilePath entity_filename = FilePath::GetAssetPath(elist.entity_file_list(i));
 				if (entity_filename.isValidPath() && entity_filename.FileExists()) {
 					ProtoLoadEntity(entity_filename);
 				}
 				else {
-					_log->error() << "[ProtoLoadEntity] Error opening " << entity_filename.FileName() << " file. Can't find it";
+					_log->error("[ProtoLoadEntity] Error opening {} file. Can't find it", entity_filename.FileName());
 				}
 			}
 		}
 		else {
-			_log->error() << "[ProtoLoad] Error opening " << fname.FileName() << " file. Can't find it\n";
+			_log->error("[ProtoLoad] Error opening {} file. Can't find it\n", fname.FileName());
 		}
 	}
 }

@@ -62,10 +62,10 @@ namespace tec {
 				this->diffuse_intensity = comp.diffuse_intensity();
 			}
 			if (comp.has_direction()) {
-				const proto::Light::Direction& direction = comp.direction();
-				this->direction.x = direction.x();
-				this->direction.y = direction.y();
-				this->direction.z = direction.z();
+				const proto::Light::Direction& _direction = comp.direction();
+				this->direction.x = _direction.x();
+				this->direction.y = _direction.y();
+				this->direction.z = _direction.z();
 			}
 		}
 	};

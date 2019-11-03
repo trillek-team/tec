@@ -29,9 +29,9 @@ namespace tec {
 			});
 			RegisterMessageHandler(CLIENT_ID, [this](const ServerMessage& message) {
 				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
-				client_id = std::atoi(id_message.c_str());
+				this->client_id = std::atoi(id_message.c_str());
 			});
-			RegisterMessageHandler(CLIENT_LEAVE, [this](const ServerMessage& message) {
+			RegisterMessageHandler(CLIENT_LEAVE, [](const ServerMessage& message) {
 				std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
 				eid entity_id = std::atoi(id_message.c_str());
 				_log->info("Entity " + std::to_string(entity_id) + " left");
@@ -39,7 +39,7 @@ namespace tec {
 				data->entity_id = entity_id;
 				EventSystem<EntityDestroyed>::Get()->Emit(data);
 			});
-			RegisterMessageHandler(ENTITY_CREATE, [this](const ServerMessage& message) {
+			RegisterMessageHandler(ENTITY_CREATE, [this](const ServerMessage&) {
 				std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 				data->entity.ParseFromArray(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength());
 				data->entity_id = data->entity.id();
@@ -118,8 +118,8 @@ namespace tec {
 				this->message_handlers[current_read_msg.GetMessageType()](current_read_msg);
 			}
 			else if (error) {
-				throw asio::system_error(error);
 				this->socket.close();
+				throw asio::system_error(error);
 			}
 		}
 
@@ -133,8 +133,8 @@ namespace tec {
 				read_body();
 			}
 			else if (error) {
-				throw asio::system_error(error);
 				this->socket.close();
+				throw asio::system_error(error);
 			}
 		}
 
@@ -171,7 +171,7 @@ namespace tec {
 			}
 		}
 
-		void ServerConnection::SyncHandler(const ServerMessage& message) {
+		void ServerConnection::SyncHandler(const ServerMessage&) {
 			std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
 			std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
 			if (this->recent_pings.size() >= 10) {

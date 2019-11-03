@@ -22,6 +22,7 @@
 #include <future>
 #include <iostream>
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_sinks.h>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -52,7 +53,6 @@ int main(int argc, char* argv[]) {
 	// Console and logging initialization
 	tec::Console console;
 
-	spdlog::set_async_mode(1048576);
 	std::vector<spdlog::sink_ptr> sinks;
 	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
 	sinks.push_back(std::make_shared<tec::ConsoleSink>(console));
@@ -68,10 +68,10 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 	console.AddConsoleCommand("exit",
-		"exit : Exit from TEC",
-		[&os](const char* args) {
-		os.Quit();
-	});
+							  "exit : Exit from TEC",
+							  [&os] (const char*) {
+								  os.Quit();
+							  });
 	std::thread* asio_thread = nullptr;
 	std::thread* sync_thread = nullptr;
 	tec::Simulation simulation;
@@ -79,37 +79,37 @@ int main(int argc, char* argv[]) {
 	tec::networking::ServerConnection connection;
 
 	console.AddConsoleCommand("msg",
-		"msg : Send a message to all clients.",
-		[&connection](const char* args) {
-		const char* end_arg = args;
-		while (*end_arg != '\0') {
-			end_arg++;
-		}
-		// Args now points were the arguments begins
-		std::string message(args, end_arg - args);
-		connection.SendChatMessage(message);
-	});
+							  "msg : Send a message to all clients.",
+							  [&connection] (const char* args) {
+								  const char* end_arg = args;
+								  while (*end_arg != '\0') {
+									  end_arg++;
+								  }
+								  // Args now points were the arguments begins
+								  std::string message(args, end_arg - args);
+								  connection.SendChatMessage(message);
+							  });
 
 	console.AddConsoleCommand("connect",
-		"connect ip : Connects to the server at ip",
-		[&connection, &log](const char* args) {
-		const char* end_arg = args;
-		while (*end_arg != '\0' && *end_arg != ' ') {
-			end_arg++;
-		}
-		// Args now points were the arguments begins
-		std::string ip(args, end_arg - args);
+							  "connect ip : Connects to the server at ip",
+							  [&connection, &log] (const char* args) {
+								  const char* end_arg = args;
+								  while (*end_arg != '\0' && *end_arg != ' ') {
+									  end_arg++;
+								  }
+								  // Args now points were the arguments begins
+								  std::string ip(args, end_arg - args);
 
-		if (!connection.Connect(ip.c_str())) {
-			log->error("Failed to connect to " + ip);
-		}
-	});
+								  if (!connection.Connect(ip.c_str())) {
+									  log->error("Failed to connect to " + ip);
+								  }
+							  });
 
-	log->info(std::string("Loading assets from: ") + tec::FilePath::GetAssetsBasePath());
+	log->info(std::string("Loading assets from: ") + tec::FilePath::GetAssetsBasePath().toString());
 
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
-	
+
 	gui.CreateGUI(&os, &connection, &console);
 
 	log->info("Initializing rendering system...");
@@ -123,8 +123,8 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing sound system...");
 	tec::SoundSystem ss;
 
-	log->info("Initializing voxel system...");
-	tec::VoxelSystem vox_sys;
+	//log->info("Initializing voxel system...");
+	//tec::VoxelSystem vox_sys;
 
 	log->info("Initializing script system...");
 	tec::LuaSystem lua_sys;
@@ -137,13 +137,14 @@ int main(int argc, char* argv[]) {
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
 
-	std::thread ss_thread([&]() {
+	std::thread ss_thread([&] () {
 		ss.Update();
-	});
+						  });
 
-	connection.RegisterConnectFunc([&game_state_queue,&connection, &camera_controller, &log, &gui, &asio_thread, &sync_thread]() {
-		std::thread on_connect([&game_state_queue, &connection, &camera_controller, &log]()
-		{
+	tec::eid client_id = 0;
+
+	connection.RegisterConnectFunc([&game_state_queue, &connection, &camera_controller, &log, &gui, &asio_thread, &sync_thread, &client_id] () {
+		std::thread on_connect([&game_state_queue, &connection, &camera_controller, &log, &client_id] () {
 			unsigned int tries = 0;
 			while (connection.GetClientID() == 0) {
 				tries++;
@@ -165,17 +166,18 @@ int main(int argc, char* argv[]) {
 			tec::EventSystem<tec::ControllerAddedEvent>::Get()->Emit(cae_event);
 			//simulation.AddController(camera_controller);
 			game_state_queue.SetClientID(connection.GetClientID());
-		});
+			client_id = connection.GetClientID();
+							   });
 		on_connect.detach();
 		gui.HideWindow("connect_window");
 
-		asio_thread = new std::thread([&connection]() {
+		asio_thread = new std::thread([&connection] () {
 			connection.StartRead();
-		});
-		sync_thread = new std::thread([&connection]() {
+									  });
+		sync_thread = new std::thread([&connection] () {
 			connection.StartSync();
-		});
-	});
+									  });
+								   });
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	tec::state_id_t command_id = 0;
@@ -220,14 +222,14 @@ int main(int argc, char* argv[]) {
 		if (camera_controller != nullptr) {
 			if (camera_controller->mouse_look) {
 				os.EnableMouseLock();
-				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), static_cast<float>(os.GetWindowWidth()) / 2.0f, static_cast<float>(os.GetWindowHeight()) / 2.0f,
-					static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
+				tec::active_entity = ps.RayCastMousePick(client_id, static_cast<float>(os.GetWindowWidth()) / 2.0f, static_cast<float>(os.GetWindowHeight()) / 2.0f,
+														 static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 			}
 			else {
 				os.DisableMouseLock();
 				os.GetMousePosition(&mouse_x, &mouse_y);
-				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
-					static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
+				tec::active_entity = ps.RayCastMousePick(client_id, mouse_x, mouse_y,
+														 static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
 			}
 		}
 

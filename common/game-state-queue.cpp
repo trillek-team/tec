@@ -25,6 +25,7 @@ namespace tec {
 					}
 					if (this->client_id != 0) {
 						this->base_state.positions[this->client_id] = this->predictions.at(this->command_id);
+						this->interpolated_state.positions[this->client_id] = this->predictions.at(this->command_id);
 					}
 					for (auto velocity : to_state.velocities) {
 						this->base_state.velocities[velocity.first] = velocity.second;
@@ -101,17 +102,16 @@ namespace tec {
 
 	void GameStateQueue::CheckPredictionResult(GameState& new_state) {
 		if (this->client_id != 0) {
-			state_id_t command_id = new_state.command_id;// new_state.command_id;
 			std::cout << "Client command id: " << this->command_id << " server ack: " << new_state.command_id << std::endl;
 			for (auto itr = this->predictions.begin(); itr != this->predictions.end(); ) {
-				if ((itr->first + 1) < command_id) {
+				if ((itr->first + 1) < new_state.command_id) {
 					itr = this->predictions.erase(itr);
 				}
 				else {
 					++itr;
 				}
 			}
-			if (this->predictions.find(command_id) != this->predictions.end()) {
+			if (this->predictions.find(new_state.command_id) != this->predictions.end()) {
 				if (new_state.positions.find(this->client_id) != new_state.positions.end()) {
 					auto dif = new_state.positions[this->client_id].value - this->predictions[new_state.state_id].value;
 					std::cout << "Diff (" << dif.x << ", " << dif.y << ", " << dif.z << ") <> Predictions size = " << this->predictions.size() << std::endl;

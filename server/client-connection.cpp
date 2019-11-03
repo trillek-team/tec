@@ -43,9 +43,9 @@ namespace tec {
 			}
 		}
 
-		void ClientConnection::SetID(eid id) {
-			this->id = id;
-			this->entity.set_id(id);
+		void ClientConnection::SetID(eid _id) {
+			this->id = _id;
+			this->entity.set_id(this->id);
 			std::string message(std::to_string(this->id));
 			static ServerMessage id_message;
 			id_message.SetMessageType(CLIENT_ID);
@@ -214,16 +214,16 @@ namespace tec {
 			gsu_msg.set_state_id(current_state_id);
 			gsu_msg.set_command_id(this->last_recv_command_id);
 			for (auto pos : this->state_changes_since_confirmed.positions) {
-				tec::proto::Entity* entity = gsu_msg.add_entity();
-				entity->set_id(pos.first);
-				pos.second.Out(entity->add_components());
+				tec::proto::Entity* _entity = gsu_msg.add_entity();
+				_entity->set_id(pos.first);
+				pos.second.Out(_entity->add_components());
 				if (this->state_changes_since_confirmed.orientations.find(pos.first) != this->state_changes_since_confirmed.orientations.end()) {
 					tec::Orientation ori = this->state_changes_since_confirmed.orientations.at(pos.first);
-					ori.Out(entity->add_components());
+					ori.Out(_entity->add_components());
 				}
 				if (this->state_changes_since_confirmed.velocities.find(pos.first) != this->state_changes_since_confirmed.velocities.end()) {
 					tec::Velocity vel = this->state_changes_since_confirmed.velocities.at(pos.first);
-					vel.Out(entity->add_components());
+					vel.Out(_entity->add_components());
 				}
 			}
 			tec::networking::ServerMessage update_message;

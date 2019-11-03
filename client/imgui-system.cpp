@@ -27,10 +27,10 @@ namespace tec {
 	std::string inifilename;
 	std::string logfilename;
 
-	IMGUISystem::IMGUISystem(GLFWwindow* window) : io(ImGui::GetIO()) {
+	IMGUISystem::IMGUISystem(GLFWwindow* _window) : io(ImGui::GetIO()) {
 		this->mouse_pos.x = 0; this->mouse_pos.y = 0;
 		this->mouse_wheel.x = 0; this->mouse_wheel.y = 0;
-		IMGUISystem::window = window;
+		IMGUISystem::window = _window;
 		inifilename = (FilePath::GetUserSettingsPath() / "imgui.ini").toString();
 		logfilename = (FilePath::GetUserCachePath() / "imgui_log.txt").toString();
 		this->io.IniFilename = inifilename.c_str();
@@ -243,7 +243,7 @@ namespace tec {
 	}
 
 	void IMGUISystem::CreateDeviceObjects() {
-		const GLchar *vertex_shader =
+		const GLchar *_vertex_shader =
 			"#version 330\n"
 			"uniform mat4 ProjMtx;\n"
 			"in vec2 Position;\n"
@@ -258,7 +258,7 @@ namespace tec {
 			"	gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
 			"}\n";
 
-		const GLchar* fragment_shader =
+		const GLchar* _fragment_shader =
 			"#version 330\n"
 			"uniform sampler2D Texture;\n"
 			"in vec2 Frag_UV;\n"
@@ -272,8 +272,8 @@ namespace tec {
 		IMGUISystem::shader_program = glCreateProgram();
 		IMGUISystem::vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 		IMGUISystem::fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(IMGUISystem::vertex_shader, 1, &vertex_shader, 0);
-		glShaderSource(IMGUISystem::fragment_shader, 1, &fragment_shader, 0);
+		glShaderSource(IMGUISystem::vertex_shader, 1, &_vertex_shader, 0);
+		glShaderSource(IMGUISystem::fragment_shader, 1, &_fragment_shader, 0);
 		GLint success = 0;
 		glCompileShader(IMGUISystem::vertex_shader);
 		glGetShaderiv(IMGUISystem::vertex_shader, GL_COMPILE_STATUS, &success);

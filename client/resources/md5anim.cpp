@@ -86,7 +86,7 @@ namespace tec {
 		}
 
 		std::string line;
-		unsigned int num_components;
+		unsigned int num_components = 0;
 		while (std::getline(f, line)) {
 			std::stringstream ss(line);
 			std::string identifier;

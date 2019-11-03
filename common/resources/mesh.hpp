@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -108,8 +108,8 @@ namespace tec {
 		const std::string GetName() const {
 			return this->name;
 		}
-		void SetName(const std::string& name) {
-			this->name = name;
+		void SetName(const std::string& _name) {
+			this->name = _name;
 		}
 
 		bool IsDirty() const {

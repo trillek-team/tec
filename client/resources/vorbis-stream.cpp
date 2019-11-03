@@ -7,7 +7,30 @@
 #include "multiton.hpp"
 
 #undef STB_VORBIS_HEADER_ONLY
+// Rather than modifying the source to have these pragma just wrap the usages in the trillek code
+#pragma warning( push )
+#pragma warning( disable : 4244) // Conversion loss of data
+
+#pragma warning( push )
+#pragma warning( disable : 4457) // declaration hides function parameter
+
+#pragma warning( push )
+#pragma warning( disable : 4456) // declaration hides previous declaration
+
+#pragma warning( push )
+#pragma warning( disable : 4245) // signed / unsigned mismatch
+
+#pragma warning( push )
+#pragma warning( disable : 4701) // potentially uninitialized variable
+
 #include "resources/stb_vorbis.c"
+
+#pragma warning( pop ) 
+#pragma warning( pop ) 
+#pragma warning( pop ) 
+#pragma warning( pop ) 
+#pragma warning( pop ) 
+
 namespace tec {
 	typedef Multiton<std::string, std::shared_ptr<VorbisStream>> SoundMap;
 	VorbisStream::VorbisStream(std::size_t buffer_size)

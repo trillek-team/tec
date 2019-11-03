@@ -335,8 +335,8 @@ namespace tec {
 
 				// Put the bind-pose normal into joint-local space
 				// so the animated normal can be computed faster later
-				for (std::size_t j = 0; j < vert.weight_count; ++j) {
-					const Weight& weight = int_mesh.weights[vert.startWeight + j];
+				for (std::size_t k = 0; k < vert.weight_count; ++k) {
+					const Weight& weight = int_mesh.weights[vert.startWeight + k];
 					vert.normal += (normal * this->joints[weight.joint].orientation) * weight.bias;
 				}
 			}

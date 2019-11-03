@@ -93,8 +93,8 @@ namespace tec {
 			return this->name;
 		}
 		
-		void SetName(const std::string& name) {
-			this->name = name;
+		void SetName(const std::string& _name) {
+			this->name = _name;
 		}
 		
 		/**

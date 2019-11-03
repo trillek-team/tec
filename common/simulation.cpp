@@ -92,7 +92,7 @@ namespace tec {
 
 	void Simulation::On(std::shared_ptr<ClientCommandsEvent> data) {
 		for (Controller* controller : this->controllers) {
-			if (controller->entity_id == data->client_commands.id()) {
+			if (static_cast<unsigned int>(controller->entity_id) == data->client_commands.id()) {
 				controller->ApplyClientCommands(data->client_commands);
 			}
 		}

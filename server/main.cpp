@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include <iostream>
@@ -25,7 +25,7 @@ namespace tec {
 		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 		std::string in;
 		input.seekg(0, std::ios::end);
-		in.reserve(input.tellg());
+		in.reserve(static_cast<std::size_t>(input.tellg()));
 		input.seekg(0, std::ios::beg);
 		std::copy((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>(), std::back_inserter(in));
 		input.close();

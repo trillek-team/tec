@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "voxel-volume.hpp"
@@ -79,7 +79,7 @@ namespace tec {
 		}
 	}
 
-	void VoxelVolume::Update(double delta) {
+	void VoxelVolume::Update(double) {
 		ProcessCommandQueue();
 		EventQueue<MouseClickEvent>::ProcessEventQueue();
 		UpdateMesh();
@@ -126,18 +126,18 @@ namespace tec {
 			if (this->changed_queue.size() == 0) {
 				return;
 			}
-			Mesh* mesh = nullptr;
+			Mesh* _mesh = nullptr;
 			if (m->GetMeshCount() > 0) {
-				mesh = m->GetMesh(0);
+				_mesh = m->GetMesh(0);
 			}
 			else {
-				mesh = m->CreateMesh();
+				_mesh = m->CreateMesh();
 			}
 			ObjectGroup* objgroup = nullptr;
-			if (mesh->object_groups.size() == 0) {
-				mesh->object_groups.push_back(new ObjectGroup());
+			if (_mesh->object_groups.size() == 0) {
+				_mesh->object_groups.push_back(new ObjectGroup());
 			}
-			objgroup = mesh->object_groups[0];
+			objgroup = _mesh->object_groups[0];
 			while (this->changed_queue.size() > 0) {
 				std::int64_t index = this->changed_queue.front();
 				this->changed_queue.pop();
@@ -145,9 +145,9 @@ namespace tec {
 					std::int16_t y = static_cast<std::int16_t>((index & 0xFFFF00000000) >> 32);
 					std::int16_t x = static_cast<std::int16_t>((index & 0xFFFF0000) >> 16);
 					std::int16_t z = static_cast<std::int16_t>(index & 0xFFFF);
-					std::size_t vertex_offset = mesh->verts.size();
+					std::size_t vertex_offset = _mesh->verts.size();
 					for (std::size_t i = 0; i < 24; ++i) {
-						mesh->verts.push_back(std::move(VertexData(IdentityVerts[i].position[0] + x,
+						_mesh->verts.push_back(std::move(VertexData(IdentityVerts[i].position[0] + x,
 							IdentityVerts[i].position[1] + y, IdentityVerts[i].position[2] + z,
 							IdentityVerts[i].color[0], IdentityVerts[i].color[1], IdentityVerts[i].color[2],
 							IdentityVerts[i].uv[0], IdentityVerts[i].uv[1])));
@@ -171,17 +171,17 @@ namespace tec {
 								}
 							}
 						}
-						if (this->vertex_index[index] == mesh->verts.size() - 24) {
+						if (this->vertex_index[index] == _mesh->verts.size() - 24) {
 							for (std::size_t i = 0; i < 24; i++) {
-								mesh->verts.pop_back();
+								_mesh->verts.pop_back();
 							}
 						}
 						else {
 							for (std::size_t i = 0; i < 24; i++) {
-								std::swap(mesh->verts[this->vertex_index[index] + i], mesh->verts.back());
-								mesh->verts.pop_back();
+								std::swap(_mesh->verts[this->vertex_index[index] + i], _mesh->verts.back());
+								_mesh->verts.pop_back();
 							}
-							VertexData& vert = mesh->verts[this->vertex_index[index]];
+							VertexData& vert = _mesh->verts[this->vertex_index[index]];
 
 							std::int16_t x = static_cast<std::int16_t>(floor(vert.position.x - IdentityVerts[0].position[0]));
 							std::int16_t y = static_cast<std::int16_t>(floor(vert.position.y - IdentityVerts[0].position[1]));

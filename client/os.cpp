@@ -26,7 +26,7 @@ namespace tec {
 
 	// Error helper function used by GLFW for error messaging.
 	static void ErrorCallback(int error_no, const char* description) {
-		spdlog::get("console_log")->error() << "[OS] GLFW Error " << error_no << ": " << description;
+		spdlog::get("console_log")->error("[OS] GLFW Error {} : {}", error_no, description);
 	}
 
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
@@ -78,37 +78,32 @@ namespace tec {
 		int glcx_minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
 		if ( glcx_major < glMajor || ( glcx_major == glMajor && glcx_minor < glMinor) ) {
 			glfwTerminate();
-			l->critical() << "[OS] Initializing OpenGL failed, unsupported version: " << glcx_version << '\n' 
-				<< "Press \"Enter\" to exit\n";
+			l->critical("[OS] Initializing OpenGL failed, unsupported version: {} '\n' Press \"Enter\" to exit\n", glcx_version);
 			std::cin.get();
 			return false;
 		}
 
 		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
 		const char* glcx_renderer = (char*)glGetString(GL_RENDERER);
-		l->info() << glcx_vendor << " - " << glcx_renderer;
+		l->info("{} - {}", glcx_vendor, std::string{ glcx_renderer });
 	
 		// Check that GLSL is >= 3.30
 		std::string glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 		std::string glsl_major = glcx_glslver.substr(0, glcx_glslver.find('.', 0));
 		std::string glsl_minor = glcx_glslver.substr(glcx_glslver.find('.', 0)+1, 1);
 		if (glsl_major.at(0) < '3') {
-			l->critical() << "[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : " 
-						  << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver << "\n" 
-						  << "Press \"Enter\" to exit\n";
+			l->critical("[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version : {} GLSL version : {} \n Press \"Enter\" to exit\n", glcx_version, glcx_glslver);
 			std::cin.get();
 			return false;
 		} else if (glsl_major.at(0) == '3') { 
 			if (glsl_minor.at(0) < '3') {
-				l->critical() << "[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : " 
-							<< "GL version : " << glcx_version << " GLSL version : " << glcx_glslver << "\n" 
-							<< "Press \"Enter\" to exit\n";
+				l->critical("[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version : {} GLSL version : {} \n Press \"Enter\" to exit\n", glcx_version, glcx_glslver);
 				std::cin.get();
 				return false;
 			}
 		}
 		
-		l->info() << "GL version : " << glcx_version << " GLSL version : " << glcx_glslver; 
+		l->info("GL version : {} GLSL version : {}", glcx_version, glcx_glslver);
 		
 		this->client_width = width;
 		this->client_height = height;
@@ -336,7 +331,7 @@ namespace tec {
 
 	}
 
-	void OS::DispatchMouseButtonEvent(const int button, const int action, const int mods) {
+	void OS::DispatchMouseButtonEvent(const int button, const int action, const int) {
 		std::shared_ptr<MouseBtnEvent> mbtn_event = std::make_shared<MouseBtnEvent>();
 		if (action == GLFW_PRESS) {
 			mbtn_event->action = MouseBtnEvent::DOWN;

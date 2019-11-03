@@ -48,10 +48,10 @@ namespace tec {
 
 			ss >> identifier;
 			if (identifier == "newmtl") {
-				std::string name;
-				ss >> name;
-				this->materials[name] = std::make_shared<MTL>();
-				currentMTL = this->materials[name];
+				std::string _name;
+				ss >> _name;
+				this->materials[_name] = std::make_shared<MTL>();
+				currentMTL = this->materials[_name];
 			}
 			else if (identifier == "Ka") {
 				float r, g, b;
@@ -220,15 +220,13 @@ namespace tec {
 				this->normals.push_back(norm);
 			}
 			else if (identifier == "o") {
-				std::string name;
-				ss >> name;
 				if (currentVGroup) {
 					if (currentVGroup->face_groups.size() > 0) { // Empty groups are worth saving
 						this->vertexGroups.push_back(currentVGroup);
 					}
 				}
 				currentVGroup = std::make_shared<OBJGroup>();
-				currentVGroup->name = name;
+				ss >> currentVGroup->name;
 			}
 			else if (identifier == "usemtl") {
 				current_face_group = nullptr;
@@ -325,7 +323,7 @@ namespace tec {
 				}
 				MaterialGroup mat_group;
 				mat_group.start = objgroup->indices.size();
-				glm::vec4 diffuse_color;
+				glm::vec4 diffuse_color{ 0.0 };
 				if (this->materials.find(face_group->mtl) != this->materials.end()) {
 					std::shared_ptr<MTL> material = this->materials[face_group->mtl];
 					std::string material_name = material->diffuseMap;

@@ -21,7 +21,7 @@ namespace tec {
 			auto entity_id = itr->first;
 			if (Entity(entity_id).Has<LuaScript>()) {
 				if (const LuaScript* lscript = Entity(entity_id).Get<LuaScript>()) {
-					if (!lscript->script_name.empty() ) { // Check that have a asigned script with onUpdate function
+					if (!lscript->script_name.empty() ) { // Check that have a assigned script with onUpdate function
 						//lscript->state["this"].SetObj(Entity(entity_id) //,
 							//"add", &Entity::Add,
 							//"has", &Entity::Has,
@@ -32,7 +32,4 @@ namespace tec {
 			}
 		}
 	}
-
-
-
 }
