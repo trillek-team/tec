@@ -23,7 +23,7 @@ for:
     - mkdir -p build; cd build;  cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake ..
   build_script:
     - make
- -
+-
    matrix:
      only:
        - image: Visual Studio 2019
