@@ -7,6 +7,7 @@ configuration: Release
 clone_depth: 1
 install:
   - git submodule update --init
+  - sh: sudo apt-get libx11-dev libgl1-mesa-dev xorg-dev libglu1-mesa-dev
   - sh: git clone https://github.com/Microsoft/vcpkg.git
   - sh: cd vcpkg
   - sh: ./bootstrap-vcpkg.sh
@@ -32,18 +33,18 @@ for:
    build:
      project: .\build\trillek.sln
      verbosity: minimal
-after_build:
-- cmd: 7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe
-artifacts:
-- path: trillek-win32.zip
-  name: trillek-win32
-deploy:
-- provider: GitHub
-  description: nightly
-  auth_token:
-    secure: kL45ksPB9JGrbvgPjbKbTrnHV3gRj3XC52wu6cg8vhIy3iE8hcAzvR7tBBA8QRtO
-  artifact: trillek-win32
-  on:
-    branch: master
+#after_build:
+#- cmd: 7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe
+#artifacts:
+#- path: trillek-win32.zip
+#  name: trillek-win32
+#deploy:
+#- provider: GitHub
+#  description: nightly
+#  auth_token:
+#    secure: kL45ksPB9JGrbvgPjbKbTrnHV3gRj3XC52wu6cg8vhIy3iE8hcAzvR7tBBA8QRtO
+#  artifact: trillek-win32
+#  on:
+#    branch: master
 
 cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt
