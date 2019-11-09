@@ -1,13 +1,13 @@
 version: 0.1 b{build}
 skip_tags: true
 image:
-  - Visual Studio 2019
   - Ubuntu
+  - Visual Studio 2019
 configuration: Release
 clone_depth: 1
 install:
   - git submodule update --init
-  - sh: sudo apt-get install libx11-dev libgl1-mesa-dev xorg-dev libglu1-mesa-dev
+  - sh: sudo apt-get install libx11-dev libgl1-mesa-dev xorg-dev libglu1-mesa-dev -y
   - sh: git clone https://github.com/Microsoft/vcpkg.git
   - sh: cd vcpkg
   - sh: ./bootstrap-vcpkg.sh
