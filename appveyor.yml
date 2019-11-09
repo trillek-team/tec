@@ -1,25 +1,37 @@
 version: 0.1 b{build}
 skip_tags: true
-image: Visual Studio 2019
+image:
+  - Visual Studio 2019
+  - Ubuntu
 configuration: Release
 clone_depth: 1
-clone_folder: c:\projects\tec
 install:
-- cmd: >-
-    vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
-
-    cd c:\projects\tec
-    
-    git submodule update --init
-
-    mkdir build
-
-    cd build
-
-    cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-build:
-  project: c:\projects\tec\build\trillek.sln
-  verbosity: minimal
+  - git submodule update --init
+  - sh: git clone https://github.com/Microsoft/vcpkg.git
+  - sh: cd vcpkg
+  - sh: ./bootstrap-vcpkg.sh
+  - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
+  - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
+  - cmd: mkdir build
+  - cmd: cd build
+for:
+-
+  matrix:
+    only:
+      - image: Ubuntu
+  before_build:
+    - mkdir -p build; cd build;  cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake ..
+  build_script:
+    - make
+ -
+   matrix:
+     only:
+       - image: Visual Studio 2019
+   before_build:
+     - cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+   build:
+     project: c:\projects\tec\build\trillek.sln
+     verbosity: minimal
 after_build:
 - cmd: >-
     cd ..
