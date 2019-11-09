@@ -12,6 +12,7 @@ install:
   - sh: cd vcpkg
   - sh: ./bootstrap-vcpkg.sh
   - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
+  - sh: cd ..
   - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
   - cmd: mkdir build
   - cmd: cd build
@@ -21,7 +22,7 @@ for:
     only:
       - image: Ubuntu
   before_build:
-    - mkdir -p build; cd build;  cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake ..
   build_script:
     - make
 -
