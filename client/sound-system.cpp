@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "sound-system.hpp"
@@ -22,12 +22,12 @@ namespace tec {
 
 		this->device = alcOpenDevice(NULL); alCheckError();
 		if (!this->device) {
-			_log->warn() << "[Sound System] No OpenAL device selected.";
+			_log->warn("[Sound System] No OpenAL device selected.");
 		}
 
 		this->context = alcCreateContext(device, NULL); alCheckError();
 		if (!alcMakeContextCurrent(this->context)) {
-			_log->warn() << "[Sound System] No OpenAL context created.";
+			_log->warn("[Sound System] No OpenAL context created.");
 		}
 		alListener3f(AL_POSITION, 0, 0, 0);
 		alListener3f(AL_VELOCITY, 0, 0, 0);
@@ -71,15 +71,15 @@ namespace tec {
 				alSourcef(source->source, AL_GAIN, source->gain / 100.0f); alCheckError();
 
 				// If there was a state change to play then start playing
-				if (state != AL_PLAYING && source->source_state == PLAYING) {
+				if (state != AL_PLAYING && source->source_state == AUDIOSOURCE_STATE::PLAYING) {
 					alSourcePlay(source->source); alCheckError();
 				}
 				else if (state == AL_PLAYING) {
-					if (source->source_state == PAUSED) {
+					if (source->source_state == AUDIOSOURCE_STATE::PAUSED) {
 						alSourcePause(source->source); alCheckError();
 						alSourcei(source->source, AL_SOURCE_STATE, AL_PAUSED);
 					}
-					else if (source->source_state == STOPPED) {
+					else if (source->source_state == AUDIOSOURCE_STATE::STOPPED) {
 						alSourceStop(source->source); alCheckError();
 						alSourcei(source->source, AL_SOURCE_STATE, AL_STOPPED);
 					}
@@ -127,13 +127,13 @@ namespace tec {
 
 			alSourceQueueBuffers(source->source, 2, source->buffer); alCheckError();
 			switch (source->source_state) {
-				case PLAYING:
+				case AUDIOSOURCE_STATE::PLAYING:
 					alSourcei(source->source, AL_SOURCE_STATE, AL_PLAYING);
 					break;
-				case PAUSED:
+				case AUDIOSOURCE_STATE::PAUSED:
 					alSourcei(source->source, AL_SOURCE_STATE, AL_PAUSED);
 					break;
-				case STOPPED:
+				case AUDIOSOURCE_STATE::STOPPED:
 					break;
 			}
 		}

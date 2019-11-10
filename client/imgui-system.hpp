@@ -53,7 +53,7 @@ namespace tec {
 
 		void ShowWindow(std::string name) {
 			GUICommand show_window(
-				[=] (IMGUISystem* gui_system) {
+				[=] (IMGUISystem*) {
 				this->visible_windows.insert(name);
 			});
 			IMGUISystem::QueueCommand(std::move(show_window));
@@ -61,7 +61,7 @@ namespace tec {
 
 		void HideWindow(std::string name) {
 			GUICommand hide_window(
-				[=] (IMGUISystem* gui_system) {
+				[=] (IMGUISystem*) {
 				this->visible_windows.erase(name);
 			});
 			IMGUISystem::QueueCommand(std::move(hide_window));

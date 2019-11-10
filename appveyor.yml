@@ -1,37 +1,53 @@
 version: 0.1 b{build}
-image: Visual Studio 2017
+skip_tags: true
+image:
+  - Visual Studio 2019
+  - Ubuntu
 configuration: Release
 clone_depth: 1
-clone_folder: c:\projects\tec
-install:
-- cmd: >-
-    vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib
-
-    cd c:\projects\tec
-    
-    git submodule update --init
-
-    mkdir build
-
-    cd build
-
-    cmake -G "Visual Studio 15 2017" -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-build:
-  project: c:\projects\tec\build\trillek.sln
-  verbosity: minimal
-after_build:
-- cmd: >-
-    cd ..
-
-    7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe
-artifacts:
-- path: trillek-win32.zip
-  name: trillek-win32
-deploy:
-- provider: GitHub
-  description: nightly
-  auth_token:
-    secure: kL45ksPB9JGrbvgPjbKbTrnHV3gRj3XC52wu6cg8vhIy3iE8hcAzvR7tBBA8QRtO
-  artifact: trillek-win32
+for:
+-
+  matrix:
+    only:
+      - image: Ubuntu
+  install:
+    - git submodule update --init
+    - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev -y
+    - sh: git clone https://github.com/Microsoft/vcpkg.git
+    - sh: cd vcpkg
+    - sh: ./bootstrap-vcpkg.sh
+    - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
+    - sh: cd ..
+  before_build:
+    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug ..
+  build_script:
+    - make
+-
+   matrix:
+     only:
+       - image: Visual Studio 2019
+   install:
+     - git submodule update --init
+     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows
+     - cmd: mkdir build
+     - cmd: cd build
+   before_build:
+     - cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+   build:
+     project: .\build\trillek.sln
+     verbosity: minimal
+#after_build:
+#- cmd: 7z a trillek-win32.zip .\assets\ .\build\client\Release\trillek-client.exe .\build\client\Release\*.dll .\build\Server\Release\trillek-server.exe
+#artifacts:
+#- path: trillek-win32.zip
+#  name: trillek-win32
+#deploy:
+#- provider: GitHub
+#  description: nightly
+#  auth_token:
+#    secure: kL45ksPB9JGrbvgPjbKbTrnHV3gRj3XC52wu6cg8vhIy3iE8hcAzvR7tBBA8QRtO
+#  artifact: trillek-win32
+#  on:
+#    branch: master
 
 cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt

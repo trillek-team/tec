@@ -41,6 +41,7 @@ namespace tec {
 	};
 
 	struct MouseClickEvent {
+		eid entity_id;
 		MouseBtnEvent::MOUSE_BTN button;
 		glm::vec3 ray_hit_piont_world;
 		double ray_distance;

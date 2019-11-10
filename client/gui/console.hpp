@@ -1,9 +1,11 @@
 #pragma once
 
 #include <deque>
+#include <functional>
 #include <map>
 #include <tuple>
 #include <mutex>
+#include <memory>
 
 #include <imgui.h>
 #include <spdlog/sinks/sink.h>
@@ -80,8 +82,26 @@ namespace tec {
 			void log(const spdlog::details::log_msg& msg) override;
 			
 			void flush() {};
+
+			void set_pattern(const std::string& pattern) final {
+				std::lock_guard<std::mutex> lock(mutex_);
+				set_pattern_(pattern);
+			}
+
+			void set_formatter(std::unique_ptr<spdlog::formatter> sink_formatter) final {
+				std::lock_guard<std::mutex> lock(mutex_);
+				set_formatter_(std::move(sink_formatter));
+			}
 		private:
 			Console& console;
+			virtual void set_pattern_(const std::string& pattern) {
+				set_formatter_(std::make_unique<spdlog::pattern_formatter>(pattern));
+			}
+
+			virtual void set_formatter_(std::unique_ptr<spdlog::formatter> sink_formatter) {
+				formatter_ = std::move(sink_formatter);
+			}
+			std::mutex mutex_;
 	};
 	
 }

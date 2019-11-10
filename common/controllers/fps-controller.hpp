@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -15,8 +15,7 @@ namespace tec {
 	struct Controller {
 		Controller(eid entity_id) : entity_id(entity_id) { }
 
-		virtual void Update(double delta, const GameState& state,
-			EventList& commands) { }
+		virtual void Update(double, GameState&, EventList&) { }
 
 		virtual ~Controller() = default;
 
@@ -30,15 +29,14 @@ namespace tec {
 	// TODO: Remove this class as it is only for testing and should really be
 	// implemented in script.
 	struct FPSController : public Controller {
-		FPSController(eid entity_id) : Controller(entity_id), mouse_look(false)
-		{ }
+		FPSController(const eid entity_id) : Controller(entity_id) {}
 		virtual ~FPSController() = default;
 
 		void Handle(const KeyboardEvent& data, const GameState& state);
 		void Handle(const MouseBtnEvent& data, const GameState& state);
 		void Handle(const MouseMoveEvent& data, const GameState& state);
 
-		void Update(double delta, const GameState& state,
+		void Update(double delta, GameState& state,
 			EventList& commands);
 
 		proto::ClientCommands GetClientCommands();
@@ -48,8 +46,8 @@ namespace tec {
 		bool right_strafe = false;
 		bool left_strafe = false;
 
-		double current_delta;
-		bool mouse_look;
+		double current_delta = 0.0;
+		bool mouse_look = false;
 
 		Orientation orientation;
 

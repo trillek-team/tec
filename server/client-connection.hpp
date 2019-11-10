@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -81,6 +81,7 @@ namespace tec {
 			FPSController* controller = nullptr;
 
 			state_id_t last_confirmed_state_id; // That last state_id the client confirmed it received.
+			state_id_t last_recv_command_id;
 			GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.
 		};
 	}

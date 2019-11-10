@@ -11,13 +11,13 @@
 #include "types.hpp"
 
 namespace tec {
-	struct CollisionBody {
-		struct MotionState : public btMotionState {
-			MotionState() { }
+	namespace {
+		ATTRIBUTE_ALIGNED16(struct) MotionState : public btMotionState{
+			BT_DECLARE_ALIGNED_ALLOCATOR();
+			MotionState() = default;
 			MotionState(MotionState&& other) : transform(std::move(other.transform)),
-				transform_updated(other.transform_updated) {
-			}
-			
+				transform_updated(other.transform_updated) {}
+
 			MotionState& operator=(MotionState&& other) {
 				transform_updated = other.transform_updated;
 				transform = std::move(transform);
@@ -25,7 +25,7 @@ namespace tec {
 			}
 			btTransform transform;
 
-			bool transform_updated;
+			bool transform_updated = false;
 
 			void getWorldTransform(btTransform& worldTrans) const {
 				worldTrans = this->transform;
@@ -36,14 +36,18 @@ namespace tec {
 				this->transform = worldTrans;
 			}
 		};
+	}
+
+	ATTRIBUTE_ALIGNED16(struct) CollisionBody {
+		BT_DECLARE_ALIGNED_ALLOCATOR();
 		CollisionBody();
-		CollisionBody(CollisionBody&& other);
+		CollisionBody(CollisionBody && other);
 		~CollisionBody();
 
-		CollisionBody& operator=(CollisionBody&& other);
+		CollisionBody& operator=(CollisionBody && other);
 
-		void Out(proto::Component* target);
-		void In(const proto::Component& source);
+		void Out(proto::Component * target);
+		void In(const proto::Component & source);
 
 		btScalar mass; // For static objects mass must be 0.
 		bool disable_deactivation = false; // Whether to disable automatic deactivation.

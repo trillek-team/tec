@@ -41,7 +41,7 @@ namespace tec {
 		void Update(double delta);
 
 		
-		void Out(proto::Component* target) {
+		void Out(proto::Component*) {
 
 		}
 
@@ -63,7 +63,7 @@ namespace tec {
 		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into sub-mesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 		
-		void On(const eid entity_id, std::shared_ptr<MouseClickEvent> data);
+		void On(std::shared_ptr<MouseClickEvent> data);
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
 		std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.

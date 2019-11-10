@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "render-system.hpp"
@@ -24,8 +24,8 @@
 #include "multiton.hpp"
 
 namespace tec {
-	typedef Multiton<eid, PointLight*> PointLightMap;
-	typedef Multiton<eid, DirectionalLight*> DirectionalLightMap;
+	using PointLightMap = Multiton<eid, PointLight*>;
+	using DirectionalLightMap = Multiton<eid, DirectionalLight*>;
 
 	RenderSystem::RenderSystem() : current_view(nullptr),
 		window_width(1024), window_height(768) {
@@ -61,12 +61,12 @@ namespace tec {
 		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_STENCIL,
 			this->window_width, this->window_height);
 		if (!this->light_gbuffer.CheckCompletion()) {
-			_log->error() << "[RenderSystem] Failed to create Light GBuffer.";
+			_log->error("[RenderSystem] Failed to create Light GBuffer.");
 		}
 
 		this->shadow_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_SHADOW, 4096, 4096);
 		if (!this->shadow_gbuffer.CheckCompletion()) {
-			_log->error() << "[RenderSystem] Failed to create Shadow GBuffer.";
+			_log->error("[RenderSystem] Failed to create Shadow GBuffer.");
 		}
 		std::uint8_t tmp_buff[] = {
 #include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
@@ -175,7 +175,7 @@ namespace tec {
 					glUniform1i(animated_loc, 0);
 					if (render_item.animated) {
 						glUniform1i(animated_loc, 1);
-						auto& animmatricies = render_item.animation->animation_matrices;
+						auto& animmatricies = render_item.animation->bone_matrices;
 						glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
 					}
 					for (VertexGroup* vertex_group : *render_item.vertex_groups) {
@@ -226,7 +226,7 @@ namespace tec {
 				glUniform1i(animated_loc, 0);
 				if (render_item.animated) {
 					glUniform1i(animated_loc, 1);
-					auto& animmatricies = render_item.animation->animation_matrices;
+					auto& animmatricies = render_item.animation->bone_matrices;
 					glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
 				}
 				for (VertexGroup* vertex_group : *render_item.vertex_groups) {
@@ -314,7 +314,7 @@ namespace tec {
 			this->light_gbuffer.StencilPass();
 			def_stencil_shader->Use();
 			glUniformMatrix4fv(stencil_model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
-			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 			def_stencil_shader->UnUse();
 
 			// Change state for light pass after the stencil pass. Stencil pass must happen for each light.
@@ -327,7 +327,7 @@ namespace tec {
 			glUniform1f(Atten_Linear_index, light->Attenuation.linear);
 			glUniform1f(Atten_Exp_index, light->Attenuation.exponential);
 			glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
-			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 		}
 
 		def_pl_shader->UnUse();
@@ -394,7 +394,7 @@ namespace tec {
 			glUniform1f(DiffuseIntensity_index, light->diffuse_intensity);
 			glUniform3f(direction_index, light->direction.x, light->direction.y, light->direction.z);
 
-			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 		}
 		def_dl_shader->UnUse();
 	}
@@ -412,7 +412,7 @@ namespace tec {
 
 		this->light_gbuffer.BindForRendering();
 
-		GLsizei HalfWidth = (GLsizei)(this->window_width / 2.0f);
+		//GLsizei HalfWidth = (GLsizei)(this->window_width / 2.0f);
 		GLsizei HalfHeight = (GLsizei)(this->window_height / 2.0f);
 		GLsizei QuarterWidth = (GLsizei)(this->window_width / 4.0f);
 		GLsizei QuarterHeight = (GLsizei)(this->window_height / 4.0f);
@@ -435,7 +435,7 @@ namespace tec {
 
 	}
 
-	typedef Multiton<eid, Renderable*> RenderableMap;
+	using RenderableMap = Multiton<eid, Renderable*>;
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
@@ -534,36 +534,33 @@ namespace tec {
 				if (Multiton<eid, Animation*>::Has(e.GetID())) {
 					Animation* anim = Multiton<eid, Animation*>::Get(e.GetID());
 					anim->UpdateAnimation(delta);
-					if (anim->animation_matrices.size() > 0) {
+					if (anim->bone_matrices.size() > 0) {
 						ri.animated = true;
 						ri.animation = anim;
 					}
 				}
-				for (VertexGroup* group : renderable->vertex_groups) {
-					this->render_item_list[renderable->shader].insert(std::move(ri));
-				}
+				this->render_item_list[renderable->shader].insert(std::move(ri));
+			}
+		}
+
+		for (auto itr = Multiton<eid, View*>::Begin(); itr != Multiton<eid, View*>::End(); ++itr) {
+			eid entity_id = itr->first;
+			View* view = itr->second;
+
+			glm::vec3 position;
+			if (state.positions.find(entity_id) != state.positions.end()) {
+				position = state.positions.at(entity_id).value;
+			}
+			glm::quat orientation;
+			if (state.orientations.find(entity_id) != state.orientations.end()) {
+				orientation = state.orientations.at(entity_id).value;
 			}
 
-			for (auto itr = Multiton<eid, View*>::Begin();
-				itr != Multiton<eid, View*>::End(); ++itr) {
-				eid entity_id = itr->first;
-				View* view = itr->second;
+			this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);
 
-				glm::vec3 position;
-				if (state.positions.find(entity_id) != state.positions.end()) {
-					position = state.positions.at(entity_id).value;
-				}
-				glm::quat orientation;
-				if (state.orientations.find(entity_id) != state.orientations.end()) {
-					orientation = state.orientations.at(entity_id).value;
-				}
-
-				this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);
-
-				view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
-				if (view->active) {
-					this->current_view = view;
-				}
+			view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
+			if (view->active) {
+				this->current_view = view;
 			}
 		}
 	}

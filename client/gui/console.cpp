@@ -11,7 +11,7 @@ namespace tec {
 		// Default embed commands
 		this->AddConsoleCommand( "cmdlist",
 			"cmdlist : List all commands",
-		[this ] (const char* args) {
+		[this ] (const char*) {
 			for (auto command : this->commands) {
 				this->Println(command.first);
 			}
@@ -36,7 +36,7 @@ namespace tec {
 		
 		this->AddConsoleCommand( "clear",
 			"clear : Clear console output",
-		[this ] (const char* args) {
+		[this ] (const char*) {
 			this->Clear();
 		});
 		
@@ -48,7 +48,7 @@ namespace tec {
 		
 	}
 
-	void Console::Update(double delta) {
+	void Console::Update(double) {
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 	}
@@ -213,7 +213,7 @@ namespace tec {
 
 
 	void ConsoleSink::log(const spdlog::details::log_msg& msg) {
-		std::string str(msg.raw.str());
+		std::string str(msg.payload.data());
 		ImVec4 color(255, 255, 255, 255);
 		switch (msg.level) {
 			case spdlog::level::trace :
@@ -234,16 +234,8 @@ namespace tec {
 				str = "CRITICAL ERROR! " + str;
 				color = ImVec4(255, 0, 0, 255);
 				break;
-			case spdlog::level::alert :
-				str = "ALERT! " + str;
-				color = ImVec4(255, 0, 0, 255);
-				break;
-			case spdlog::level::emerg :
-				str = "BLUE SCREEN OF DEATH! " + str;
-				color = ImVec4(255, 0, 0, 255);
-				break;
 			case spdlog::level::info :
-			case spdlog::level::notice :
+			case spdlog::level::off :
 			default:
 				;
 		}

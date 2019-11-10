@@ -21,14 +21,14 @@ namespace tec {
 	*
 	* Modeled after http://en.wikipedia.org/wiki/Multiton_pattern.
 	*/
-	template <typename ID, typename T>
+	template <typename ID_T, typename T>
 	class Multiton {
 	public:
-		static typename std::map<ID, T>::iterator Begin() {
+		static typename std::map<ID_T, T>::iterator Begin() {
 			return instances.begin();
 		}
 
-		static typename std::map<ID, T>::iterator End() {
+		static typename std::map<ID_T, T>::iterator End() {
 			return instances.end();
 		}
 
@@ -36,8 +36,8 @@ namespace tec {
 			return instances.size();
 		}
 
-		static typename std::vector<ID>& Keys() {
-			static std::vector<ID> keys;
+		static typename std::vector<ID_T>& Keys() {
+			static std::vector<ID_T> keys;
 			if (keys.size() != instances.size()) {
 				keys.clear();
 				for (auto pair : instances) {
@@ -55,7 +55,7 @@ namespace tec {
 		* \param[in] const ID The ID of the instance to get.
 		* \return T The ID's instance or the default one.
 		*/
-		static T Get(const ID id) {
+		static T Get(const ID_T id) {
 			if (instances.find(id) != instances.end()) {
 				return instances.at(id);
 			}
@@ -63,7 +63,7 @@ namespace tec {
 		}
 
 
-		static bool Has(const ID id) {
+		static bool Has(const ID_T id) {
 			return instances.find(id) != instances.end();
 		}
 
@@ -74,7 +74,7 @@ namespace tec {
 		* \param[in] T instance The ID's instance.
 		* \return void
 		*/
-		static void Set(const ID id, T instance) {
+		static void Set(const ID_T id, T instance) {
 			instances[id] = instance;
 		}
 
@@ -84,20 +84,20 @@ namespace tec {
 		* \param[in] const ID id The ID of the instance to remove.
 		* \return void
 		*/
-		static void Remove(const ID id) {
+		static void Remove(const ID_T id) {
 			instances.erase(id);
 		}
 	protected:
 		static T default_value; // Default instance.
 
 		// TODO: Replace this with a weak_ptr to allow pruning?
-		static std::map<ID, T> instances; // Mapping of ID to instance.
+		static std::map<ID_T, T> instances; // Mapping of ID to instance.
 	};
 
 
-	template <typename ID, typename T>
-	std::map<ID, T> Multiton<ID, T>::instances;
+	template <typename ID_T, typename T>
+	std::map<ID_T, T> Multiton<ID_T, T>::instances;
 
-	template <typename ID, typename T>
-	T Multiton<ID, T>::default_value;
+	template <typename ID_T, typename T>
+	T Multiton<ID_T, T>::default_value;
 }

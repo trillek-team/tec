@@ -20,34 +20,34 @@
 namespace tec {
 	using namespace trillek::computer;
 
-	Computer::Computer() : rom(new std::uint8_t[32 * 1024]), rom_size(0) { }
+	Computer::Computer() : rom(new std::uint8_t[32 * 1024]), rom_size(0) {}
 
 	void Computer::In(const proto::Component& source) {
 		const proto::Computer& comp = source.computer();
 		const proto::Computer::CPU& cpu = comp.cpu();
 		switch (cpu.cpu_case()) {
 			case proto::Computer::CPU::kTr3200:
-            {
-                const proto::Computer::CPU::TR3200 &tr3200 = cpu.tr3200();
-                TR3200State state;
-                for (int i = 0; i < tr3200.registers_size(); ++i) {
-                    state.r[i] = tr3200.registers(i);
-                }
-                state.pc = tr3200.pc();
-                state.wait_cycles = tr3200.wait_cycles();
-                state.int_msg = tr3200.int_msg();
-                state.interrupt = tr3200.interrupt();
-                state.step_mode = tr3200.step_mode();
-                state.skiping = tr3200.skiping();
-                state.sleeping = tr3200.sleeping();
-                std::unique_ptr <TR3200> trcpu = std::make_unique<TR3200>();
-                this->vc.SetCPU(std::move(trcpu));
-                this->vc.On();
-                this->vc.SetState(&state, sizeof(TR3200State));
-            }
-				break;
+			{
+				const proto::Computer::CPU::TR3200& tr3200 = cpu.tr3200();
+				TR3200State state;
+				for (int i = 0; i < tr3200.registers_size(); ++i) {
+					state.r[i] = tr3200.registers(i);
+				}
+				state.pc = tr3200.pc();
+				state.wait_cycles = tr3200.wait_cycles();
+				state.int_msg = static_cast<trillek::Word>(tr3200.int_msg());
+				state.interrupt = tr3200.interrupt();
+				state.step_mode = tr3200.step_mode();
+				state.skiping = tr3200.skiping();
+				state.sleeping = tr3200.sleeping();
+				std::unique_ptr <TR3200> trcpu = std::make_unique<TR3200>();
+				this->vc.SetCPU(std::move(trcpu));
+				this->vc.On();
+				this->vc.SetState(&state, sizeof(TR3200State));
+			}
+			break;
 			case proto::Computer::CPU::CPU_NOT_SET:
-				break;
+			break;
 
 		}
 		std::string buf = comp.ram();
@@ -59,15 +59,15 @@ namespace tec {
 			const proto::Computer::Device& device = comp.devices(i);
 			switch (device.device_case()) {
 				case proto::Computer::Device::kComputerScreen:
-					{
-						std::shared_ptr<ComputerScreen> screen = std::make_shared<ComputerScreen>();
-						screen->In(device);
-						this->vc.AddDevice(device.slot(), screen->device);
-						this->devices[device.slot()] = screen;
-					}
-					break;
-                case proto::Computer::Device::DEVICE_NOT_SET:
-					break;
+				{
+					std::shared_ptr<ComputerScreen> screen = std::make_shared<ComputerScreen>();
+					screen->In(device);
+					this->vc.AddDevice(device.slot(), screen->device);
+					this->devices[device.slot()] = screen;
+				}
+				break;
+				case proto::Computer::Device::DEVICE_NOT_SET:
+				break;
 			}
 		}
 	}
@@ -116,11 +116,11 @@ namespace tec {
 		}*/
 		state.buffer_ptr = comp.buffer_ptr();
 		state.font_ptr = comp.font_ptr();
-		state.vsync_msg = comp.vsync_msg();
-		state.a = comp.a();
-		state.b = comp.b();
-		state.d = comp.d();
-		state.e = comp.e();
+		state.vsync_msg = static_cast<trillek::Word>(comp.vsync_msg());
+		state.a = static_cast<trillek::Word>(comp.a());
+		state.b = static_cast<trillek::Word>(comp.b());
+		state.d = static_cast<trillek::Word>(comp.d());
+		state.e = static_cast<trillek::Word>(comp.e());
 		std::size_t state_size = sizeof(tda::TDAState);
 		this->device->SetState(&state, state_size);
 	}
@@ -149,15 +149,15 @@ namespace tec {
 		this->device = std::make_shared<gkeyboard::GKeyboardDev>();
 	}
 
-	void ComputerKeyboard::In(const proto::Computer::Device& source) { }
+	void ComputerKeyboard::In(const proto::Computer::Device&) {}
 
-	void ComputerKeyboard::Out(proto::Computer::Device* target) { }
+	void ComputerKeyboard::Out(proto::Computer::Device*) {}
 
 	VComputerSystem::VComputerSystem() {
 		_log = spdlog::get("console_log");
 	};
 
-	VComputerSystem::~VComputerSystem() { }
+	VComputerSystem::~VComputerSystem() = default;
 
 	void VComputerSystem::SetDevice(const eid entity_id, const unsigned int slot, std::shared_ptr<DeviceBase> device) {
 		if (this->computers.find(entity_id) != this->computers.end()) {
@@ -178,7 +178,7 @@ namespace tec {
 		}
 	}
 
-	void VComputerSystem::Update(double delta) {
+	void VComputerSystem::Update(double _delta) {
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		for (auto computer_itr = ComputerComponentMap::Begin(); computer_itr != ComputerComponentMap::End(); ++computer_itr) {
@@ -187,31 +187,31 @@ namespace tec {
 			}
 		}
 		ProcessCommandQueue();
-		this->delta = delta;
+		this->delta = _delta;
 		tda::TDAScreen screen;
-//		static PixelBuffer local_pbuffer(320, 240, 8, ImageColorMode::COLOR_RGBA);
+		//		static PixelBuffer local_pbuffer(320, 240, 8, ImageColorMode::COLOR_RGBA);
 		for (const auto& comp : this->computers) {
 			std::shared_ptr<ComputerScreen> comp_screen = std::static_pointer_cast<ComputerScreen>(comp.second->devices[5]);
-			comp.second->vc.Update(delta);
-// #ifdef CLIENT_STANDALONE
-// 			std::static_pointer_cast<tda::TDADev>(comp_screen->device)->DumpScreen(screen);
-// 			tda::TDAtoRGBATexture(screen, (std::uint32_t*)local_pbuffer.LockWrite());
-// 			local_pbuffer.UnlockWrite();
-// 			if (comp_screen->texture) {
-// 				comp_screen->texture->Load(local_pbuffer);
-// 			}
-// 			else {
-// 				Entity screen_entity(comp.first);
-// 				if (screen_entity.Has<Renderable>()) {
-// 					Renderable* ren = screen_entity.Get<Renderable>();
-// 					if (ren->buffer) {
-// 						if (ren->buffer->GetVertexGroupCount() > 0) {
-// 							comp_screen->texture = ren->buffer->GetVertexGroup(0)->material->GetTexutre(0);
-// 						}
-// 					}
-// 				}
-// 			}
-// #endif
+			comp.second->vc.Update(this->delta);
+			// #ifdef CLIENT_STANDALONE
+			// 			std::static_pointer_cast<tda::TDADev>(comp_screen->device)->DumpScreen(screen);
+			// 			tda::TDAtoRGBATexture(screen, (std::uint32_t*)local_pbuffer.LockWrite());
+			// 			local_pbuffer.UnlockWrite();
+			// 			if (comp_screen->texture) {
+			// 				comp_screen->texture->Load(local_pbuffer);
+			// 			}
+			// 			else {
+			// 				Entity screen_entity(comp.first);
+			// 				if (screen_entity.Has<Renderable>()) {
+			// 					Renderable* ren = screen_entity.Get<Renderable>();
+			// 					if (ren->buffer) {
+			// 						if (ren->buffer->GetVertexGroupCount() > 0) {
+			// 							comp_screen->texture = ren->buffer->GetVertexGroup(0)->material->GetTexutre(0);
+			// 						}
+			// 					}
+			// 				}
+			// 			}
+			// #endif
 		}
 	}
 
@@ -248,7 +248,7 @@ namespace tec {
 	void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 		std::shared_ptr<gkeyboard::GKeyboardDev> active_keybaord;
 		for (auto keyboard_itr = KeyboardComponentMap::Begin();
-			keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
+			 keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
 			if (keyboard_itr->second->has_focus) {
 				active_keybaord = std::static_pointer_cast<gkeyboard::GKeyboardDev>(keyboard_itr->second->device);
 			}
@@ -256,21 +256,21 @@ namespace tec {
 		if (active_keybaord) {
 			switch (data->action) {
 				case KeyboardEvent::KEY_DOWN:
-					if (data->key == GLFW_KEY_ESCAPE) {
-						if (KeyboardComponentMap::Has(active_entity)) {
-							KeyboardComponentMap::Get(active_entity)->has_focus = false;
-						}
+				if (data->key == GLFW_KEY_ESCAPE) {
+					if (KeyboardComponentMap::Has(active_entity)) {
+						KeyboardComponentMap::Get(active_entity)->has_focus = false;
 					}
-					else if (data->key == GLFW_KEY_BACKSPACE) {
-						active_keybaord->SendKeyEvent(data->scancode, gkeyboard::KEY_BACKSPACE,
-							gkeyboard::KEY_MODS::KEY_MOD_NONE);
-					}
-					else {
-						active_keybaord->SendKeyEvent(data->scancode, data->key,
-							gkeyboard::KEY_MODS::KEY_MOD_NONE);
-					}
+				}
+				else if (data->key == GLFW_KEY_BACKSPACE) {
+					active_keybaord->SendKeyEvent(static_cast<trillek::Word>(data->scancode), gkeyboard::KEY_BACKSPACE,
+												  gkeyboard::KEY_MODS::KEY_MOD_NONE);
+				}
+				else {
+					active_keybaord->SendKeyEvent(static_cast<trillek::Word>(data->scancode), static_cast<unsigned char>(data->key),
+												  gkeyboard::KEY_MODS::KEY_MOD_NONE);
+				}
 				default:
-					break;
+				break;
 			}
 		}
 	}
@@ -278,7 +278,7 @@ namespace tec {
 	void VComputerSystem::On(std::shared_ptr<MouseBtnEvent> data) {
 		if (data->action == MouseBtnEvent::DOWN && data->button == MouseBtnEvent::LEFT) {
 			for (auto keyboard_itr = KeyboardComponentMap::Begin();
-				keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
+				 keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
 				if (keyboard_itr->first == active_entity) {
 					keyboard_itr->second->has_focus = true;
 				}

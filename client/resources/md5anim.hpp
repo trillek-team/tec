@@ -48,7 +48,7 @@ namespace tec {
 
 		struct FrameSkeleton {
 			std::vector<SkeletonJoint> skeleton_joints;
-			std::vector<glm::mat4> bone_matricies;
+			std::vector<glm::mat4> bone_matrices;
 		};
 
 		struct Frame {
@@ -93,8 +93,8 @@ namespace tec {
 			return this->name;
 		}
 		
-		void SetName(const std::string& name) {
-			this->name = name;
+		void SetName(const std::string& _name) {
+			this->name = _name;
 		}
 		
 		/**

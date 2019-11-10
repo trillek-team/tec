@@ -66,7 +66,7 @@ FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count)
 
 FilePath::FilePath(const std::wstring& other, std::size_t pos, std::size_t count) {
 	auto ustr = tec::utf8_encode(other);
-	this->path = ustr;
+	this->path = ustr.substr(pos, count);
 	this->NormalizePath();
 }
 
@@ -99,7 +99,7 @@ FilePath FilePath::GetUserSettingsPath() {
 	ret += PATH_SEPARATOR;
 
 #elif defined(WIN32)
-	LPWSTR wszPath = NULL;
+	LPWSTR wszPath = nullptr;
 
 	if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &wszPath))) {
 		return FilePath();
@@ -185,7 +185,7 @@ FilePath FilePath::GetUserCachePath() {
 	path /= app_name;
 	path += PATH_SEPARATOR;
 #elif defined(WIN32)
-	LPWSTR wszPath = NULL;
+	LPWSTR wszPath = nullptr;
 
 	if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &wszPath))) {
 		return FilePath();
@@ -396,7 +396,7 @@ FilePath FilePath::GetProgramPath() {
 #elif defined(WIN32)
 	//LPWSTR buffer; //or wchar_t * buffer;
 	wchar_t buffer[MAX_PATH];
-	if (0 == GetModuleFileNameW(NULL, buffer, MAX_PATH)) {
+	if (0 == GetModuleFileNameW(nullptr, buffer, MAX_PATH)) {
 		return FilePath();
 	}
 	std::wstring wstr(buffer);

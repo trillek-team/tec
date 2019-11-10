@@ -9,7 +9,7 @@ namespace tec {
 	public:
 		virtual ~AbstractWindow() {}
 
-		virtual void Update(double delta) {};
+		virtual void Update(double) {};
 
 		virtual void Draw() = 0;
 		

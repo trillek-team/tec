@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "server.hpp"
@@ -14,7 +14,7 @@ using asio::ip::tcp;
 
 namespace tec {
 	namespace networking {
-		const int SERVER_PORT = 0xa10c;
+		unsigned short SERVER_PORT = 0xa10c;
 		std::mutex Server::recent_msgs_mutex;
 
 		Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
@@ -56,8 +56,8 @@ namespace tec {
 			UnlockClientList();
 
 			// Notify other clients that a client left.
-			for (auto client : this->clients) {
-				client->OnClientLeave(leaving_client_id);
+			for (auto _client : this->clients) {
+				_client->OnClientLeave(leaving_client_id);
 			}
 		}
 

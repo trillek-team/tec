@@ -18,7 +18,8 @@ message OrientationCommand {
 
 message ClientCommands {
 	required uint64 id = 1;
-	optional MovementCommand movement = 2;
-	optional OrientationCommand orientation = 3;
-	repeated string commandList = 4;
+	required uint64 commandID = 2;
+	optional MovementCommand movement = 3;
+	optional OrientationCommand orientation = 4;
+	repeated string commandList = 5;
 }

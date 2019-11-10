@@ -16,7 +16,7 @@ namespace tec {
 
 	// Vertex data used for rendering or other purposes.
 	struct VertexData {
-		VertexData() : position(0.0f, 0.0f, 0.0f), color(0.0f, 0.0f, 0.0f, 1.0f) { }
+		VertexData() : position(0.0f, 0.0f, 0.0f), color(1.0f, 1.0f, 1.0f, 1.0f) { }
 		VertexData(double x, double y, double z, double r, double g, double b, double u = 0.0, double v = 0.0) :
 			position(x, y, z), color(r, g, b, 1.0f), uv(u, v) { }
 		glm::vec3 position;
@@ -108,8 +108,8 @@ namespace tec {
 		const std::string GetName() const {
 			return this->name;
 		}
-		void SetName(const std::string& name) {
-			this->name = name;
+		void SetName(const std::string& _name) {
+			this->name = _name;
 		}
 
 		bool IsDirty() const {

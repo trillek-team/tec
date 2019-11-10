@@ -13,17 +13,10 @@ include_directories(${LUA_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIR})
 include_directories(${trillek_BINARY_DIR}/common) # Protobuf files are here
 include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
-include_directories(${trillek_SOURCE_DIR}/deps/spdlog/include)
 include_directories(${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 protobuf_generate_cpp(COMPONENTS_SOURCES COMPONENTS_HEADERS ${trillek-common_SOURCE_DIR}/proto/components.proto)
 protobuf_generate_cpp(GAME_STATE_SOURCES GAME_STATE_HEADERS ${trillek-common_SOURCE_DIR}/proto/game_state.proto)
 protobuf_generate_cpp(COMMANDS_SOURCES COMMANDS_HEADERS ${trillek-common_SOURCE_DIR}/proto/commands.proto)
-
-set(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - static version")
-set(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
-set(BUILD_TOOLS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tools")
-set(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
-add_subdirectory(${trillek_SOURCE_DIR}/deps/trillek-vcomputer ${trillek_BINARY_DIR}/deps/trillek-vcomputer)
 
 set(trillek-common_LIBRARY "tec" CACHE STRING "Name of the library with code common to both the client and the server")
 set(trillek-common_SOURCES
