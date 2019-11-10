@@ -12,7 +12,7 @@ for:
       - image: Ubuntu
   install:
     - git submodule update --init
-    - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev -y
+    - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev -y
     - sh: git clone https://github.com/Microsoft/vcpkg.git
     - sh: cd vcpkg
     - sh: ./bootstrap-vcpkg.sh

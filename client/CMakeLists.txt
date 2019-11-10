@@ -58,6 +58,9 @@ set(OSX_LIBRARIES "")
 if (APPLE)
 	set(OSX_LIBRARIES "/usr/lib/libobjc.dylib")
 endif (APPLE)
+if (UNIX AND NOT APPLE)
+	find_package(X11 REQUIRED)
+endif (UNIX AND NOT APPLE)
 
 add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCES})
 if (MSVC)
@@ -67,4 +70,4 @@ else ()
 endif ()
 target_link_libraries(${trillek-client_PROGRAM} ${trillek-common_LIBRARY}
 	${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} ${OPENGL_gl_LIBRARY}
-	${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${GLEW_LIBRARIES} ${OSX_LIBRARIES} VCOMPUTER_STATIC)
+	${GLFW_LIBRARY} ${OPENAL_LIBRARY} ${GLEW_LIBRARIES} ${X11_LIBRARIES} ${OSX_LIBRARIES} VCOMPUTER_STATIC)
