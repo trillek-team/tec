@@ -5,32 +5,29 @@ image:
   - Visual Studio 2019
 configuration: Release
 clone_depth: 1
-install:
-  - git submodule update --init
 for:
 -
   matrix:
     only:
       - image: Ubuntu
   install:
+    - git submodule update --init
     - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev -y
     - sh: git clone https://github.com/Microsoft/vcpkg.git
     - sh: cd vcpkg
     - sh: ./bootstrap-vcpkg.sh
-    - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog pthreads
+    - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
     - sh: cd ..
   before_build:
-    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug ..
+    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug ..
   build_script:
-    - make -d -k
-  on_finish:
-    - sh: export APPVEYOR_SSH_BLOCK=true
-    - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
+    - make
 -
    matrix:
      only:
        - image: Visual Studio 2019
    install:
+     - git submodule update --init
      - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows
      - cmd: mkdir build
      - cmd: cd build
