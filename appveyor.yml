@@ -28,7 +28,7 @@ for:
        - image: Visual Studio 2019
    install:
      - git submodule update --init
-     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows-static
+     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows
      - cmd: mkdir build
      - cmd: cd build
    before_build:
