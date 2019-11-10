@@ -1,8 +1,8 @@
 version: 0.1 b{build}
 skip_tags: true
 image:
-  - Ubuntu
   - Visual Studio 2019
+  - Ubuntu
 configuration: Release
 clone_depth: 1
 for:
@@ -28,11 +28,11 @@ for:
        - image: Visual Studio 2019
    install:
      - git submodule update --init
-     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows
+     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows-static
      - cmd: mkdir build
      - cmd: cd build
    before_build:
-     - cmake -G "Visual Studio 16 2019" -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+     - cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
    build:
      project: .\build\trillek.sln
      verbosity: minimal
