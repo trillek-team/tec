@@ -7,30 +7,35 @@ configuration: Release
 clone_depth: 1
 install:
   - git submodule update --init
-  - sh: sudo apt-get install libx11-dev libgl1-mesa-dev xorg-dev libglu1-mesa-dev -y
-  - sh: git clone https://github.com/Microsoft/vcpkg.git
-  - sh: cd vcpkg
-  - sh: ./bootstrap-vcpkg.sh
-  - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
-  - sh: cd ..
-  - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
-  - cmd: mkdir build
-  - cmd: cd build
 for:
 -
   matrix:
     only:
       - image: Ubuntu
+  install:
+    - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev -y
+    - sh: git clone https://github.com/Microsoft/vcpkg.git
+    - sh: cd vcpkg
+    - sh: ./bootstrap-vcpkg.sh
+    - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
+    - sh: cd ..
   before_build:
-    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release ..
   build_script:
-    - make
+    - make -d -k
+  on_finish:
+    - sh: export APPVEYOR_SSH_BLOCK=true
+    - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
 -
    matrix:
      only:
        - image: Visual Studio 2019
+   install:
+     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows
+     - cmd: mkdir build
+     - cmd: cd build
    before_build:
-     - cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+     - cmake -G "Visual Studio 16 2019" -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
    build:
      project: .\build\trillek.sln
      verbosity: minimal
