@@ -279,11 +279,11 @@ namespace tec {
 		*/
 		void DispatchFileDropEvent(const int count, const char** paths);
 
-		GLFWwindow* window;
+		GLFWwindow* window{ nullptr };
 		static GLFWwindow* focused_window; // The window that currently has focus.
-		int client_width, client_height; // Current window's client width and height.
-		double old_mouse_x, old_mouse_y;
-		double last_time; // The time at the last call to GetDeltaTime().
-		bool mouse_lock; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
+		int client_width{ 0 }, client_height{ 0 }; // Current window's client width and height.
+		double old_mouse_x{ 0 }, old_mouse_y{ 0 };
+		double last_time{ 0 }; // The time at the last call to GetDeltaTime().
+		bool mouse_lock{ false }; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
 	};
 }

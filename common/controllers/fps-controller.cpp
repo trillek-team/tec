@@ -11,6 +11,13 @@
 
 namespace tec {
 	void FPSController::Update(double delta, GameState& state, EventList& commands) {
+		if (!this->orientation && state.orientations.find(entity_id) != state.orientations.end()) {
+			this->orientation = std::make_unique<Orientation>(state.orientations[entity_id]);
+			
+		}
+		if (!this->orientation) {
+			return;
+		}
 		this->current_delta = delta;
 		for (const KeyboardEvent& key_event : commands.keyboard_events) {
 			Handle(key_event, state);
@@ -30,7 +37,7 @@ namespace tec {
 			this->forward = true;
 		}
 		else if (this->KEY_S_DOWN || this->backward) {
-			forward = 1;
+			forwardDirection = 1;
 			this->backward = true;
 		}
 		if ((this->KEY_A_DOWN && this->KEY_A_FIRST) || this->left_strafe) {
@@ -43,10 +50,10 @@ namespace tec {
 		}
 
 		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			state.orientations[entity_id] = this->orientation;
+			state.orientations[entity_id] = *this->orientation;
 		}
 
-		state.velocities[entity_id].linear = glm::vec4(this->orientation.value * glm::vec3(3.0 * strafeDirection, 0.0, 7.5 * forwardDirection), 1.0);
+		state.velocities[entity_id].linear = glm::vec4(this->orientation->value * glm::vec3(5.0 * strafeDirection, 0.0, 7.5 * forwardDirection), 1.0);
 	}
 
 	proto::ClientCommands FPSController::GetClientCommands() {
@@ -89,11 +96,21 @@ namespace tec {
 			}
 			movement_command->set_rightstrafe(true);
 		}
-		auto _orientation = proto_client_commands.mutable_orientation();
-		_orientation->set_x(this->orientation.value.x);
-		_orientation->set_y(this->orientation.value.y);
-		_orientation->set_z(this->orientation.value.z);
-		_orientation->set_w(this->orientation.value.w);
+		if (!movement_command) {
+			movement_command = proto_client_commands.mutable_movement();
+			movement_command->set_forward(false);
+			movement_command->set_backward(false);
+			movement_command->set_leftstrafe(false);
+			movement_command->set_rightstrafe(false);
+		}
+
+		if (this->orientation) {
+			auto _orientation = proto_client_commands.mutable_orientation();
+			_orientation->set_x(this->orientation->value.x);
+			_orientation->set_y(this->orientation->value.y);
+			_orientation->set_z(this->orientation->value.z);
+			_orientation->set_w(this->orientation->value.w);
+		}
 		return std::move(proto_client_commands);
 	}
 
@@ -111,11 +128,13 @@ namespace tec {
 			this->left_strafe = false;
 			this->right_strafe = false;
 		}
-		const proto::OrientationCommand& orientation_command = proto_client_commands.orientation();
-		this->orientation.value.x = orientation_command.x();
-		this->orientation.value.y = orientation_command.y();
-		this->orientation.value.z = orientation_command.z();
-		this->orientation.value.w = orientation_command.w();
+		if (this->orientation && proto_client_commands.has_orientation()) {
+			const proto::OrientationCommand& orientation_command = proto_client_commands.orientation();
+			this->orientation->value.x = orientation_command.x();
+			this->orientation->value.y = orientation_command.y();
+			this->orientation->value.z = orientation_command.z();
+			this->orientation->value.w = orientation_command.w();
+		}
 	}
 
 	void FPSController::Handle(const KeyboardEvent& data, const GameState&) {
@@ -203,12 +222,12 @@ namespace tec {
 		if (change_x != 0) {
 			glm::quat rotX = glm::angleAxis(static_cast<float>(glm::radians(change_x * -50.0f * this->current_delta)),
 											glm::vec3(0.0, 1.0, 0.0));
-			this->orientation.value = rotX * this->orientation.value;
+			this->orientation->value = rotX * this->orientation->value;
 		}
 		if (change_y != 0) {
 			glm::quat rotY = glm::angleAxis(static_cast<float>(glm::radians(change_y * -10.0f * this->current_delta)),
 											glm::vec3(1.0, 0.0, 0.0));
-			this->orientation.value = this->orientation.value * rotY;
+			this->orientation->value = this->orientation->value * rotY;
 		}
 	}
 }

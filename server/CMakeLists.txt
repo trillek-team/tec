@@ -1,6 +1,6 @@
 # Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 # Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.9)
 project(trillek-server)
 
 include_directories(${BULLET_INCLUDE_DIR})
@@ -10,8 +10,6 @@ include_directories(${trillek_SOURCE_DIR})
 include_directories(${trillek_SOURCE_DIR}/deps/spdlog/include)
 include_directories(${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 include_directories(${trillek-proto-INCLUDE_DIR})
-
-add_definitions(-DASIO_STANDALONE)
 
 if (WIN32)
 	set(trillek-server_PROGRAM "trillek-server")

@@ -79,7 +79,7 @@ namespace tec {
 			if (state.orientations.find(entity_id) != state.orientations.end()) {
 				glm::quat orientation = state.orientations.at(entity_id).value;
 				if (std::isfinite(orientation.x) && std::isfinite(orientation.y) && std::isfinite(orientation.z) && std::isfinite(orientation.w)) {
-					collidable->motion_state.transform.getBasis().setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+					collidable->motion_state.transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 				}
 			}
 

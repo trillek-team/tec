@@ -181,6 +181,7 @@ int main(int argc, char* argv[]) {
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	tec::state_id_t command_id = 0;
+
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();

@@ -35,14 +35,14 @@ namespace tec {
 		}
 		Orientation(glm::quat q) : value(q), rotation(glm::eulerAngles(q)) {}
 		Orientation() = default;
-		void Rotate(const glm::vec3 amount = glm::vec3(0.0));
+		void Rotate(const glm::vec3 amount = glm::vec3(0.0f));
 
 		// Adds the rotation amount based on the current orientation.
 		void OrientedRotate(const glm::vec3 amount);
 
-		glm::quat value{ 0,0,0,0 };
-		glm::vec3 rotation{ 0,0,0 };
-		glm::vec3 rotation_offset{ 0,0,0 };
+		glm::quat value{ 0.f,0.f,0.f,1.f };
+		glm::vec3 rotation{ 0.f,0.f,0.f };
+		glm::vec3 rotation_offset{ 0.f,0.f,0.f };
 
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);

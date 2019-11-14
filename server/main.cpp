@@ -70,7 +70,7 @@ int main() {
 					tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetBaseState());
 					full_state.state_id = current_state_id;
 					tec::proto::GameStateUpdate full_state_update;
-					full_state_update.set_command_id(0);
+					full_state_update.set_command_id(current_state_id);
 					full_state.Out(&full_state_update);
 					tec::networking::ServerMessage full_state_update_message;
 					full_state_update_message.SetStateID(current_state_id);

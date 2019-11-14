@@ -118,7 +118,7 @@ namespace tec {
 		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
 			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
 		};
-		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_pl_shader_files);
+		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_stencil_shader_files);
 
 		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
 			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")),

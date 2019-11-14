@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -18,11 +18,9 @@ namespace tec {
 			GBUFFER_TEXTURE_TYPE_POSITION,
 			GBUFFER_TEXTURE_TYPE_DIFFUSE,
 			GBUFFER_TEXTURE_TYPE_NORMAL,
-			GBUFFER_TEXTURE_TYPE_TEXCOORD,
 			GBUFFER_NUM_TEXTURES
 		};
 		enum GBUFFER_DEPTH_TYPE {
-			GBUFFER_DEPTH_TYPE_SHADOW,
 			GBUFFER_DEPTH_TYPE_STENCIL
 		};
 
@@ -36,12 +34,24 @@ namespace tec {
 		void ResizeDepthAttachment(const unsigned int width, const unsigned int height);
 		bool CheckCompletion() const;
 		void StartFrame();
-		void ShadowPass();
-		void GeometyPass();
+
+		void BeginGeometryPass();
+		void EndGeometryPass();
+
 		void StencilPass();
-		void LightPass(GLuint external_shadow_map_texture);
+
+		void BeginLightPass();
+
+		void BeginDirLightPass();
+
+		void BeginPointLightPass();
+		void EndPointLightPass();
+
 		void FinalPass();
+
+		void BindForWriting() const;
 		void BindForRendering() const;
+
 		void SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) const;
 
 		GLuint GetDepthTexture() const {

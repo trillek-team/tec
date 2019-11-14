@@ -13,9 +13,9 @@ namespace tec {
 	// TODO: Create Controller system that calls update on all controller
 	// instances.
 	struct Controller {
-		Controller(eid entity_id) : entity_id(entity_id) { }
+		Controller(eid entity_id) : entity_id(entity_id) {}
 
-		virtual void Update(double, GameState&, EventList&) { }
+		virtual void Update(double, GameState&, EventList&) {}
 
 		virtual ~Controller() = default;
 
@@ -36,8 +36,7 @@ namespace tec {
 		void Handle(const MouseBtnEvent& data, const GameState& state);
 		void Handle(const MouseMoveEvent& data, const GameState& state);
 
-		void Update(double delta, GameState& state,
-			EventList& commands);
+		void Update(double delta, GameState& state, EventList& commands);
 
 		proto::ClientCommands GetClientCommands();
 
@@ -49,7 +48,7 @@ namespace tec {
 		double current_delta = 0.0;
 		bool mouse_look = false;
 
-		Orientation orientation;
+		std::unique_ptr<Orientation> orientation;
 
 		// These tell us which was pressed first.
 		bool KEY_A_FIRST = false;
