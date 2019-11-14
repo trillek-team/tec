@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -49,9 +49,8 @@ namespace tec {
 	private:
 		std::shared_ptr<spdlog::logger> _log;
 
-		void ShadowPass();
 		void GeometryPass();
-		void PointLightPass();
+		void BeginPointLightPass();
 		void DirectionalLightPass();
 		void FinalPass();
 		void RenderGbuffer();
@@ -68,7 +67,6 @@ namespace tec {
 		std::shared_ptr<Shader> default_shader;
 
 		GBuffer light_gbuffer;
-		GBuffer shadow_gbuffer;
 		VertexBufferObject sphere_vbo; // Used for rendering point lights.
 		VertexBufferObject quad_vbo; // Used for rendering directional lights.
 

@@ -2,6 +2,7 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "render-system.hpp"
+#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <spdlog/spdlog.h>
@@ -64,10 +65,6 @@ namespace tec {
 			_log->error("[RenderSystem] Failed to create Light GBuffer.");
 		}
 
-		this->shadow_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_SHADOW, 4096, 4096);
-		if (!this->shadow_gbuffer.CheckCompletion()) {
-			_log->error("[RenderSystem] Failed to create Shadow GBuffer.");
-		}
 		std::uint8_t tmp_buff[] = {
 #include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
 		};
@@ -109,92 +106,23 @@ namespace tec {
 		UpdateRenderList(delta, state);
 		this->light_gbuffer.StartFrame();
 
-		// Set the common states here that hold don't change often.
-		glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		glDisable(GL_BLEND);
-
-		ShadowPass();
-		// The shadow pass changes the viewport.
-		glViewport(0, 0, this->window_width, this->window_height);
-
 		GeometryPass();
 
-		// More common state changes.
-		glDepthMask(GL_FALSE);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+		this->light_gbuffer.BeginLightPass();
 		glEnable(GL_STENCIL_TEST);
-		PointLightPass();
+		BeginPointLightPass();
 		glDisable(GL_STENCIL_TEST);
+		glDisable(GL_BLEND);
 		DirectionalLightPass();
+
 		FinalPass();
 		//RenderGbuffer();
 	}
 
-	void RenderSystem::ShadowPass() {
-		this->shadow_gbuffer.ShadowPass();
-
-		std::shared_ptr<Shader> def_shader = ShaderMap::Get("deferred_shadow");
-		def_shader->Use();
-
-		glm::mat4 camera_matrix(1.0);
-		{
-			View* view = this->current_view;
-			if (view) {
-				camera_matrix = view->view_matrix;
-			}
-		}
-
-		GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
-		GLint animated_loc = def_shader->GetUniformLocation("animated");
-		GLint model_index = def_shader->GetUniformLocation("model");
-		GLint depthMVP_index = def_shader->GetUniformLocation("depthMVP");
-
-		glm::mat4 depthProjectionMatrix = glm::ortho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
-		glm::mat4 depthModelMatrix = glm::mat4(1.0);
-
-		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
-			DirectionalLight* light = itr->second;
-			glm::vec3 lightInvDir = light->direction * -1.0f;
-
-			// Compute the MVP matrix from the light's point of view
-			glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0));
-			glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
-
-			// Send our transformation to the currently bound shader,
-			// in the "MVP" uniform
-			glUniformMatrix4fv(depthMVP_index, 1, GL_FALSE, glm::value_ptr(depthMVP));
-			for (auto shader_list : this->render_item_list) {
-				for (auto render_item : shader_list.second) {
-					glBindVertexArray(render_item.vao);
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
-					glUniform1i(animated_loc, 0);
-					if (render_item.animated) {
-						glUniform1i(animated_loc, 1);
-						auto& animmatricies = render_item.animation->bone_matrices;
-						glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
-					}
-					for (VertexGroup* vertex_group : *render_item.vertex_groups) {
-						glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
-						glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
-					}
-				}
-			}
-		}
-		def_shader->UnUse();
-		glBindVertexArray(0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-
 	void RenderSystem::GeometryPass() {
-		this->light_gbuffer.GeometyPass();
+		this->light_gbuffer.BeginGeometryPass();
 
-
-		glm::mat4 camera_matrix(1.0);
+		glm::mat4 camera_matrix(1.0f);
 		{
 			View* view = this->current_view;
 			if (view) {
@@ -204,18 +132,20 @@ namespace tec {
 
 		std::shared_ptr<Shader> def_shader = ShaderMap::Get("deferred");
 		def_shader->Use();
-
 		glUniformMatrix4fv(def_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
+		glUniform1i(def_shader->GetUniformLocation("gColorMap"),0);
 		GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
 		GLint animated_loc = def_shader->GetUniformLocation("animated");
 		GLint model_index = def_shader->GetUniformLocation("model");
 		for (auto shader_list : this->render_item_list) {
 			// Check if we need to use a specific shader and set it up.
 			if (shader_list.first) {
+				def_shader->UnUse();
 				shader_list.first->Use();
 				glUniformMatrix4fv(shader_list.first->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 				glUniformMatrix4fv(shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
+				glUniform1i(shader_list.first->GetUniformLocation("gColorMap"), 0);
 				animatrix_loc = shader_list.first->GetUniformLocation("animation_matrix");
 				animated_loc = shader_list.first->GetUniformLocation("animated");
 				model_index = shader_list.first->GetUniformLocation("model");
@@ -239,37 +169,37 @@ namespace tec {
 			}
 			// If we used a special shader set things back to the deferred shader.
 			if (shader_list.first) {
+				shader_list.first->UnUse();
+				def_shader->Use();
 				animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
 				animated_loc = def_shader->GetUniformLocation("animated");
 				model_index = def_shader->GetUniformLocation("model");
-				shader_list.first->UnUse();
-				def_shader->Use();
 			}
 		}
 		def_shader->UnUse();
 		glBindVertexArray(0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		this->light_gbuffer.EndGeometryPass();
 	}
 
-	void RenderSystem::PointLightPass() {
-		this->light_gbuffer.LightPass(this->shadow_gbuffer.GetDepthTexture());
+	void RenderSystem::BeginPointLightPass() {
 
-		std::shared_ptr<Shader> def_pl_shader = ShaderMap::Get("deferred_pointlight");
-		def_pl_shader->Use();
-
-		glm::mat4 camera_matrix(1.0);
+		glm::mat4 camera_matrix(1.0f);
 		{
 			View* view = this->current_view;
 			if (view) {
 				camera_matrix = view->view_matrix;
 			}
 		}
+
+		std::shared_ptr<Shader> def_pl_shader = ShaderMap::Get("deferred_pointlight");
+		def_pl_shader->Use();
 		glUniformMatrix4fv(def_pl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniformMatrix4fv(def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
 		glUniform1i(def_pl_shader->GetUniformLocation("gPositionMap"), GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
 		glUniform1i(def_pl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glUniform1i(def_pl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-		glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), (GLfloat) this->window_width, (GLfloat) this->window_height);
+		glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), (GLfloat)this->window_width, (GLfloat)this->window_height);
 		GLint model_index = def_pl_shader->GetUniformLocation("model");
 		GLint Color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
 		GLint AmbientIntensity_index = def_pl_shader->GetUniformLocation("gPointLight.Base.AmbientIntensity");
@@ -318,28 +248,32 @@ namespace tec {
 			def_stencil_shader->UnUse();
 
 			// Change state for light pass after the stencil pass. Stencil pass must happen for each light.
-			this->light_gbuffer.LightPass(this->shadow_gbuffer.GetDepthTexture());
+			this->light_gbuffer.BeginLightPass();
+			this->light_gbuffer.BeginPointLightPass();
 			def_pl_shader->Use();
+			glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
 			glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
 			glUniform1f(AmbientIntensity_index, light->ambient_intensity);
 			glUniform1f(DiffuseIntensity_index, light->diffuse_intensity);
 			glUniform1f(Atten_Constant_index, light->Attenuation.constant);
 			glUniform1f(Atten_Linear_index, light->Attenuation.linear);
 			glUniform1f(Atten_Exp_index, light->Attenuation.exponential);
-			glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
 			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
+			this->light_gbuffer.EndPointLightPass();
+			def_pl_shader->UnUse();
 		}
 
-		def_pl_shader->UnUse();
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	void RenderSystem::DirectionalLightPass() {
-		this->light_gbuffer.LightPass(this->shadow_gbuffer.GetDepthTexture());
-
+		this->light_gbuffer.BeginLightPass();
+		this->light_gbuffer.BeginDirLightPass();
 		std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get("deferred_dirlight");
 		def_dl_shader->Use();
 
-		glm::mat4 camera_matrix(1.0);
+		glm::mat4 camera_matrix{ 1.f };
 		{
 			View* view = this->current_view;
 			if (view) {
@@ -347,47 +281,23 @@ namespace tec {
 			}
 		}
 
-		glm::mat4 ident;
-		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(ident));
-		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(ident));
-		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(ident));
-		glUniformMatrix4fv(def_dl_shader->GetUniformLocation("gCameraPos"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniform1i(def_dl_shader->GetUniformLocation("gPositionMap"), GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
 		glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-		glUniform1i(def_dl_shader->GetUniformLocation("gShadowMap"), GBuffer::GBUFFER_NUM_TEXTURES);
 		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), (GLfloat) this->window_width, (GLfloat) this->window_height);
-		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), camera_matrix[3].x, camera_matrix[3].y, camera_matrix[3].z);
+		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), 0, 0, 0);
 		GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 		GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
 		GLint DiffuseIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.DiffuseIntensity");
 		GLint direction_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Direction");
-		GLint DepthBiasMVP_index = def_dl_shader->GetUniformLocation("DepthBiasMVP");
 
 		glBindVertexArray(this->quad_vbo.GetVAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_vbo.GetIBO());
-		glDisable(GL_CULL_FACE);
 
 		std::size_t index_count = this->quad_vbo.GetVertexGroup(0)->index_count;
-		glm::mat4 depthModelMatrix = glm::mat4(1.0);
-		glm::mat4 depthProjectionMatrix = glm::ortho(-10.0, 10.0, -10.0, 10.0, -100.0, 100.0);
-		glm::mat4 biasMatrix(
-			0.5, 0.0, 0.0, 0.0,
-			0.0, 0.5, 0.0, 0.0,
-			0.0, 0.0, 0.5, 0.0,
-			0.5, 0.5, 0.5, 1.0
-		);
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
 			DirectionalLight* light = itr->second;
-
-			glm::vec3 lightInvDir = light->direction * -1.0f;
-
-			// Compute the MVP matrix from the light's point of view
-			glm::mat4 depthViewMatrix = glm::lookAt(lightInvDir, glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0));
-			glm::mat4 depthMVP = depthProjectionMatrix * depthViewMatrix * depthModelMatrix;
-			glm::mat4 depthBiasMVP = biasMatrix * depthMVP;
-			glUniformMatrix4fv(DepthBiasMVP_index, 1, GL_FALSE, glm::value_ptr(depthBiasMVP));
 
 			glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
 			glUniform1f(AmbientIntensity_index, light->ambient_intensity);
@@ -397,6 +307,8 @@ namespace tec {
 			glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 		}
 		def_dl_shader->UnUse();
+		glBindVertexArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	void RenderSystem::FinalPass() {
@@ -408,11 +320,8 @@ namespace tec {
 	}
 
 	void RenderSystem::RenderGbuffer() {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		this->light_gbuffer.BindForRendering();
 
-		//GLsizei HalfWidth = (GLsizei)(this->window_width / 2.0f);
 		GLsizei HalfHeight = (GLsizei)(this->window_height / 2.0f);
 		GLsizei QuarterWidth = (GLsizei)(this->window_width / 4.0f);
 		GLsizei QuarterHeight = (GLsizei)(this->window_height / 4.0f);
@@ -429,10 +338,10 @@ namespace tec {
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
 			this->window_width - QuarterWidth, HalfHeight, this->window_width, HalfHeight + QuarterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_TEXCOORD);
+		glReadBuffer(GL_DEPTH_ATTACHMENT);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuarterWidth, HalfHeight + QuarterHeight, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
+			this->window_width - QuarterWidth, HalfHeight + QuarterHeight, this->window_width, this->window_height, GL_DEPTH_BUFFER_BIT, GL_LINEAR);
+		glReadBuffer(GL_NONE);
 	}
 
 	using RenderableMap = Multiton<eid, Renderable*>;

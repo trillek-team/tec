@@ -16,7 +16,7 @@ for:
     - sh: git clone https://github.com/Microsoft/vcpkg.git
     - sh: cd vcpkg
     - sh: ./bootstrap-vcpkg.sh
-    - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog
+    - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - sh: cd ..
   before_build:
     - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Debug ..
@@ -28,7 +28,7 @@ for:
        - image: Visual Studio 2019
    install:
      - git submodule update --init
-     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog --triplet x64-windows
+     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet x64-windows
      - cmd: mkdir build
      - cmd: cd build
    before_build:

@@ -34,7 +34,7 @@ namespace tec {
 		void Println(const std::string& str, ImVec4 color = ImVec4(255, 255, 255, 255) );
 		void Println(const char* cstr, ImVec4 color = ImVec4(255, 255, 255, 255) );
 		
-		void Printfln(const char* cstr, ...) IM_PRINTFARGS(2);
+		void Printfln(const char* cstr, ...) IM_FMTARGS(2);
 
 		void Draw();
 		

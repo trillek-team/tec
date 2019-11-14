@@ -7,6 +7,8 @@
 #include "filesystem.hpp"
 #include "os.hpp"
 #include "events.hpp"
+#include "client/server-connection.hpp"
+#include "gui/console.hpp"
 
 #ifdef _MSC_VER
 #undef APIENTRY
@@ -27,44 +29,44 @@ namespace tec {
 	std::string inifilename;
 	std::string logfilename;
 
-	IMGUISystem::IMGUISystem(GLFWwindow* _window) : io(ImGui::GetIO()) {
-		this->mouse_pos.x = 0; this->mouse_pos.y = 0;
-		this->mouse_wheel.x = 0; this->mouse_wheel.y = 0;
+	IMGUISystem::IMGUISystem(GLFWwindow* _window) {
+		ImGui::CreateContext();
 		IMGUISystem::window = _window;
+		auto& io = ImGui::GetIO();
 		inifilename = (FilePath::GetUserSettingsPath() / "imgui.ini").toString();
 		logfilename = (FilePath::GetUserCachePath() / "imgui_log.txt").toString();
-		this->io.IniFilename = inifilename.c_str();
+		io.IniFilename = inifilename.c_str();
 #if defined(DEBUG) || defined(_DEBUG)
-		this->io.LogFilename = logfilename.c_str();
+		io.LogFilename = logfilename.c_str();
 #endif
-		this->io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
-		this->io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
-		this->io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
-		this->io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
-		this->io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
-		this->io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
-		this->io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
-		this->io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
-		this->io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
-		this->io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
-		this->io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
-		this->io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
-		this->io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
-		this->io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
-		this->io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
-		this->io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
-		this->io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
+		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
+		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
+		io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
+		io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
+		io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
+		io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
+		io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
+		io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
+		io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
+		io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
+		io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
+		io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
+		io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
+		io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
+		io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
+		io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
+		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
-		this->io.RenderDrawListsFn = RenderDrawLists;
-		this->io.SetClipboardTextFn = SetClipboardText;
-		this->io.GetClipboardTextFn = GetClipboardText;
+		io.SetClipboardTextFn = SetClipboardText;
+		io.GetClipboardTextFn = GetClipboardText;
 #ifdef _MSC_VER
-		this->io.ImeWindowHandle = glfwGetWin32Window(IMGUISystem::window);
+		io.ImeWindowHandle = glfwGetWin32Window(IMGUISystem::window);
 #endif
+		this->UpdateDisplaySize();
 
-		glfwGetWindowSize(IMGUISystem::window, &this->window_width, &this->window_height);
-		glfwGetFramebufferSize(IMGUISystem::window, &this->framebuffer_width, &this->framebuffer_height);
-		io.DisplaySize = ImVec2((float)this->framebuffer_width, (float)this->framebuffer_height);
+		if (!IMGUISystem::font_texture) {
+			CreateDeviceObjects();
+		}
 	}
 
 	IMGUISystem::~IMGUISystem() {
@@ -93,141 +95,137 @@ namespace tec {
 			ImGui::GetIO().Fonts->TexID = 0;
 			font_texture = 0;
 		}
-		ImGui::Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	extern eid active_entity;
 
-	void IMGUISystem::CreateGUI(tec::OS* os, tec::networking::ServerConnection* connection, Console* console)
-	{
-		this->AddWindowDrawFunction("connect_window", [connection]() {
-		ImGui::SetNextWindowPosCenter();
-		ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+	void IMGUISystem::CreateGUI(OS* os, networking::ServerConnection* connection, Console* console) {
+		this->AddWindowDrawFunction("connect_window", [connection] () {
+			ImGui::SetNextWindowPosCenter();
+			ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
-		static int octets[4] = { 127, 0, 0, 1 };
+			static int octets[4] = { 127, 0, 0, 1 };
 
-		float width = ImGui::CalcItemWidth();
-		ImGui::PushID("IP");
-		ImGui::AlignFirstTextHeightToWidgets();
-		ImGui::TextUnformatted("IP");
-		ImGui::SameLine();
-		for (int i = 0; i < 4; i++) {
-			ImGui::PushItemWidth(width / 4.0f);
-			ImGui::PushID(i);
-
-			bool invalid_octet = false;
-			if (octets[i] > 255) {
-				octets[i] = 255;
-				invalid_octet = true;
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-			}
-			if (octets[i] < 0) {
-				octets[i] = 0;
-				invalid_octet = true;
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-			}
-			ImGui::InputInt("##v", &octets[i], 0, 0, ImGuiInputTextFlags_CharsDecimal);
-			if (invalid_octet) {
-				ImGui::PopStyleColor();
-			}
+			float width = ImGui::CalcItemWidth();
+			ImGui::PushID("IP");
+			ImGui::AlignFirstTextHeightToWidgets();
+			ImGui::TextUnformatted("IP");
 			ImGui::SameLine();
-			ImGui::PopID();
-			ImGui::PopItemWidth();
-		}
-		ImGui::PopID();
-		ImGui::SameLine();
-		if (ImGui::Button("Connect")) {
-			std::stringstream ip;
-			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
-			printf("Connecting to %s\n", ip.str().c_str());
-			connection->Connect(ip.str());
-		}
-		ImGui::End();
-		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
-	});
+			for (int i = 0; i < 4; i++) {
+				ImGui::PushItemWidth(width / 4.0f);
+				ImGui::PushID(i);
 
-	this->AddWindowDrawFunction("sample_window", []() {
-		ImGui::ShowTestWindow();
-	});
-
-	this->AddWindowDrawFunction("active_entity", []() {
-		if (tec::active_entity != 0) {
-			ImGui::SetTooltip("#%" PRI_EID, tec::active_entity);
-		}
-	});
-	this->ShowWindow("active_entity");
-	this->AddWindowDrawFunction("main_menu", [os, connection, this]() {
-		if (ImGui::BeginMainMenuBar()) {
-			if (ImGui::BeginMenu("Connect")) {
-				bool visible = this->IsWindowVisible("connect_window");
-				if (ImGui::MenuItem("Connect to server...", "", visible)) {
-					if (visible) {
-						this->HideWindow("connect_window");
-					}
-					else {
-						this->ShowWindow("connect_window");
-					}
+				bool invalid_octet = false;
+				if (octets[i] > 255) {
+					octets[i] = 255;
+					invalid_octet = true;
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
 				}
-				ImGui::EndMenu();
+				if (octets[i] < 0) {
+					octets[i] = 0;
+					invalid_octet = true;
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+				}
+				ImGui::InputInt("##v", &octets[i], 0, 0, ImGuiInputTextFlags_CharsDecimal);
+				if (invalid_octet) {
+					ImGui::PopStyleColor();
+				}
+				ImGui::SameLine();
+				ImGui::PopID();
+				ImGui::PopItemWidth();
 			}
-			ImGui::Text("Ping %" PRI_PING_TIME_T, connection->GetAveragePing());
-			ImGui::EndMainMenuBar();
-		}
-	});
+			ImGui::PopID();
+			ImGui::SameLine();
+			if (ImGui::Button("Connect")) {
+				std::stringstream ip;
+				ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
+				printf("Connecting to %s\n", ip.str().c_str());
+				connection->Connect(ip.str());
+			}
+			ImGui::End();
+			ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
+									});
 
-	this->ShowWindow("main_menu");
-	this->AddWindowDrawFunction("ping_times", [connection]() {
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-		ImGui::Begin("ping_times", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
-		static float arr[10];
-		std::list<tec::networking::ping_time_t> recent_pings = connection->GetRecentPings();
-		std::size_t i = 0;
-		for (tec::networking::ping_time_t ping : recent_pings) {
-			arr[i++] = static_cast<float>(ping);
-		}
-		ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
-		ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
-		ImGui::End();
-		ImGui::SetWindowSize("ping_times", ImVec2(0, 0));
-		ImGui::PopStyleColor();
-	});
-	this->ShowWindow("ping_times");
+		this->AddWindowDrawFunction("sample_window", [] () {
+			ImGui::ShowTestWindow();
+									});
 
-	this->AddWindowDrawFunction("console", [console]() {
-		console->Draw();
-	});
-	this->ShowWindow("console");
+		this->AddWindowDrawFunction("active_entity", [] () {
+			if (tec::active_entity != 0) {
+				ImGui::SetTooltip("#%" PRI_EID, tec::active_entity);
+			}
+									});
+		this->ShowWindow("active_entity");
+		this->AddWindowDrawFunction("main_menu", [os, connection, this] () {
+			if (ImGui::BeginMainMenuBar()) {
+				if (ImGui::BeginMenu("Connect")) {
+					bool visible = this->IsWindowVisible("connect_window");
+					if (ImGui::MenuItem("Connect to server...", "", visible)) {
+						if (visible) {
+							this->HideWindow("connect_window");
+						}
+						else {
+							this->ShowWindow("connect_window");
+						}
+					}
+					ImGui::EndMenu();
+				}
+				ImGui::Text("Ping %" PRI_PING_TIME_T, connection->GetAveragePing());
+				ImGui::EndMainMenuBar();
+			}
+									});
+
+		this->ShowWindow("main_menu");
+		this->AddWindowDrawFunction("ping_times", [connection] () {
+			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+			ImGui::Begin("ping_times", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
+			static float arr[10];
+			std::list<tec::networking::ping_time_t> recent_pings = connection->GetRecentPings();
+			std::size_t i = 0;
+			for (tec::networking::ping_time_t ping : recent_pings) {
+				arr[i++] = static_cast<float>(ping);
+			}
+			ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
+			ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
+			ImGui::End();
+			ImGui::SetWindowSize("ping_times", ImVec2(0, 0));
+			ImGui::PopStyleColor();
+									});
+		this->ShowWindow("ping_times");
+
+		this->AddWindowDrawFunction("console", [console] () {
+			console->Draw();
+									});
+		this->ShowWindow("console");
 	}
 
 
 	void IMGUISystem::Update(double delta) {
 		ProcessCommandQueue();
-		this->io.DeltaTime = static_cast<float>(delta);
+		auto& io = ImGui::GetIO();
+		io.DeltaTime = static_cast<float>(delta);
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 		EventQueue<MouseScrollEvent>::ProcessEventQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
-
-		if (!IMGUISystem::font_texture) {
-			CreateDeviceObjects();
-		}
 
 		// Setup inputs
 		// (we already got mouse wheel, keyboard keys & characters from event system
 		if (glfwGetWindowAttrib(IMGUISystem::window, GLFW_FOCUSED)) {
 			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;  // Convert mouse coordinates to pixels
 			this->mouse_pos.y *= (float)this->framebuffer_height / this->window_height;
-			this->io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
-			this->io.MouseWheel += this->mouse_wheel.y; // ImGUI not support x axis scroll :(
+			io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
+			io.MouseWheel += this->mouse_wheel.y; // ImGUI not support x axis scroll :(
 			this->mouse_wheel.y = 0;
 			this->mouse_wheel.x = 0;
 		}
 		else {
-			this->io.MousePos = ImVec2(-1, -1);
+			io.MousePos = ImVec2(-1, -1);
 		}
 
 		for (int i = 0; i < 3; i++) {
-			this->io.MouseDown[i] = mouse_pressed[i] || glfwGetMouseButton(IMGUISystem::window, i) != 0;    // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
+			io.MouseDown[i] = mouse_pressed[i] || glfwGetMouseButton(IMGUISystem::window, i) != 0;    // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
 			mouse_pressed[i] = false;
 		}
 
@@ -240,10 +238,11 @@ namespace tec {
 			}
 		}
 		ImGui::Render();
+		this->RenderDrawLists(ImGui::GetDrawData());
 	}
 
 	void IMGUISystem::CreateDeviceObjects() {
-		const GLchar *_vertex_shader =
+		const GLchar* _vertex_shader =
 			"#version 330\n"
 			"uniform mat4 ProjMtx;\n"
 			"in vec2 Position;\n"
@@ -283,7 +282,7 @@ namespace tec {
 		glAttachShader(IMGUISystem::shader_program, IMGUISystem::fragment_shader);
 		glLinkProgram(IMGUISystem::shader_program);
 		GLint isLinked = 0;
-		glGetProgramiv(IMGUISystem::shader_program, GL_LINK_STATUS, (int *)&isLinked);
+		glGetProgramiv(IMGUISystem::shader_program, GL_LINK_STATUS, (int*)&isLinked);
 
 		IMGUISystem::texture_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "Texture");
 		IMGUISystem::projmtx_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "ProjMtx");
@@ -292,12 +291,12 @@ namespace tec {
 		IMGUISystem::color_attribute_location = glGetAttribLocation(IMGUISystem::shader_program, "Color");
 
 		glGenBuffers(1, &IMGUISystem::vbo);
-        glGenBuffers(1, &IMGUISystem::ibo);
+		glGenBuffers(1, &IMGUISystem::ibo);
 
 		glGenVertexArrays(1, &IMGUISystem::vao);
 		glBindVertexArray(IMGUISystem::vao);
 		glBindBuffer(GL_ARRAY_BUFFER, IMGUISystem::vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IMGUISystem::ibo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IMGUISystem::ibo);
 		glEnableVertexAttribArray(IMGUISystem::position_attribute_location);
 		glEnableVertexAttribArray(IMGUISystem::uv_attribute_location);
 		glEnableVertexAttribArray(IMGUISystem::color_attribute_location);
@@ -309,11 +308,12 @@ namespace tec {
 #undef OFFSETOF
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		// Create the font texture.
 		unsigned char* pixels;
 		int width, height;
+		auto& io = ImGui::GetIO();
 		io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bits for OpenGL3 demo because it is more likely to be compatible with user's existing shader.
 
 		glGenTextures(1, &font_texture);
@@ -323,22 +323,21 @@ namespace tec {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
 		// Store our identifier
-		io.Fonts->TexID = (void *)(intptr_t)font_texture;
+		io.Fonts->TexID = (void*)(intptr_t)font_texture;
 
 		// Cleanup (don't clear the input data if you want to append new fonts later)
 		io.Fonts->ClearInputData();
 		io.Fonts->ClearTexData();
 	}
 
-	const char* IMGUISystem::GetClipboardText() {
+	const char* IMGUISystem::GetClipboardText(void*) {
 		return glfwGetClipboardString(IMGUISystem::window);
 	}
 
-	void IMGUISystem::SetClipboardText(const char* text) {
+	void IMGUISystem::SetClipboardText(void*, const char* text) {
 		glfwSetClipboardString(IMGUISystem::window, text);
 	}
 
-	//void IMGUISystem::RenderDrawLists(ImDrawList** const cmd_lists, int cmd_lists_count) {
 	void IMGUISystem::RenderDrawLists(ImDrawData* draw_data) {
 		if (draw_data->CmdListsCount == 0) {
 			return;
@@ -353,7 +352,8 @@ namespace tec {
 		glActiveTexture(GL_TEXTURE0);
 
 		// Setup orthographic projection matrix
-		const float width = ImGui::GetIO().DisplaySize.x;
+		const auto display_size{ ImGui::GetIO().DisplaySize };
+		const float width = display_size.x;
 		const float height = ImGui::GetIO().DisplaySize.y;
 		const float ortho_projection[4][4] =
 		{
@@ -366,10 +366,9 @@ namespace tec {
 		glUniform1i(texture_attribute_location, 0);
 		glUniformMatrix4fv(projmtx_attribute_location, 1, GL_FALSE, &ortho_projection[0][0]);
 		glBindVertexArray(vao);
-		for (int n = 0; n < draw_data->CmdListsCount; n++)
-		{
+		for (int n = 0; n < draw_data->CmdListsCount; n++) {
 			const ImDrawList* cmd_list = draw_data->CmdLists[n];
-            ImDrawIdx* idx_buffer_offset = 0;
+			ImDrawIdx* idx_buffer_offset = 0;
 
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
 			std::size_t needed_vtx_size = cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
@@ -386,27 +385,28 @@ namespace tec {
 			}
 			memcpy(vtx_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
 			glUnmapBuffer(GL_ARRAY_BUFFER);
-            
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-            std::size_t needed_idx_size = cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx);
-            if (ibo_size < needed_idx_size) {
-                // Grow our buffer if needed
-                ibo_size = needed_idx_size + 500 * sizeof(ImDrawIdx);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)ibo_size, NULL, GL_STREAM_DRAW);
-            }
-            
-            unsigned char* idx_data = (unsigned char*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, needed_idx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-            
-            if (!idx_data) {
-                continue;
-            }
-            memcpy(idx_data, &cmd_list->IdxBuffer[0], cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
-            glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+			std::size_t needed_idx_size = cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx);
+			if (ibo_size < needed_idx_size) {
+				// Grow our buffer if needed
+				ibo_size = needed_idx_size + 500 * sizeof(ImDrawIdx);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)ibo_size, NULL, GL_STREAM_DRAW);
+			}
+
+			unsigned char* idx_data = (unsigned char*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, needed_idx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
+			if (!idx_data) {
+				continue;
+			}
+			memcpy(idx_data, &cmd_list->IdxBuffer[0], cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
+			glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
 			for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != cmd_list->CmdBuffer.end(); pcmd++) {
 				if (pcmd->UserCallback) {
 					pcmd->UserCallback(cmd_list, pcmd);
-				} else {
+				}
+				else {
 					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
 					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
 					glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, GL_UNSIGNED_SHORT, idx_buffer_offset);
@@ -453,7 +453,7 @@ namespace tec {
 				}
 				else {
 					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
-					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), 
+					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w),
 						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
 					glDrawArrays(GL_TRIANGLES, vtx_offset, pcmd->ElemCount);
 				}
@@ -465,7 +465,7 @@ namespace tec {
 		// Restore modified state
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		glUseProgram(0);
 		glDisable(GL_SCISSOR_TEST);
 		glDisable(GL_BLEND);
@@ -477,25 +477,30 @@ namespace tec {
 		this->window_draw_funcs[name] = std::move(func);
 	}
 
-
-	void IMGUISystem::On(std::shared_ptr<WindowResizedEvent> data) {
+	void IMGUISystem::UpdateDisplaySize() {
 		glfwGetWindowSize(IMGUISystem::window, &this->window_width, &this->window_height);
 		glfwGetFramebufferSize(IMGUISystem::window, &this->framebuffer_width, &this->framebuffer_height);
-		io.DisplaySize = ImVec2((float)this->framebuffer_width, (float)this->framebuffer_height);
+		ImGui::GetIO().DisplaySize = ImVec2((float)this->framebuffer_width, (float)this->framebuffer_height);
+	}
+
+
+	void IMGUISystem::On(std::shared_ptr<WindowResizedEvent> data) {
+		this->UpdateDisplaySize();
 	}
 
 	void IMGUISystem::On(std::shared_ptr<MouseMoveEvent> data) {
 		this->mouse_pos.x = static_cast<float>(data->new_x);
 		this->mouse_pos.y = static_cast<float>(data->new_y);
 	}
-	
+
 	void IMGUISystem::On(std::shared_ptr<MouseScrollEvent> data) {
 		this->mouse_wheel.x = static_cast<float>(data->x_offset);
 		this->mouse_wheel.y = static_cast<float>(data->y_offset);
 	}
-	
-	
+
+
 	void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
+		auto& io = ImGui::GetIO();
 		if (data->action == KeyboardEvent::KEY_DOWN) {
 			io.KeysDown[data->key] = true;
 		}

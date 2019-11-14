@@ -5,6 +5,8 @@
 
 #include <map>
 #include <string>
+#include <set>
+#include <functional>
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -18,20 +20,18 @@
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 
-#include "multiton.hpp"
-#include "types.hpp"
 #include "events.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
 
-#include "client/server-connection.hpp"
-#include "gui/console.hpp"
-
 namespace tec {
 	class IMGUISystem;
-	typedef Command<IMGUISystem> GUICommand;
-	struct KeyboardEvent;
-	struct WindowResizedEvent;
+	class Console;
+	class OS;
+
+	namespace networking {
+		class ServerConnection;
+	}
 
 	class IMGUISystem :
 		public CommandQueue < IMGUISystem >,
@@ -39,11 +39,12 @@ namespace tec {
 		public EventQueue < MouseMoveEvent >,
 		public EventQueue < MouseScrollEvent >,
 		public EventQueue < WindowResizedEvent > {
+		typedef Command<IMGUISystem> GUICommand;
 	public:
 		IMGUISystem(GLFWwindow* window);
 		~IMGUISystem();
 
-		void CreateGUI(tec::OS* os, tec::networking::ServerConnection* connection, tec::Console* console);
+		void CreateGUI(OS* os, networking::ServerConnection* connection, Console* console);
 
 		void Update(double delta);
 
@@ -51,28 +52,28 @@ namespace tec {
 
 		void AddWindowDrawFunction(std::string name, std::function<void()>&& func);
 
-		void ShowWindow(std::string name) {
+		void ShowWindow(const std::string name) {
 			GUICommand show_window(
 				[=] (IMGUISystem*) {
-				this->visible_windows.insert(name);
-			});
+					this->visible_windows.insert(name);
+				});
 			IMGUISystem::QueueCommand(std::move(show_window));
 		}
 
-		void HideWindow(std::string name) {
+		void HideWindow(const std::string name) {
 			GUICommand hide_window(
 				[=] (IMGUISystem*) {
-				this->visible_windows.erase(name);
-			});
+					this->visible_windows.erase(name);
+				});
 			IMGUISystem::QueueCommand(std::move(hide_window));
 		}
 
-		bool IsWindowVisible(std::string name) {
+		bool IsWindowVisible(const std::string& name) const {
 			return this->visible_windows.find(name) != this->visible_windows.end();
 		}
 
-		static const char* GetClipboardText();
-		static void SetClipboardText(const char* text);
+		static const char* GetClipboardText(void* user_data);
+		static void SetClipboardText(void* user_data, const char* text);
 		static void RenderDrawLists(ImDrawData* draw_data);
 	private:
 		void On(std::shared_ptr<WindowResizedEvent> data);
@@ -80,12 +81,13 @@ namespace tec {
 		void On(std::shared_ptr<MouseScrollEvent > data);
 		void On(std::shared_ptr<KeyboardEvent> data);
 
-		ImGuiIO& io;
-		int framebuffer_width, framebuffer_height;
-		int window_width, window_height;
-		bool mouse_pressed[3];
-		ImVec2 mouse_pos;
-		ImVec2 mouse_wheel;
+		void UpdateDisplaySize();
+
+		int framebuffer_width{ 0 }, framebuffer_height{ 0 };
+		int window_width{ 0 }, window_height{ 0 };
+		bool mouse_pressed[3]{ false, false, false };
+		ImVec2 mouse_pos{ 0, 0 };
+		ImVec2 mouse_wheel{ 0, 0 };
 
 		static GLuint font_texture;
 		static GLFWwindow* window;

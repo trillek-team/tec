@@ -20,7 +20,7 @@ Building takes a few steps to get everything set up for the first build.
 3. `cd build/`
 4. Follow platform specific instructions 
   1. Linux (G++ 6 maybe 7 or CLang 4)
-       1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, spdlog, and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC.)
+       1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, spdlog, Dear ImGui, and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC.)
             1. If you are on Ubuntu/Debian/etc. (something with `apt`):
                 1. Run `apt-get install libglew-dev libglfw3 libglm-dev libasio-dev`
                 2. Run `apt-get install liblua5.2-dev libopenal-dev  libbullet-dev`
@@ -36,7 +36,7 @@ Building takes a few steps to get everything set up for the first build.
      2. Navigate to the `vcpkg/` directory.
      3. Run `powershell -exec bypass scripts\bootstrap.ps1`
      4. Run `.\vcpkg integrate install`
-     5. Run `.\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog`
+     5. Run `.\vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui`
      6. Run cmake-gui setting the source line to the root directory and the build line to the build directory.
      7. Hit configure and select `Specify toolchain file for cross-compiling` using `scripts/buildsystems/vcpkg.cmake` from the the `vcpkg/` directory
      8. Click generate; then open and build the solution in Visual Studio.

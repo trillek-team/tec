@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #ifndef TRILLEK_COMMON_SERVER_MESSAGE_HPP
@@ -30,7 +30,7 @@ namespace tec {
 			enum { max_body_length = 512 };
 
 			ServerMessage() : body_length(0), last_recv_state_id(0),
-				message_type(CHAT_MESSAGE) { }
+				message_type(MessageType::CHAT_MESSAGE) { }
 
 			const char* GetDataPTR() const {
 				return data;
@@ -103,7 +103,7 @@ namespace tec {
 			}
 
 		private:
-			char data[header_length + max_body_length];
+			char data[header_length + max_body_length]{ 0 };
 			std::size_t body_length;
 			state_id_t last_recv_state_id;
 			MessageType message_type;

@@ -1,9 +1,6 @@
 [submodule "assets"]
 	path = assets
 	url = https://github.com/trillek-team/tec-assets
-[submodule "deps/imgui"]
-	path = deps/imgui
-	url = https://github.com/ocornut/imgui
 [submodule "deps/trillek-vcomputer"]
 	path = deps/trillek-vcomputer
 	url = https://github.com/trillek-team/trillek-vcomputer-module

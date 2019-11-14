@@ -21,6 +21,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(${trillek_SOURCE_DIR}/common)
 
 add_definitions(-DFMT_HEADER_ONLY)
+add_definitions(-DASIO_STANDALONE)
 
 if (MSVC)
 	add_definitions(-DPROTOBUF_USE_DLLS)

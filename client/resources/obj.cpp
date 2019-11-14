@@ -323,7 +323,7 @@ namespace tec {
 				}
 				MaterialGroup mat_group;
 				mat_group.start = objgroup->indices.size();
-				glm::vec4 diffuse_color{ 0.0 };
+				glm::vec4 diffuse_color{ 1.0 };
 				if (this->materials.find(face_group->mtl) != this->materials.end()) {
 					std::shared_ptr<MTL> material = this->materials[face_group->mtl];
 					std::string material_name = material->diffuseMap;
