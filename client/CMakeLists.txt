@@ -6,25 +6,22 @@ project(trillek-client)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
-find_package(OpenAL REQUIRED)
+find_package(OpenAL CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
-include_directories(${BULLET_INCLUDE_DIR})
-include_directories(${LUA_INCLUDE_DIR})
-include_directories(${GLFW_INCLUDE_DIR})
-include_directories(${imgui_DIR})
-include_directories(${OPENAL_INCLUDE_DIR})
-include_directories(${Protobuf_INCLUDE_DIR})
+
 include_directories(${trillek_SOURCE_DIR})
+include_directories(SYSTEM ${BULLET_INCLUDE_DIR})
+include_directories(SYSTEM ${trillek-proto-INCLUDE_DIR})
+include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
+include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 include_directories(${trillek-client_SOURCE_DIR})
-include_directories(${trillek_SOURCE_DIR}/deps/selene/include)
-include_directories(${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
-include_directories(${trillek-proto-INCLUDE_DIR})
 
 if (WIN32)
 	set(trillek-client_PROGRAM "trillek-client")
 else ()
 	set(trillek-client_PROGRAM "trillek-client")
 endif ()
+
 set(trillek-client_SOURCES
 	${trillek-client_SOURCE_DIR}/imgui-system.cpp
 	${trillek-client_SOURCE_DIR}/main.cpp
@@ -54,16 +51,18 @@ set(OSX_LIBRARIES "")
 if (APPLE)
 	set(OSX_LIBRARIES "/usr/lib/libobjc.dylib")
 endif (APPLE)
+
 if (UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
 endif (UNIX AND NOT APPLE)
 
 add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCES})
+
 if (MSVC)
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
 else ()
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
 endif ()
+
 target_link_libraries(${trillek-client_PROGRAM} ${trillek-common_LIBRARY}
-	${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} ${OPENGL_gl_LIBRARY}
-	${OPENAL_LIBRARY} ${GLEW_LIBRARIES} ${X11_LIBRARIES} ${OSX_LIBRARIES} glfw imgui::imgui VCOMPUTER_STATIC)
+	${OPENGL_gl_LIBRARY} ${X11_LIBRARIES} ${OSX_LIBRARIES} GLEW::GLEW OpenAL::OpenAL glfw imgui::imgui VCOMPUTER_STATIC)

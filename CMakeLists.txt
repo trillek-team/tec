@@ -27,6 +27,7 @@ if (MSVC)
 	add_definitions(-DPROTOBUF_USE_DLLS)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	add_definitions(-D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS )
+	add_definitions(-D_WIN32_WINNT=0x0601)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4251") # Auto generated protobuf gives lots of these and they recommend to disable
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4127") # Warns that expression could be 'if constexpr' which 3rd party libs might not be updated to use
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4005") # Protobuf redefines the macro by mistake
