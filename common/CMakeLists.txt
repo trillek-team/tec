@@ -1,6 +1,6 @@
 # Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 # Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.9)
 project(trillek-common)
 
 set(trillek-proto-INCLUDE_DIR ${trillek_BINARY_DIR}/common PARENT_SCOPE) # <-- Protobuf files go here
@@ -8,9 +8,11 @@ set(trillek-proto-INCLUDE_DIR ${trillek_BINARY_DIR}/common PARENT_SCOPE) # <-- P
 find_package(Bullet REQUIRED)
 find_package(Lua REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
 include_directories(${BULLET_INCLUDE_DIR})
 include_directories(${LUA_INCLUDE_DIR})
 include_directories(${PROTOBUF_INCLUDE_DIR})
+include_directories(${spdlog_DIR})
 include_directories(${trillek_BINARY_DIR}/common) # Protobuf files are here
 include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
 include_directories(${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
@@ -42,4 +44,4 @@ if (MSVC)
 else ()
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
 endif ()
-target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} VCOMPUTER_STATIC)
+target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES} ${PROTOBUF_LIBRARIES} spdlog::spdlog VCOMPUTER_STATIC)

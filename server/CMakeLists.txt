@@ -14,7 +14,7 @@ include_directories(${trillek-proto-INCLUDE_DIR})
 if (WIN32)
 	set(trillek-server_PROGRAM "trillek-server")
 else ()
-	set(trillek-server_PROGRAM "trillekd")
+	set(trillek-server_PROGRAM "trillek-serverd")
 endif ()
 set(trillek-server_SOURCES
 	${trillek-server_SOURCE_DIR}/client-connection.cpp
