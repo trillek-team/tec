@@ -95,6 +95,7 @@ namespace tec {
 		);
 		this->light_gbuffer.ResizeColorAttachments(this->window_width, this->window_height);
 		this->light_gbuffer.ResizeDepthAttachment(this->window_width, this->window_height);
+		glViewport(0, 0, width, height);
 	}
 
 	void RenderSystem::Update(const double delta, const GameState& state) {
