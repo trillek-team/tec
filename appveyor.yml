@@ -24,7 +24,7 @@ for:
     - make
   after_build:
     - sh: cd ..
-    - sh: 7z a trillek-linux.zip ./assets ./linuxbuild/client/trillek-client ./linuxbuild/server/trillek-serverd
+    - sh: 7z a trillek-linux.zip ./assets ./build/client/trillek-client ./build/server/trillek-serverd
   artifacts:
     - path: trillek-linux.zip
       name: trillek-linux
