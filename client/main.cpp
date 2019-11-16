@@ -189,7 +189,7 @@ int main(int argc, char* argv[]) {
 				tec::proto::ClientCommands client_commands = camera_controller->GetClientCommands();
 				client_commands.set_commandid(command_id++);
 				update_message.SetStateID(connection.GetLastRecvStateID());
-				update_message.SetMessageType(tec::networking::CLIENT_COMMAND);
+				update_message.SetMessageType(tec::networking::MessageType::CLIENT_COMMAND);
 				client_commands.SerializeToArray(update_message.GetBodyPTR(), client_commands.ByteSize());
 				update_message.SetBodyLength(client_commands.ByteSize());
 				update_message.encode_header();

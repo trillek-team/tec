@@ -3,12 +3,10 @@
 
 #include "shader.hpp"
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 #include <iterator>
 
 namespace tec {
-	Shader::Shader() : program(0) {}
-
 	Shader::~Shader() {
 		DeleteProgram();
 	}
@@ -24,7 +22,7 @@ namespace tec {
 		this->shaders.clear();
 	}
 
-	void Shader::LoadFromFile(const ShaderType type, const tec::FilePath& fname) {
+	void Shader::LoadFromFile(const Shader::ShaderType type, const tec::FilePath& fname) {
 		auto _log = spdlog::get("console_log");
 		if (!fname.isValidPath()) {
 			_log->error("[Shader] Error loading shader: {} Invalid path: {}", fname.FileName(), fname.toString());
@@ -43,7 +41,7 @@ namespace tec {
 		LoadFromString(type, buffer, fname.FileName());
 	}
 
-	void Shader::LoadFromString(const ShaderType type, const std::string& source, const std::string& filename) {
+	void Shader::LoadFromString(const Shader::ShaderType type, const std::string& source, const std::string& filename) {
 		auto _log = spdlog::get("console_log");
 		glGetError();
 		GLuint shader = glCreateShader(type);
@@ -52,7 +50,7 @@ namespace tec {
 			return;
 		}
 
-		GLint length = source.length();
+		GLint length = static_cast<GLint>(source.length());
 		const GLchar* str = source.data();
 		glShaderSource(shader, 1, &str, &length);
 		if (auto error = glGetError() != GL_NO_ERROR) {

@@ -53,9 +53,9 @@ namespace tec {
 
 	private:
 		// TODO Store a RingBuffer<tuple<color, text> instead of raw text ?
-		tec::RingBuffer< std::tuple< ImVec4, std::string >, 4096> buf;
+		std::shared_ptr<tec::RingBuffer< std::tuple< ImVec4, std::string >, 4096>> buf;
 		std::mutex input_mutex; /// Mutex to serialize write to Console buffer
-		bool scrollToBottom = false;
+		bool scrollToBottom{ false };
 		char inputBuf[256];
 
 		bool resize = true;

@@ -21,9 +21,9 @@ namespace tec {
 	struct VertexData;
 
 	struct VertexGroup {
-		std::size_t mesh_group_number;
-		std::size_t index_count;
-		std::size_t starting_offset;
+		std::size_t mesh_group_number{ 0 };
+		std::size_t index_count{ 0 };
+		std::size_t starting_offset{ 0 };
 		std::shared_ptr<Material> material;
 	};
 
@@ -90,9 +90,9 @@ namespace tec {
 		 */
 		void Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices);
 	private:
-		GLuint vao, vbo, ibo;
-		std::size_t vertex_count; // Total vertex count.
-		std::size_t index_count; // Total index count.
+		GLuint vao{ 0 }, vbo{ 0 }, ibo{ 0 };
+		std::size_t vertex_count{ 0 }; // Total vertex count.
+		std::size_t index_count{ 0 }; // Total index count.
 		std::vector<VertexGroup> vertex_groups;
 		std::weak_ptr<MeshFile> source_mesh;
 	};

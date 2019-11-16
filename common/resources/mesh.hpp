@@ -28,8 +28,8 @@ namespace tec {
 	};
 
 	struct MaterialGroup final {
-		unsigned int start;
-		unsigned int count;
+		std::size_t start{ 0 };
+		std::size_t count{ 0 };
 		std::string material_name;
 		std::list<std::string> textures;
 	};
@@ -53,7 +53,6 @@ namespace tec {
 
 	class MeshFile {
 	public:
-		MeshFile() : name("test") {}
 		virtual ~MeshFile() {
 			for (Mesh* mesh : this->meshes) {
 				if (mesh) {
@@ -125,7 +124,7 @@ namespace tec {
 		}
 	protected:
 		std::vector<Mesh*> meshes;
-		std::string name;
-		bool dirty = false;
+		std::string name{ "test" };
+		bool dirty{ false };
 	};
 }

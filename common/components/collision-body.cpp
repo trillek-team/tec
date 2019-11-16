@@ -4,22 +4,14 @@
 #include "components/collision-body.hpp"
 
 namespace tec {
-	CollisionBody::CollisionBody() : mass(0.0),
-		disable_deactivation(false), disable_rotation(false) {
-		motion_state.transform_updated = true;
-	}
-
-
-	CollisionBody::CollisionBody(CollisionBody&& other) : mass(other.mass),
+	CollisionBody::CollisionBody(CollisionBody&& other) noexcept : mass(other.mass),
 		disable_deactivation(other.disable_deactivation),
 		disable_rotation(other.disable_rotation), shape(std::move(other.shape)),
 		entity_id(other.entity_id), motion_state(std::move(other.motion_state)) {
 
 	}
 
-	CollisionBody::~CollisionBody() = default;
-
-	CollisionBody& CollisionBody::operator=(CollisionBody&& other) {
+	CollisionBody& CollisionBody::operator=(CollisionBody&& other) noexcept {
 		mass = other.mass;
 		disable_deactivation = other.disable_deactivation;
 		disable_rotation = other.disable_rotation;

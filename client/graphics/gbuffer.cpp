@@ -4,13 +4,11 @@
 #include "gbuffer.hpp"
 
 namespace tec {
-	GBuffer::GBuffer() : num_color_textures(0) {
+	GBuffer::GBuffer() {
 		glGenFramebuffers(1, &this->frame_buffer_object);
 	}
-	void GBuffer::AddColorAttachments(unsigned short count,
-									  const unsigned int window_width, const unsigned int window_height) {
+	void GBuffer::AddColorAttachments(const unsigned int window_width, const unsigned int window_height) {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
-		this->num_color_textures = GBUFFER_NUM_TEXTURES;
 		glGenTextures(this->num_color_textures, this->color_textures);
 		glGenTextures(1, &this->final_texture);
 
@@ -102,7 +100,7 @@ namespace tec {
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 		for (unsigned int i = 0; i < this->num_color_textures; i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, this->color_textures[GBUFFER_TEXTURE_TYPE_POSITION + i]);
+			glBindTexture(GL_TEXTURE_2D, this->color_textures[i]);
 		}
 	}
 
@@ -146,6 +144,6 @@ namespace tec {
 	}
 
 	void GBuffer::SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) const {
-		glReadBuffer(GL_COLOR_ATTACHMENT0 + TextureType);
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + static_cast<int>(TextureType));
 	}
 }

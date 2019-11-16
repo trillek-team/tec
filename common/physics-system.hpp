@@ -30,7 +30,7 @@ namespace tec {
 		std::set<eid> Update(const double delta, const GameState& state);
 
 		eid RayCastMousePick(eid source_entity, double mouse_x = 0.0f, double mouse_y = 0.0f,
-			float screen_width = 1.0f, float screen_height = 1.0f);
+							 float screen_width = 1.0f, float screen_height = 1.0f);
 		eid RayCastIgnore(eid);
 		glm::vec3 GetLastRayPos() const {
 			return glm::vec3(last_raypos.getX(), last_raypos.getY(), last_raypos.getZ());
@@ -71,14 +71,14 @@ namespace tec {
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
 		btDynamicsWorld* dynamicsWorld;
-		
+
 		std::map<eid, btRigidBody*> bodies;
 
 		btVector3 last_rayfrom;
-		double last_raydist;
+		double last_raydist{ 0.0 };
 		btVector3 last_raypos;
 		btVector3 last_raynorm;
-		bool last_rayvalid;
-		eid last_entity_hit;
+		bool last_rayvalid{ false };
+		eid last_entity_hit{ 0 };
 	};
 }

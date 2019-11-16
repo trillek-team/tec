@@ -68,11 +68,11 @@ namespace tec {
 		}
 	private:
 		std::string name;
-		stb_vorbis* stream;
+		stb_vorbis* stream{ nullptr };
 		stb_vorbis_info info;
 		ALenum format;
-		std::size_t buffer_size;
-		std::size_t totalSamplesLeft;
-		ALshort* sbuffer;
+		std::size_t buffer_size{ 0 };
+		std::size_t totalSamplesLeft{ 0 };
+		ALshort* sbuffer{ nullptr };
 	};
 }

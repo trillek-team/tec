@@ -22,9 +22,6 @@
 namespace tec {
 	class OS {
 	public:
-		OS() : mouse_lock(false) { }
-		~OS() { }
-
 		/**
 		* \brief Initialize the rendering window and makes the window's context the current one.
 		*

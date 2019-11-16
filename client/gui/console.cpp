@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 namespace tec {
-	Console::Console() {
+	Console::Console() : buf{ new tec::RingBuffer< std::tuple< ImVec4, std::string >, 4096>() } {
 		inputBuf[0] = '\0';
 		
 		// Default embed commands
@@ -54,16 +54,16 @@ namespace tec {
 	}
 
 	void Console::Clear() {
-		buf.clear();
+		buf->clear();
 	}
 
 	void Console::Println(const std::string& str, ImVec4 color) {
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
-			if (buf.full()) {
-				buf.pop_back();
+			if (buf->full()) {
+				buf->pop_back();
 			}
-			buf.push_front(std::make_tuple(color, str));
+			buf->push_front(std::make_tuple(color, str));
 		}
 		scrollToBottom = true;
 	}
@@ -71,10 +71,10 @@ namespace tec {
 	void Console::Println(const char* cstr, ImVec4 color) {
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
-			if (buf.full()) {
-				buf.pop_back();
+			if (buf->full()) {
+				buf->pop_back();
 			}
-			buf.push_front(std::make_tuple(color, std::string(cstr)));
+			buf->push_front(std::make_tuple(color, std::string(cstr)));
 		}
 		scrollToBottom = true;
 	}
@@ -89,10 +89,10 @@ namespace tec {
 
 		{
 			std::lock_guard<std::mutex> lock(input_mutex);
-			if (buf.full()) {
-				buf.pop_back();
+			if (buf->full()) {
+				buf->pop_back();
 			}
-			buf.push_front(std::make_tuple(ImVec4(255, 255, 255, 255), std::string(tmp)));
+			buf->push_front(std::make_tuple(ImVec4(255, 255, 255, 255), std::string(tmp)));
 		}
 		scrollToBottom = true;
 	}
@@ -117,9 +117,9 @@ namespace tec {
 				ImGuiWindowFlags_NoScrollbar);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 
-			for (std::size_t i = 0; i < buf.size(); i++) {
-				ImGui::PushStyleColor(ImGuiCol_Text, std::get<0>(buf[i]) );
-				ImGui::TextWrapped("%s", std::get<1>(buf[i]).c_str() );
+			for (std::size_t i = 0; i < buf->size(); i++) {
+				ImGui::PushStyleColor(ImGuiCol_Text, std::get<0>((*buf)[i]) );
+				ImGui::TextWrapped("%s", std::get<1>((*buf)[i]).c_str() );
 				ImGui::PopStyleColor();
 				/*
 				ImVec2 pos = ImGui::GetCursorScreenPos();

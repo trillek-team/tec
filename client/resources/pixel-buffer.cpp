@@ -1,22 +1,13 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "resources/pixel-buffer.hpp"
+#include "pixel-buffer.hpp"
 #include <cstring>
 #include <fstream>
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 namespace tec {
-	PixelBuffer::PixelBuffer()
-		: image_x(0), image_y(0), imagewidth(0), imageheight(0),
-		  bufferpitch(0), imagepixelsize(0), imagebitdepth(0),
-		  imagemode(ImageColorMode::MONOCHROME), dirty(false) { }
-
-	PixelBuffer::~PixelBuffer() {
-
-	}
-
 	PixelBuffer::PixelBuffer(PixelBuffer && rv) {
 		writelock.lock();
 		rv.writelock.lock();

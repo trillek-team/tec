@@ -15,15 +15,10 @@
 namespace tec {
 	class MD5Mesh final : public MeshFile {
 	public:
-		MD5Mesh() { }
-		~MD5Mesh() { }
-
 		/*****************************/
 		/* MD5Mesh helper structures */
 		/*****************************/
 		struct Joint {
-			Joint() : name(""), parent(-1), position(0.0f, 0.0f, 0.0f) { }
-
 			/**
 			 * \brief Compute the joint's quaternion W component.
 			 *
@@ -31,35 +26,30 @@ namespace tec {
 			 */
 			void ComputeW();
 
-			std::string name; // The name of the joint
-			int parent; // index
-			glm::vec3 position; // Transformed position.
-			glm::quat orientation; // Quaternion
-			glm::mat4 bind_pose;
-			glm::mat4 bind_pose_inverse;
+			std::string name{ "" }; // The name of the joint
+			int parent{ -1 }; // index
+			glm::vec3 position{ 0.f, 0.f, 0.f }; // Transformed position.
+			glm::quat orientation{ 0.f, 0.f, 0.f, 1.f }; // Quaternion
+			glm::mat4 bind_pose{ 0.f };
+			glm::mat4 bind_pose_inverse{ 0.f };
 		};
 
 		struct Vertex {
-			Vertex() : startWeight(0), weight_count(0), uv(0.0f, 0.0f) { }
-			int startWeight; // index
-			unsigned int weight_count;
-			glm::vec2 uv; // Texture coordinates
-			glm::vec3 position; // Calculated position (cached for later use)
-			glm::vec3 normal; // Calculated normal (cached for later use)
+			int startWeight{ 0 }; // index
+			unsigned int weight_count{ 0 };
+			glm::vec2 uv{ 0.f, 0.f }; // Texture coordinates
+			glm::vec3 position{ 0.f, 0.f, 0.f }; // Calculated position (cached for later use)
+			glm::vec3 normal{ 0.f, 0.f, 0.f }; // Calculated normal (cached for later use)
 		};
 
 		struct Triangle {
-			Triangle() {
-				this->verts[0] = 0; verts[1] = 0; verts[2] = 0;
-			}
-			int verts[3]; // index
+			int verts[3]{ 0, 0, 0 }; // index
 		};
 
 		struct Weight {
-			Weight() : joint(0), bias(0.0f), position(0.0f, 0.0f, 0.0f) { }
-			int joint; // index
-			float bias; // 0-1
-			glm::vec3 position;
+			int joint{ 0 }; // index
+			float bias{ 0.f }; // 0-1
+			glm::vec3 position{ 0.f, 0.f, 0.f };
 		};
 
 		// Holds information about each mesh inside the file.

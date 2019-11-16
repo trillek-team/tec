@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "vertex-buffer-object.hpp"
@@ -9,10 +9,10 @@
 #include "texture-object.hpp"
 
 namespace tec {
-	VertexBufferObject::VertexBufferObject() : vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0) { }
+	VertexBufferObject::VertexBufferObject() {}
 
 	VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) :
-		vao(0), vbo(0), ibo(0), vertex_count(0), index_count(0), source_mesh(mesh) {
+		source_mesh(mesh) {
 		Load(mesh);
 	}
 
@@ -58,11 +58,11 @@ namespace tec {
 			this->source_mesh = mesh;
 			std::vector<GLuint> all_indices;
 			std::vector<VertexData> all_verts;
-			std::size_t vert_offset = 0;
+			GLuint vert_offset = 0;
 			this->vertex_groups.clear();
 			for (std::size_t i = 0; i < mesh->GetMeshCount(); ++i) {
 				Mesh* mfmesh = mesh->GetMesh(i);
-				vert_offset = all_verts.size();
+				vert_offset = static_cast<GLuint>(all_verts.size());
 				all_verts.insert(all_verts.end(), mfmesh->verts.begin(), mfmesh->verts.end());
 				for (ObjectGroup* objgroup : mfmesh->object_groups) {
 					for (auto mat_group : objgroup->material_groups) {
@@ -110,7 +110,7 @@ namespace tec {
 		// If the size hasn't changed we can call update
 		if (this->vertex_count >= verts.size()) {
 			auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, this->vertex_count *
-				sizeof(VertexData), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+											sizeof(VertexData), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
 				std::memset((char*)buffer + verts.size() * sizeof(VertexData) - 1, 0, (this->vertex_count - verts.size()) * sizeof(VertexData));
@@ -147,7 +147,7 @@ namespace tec {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 		if (this->index_count >= indices.size()) {
 			auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, this->index_count *
-				sizeof(GLuint), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+											sizeof(GLuint), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
 				std::memset((char*)buffer + indices.size() * sizeof(GLuint) - 1, 0, (this->index_count - indices.size()) * sizeof(GLuint));

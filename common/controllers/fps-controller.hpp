@@ -40,25 +40,25 @@ namespace tec {
 
 		proto::ClientCommands GetClientCommands();
 
-		bool forward = false;
-		bool backward = false;
-		bool right_strafe = false;
-		bool left_strafe = false;
+		bool forward{ false };
+		bool backward{ false };
+		bool right_strafe{ false };
+		bool left_strafe{ false };
 
-		double current_delta = 0.0;
-		bool mouse_look = false;
+		double current_delta{ 0.0 };
+		bool mouse_look{ false };
 
 		std::unique_ptr<Orientation> orientation;
 
 		// These tell us which was pressed first.
-		bool KEY_A_FIRST = false;
-		bool KEY_W_FIRST = false;
+		bool KEY_A_FIRST{ false };
+		bool KEY_W_FIRST{ false };
 
 		// These tell us which are pressed.
-		bool KEY_W_DOWN = false;
-		bool KEY_A_DOWN = false;
-		bool KEY_S_DOWN = false;
-		bool KEY_D_DOWN = false;
+		bool KEY_W_DOWN{ false };
+		bool KEY_A_DOWN{ false };
+		bool KEY_S_DOWN{ false };
+		bool KEY_D_DOWN{ false };
 
 		void ApplyClientCommands(proto::ClientCommands proto_client_commands) override;
 	};

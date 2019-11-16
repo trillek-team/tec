@@ -29,9 +29,6 @@ namespace tec {
 		public EventQueue<ClientCommandsEvent>, public EventQueue<ControllerAddedEvent>,
 		public EventQueue<ControllerRemovedEvent> {
 	public:
-		Simulation() { }
-		~Simulation() { }
-
 		GameState Simulate(const double delta_time, GameState& interpolated_state);
 
 		PhysicsSystem& GetPhysicsSystem() {

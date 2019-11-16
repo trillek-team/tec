@@ -7,12 +7,7 @@
 
 #include "entity.hpp"
 
-namespace tec {
-	
-	LuaSystem::LuaSystem() = default;
-	
-	LuaSystem::~LuaSystem() = default;
-	
+namespace tec {	
 	void LuaSystem::Update(const double delta) {
 		auto _log = spdlog::get("console_log");
 		ProcessCommandQueue();

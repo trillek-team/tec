@@ -1,7 +1,7 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "resources/obj.hpp"
+#include "obj.hpp"
 
 #include <fstream>
 #include <memory>
@@ -11,8 +11,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "spdlog/spdlog.h"
-#include "client/graphics/texture-object.hpp"
+#include <spdlog/spdlog.h>
+#include "graphics/texture-object.hpp"
 
 namespace tec {
 	/**
@@ -239,7 +239,7 @@ namespace tec {
 				}
 				if (!current_face_group) {
 					current_face_group = new OBJGroup::FaceGroup();
-					current_face_group->faces.reserve(object_face_count[this->vertexGroups.size()] * 2);
+					current_face_group->faces.reserve(static_cast<std::size_t>(object_face_count[this->vertexGroups.size()]) * 2);
 					current_face_group->mtl = mtlname;
 					currentVGroup->face_groups.push_back(current_face_group);
 				}
@@ -337,7 +337,7 @@ namespace tec {
 					diffuse_color = glm::vec4(material->kd, 1.0);
 				}
 
-				size_t j = mesh->verts.size();
+				auto j{ static_cast<unsigned int>(mesh->verts.size()) };
 
 				if (mesh->verts.size() < (face_group->faces.size() * 3 + mesh->verts.size())) {
 					mesh->verts.resize(face_group->faces.size() * 3 + mesh->verts.size());

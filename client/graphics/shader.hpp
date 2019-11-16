@@ -32,7 +32,7 @@ namespace tec {
 			GEOMETRY = GL_GEOMETRY_SHADER,
 		};
 
-		Shader();
+		Shader() = default;
 
 		~Shader();
 		
@@ -107,7 +107,7 @@ namespace tec {
 		 * \param const FilePath filename The filename of the source file to load (relative to assets folder)
 		 * \return void
 		 */
-		void LoadFromFile(const ShaderType type, const tec::FilePath& filename);
+		void LoadFromFile(const Shader::ShaderType type, const tec::FilePath& filename);
 
 		/**
 		 * \brief Loads the specified ShaderType from the source string provided..
@@ -115,7 +115,7 @@ namespace tec {
 		 * \param const std::string source The source string to load from.
 		 * \return void
 		 */
-		void LoadFromString(const ShaderType type, const std::string& source) {
+		void LoadFromString(const Shader::ShaderType type, const std::string& source) {
 			LoadFromString(type, source, "");
 		}
 
@@ -140,9 +140,9 @@ namespace tec {
 		* \param const std::string filename The filename from were the source comes (only for debug purposes)
 		* \return void
 		*/
-		void LoadFromString(const ShaderType type, const std::string& source, const std::string& filename);
+		void LoadFromString(const Shader::ShaderType type, const std::string& source, const std::string& filename);
 
-		GLuint program;
+		GLuint program{ 0 };
 		std::vector<GLuint> shaders;
 		std::map<std::string, GLint> attributes;
 		std::map<std::string, GLint> uniforms;

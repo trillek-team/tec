@@ -22,7 +22,7 @@ namespace tec {
 
 	struct Voxel {
 		enum NEIGHBORS { UP = 0, DOWN, LEFT, RIGHT, FRONT, BACK };
-		float color[3];
+		float color[3]{ 0.f, 0.f, 0.f };
 		std::weak_ptr<Voxel> neighbors[6];
 	};
 

@@ -111,8 +111,8 @@ namespace tec {
 			return this->texture_id == other.texture_id;
 		}
 	protected:
-		GLuint texture_id;
-		bool compare;
+		GLuint texture_id{ 0 };
+		bool compare{ 0 };
 		std::weak_ptr<PixelBuffer> source_ptr;
 	};
 

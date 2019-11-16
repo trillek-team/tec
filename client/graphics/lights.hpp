@@ -13,23 +13,17 @@
 
 namespace tec {
 	struct BaseLight {
-		glm::vec3 color;
-		float ambient_intensity;
-		float diffuse_intensity;
+		glm::vec3 color{ 1.f, 1.f, 1.f };
+		float ambient_intensity{ 0.5f };
+		float diffuse_intensity{ 0.2f };
 
-		BaseLight() {
-			color = glm::vec3(1.0f, 1.0f, 1.0f);
-			ambient_intensity = 0.5f;
-			diffuse_intensity = 0.2f;
-		}
+		BaseLight() = default;
 	};
 
 	struct DirectionalLight : public BaseLight {
-		glm::vec3 direction;
+		glm::vec3 direction{ 0.f, 0.f, -1.f };
 
-		DirectionalLight() {
-			direction = glm::vec3(0.0f, 0.0f, -1.0f);
-		}
+		DirectionalLight() = default;
 
 		void Out(proto::Component* target) {
 			proto::Light* comp = target->mutable_directionallight();
@@ -72,16 +66,12 @@ namespace tec {
 
 	struct PointLight : public BaseLight {
 		struct {
-			float constant;
-			float linear;
-			float exponential;
+			float constant{ 0.f };
+			float linear{ 0.f };
+			float exponential{ 0.3f };
 		} Attenuation;
 
-		PointLight() {
-			Attenuation.constant = 0.0f;
-			Attenuation.linear = 0.0f;
-			Attenuation.exponential = 0.3f;
-		}
+		PointLight() = default;
 
 		void Out(proto::Component* target) {
 			proto::Light* comp = target->mutable_pointlight();
@@ -139,14 +129,12 @@ namespace tec {
 				this->Attenuation.exponential;
 		}
 
-		float bounding_radius;
+		float bounding_radius{ 0.f };
 	};
 
 	struct SpotLight : public DirectionalLight {
-		float cutoff;
+		float cutoff{ 0.f };
 
-		SpotLight() {
-			cutoff = 0.0f;
-		}
+		SpotLight() = default;
 	};
 }

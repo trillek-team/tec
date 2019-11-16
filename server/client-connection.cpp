@@ -48,7 +48,7 @@ namespace tec {
 			this->entity.set_id(this->id);
 			std::string message(std::to_string(this->id));
 			static ServerMessage id_message;
-			id_message.SetMessageType(CLIENT_ID);
+			id_message.SetMessageType(MessageType::CLIENT_ID);
 			id_message.SetBodyLength(message.size());
 			memcpy(id_message.GetBodyPTR(), message.c_str(), id_message.GetBodyLength());
 			id_message.encode_header();
@@ -58,7 +58,7 @@ namespace tec {
 		void ClientConnection::DoJoin() {
 			// Build an entity
 			Entity self(this->id);
-			self.Add<Position, Orientation, Velocity, View>(glm::vec3(5,1.0,5),glm::vec3(.5f,0.f,0.f), Velocity(), true);
+			self.Add<Position, Orientation, Velocity, View>(glm::vec3(5, 1.0, 5), glm::vec3(.5f, 0.f, 0.f), Velocity(), true);
 			CollisionBody* body = new CollisionBody();
 			proto::Component* component = this->entity.add_components();
 			proto::CollisionBody* body_component = component->mutable_collision_body();
@@ -72,11 +72,11 @@ namespace tec {
 			body->In(*component);
 			Multiton<eid, CollisionBody*>::Set(this->id, body);
 			self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
-					
+
 			ServerMessage entity_create_msg;
 			entity_create_msg.SetBodyLength(this->entity.ByteSize());
-			this->entity.SerializeToArray(entity_create_msg.GetBodyPTR(), entity_create_msg.GetBodyLength());
-			entity_create_msg.SetMessageType(ENTITY_CREATE);
+			this->entity.SerializeToArray(entity_create_msg.GetBodyPTR(), static_cast<int>(entity_create_msg.GetBodyLength()));
+			entity_create_msg.SetMessageType(MessageType::ENTITY_CREATE);
 			entity_create_msg.encode_header();
 			QueueWrite(entity_create_msg);
 			std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
@@ -92,7 +92,7 @@ namespace tec {
 
 		void ClientConnection::DoLeave() {
 			static ServerMessage leave_msg;
-			leave_msg.SetMessageType(CLIENT_LEAVE);
+			leave_msg.SetMessageType(MessageType::CLIENT_LEAVE);
 			std::string message(std::to_string(this->id));
 			leave_msg.SetBodyLength(message.size());
 			memcpy(leave_msg.GetBodyPTR(), message.c_str(), leave_msg.GetBodyLength());
@@ -117,82 +117,86 @@ namespace tec {
 
 		void ClientConnection::read_header() {
 			auto self(shared_from_this());
-			asio::async_read(socket,
+			asio::async_read(
+				socket,
 				asio::buffer(current_read_msg.GetDataPTR(), ServerMessage::header_length),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
-				if (!error && current_read_msg.decode_header()) {
-					read_body();
-				}
-				else {
-					server->Leave(shared_from_this());
-				}
-			});
+					if (!error && current_read_msg.decode_header()) {
+						read_body();
+					}
+					else {
+						server->Leave(shared_from_this());
+					}
+				});
 		}
 
 		void ClientConnection::read_body() {
 			auto self(shared_from_this());
-			asio::async_read(socket,
+			asio::async_read(
+				socket,
 				asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
-				if (!error) {
-					switch (this->current_read_msg.GetMessageType()) {
-						case CHAT_MESSAGE:
+					if (!error) {
+						switch (this->current_read_msg.GetMessageType()) {
+							case MessageType::CHAT_MESSAGE:
 							server->Deliver(this->current_read_msg);
 							std::cout.write(this->current_read_msg.GetBodyPTR(),
-								this->current_read_msg.GetBodyLength()) << std::endl;
+											this->current_read_msg.GetBodyLength()) << std::endl;
 							break;
-						case SYNC:
+							case MessageType::SYNC:
 							QueueWrite(this->current_read_msg);
 							break;
-						case CLIENT_COMMAND:
-						{
-							// Pass this along to be handled in simulation to allow for
-							// processing of string commands as well as movement.
+							case MessageType::CLIENT_COMMAND:
+							{
+								// Pass this along to be handled in simulation to allow for
+								// processing of string commands as well as movement.
 
-							// TODO: just apply movement commands here and split string commands
-							// to a different message.
-							proto::ClientCommands proto_client_commands;
-							proto_client_commands.ParseFromArray(current_read_msg.GetBodyPTR(),
-								current_read_msg.GetBodyLength());
-							this->last_confirmed_state_id = current_read_msg.GetStateID();
-							std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
-							data->client_commands = std::move(proto_client_commands);
-							this->last_recv_command_id = proto_client_commands.commandid();
-							EventSystem<ClientCommandsEvent>::Get()->Emit(data);
-						}
+								// TODO: just apply movement commands here and split string commands
+								// to a different message.
+								proto::ClientCommands proto_client_commands;
+								proto_client_commands.ParseFromArray(
+									current_read_msg.GetBodyPTR(),
+									static_cast<int>(current_read_msg.GetBodyLength()));
+								this->last_confirmed_state_id = current_read_msg.GetStateID();
+								std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
+								data->client_commands = std::move(proto_client_commands);
+								this->last_recv_command_id = proto_client_commands.commandid();
+								EventSystem<ClientCommandsEvent>::Get()->Emit(data);
+							}
 							break;
+						}
+						std::this_thread::sleep_for(std::chrono::milliseconds(1));
+						read_header();
 					}
-					std::this_thread::sleep_for(std::chrono::milliseconds(1));
-					read_header();
-				}
-				else {
-					server->Leave(shared_from_this());
-				}
-			});
+					else {
+						server->Leave(shared_from_this());
+					}
+				});
 		}
 
 		void ClientConnection::do_write() {
 			auto self(shared_from_this());
 			std::lock_guard<std::mutex> lock(write_msg_mutex);
-			asio::async_write(socket,
+			asio::async_write(
+				socket,
 				asio::buffer(write_msgs_.front().GetDataPTR(),
-				write_msgs_.front().length()),
+							 write_msgs_.front().length()),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
-				if (!error) {
-					bool more_to_write = false;
-					{
-						std::lock_guard<std::mutex> lock(write_msg_mutex);
-						write_msgs_.pop_front();
-						more_to_write = !write_msgs_.empty();
+					if (!error) {
+						bool more_to_write = false;
+						{
+							std::lock_guard<std::mutex> lock(write_msg_mutex);
+							write_msgs_.pop_front();
+							more_to_write = !write_msgs_.empty();
+						}
+						if (more_to_write) {
+							do_write();
+						}
 					}
-					if (more_to_write) {
-						do_write();
+					else {
+						server->Leave(shared_from_this());
 					}
-				}
-				else {
-					server->Leave(shared_from_this());
-				}
-			});
+				});
 		}
 
 		void ClientConnection::UpdateGameState(const GameState& full_state) {
@@ -227,9 +231,9 @@ namespace tec {
 				}
 			}
 			tec::networking::ServerMessage update_message;
-			update_message.SetMessageType(tec::networking::GAME_STATE_UPDATE);
+			update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
 			update_message.SetBodyLength(gsu_msg.ByteSize());
-			gsu_msg.SerializeToArray(update_message.GetBodyPTR(), update_message.GetBodyLength());
+			gsu_msg.SerializeToArray(update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
 			update_message.encode_header();
 			return std::move(update_message);
 		}

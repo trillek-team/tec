@@ -24,8 +24,7 @@ namespace tec {
 			: public std::enable_shared_from_this<ClientConnection> {
 		public:
 			ClientConnection(tcp::socket socket, Server* server) :
-				socket(std::move(socket)), server(server),
-				last_confirmed_state_id(0) { }
+				socket(std::move(socket)), server(server) { }
 
 			~ClientConnection();
 
@@ -74,14 +73,14 @@ namespace tec {
 			ServerMessage current_read_msg;
 			std::deque<ServerMessage> write_msgs_;
 			Server* server;
-			eid id;
+			eid id{ 0 };
 			proto::Entity entity;
 			static std::mutex write_msg_mutex;
 
-			FPSController* controller = nullptr;
+			FPSController* controller{ nullptr };
 
-			state_id_t last_confirmed_state_id; // That last state_id the client confirmed it received.
-			state_id_t last_recv_command_id;
+			state_id_t last_confirmed_state_id{ 0 }; // That last state_id the client confirmed it received.
+			state_id_t last_recv_command_id{ 0 };
 			GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.
 		};
 	}

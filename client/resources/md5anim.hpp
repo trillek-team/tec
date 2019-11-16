@@ -17,32 +17,32 @@ namespace tec {
 
 	class MD5Anim final {
 	public:
-		MD5Anim() { }
-		~MD5Anim() { }
+		MD5Anim() = default;
+		~MD5Anim() = default;
 
 		/*****************************/
 		/* MD5Anim helper structures */
 		/*****************************/
 		struct Joint {
 			std::string name; // The name of the joint
-			int parent; // index
-			int flags;
-			int start_index;
-			glm::vec3 base_position;
-			glm::quat base_orientation;
-			glm::mat4 bind_pose_inverse;
+			int parent{ 0 }; // index
+			int flags{0};
+			int start_index{0};
+			glm::vec3 base_position{ 0.f, 0.f, 0.f };
+			glm::quat base_orientation{ 0.f, 0.f, 0.f, 1.f };
+			glm::mat4 bind_pose_inverse{ 0.f };
 			void ComputeW();
 		};
 
 		struct BoundingBox {
-			glm::vec3 min;
-			glm::vec3 max;
+			glm::vec3 min{ 0.f, 0.f, 0.f };
+			glm::vec3 max{ 0.f, 0.f, 0.f };
 		};
 
 		struct SkeletonJoint {
 			int parent;
-			glm::vec3 position;
-			glm::quat orientation;
+			glm::vec3 position{ 0.f, 0.f, 0.f };
+			glm::quat orientation{ 0.f, 0.f, 0.f, 1.f };
 			void ComputeW();
 		};
 
@@ -52,7 +52,7 @@ namespace tec {
 		};
 
 		struct Frame {
-			int index;
+			int index{ 0 };
 			std::vector<float> parameters;
 			FrameSkeleton skeleton;
 		};
@@ -88,15 +88,15 @@ namespace tec {
 		FilePath GetFileName() {
 			return this->path;
 		}
-		
+
 		const std::string GetName() const {
 			return this->name;
 		}
-		
+
 		void SetName(const std::string& _name) {
 			this->name = _name;
 		}
-		
+
 		/**
 		* \brief Returns the number of animation frames.
 		*
@@ -146,6 +146,6 @@ namespace tec {
 		std::vector<BoundingBox> bounds; // Bound box sizes for each join.
 		std::vector<Frame> frames;
 		std::vector<Joint> joints;
-		int frame_rate; // Frame rate.
+		int frame_rate{ 0 }; // Frame rate.
 	};
 }

@@ -22,8 +22,6 @@ namespace tec {
 
 	class Material {
 	public:
-		Material();
-
 		/**
 		 * \brief Factory method that creates a Material and stores it in the
 		 * MaterialMap under name.
@@ -32,14 +30,14 @@ namespace tec {
 		 * \return std::shared_ptr<Material> The created Material.
 		 */
 		static std::shared_ptr<Material> Create(const std::string name);
-		
+
 		/**
 		 * \brief Adds a TextureObject to this material.
 		 * \param std::shared_ptr<TextureObject> tex The texture to add.
 		 * \return void
 		 */
 		void AddTexture(std::shared_ptr<TextureObject> tex);
-		
+
 		/**
 		 * \brief Gets a TextureObject from this material.
 		 * \param size_t index The index of the texture to grab (0-based).
@@ -53,7 +51,7 @@ namespace tec {
 		 * \return void
 		 */
 		void RemoveTexture(std::shared_ptr<TextureObject> tex);
-	
+
 		/**
 		 * \brief Sets the PolygonMode used when this material is in use.
 		 * \param const GLenum mode The PolygonMode (GL_POINT, GL_LINE, or GL_FILL).
@@ -95,8 +93,8 @@ namespace tec {
 		 */
 		void Deactivate();
 	private:
-		GLenum polygon_mode;
-		GLenum draw_elements_mode;
+		GLenum polygon_mode{ GL_FILL };
+		GLenum draw_elements_mode{ GL_TRIANGLES };
 		std::vector<std::shared_ptr<TextureObject>> textures;
 	};
 }
