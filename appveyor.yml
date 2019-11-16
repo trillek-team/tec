@@ -13,7 +13,7 @@ for:
   install:
     - git submodule update --init
     - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-    - sh: git clone https://github.com/Microsoft/vcpkg.git
+    - sh: "[ ! -d 'vcpkg' ] && git clone https://github.com/Microsoft/vcpkg.git"
     - sh: cd vcpkg
     - sh: ./bootstrap-vcpkg.sh
     - sh: ./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
@@ -36,6 +36,8 @@ for:
       artifact: trillek-linux
       on:
         branch: master
+      prerelease: true
+  cache: /vcpkg -> vcpkg_cache.txt
 -
   matrix:
      only:
@@ -64,5 +66,5 @@ for:
       artifact: trillek-win32
       on:
         branch: master
-
-cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt
+      prerelease: true
+  cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt
