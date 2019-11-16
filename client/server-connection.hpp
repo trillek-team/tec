@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #ifndef TRILLEK_CLIENT_SERVER_CONNECTION_HPP
@@ -20,16 +20,16 @@ using asio::ip::tcp;
 namespace tec {
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
-	
+
 	namespace networking {
 		extern const char* SERVER_PORT_STR;
 		extern const char* LOCAL_HOST;
 		typedef std::chrono::milliseconds::rep ping_time_t;
 		// std::chrono::milliseconds::rep is required to be signed and at least
 		// 45 bits, so it should be std::int64_t.
-		#define PRI_PING_TIME_T PRId64
+#define PRI_PING_TIME_T PRId64
 
-		// Used to connect to a server.
+// Used to connect to a server.
 		class ServerConnection {
 		public:
 			ServerConnection();
@@ -71,10 +71,10 @@ namespace tec {
 
 			// Register a message handler for a given MessageType.
 			void RegisterMessageHandler(MessageType type, std::function<void(const ServerMessage&)> handler) {
-				this->message_handlers[type] = std::move(handler);
+				this->message_handlers[type].push_back(handler);
 			}
 
-			void RegisterConnectFunc(std::function<void()> && func);
+			void RegisterConnectFunc(std::function<void()>&& func);
 
 		private:
 			void read_body(); // Used by the read loop. Calls read_header after the whole body is read.
@@ -84,6 +84,8 @@ namespace tec {
 			void GameStateUpdateHandler(const ServerMessage& message);
 
 			static std::shared_ptr<spdlog::logger> _log;
+
+			typedef std::function<void(const ServerMessage&)> handlerFunc;
 
 			// ASIO variables
 			asio::io_service io_service;
@@ -105,9 +107,9 @@ namespace tec {
 			// State management variables
 			state_id_t last_received_state_id;
 
-			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>, std::hash<std::underlying_type<MessageType>::type>> message_handlers;
+			std::unordered_map<MessageType, std::list<handlerFunc>> message_handlers;
 
-			std::function<void()> && onConnect = NULL;
+			std::function<void()>&& onConnect = NULL;
 		};
 	}
 }

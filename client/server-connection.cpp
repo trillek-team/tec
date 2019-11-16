@@ -115,7 +115,9 @@ namespace tec {
 				error);
 
 			if (!error) {
-				this->message_handlers[current_read_msg.GetMessageType()](current_read_msg);
+				for (auto handler : this->message_handlers[current_read_msg.GetMessageType()]) {
+					handler(current_read_msg);
+				}
 			}
 			else if (error) {
 				this->socket.close();
