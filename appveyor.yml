@@ -5,7 +5,6 @@ image:
   - Ubuntu
 configuration: Release
 clone_depth: 1
-max_jobs: 2
 for:
 -
   matrix:
