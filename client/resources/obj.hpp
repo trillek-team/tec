@@ -16,19 +16,11 @@
 namespace tec {
 	class OBJ final : public MeshFile {
 	public:
-		OBJ() { }
-		~OBJ() { }
-
 		// OBJ Helper struct for face vertex data indices.
 		struct Face {
-			Face() {
-				this->pos[0] = 0; this->pos[1] = 0; this->pos[2] = 0;
-				this->uv[0] = 0; this->uv[1] = 0; this->uv[2] = 0;
-				this->norm[0] = 0; this->norm[1] = 0; this->norm[2] = 0;
-			}
-			unsigned int pos[3]; // index
-			unsigned int uv[3]; // index
-			unsigned int norm[3]; // index
+			unsigned int pos[3]{ 0,0,0 }; // index
+			unsigned int uv[3]{ 0,0,0 }; // index
+			unsigned int norm[3]{ 0,0,0 }; // index
 		};
 
 		// OBJ Helper struct for storing vertex groups
@@ -50,12 +42,12 @@ namespace tec {
 
 		// MTL Helper struct describing mtl files
 		struct MTL {
-			glm::vec3 ka;
-			glm::vec3 kd;
-			glm::vec3 ks;
-			float tr;
-			float hardness;
-			int illum;
+			glm::vec3 ka{ 0.f, 0.f, 0.f };
+			glm::vec3 kd{ 0.f, 0.f, 0.f };
+			glm::vec3 ks{ 0.f, 0.f, 0.f };
+			float tr{ 0 };
+			float hardness{ 0 };
+			int illum{ 0 };
 			std::string ambientMap;
 			std::string diffuseMap;
 			std::string specularMap;

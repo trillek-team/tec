@@ -1,7 +1,7 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "client/server-connection.hpp"
+#include "server-connection.hpp"
 #include "controllers/fps-controller.hpp"
 #include "events.hpp"
 #include "event-system.hpp"
@@ -202,7 +202,7 @@ int main(int argc, char* argv[]) {
 				tec::proto::ClientCommands client_commands = camera_controller->GetClientCommands();
 				client_commands.set_commandid(command_id++);
 				update_message.SetStateID(connection.GetLastRecvStateID());
-				update_message.SetMessageType(tec::networking::CLIENT_COMMAND);
+				update_message.SetMessageType(tec::networking::MessageType::CLIENT_COMMAND);
 				client_commands.SerializeToArray(update_message.GetBodyPTR(), client_commands.ByteSize());
 				update_message.SetBodyLength(client_commands.ByteSize());
 				update_message.encode_header();

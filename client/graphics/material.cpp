@@ -6,8 +6,6 @@
 #include "shader.hpp"
 
 namespace tec {
-	Material::Material() : polygon_mode(GL_FILL), draw_elements_mode(GL_TRIANGLES) { }
-
 	const GLenum Material::GetPolygonMode() {
 		return this->polygon_mode;
 	}

@@ -21,12 +21,7 @@ namespace tec {
 
 	class ScriptFile {
 	public:
-		ScriptFile() { 
-			
-		}
-		
-		~ScriptFile() {
-		}
+		ScriptFile() = default;
 
 		/**
 		 * \brief Returns a resource with the specified name.
@@ -39,14 +34,14 @@ namespace tec {
 			auto scriptfile = std::make_shared<ScriptFile>();
 			scriptfile->SetName(fname.SubpathFrom("assets").toGenericString());
 
-			if (scriptfile->Load(fname) ) {
+			if (scriptfile->Load(fname)) {
 				return scriptfile;
 			}
 			spdlog::get("console_log")->warn("[ScriptFile] Error loading script file {}", fname.toString());
 
 			return nullptr;
 		}
-		
+
 		/**
 		 * \brief Returns a resource with the specified name.
 		 *
@@ -61,15 +56,17 @@ namespace tec {
 					file.seekg(0, std::ios::end);
 					script.reserve(static_cast<std::size_t>(file.tellg())); // Allocate string to the file size
 					file.seekg(0, std::ios::beg);
-					
+
 					script = std::string((std::istreambuf_iterator<char>(file)),
-									std::istreambuf_iterator<char>());
+										 std::istreambuf_iterator<char>());
 					_log->trace("[Script] Read script file {} of {} bytes", filename.FileName(), script.length());
-				} else {
+				}
+				else {
 					_log->warn("[Script] Error loading scriptfile {}", filename.FileName());
 					return false;
 				}
-			} else { 
+			}
+			else {
 				_log->warn("[Script] Error loading scriptfile {}. Invalid path.", filename.FileName());
 				return false;
 			}
@@ -93,12 +90,12 @@ namespace tec {
 			return scr;
 		}
 
-		ScriptFile(const ScriptFile &) = delete;
-		ScriptFile & operator=(const ScriptFile &) = delete;
+		ScriptFile(const ScriptFile&) = delete;
+		ScriptFile& operator=(const ScriptFile&) = delete;
 
-		ScriptFile(ScriptFile &&other) : name(std::move(other.name)), script(std::move(other.script)) { }
+		ScriptFile(ScriptFile&& other) noexcept : name(std::move(other.name)), script(std::move(other.script)) {}
 
-		ScriptFile& operator=(ScriptFile &&other)  {
+		ScriptFile& operator=(ScriptFile&& other) noexcept {
 			this->name = std::move(other.name);
 			this->script = std::move(other.script);
 			return *this;
@@ -137,10 +134,10 @@ namespace tec {
 		void Validate() {
 			this->dirty = false;
 		}
-		
+
 	protected:
 		std::string name;
 		std::string script;
-		bool dirty = false;
+		bool dirty{ false };
 	};
 }

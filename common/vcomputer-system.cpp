@@ -145,7 +145,7 @@ namespace tec {
 		comp->set_e(state.e);
 	}
 
-	ComputerKeyboard::ComputerKeyboard() : has_focus(false) {
+	ComputerKeyboard::ComputerKeyboard() {
 		this->device = std::make_shared<gkeyboard::GKeyboardDev>();
 	}
 
@@ -156,8 +156,6 @@ namespace tec {
 	VComputerSystem::VComputerSystem() {
 		_log = spdlog::get("console_log");
 	};
-
-	VComputerSystem::~VComputerSystem() = default;
 
 	void VComputerSystem::SetDevice(const eid entity_id, const unsigned int slot, std::shared_ptr<DeviceBase> device) {
 		if (this->computers.find(entity_id) != this->computers.end()) {

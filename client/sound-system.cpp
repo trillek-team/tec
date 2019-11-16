@@ -17,7 +17,7 @@ namespace tec {
 		}
 	}
 
-	SoundSystem::SoundSystem() : running(true) {
+	SoundSystem::SoundSystem() {
 		_log = spdlog::get("console_log");
 
 		this->device = alcOpenDevice(NULL); alCheckError();

@@ -10,8 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "spdlog/spdlog.h"
-#include "client/graphics/texture-object.hpp"
+#include <spdlog/spdlog.h>
+#include "graphics/texture-object.hpp"
 
 namespace tec {
 	/**
@@ -271,16 +271,16 @@ namespace tec {
 				VertexData vdata;
 
 				// Compute vertex position based on joint position.
-				for (std::size_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
-					Weight& weight = int_mesh.weights[int_mesh.verts[j].startWeight + k];
+				for (std::uint8_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
+					Weight& weight = int_mesh.weights[static_cast<std::size_t>(int_mesh.verts[j].startWeight) + static_cast<std::size_t>(k)];
 
 					/* Calculate transformed vertex for this weight */
 					glm::vec3 wv = this->joints[weight.joint].orientation * weight.position;
 
 					/* the sum of all weight->bias should be 1.0 */
 					vdata.position += (this->joints[weight.joint].position + wv) * weight.bias;
-					vdata.bone_indices[k] = weight.joint;
-					vdata.bone_weights[k] = weight.bias;
+					vdata.bone_indices[k] = static_cast<glm::u32>(weight.joint);
+					vdata.bone_weights[k] = static_cast<float>(weight.bias);
 				}
 
 				// Cache the calculated position for later

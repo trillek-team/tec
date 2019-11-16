@@ -3,7 +3,7 @@
 
 #include "voxel-volume.hpp"
 
-#include "client/graphics/vertex-buffer-object.hpp"
+#include "graphics/vertex-buffer-object.hpp"
 #include "events.hpp"
 #include "entity.hpp"
 #include "components/transforms.hpp"
@@ -154,12 +154,12 @@ namespace tec {
 					}
 					this->vertex_index[index] = vertex_offset;
 					for (std::size_t i = 0; i < 6; ++i) {
-						objgroup->indices.push_back(i * 4 + vertex_offset + 0);
-						objgroup->indices.push_back(i * 4 + vertex_offset + 1);
-						objgroup->indices.push_back(i * 4 + vertex_offset + 2);
-						objgroup->indices.push_back(i * 4 + vertex_offset + 2);
-						objgroup->indices.push_back(i * 4 + vertex_offset + 3);
-						objgroup->indices.push_back(i * 4 + vertex_offset + 0);
+						objgroup->indices.push_back(static_cast<int>(i * 4 + vertex_offset + 0));
+						objgroup->indices.push_back(static_cast<int>(i * 4 + vertex_offset + 1));
+						objgroup->indices.push_back(static_cast<int>(i * 4 + vertex_offset + 2));
+						objgroup->indices.push_back(static_cast<int>(i * 4 + vertex_offset + 2));
+						objgroup->indices.push_back(static_cast<int>(i * 4 + vertex_offset + 3));
+						objgroup->indices.push_back(static_cast<int>(i * 4 + vertex_offset + 0));
 					}
 				}
 				else {
@@ -187,8 +187,8 @@ namespace tec {
 							std::int16_t y = static_cast<std::int16_t>(floor(vert.position.y - IdentityVerts[0].position[1]));
 							std::int16_t z = static_cast<std::int16_t>(floor(vert.position.z - IdentityVerts[0].position[2]));
 
-							std::int64_t changed_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) +
-								(static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
+							std::int64_t changed_index = (static_cast<std::uint64_t>(y & 0xFFFF) << static_cast<std::uint64_t>(32)) +
+								(static_cast<std::uint32_t>(x & 0xFFFF) << static_cast<std::uint32_t>(16)) + static_cast<std::uint16_t>(z & 0xFFFF);
 
 							this->vertex_index[changed_index] = this->vertex_index[index];
 						}

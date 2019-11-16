@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #pragma once
@@ -15,10 +15,10 @@ namespace tec {
 
 	struct KeyboardEvent {
 		enum KEY_ACTION { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR };
-		int key;
-		int scancode;
+		int key{ 0 };
+		int scancode{0};
 		KEY_ACTION action;
-		int mods;
+		int mods{0};
 	};
 
 	struct MouseBtnEvent {
@@ -30,26 +30,26 @@ namespace tec {
 
 	/** Mouse change of position event */
 	struct MouseMoveEvent {
-		double norm_x, norm_y; /// Resolution independent new x, y (0-1) from upper-left to lower-right.
-		int old_x, old_y; /// Client space old x, y.
-		int new_x, new_y; /// Client space new x, y.
+		double norm_x{ 0.0 }, norm_y{ 0.0 }; /// Resolution independent new x, y (0-1) from upper-left to lower-right.
+		int old_x{ 0 }, old_y{ 0 }; /// Client space old x, y.
+		int new_x{ 0 }, new_y{ 0 }; /// Client space new x, y.
 	};
 
 	/** Mouse wheel event */
 	struct MouseScrollEvent {
-		double x_offset, y_offset; /// Delta x, y of mouse wheel.
+		double x_offset{ 0.0 }, y_offset{ 0.0 }; /// Delta x, y of mouse wheel.
 	};
 
 	struct MouseClickEvent {
-		eid entity_id;
+		eid entity_id{ 0 };
 		MouseBtnEvent::MOUSE_BTN button;
-		glm::vec3 ray_hit_piont_world;
+		glm::vec3 ray_hit_piont_world{ 0.f, 0.f, 0.f };
 		double ray_distance;
 	};
 
 	struct WindowResizedEvent {
-		int old_width, old_height; // Client space old width, height.
-		int new_width, new_height; // Client space new width, height.
+		int old_width{ 0 }, old_height{ 0 }; // Client space old width, height.
+		int new_width{ 0 }, new_height{ 0 }; // Client space new width, height.
 	};
 
 	struct FileDropEvent {
@@ -57,12 +57,12 @@ namespace tec {
 	};
 
 	struct EntityCreated {
-		eid entity_id;
+		eid entity_id{ 0 };
 		proto::Entity entity;
 	};
 
 	struct EntityDestroyed {
-		eid entity_id;
+		eid entity_id{ 0 };
 	};
 
 	struct ClientCommandsEvent {
@@ -71,10 +71,10 @@ namespace tec {
 
 	struct Controller;
 	struct ControllerAddedEvent {
-		Controller* controller;
+		Controller* controller{ nullptr };
 	};
 	struct ControllerRemovedEvent {
-		Controller* controller;
+		Controller* controller{nullptr};
 	};
 
 }

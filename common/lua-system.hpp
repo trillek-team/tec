@@ -22,10 +22,7 @@ namespace tec {
 	
 	class LuaSystem :
 		public CommandQueue<LuaSystem> {
-	public:
-		LuaSystem();
-		~LuaSystem();
-		
+	public:		
 		void Update(const double delta);
 		
 	private:

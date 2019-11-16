@@ -88,64 +88,65 @@ namespace tec {
 		}
 
 		void Server::AcceptHandler() {
-			acceptor.async_accept(socket,
-				[this](std::error_code error) {
-				EventQueue<EntityCreated>::ProcessEventQueue();
-				EventQueue<EntityDestroyed>::ProcessEventQueue();
-				if (!error) {
-					asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
-					std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
+			acceptor.async_accept(
+				socket,
+				[this] (std::error_code error) {
+					EventQueue<EntityCreated>::ProcessEventQueue();
+					EventQueue<EntityDestroyed>::ProcessEventQueue();
+					if (!error) {
+						asio::write(socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
+						std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
 
-					// self_protopack does contain a renderable component
-					static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.proto");
-					proto::Entity other_entity;
-					LoadProtoPack(other_entity, others_protopack);
+						// self_protopack does contain a renderable component
+						static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.proto");
+						proto::Entity other_entity;
+						LoadProtoPack(other_entity, others_protopack);
 
-					client->SetID(++base_id);
-					client->DoJoin();
+						client->SetID(++base_id);
+						client->DoJoin();
 
-					static ServerMessage connecting_client_entity_msg;
-					other_entity.set_id(client->GetID());
-					connecting_client_entity_msg.SetBodyLength(other_entity.ByteSize());
-					other_entity.SerializeToArray(connecting_client_entity_msg.GetBodyPTR(), connecting_client_entity_msg.GetBodyLength());
-					connecting_client_entity_msg.SetMessageType(ENTITY_CREATE);
-					connecting_client_entity_msg.encode_header();
+						static ServerMessage connecting_client_entity_msg;
+						other_entity.set_id(client->GetID());
+						connecting_client_entity_msg.SetBodyLength(other_entity.ByteSize());
+						other_entity.SerializeToArray(connecting_client_entity_msg.GetBodyPTR(), static_cast<int>(connecting_client_entity_msg.GetBodyLength()));
+						connecting_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
+						connecting_client_entity_msg.encode_header();
 
-					static ServerMessage other_client_entity_msg;
-					for (auto other_client : clients) {
-						other_entity.set_id(other_client->GetID());
-						other_client_entity_msg.SetBodyLength(other_entity.ByteSize());
-						other_entity.SerializeToArray(other_client_entity_msg.GetBodyPTR(), other_client_entity_msg.GetBodyLength());
-						other_client_entity_msg.SetMessageType(ENTITY_CREATE);
-						other_client_entity_msg.encode_header();
+						static ServerMessage other_client_entity_msg;
+						for (auto other_client : clients) {
+							other_entity.set_id(other_client->GetID());
+							other_client_entity_msg.SetBodyLength(other_entity.ByteSize());
+							other_entity.SerializeToArray(other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
+							other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
+							other_client_entity_msg.encode_header();
 
-						client->QueueWrite(other_client_entity_msg);
-						other_client->QueueWrite(connecting_client_entity_msg);
-					}
-					for (auto entity : entities) {
-						other_client_entity_msg.SetBodyLength(entity.second.ByteSize());
-						entity.second.SerializeToArray(other_client_entity_msg.GetBodyPTR(), other_client_entity_msg.GetBodyLength());
-						other_client_entity_msg.SetMessageType(ENTITY_CREATE);
-						other_client_entity_msg.encode_header();
-
-						client->QueueWrite(other_client_entity_msg);
-					}
-
-					LockClientList();
-					clients.insert(client);
-					UnlockClientList();
-					{
-						std::lock_guard<std::mutex> lock(recent_msgs_mutex);
-						for (auto msg : this->recent_msgs) {
-							client->QueueWrite(msg);
+							client->QueueWrite(other_client_entity_msg);
+							other_client->QueueWrite(connecting_client_entity_msg);
 						}
-					}
-					client->StartRead();
-				}
+						for (auto entity : entities) {
+							other_client_entity_msg.SetBodyLength(entity.second.ByteSize());
+							entity.second.SerializeToArray(other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
+							other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
+							other_client_entity_msg.encode_header();
 
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
-				AcceptHandler();
-			});
+							client->QueueWrite(other_client_entity_msg);
+						}
+
+						LockClientList();
+						clients.insert(client);
+						UnlockClientList();
+						{
+							std::lock_guard<std::mutex> lock(recent_msgs_mutex);
+							for (auto msg : this->recent_msgs) {
+								client->QueueWrite(msg);
+							}
+						}
+						client->StartRead();
+					}
+
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+					AcceptHandler();
+				});
 		}
 	}
 }

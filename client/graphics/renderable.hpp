@@ -32,6 +32,6 @@ namespace tec {
 		std::shared_ptr<MeshFile> mesh;
 		std::string shader_name;
 		std::shared_ptr<Shader> shader;
-		bool hidden = false;
+		bool hidden{ false };
 	};
 }

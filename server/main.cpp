@@ -9,8 +9,8 @@
 #include <fstream>
 #include <google/protobuf/util/json_util.h>
 #include "filesystem.hpp"
-#include "server/server.hpp"
-#include "server/client-connection.hpp"
+#include "server.hpp"
+#include "client-connection.hpp"
 #include "game_state.pb.h"
 #include "game-state-queue.hpp"
 #include "simulation.hpp"
@@ -74,9 +74,9 @@ int main() {
 					full_state.Out(&full_state_update);
 					tec::networking::ServerMessage full_state_update_message;
 					full_state_update_message.SetStateID(current_state_id);
-					full_state_update_message.SetMessageType(tec::networking::GAME_STATE_UPDATE);
+					full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
 					full_state_update_message.SetBodyLength(full_state_update.ByteSize());
-					full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), full_state_update_message.GetBodyLength());
+					full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), static_cast<int>(full_state_update_message.GetBodyLength()));
 					full_state_update_message.encode_header();
 					server.LockClientList();
 					for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {

@@ -28,8 +28,7 @@ namespace tec {
 	using PointLightMap = Multiton<eid, PointLight*>;
 	using DirectionalLightMap = Multiton<eid, DirectionalLight*>;
 
-	RenderSystem::RenderSystem() : current_view(nullptr),
-		window_width(1024), window_height(768) {
+	RenderSystem::RenderSystem() {
 		_log = spdlog::get("console_log");
 
 		GLenum err = glGetError();
@@ -58,18 +57,18 @@ namespace tec {
 			this->quad_vbo.Load(quad);
 		}
 
-		this->light_gbuffer.AddColorAttachments(4, this->window_width, this->window_height);
-		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE_STENCIL,
-			this->window_width, this->window_height);
+		this->light_gbuffer.AddColorAttachments(this->window_width, this->window_height);
+		this->light_gbuffer.SetDepthAttachment(GBuffer::GBUFFER_DEPTH_TYPE::GBUFFER_DEPTH_TYPE_STENCIL,
+											   this->window_width, this->window_height);
 		if (!this->light_gbuffer.CheckCompletion()) {
 			_log->error("[RenderSystem] Failed to create Light GBuffer.");
 		}
 
-		std::uint8_t tmp_buff[] = {
+		std::unique_ptr<const char[]> tmp_buf{ new char[16385] {
 #include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
-		};
+		} };
 		std::shared_ptr<PixelBuffer> default_pbuffer = std::make_shared<PixelBuffer>(64, 64, 8, ImageColorMode::COLOR_RGBA);
-		std::copy_n(tmp_buff, sizeof(tmp_buff) - 1, default_pbuffer->LockWrite());
+		std::copy_n(tmp_buf.get(), sizeof(tmp_buf.get()) - 1, default_pbuffer->LockWrite());
 		default_pbuffer->UnlockWrite();
 		PixelBufferMap::Set("default", default_pbuffer);
 
@@ -135,7 +134,7 @@ namespace tec {
 		def_shader->Use();
 		glUniformMatrix4fv(def_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-		glUniform1i(def_shader->GetUniformLocation("gColorMap"),0);
+		glUniform1i(def_shader->GetUniformLocation("gColorMap"), 0);
 		GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
 		GLint animated_loc = def_shader->GetUniformLocation("animated");
 		GLint model_index = def_shader->GetUniformLocation("model");
@@ -158,13 +157,13 @@ namespace tec {
 				if (render_item.animated) {
 					glUniform1i(animated_loc, 1);
 					auto& animmatricies = render_item.animation->bone_matrices;
-					glUniformMatrix4fv(animatrix_loc, animmatricies.size(), GL_FALSE, glm::value_ptr(animmatricies[0]));
+					glUniformMatrix4fv(animatrix_loc, static_cast<GLsizei>(animmatricies.size()), GL_FALSE, glm::value_ptr(animmatricies[0]));
 				}
 				for (VertexGroup* vertex_group : *render_item.vertex_groups) {
 					glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
 					vertex_group->material->Activate();
 					glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
-					glDrawElements(vertex_group->material->GetDrawElementsMode(), vertex_group->index_count, GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
+					glDrawElements(vertex_group->material->GetDrawElementsMode(), static_cast<GLsizei>(vertex_group->index_count), GL_UNSIGNED_INT, (GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
 					vertex_group->material->Deactivate();
 				}
 			}
@@ -197,9 +196,9 @@ namespace tec {
 		def_pl_shader->Use();
 		glUniformMatrix4fv(def_pl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniformMatrix4fv(def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-		glUniform1i(def_pl_shader->GetUniformLocation("gPositionMap"), GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
-		glUniform1i(def_pl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
-		glUniform1i(def_pl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+		glUniform1i(def_pl_shader->GetUniformLocation("gPositionMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
+		glUniform1i(def_pl_shader->GetUniformLocation("gNormalMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
+		glUniform1i(def_pl_shader->GetUniformLocation("gColorMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
 		glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), (GLfloat)this->window_width, (GLfloat)this->window_height);
 		GLint model_index = def_pl_shader->GetUniformLocation("model");
 		GLint Color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
@@ -217,7 +216,7 @@ namespace tec {
 
 		glBindVertexArray(this->sphere_vbo.GetVAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->sphere_vbo.GetIBO());
-		std::size_t index_count = this->sphere_vbo.GetVertexGroup(0)->index_count;
+		auto index_count{ static_cast<GLsizei>(this->sphere_vbo.GetVertexGroup(0)->index_count) };
 
 		for (auto itr = PointLightMap::Begin(); itr != PointLightMap::End(); ++itr) {
 			eid entity_id = itr->first;
@@ -237,7 +236,7 @@ namespace tec {
 			}
 
 			glm::mat4 transform_matrix = glm::scale(glm::translate(glm::mat4(1.0), position) *
-				glm::mat4_cast(orientation), scale);
+													glm::mat4_cast(orientation), scale);
 
 			light->UpdateBoundingRadius();
 			glm::mat4 scale_matrix = glm::scale(transform_matrix, glm::vec3(light->bounding_radius));
@@ -282,10 +281,10 @@ namespace tec {
 			}
 		}
 
-		glUniform1i(def_dl_shader->GetUniformLocation("gPositionMap"), GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
-		glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"), GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
-		glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"), GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), (GLfloat) this->window_width, (GLfloat) this->window_height);
+		glUniform1i(def_dl_shader->GetUniformLocation("gPositionMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
+		glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
+		glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
+		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), (GLfloat)this->window_width, (GLfloat)this->window_height);
 		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), 0, 0, 0);
 		GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 		GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
@@ -295,7 +294,7 @@ namespace tec {
 		glBindVertexArray(this->quad_vbo.GetVAO());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_vbo.GetIBO());
 
-		std::size_t index_count = this->quad_vbo.GetVertexGroup(0)->index_count;
+		auto index_count{ static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count) };
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
 			DirectionalLight* light = itr->second;
@@ -316,7 +315,7 @@ namespace tec {
 		this->light_gbuffer.FinalPass();
 
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			0, 0, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+						  0, 0, this->window_width, this->window_height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
@@ -327,21 +326,21 @@ namespace tec {
 		GLsizei QuarterWidth = (GLsizei)(this->window_width / 4.0f);
 		GLsizei QuarterHeight = (GLsizei)(this->window_height / 4.0f);
 
-		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuarterWidth, 0, this->window_width, QuarterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+						  this->window_width - QuarterWidth, 0, this->window_width, QuarterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuarterWidth, QuarterHeight, this->window_width, HalfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+						  this->window_width - QuarterWidth, QuarterHeight, this->window_width, HalfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+		this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuarterWidth, HalfHeight, this->window_width, HalfHeight + QuarterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+						  this->window_width - QuarterWidth, HalfHeight, this->window_width, HalfHeight + QuarterHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 		glReadBuffer(GL_DEPTH_ATTACHMENT);
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
-			this->window_width - QuarterWidth, HalfHeight + QuarterHeight, this->window_width, this->window_height, GL_DEPTH_BUFFER_BIT, GL_LINEAR);
+						  this->window_width - QuarterWidth, HalfHeight + QuarterHeight, this->window_width, this->window_height, GL_DEPTH_BUFFER_BIT, GL_LINEAR);
 		glReadBuffer(GL_NONE);
 	}
 
@@ -366,7 +365,7 @@ namespace tec {
 
 					RenderableMap::Set(entity_id, renderable);
 				}
-					break;
+				break;
 				case proto::Component::kPosition:
 				case proto::Component::kOrientation:
 				case proto::Component::kView:
@@ -382,7 +381,7 @@ namespace tec {
 				case proto::Component::kComputer:
 				case proto::Component::kLuaScript:
 				case proto::Component::COMPONENT_NOT_SET:
-					break;
+				break;
 			}
 		}
 	}
@@ -417,7 +416,7 @@ namespace tec {
 			}
 
 			this->model_matricies[entity_id] = glm::scale(glm::translate(glm::mat4(1.0), position) *
-				glm::mat4_cast(orientation), scale);
+														  glm::mat4_cast(orientation), scale);
 			if (!renderable->buffer) {
 				renderable->buffer = std::make_shared<VertexBufferObject>();
 				renderable->buffer->Load(renderable->mesh);

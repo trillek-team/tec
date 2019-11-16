@@ -61,7 +61,7 @@ namespace tec {
 	struct ComputerKeyboard : DeviceBase {
 		ComputerKeyboard();
 
-		bool has_focus;
+		bool has_focus{ false };
 
 		void In(const proto::Computer::Device& source);
 
@@ -75,7 +75,6 @@ namespace tec {
 		public EventQueue < KeyboardEvent >, public EventQueue < MouseBtnEvent > {
 	public:
 		VComputerSystem();
-		~VComputerSystem();
 
 		/** \brief Sets the specified device for the entity ID to device.
 		 *
@@ -130,7 +129,7 @@ namespace tec {
 		typedef Multiton<eid, std::shared_ptr<Computer>> ComputerComponentMap;
 		typedef Multiton<eid, std::shared_ptr<ComputerKeyboard>> KeyboardComponentMap;
 
-		double delta; // The time since the last Update was called.
+		double delta{ 0 }; // The time since the last Update was called.
 
 		std::map<eid, std::shared_ptr<Computer>> computers;
 	};

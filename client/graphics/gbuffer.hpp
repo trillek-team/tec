@@ -14,23 +14,21 @@
 namespace tec {
 	class GBuffer {
 	public:
-		enum GBUFFER_TEXTURE_TYPE {
-			GBUFFER_TEXTURE_TYPE_POSITION,
+		enum class GBUFFER_TEXTURE_TYPE : int {
+			GBUFFER_TEXTURE_TYPE_POSITION = 0,
 			GBUFFER_TEXTURE_TYPE_DIFFUSE,
 			GBUFFER_TEXTURE_TYPE_NORMAL,
-			GBUFFER_NUM_TEXTURES
 		};
-		enum GBUFFER_DEPTH_TYPE {
+		enum class GBUFFER_DEPTH_TYPE {
 			GBUFFER_DEPTH_TYPE_STENCIL
 		};
 
 		GBuffer();
-		~GBuffer() { }
-		void AddColorAttachments(unsigned short count,
-			const unsigned int window_width, const unsigned int window_height);
+		~GBuffer() {}
+		void AddColorAttachments(const unsigned int window_width, const unsigned int window_height);
 		void ResizeColorAttachments(const unsigned int window_width, const unsigned int window_height);
 		void SetDepthAttachment(GBUFFER_DEPTH_TYPE type,
-			const unsigned int width, const unsigned int height);
+								const unsigned int width, const unsigned int height);
 		void ResizeDepthAttachment(const unsigned int width, const unsigned int height);
 		bool CheckCompletion() const;
 		void StartFrame();
@@ -65,12 +63,12 @@ namespace tec {
 			return 0;
 		}
 	private:
-		GLuint frame_buffer_object;
-		GLuint color_textures[GBUFFER_NUM_TEXTURES];
-		GLuint depth_texture;
-		GLuint final_texture;
-		unsigned short num_color_textures;
-		unsigned int depth_width, depth_height;
-		GBUFFER_DEPTH_TYPE depth_type;
+		GLuint frame_buffer_object{ 0 };
+		GLuint color_textures[sizeof(GBUFFER_TEXTURE_TYPE) - 1]{ 0,0,0 };
+		GLuint depth_texture{ 0 };
+		GLuint final_texture{ 0 };
+		unsigned short num_color_textures{ sizeof(GBUFFER_TEXTURE_TYPE) - 1 };
+		unsigned int depth_width{ 0 }, depth_height{ 0 };
+		GBUFFER_DEPTH_TYPE depth_type{ GBUFFER_DEPTH_TYPE::GBUFFER_DEPTH_TYPE_STENCIL };
 	};
 }

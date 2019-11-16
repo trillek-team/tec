@@ -60,9 +60,9 @@ namespace tec {
 		void On(std::shared_ptr<EntityCreated> data);
 		void UpdateRenderList(double delta, const GameState& state);
 
-		glm::mat4 projection;
-		View* current_view;
-		unsigned int window_width, window_height;
+		glm::mat4 projection{ 0 };
+		View* current_view{ nullptr };
+		unsigned int window_width{ 1024 }, window_height{ 768 };
 		std::map<eid, glm::mat4> model_matricies;
 		std::shared_ptr<Shader> default_shader;
 
@@ -71,11 +71,11 @@ namespace tec {
 		VertexBufferObject quad_vbo; // Used for rendering directional lights.
 
 		struct RenderItem {
-			glm::mat4* model_matrix;
-			std::set<VertexGroup*>* vertex_groups;
-			GLuint vao, ibo;
-			bool animated = false;
-			Animation* animation;
+			glm::mat4* model_matrix{ nullptr };
+			std::set<VertexGroup*>* vertex_groups{ nullptr };
+			GLuint vao{ 0 }, ibo{ 0 };
+			bool animated{ false };
+			Animation* animation{ nullptr };
 
 			friend bool operator<(const RenderItem& a, const RenderItem& b) {
 				return a.vao < b.vao;

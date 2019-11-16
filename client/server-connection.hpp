@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+// Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #ifndef TRILLEK_CLIENT_SERVER_CONNECTION_HPP
@@ -97,17 +97,17 @@ namespace tec {
 			std::chrono::high_resolution_clock::time_point sync_start, recv_time;
 			std::list<ping_time_t> recent_pings;
 			static std::mutex recent_ping_mutex;
-			ping_time_t average_ping = 0;
+			ping_time_t average_ping{ 0 };
 
 			// Server-assigned client ID
-			eid client_id = 0;
+			eid client_id{ 0 };
 
 			// State management variables
-			state_id_t last_received_state_id;
+			state_id_t last_received_state_id{ 0 };
 
-			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>, std::hash<std::underlying_type<MessageType>::type>> message_handlers;
+			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>> message_handlers;
 
-			std::function<void()> && onConnect = NULL;
+			std::function<void()> && onConnect = nullptr;
 		};
 	}
 }

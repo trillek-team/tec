@@ -27,8 +27,7 @@ namespace tec {
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
 	struct AudioSource {
 		AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play) :
-			vorbis_stream(stream), source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED),
-			gain(100) {}
+			vorbis_stream(stream), source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED) {}
 		AudioSource() = default;
 
 		void Out(proto::Component* target) {
@@ -66,8 +65,8 @@ namespace tec {
 		ALuint buffer[2]{ 0,0 };
 		bool looping{ false };
 		std::shared_ptr<VorbisStream> vorbis_stream;
-		AUDIOSOURCE_STATE source_state = AUDIOSOURCE_STATE::PAUSED;
-		int gain = 100; // Volume
+		AUDIOSOURCE_STATE source_state{ AUDIOSOURCE_STATE::PAUSED };
+		int gain{ 100 }; // Volume
 		std::string audio_name;
 	};
 
@@ -88,12 +87,12 @@ namespace tec {
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
 	private:
-		std::atomic_bool running;
-		double delta;
+		std::atomic_bool running{ true };
+		double delta{ 0 };
 		std::shared_ptr<spdlog::logger> _log;
 		typedef Multiton<eid, AudioSource*> AudioSourceComponentMap;
-		ALCdevice* device;
-		ALCcontext* context;
+		ALCdevice* device{ nullptr };
+		ALCcontext* context{ nullptr };
 
 		std::set<AudioSource*> queued_sources;
 	};
