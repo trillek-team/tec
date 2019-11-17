@@ -3,12 +3,7 @@
 
 #include "imgui-system.hpp"
 
-#include "spdlog/spdlog.h"
-#include "filesystem.hpp"
-#include "os.hpp"
-#include "events.hpp"
-#include "client/server-connection.hpp"
-#include "gui/console.hpp"
+#include <spdlog/spdlog.h>
 
 #ifdef _MSC_VER
 #undef APIENTRY
@@ -16,6 +11,12 @@
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
 #endif
+
+#include "filesystem.hpp"
+#include "os.hpp"
+#include "events.hpp"
+#include "server-connection.hpp"
+#include "gui/console.hpp"
 
 namespace tec {
 	GLFWwindow* IMGUISystem::window = nullptr;

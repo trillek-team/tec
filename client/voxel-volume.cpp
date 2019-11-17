@@ -3,13 +3,15 @@
 
 #include "voxel-volume.hpp"
 
+#include <cmath>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "graphics/vertex-buffer-object.hpp"
 #include "events.hpp"
 #include "entity.hpp"
 #include "components/transforms.hpp"
-#include <cmath>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
 	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh)

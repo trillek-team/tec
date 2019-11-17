@@ -2,15 +2,17 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "vcomputer-system.hpp"
+
 #include <GLFW/glfw3.h> // TODO: included for key constants
+
+#include <vcomputer.hpp>
+#include <auxiliar.hpp>
+#include <tr3200/tr3200.hpp>
+#include <devices/tda.hpp>
+#include <devices/gkeyb.hpp>
+
 #include "entity.hpp"
 #include "events.hpp"
-
-#include "vcomputer.hpp"
-#include "auxiliar.hpp"
-#include "tr3200/tr3200.hpp"
-#include "devices/tda.hpp"
-#include "devices/gkeyb.hpp"
 
 // #include "client/graphics/texture-object.hpp"
 // #include "client/graphics/material.hpp"

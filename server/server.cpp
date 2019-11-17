@@ -1,14 +1,15 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "server.hpp"
-#include "client-connection.hpp"
-#include "components.pb.h"
-#include "filesystem.hpp"
-
 #include <iostream>
 #include <fstream>
 #include <thread>
+
+#include <components.pb.h>
+
+#include "server.hpp"
+#include "client-connection.hpp"
+#include "filesystem.hpp"
 
 using asio::ip::tcp;
 

@@ -8,8 +8,7 @@
 
 #include <spdlog/spdlog.h>
 #include <selene.h>
-
-#include "components.pb.h"
+#include <components.pb.h>
 
 namespace tec {
 

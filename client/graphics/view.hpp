@@ -4,8 +4,7 @@
 #pragma once
 
 #include <glm/mat4x4.hpp>
-
-#include "components.pb.h"
+#include <components.pb.h>
 
 namespace tec {
 	struct View {

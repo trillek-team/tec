@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+
 #include <al.h>
 #include <alc.h>
 

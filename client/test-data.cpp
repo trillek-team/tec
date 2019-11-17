@@ -1,6 +1,15 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
+#include <iostream>
+#include <map>
+#include <set>
+#include <memory>
+
+#include <spdlog/spdlog.h>
+#include <google/protobuf/util/json_util.h>
+#include <components.pb.h>
+
 #include "components/transforms.hpp"
 #include "components/collision-body.hpp"
 #include "components/lua-script.hpp"
@@ -27,16 +36,6 @@
 #include "physics-system.hpp"
 #include "voxel-volume.hpp"
 #include "lua-system.hpp"
-
-#include <spdlog/spdlog.h>
-#include <google/protobuf/util/json_util.h>
-
-#include <iostream>
-#include <map>
-#include <set>
-#include <memory>
-
-#include "components.pb.h"
 
 namespace tec {
 	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;

@@ -1,7 +1,7 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "resources/md5mesh.hpp"
+#include "md5mesh.hpp"
 
 #include <fstream>
 #include <memory>
@@ -9,8 +9,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 #include <spdlog/spdlog.h>
+
 #include "graphics/texture-object.hpp"
 
 namespace tec {

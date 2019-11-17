@@ -7,6 +7,7 @@
 #include <asio.hpp>
 #include <mutex>
 #include <deque>
+
 #include "types.hpp"
 #include "server-message.hpp"
 #include "game-state.hpp"

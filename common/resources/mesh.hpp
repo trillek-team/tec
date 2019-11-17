@@ -3,11 +3,13 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
 #include <list>
 #include <vector>
 #include <memory>
 #include <string>
+
+#include <glm/glm.hpp>
+
 #include "multiton.hpp"
 
 namespace tec {

@@ -6,13 +6,13 @@
 #include <memory>
 #include <vector>
 
-#include "multiton.hpp"
-
 #ifndef __APPLE__
 #include <GL/glew.h>
 #else
 #include <OpenGL/gl3.h>
 #endif
+
+#include "multiton.hpp"
 
 namespace tec {
 	class TextureObject;

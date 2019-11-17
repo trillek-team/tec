@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "types.hpp"
+
 namespace tec {
 	struct Shape {
 		float half_extents[3];

@@ -6,6 +6,7 @@
 #include <queue>
 #include <memory>
 #include <atomic>
+
 #include "types.hpp"
 
 namespace tec {

@@ -13,7 +13,7 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include "components.pb.h"
+#include <components.pb.h>
 
 namespace tec {
 	typedef std::int64_t state_id_t;

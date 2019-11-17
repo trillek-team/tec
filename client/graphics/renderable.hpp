@@ -8,7 +8,7 @@
 #include <map>
 #include <functional>
 
-#include "components.pb.h"
+#include <components.pb.h>
 
 namespace tec {
 	class Shader;

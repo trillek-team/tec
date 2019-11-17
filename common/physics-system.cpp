@@ -3,6 +3,11 @@
 
 #include "physics-system.hpp"
 
+// #include "physics/physics-debug-drawer.hpp"
+#include <BulletCollision/Gimpact/btGImpactShape.h>
+#include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "components/collision-body.hpp"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
@@ -10,10 +15,6 @@
 #include "events.hpp"
 #include "multiton.hpp"
 
-// #include "physics/physics-debug-drawer.hpp"
-#include <BulletCollision/Gimpact/btGImpactShape.h>
-#include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
-#include <glm/gtc/matrix_transform.hpp>
 
 namespace tec {
 	using CollisionBodyMap = Multiton<eid, CollisionBody*>;

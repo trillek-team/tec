@@ -1,6 +1,12 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
+#include <future>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <thread>
+
 #include "server-connection.hpp"
 #include "controllers/fps-controller.hpp"
 #include "events.hpp"
@@ -19,13 +25,8 @@
 #include "vcomputer-system.hpp"
 #include "voxel-volume.hpp"
 
-#include <future>
-#include <iostream>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_sinks.h>
-#include <sstream>
-#include <string>
-#include <thread>
 
 namespace tec {
 	extern void InitializeComponents();
