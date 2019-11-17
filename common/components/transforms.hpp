@@ -5,8 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
-
-#include "components.pb.h"
+#include <components.pb.h>
 
 namespace tec {
 	static glm::vec3 FORWARD_VECTOR(0.0f, 0.0f, -1.0f);

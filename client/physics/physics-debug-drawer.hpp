@@ -3,6 +3,7 @@
 #include <LinearMath/btIDebugDraw.h>
 #include <vector>
 #include <memory>
+
 #include "resources/mesh.hpp"
 
 namespace tec {

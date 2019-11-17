@@ -4,8 +4,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "components.pb.h"
-#include "commands.pb.h"
+#include <components.pb.h>
+#include <commands.pb.h>
+
 #include "types.hpp"
 
 namespace tec {

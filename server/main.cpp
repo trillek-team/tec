@@ -3,15 +3,17 @@
 
 #include <iostream>
 #include <string>
-#include <asio.hpp>
 #include <chrono>
 #include <thread>
 #include <fstream>
+
+#include <asio.hpp>
 #include <google/protobuf/util/json_util.h>
+#include <game_state.pb.h>
+
 #include "filesystem.hpp"
 #include "server.hpp"
 #include "client-connection.hpp"
-#include "game_state.pb.h"
 #include "game-state-queue.hpp"
 #include "simulation.hpp"
 

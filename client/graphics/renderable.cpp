@@ -2,6 +2,7 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "renderable.hpp"
+
 #include "resources/mesh.hpp"
 #include "shader.hpp"
 #include "vertex-buffer-object.hpp"

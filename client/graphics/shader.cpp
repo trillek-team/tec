@@ -3,8 +3,9 @@
 
 #include "shader.hpp"
 
-#include <spdlog/spdlog.h>
 #include <iterator>
+
+#include <spdlog/spdlog.h>
 
 namespace tec {
 	Shader::~Shader() {

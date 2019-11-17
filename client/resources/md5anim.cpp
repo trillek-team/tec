@@ -1,16 +1,17 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include "resources/md5anim.hpp"
+#include "md5anim.hpp"
 
 #include <fstream>
 #include <memory>
 #include <sstream>
+
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <spdlog/spdlog.h>
 
-#include "spdlog/spdlog.h"
-#include "resources/md5mesh.hpp"
+#include "md5mesh.hpp"
 
 namespace tec {
 	void MD5Anim::Joint::ComputeW() {

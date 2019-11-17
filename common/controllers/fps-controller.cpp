@@ -3,9 +3,11 @@
 
 #include "controllers/fps-controller.hpp"
 
+#include <iostream>
+
 #include <glm/gtx/quaternion.hpp>
 #include <GLFW/glfw3.h> // TODO: included for key constants
-#include <iostream>
+
 #include "components/transforms.hpp"
 #include "events.hpp"
 

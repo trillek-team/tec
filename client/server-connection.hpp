@@ -5,7 +5,6 @@
 #define TRILLEK_CLIENT_SERVER_CONNECTION_HPP
 
 #include <asio.hpp>
-#include <spdlog/spdlog.h>
 #include <memory>
 #include <thread>
 #include <chrono>
@@ -13,6 +12,9 @@
 #include <list>
 #include <iostream>
 #include <atomic>
+
+#include <spdlog/spdlog.h>
+
 #include "server-message.hpp"
 
 using asio::ip::tcp;

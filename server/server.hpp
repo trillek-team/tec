@@ -5,13 +5,15 @@
 
 #include <set>
 #include <deque>
-#include <asio.hpp>
 #include <mutex>
+
+#include <asio.hpp>
+#include <components.pb.h>
+
 #include "server-message.hpp"
 #include "event-queue.hpp"
 #include "event-system.hpp"
 #include "events.hpp"
-#include "components.pb.h"
 
 using asio::ip::tcp;
 

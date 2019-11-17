@@ -7,10 +7,11 @@
 #include <memory>
 #include <set>
 #include <iostream>
+
 #include <al.h>
 #include <alc.h>
+#include <spdlog/spdlog.h>
 
-#include "spdlog/spdlog.h"
 #include "multiton.hpp"
 #include "entity.hpp"
 #include "events.hpp"

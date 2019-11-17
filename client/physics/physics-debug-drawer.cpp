@@ -1,6 +1,6 @@
 #include "physics-debug-drawer.hpp"
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 #include "client/graphics/vertex-buffer-object.hpp"
 #include "client/graphics/material.hpp"
 #include "client/graphics/shader.hpp"

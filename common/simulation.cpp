@@ -8,9 +8,10 @@
 #include <set>
 #include <iostream>
 
+#include <commands.pb.h>
+
 #include "components/transforms.hpp"
 #include "controllers/fps-controller.hpp"
-#include "commands.pb.h"
 
 namespace tec {
 	double UPDATE_RATE = 10.0 / 60.0;

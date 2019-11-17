@@ -4,6 +4,7 @@
 #include "vorbis-stream.hpp"
 
 #include <spdlog/spdlog.h>
+
 #include "multiton.hpp"
 
 #undef STB_VORBIS_HEADER_ONLY

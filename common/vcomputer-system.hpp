@@ -7,9 +7,9 @@
 #include <list>
 #include <cstdint>
 
-#include "vcomputer.hpp"
+#include <vcomputer.hpp>
+#include <spdlog/spdlog.h>
 
-#include "spdlog/spdlog.h"
 #include "types.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"

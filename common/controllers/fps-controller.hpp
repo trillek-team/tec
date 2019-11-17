@@ -4,9 +4,11 @@
 #pragma once
 
 #include <memory>
+
+#include <commands.pb.h>
+
 #include "types.hpp"
 #include "game-state.hpp"
-#include "commands.pb.h"
 #include "events.hpp"
 
 namespace tec {

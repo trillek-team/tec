@@ -3,10 +3,10 @@
 
 #pragma once
 
+#include <memory>
+
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
-
-#include <memory>
 
 #include "types.hpp"
 

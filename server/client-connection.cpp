@@ -2,8 +2,13 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "client-connection.hpp"
-#include "game_state.pb.h"
-#include "commands.pb.h"
+
+#include <iostream>
+#include <thread>
+
+#include <game_state.pb.h>
+#include <commands.pb.h>
+
 #include "event-system.hpp"
 #include "events.hpp"
 #include "server.hpp"
@@ -12,8 +17,6 @@
 #include "controllers/fps-controller.hpp"
 #include "client/graphics/view.hpp"
 #include "components/collision-body.hpp"
-#include <iostream>
-#include <thread>
 
 namespace tec {
 	namespace networking {

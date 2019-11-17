@@ -2,6 +2,7 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "material.hpp"
+
 #include "texture-object.hpp"
 #include "shader.hpp"
 

@@ -6,8 +6,10 @@
 #include <map>
 #include <functional>
 #include <list>
+
+#include <game_state.pb.h>
+
 #include "types.hpp"
-#include "game_state.pb.h"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
 #include "events.hpp"

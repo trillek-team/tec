@@ -2,12 +2,14 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include "render-system.hpp"
+
+#include <thread>
+#include <cmath>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <spdlog/spdlog.h>
-#include <thread>
-#include <cmath>
 
 #include "graphics/shader.hpp"
 #include "graphics/animation.hpp"
