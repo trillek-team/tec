@@ -36,7 +36,7 @@ for:
         branch: master
       prerelease: true
   cache: /home/appveyor/projects/vcpkg -> vcpkg_cache.txt
-  test_script: '%APPVEYOR_BUILD_FOLDER%/build/tests/tests'
+  test_script: ./build/tests/tests
 -
   matrix:
      only:
