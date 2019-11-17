@@ -13,7 +13,7 @@
 
 namespace tec {
 	namespace networking {
-		enum class MessageType : int {
+		enum MessageType : int {
 			SYNC,
 			CLIENT_COMMAND,
 			ENTITY_CREATE,

@@ -107,7 +107,7 @@ namespace tec {
 			// State management variables
 			state_id_t last_received_state_id{ 0 };
 
-			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>> message_handlers;
+			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>, std::hash<std::underlying_type<MessageType>::type>> message_handlers;
 
 			std::function<void()> && onConnect = nullptr;
 		};
