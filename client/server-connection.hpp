@@ -74,7 +74,7 @@ namespace tec {
 				this->message_handlers[type].push_back(handler);
 			}
 
-			void RegisterConnectFunc(std::function<void()>&& func);
+			void RegisterConnectFunc(std::function<void()> func);
 
 		private:
 			void read_body(); // Used by the read loop. Calls read_header after the whole body is read.
@@ -109,7 +109,7 @@ namespace tec {
 
 			std::unordered_map<MessageType, std::list<handlerFunc>> message_handlers;
 
-			std::function<void()>&& onConnect = NULL;
+			std::function<void()> onConnect;
 		};
 	}
 }

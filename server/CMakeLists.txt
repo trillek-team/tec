@@ -16,13 +16,14 @@ else ()
 	set(trillek-server_PROGRAM "trillek-serverd")
 endif ()
 
-set(trillek-server_SOURCES
+set(trillek-server_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-server_SOURCE_DIR}/client-connection.cpp
-	${trillek-server_SOURCE_DIR}/main.cpp
 	${trillek-server_SOURCE_DIR}/server.cpp
 )
 
-add_executable(${trillek-server_PROGRAM} ${trillek-server_SOURCES})
+set(trillek-server_SOURCES ${trillek-server_SOURCES} PARENT_SCOPE) # so tests can use them
+
+add_executable(${trillek-server_PROGRAM} ${trillek-server_SOURCE_DIR}/main.cpp ${trillek-server_SOURCES})
 
 if (MSVC)
 	set_property(TARGET ${trillek-server_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)

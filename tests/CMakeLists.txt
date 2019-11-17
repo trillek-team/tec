@@ -1,80 +1,36 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
-# Unit Tests
-# idea take from : http://mifrosu.blogspot.com.es/2013/02/cmake-and-google-test-framework.html
-# and from http://stackoverflow.com/questions/9689183/cmake-googletest
+# Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
+# Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
+cmake_minimum_required(VERSION 3.9)
 
-INCLUDE(ExternalProject)
-# Set default ExternalProject root directory
-SET_DIRECTORY_PROPERTIES(PROPERTIES EP_PREFIX ${CMAKE_BINARY_DIR}/ThirdParty)
+enable_testing()
+find_package(GTest MODULE REQUIRED)
+find_package(GTest MODULE REQUIRED)
+find_package(protobuf CONFIG REQUIRED)
+find_package(Bullet REQUIRED)
+find_package(Lua REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(OpenAL CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
 
-FIND_PACKAGE(Threads REQUIRED)
+include_directories(${trillek_SOURCE_DIR})
+include_directories(SYSTEM ${BULLET_INCLUDE_DIR})
+include_directories(SYSTEM ${trillek-proto-INCLUDE_DIR})
+include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
+include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
+include_directories(${trillek-client_SOURCE_DIR})
+include_directories(${trillek-server_SOURCE_DIR})
 
-# Set the build type if it isn't already
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Release)
-ENDIF()
-# Add gtest
-ExternalProject_Add(
-    googletest
-# SVN_REPOSITORY http://googletest.googlecode.com/svn/trunk/
-# SVN_REVISION -r 660
-    URL http://googletest.googlecode.com/files/gtest-1.7.0.zip
-    TIMEOUT 30
-    # Force separate output paths for debug and release builds to allow easy
-    # identification of correct lib in subsequent TARGET_LINK_LIBRARIES commands
-    CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-        -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs
-        -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs
-        -Dgtest_force_shared_crt=ON
-    # Disable install step
-    INSTALL_COMMAND ""
-    # Wrap download, configure and build steps in a script to log output
-    LOG_DOWNLOAD ON
-    LOG_CONFIGURE ON
-    LOG_BUILD ON
-    )
-# Specify include dir
-ExternalProject_Get_Property(googletest source_dir)
+set(trillek-test_PROGRAM "tests")
 
+set(trillek-test_SOURCES
+	client-server-connection.cpp
+	filesystem_test.cpp
+)
 
-FILE(GLOB UNIT_TEST_FILES_SRC
-  "*_test.cpp"
-  )
-
-INCLUDE_DIRECTORIES( UNIT_TEST
-#    "${CMAKE_SOURCE_DIR}/src/"
-#    "${CMAKE_SOURCE_DIR}/include/"
-    "${CMAKE_SOURCE_DIR}/tests/"
-    ${source_dir}/include
-    )
-
-ADD_EXECUTABLE( UNIT_TEST
-    ${UNIT_TEST_FILES_SRC}
-#    ${TEC_SRC}
-    ${TEC_INCLUDES}
-#    ${IMGUI_SRC}
-#    ${IMGUI_INCLUDES}
-#    ${PB_FILES_SRC}
-#    ${PB_FILES_INCLUDES}
-    )
-
-ADD_DEPENDENCIES(UNIT_TEST googletest)
-
-SET_PROPERTY(TARGET UNIT_TEST PROPERTY CXX_STANDARD 11)
-
-ExternalProject_Get_Property(googletest binary_dir)
-if(MSVC)
-  set(GSuffix ".lib")
-else()
-  set(GSuffix ".a")
-endif()
-
-TARGET_LINK_LIBRARIES( UNIT_TEST
-    debug ${binary_dir}/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${GSuffix}
-    optimized ${binary_dir}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${GSuffix}
-    debug ${binary_dir}/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${GSuffix}
-    optimized ${binary_dir}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${GSuffix}
-    TEC_LIB
-    ${TEC_ALL_LIBS}
-    ${CMAKE_THREAD_LIBS_INIT}
-    )
+add_executable(${trillek-test_PROGRAM} ${trillek-test_SOURCES} ${trillek-server_SOURCES} ${trillek-client_SOURCES})
+target_link_libraries(${trillek-test_PROGRAM} PRIVATE ${OPENGL_gl_LIBRARY} ${X11_LIBRARIES} ${OSX_LIBRARIES}
+	GTest::GTest GTest::Main GLEW::GLEW OpenAL::OpenAL glfw imgui::imgui  ${trillek-common_LIBRARY} VCOMPUTER_STATIC)
+gtest_discover_tests(${trillek-test_PROGRAM})
