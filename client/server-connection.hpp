@@ -109,7 +109,7 @@ namespace tec {
 
 			std::unordered_map<MessageType, std::function<void(const ServerMessage&)>, std::hash<std::underlying_type<MessageType>::type>> message_handlers;
 
-			std::function<void()> && onConnect = nullptr;
+			std::function<void()> onConnect = nullptr;
 		};
 	}
 }
