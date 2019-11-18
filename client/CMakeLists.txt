@@ -22,6 +22,12 @@ else ()
 	set(trillek-client_PROGRAM "trillek-client")
 endif ()
 
+# Rather wonderfully, Apple decided to mark every single fucking OpenGL function
+# as deprecated because they have 'deprecated' OpenGL. Brilliant!
+if(APPLE)
+    add_definitions(-DGL_SILENCE_DEPRECATION)
+endif()
+
 set(trillek-client_SOURCES
 	${trillek-client_SOURCE_DIR}/imgui-system.cpp
 	${trillek-client_SOURCE_DIR}/main.cpp
