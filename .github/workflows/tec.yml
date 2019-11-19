@@ -11,6 +11,11 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    - name: Cache vcpkg installed
+      uses: actions/cache@v1
+      with:
+        key: ${{ runner.OS }}-vcpkg
+        path: ${VCPKG_INSTALLATION_ROOT}/installed
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Configure cmake
@@ -26,14 +31,21 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    - name: Cache vcpkg installed
+      uses: actions/cache@v1
+      with:
+        key: ${{ runner.OS }}-vcpkg
+        path: ${VCPKG_INSTALLATION_ROOT}/installed
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet x64-windows
     - name: Make build dir
       run: mkdir build
     - name: Change to build dir
       run: cd build
+    - name: Configure cmake
+      run: cmake -G "Visual Studio 16 2019" -A x64  -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake ..
     - name: Make
-      run: cmake -G "Visual Studio 16 2019" -A x64  -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake .. 
+      run: msbuild .\build\trillek.sln
       
   build-macos:
 
@@ -43,12 +55,17 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    - name: Cache vcpkg installed
+      uses: actions/cache@v1
+      with:
+        key: ${{ runner.OS }}-vcpkg
+        path: ${VCPKG_INSTALLATION_ROOT}/installed
     #- name: Checkout vcpkg
     #  run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
     #- name: Bootstrap vcpkg
     #  run: ../vcpkg/bootstrap-vcpkg.sh
     - name: Install deps vcpkg
-      run: ../vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: install bullet
       run: brew install bullet
     - name: Configure cmake
