@@ -14,7 +14,7 @@ jobs:
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Configure cmake
-      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=${{VCPKG_INSTALLATION_ROOT}}/scripts/buildsystems/vcpkg.cmake .. 
+      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake .. 
     - name: Make
       run: make
       
@@ -33,7 +33,7 @@ jobs:
     - name: Change to build dir
       run: cd build
     - name: Make
-      run: cmake -G "Visual Studio 16 2019" -A x64  -DCMAKE_TOOLCHAIN_FILE=${{VCPKG_INSTALLATION_ROOT}}/scripts/buildsystems/vcpkg.cmake .. 
+      run: cmake -G "Visual Studio 16 2019" -A x64  -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake .. 
       
   build-macos:
 
@@ -52,7 +52,7 @@ jobs:
     - name: install bullet
       run: brew install bullet
     - name: Configure cmake
-      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=${{VCPKG_INSTALLATION_ROOT}}/scripts/buildsystems/vcpkg.cmake .. 
+      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake .. 
     - name: Make
       run: make
 
