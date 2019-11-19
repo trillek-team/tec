@@ -1,0 +1,58 @@
+name: Trillek Engine CI
+
+on: [pull_request]
+
+jobs:
+  build-linux:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@2.0.0fi
+    - name: Install deps vcpkg
+      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+    - name: Configure cmake
+      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=${{VCPKG_INSTALLATION_ROOT}}/scripts/buildsystems/vcpkg.cmake .. 
+    - name: Make
+      run: make
+      
+  build-windows:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@2.0.0
+    - name: Install deps vcpkg
+      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet x64-windows
+    - name: Make build dir
+      run: mkdir build
+    - name: Change to build dir
+      run: cd build
+    - name: Make
+      run: cmake -G "Visual Studio 16 2019" -A x64  -DCMAKE_TOOLCHAIN_FILE=${{VCPKG_INSTALLATION_ROOT}}/scripts/buildsystems/vcpkg.cmake .. 
+      
+  build-macos:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Checkout submodules
+      uses: textbook/git-checkout-submodule-action@2.0.0
+    #- name: Checkout vcpkg
+    #  run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
+    #- name: Bootstrap vcpkg
+    #  run: ../vcpkg/bootstrap-vcpkg.sh
+    - name: Install deps vcpkg
+      run: ../vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+    - name: install bullet
+      run: brew install bullet
+    - name: Configure cmake
+      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=${{VCPKG_INSTALLATION_ROOT}}/scripts/buildsystems/vcpkg.cmake .. 
+    - name: Make
+      run: make
+
