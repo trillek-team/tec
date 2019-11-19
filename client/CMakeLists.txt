@@ -22,15 +22,15 @@ else ()
 	set(trillek-client_PROGRAM "trillek-client")
 endif ()
 
+
 # Rather wonderfully, Apple decided to mark every single fucking OpenGL function
 # as deprecated because they have 'deprecated' OpenGL. Brilliant!
 if(APPLE)
     add_definitions(-DGL_SILENCE_DEPRECATION)
 endif()
 
-set(trillek-client_SOURCES
+set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-client_SOURCE_DIR}/imgui-system.cpp
-	${trillek-client_SOURCE_DIR}/main.cpp
 	${trillek-client_SOURCE_DIR}/os.cpp
 	${trillek-client_SOURCE_DIR}/render-system.cpp
 	${trillek-client_SOURCE_DIR}/server-connection.cpp
@@ -52,6 +52,8 @@ set(trillek-client_SOURCES
 	${trillek-client_SOURCE_DIR}/resources/pixel-buffer.cpp
 )
 
+set(trillek-client_SOURCES ${trillek-client_SOURCES} PARENT_SCOPE) # so tests can use them
+
 # macOS needs to link libobjc
 set(OSX_LIBRARIES "")
 if (APPLE)
@@ -62,7 +64,7 @@ if (UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
 endif (UNIX AND NOT APPLE)
 
-add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCES})
+add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCE_DIR}/main.cpp ${trillek-client_SOURCES})
 
 if (MSVC)
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)

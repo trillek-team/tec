@@ -49,7 +49,7 @@ namespace tec {
 	}
 
 	void Orientation::Rotate(const glm::vec3 amount) {
-		this->rotation += amount;
+		this->rotation = this->rotation + amount;
 		this->value = glm::normalize(glm::quat(this->rotation));
 	}
 
