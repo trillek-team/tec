@@ -17,7 +17,7 @@ jobs:
       uses: actions/cache@v1
       with:
         key: ${{ runner.OS }}-vcpkg
-        path: ${{VCPKG_INSTALLATION_ROOT}}/installed
+        path: $VCPKG_INSTALLATION_ROOT/installed
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Configure cmake
@@ -37,7 +37,7 @@ jobs:
       uses: actions/cache@v1
       with:
         key: ${{ runner.OS }}-vcpkg
-        path: ${{VCPKG_INSTALLATION_ROOT}}/installed
+        path: $VCPKG_INSTALLATION_ROOT/installed
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet x64-windows
     - name: Configure cmake
