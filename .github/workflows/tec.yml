@@ -11,6 +11,8 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    - name: Install os deps
+      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y   
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
@@ -59,17 +61,17 @@ jobs:
       uses: actions/cache@v1
       with:
         key: ${{ runner.OS }}-vcpkg
-        path: ${VCPKG_INSTALLATION_ROOT}/installed
-    #- name: Checkout vcpkg
-    #  run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
-    #- name: Bootstrap vcpkg
-    #  run: ../vcpkg/bootstrap-vcpkg.sh
+        path: ../vcpkg/installed
+    - name: Checkout vcpkg
+      run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
+    - name: Bootstrap vcpkg
+      run: ../vcpkg/bootstrap-vcpkg.sh
     - name: Install deps vcpkg
-      run: vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: ../vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: install bullet
       run: brew install bullet
     - name: Configure cmake
-      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake .. 
+      run: makdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake .. 
     - name: Make
       run: make
 
