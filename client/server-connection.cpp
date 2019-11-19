@@ -10,8 +10,10 @@ using asio::ip::tcp;
 
 namespace tec {
 	namespace networking {
-		const char* SERVER_PORT_STR = "41228";
-		const char* LOCAL_HOST = "127.0.0.1";
+
+		const std::string_view SERVER_PORT = "41228";
+		const std::string_view LOCAL_HOST = "127.0.0.1";
+
 		std::shared_ptr<spdlog::logger> ServerConnection::_log;
 		std::mutex ServerConnection::recent_ping_mutex;
 
@@ -47,11 +49,11 @@ namespace tec {
 								   });
 		}
 
-		bool ServerConnection::Connect(std::string ip) {
+		bool ServerConnection::Connect(std::string_view ip) {
 			this->client_id = 0;
 			this->socket.close();
 			tcp::resolver resolver(this->io_service);
-			tcp::resolver::query query(ip, SERVER_PORT_STR);
+			tcp::resolver::query query(std::string(ip).data(), std::string(SERVER_PORT).data());
 			asio::error_code error = asio::error::host_not_found;
 			tcp::resolver::iterator endpoint_iterator = resolver.resolve(query), end;
 			try {

@@ -149,10 +149,10 @@ namespace tec {
 					std::int16_t z = static_cast<std::int16_t>(index & 0xFFFF);
 					std::size_t vertex_offset = _mesh->verts.size();
 					for (std::size_t i = 0; i < 24; ++i) {
-						_mesh->verts.push_back(std::move(VertexData(IdentityVerts[i].position[0] + x,
+						_mesh->verts.push_back(VertexData(IdentityVerts[i].position[0] + x,
 							IdentityVerts[i].position[1] + y, IdentityVerts[i].position[2] + z,
 							IdentityVerts[i].color[0], IdentityVerts[i].color[1], IdentityVerts[i].color[2],
-							IdentityVerts[i].uv[0], IdentityVerts[i].uv[1])));
+							IdentityVerts[i].uv[0], IdentityVerts[i].uv[1]));
 					}
 					this->vertex_index[index] = vertex_offset;
 					for (std::size_t i = 0; i < 6; ++i) {
@@ -219,14 +219,12 @@ namespace tec {
 			mesh = MeshMap::Get(name);
 			mesh.lock()->SetName(name);
 		}
-		auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh);
-		VoxelVoumeMap::Set(entity_id, voxvol);
-		return voxvol;
+		return Create(entity_id, mesh);
 	}
 
 	std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id, std::weak_ptr<MeshFile> mesh) {
 		auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh);
-		VoxelVoumeMap::Set(entity_id, voxvol);
+		VoxelVolumeMap::Set(entity_id, voxvol);
 		return voxvol;
 	}
 

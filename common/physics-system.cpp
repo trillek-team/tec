@@ -130,7 +130,7 @@ namespace tec {
 				itr->second->motion_state.transform_updated = false;
 			}
 		}
-		return std::move(updated_entities);
+		return updated_entities;
 	}
 
 	glm::vec3 GetRayDirection(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) {
@@ -379,7 +379,7 @@ namespace tec {
 			if (Entity(entity_id).Has<Position>()) {
 				position.center_offset = Entity(entity_id).Get<Position>()->center_offset;
 			}
-			return std::move(position);
+			return position;
 		}
 		return glm::vec3();
 	}
@@ -393,7 +393,7 @@ namespace tec {
 			if (Entity(entity_id).Has<Orientation>()) {
 				orientation.rotation_offset = Entity(entity_id).Get<Orientation>()->rotation_offset;
 			}
-			return std::move(orientation);
+			return orientation;
 		}
 		return glm::quat();
 	}

@@ -40,20 +40,13 @@ namespace tec {
 
 			void Stop();
 
-			void LockClientList() {
-				this->client_list_mutex.lock();
-			}
-
-			void UnlockClientList() {
-				
-				this->client_list_mutex.unlock();
-			}
-
 			// Get a list of all connected clients.
 			const std::set<std::shared_ptr<ClientConnection>>& GetClients() {
 				return this->clients;
 			}
 
+			using EventQueue<EntityCreated>::On;
+			using EventQueue<EntityDestroyed>::On;
 			void On(std::shared_ptr<EntityCreated> data);
 			void On(std::shared_ptr<EntityDestroyed> data);
 		private:
@@ -76,6 +69,7 @@ namespace tec {
 			enum { max_recent_msgs = 100 };
 			std::deque<ServerMessage> recent_msgs;
 			static std::mutex recent_msgs_mutex;
+		public:
 			std::mutex client_list_mutex;
 		};
 	}

@@ -42,6 +42,13 @@ namespace tec {
 		void AddController(Controller* controller);
 		void RemoveController(Controller* controller);
 
+		using EventQueue<KeyboardEvent>::On;
+		using EventQueue<MouseBtnEvent>::On;
+		using EventQueue<MouseMoveEvent>::On;
+		using EventQueue<MouseClickEvent>::On;
+		using EventQueue<ClientCommandsEvent>::On;
+		using EventQueue<ControllerAddedEvent>::On;
+		using EventQueue<ControllerRemovedEvent>::On;
 		void On(std::shared_ptr<KeyboardEvent> data);
 		void On(std::shared_ptr<MouseBtnEvent> data);
 		void On(std::shared_ptr<MouseMoveEvent> data);

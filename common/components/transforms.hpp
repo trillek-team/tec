@@ -8,9 +8,9 @@
 #include <components.pb.h>
 
 namespace tec {
-	static glm::vec3 FORWARD_VECTOR(0.0f, 0.0f, -1.0f);
-	static glm::vec3 UP_VECTOR(0.0f, 1.0f, 0.0f);
-	static glm::vec3 RIGHT_VECTOR(1.0f, 0.0f, 0.0f);
+	static glm::vec3 FORWARD_VECTOR = {0.0f, 0.0f, -1.0f};
+	static glm::vec3 UP_VECTOR = {0.0f, 1.0f, 0.0f};
+	static glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
 
 	struct Position {
 		Position(glm::vec3 pos) : value(pos) {}
@@ -21,8 +21,8 @@ namespace tec {
 		// Translates by amount in direction orientation.
 		void Translate(const glm::vec3 amount, const glm::quat orientation);
 
-		glm::vec3 value{ 0,0,0 };
-		glm::vec3 center_offset{ 0,0,0 };
+		glm::vec3 value = {0.0f, 0.0f, 0.0f};
+		glm::vec3 center_offset = {0.0f, 0.0f, 0.0f};
 
 		void Out(proto::Component* target);
 		void In(const proto::Component& source);

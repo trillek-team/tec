@@ -6,6 +6,9 @@
 #include <iostream>
 
 #include <glm/gtx/quaternion.hpp>
+
+#define GLFW_INCLUDE_GL3
+#define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h> // TODO: included for key constants
 
 #include "components/transforms.hpp"
@@ -113,7 +116,7 @@ namespace tec {
 			_orientation->set_z(this->orientation->value.z);
 			_orientation->set_w(this->orientation->value.w);
 		}
-		return std::move(proto_client_commands);
+		return proto_client_commands;
 	}
 
 	void FPSController::ApplyClientCommands(proto::ClientCommands proto_client_commands) {

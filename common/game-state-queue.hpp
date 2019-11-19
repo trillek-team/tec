@@ -30,9 +30,12 @@ namespace tec {
 			this->command_id = _command_id;
 		}
 
-		void On(std::shared_ptr<EntityCreated> data);
-		void On(std::shared_ptr<EntityDestroyed> data);
-		void On(std::shared_ptr<NewGameStateEvent> data);
+		using EventQueue<EntityCreated>::On;
+		using EventQueue<EntityDestroyed>::On;
+		using EventQueue<NewGameStateEvent>::On;
+		virtual void On(std::shared_ptr<EntityCreated> data);
+		virtual void On(std::shared_ptr<EntityDestroyed> data);
+		virtual void On(std::shared_ptr<NewGameStateEvent> data);
 
 		GameState& GetInterpolatedState() {
 			return this->interpolated_state;

@@ -66,12 +66,16 @@ namespace tec {
 			_log->error("[RenderSystem] Failed to create Light GBuffer.");
 		}
 
-		const char* tmp_buf{
+		const char* tmp_buf = {
 #include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monocrome texture data
-		 };
-		std::shared_ptr<PixelBuffer> default_pbuffer = std::make_shared<PixelBuffer>(64, 64, 8, ImageColorMode::COLOR_RGBA);
-		std::copy_n(tmp_buf, sizeof(tmp_buf), default_pbuffer->LockWrite());
-		default_pbuffer->UnlockWrite();
+		};
+
+		auto default_pbuffer = std::make_shared<PixelBuffer>(64, 64, 8, ImageColorMode::COLOR_RGBA);
+		{
+			std::lock_guard lg(default_pbuffer->GetWritelock());
+			std::copy_n(tmp_buf, sizeof(tmp_buf), default_pbuffer->GetPtr());
+		}
+
 		PixelBufferMap::Set("default", default_pbuffer);
 
 		std::shared_ptr<TextureObject> default_texture = std::make_shared<TextureObject>(default_pbuffer);

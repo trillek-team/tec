@@ -24,8 +24,9 @@ namespace tec {
 	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
 
 	namespace networking {
-		extern const char* SERVER_PORT_STR;
-		extern const char* LOCAL_HOST;
+		extern const std::string_view SERVER_PORT;
+		extern const std::string_view LOCAL_HOST;
+
 		typedef std::chrono::milliseconds::rep ping_time_t;
 		// std::chrono::milliseconds::rep is required to be signed and at least
 		// 45 bits, so it should be std::int64_t.
@@ -36,7 +37,7 @@ namespace tec {
 		public:
 			ServerConnection();
 
-			bool Connect(std::string ip = LOCAL_HOST); // Connects to a server.
+			bool Connect(std::string_view ip = LOCAL_HOST); // Connects to a server.
 
 			void Disconnect(); // Closes the socket connection and stops the read and sync loops.
 

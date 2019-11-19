@@ -59,7 +59,7 @@ namespace tec {
 
 	void Console::Println(const std::string& str, ImVec4 color) {
 		{
-			std::lock_guard<std::mutex> lock(input_mutex);
+			std::lock_guard<std::mutex> lg(input_mutex);
 			if (buf->full()) {
 				buf->pop_back();
 			}
@@ -70,7 +70,7 @@ namespace tec {
 
 	void Console::Println(const char* cstr, ImVec4 color) {
 		{
-			std::lock_guard<std::mutex> lock(input_mutex);
+			std::lock_guard<std::mutex> lg(input_mutex);
 			if (buf->full()) {
 				buf->pop_back();
 			}
@@ -88,7 +88,7 @@ namespace tec {
 		va_end(args);
 
 		{
-			std::lock_guard<std::mutex> lock(input_mutex);
+			std::lock_guard<std::mutex> lg(input_mutex);
 			if (buf->full()) {
 				buf->pop_back();
 			}

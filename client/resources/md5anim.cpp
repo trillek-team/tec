@@ -306,6 +306,6 @@ namespace tec {
 				glm::toMat4(finalJoint.orientation)) * this->joints[i].bind_pose_inverse;
 		}
 
-		return std::move(final_skeleton);
+		return final_skeleton;
 	}
 }
