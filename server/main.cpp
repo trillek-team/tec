@@ -26,7 +26,7 @@ namespace tec {
 	std::string LoadJSON(const FilePath& fname) {
 		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 		if (!input.good())
-			throw std::runtime_error("can't open ." + fname.GetNativePath());
+			throw std::runtime_error("can't open ." + *fname.GetNativePath().c_str());
 
 		std::string in;
 		input.seekg(0, std::ios::end);
