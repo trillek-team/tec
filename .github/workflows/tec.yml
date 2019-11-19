@@ -61,13 +61,13 @@ jobs:
       uses: actions/cache@v1
       with:
         key: ${{ runner.OS }}-vcpkg
-        path: ../vcpkg/installed
+        path: ../vcpkg
     - name: Checkout vcpkg
       run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
     - name: Bootstrap vcpkg
       run: ../vcpkg/bootstrap-vcpkg.sh
     - name: Install deps vcpkg
-      run: ../vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: ../vcpkg/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: install bullet
       run: brew install bullet
     - name: Configure cmake
