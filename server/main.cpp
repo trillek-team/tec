@@ -25,13 +25,16 @@ namespace tec {
 	eid active_entity;
 	std::string LoadJSON(const FilePath& fname) {
 		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
+		if (!input.good())
+			throw std::runtime_error("can't open ." + fname.GetNativePath());
+
 		std::string in;
 		input.seekg(0, std::ios::end);
 		in.reserve(static_cast<std::size_t>(input.tellg()));
 		input.seekg(0, std::ios::beg);
 		std::copy((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>(), std::back_inserter(in));
 		input.close();
-		return std::move(in);
+		return in;
 	}
 
 	void ProtoLoadEntity(const FilePath& fname) {
