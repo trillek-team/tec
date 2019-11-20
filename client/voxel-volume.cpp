@@ -244,7 +244,7 @@ namespace tec {
 			}
 		}
 		else if (data->button == MouseBtnEvent::RIGHT) {
-			if (entity_id == this->entity_id) {
+			if (data->entity_id == this->entity_id) {
 				const Position* pos = Entity(entity_id).Get<Position>();
 				const Orientation* orientation = Entity(entity_id).Get<Orientation>();
 				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
