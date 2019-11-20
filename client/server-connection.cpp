@@ -101,7 +101,8 @@ namespace tec {
 			try {
 				asio::write(this->socket, asio::buffer(msg.GetDataPTR(), msg.length()));
 			}
-			catch (std::exception) {
+			catch (std::exception const& e) {
+				std::cerr << "ServerConnection::Send(ServerMessage&): asio::write:" << e.what() << std::endl;
 			}
 		}
 
@@ -149,8 +150,8 @@ namespace tec {
 						read_header();
 					}
 				}
-				catch (std::exception e) {
-					std::cout << e.what();
+				catch (std::exception const& e) {
+					std::cerr << "ServerConnection::StartRead(): Error reading header:" << e.what() << std::endl;
 				}
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
