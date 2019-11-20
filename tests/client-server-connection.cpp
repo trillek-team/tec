@@ -2,7 +2,7 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 /**
- * Unit tests of VComputer
+ * Unit tests
  */
 
 #include <gtest/gtest.h>

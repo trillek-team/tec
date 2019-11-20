@@ -52,14 +52,14 @@ int main() {
 	std::chrono::duration<double> elapsed_seconds;
 	bool closing = false;
 
-    // Accumulated deltas since the last update was sent.
+	// Accumulated deltas since the last update was sent.
 	double delta_accumulator = 0.0;
 
 	tec::GameStateQueue game_state_queue;
 	tec::Simulation simulation;
 
 	try {
-		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::SERVER_PORT);
+		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::PORT);
 		tec::networking::Server server(endpoint);
 		std::cout << "Server ready" << std::endl;
 

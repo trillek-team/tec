@@ -19,7 +19,7 @@ using asio::ip::tcp;
 
 namespace tec {
 	namespace networking {
-		extern unsigned short SERVER_PORT;
+		extern unsigned short PORT;
 		class ClientConnection;
 
 		class Server : public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {

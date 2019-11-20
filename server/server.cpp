@@ -15,7 +15,7 @@ using asio::ip::tcp;
 
 namespace tec {
 	namespace networking {
-		unsigned short SERVER_PORT = 0xa10c;
+		unsigned short PORT = 0xa10c;
 		std::mutex Server::recent_msgs_mutex;
 
 		Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
