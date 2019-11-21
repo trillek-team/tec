@@ -20,6 +20,8 @@ using asio::ip::tcp;
 namespace tec {
 	namespace networking {
 		extern unsigned short SERVER_PORT;
+		static eid BASE_ENTITY_ID = 10000;
+
 		class ClientConnection;
 
 		class Server : public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
@@ -70,7 +72,7 @@ namespace tec {
 			std::map<eid, proto::Entity> entities;
 
 			std::set<std::shared_ptr<ClientConnection>> clients; // All connected clients.
-			std::uint64_t base_id = 10000; // Starting client_id
+			std::uint64_t base_id = BASE_ENTITY_ID; // Starting client_id
 
 			// Recent message list all clients get on connecting,
 			enum { max_recent_msgs = 100 };

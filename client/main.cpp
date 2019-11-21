@@ -150,11 +150,11 @@ int main(int argc, char* argv[]) {
 		[&game_state_queue, &connection, &camera_controller, &log, &gui] (const tec::networking::ServerMessage&) {
 			auto client_id = connection.GetClientID();
 			log->info("You are connected as client ID " + std::to_string(client_id));
-			camera_controller = std::make_shared< tec::FPSController>(client_id);
+			camera_controller = std::make_shared<tec::FPSController>(client_id);
 			tec::Entity camera(client_id);
 			camera.Add<tec::View>(true);
 			std::shared_ptr<tec::ControllerAddedEvent> cae_event = std::make_shared<tec::ControllerAddedEvent>();
-			cae_event->controller = camera_controller.get();
+			cae_event->controller = camera_controller;
 			tec::EventSystem<tec::ControllerAddedEvent>::Get()->Emit(cae_event);
 			game_state_queue.SetClientID(client_id);
 

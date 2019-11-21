@@ -25,10 +25,6 @@ namespace tec {
 			std::shared_ptr<ControllerRemovedEvent> data = std::make_shared<ControllerRemovedEvent>();
 			data->controller = this->controller;
 			EventSystem<ControllerRemovedEvent>::Get()->Emit(data);
-
-			if (this->controller) {
-				delete this->controller;
-			}
 		}
 		void ClientConnection::StartRead() {
 			read_header();
@@ -87,7 +83,7 @@ namespace tec {
 			data->entity_id = this->entity.id();
 			EventSystem<EntityCreated>::Get()->Emit(data);
 
-			this->controller = new tec::FPSController(data->entity_id);
+			this->controller = std::make_shared<FPSController>(data->entity_id);
 			std::shared_ptr<ControllerAddedEvent> dataX = std::make_shared<ControllerAddedEvent>();
 			dataX->controller = controller;
 			EventSystem<ControllerAddedEvent>::Get()->Emit(dataX);
