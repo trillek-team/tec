@@ -5,6 +5,7 @@ project(trillek)
 
 option(BUILD_CLIENT "Build the client" ON)
 option(BUILD_SERVER "Build the server" ON)
+option(BUILD_TESTS "Build tests" OFF)
 
 # TEMPRARY WORKAROUND - Figure out a better solution (TODO)
 #	asio does not include a CMake module so we have no easy way to locate it.
@@ -48,4 +49,7 @@ if (BUILD_CLIENT)
 endif ()
 if (BUILD_SERVER)
 	add_subdirectory(server)
+endif ()
+if (BUILD_TESTS)
+	add_subdirectory(tests)
 endif ()

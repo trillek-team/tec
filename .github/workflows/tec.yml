@@ -1,0 +1,73 @@
+name: Trillek Engine CI
+
+on: [pull_request]
+
+jobs:
+  build-linux:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Install os deps
+      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y   
+    - name: Cache vcpkg installed
+      uses: actions/cache@v1
+      with:
+        key: ${{ runner.OS }}-vcpkg
+        path: /usr/local/share/vcpkg/installed
+    - name: Install deps vcpkg
+      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+    - name: Configure cmake
+      run: mkdir -p build && cd build && cmake -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake ..
+    - name: Build
+      run: cmake --build build
+      
+  build-windows:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Cache vcpkg installed
+      uses: actions/cache@v1
+      with:
+        key: ${{ runner.OS }}-vcpkg
+        path: C:/vcpkg/installed
+    - name: Install deps vcpkg
+      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet x64-windows
+    - name: Configure cmake
+      run: cmake -G"Visual Studio 16 2019" -Ax64 -Bbuild -S. -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+    - name: Build
+      run: cmake --build build
+      
+  build-macos:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Cache vcpkg installed
+      uses: actions/cache@v1
+      with:
+        key: ${{ runner.OS }}-vcpkg
+        path: ../vcpkg
+    - name: Checkout vcpkg
+      run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
+    - name: Bootstrap vcpkg
+      run: ../vcpkg/bootstrap-vcpkg.sh
+    - name: Install deps vcpkg
+      run: ../vcpkg/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+    - name: install bullet
+      run: brew install bullet
+    - name: Configure cmake
+      run: cmake -B build -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
+    - name: Build
+      run: cmake --build build
+

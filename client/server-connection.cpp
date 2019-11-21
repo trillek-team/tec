@@ -44,7 +44,7 @@ namespace tec {
 				data->entity.ParseFromArray(current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
 				data->entity_id = data->entity.id();
 				EventSystem<EntityCreated>::Get()->Emit(data);
-			});
+								   });
 		}
 
 		bool ServerConnection::Connect(std::string ip) {
@@ -64,7 +64,7 @@ namespace tec {
 					throw asio::system_error(error);
 				}
 			}
-			catch (std::exception& e) {
+			catch (std::exception & e) {
 				std::cerr << e.what() << std::endl;
 				return false;
 			}
@@ -103,19 +103,20 @@ namespace tec {
 			}
 		}
 
-		void ServerConnection::RegisterConnectFunc(std::function<void()> && func)
-		{
+		void ServerConnection::RegisterConnectFunc(std::function<void()> func) {
 			this->onConnect = std::move(func);
 		}
 
 		void ServerConnection::read_body() {
 			asio::error_code error = asio::error::eof;
 			asio::read(this->socket,
-				asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()),
-				error);
+					   asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()),
+					   error);
 
 			if (!error) {
-				this->message_handlers[current_read_msg.GetMessageType()](current_read_msg);
+				for (auto handler : this->message_handlers[current_read_msg.GetMessageType()]) {
+					handler(current_read_msg);
+				}
 			}
 			else if (error) {
 				this->socket.close();
@@ -126,7 +127,7 @@ namespace tec {
 		void ServerConnection::read_header() {
 			asio::error_code error = asio::error::eof;
 			asio::read(this->socket,
-				asio::buffer(this->current_read_msg.GetDataPTR(), ServerMessage::header_length), error);
+					   asio::buffer(this->current_read_msg.GetDataPTR(), ServerMessage::header_length), error);
 			this->recv_time = std::chrono::high_resolution_clock::now();
 
 			if (!error && this->current_read_msg.decode_header()) {
@@ -140,16 +141,14 @@ namespace tec {
 
 		void ServerConnection::StartRead() {
 			this->stopped = false;
-			while (1) {
+			while (!this->stopped) {
 				try {
 					if (this->socket.is_open() && this->socket.available()) {
 						read_header();
 					}
-					if (this->stopped) {
-						return;
-					}
 				}
-				catch (std::exception) {
+				catch (std::exception e) {
+					std::cout << e.what();
 				}
 				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}

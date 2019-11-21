@@ -453,6 +453,5 @@ private:
 		is >> tmp;
 		path = FilePath(tmp);
 	}
-
 }
 

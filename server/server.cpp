@@ -39,9 +39,11 @@ namespace tec {
 				}
 			}
 
+			LockClientList();
 			for (auto client : this->clients) {
 				client->QueueWrite(msg);
 			}
+			UnlockClientList();
 		}
 
 		void Server::Deliver(std::shared_ptr<ClientConnection> client, const ServerMessage& msg) {
@@ -67,6 +69,9 @@ namespace tec {
 		}
 
 		void Server::Stop() {
+			LockClientList();
+			this->clients.clear();
+			UnlockClientList();
 			this->io_service.stop();
 		}
 

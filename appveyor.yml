@@ -15,9 +15,9 @@ for:
     - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - sh: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
     - sh: ../vcpkg/bootstrap-vcpkg.sh
-    - sh: ../vcpkg/vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+    - sh: ../vcpkg/vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog gtest
   before_build:
-    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+    - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_TESTS=true ..
   build_script:
     - make
   after_build:
@@ -36,17 +36,18 @@ for:
         branch: master
       prerelease: true
   cache: /home/appveyor/projects/vcpkg -> vcpkg_cache.txt
+  test_script: ./build/tests/tests
 -
   matrix:
      only:
        - image: Visual Studio 2019
   install:
      - git submodule update --init
-     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet x64-windows
+     - cmd: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog gtest --triplet x64-windows
      - cmd: mkdir build
      - cmd: cd build
   before_build:
-     - cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+     - cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_TESTS=true ..
   build:
      project: .\build\trillek.sln
      verbosity: minimal
@@ -66,3 +67,4 @@ for:
         branch: master
       prerelease: true
   cache: c:\tools\vcpkg\installed\ -> vcpkg_cache.txt
+  test_script: '%APPVEYOR_BUILD_FOLDER%\build\tests\%CONFIGURATION%\tests.exe'
