@@ -72,10 +72,10 @@ namespace tec {
 
 	struct Controller;
 	struct ControllerAddedEvent {
-		Controller* controller{ nullptr };
+		std::shared_ptr<Controller> controller{ nullptr };
 	};
 	struct ControllerRemovedEvent {
-		Controller* controller{nullptr};
+		std::shared_ptr<Controller> controller{nullptr};
 	};
 
 }

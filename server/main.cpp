@@ -63,51 +63,52 @@ int main() {
 		tec::ProtoLoadEntity(tec::FilePath::GetAssetPath("json/1000.json"));
 
 		last_time = std::chrono::high_resolution_clock::now();
-		std::thread simulation_thread([&]() {
-			while (!closing) {
-				next_time = std::chrono::high_resolution_clock::now();
-				elapsed_seconds = next_time - last_time;
-				last_time = next_time;
-				delta_accumulator += elapsed_seconds.count();
-				if (delta_accumulator >= tec::UPDATE_RATE) {
-					current_state_id++;
-					game_state_queue.ProcessEventQueue();
-					tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetBaseState());
-					full_state.state_id = current_state_id;
-					tec::proto::GameStateUpdate full_state_update;
-					full_state_update.set_command_id(current_state_id);
-					full_state.Out(&full_state_update);
-					tec::networking::ServerMessage full_state_update_message;
-					full_state_update_message.SetStateID(current_state_id);
-					full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
-					full_state_update_message.SetBodyLength(full_state_update.ByteSize());
-					full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), static_cast<int>(full_state_update_message.GetBodyLength()));
-					full_state_update_message.encode_header();
-					server.LockClientList();
-					for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
-						client->UpdateGameState(full_state);
-						if (current_state_id - client->GetLastConfirmedStateID() > tec::TICKS_PER_SECOND * 2.0) {
-							server.Deliver(client, full_state_update_message);
-							std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
+		std::thread simulation_thread(
+			[&] () {
+				while (!closing) {
+					next_time = std::chrono::high_resolution_clock::now();
+					elapsed_seconds = next_time - last_time;
+					last_time = next_time;
+					delta_accumulator += elapsed_seconds.count();
+					if (delta_accumulator >= tec::UPDATE_RATE) {
+						current_state_id++;
+						game_state_queue.ProcessEventQueue();
+						tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetBaseState());
+						full_state.state_id = current_state_id;
+						tec::proto::GameStateUpdate full_state_update;
+						full_state_update.set_command_id(current_state_id);
+						full_state.Out(&full_state_update);
+						tec::networking::ServerMessage full_state_update_message;
+						full_state_update_message.SetStateID(current_state_id);
+						full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
+						full_state_update_message.SetBodyLength(full_state_update.ByteSize());
+						full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), static_cast<int>(full_state_update_message.GetBodyLength()));
+						full_state_update_message.encode_header();
+						server.LockClientList();
+						for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
+							client->UpdateGameState(full_state);
+							if (current_state_id - client->GetLastConfirmedStateID() > tec::TICKS_PER_SECOND * 2.0) {
+								server.Deliver(client, full_state_update_message);
+								std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
+							}
+							else {
+								server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
+							}
 						}
-						else {
-							server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
-						}
-					}
 
-					server.UnlockClientList();
-					delta_accumulator -= tec::UPDATE_RATE;
-					game_state_queue.SetBaseState(std::move(full_state));
+						server.UnlockClientList();
+						delta_accumulator -= tec::UPDATE_RATE;
+						game_state_queue.SetBaseState(std::move(full_state));
+					}
+					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				}
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
-			}
-		});
+			});
 		std::cout << "Starting time: " << last_time.time_since_epoch().count() << std::endl;
 		server.Start();
 		closing = true;
 		simulation_thread.join();
 	}
-	catch (std::exception& e) {
+	catch (std::exception & e) {
 		std::cerr << "Exception: " << e.what() << std::endl;
 	}
 }
