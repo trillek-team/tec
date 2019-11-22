@@ -102,7 +102,6 @@ int main() {
 							}
 						}
 
-						server.UnlockClientList();
 						delta_accumulator -= tec::UPDATE_RATE;
 						game_state_queue.SetBaseState(std::move(full_state));
 					}
