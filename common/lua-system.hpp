@@ -20,13 +20,13 @@ namespace tec {
 	class LuaSystem;
 	typedef Command<LuaSystem> LuaCommand;
 	
-	class LuaSystem :
-		public CommandQueue<LuaSystem> {
+	class LuaSystem : public CommandQueue<LuaSystem> {
 	public:		
 		void Update(const double delta);
 		
 	private:
-		typedef Multiton<eid, std::shared_ptr<LuaScript>> ScriptsMap;
+		using ScriptsMap_t = Multiton<eid, std::shared_ptr<LuaScript>>;
+        ScriptsMap_t scripts_map;
 	};
 	
 }

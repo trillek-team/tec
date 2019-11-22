@@ -2,7 +2,7 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 /**
- * Unit tests of VComputer
+ * Unit tests
  */
 
 #include <gtest/gtest.h>
@@ -23,7 +23,7 @@ TEST(ClientServerConnection_test, Constructor) {
 	auto log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
 	spdlog::register_logger(log);
 
-	tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::SERVER_PORT);
+	tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::PORT);
 	tec::networking::Server server(endpoint);
 	std::thread start_thread([&server] () {server.Start(); });
 

@@ -27,7 +27,7 @@ namespace tec {
 	};
 
 	class VoxelVolume;
-	typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVoumeMap;
+	typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVolumeMap;
 
 	typedef Command<VoxelVolume> VoxelCommand;
 
@@ -63,6 +63,7 @@ namespace tec {
 		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into sub-mesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 		
+		using EventQueue<MouseClickEvent>::On;
 		void On(std::shared_ptr<MouseClickEvent> data);
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;

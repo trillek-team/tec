@@ -8,7 +8,7 @@ namespace tec {
 	static const double INTERPOLATION_RATE = 10.0 / 60.0;
 
 	void GameStateQueue::Interpolate(const double delta_time) {
-		std::lock_guard<std::mutex> lock(this->server_state_mutex);
+		std::lock_guard<std::mutex> lg(this->server_state_mutex);
 		if (this->server_states.size() > 5) {
 			std::cout << "getting flooded by state updates" << std::endl;
 		}
@@ -95,7 +95,7 @@ namespace tec {
 			this->server_states_array[server_state_array_index % SERVER_STATES_ARRAY_SIZE] = new_state;
 			server_state_array_index++;
 			this->last_server_state_id = new_state.state_id;
-			std::lock_guard<std::mutex> lock(this->server_state_mutex);
+			std::lock_guard<std::mutex> lg(this->server_state_mutex);
 			CheckPredictionResult(new_state);
 			this->server_states.emplace(std::move(new_state));
 		}

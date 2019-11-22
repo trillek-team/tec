@@ -174,7 +174,7 @@ namespace tec {
 		input.seekg(0, std::ios::beg);
 		std::copy((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>(), std::back_inserter(in));
 		input.close();
-		return std::move(in);
+		return in;
 	}
 
 	void ProtoLoadEntity(const FilePath& fname) {

@@ -94,16 +94,8 @@ namespace tec {
 		 */
 		const std::uint8_t* GetBlockBase() const;
 
-		/**
-		 * \brief Locks image for writing and gets pointer to base address of image data.
-		 * This function is intended for image processing or filling the pixel buffer.
-		 * \return uint8_t * base image address or nullptr if invalid or lock failed.
-		 */
-		std::uint8_t* LockWrite();
-		/**
-		 * \brief Unlocks image after writing, must be called if LockWrite was successful.
-		 */
-		void UnlockWrite();
+		std::mutex& GetWritelock() { return this->writelock; }
+		std::uint8_t* GetPtr() { return this->blockptr.get(); }
 
 		std::uint32_t Width() const { return imagewidth; }
 		std::uint32_t Height() const { return imageheight; }

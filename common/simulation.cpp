@@ -41,7 +41,7 @@ namespace tec {
 
 		GameState client_state = interpolated_state;
 		std::future<std::set<eid>> phys_future = std::async(std::launch::async, [=, &interpolated_state]() -> std::set < eid > {
-			return std::move(phys_sys.Update(delta_time, interpolated_state));
+			return phys_sys.Update(delta_time, interpolated_state);
 		});
 		std::set<eid> phys_results = phys_future.get();
 

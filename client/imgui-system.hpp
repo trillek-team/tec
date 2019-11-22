@@ -9,7 +9,7 @@
 #include <functional>
 
 #ifdef __APPLE__
-#include <OpenGL/gl3.h>
+#define GLFW_INCLUDE_GLCOREARB
 #else
 #include <GL/glew.h>
 #ifndef __unix
@@ -34,11 +34,11 @@ namespace tec {
 	}
 
 	class IMGUISystem :
-		public CommandQueue < IMGUISystem >,
-		public EventQueue < KeyboardEvent >,
-		public EventQueue < MouseMoveEvent >,
-		public EventQueue < MouseScrollEvent >,
-		public EventQueue < WindowResizedEvent > {
+		public CommandQueue<IMGUISystem>,
+		public EventQueue<KeyboardEvent>,
+		public EventQueue<MouseMoveEvent>,
+		public EventQueue<MouseScrollEvent>,
+		public EventQueue<WindowResizedEvent> {
 		typedef Command<IMGUISystem> GUICommand;
 	public:
 		IMGUISystem(GLFWwindow* window);
@@ -76,6 +76,10 @@ namespace tec {
 		static void SetClipboardText(void* user_data, const char* text);
 		static void RenderDrawLists(ImDrawData* draw_data);
 	private:
+		using EventQueue<WindowResizedEvent>::On;
+		using EventQueue<MouseMoveEvent>::On;
+		using EventQueue<MouseScrollEvent>::On;
+		using EventQueue<KeyboardEvent>::On;
 		void On(std::shared_ptr<WindowResizedEvent> data);
 		void On(std::shared_ptr<MouseMoveEvent > data);
 		void On(std::shared_ptr<MouseScrollEvent > data);

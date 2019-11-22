@@ -15,7 +15,7 @@ using asio::ip::tcp;
 
 namespace tec {
 	namespace networking {
-		unsigned short SERVER_PORT = 0xa10c;
+		unsigned short PORT = 0xa10c;
 		std::mutex Server::recent_msgs_mutex;
 
 		Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
@@ -32,18 +32,19 @@ namespace tec {
 		// TODO: Implement a method to deliver a message to all clients except the source.
 		void Server::Deliver(const ServerMessage& msg, bool save_to_recent) {
 			if (save_to_recent) {
-				std::lock_guard<std::mutex> lock(recent_msgs_mutex);
+				std::lock_guard<std::mutex> lg(recent_msgs_mutex);
 				this->recent_msgs.push_back(msg);
 				while (this->recent_msgs.size() > max_recent_msgs) {
 					this->recent_msgs.pop_front();
 				}
 			}
 
-			LockClientList();
-			for (auto client : this->clients) {
-				client->QueueWrite(msg);
+			{
+				std::lock_guard<std::mutex> lg(client_list_mutex);
+				for (auto client : this->clients) {
+					client->QueueWrite(msg);
+				}
 			}
-			UnlockClientList();
 		}
 
 		void Server::Deliver(std::shared_ptr<ClientConnection> client, const ServerMessage& msg) {
@@ -54,9 +55,10 @@ namespace tec {
 			eid leaving_client_id = client->GetID();
 			client->DoLeave(); // Send out entity destroyed events and client leave messages.
 
-			LockClientList();
-			this->clients.erase(client);
-			UnlockClientList();
+            {
+                std::lock_guard lg(this->client_list_mutex);
+                this->clients.erase(client);
+            }
 
 			// Notify other clients that a client left.
 			for (auto _client : this->clients) {
@@ -69,9 +71,10 @@ namespace tec {
 		}
 
 		void Server::Stop() {
-			LockClientList();
-			this->clients.clear();
-			UnlockClientList();
+			{
+				std::lock_guard<std::mutex> lg(client_list_mutex);
+				this->clients.clear();
+			}
 			this->io_service.stop();
 		}
 
@@ -138,11 +141,12 @@ namespace tec {
 							client->QueueWrite(other_client_entity_msg);
 						}
 
-						LockClientList();
-						clients.insert(client);
-						UnlockClientList();
 						{
-							std::lock_guard<std::mutex> lock(recent_msgs_mutex);
+							std::lock_guard lg(this->client_list_mutex);
+							clients.insert(client);
+						}
+						{
+							std::lock_guard<std::mutex> lg(recent_msgs_mutex);
 							for (auto msg : this->recent_msgs) {
 								client->QueueWrite(msg);
 							}

@@ -38,9 +38,9 @@ namespace tec {
 		void Handle(const MouseBtnEvent& data, const GameState& state);
 		void Handle(const MouseMoveEvent& data, const GameState& state);
 
-		void Update(double delta, GameState& state, EventList& commands);
+		void Update(double delta, GameState& state, EventList& commands) override;
 
-		proto::ClientCommands GetClientCommands();
+		proto::ClientCommands GetClientCommands() override;
 
 		bool forward{ false };
 		bool backward{ false };

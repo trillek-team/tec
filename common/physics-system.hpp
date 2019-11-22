@@ -43,6 +43,10 @@ namespace tec {
 		}
 
 		void DebugDraw();
+
+		using EventQueue<MouseBtnEvent>::On;
+		using EventQueue<EntityCreated>::On;
+		using EventQueue<EntityDestroyed>::On;
 		void On(std::shared_ptr<MouseBtnEvent> data);
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);

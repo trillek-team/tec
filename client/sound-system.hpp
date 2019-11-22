@@ -71,8 +71,9 @@ namespace tec {
 		std::string audio_name;
 	};
 
-	class SoundSystem : public CommandQueue < SoundSystem >,
-		public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
+	class SoundSystem : public CommandQueue<SoundSystem>,
+		public EventQueue<EntityCreated>,
+		public EventQueue<EntityDestroyed> {
 	public:
 		SoundSystem();
 
@@ -85,6 +86,9 @@ namespace tec {
 		void Stop() {
 			this->running = false;
 		}
+
+		using EventQueue<EntityCreated>::On;
+		using EventQueue<EntityDestroyed>::On;
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
 	private:

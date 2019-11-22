@@ -158,7 +158,7 @@ namespace tec {
 			}
 									});
 		this->ShowWindow("active_entity");
-		this->AddWindowDrawFunction("main_menu", [os, connection, this] () {
+		this->AddWindowDrawFunction("main_menu", [connection, this] () {
 			if (ImGui::BeginMainMenuBar()) {
 				if (ImGui::BeginMenu("Connect")) {
 					bool visible = this->IsWindowVisible("connect_window");

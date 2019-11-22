@@ -179,18 +179,6 @@ namespace tec {
 		return nullptr;
 	}
 
-	uint8_t * PixelBuffer::LockWrite() {
-		if (blockptr) {
-			writelock.lock();
-			return blockptr.get();
-		}
-		return nullptr;
-	}
-
-	void PixelBuffer::UnlockWrite() {
-		writelock.unlock();
-	}
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "resources/stb_image.h"
 

@@ -55,6 +55,9 @@ namespace tec {
 		void FinalPass();
 		void RenderGbuffer();
 
+		using EventQueue<WindowResizedEvent>::On;
+		using EventQueue<EntityDestroyed>::On;
+		using EventQueue<EntityCreated>::On;
 		void On(std::shared_ptr<WindowResizedEvent> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
 		void On(std::shared_ptr<EntityCreated> data);

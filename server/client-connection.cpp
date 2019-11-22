@@ -33,7 +33,7 @@ namespace tec {
 		void ClientConnection::QueueWrite(const ServerMessage& msg) {
 			bool write_in_progress;
 			{
-				std::lock_guard<std::mutex> lock(write_msg_mutex);
+				std::lock_guard<std::mutex> lg(write_msg_mutex);
 				write_in_progress = !write_msgs_.empty();
 				write_msgs_.push_back(msg);
 			}
@@ -175,7 +175,7 @@ namespace tec {
 
 		void ClientConnection::do_write() {
 			auto self(shared_from_this());
-			std::lock_guard<std::mutex> lock(write_msg_mutex);
+			std::lock_guard<std::mutex> lg(write_msg_mutex);
 			asio::async_write(
 				socket,
 				asio::buffer(write_msgs_.front().GetDataPTR(),
@@ -184,7 +184,7 @@ namespace tec {
 					if (!error) {
 						bool more_to_write = false;
 						{
-							std::lock_guard<std::mutex> lock(write_msg_mutex);
+							std::lock_guard<std::mutex> lg(write_msg_mutex);
 							write_msgs_.pop_front();
 							more_to_write = !write_msgs_.empty();
 						}
@@ -234,7 +234,7 @@ namespace tec {
 			update_message.SetBodyLength(gsu_msg.ByteSize());
 			gsu_msg.SerializeToArray(update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
 			update_message.encode_header();
-			return std::move(update_message);
+			return update_message;
 		}
 	}
 }

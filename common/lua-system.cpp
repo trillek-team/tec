@@ -12,7 +12,7 @@ namespace tec {
 		auto _log = spdlog::get("console_log");
 		ProcessCommandQueue();
 		
-		for (auto itr = ScriptsMap::Begin(); itr != ScriptsMap::End(); itr++) {
+		for (auto itr = this->scripts_map.Begin(); itr != this->scripts_map.End(); itr++) {
 			auto entity_id = itr->first;
 			if (Entity(entity_id).Has<LuaScript>()) {
 				if (const LuaScript* lscript = Entity(entity_id).Get<LuaScript>()) {

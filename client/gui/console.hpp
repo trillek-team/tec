@@ -68,8 +68,9 @@ namespace tec {
 
 		std::map<std::string, std::tuple<std::function<void(const char*)>, std::string>> commands; /// Storage of commands and help info
 			
+		using EventQueue<WindowResizedEvent>::On;
+		using EventQueue<KeyboardEvent>::On;
 		void On(std::shared_ptr<WindowResizedEvent> data);
-
 		void On(std::shared_ptr<KeyboardEvent> data);
 	};
 
@@ -81,15 +82,15 @@ namespace tec {
 			// SPDLog sink interface
 			void log(const spdlog::details::log_msg& msg) override;
 			
-			void flush() {};
+			void flush() override {}
 
 			void set_pattern(const std::string& pattern) final {
-				std::lock_guard<std::mutex> lock(mutex_);
+				std::lock_guard<std::mutex> lg(mutex_);
 				set_pattern_(pattern);
 			}
 
 			void set_formatter(std::unique_ptr<spdlog::formatter> sink_formatter) final {
-				std::lock_guard<std::mutex> lock(mutex_);
+				std::lock_guard<std::mutex> lg(mutex_);
 				set_formatter_(std::move(sink_formatter));
 			}
 		private:

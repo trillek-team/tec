@@ -34,7 +34,7 @@ namespace tec {
 		~Computer() {
 			if (this->rom) {
 				this->vc.Off();
-				delete this->rom;
+				delete[] this->rom;
 			}
 		}
 		std::uint8_t *rom;
@@ -51,6 +51,7 @@ namespace tec {
 	class TextureObject;
 	struct ComputerScreen : DeviceBase {
 		ComputerScreen();
+		virtual ~ComputerScreen() = default;
 		std::shared_ptr<TextureObject> texture;
 
 		void In(const proto::Computer::Device& source);
@@ -60,6 +61,7 @@ namespace tec {
 
 	struct ComputerKeyboard : DeviceBase {
 		ComputerKeyboard();
+		virtual ~ComputerKeyboard() = default;
 
 		bool has_focus{ false };
 
@@ -71,8 +73,10 @@ namespace tec {
 	struct KeyboardEvent;
 	struct MouseBtnEvent;
 
-	class VComputerSystem final : public CommandQueue < VComputerSystem >,
-		public EventQueue < KeyboardEvent >, public EventQueue < MouseBtnEvent > {
+	class VComputerSystem final :
+        public CommandQueue<VComputerSystem>,
+		public EventQueue<KeyboardEvent>,
+        public EventQueue<MouseBtnEvent> {
 	public:
 		VComputerSystem();
 
@@ -122,6 +126,8 @@ namespace tec {
 		 */
 		void Update(double delta);
 
+		using EventQueue<KeyboardEvent>::On;
+		using EventQueue<MouseBtnEvent>::On;
 		void On(std::shared_ptr<KeyboardEvent> data);
 		void On(std::shared_ptr<MouseBtnEvent> data);
 	private:

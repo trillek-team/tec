@@ -12,7 +12,9 @@
 
 namespace tec {
 	ATTRIBUTE_ALIGNED16(struct) CollisionBody {
+
 		BT_DECLARE_ALIGNED_ALLOCATOR();
+
 		struct MotionState : public btMotionState {
 			MotionState() {
 				this->transform.setIdentity();
@@ -22,12 +24,8 @@ namespace tec {
 
 			MotionState& operator=(MotionState&& other) noexcept {
 				transform_updated = other.transform_updated;
-				transform = std::move(transform);
 				return *this;
 			}
-			btTransform transform;
-
-			bool transform_updated{ true };
 
 			void getWorldTransform(btTransform& worldTrans) const {
 				worldTrans = this->transform;
@@ -37,7 +35,11 @@ namespace tec {
 				this->transform_updated = true;
 				this->transform = worldTrans;
 			}
+
+			btTransform transform;
+			bool transform_updated = true;
 		};
+
 		CollisionBody() = default;
 		CollisionBody(CollisionBody && other) noexcept;
 
@@ -46,12 +48,11 @@ namespace tec {
 		void Out(proto::Component * target);
 		void In(const proto::Component & source);
 
-		btScalar mass{ 0.f }; // For static objects mass must be 0.
-		bool disable_deactivation{ false }; // Whether to disable automatic deactivation.
-		bool disable_rotation{ false }; // prevent rotation from physics simulation.
-
+		btScalar mass = 0.0f;              // For static objects mass must be 0.
+		bool disable_deactivation = false; // Whether to disable automatic deactivation.
+		bool disable_rotation = false;     // prevent rotation from physics simulation.
 		std::shared_ptr<btCollisionShape> shape;
-		eid entity_id{ 0 }; // Stored to use when doing lookups during collision
+		eid entity_id = 0; // Stored to use when doing lookups during collision
 		MotionState motion_state;
 	};
 }

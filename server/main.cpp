@@ -23,6 +23,7 @@ tec::state_id_t current_state_id = 0;
 
 namespace tec {
 	eid active_entity;
+
 	std::string LoadJSON(const FilePath& fname) {
 		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 		if (!input.good())
@@ -50,13 +51,15 @@ int main() {
 	std::chrono::high_resolution_clock::time_point last_time, next_time;
 	std::chrono::duration<double> elapsed_seconds;
 	bool closing = false;
-	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
+
+	// Accumulated deltas since the last update was sent.
+	double delta_accumulator = 0.0;
 
 	tec::GameStateQueue game_state_queue;
 	tec::Simulation simulation;
 
 	try {
-		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::SERVER_PORT);
+		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::PORT);
 		tec::networking::Server server(endpoint);
 		std::cout << "Server ready" << std::endl;
 
@@ -84,19 +87,21 @@ int main() {
 						full_state_update_message.SetBodyLength(full_state_update.ByteSize());
 						full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), static_cast<int>(full_state_update_message.GetBodyLength()));
 						full_state_update_message.encode_header();
-						server.LockClientList();
-						for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
-							client->UpdateGameState(full_state);
-							if (current_state_id - client->GetLastConfirmedStateID() > tec::TICKS_PER_SECOND * 2.0) {
-								server.Deliver(client, full_state_update_message);
-								std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
-							}
-							else {
-								server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
+						
+						{
+							std::lock_guard lg(server.client_list_mutex);
+							for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
+								client->UpdateGameState(full_state);
+								if (current_state_id - client->GetLastConfirmedStateID() > tec::TICKS_PER_SECOND * 2.0) {
+									server.Deliver(client, full_state_update_message);
+									std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
+								}
+								else {
+									server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
+								}
 							}
 						}
 
-						server.UnlockClientList();
 						delta_accumulator -= tec::UPDATE_RATE;
 						game_state_queue.SetBaseState(std::move(full_state));
 					}
