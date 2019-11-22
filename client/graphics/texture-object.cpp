@@ -10,7 +10,7 @@ namespace tec {
 		Destroy();
 	}
 
-	TextureObject::TextureObject(const PixelBuffer & image) {
+	TextureObject::TextureObject(const PixelBuffer& image) {
 		this->texture_id = 0;
 		Load(image);
 	}
@@ -33,12 +33,12 @@ namespace tec {
 		}
 	}
 
-	TextureObject::TextureObject(TextureObject && other) {
+	TextureObject::TextureObject(TextureObject&& other) {
 		this->texture_id = other.texture_id;
 		other.texture_id = 0;
 	}
 
-	TextureObject& TextureObject::operator=(TextureObject && other) {
+	TextureObject& TextureObject::operator=(TextureObject&& other) {
 		this->texture_id = other.texture_id;
 		other.texture_id = 0;
 		return *this;
@@ -50,7 +50,7 @@ namespace tec {
 		}
 	}
 
-	void TextureObject::Load(const PixelBuffer & image) {
+	void TextureObject::Load(const PixelBuffer& image) {
 		auto _log = spdlog::get("console_log");
 		auto err = glGetError();
 		if (err) {
@@ -77,7 +77,7 @@ namespace tec {
 			default:
 				return;
 		}
-		const uint8_t * pixdata = image.GetBlockBase();
+		const uint8_t* pixdata = image.GetBlockBase();
 		if (nullptr == pixdata) {
 			_log->error("[Texture-Object] Missing pixeldata");
 			return;
@@ -88,7 +88,8 @@ namespace tec {
 			_log->trace("[Texture-Object] Error binding texture");
 			return;
 		}
-		GLint magfilter = GL_LINEAR; // TODO Add a get/set magfilter and add code to generate mipmaps
+		GLint magfilter =
+			GL_LINEAR; // TODO Add a get/set magfilter and add code to generate mipmaps
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		err = glGetError();
@@ -96,7 +97,8 @@ namespace tec {
 			_log->trace("[Texture-Object] Error setting texture filters");
 			return;
 		}
-		glTexImage2D(GL_TEXTURE_2D, 0, gformat, image.Width(), image.Height(), 0, gformat, GL_UNSIGNED_BYTE, pixdata);
+		glTexImage2D(GL_TEXTURE_2D, 0, gformat, image.Width(), image.Height(), 0, gformat,
+			GL_UNSIGNED_BYTE, pixdata);
 		err = glGetError();
 		if (err) {
 			_log->trace("[Texture-Object] Error coping texture data to GPU");
@@ -105,7 +107,7 @@ namespace tec {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void TextureObject::Load(const uint8_t * image, GLuint width, GLuint height) {
+	void TextureObject::Load(const uint8_t* image, GLuint width, GLuint height) {
 		auto _log = spdlog::get("console_log");
 		auto err = glGetError();
 		if (err) {
@@ -169,10 +171,12 @@ namespace tec {
 			return;
 		}
 		if (usealpha) {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(
+				GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 		}
 		else {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(
+				GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 		}
 		err = glGetError();
 		if (err) {
@@ -202,7 +206,8 @@ namespace tec {
 			return;
 		}
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, width, height, 0, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, nullptr);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_STENCIL_INDEX, width, height, 0, GL_STENCIL_INDEX,
+			GL_UNSIGNED_BYTE, nullptr);
 		err = glGetError();
 		if (err) {
 			return;
@@ -236,10 +241,12 @@ namespace tec {
 			return;
 		}
 		if (stencil) {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_STENCIL, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_STENCIL, width, height, 0, GL_DEPTH_STENCIL,
+				GL_UNSIGNED_BYTE, nullptr);
 		}
 		else {
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, nullptr);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT,
+				GL_UNSIGNED_BYTE, nullptr);
 		}
 		err = glGetError();
 		if (err) {
@@ -257,7 +264,8 @@ namespace tec {
 		if (err) {
 			return;
 		}
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGBA, width, height, GL_FALSE);
+		glTexImage2DMultisample(
+			GL_TEXTURE_2D_MULTISAMPLE, samples, GL_RGBA, width, height, GL_FALSE);
 		err = glGetError();
 		if (err) {
 			return;
@@ -275,7 +283,8 @@ namespace tec {
 		if (err) {
 			return;
 		}
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_STENCIL_INDEX, width, height, GL_FALSE);
+		glTexImage2DMultisample(
+			GL_TEXTURE_2D_MULTISAMPLE, samples, GL_STENCIL_INDEX, width, height, GL_FALSE);
 		err = glGetError();
 		if (err) {
 			return;
@@ -284,7 +293,8 @@ namespace tec {
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 	}
 
-	void TextureObject::GenerateMultisampleDepth(GLuint width, GLuint height, GLuint samples, bool stencil) {
+	void TextureObject::GenerateMultisampleDepth(
+		GLuint width, GLuint height, GLuint samples, bool stencil) {
 		if (!this->texture_id) {
 			glGenTextures(1, &this->texture_id);
 		}
@@ -294,10 +304,12 @@ namespace tec {
 			return;
 		}
 		if (stencil) {
-			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_DEPTH_STENCIL, width, height, GL_FALSE);
+			glTexImage2DMultisample(
+				GL_TEXTURE_2D_MULTISAMPLE, samples, GL_DEPTH_STENCIL, width, height, GL_FALSE);
 		}
 		else {
-			glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, GL_DEPTH_COMPONENT, width, height, GL_FALSE);
+			glTexImage2DMultisample(
+				GL_TEXTURE_2D_MULTISAMPLE, samples, GL_DEPTH_COMPONENT, width, height, GL_FALSE);
 		}
 		err = glGetError();
 		if (err) {
@@ -305,4 +317,4 @@ namespace tec {
 		}
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 	}
-}
+} // namespace tec

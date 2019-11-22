@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <set>
 #include <functional>
+#include <map>
+#include <set>
+#include <string>
 
 #ifdef __APPLE__
 #define GLFW_INCLUDE_GLCOREARB
@@ -20,9 +20,9 @@
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 
-#include "events.hpp"
-#include "event-system.hpp"
 #include "command-queue.hpp"
+#include "event-system.hpp"
+#include "events.hpp"
 
 namespace tec {
 	class IMGUISystem;
@@ -33,13 +33,13 @@ namespace tec {
 		class ServerConnection;
 	}
 
-	class IMGUISystem :
-		public CommandQueue<IMGUISystem>,
-		public EventQueue<KeyboardEvent>,
-		public EventQueue<MouseMoveEvent>,
-		public EventQueue<MouseScrollEvent>,
-		public EventQueue<WindowResizedEvent> {
+	class IMGUISystem : public CommandQueue<IMGUISystem>,
+						public EventQueue<KeyboardEvent>,
+						public EventQueue<MouseMoveEvent>,
+						public EventQueue<MouseScrollEvent>,
+						public EventQueue<WindowResizedEvent> {
 		typedef Command<IMGUISystem> GUICommand;
+
 	public:
 		IMGUISystem(GLFWwindow* window);
 		~IMGUISystem();
@@ -53,18 +53,12 @@ namespace tec {
 		void AddWindowDrawFunction(std::string name, std::function<void()>&& func);
 
 		void ShowWindow(const std::string name) {
-			GUICommand show_window(
-				[=] (IMGUISystem*) {
-					this->visible_windows.insert(name);
-				});
+			GUICommand show_window([=](IMGUISystem*) { this->visible_windows.insert(name); });
 			IMGUISystem::QueueCommand(std::move(show_window));
 		}
 
 		void HideWindow(const std::string name) {
-			GUICommand hide_window(
-				[=] (IMGUISystem*) {
-					this->visible_windows.erase(name);
-				});
+			GUICommand hide_window([=](IMGUISystem*) { this->visible_windows.erase(name); });
 			IMGUISystem::QueueCommand(std::move(hide_window));
 		}
 
@@ -75,14 +69,15 @@ namespace tec {
 		static const char* GetClipboardText(void* user_data);
 		static void SetClipboardText(void* user_data, const char* text);
 		static void RenderDrawLists(ImDrawData* draw_data);
+
 	private:
 		using EventQueue<WindowResizedEvent>::On;
 		using EventQueue<MouseMoveEvent>::On;
 		using EventQueue<MouseScrollEvent>::On;
 		using EventQueue<KeyboardEvent>::On;
 		void On(std::shared_ptr<WindowResizedEvent> data);
-		void On(std::shared_ptr<MouseMoveEvent > data);
-		void On(std::shared_ptr<MouseScrollEvent > data);
+		void On(std::shared_ptr<MouseMoveEvent> data);
+		void On(std::shared_ptr<MouseScrollEvent> data);
 		void On(std::shared_ptr<KeyboardEvent> data);
 
 		void UpdateDisplaySize();
@@ -105,4 +100,4 @@ namespace tec {
 
 		std::map<std::string, std::function<void()>> window_draw_funcs;
 	};
-}
+} // namespace tec

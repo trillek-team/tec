@@ -5,13 +5,13 @@
 #define TRILLEK_CLIENT_SERVER_CONNECTION_HPP
 
 #include <asio.hpp>
-#include <memory>
-#include <thread>
+#include <atomic>
 #include <chrono>
 #include <cinttypes>
-#include <list>
 #include <iostream>
-#include <atomic>
+#include <list>
+#include <memory>
+#include <thread>
 
 #include <spdlog/spdlog.h>
 
@@ -20,8 +20,11 @@
 using asio::ip::tcp;
 
 namespace tec {
-	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
+	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>>
+		in_functors;
+	extern std::map<tid,
+		std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>>
+		update_functors;
 
 	namespace networking {
 		extern const std::string_view SERVER_PORT;
@@ -32,7 +35,7 @@ namespace tec {
 		// 45 bits, so it should be std::int64_t.
 #define PRI_PING_TIME_T PRId64
 
-// Used to connect to a server.
+		// Used to connect to a server.
 		class ServerConnection {
 		public:
 			ServerConnection();
@@ -47,7 +50,8 @@ namespace tec {
 
 			void StartSync(); // Starts the sync loop.
 
-			void SendChatMessage(std::string message); // Send a ServerMessage with type CHAT_MESSAGE.
+			void SendChatMessage(
+				std::string message); // Send a ServerMessage with type CHAT_MESSAGE.
 
 			void Send(ServerMessage& msg);
 
@@ -73,15 +77,18 @@ namespace tec {
 			}
 
 			// Register a message handler for a given MessageType.
-			void RegisterMessageHandler(MessageType type, std::function<void(const ServerMessage&)> handler) {
+			void RegisterMessageHandler(
+				MessageType type, std::function<void(const ServerMessage&)> handler) {
 				this->message_handlers[type].push_back(handler);
 			}
 
 			void RegisterConnectFunc(std::function<void()> func);
 
 		private:
-			void read_body(); // Used by the read loop. Calls read_header after the whole body is read.
-			void read_header(); // Used by the read lop. Calls read_body after the header section is read.
+			void
+			read_body(); // Used by the read loop. Calls read_header after the whole body is read.
+			void read_header(); // Used by the read lop. Calls read_body after the header section is
+								// read.
 
 			void SyncHandler(const ServerMessage& message);
 			void GameStateUpdateHandler(const ServerMessage& message);
@@ -114,7 +121,7 @@ namespace tec {
 
 			std::function<void()> onConnect = nullptr;
 		};
-	}
-}
+	} // namespace networking
+} // namespace tec
 
 #endif

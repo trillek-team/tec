@@ -12,17 +12,19 @@
 #include <GLFW/glfw3native.h>
 #endif
 
-#include "filesystem.hpp"
-#include "os.hpp"
 #include "events.hpp"
-#include "server-connection.hpp"
+#include "filesystem.hpp"
 #include "gui/console.hpp"
+#include "os.hpp"
+#include "server-connection.hpp"
 
 namespace tec {
 	GLFWwindow* IMGUISystem::window = nullptr;
-	int IMGUISystem::shader_program = 0, IMGUISystem::vertex_shader = 0, IMGUISystem::fragment_shader = 0;
+	int IMGUISystem::shader_program = 0, IMGUISystem::vertex_shader = 0,
+		IMGUISystem::fragment_shader = 0;
 	int IMGUISystem::texture_attribute_location = 0, IMGUISystem::projmtx_attribute_location = 0;
-	int IMGUISystem::position_attribute_location = 0, IMGUISystem::uv_attribute_location = 0, IMGUISystem::color_attribute_location = 0;
+	int IMGUISystem::position_attribute_location = 0, IMGUISystem::uv_attribute_location = 0,
+		IMGUISystem::color_attribute_location = 0;
 	std::size_t IMGUISystem::vbo_size = 0, IMGUISystem::ibo_size = 0;
 	unsigned int IMGUISystem::vbo = 0, IMGUISystem::ibo = 0, IMGUISystem::vao = 0;
 	GLuint IMGUISystem::font_texture = 0;
@@ -40,7 +42,8 @@ namespace tec {
 #if defined(DEBUG) || defined(_DEBUG)
 		io.LogFilename = logfilename.c_str();
 #endif
-		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
+		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to
+												// peek into the io.KeyDown[] array.
 		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
 		io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
 		io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
@@ -101,10 +104,12 @@ namespace tec {
 
 	extern eid active_entity;
 
-	void IMGUISystem::CreateGUI(OS* os, networking::ServerConnection* connection, Console* console) {
-		this->AddWindowDrawFunction("connect_window", [connection] () {
+	void IMGUISystem::CreateGUI(
+		OS* os, networking::ServerConnection* connection, Console* console) {
+		this->AddWindowDrawFunction("connect_window", [connection]() {
 			ImGui::SetNextWindowPosCenter();
-			ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+			ImGui::Begin("Connect to Server", NULL,
+				ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
 			static int octets[4] = { 127, 0, 0, 1 };
 
@@ -146,19 +151,17 @@ namespace tec {
 			}
 			ImGui::End();
 			ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
-									});
+		});
 
-		this->AddWindowDrawFunction("sample_window", [] () {
-			ImGui::ShowTestWindow();
-									});
+		this->AddWindowDrawFunction("sample_window", []() { ImGui::ShowTestWindow(); });
 
-		this->AddWindowDrawFunction("active_entity", [] () {
+		this->AddWindowDrawFunction("active_entity", []() {
 			if (tec::active_entity != 0) {
 				ImGui::SetTooltip("#%" PRI_EID, tec::active_entity);
 			}
-									});
+		});
 		this->ShowWindow("active_entity");
-		this->AddWindowDrawFunction("main_menu", [connection, this] () {
+		this->AddWindowDrawFunction("main_menu", [connection, this]() {
 			if (ImGui::BeginMainMenuBar()) {
 				if (ImGui::BeginMenu("Connect")) {
 					bool visible = this->IsWindowVisible("connect_window");
@@ -175,12 +178,14 @@ namespace tec {
 				ImGui::Text("Ping %" PRI_PING_TIME_T, connection->GetAveragePing());
 				ImGui::EndMainMenuBar();
 			}
-									});
+		});
 
 		this->ShowWindow("main_menu");
-		this->AddWindowDrawFunction("ping_times", [connection] () {
+		this->AddWindowDrawFunction("ping_times", [connection]() {
 			ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-			ImGui::Begin("ping_times", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
+			ImGui::Begin("ping_times", NULL,
+				ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
+					ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
 			static float arr[10];
 			std::list<tec::networking::ping_time_t> recent_pings = connection->GetRecentPings();
 			std::size_t i = 0;
@@ -188,19 +193,17 @@ namespace tec {
 				arr[i++] = static_cast<float>(ping);
 			}
 			ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
-			ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
+			ImGui::SetWindowPos("ping_times",
+				ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
 			ImGui::End();
 			ImGui::SetWindowSize("ping_times", ImVec2(0, 0));
 			ImGui::PopStyleColor();
-									});
+		});
 		this->ShowWindow("ping_times");
 
-		this->AddWindowDrawFunction("console", [console] () {
-			console->Draw();
-									});
+		this->AddWindowDrawFunction("console", [console]() { console->Draw(); });
 		this->ShowWindow("console");
 	}
-
 
 	void IMGUISystem::Update(double delta) {
 		ProcessCommandQueue();
@@ -214,9 +217,12 @@ namespace tec {
 		// Setup inputs
 		// (we already got mouse wheel, keyboard keys & characters from event system
 		if (glfwGetWindowAttrib(IMGUISystem::window, GLFW_FOCUSED)) {
-			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;  // Convert mouse coordinates to pixels
+			this->mouse_pos.x *= (float)this->framebuffer_width /
+								 this->window_width; // Convert mouse coordinates to pixels
 			this->mouse_pos.y *= (float)this->framebuffer_height / this->window_height;
-			io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
+			io.MousePos = ImVec2((float)mouse_pos.x,
+				(float)mouse_pos.y); // Mouse position, in pixels (set to -1,-1 if no mouse / on
+									 // another screen, etc.)
 			io.MouseWheel += this->mouse_wheel.y; // ImGUI not support x axis scroll :(
 			this->mouse_wheel.y = 0;
 			this->mouse_wheel.x = 0;
@@ -226,7 +232,11 @@ namespace tec {
 		}
 
 		for (int i = 0; i < 3; i++) {
-			io.MouseDown[i] = mouse_pressed[i] || glfwGetMouseButton(IMGUISystem::window, i) != 0;    // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
+			io.MouseDown[i] =
+				mouse_pressed[i] ||
+				glfwGetMouseButton(IMGUISystem::window, i) !=
+					0; // If a mouse press event came, always pass it as "mouse held this frame", so
+					   // we don't miss click-release events that are shorter than 1 frame.
 			mouse_pressed[i] = false;
 		}
 
@@ -285,11 +295,15 @@ namespace tec {
 		GLint isLinked = 0;
 		glGetProgramiv(IMGUISystem::shader_program, GL_LINK_STATUS, (int*)&isLinked);
 
-		IMGUISystem::texture_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "Texture");
-		IMGUISystem::projmtx_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "ProjMtx");
-		IMGUISystem::position_attribute_location = glGetAttribLocation(IMGUISystem::shader_program, "Position");
+		IMGUISystem::texture_attribute_location =
+			glGetUniformLocation(IMGUISystem::shader_program, "Texture");
+		IMGUISystem::projmtx_attribute_location =
+			glGetUniformLocation(IMGUISystem::shader_program, "ProjMtx");
+		IMGUISystem::position_attribute_location =
+			glGetAttribLocation(IMGUISystem::shader_program, "Position");
 		IMGUISystem::uv_attribute_location = glGetAttribLocation(IMGUISystem::shader_program, "UV");
-		IMGUISystem::color_attribute_location = glGetAttribLocation(IMGUISystem::shader_program, "Color");
+		IMGUISystem::color_attribute_location =
+			glGetAttribLocation(IMGUISystem::shader_program, "Color");
 
 		glGenBuffers(1, &IMGUISystem::vbo);
 		glGenBuffers(1, &IMGUISystem::ibo);
@@ -302,10 +316,13 @@ namespace tec {
 		glEnableVertexAttribArray(IMGUISystem::uv_attribute_location);
 		glEnableVertexAttribArray(IMGUISystem::color_attribute_location);
 
-#define OFFSETOF(TYPE, ELEMENT) ((std::size_t)&(((TYPE *)0)->ELEMENT))
-		glVertexAttribPointer(IMGUISystem::position_attribute_location, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
-		glVertexAttribPointer(IMGUISystem::uv_attribute_location, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
-		glVertexAttribPointer(IMGUISystem::color_attribute_location, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
+#define OFFSETOF(TYPE, ELEMENT) ((std::size_t) & (((TYPE*)0)->ELEMENT))
+		glVertexAttribPointer(IMGUISystem::position_attribute_location, 2, GL_FLOAT, GL_FALSE,
+			sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
+		glVertexAttribPointer(IMGUISystem::uv_attribute_location, 2, GL_FLOAT, GL_FALSE,
+			sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
+		glVertexAttribPointer(IMGUISystem::color_attribute_location, 4, GL_UNSIGNED_BYTE, GL_TRUE,
+			sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
 #undef OFFSETOF
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -315,13 +332,16 @@ namespace tec {
 		unsigned char* pixels;
 		int width, height;
 		auto& io = ImGui::GetIO();
-		io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bits for OpenGL3 demo because it is more likely to be compatible with user's existing shader.
+		io.Fonts->GetTexDataAsRGBA32(&pixels, &width,
+			&height); // Load as RGBA 32-bits for OpenGL3 demo because it is more likely to be
+					  // compatible with user's existing shader.
 
 		glGenTextures(1, &font_texture);
 		glBindTexture(GL_TEXTURE_2D, font_texture);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
 		// Store our identifier
 		io.Fonts->TexID = (void*)(intptr_t)font_texture;
@@ -356,12 +376,11 @@ namespace tec {
 		const auto display_size{ ImGui::GetIO().DisplaySize };
 		const float width = display_size.x;
 		const float height = ImGui::GetIO().DisplaySize.y;
-		const float ortho_projection[4][4] =
-		{
-			{2.0f / width, 0.0f, 0.0f, 0.0f},
-			{0.0f, 2.0f / -height, 0.0f, 0.0f},
-			{0.0f, 0.0f, -1.0f, 0.0f},
-			{-1.0f, 1.0f, 0.0f, 1.0f},
+		const float ortho_projection[4][4] = {
+			{ 2.0f / width, 0.0f, 0.0f, 0.0f },
+			{ 0.0f, 2.0f / -height, 0.0f, 0.0f },
+			{ 0.0f, 0.0f, -1.0f, 0.0f },
+			{ -1.0f, 1.0f, 0.0f, 1.0f },
 		};
 		glUseProgram(shader_program);
 		glUniform1i(texture_attribute_location, 0);
@@ -379,12 +398,14 @@ namespace tec {
 				glBufferData(GL_ARRAY_BUFFER, (GLsizeiptr)vbo_size, NULL, GL_STREAM_DRAW);
 			}
 
-			unsigned char* vtx_data = (unsigned char*)glMapBufferRange(GL_ARRAY_BUFFER, 0, needed_vtx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			unsigned char* vtx_data = (unsigned char*)glMapBufferRange(GL_ARRAY_BUFFER, 0,
+				needed_vtx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 			if (!vtx_data) {
 				continue;
 			}
-			memcpy(vtx_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
+			memcpy(
+				vtx_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
 			glUnmapBuffer(GL_ARRAY_BUFFER);
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -395,22 +416,28 @@ namespace tec {
 				glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)ibo_size, NULL, GL_STREAM_DRAW);
 			}
 
-			unsigned char* idx_data = (unsigned char*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, needed_idx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			unsigned char* idx_data = (unsigned char*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0,
+				needed_idx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 			if (!idx_data) {
 				continue;
 			}
-			memcpy(idx_data, &cmd_list->IdxBuffer[0], cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
+			memcpy(
+				idx_data, &cmd_list->IdxBuffer[0], cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
 			glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
-			for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != cmd_list->CmdBuffer.end(); pcmd++) {
+			for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin();
+				 pcmd != cmd_list->CmdBuffer.end(); pcmd++) {
 				if (pcmd->UserCallback) {
 					pcmd->UserCallback(cmd_list, pcmd);
 				}
 				else {
 					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
-					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w), (int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
-					glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, GL_UNSIGNED_SHORT, idx_buffer_offset);
+					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w),
+						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
+						(int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
+					glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, GL_UNSIGNED_SHORT,
+						idx_buffer_offset);
 				}
 				idx_buffer_offset += pcmd->ElemCount;
 			}
@@ -436,8 +463,8 @@ namespace tec {
 			return;
 		for (int n = 0; n < draw_data->CmdListsCount; n++) {
 			const ImDrawList* cmd_list = draw_data->CmdLists[n];
-			memcpy(buffer_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
-			buffer_data += cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
+			memcpy(buffer_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() *
+		sizeof(ImDrawVert)); buffer_data += cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
 		}
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -455,8 +482,8 @@ namespace tec {
 				else {
 					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
 					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w),
-						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
-					glDrawArrays(GL_TRIANGLES, vtx_offset, pcmd->ElemCount);
+						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w -
+		pcmd->ClipRect.y)); glDrawArrays(GL_TRIANGLES, vtx_offset, pcmd->ElemCount);
 				}
 				vtx_offset += pcmd->ElemCount;
 			}
@@ -480,10 +507,11 @@ namespace tec {
 
 	void IMGUISystem::UpdateDisplaySize() {
 		glfwGetWindowSize(IMGUISystem::window, &this->window_width, &this->window_height);
-		glfwGetFramebufferSize(IMGUISystem::window, &this->framebuffer_width, &this->framebuffer_height);
-		ImGui::GetIO().DisplaySize = ImVec2((float)this->framebuffer_width, (float)this->framebuffer_height);
+		glfwGetFramebufferSize(
+			IMGUISystem::window, &this->framebuffer_width, &this->framebuffer_height);
+		ImGui::GetIO().DisplaySize =
+			ImVec2((float)this->framebuffer_width, (float)this->framebuffer_height);
 	}
-
 
 	void IMGUISystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		this->UpdateDisplaySize();
@@ -498,7 +526,6 @@ namespace tec {
 		this->mouse_wheel.x = static_cast<float>(data->x_offset);
 		this->mouse_wheel.y = static_cast<float>(data->y_offset);
 	}
-
 
 	void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
 		auto& io = ImGui::GetIO();
@@ -521,4 +548,4 @@ namespace tec {
 		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 	}
-}
+} // namespace tec

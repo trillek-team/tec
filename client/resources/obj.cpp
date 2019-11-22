@@ -3,14 +3,14 @@
 
 #include "obj.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <memory>
 #include <sstream>
-#include <algorithm>
 
+#include <spdlog/spdlog.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <spdlog/spdlog.h>
 
 #include "graphics/texture-object.hpp"
 
@@ -27,7 +27,8 @@ namespace tec {
 	bool OBJ::ParseMTL(const FilePath& fname) {
 		auto _log = spdlog::get("console_log");
 		if (!fname.isValidPath() || !fname.FileExists()) {
-			_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", fname.toString());
+			_log->error(
+				"[OBJ] Can't open the file {}. Invalid path or missing file.", fname.toString());
 			// Can't open the file!
 			return false;
 		}
@@ -55,18 +56,30 @@ namespace tec {
 			}
 			else if (identifier == "Ka") {
 				float r, g, b;
-				ss >> r; ss >> g; ss >> b;
-				currentMTL->ka[0] = r; currentMTL->ka[1] = g; currentMTL->ka[2] = b;
+				ss >> r;
+				ss >> g;
+				ss >> b;
+				currentMTL->ka[0] = r;
+				currentMTL->ka[1] = g;
+				currentMTL->ka[2] = b;
 			}
 			else if (identifier == "Kd") {
 				float r, g, b;
-				ss >> r; ss >> g; ss >> b;
-				currentMTL->kd[0] = r; currentMTL->kd[1] = g; currentMTL->kd[2] = b;
+				ss >> r;
+				ss >> g;
+				ss >> b;
+				currentMTL->kd[0] = r;
+				currentMTL->kd[1] = g;
+				currentMTL->kd[2] = b;
 			}
 			else if (identifier == "Ks") {
 				float r, g, b;
-				ss >> r; ss >> g; ss >> b;
-				currentMTL->ks[0] = r; currentMTL->ks[1] = g; currentMTL->ks[2] = b;
+				ss >> r;
+				ss >> g;
+				ss >> b;
+				currentMTL->ks[0] = r;
+				currentMTL->ks[1] = g;
+				currentMTL->ks[2] = b;
 			}
 			else if ((identifier == "Tr") || (identifier == "d")) {
 				float tr;
@@ -88,7 +101,8 @@ namespace tec {
 				ss >> filename;
 				currentMTL->diffuseMap = filename;
 				if (!TextureMap::Has(currentMTL->diffuseMap)) {
-					auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
+					auto pixbuf =
+						PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
 					auto tex = std::make_shared<TextureObject>(pixbuf);
 					TextureMap::Set(currentMTL->diffuseMap, tex);
 				}
@@ -97,13 +111,13 @@ namespace tec {
 				std::string filename;
 				ss >> filename;
 				currentMTL->ambientMap = filename;
-				//TODO Load ambient map to a PixelBuffer
+				// TODO Load ambient map to a PixelBuffer
 			}
 			else if (identifier == "map_Bump") {
 				std::string filename;
 				ss >> filename;
 				currentMTL->normalMap = filename;
-				//TODO Load bump map to a PixelBuffer
+				// TODO Load bump map to a PixelBuffer
 			}
 		}
 		return true;
@@ -130,7 +144,8 @@ namespace tec {
 	bool OBJ::Parse() {
 		auto _log = spdlog::get("console_log");
 		if (!this->path.isValidPath() || !this->path.FileExists()) {
-			_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", path.toString());
+			_log->error(
+				"[OBJ] Can't open the file {}. Invalid path or missing file.", path.toString());
 			// Can't open the file!
 			return false;
 		}
@@ -205,18 +220,23 @@ namespace tec {
 			ss >> identifier;
 			if (identifier == "v") {
 				glm::vec3 vert;
-				ss >> vert.x; ss >> vert.y; ss >> vert.z;
+				ss >> vert.x;
+				ss >> vert.y;
+				ss >> vert.z;
 				this->positions.push_back(vert);
 			}
 			else if (identifier == "vt") {
 				glm::vec2 uv;
-				ss >> uv.x; ss >> uv.y;
+				ss >> uv.x;
+				ss >> uv.y;
 				uv.y = 1 - uv.y;
 				this->uvs.push_back(uv);
 			}
 			else if (identifier == "vn") {
 				glm::vec3 norm;
-				ss >> norm.x; ss >> norm.y; ss >> norm.z;
+				ss >> norm.x;
+				ss >> norm.y;
+				ss >> norm.z;
 				this->normals.push_back(norm);
 			}
 			else if (identifier == "o") {
@@ -239,7 +259,8 @@ namespace tec {
 				}
 				if (!current_face_group) {
 					current_face_group = new OBJGroup::FaceGroup();
-					current_face_group->faces.reserve(static_cast<std::size_t>(object_face_count[this->vertexGroups.size()]) * 2);
+					current_face_group->faces.reserve(
+						static_cast<std::size_t>(object_face_count[this->vertexGroups.size()]) * 2);
 					current_face_group->mtl = mtlname;
 					currentVGroup->face_groups.push_back(current_face_group);
 				}
@@ -258,24 +279,40 @@ namespace tec {
 					std::replace(faceLine.begin(), faceLine.end(), '/', ' ');
 					face_ss.clear();
 					face_ss.str(faceLine);
-					face_ss >> face.pos[0]; face_ss >> face.uv[0]; face_ss >> face.norm[0];
-					face_ss >> face.pos[1]; face_ss >> face.uv[1]; face_ss >> face.norm[1];
-					face_ss >> face.pos[2]; face_ss >> face.uv[2]; face_ss >> face.norm[2];
+					face_ss >> face.pos[0];
+					face_ss >> face.uv[0];
+					face_ss >> face.norm[0];
+					face_ss >> face.pos[1];
+					face_ss >> face.uv[1];
+					face_ss >> face.norm[1];
+					face_ss >> face.pos[2];
+					face_ss >> face.uv[2];
+					face_ss >> face.norm[2];
 					if (!face_ss.eof()) {
 						quad = true;
-						face2.pos[0] = face.pos[2]; face2.uv[0] = face.uv[2]; face2.norm[0] = face.norm[2];
-						face_ss >> face2.pos[1]; face_ss >> face2.uv[1]; face_ss >> face2.norm[1];
-						face2.pos[2] = face.pos[0]; face2.uv[2] = face.uv[0]; face2.norm[2] = face.norm[0];
+						face2.pos[0] = face.pos[2];
+						face2.uv[0] = face.uv[2];
+						face2.norm[0] = face.norm[2];
+						face_ss >> face2.pos[1];
+						face_ss >> face2.uv[1];
+						face_ss >> face2.norm[1];
+						face2.pos[2] = face.pos[0];
+						face2.uv[2] = face.uv[0];
+						face2.norm[2] = face.norm[0];
 					}
 				}
 				else {
 					face_ss.clear();
 					face_ss.str(faceLine);
-					//There is only 1 vertex index per face vertex.
-					face_ss >> face.pos[0]; face_ss >> face.pos[1]; face_ss >> face.pos[2];
+					// There is only 1 vertex index per face vertex.
+					face_ss >> face.pos[0];
+					face_ss >> face.pos[1];
+					face_ss >> face.pos[2];
 					if (!face_ss.eof()) {
 						quad = true;
-						face2.pos[0] = face.pos[2]; face_ss >> face2.pos[1]; face2.pos[2] = face.pos[0];
+						face2.pos[0] = face.pos[2];
+						face_ss >> face2.pos[1];
+						face2.pos[2] = face.pos[0];
 					}
 				}
 				if (current_face_group) {
@@ -304,7 +341,8 @@ namespace tec {
 	void OBJ::PopulateMeshGroups() {
 		if (this->MeshFile::meshes.size() < this->vertexGroups.size()) {
 			this->MeshFile::meshes.reserve(this->vertexGroups.size());
-			for (std::size_t i = this->MeshFile::meshes.size(); i < this->vertexGroups.size(); ++i) {
+			for (std::size_t i = this->MeshFile::meshes.size(); i < this->vertexGroups.size();
+				 ++i) {
 				CreateMesh();
 			}
 		}
@@ -327,11 +365,10 @@ namespace tec {
 				if (this->materials.find(face_group->mtl) != this->materials.end()) {
 					std::shared_ptr<MTL> material = this->materials[face_group->mtl];
 					std::string material_name = material->diffuseMap;
-					material_name = material_name.substr(
-						material_name.find_last_of("/") + 1,
-						material_name.find_last_of(".") -
-						material_name.find_last_of("/") - 1)
-						+ "_material";
+					material_name =
+						material_name.substr(material_name.find_last_of("/") + 1,
+							material_name.find_last_of(".") - material_name.find_last_of("/") - 1) +
+						"_material";
 					mat_group.material_name = material_name;
 					mat_group.textures.push_back(this->materials[face_group->mtl]->diffuseMap);
 					diffuse_color = glm::vec4(material->kd, 1.0);
@@ -384,4 +421,4 @@ namespace tec {
 			}
 		}
 	}
-}
+} // namespace tec

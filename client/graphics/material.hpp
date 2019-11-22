@@ -41,7 +41,8 @@ namespace tec {
 		/**
 		 * \brief Gets a TextureObject from this material.
 		 * \param size_t index The index of the texture to grab (0-based).
-		 * \return std::shared_ptr<TextureObject> The request texture, or nullptr if index is invalid.
+		 * \return std::shared_ptr<TextureObject> The request texture, or nullptr if index is
+		 * invalid.
 		 */
 		std::shared_ptr<TextureObject> GetTexutre(std::size_t index);
 
@@ -92,9 +93,10 @@ namespace tec {
 		 * \return void
 		 */
 		void Deactivate();
+
 	private:
 		GLenum polygon_mode{ GL_FILL };
 		GLenum draw_elements_mode{ GL_TRIANGLES };
 		std::vector<std::shared_ptr<TextureObject>> textures;
 	};
-}
+} // namespace tec

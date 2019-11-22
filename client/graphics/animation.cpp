@@ -3,10 +3,10 @@
 
 #include "animation.hpp"
 
-#include <vector>
 #include <functional>
-#include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/glm.hpp>
+#include <vector>
 
 #include "resources/md5anim.hpp"
 
@@ -42,7 +42,8 @@ namespace tec {
 		if (this->animation_file) {
 			auto frame_skeleton = this->animation_file->InterpolateSkeletons(
 				frame_index0, frame_index1, fInterpolate);
-			this->bone_matrices.assign(frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
+			this->bone_matrices.assign(
+				frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
 		}
 	}
 
@@ -53,9 +54,9 @@ namespace tec {
 			this->frame_rate = static_cast<float>(this->animation_file->GetFrameRate());
 			this->frame_duration = 1.0f / this->frame_rate * this->frame_count;
 
-			auto frame_skeleton = this->animation_file->InterpolateSkeletons(
-				0, 1, 0.0f);
-			this->bone_matrices.assign(frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
+			auto frame_skeleton = this->animation_file->InterpolateSkeletons(0, 1, 0.0f);
+			this->bone_matrices.assign(
+				frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
 		}
 	}
 	void Animation::Out(proto::Component* target) {
@@ -69,12 +70,12 @@ namespace tec {
 		if (comp.has_animation_name()) {
 			this->animation_name = comp.animation_name();
 			/*if (!AnimationMap::Has(this->animation_name)) {
-				std::string ext = this->animation_name.substr(this->animation_name.find_last_of(".") + 1);
-				if (file_factories.find(ext) != file_factories.end()) {
+				std::string ext = this->animation_name.substr(this->animation_name.find_last_of(".")
+			+ 1); if (file_factories.find(ext) != file_factories.end()) {
 					file_factories[ext](this->animation_name);
 				}
 			}
 			this->animation_file = AnimationMap::Get(this->animation_name);*/
 		}
 	}
-}
+} // namespace tec

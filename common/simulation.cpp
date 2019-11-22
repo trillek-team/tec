@@ -3,10 +3,10 @@
 
 #include "simulation.hpp"
 
-#include <thread>
 #include <future>
-#include <set>
 #include <iostream>
+#include <set>
+#include <thread>
 
 #include <commands.pb.h>
 
@@ -40,21 +40,24 @@ namespace tec {
 		this->event_list.mouse_click_events.clear();
 
 		GameState client_state = interpolated_state;
-		std::future<std::set<eid>> phys_future = std::async(std::launch::async, [=, &interpolated_state]() -> std::set < eid > {
-			return phys_sys.Update(delta_time, interpolated_state);
-		});
+		std::future<std::set<eid>> phys_future =
+			std::async(std::launch::async, [=, &interpolated_state]() -> std::set<eid> {
+				return phys_sys.Update(delta_time, interpolated_state);
+			});
 		std::set<eid> phys_results = phys_future.get();
 
 		if (phys_results.size() > 0) {
 			for (eid entity_id : phys_results) {
 				client_state.positions[entity_id] = this->phys_sys.GetPosition(entity_id);
 				client_state.orientations[entity_id] = this->phys_sys.GetOrientation(entity_id);
-				if (interpolated_state.velocities.find(entity_id) != interpolated_state.velocities.end()) {
-					client_state.velocities[entity_id] = interpolated_state.velocities.at(entity_id);
+				if (interpolated_state.velocities.find(entity_id) !=
+					interpolated_state.velocities.end()) {
+					client_state.velocities[entity_id] =
+						interpolated_state.velocities.at(entity_id);
 				}
 			}
 		}
-		//vcomp_future.get();
+		// vcomp_future.get();
 
 		return client_state;
 	}
@@ -98,4 +101,4 @@ namespace tec {
 			}
 		}
 	}
-}
+} // namespace tec

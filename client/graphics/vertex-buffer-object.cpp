@@ -3,16 +3,15 @@
 
 #include "vertex-buffer-object.hpp"
 
-#include "resources/mesh.hpp"
 #include "material.hpp"
+#include "resources/mesh.hpp"
 #include "shader.hpp"
 #include "texture-object.hpp"
 
 namespace tec {
 	VertexBufferObject::VertexBufferObject() {}
 
-	VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) :
-		source_mesh(mesh) {
+	VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) : source_mesh(mesh) {
 		Load(mesh);
 	}
 
@@ -26,9 +25,13 @@ namespace tec {
 		glDeleteVertexArrays(1, &this->vao);
 	}
 
-	const GLuint VertexBufferObject::GetVAO() { return this->vao; }
+	const GLuint VertexBufferObject::GetVAO() {
+		return this->vao;
+	}
 
-	const GLuint VertexBufferObject::GetIBO() { return this->ibo; }
+	const GLuint VertexBufferObject::GetIBO() {
+		return this->ibo;
+	}
 
 	VertexGroup* VertexBufferObject::GetVertexGroup(const std::size_t vertex_group_number) {
 		if (vertex_group_number < this->vertex_groups.size()) {
@@ -41,7 +44,9 @@ namespace tec {
 		return this->vertex_groups.size();
 	}
 
-	bool VertexBufferObject::IsDynamic() const { return !this->source_mesh.expired(); }
+	bool VertexBufferObject::IsDynamic() const {
+		return !this->source_mesh.expired();
+	}
 
 	void VertexBufferObject::Update() {
 		std::shared_ptr<MeshFile> locked_ptr = this->source_mesh.lock();
@@ -94,7 +99,8 @@ namespace tec {
 		}
 	}
 
-	void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices) {
+	void VertexBufferObject::Load(
+		const std::vector<VertexData>& verts, const std::vector<GLuint>& indices) {
 		if (!this->vao) {
 			glGenVertexArrays(1, &this->vao);
 		}
@@ -109,19 +115,22 @@ namespace tec {
 		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 		// If the size hasn't changed we can call update
 		if (this->vertex_count >= verts.size()) {
-			auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER, 0, this->vertex_count *
-											sizeof(VertexData), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			auto* buffer =
+				glMapBufferRange(GL_ARRAY_BUFFER, 0, this->vertex_count * sizeof(VertexData),
+					GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
-				std::memset((char*)buffer + verts.size() * sizeof(VertexData) - 1, 0, (this->vertex_count - verts.size()) * sizeof(VertexData));
+				std::memset((char*)buffer + verts.size() * sizeof(VertexData) - 1, 0,
+					(this->vertex_count - verts.size()) * sizeof(VertexData));
 				glUnmapBuffer(GL_ARRAY_BUFFER);
 			}
 			else {
-				//std::err << "glMapBufferRange() failed" << __LINE__ << __FILE__ << std::endl;
+				// std::err << "glMapBufferRange() failed" << __LINE__ << __FILE__ << std::endl;
 			}
 		}
 		else {
-			glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(VertexData), &verts[0], GL_STATIC_DRAW);
+			glBufferData(
+				GL_ARRAY_BUFFER, verts.size() * sizeof(VertexData), &verts[0], GL_STATIC_DRAW);
 			this->vertex_count = verts.size();
 		}
 
@@ -146,19 +155,22 @@ namespace tec {
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 		if (this->index_count >= indices.size()) {
-			auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, this->index_count *
-											sizeof(GLuint), GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			auto* buffer =
+				glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, this->index_count * sizeof(GLuint),
+					GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 			if (buffer) {
 				std::memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
-				std::memset((char*)buffer + indices.size() * sizeof(GLuint) - 1, 0, (this->index_count - indices.size()) * sizeof(GLuint));
+				std::memset((char*)buffer + indices.size() * sizeof(GLuint) - 1, 0,
+					(this->index_count - indices.size()) * sizeof(GLuint));
 				glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 			}
 			else {
-				//std::err << "glMapBufferRange() failed" << __LINE__ << __FILE__ << std::endl;
+				// std::err << "glMapBufferRange() failed" << __LINE__ << __FILE__ << std::endl;
 			}
 		}
 		else {
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0],
+				GL_STATIC_DRAW);
 			this->index_count = indices.size();
 		}
 		glBindVertexArray(0);
@@ -173,4 +185,4 @@ namespace tec {
 			this->vertex_groups.push_back(group);
 		}
 	}
-}
+} // namespace tec

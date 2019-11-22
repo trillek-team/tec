@@ -3,10 +3,10 @@
 
 #pragma once
 
+#include <glm/mat4x4.hpp>
+#include <map>
 #include <memory>
 #include <set>
-#include <map>
-#include <glm/mat4x4.hpp>
 
 #ifndef __APPLE__
 #include <GL/glew.h>
@@ -14,12 +14,12 @@
 #include <OpenGL/gl3.h>
 #endif
 
-#include "types.hpp"
-#include "game-state.hpp"
-#include "event-system.hpp"
 #include "command-queue.hpp"
+#include "event-system.hpp"
+#include "game-state.hpp"
 #include "graphics/gbuffer.hpp"
 #include "graphics/vertex-buffer-object.hpp"
+#include "types.hpp"
 
 namespace spdlog {
 	class logger;
@@ -38,14 +38,16 @@ namespace tec {
 	struct EntityDestroyed;
 
 	class RenderSystem : public CommandQueue<RenderSystem>,
-		public EventQueue<WindowResizedEvent>,
-		public EventQueue<EntityDestroyed>, public EventQueue<EntityCreated> {
+						 public EventQueue<WindowResizedEvent>,
+						 public EventQueue<EntityDestroyed>,
+						 public EventQueue<EntityCreated> {
 	public:
 		RenderSystem();
 
 		void SetViewportSize(const unsigned int width, const unsigned int height);
 
 		void Update(const double delta, const GameState& state);
+
 	private:
 		std::shared_ptr<spdlog::logger> _log;
 
@@ -86,4 +88,4 @@ namespace tec {
 		};
 		std::map<std::shared_ptr<Shader>, std::set<RenderItem>> render_item_list;
 	};
-}
+} // namespace tec

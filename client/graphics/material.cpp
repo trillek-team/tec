@@ -3,8 +3,8 @@
 
 #include "material.hpp"
 
-#include "texture-object.hpp"
 #include "shader.hpp"
+#include "texture-object.hpp"
 
 namespace tec {
 	const GLenum Material::GetPolygonMode() {
@@ -47,7 +47,7 @@ namespace tec {
 	void Material::AddTexture(std::shared_ptr<TextureObject> tex) {
 		this->textures.push_back(tex);
 	}
-	
+
 	std::shared_ptr<TextureObject> Material::GetTexutre(std::size_t index) {
 		if (index < this->textures.size()) {
 			return this->textures[index];
@@ -80,4 +80,4 @@ namespace tec {
 			Shader::DeactivateTextureUnit(i);
 		}
 	}
-}
+} // namespace tec

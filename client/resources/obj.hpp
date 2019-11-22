@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <string>
 #include <map>
+#include <string>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -18,9 +18,9 @@ namespace tec {
 	public:
 		// OBJ Helper struct for face vertex data indices.
 		struct Face {
-			unsigned int pos[3]{ 0,0,0 }; // index
-			unsigned int uv[3]{ 0,0,0 }; // index
-			unsigned int norm[3]{ 0,0,0 }; // index
+			unsigned int pos[3]{ 0, 0, 0 }; // index
+			unsigned int uv[3]{ 0, 0, 0 }; // index
+			unsigned int norm[3]{ 0, 0, 0 }; // index
 		};
 
 		// OBJ Helper struct for storing vertex groups
@@ -58,8 +58,8 @@ namespace tec {
 		 * \brief Returns a resource with the specified name.
 		 *
 		 * The only used initialization property is "filename".
-		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
-		 * \return std::shared_ptr<OBJ> The created OBJ resource.
+		 * \param[in] const std::vector<Property>& properties The creation properties for the
+		 * resource. \return std::shared_ptr<OBJ> The created OBJ resource.
 		 */
 		static std::shared_ptr<OBJ> Create(const FilePath& fname);
 
@@ -96,6 +96,7 @@ namespace tec {
 		void SetFileName(const FilePath& fname) {
 			this->path = fname;
 		}
+
 	private:
 		std::vector<std::shared_ptr<OBJGroup>> vertexGroups;
 		FilePath path; // Path to OBJ file
@@ -104,4 +105,4 @@ namespace tec {
 		std::vector<glm::vec2> uvs;
 		std::map<std::string, std::shared_ptr<MTL>> materials;
 	};
-}
+} // namespace tec

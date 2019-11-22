@@ -22,7 +22,7 @@ namespace tec {
 
 	class TextureObject final {
 	public:
-		TextureObject() : texture_id(0), compare(false) { }
+		TextureObject() : texture_id(0), compare(false) {}
 		~TextureObject();
 
 		/**
@@ -37,11 +37,11 @@ namespace tec {
 
 		// no copying (although it could be done)
 		TextureObject(const TextureObject &) = delete;
-		TextureObject& operator=(const TextureObject &) = delete;
+		TextureObject &operator=(const TextureObject &) = delete;
 
 		// Move textures
 		TextureObject(TextureObject &&);
-		TextureObject& operator=(TextureObject &&);
+		TextureObject &operator=(TextureObject &&);
 
 		/**
 		 * \brief delete the underlaying GL texture
@@ -53,19 +53,25 @@ namespace tec {
 		 * note: this method is not const, since GL can modify the texture with the ID
 		 * \return GLuint the GL texture ID
 		 */
-		GLuint GetID() { return this->texture_id; }
+		GLuint GetID() {
+			return this->texture_id;
+		}
 
 		/**
 		 * \return true if the texture was created dynamic
 		 */
-		bool IsDynamic() { return !this->source_ptr.expired(); }
+		bool IsDynamic() {
+			return !this->source_ptr.expired();
+		}
 
 		/**
 		 * Called by the RenderSystem to update dynamic textures
 		 */
 		void Update();
 
-		void SetCompare(bool c) { this->compare = c; }
+		void SetCompare(bool c) {
+			this->compare = c;
+		}
 
 		/**
 		 * \brief create a texture from an image
@@ -107,13 +113,14 @@ namespace tec {
 		 */
 		void GenerateMultisampleStencil(GLuint width, GLuint height, GLuint samples);
 
-		bool operator==(const TextureObject & other) {
+		bool operator==(const TextureObject &other) {
 			return this->texture_id == other.texture_id;
 		}
+
 	protected:
 		GLuint texture_id{ 0 };
 		bool compare{ 0 };
 		std::weak_ptr<PixelBuffer> source_ptr;
 	};
 
-}
+} // namespace tec

@@ -64,8 +64,8 @@ namespace tec {
 		 * \brief Returns a resource with the specified name.
 		 *
 		 * The only used initialization property is "filename".
-		 * \param[in] const std::vector<Property>& properties The creation properties for the resource.
-		 * \return std::shared_ptr<MD5Mesh> The created MD5Mesh resource.
+		 * \param[in] const std::vector<Property>& properties The creation properties for the
+		 * resource. \return std::shared_ptr<MD5Mesh> The created MD5Mesh resource.
 		 */
 		static std::shared_ptr<MD5Mesh> Create(const FilePath& fname);
 
@@ -116,9 +116,10 @@ namespace tec {
 
 		// Used for MD5Anim::CheckMesh().
 		friend class MD5Anim;
+
 	private:
 		std::vector<InternalMesh> meshes_internal;
 		FilePath path; // Path to MD5Mesh file
 		std::vector<Joint> joints;
 	};
-}
+} // namespace tec

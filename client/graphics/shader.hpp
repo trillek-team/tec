@@ -9,13 +9,13 @@
 #include <OpenGL/gl3.h>
 #endif
 
-#include <string>
-#include <map>
-#include <list>
-#include <vector>
-#include <memory>
 #include <fstream>
 #include <iostream>
+#include <list>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "filesystem.hpp"
 #include "multiton.hpp"
@@ -35,7 +35,7 @@ namespace tec {
 		Shader() = default;
 
 		~Shader();
-		
+
 		/**
 		 * \brief Uses the shader program.
 		 * \return void
@@ -83,37 +83,40 @@ namespace tec {
 		 * Filenames should be something like:
 		 * \code{.cpp}:
 		 * auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-		 *	std::make_pair(Shader::VERTEX, FilePath("basic.vert")), std::make_pair(Shader::FRAGMENT, FilePath("./basic.frag")),
+		 *	std::make_pair(Shader::VERTEX, FilePath("basic.vert")), std::make_pair(Shader::FRAGMENT,
+		 *FilePath("./basic.frag")),
 		 * };
 		 * \return is a weak_ptr to the created Shader.
 		 */
-		static std::shared_ptr<Shader> CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, tec::FilePath>> filenames);
-	
+		static std::shared_ptr<Shader> CreateFromFile(const std::string name,
+			std::list<std::pair<Shader::ShaderType, tec::FilePath>> filenames);
+
 		/**
 		 * \brief Creates a Shader the provide source code stores it in ShaderMap under name.
 		 *
 		 * Source_code should be something like:
 		 * \code{.cpp}:
 		 * auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-		 *   std::make_pair(Shader::VERTEX, "shader source code\nversion 330\n{}"), std::make_pair(Shader::FRAGMENT, "shader source code\nversion 330\n{}"),
+		 *   std::make_pair(Shader::VERTEX, "shader source code\nversion 330\n{}"),
+		 * std::make_pair(Shader::FRAGMENT, "shader source code\nversion 330\n{}"),
 		 * };
 		 * \return is a weak_ptr to the created Shader.
 		 */
-		static std::shared_ptr<Shader> CreateFromString(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code);
+		static std::shared_ptr<Shader> CreateFromString(const std::string name,
+			std::list<std::pair<Shader::ShaderType, std::string>> source_code);
 
 		/**
 		 * \brief Loads the specified ShaderType from file filename.
-		 * \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT, GEOMETRY).
-		 * \param const FilePath filename The filename of the source file to load (relative to assets folder)
-		 * \return void
+		 * \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT,
+		 * GEOMETRY). \param const FilePath filename The filename of the source file to load
+		 * (relative to assets folder) \return void
 		 */
 		void LoadFromFile(const Shader::ShaderType type, const tec::FilePath& filename);
 
 		/**
 		 * \brief Loads the specified ShaderType from the source string provided..
-		 * \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT, GEOMETRY).
-		 * \param const std::string source The source string to load from.
-		 * \return void
+		 * \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT,
+		 * GEOMETRY). \param const std::string source The source string to load from. \return void
 		 */
 		void LoadFromString(const Shader::ShaderType type, const std::string& source) {
 			LoadFromString(type, source, "");
@@ -131,20 +134,21 @@ namespace tec {
 		 * \return void
 		 */
 		void DeleteProgram();
-	private:
 
+	private:
 		/**
-		* \brief Loads the specified ShaderType from the source string provided..
-		* \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT, GEOMETRY).
-		* \param const std::string source The source string to load from.
-		* \param const std::string filename The filename from were the source comes (only for debug purposes)
-		* \return void
-		*/
-		void LoadFromString(const Shader::ShaderType type, const std::string& source, const std::string& filename);
+		 * \brief Loads the specified ShaderType from the source string provided..
+		 * \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT,
+		 * GEOMETRY). \param const std::string source The source string to load from. \param const
+		 * std::string filename The filename from were the source comes (only for debug purposes)
+		 * \return void
+		 */
+		void LoadFromString(
+			const Shader::ShaderType type, const std::string& source, const std::string& filename);
 
 		GLuint program{ 0 };
 		std::vector<GLuint> shaders;
 		std::map<std::string, GLint> attributes;
 		std::map<std::string, GLint> uniforms;
 	};
-}
+} // namespace tec

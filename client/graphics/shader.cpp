@@ -26,23 +26,27 @@ namespace tec {
 	void Shader::LoadFromFile(const Shader::ShaderType type, const tec::FilePath& fname) {
 		auto _log = spdlog::get("console_log");
 		if (!fname.isValidPath()) {
-			_log->error("[Shader] Error loading shader: {} Invalid path: {}", fname.FileName(), fname.toString());
+			_log->error("[Shader] Error loading shader: {} Invalid path: {}", fname.FileName(),
+				fname.toString());
 			return;
 		}
 		if (!fname.FileExists()) {
-			_log->error("[Shader] Error loading shader: {} File don't exists. Check assets folder", fname.FileName());
+			_log->error("[Shader] Error loading shader: {} File don't exists. Check assets folder",
+				fname.FileName());
 			return;
 		}
 		std::ifstream fp(fname.GetNativePath(), std::ios_base::in);
 		if (!fp.is_open()) {
-			_log->error("[Shader] Error loading shader: {} File don't exists. Check open file.", fname.FileName());
+			_log->error("[Shader] Error loading shader: {} File don't exists. Check open file.",
+				fname.FileName());
 			return;
 		}
 		std::string buffer(std::istreambuf_iterator<char>(fp), (std::istreambuf_iterator<char>()));
 		LoadFromString(type, buffer, fname.FileName());
 	}
 
-	void Shader::LoadFromString(const Shader::ShaderType type, const std::string& source, const std::string& filename) {
+	void Shader::LoadFromString(
+		const Shader::ShaderType type, const std::string& source, const std::string& filename) {
 		auto _log = spdlog::get("console_log");
 		glGetError();
 		GLuint shader = glCreateShader(type);
@@ -125,7 +129,6 @@ namespace tec {
 	void Shader::ActivateTextureUnit(const GLuint unit, const GLuint texture_name) {
 		glActiveTexture(GL_TEXTURE0 + unit);
 		glBindTexture(GL_TEXTURE_2D, texture_name);
-
 	}
 
 	void Shader::DeactivateTextureUnit(const GLuint unit) {
@@ -161,8 +164,8 @@ namespace tec {
 		return 0;
 	}
 
-	std::shared_ptr<Shader> Shader::CreateFromFile(const std::string name,
-												   std::list<std::pair<Shader::ShaderType, FilePath>> filenames) {
+	std::shared_ptr<Shader> Shader::CreateFromFile(
+		const std::string name, std::list<std::pair<Shader::ShaderType, FilePath>> filenames) {
 		auto s = std::make_shared<Shader>();
 		for (auto pair : filenames) {
 			s->LoadFromFile(pair.first, pair.second);
@@ -172,8 +175,8 @@ namespace tec {
 		return s;
 	}
 
-	std::shared_ptr<Shader> Shader::CreateFromString(const std::string name,
-													 std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
+	std::shared_ptr<Shader> Shader::CreateFromString(
+		const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
 		auto s = std::make_shared<Shader>();
 		for (auto pair : source_code) {
 			s->LoadFromString(pair.first, pair.second);
@@ -182,4 +185,4 @@ namespace tec {
 		ShaderMap::Set(name, s);
 		return s;
 	}
-}
+} // namespace tec

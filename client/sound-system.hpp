@@ -4,20 +4,20 @@
 #ifndef TRILLEK_CLIENT_SOUND_SYSTEM_HPP
 #define TRILLEK_CLIENT_SOUND_SYSTEM_HPP
 
+#include <iostream>
 #include <memory>
 #include <set>
-#include <iostream>
 
 #include <al.h>
 #include <alc.h>
 #include <spdlog/spdlog.h>
 
-#include "multiton.hpp"
-#include "entity.hpp"
-#include "events.hpp"
-#include "types.hpp"
 #include "command-queue.hpp"
+#include "entity.hpp"
 #include "event-queue.hpp"
+#include "events.hpp"
+#include "multiton.hpp"
+#include "types.hpp"
 
 namespace tec {
 	class VorbisStream;
@@ -27,8 +27,9 @@ namespace tec {
 
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
 	struct AudioSource {
-		AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play) :
-			vorbis_stream(stream), source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED) {}
+		AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play)
+			: vorbis_stream(stream),
+			  source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED) {}
 		AudioSource() = default;
 
 		void Out(proto::Component* target) {
@@ -43,8 +44,8 @@ namespace tec {
 			if (comp.has_audio_name()) {
 				this->audio_name = comp.audio_name();
 				if (!SoundMap::Has(this->audio_name)) {
-					std::string ext = this->audio_name.substr(
-						this->audio_name.find_last_of(".") + 1);
+					std::string ext =
+						this->audio_name.substr(this->audio_name.find_last_of(".") + 1);
 					if (file_factories.find(ext) != file_factories.end()) {
 						file_factories[ext](this->audio_name);
 					}
@@ -55,7 +56,8 @@ namespace tec {
 				this->looping = comp.looping();
 			}
 			if (comp.has_playing()) {
-				this->source_state = comp.playing() ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED;
+				this->source_state =
+					comp.playing() ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED;
 			}
 			if (comp.has_volume()) {
 				this->gain = comp.volume();
@@ -63,7 +65,7 @@ namespace tec {
 		}
 
 		ALuint source{ 0 };
-		ALuint buffer[2]{ 0,0 };
+		ALuint buffer[2]{ 0, 0 };
 		bool looping{ false };
 		std::shared_ptr<VorbisStream> vorbis_stream;
 		AUDIOSOURCE_STATE source_state{ AUDIOSOURCE_STATE::PAUSED };
@@ -72,8 +74,8 @@ namespace tec {
 	};
 
 	class SoundSystem : public CommandQueue<SoundSystem>,
-		public EventQueue<EntityCreated>,
-		public EventQueue<EntityDestroyed> {
+						public EventQueue<EntityCreated>,
+						public EventQueue<EntityDestroyed> {
 	public:
 		SoundSystem();
 
@@ -91,6 +93,7 @@ namespace tec {
 		using EventQueue<EntityDestroyed>::On;
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
+
 	private:
 		std::atomic_bool running{ true };
 		double delta{ 0 };
@@ -101,6 +104,6 @@ namespace tec {
 
 		std::set<AudioSource*> queued_sources;
 	};
-}
+} // namespace tec
 
 #endif

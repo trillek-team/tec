@@ -7,27 +7,27 @@
 #include <string>
 #include <thread>
 
-#include "server-connection.hpp"
-#include "server-message.hpp"
 #include "controllers/fps-controller.hpp"
-#include "events.hpp"
 #include "event-system.hpp"
+#include "events.hpp"
 #include "filesystem.hpp"
+#include "game-state-queue.hpp"
+#include "graphics/view.hpp"
 #include "gui/console.hpp"
 #include "imgui-system.hpp"
 #include "lua-system.hpp"
 #include "os.hpp"
-#include "graphics/view.hpp"
 #include "physics-system.hpp"
 #include "render-system.hpp"
+#include "server-connection.hpp"
+#include "server-message.hpp"
 #include "simulation.hpp"
-#include "game-state-queue.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "voxel-volume.hpp"
 
-#include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_sinks.h>
+#include <spdlog/spdlog.h>
 
 namespace tec {
 	extern void InitializeComponents();
@@ -35,11 +35,10 @@ namespace tec {
 	extern void BuildTestEntities();
 	extern void ProtoLoad();
 	eid active_entity;
-}
+} // namespace tec
 
 int main(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
-
 
 	tec::InitializeComponents();
 	tec::InitializeFileFactories();
@@ -67,15 +66,11 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing OpenGL...");
 	tec::OS os;
 	if (!os.InitializeWindow(1024, 768, "TEC 0.1", 4, 0)) {
-		log->info("Exiting. The context wasn't created properly please update drivers and try again.");
+		log->info(
+			"Exiting. The context wasn't created properly please update drivers and try again.");
 		exit(1);
 	}
-	console.AddConsoleCommand(
-		"exit",
-		"exit : Exit from TEC",
-		[&os] (const char*) {
-			os.Quit();
-		});
+	console.AddConsoleCommand("exit", "exit : Exit from TEC", [&os](const char*) { os.Quit(); });
 	std::thread* asio_thread = nullptr;
 	std::thread* sync_thread = nullptr;
 	tec::Simulation simulation;
@@ -83,9 +78,7 @@ int main(int argc, char* argv[]) {
 	tec::networking::ServerConnection connection;
 
 	console.AddConsoleCommand(
-		"msg",
-		"msg : Send a message to all clients.",
-		[&connection] (const char* args) {
+		"msg", "msg : Send a message to all clients.", [&connection](const char* args) {
 			const char* end_arg = args;
 			while (*end_arg != '\0') {
 				end_arg++;
@@ -95,10 +88,8 @@ int main(int argc, char* argv[]) {
 			connection.SendChatMessage(message);
 		});
 
-	console.AddConsoleCommand(
-		"connect",
-		"connect ip : Connects to the server at ip",
-		[&connection, &log] (const char* args) {
+	console.AddConsoleCommand("connect", "connect ip : Connects to the server at ip",
+		[&connection, &log](const char* args) {
 			const char* end_arg = args;
 			while (*end_arg != '\0' && *end_arg != ' ') {
 				end_arg++;
@@ -129,8 +120,8 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing sound system...");
 	tec::SoundSystem ss;
 
-	//log->info("Initializing voxel system...");
-	//tec::VoxelSystem vox_sys;
+	// log->info("Initializing voxel system...");
+	// tec::VoxelSystem vox_sys;
 
 	log->info("Initializing script system...");
 	tec::LuaSystem lua_sys;
@@ -143,17 +134,18 @@ int main(int argc, char* argv[]) {
 	double delta = os.GetDeltaTime();
 	double mouse_x, mouse_y;
 
-	std::thread ss_thread([&] () { ss.Update(); });
+	std::thread ss_thread([&]() { ss.Update(); });
 
-	connection.RegisterMessageHandler(
-		tec::networking::MessageType::CLIENT_ID,
-		[&game_state_queue, &connection, &camera_controller, &log, &gui] (const tec::networking::ServerMessage&) {
+	connection.RegisterMessageHandler(tec::networking::MessageType::CLIENT_ID,
+		[&game_state_queue, &connection, &camera_controller, &log, &gui](
+			const tec::networking::ServerMessage&) {
 			auto client_id = connection.GetClientID();
 			log->info("You are connected as client ID " + std::to_string(client_id));
 			camera_controller = std::make_shared<tec::FPSController>(client_id);
 			tec::Entity camera(client_id);
 			camera.Add<tec::View>(true);
-			std::shared_ptr<tec::ControllerAddedEvent> cae_event = std::make_shared<tec::ControllerAddedEvent>();
+			std::shared_ptr<tec::ControllerAddedEvent> cae_event =
+				std::make_shared<tec::ControllerAddedEvent>();
 			cae_event->controller = camera_controller;
 			tec::EventSystem<tec::ControllerAddedEvent>::Get()->Emit(cae_event);
 			game_state_queue.SetClientID(client_id);
@@ -161,11 +153,10 @@ int main(int argc, char* argv[]) {
 			gui.HideWindow("connect_window");
 		});
 
-	connection.RegisterConnectFunc(
-		[&connection, &asio_thread, &sync_thread] () {
-			asio_thread = new std::thread([&connection] () { connection.StartRead(); });
-			sync_thread = new std::thread([&connection] () { connection.StartSync(); });
-		});
+	connection.RegisterConnectFunc([&connection, &asio_thread, &sync_thread]() {
+		asio_thread = new std::thread([&connection]() { connection.StartRead(); });
+		sync_thread = new std::thread([&connection]() { connection.StartSync(); });
+	});
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	tec::state_id_t command_id = 0;
@@ -191,7 +182,8 @@ int main(int argc, char* argv[]) {
 				client_commands.set_commandid(command_id++);
 				update_message.SetStateID(connection.GetLastRecvStateID());
 				update_message.SetMessageType(tec::networking::MessageType::CLIENT_COMMAND);
-				client_commands.SerializeToArray(update_message.GetBodyPTR(), client_commands.ByteSize());
+				client_commands.SerializeToArray(
+					update_message.GetBodyPTR(), client_commands.ByteSize());
 				update_message.SetBodyLength(client_commands.ByteSize());
 				update_message.encode_header();
 				connection.Send(update_message);
@@ -207,18 +199,22 @@ int main(int argc, char* argv[]) {
 
 		lua_sys.Update(delta);
 
-		//ps.DebugDraw();
+		// ps.DebugDraw();
 		if (camera_controller != nullptr) {
 			if (camera_controller->mouse_look) {
 				os.EnableMouseLock();
-				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), static_cast<float>(os.GetWindowWidth()) / 2.0f, static_cast<float>(os.GetWindowHeight()) / 2.0f,
-														 static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
+				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(),
+					static_cast<float>(os.GetWindowWidth()) / 2.0f,
+					static_cast<float>(os.GetWindowHeight()) / 2.0f,
+					static_cast<float>(os.GetWindowWidth()),
+					static_cast<float>(os.GetWindowHeight()));
 			}
 			else {
 				os.DisableMouseLock();
 				os.GetMousePosition(&mouse_x, &mouse_y);
 				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
-														 static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
+					static_cast<float>(os.GetWindowWidth()),
+					static_cast<float>(os.GetWindowHeight()));
 			}
 		}
 

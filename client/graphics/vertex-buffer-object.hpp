@@ -3,9 +3,9 @@
 
 #pragma once
 
+#include <cstring>
 #include <memory>
 #include <vector>
-#include <cstring>
 
 #ifndef __APPLE__
 #include <GL/glew.h>
@@ -79,9 +79,9 @@ namespace tec {
 
 		/**
 		 * Loads a mesh into a vertex buffer object.
-		 * note: calls Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices).
-		 * \param std::shared_ptr<MeshFile> mesh The mesh to load into this VertexBufferObject.
-		 * \return void
+		 * note: calls Load(const std::vector<VertexData>& verts, const std::vector<GLuint>&
+		 * indices). \param std::shared_ptr<MeshFile> mesh The mesh to load into this
+		 * VertexBufferObject. \return void
 		 */
 		void Load(std::shared_ptr<MeshFile> mesh);
 
@@ -89,6 +89,7 @@ namespace tec {
 		 * Loads a set of vertex and index data into a vertex buffer object.
 		 */
 		void Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices);
+
 	private:
 		GLuint vao{ 0 }, vbo{ 0 }, ibo{ 0 };
 		std::size_t vertex_count{ 0 }; // Total vertex count.
@@ -96,4 +97,4 @@ namespace tec {
 		std::vector<VertexGroup> vertex_groups;
 		std::weak_ptr<MeshFile> source_mesh;
 	};
-}
+} // namespace tec

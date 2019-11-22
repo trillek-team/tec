@@ -3,17 +3,17 @@
 
 #pragma once
 
-#include <unordered_map>
+#include <cstdint>
 #include <map>
 #include <memory>
-#include <vector>
 #include <queue>
-#include <cstdint>
+#include <unordered_map>
+#include <vector>
 
-#include "multiton.hpp"
-#include "resources/mesh.hpp"
 #include "command-queue.hpp"
 #include "event-system.hpp"
+#include "multiton.hpp"
+#include "resources/mesh.hpp"
 
 namespace tec {
 	struct MouseClickEvent;
@@ -31,19 +31,16 @@ namespace tec {
 
 	typedef Command<VoxelVolume> VoxelCommand;
 
-	class VoxelVolume : public CommandQueue < VoxelVolume >,
-		public EventQueue<MouseClickEvent> {
+	class VoxelVolume : public CommandQueue<VoxelVolume>, public EventQueue<MouseClickEvent> {
 	public:
 		VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh);
 		~VoxelVolume();
+
 	public:
 		// Iterates over all the actions queued before the call to update.
 		void Update(double delta);
 
-		
-		void Out(proto::Component*) {
-
-		}
+		void Out(proto::Component*) {}
 
 		// Generates a vertex (and index) buffer for the current voxel state.
 		void UpdateMesh();
@@ -56,19 +53,24 @@ namespace tec {
 		void AddVoxel(const std::int16_t row, const std::int16_t column, const std::int16_t slice);
 
 		// See AddVoxel().
-		void RemoveVoxel(const std::int16_t row, const std::int16_t column, const std::int16_t slice);
+		void RemoveVoxel(
+			const std::int16_t row, const std::int16_t column, const std::int16_t slice);
 
-		// Creates a VoxelVolume for entity_id and uses a PolygonMeshData with name and into sub-mesh.
+		// Creates a VoxelVolume for entity_id and uses a PolygonMeshData with name and into
+		// sub-mesh.
 		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, const std::string name);
 		// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into sub-mesh.
-		static std::weak_ptr<VoxelVolume> Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
-		
+		static std::weak_ptr<VoxelVolume> Create(
+			const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
+
 		using EventQueue<MouseClickEvent>::On;
 		void On(std::shared_ptr<MouseClickEvent> data);
+
 	private:
 		std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
 		std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.
-		std::unordered_map<std::int64_t, std::size_t> vertex_index; // Used to update or remove voxels from the mesh.
+		std::unordered_map<std::int64_t, std::size_t>
+			vertex_index; // Used to update or remove voxels from the mesh.
 		std::weak_ptr<MeshFile> mesh;
 		eid entity_id;
 	};
@@ -80,7 +82,8 @@ namespace tec {
 				itr->second->Update(delta);
 			}
 		}
+
 	private:
 		typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVolumeMap;
 	};
-}
+} // namespace tec

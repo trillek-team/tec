@@ -7,9 +7,9 @@
 #include <memory>
 #include <sstream>
 
+#include <spdlog/spdlog.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <spdlog/spdlog.h>
 
 #include "graphics/texture-object.hpp"
 
@@ -39,10 +39,9 @@ namespace tec {
 	}
 
 	void MD5Mesh::Joint::ComputeW() {
-		float t = 1.0f -
-			(this->orientation[0] * this->orientation[0]) -
-			(this->orientation[1] * this->orientation[1]) -
-			(this->orientation[2] * this->orientation[2]);
+		float t = 1.0f - (this->orientation[0] * this->orientation[0]) -
+				  (this->orientation[1] * this->orientation[1]) -
+				  (this->orientation[2] * this->orientation[2]);
 
 		if (t < 0.0f) {
 			this->orientation[3] = 0.0f;
@@ -66,8 +65,12 @@ namespace tec {
 		MD5Mesh::Joint j;
 		ss >> j.name;
 		ss >> j.parent;
-		ss >> j.position[0]; ss >> j.position[1]; ss >> j.position[2];
-		ss >> j.orientation[0]; ss >> j.orientation[1]; ss >> j.orientation[2];
+		ss >> j.position[0];
+		ss >> j.position[1];
+		ss >> j.position[2];
+		ss >> j.orientation[0];
+		ss >> j.orientation[1];
+		ss >> j.orientation[2];
 		j.ComputeW();
 
 		glm::mat4x4 boneTranslation = glm::translate(glm::mat4(1.0f), j.position);
@@ -90,8 +93,10 @@ namespace tec {
 		MD5Mesh::Vertex v;
 		int index;
 		ss >> index;
-		ss >> v.uv[0]; ss >> v.uv[1];
-		ss >> v.startWeight; ss >> v.weight_count;
+		ss >> v.uv[0];
+		ss >> v.uv[1];
+		ss >> v.startWeight;
+		ss >> v.weight_count;
 		return v;
 	}
 
@@ -106,7 +111,9 @@ namespace tec {
 		MD5Mesh::Triangle t;
 		int index;
 		ss >> index;
-		ss >> t.verts[0]; ss >> t.verts[1]; ss >> t.verts[2];
+		ss >> t.verts[0];
+		ss >> t.verts[1];
+		ss >> t.verts[2];
 		return t;
 	}
 
@@ -123,7 +130,9 @@ namespace tec {
 		ss >> index;
 		ss >> w.joint;
 		ss >> w.bias;
-		ss >> w.position[0]; ss >> w.position[1]; ss >> w.position[2];
+		ss >> w.position[0];
+		ss >> w.position[1];
+		ss >> w.position[2];
 		return w;
 	}
 
@@ -146,13 +155,14 @@ namespace tec {
 
 	bool MD5Mesh::Parse() {
 		auto _log = spdlog::get("console_log");
-		if (!this->path.isValidPath() || ! this->path.FileExists()) {
-			_log->error("[MD5Mesh] Can't open the file {}. Invalid path or missing file.", path.toString());
+		if (!this->path.isValidPath() || !this->path.FileExists()) {
+			_log->error(
+				"[MD5Mesh] Can't open the file {}. Invalid path or missing file.", path.toString());
 			// Can't open the file!
 			return false;
 		}
 		auto base_path = this->path.BasePath();
-		
+
 		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
 			_log->error("[MD5Mesh] Error opening file {}", path.toString());
@@ -272,7 +282,9 @@ namespace tec {
 
 				// Compute vertex position based on joint position.
 				for (std::uint8_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
-					Weight& weight = int_mesh.weights[static_cast<std::size_t>(int_mesh.verts[j].startWeight) + static_cast<std::size_t>(k)];
+					Weight& weight =
+						int_mesh.weights[static_cast<std::size_t>(int_mesh.verts[j].startWeight) +
+										 static_cast<std::size_t>(k)];
 
 					/* Calculate transformed vertex for this weight */
 					glm::vec3 wv = this->joints[weight.joint].orientation * weight.position;
@@ -307,7 +319,8 @@ namespace tec {
 			InternalMesh& int_mesh = this->meshes_internal[i];
 			if (mesh->verts.size() < int_mesh.verts.size()) {
 				mesh->verts.resize(int_mesh.verts.size());
-				// If we need to resize here then we will need to calculate the vertex positions again.
+				// If we need to resize here then we will need to calculate the vertex positions
+				// again.
 				CalculateVertexPositions();
 			}
 			// Loop through all triangles and calculate the normal of each triangle
@@ -358,11 +371,10 @@ namespace tec {
 			}
 			ObjectGroup* objgroup = this->meshes[i]->object_groups[0];
 			std::string material_name = int_mesh.shader;
-			material_name = material_name.substr(
-				material_name.find_last_of("/") + 1,
-				material_name.find_last_of(".") -
-				material_name.find_last_of("/") - 1)
-				+ "_material";
+			material_name =
+				material_name.substr(material_name.find_last_of("/") + 1,
+					material_name.find_last_of(".") - material_name.find_last_of("/") - 1) +
+				"_material";
 			if (objgroup->indices.size() < int_mesh.tris.size()) {
 				objgroup->indices.reserve(int_mesh.tris.size() * 3);
 			}
@@ -371,9 +383,10 @@ namespace tec {
 				objgroup->indices.push_back(int_mesh.tris[j].verts[1]);
 				objgroup->indices.push_back(int_mesh.tris[j].verts[2]);
 			}
-			MaterialGroup mat_group = {0, static_cast<unsigned int>(objgroup->indices.size()), material_name};
+			MaterialGroup mat_group = { 0, static_cast<unsigned int>(objgroup->indices.size()),
+				material_name };
 			mat_group.textures.push_back(int_mesh.shader);
 			objgroup->material_groups.push_back(std::move(mat_group));
 		}
 	}
-}
+} // namespace tec

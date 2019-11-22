@@ -3,13 +3,13 @@
 
 #pragma once
 
-#include <mutex>
-#include <memory>
 #include <cstdint>
+#include <memory>
+#include <mutex>
 #include <string>
 
-#include "multiton.hpp"
 #include "filesystem.hpp"
+#include "multiton.hpp"
 
 namespace tec {
 	class PixelBuffer;
@@ -46,7 +46,8 @@ namespace tec {
 		 * \param bitspersample the number of bits in a single channel, usually 8
 		 * \param mode greyscale (Monochrome) or color (RGB), and whether there is alpha or no alpha
 		 */
-		PixelBuffer(std::uint32_t width, std::uint32_t height, std::uint32_t bitspersample, ImageColorMode mode);
+		PixelBuffer(std::uint32_t width, std::uint32_t height, std::uint32_t bitspersample,
+			ImageColorMode mode);
 
 		/** \brief Create a copy of a pixel buffer.
 		 * \param pbuf the pixel buffer to copy from
@@ -79,7 +80,8 @@ namespace tec {
 		 * \param const FilePath filename The optional filename of the image to load.
 		 * \return std::shared_ptr<PixelBuffer> The created PixelBuffer.
 		 */
-		static std::shared_ptr<PixelBuffer> Create(const std::string name, const FilePath& filename = FilePath());
+		static std::shared_ptr<PixelBuffer> Create(
+			const std::string name, const FilePath& filename = FilePath());
 
 		bool IsDirty() const;
 		/** \brief Mark dirty */
@@ -94,14 +96,28 @@ namespace tec {
 		 */
 		const std::uint8_t* GetBlockBase() const;
 
-		std::mutex& GetWritelock() { return this->writelock; }
-		std::uint8_t* GetPtr() { return this->blockptr.get(); }
+		std::mutex& GetWritelock() {
+			return this->writelock;
+		}
+		std::uint8_t* GetPtr() {
+			return this->blockptr.get();
+		}
 
-		std::uint32_t Width() const { return imagewidth; }
-		std::uint32_t Height() const { return imageheight; }
-		std::uint32_t Pitch() const { return bufferpitch; }
-		std::uint32_t PixelSize() const { return imagepixelsize; }
-		ImageColorMode GetFormat() const { return imagemode; }
+		std::uint32_t Width() const {
+			return imagewidth;
+		}
+		std::uint32_t Height() const {
+			return imageheight;
+		}
+		std::uint32_t Pitch() const {
+			return bufferpitch;
+		}
+		std::uint32_t PixelSize() const {
+			return imagepixelsize;
+		}
+		ImageColorMode GetFormat() const {
+			return imagemode;
+		}
 
 		// output a PPM image to stderr or file as a debug feature
 		void PPMDebug();
@@ -127,4 +143,4 @@ namespace tec {
 		std::mutex writelock;
 	};
 
-}
+} // namespace tec

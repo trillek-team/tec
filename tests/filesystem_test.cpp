@@ -2,16 +2,16 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 /**
-* Unit tests of TEC - FileSystem
-*/
+ * Unit tests of TEC - FileSystem
+ */
 
 #include "filesystem.hpp"
 
 #include <gtest/gtest.h>
 
-#include <cstring>
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <ctime>
 
 TEST(FilePath_class_test, Constructor) {
@@ -20,17 +20,16 @@ TEST(FilePath_class_test, Constructor) {
 	std::string bad_path = "c:\\usr/share\\MyApp\\foo/bar.png";
 	FilePath fp1(bad_path);
 #if defined(WIN32)
-	ASSERT_STREQ("c:\\usr\\share\\MyApp\\foo\\bar.png", fp1.toString().c_str() );
+	ASSERT_STREQ("c:\\usr\\share\\MyApp\\foo\\bar.png", fp1.toString().c_str());
 #else
-	ASSERT_STREQ("/usr/share/MyApp/foo/bar.png", fp1.toString().c_str() );
+	ASSERT_STREQ("/usr/share/MyApp/foo/bar.png", fp1.toString().c_str());
 #endif
 	FilePath fp2("c:/usr/local/share/");
 #if defined(WIN32)
-	ASSERT_STREQ("c:\\usr\\local\\share\\", fp2.toString().c_str() );
+	ASSERT_STREQ("c:\\usr\\local\\share\\", fp2.toString().c_str());
 #else
-	ASSERT_STREQ("/usr/local/share/", fp2.toString().c_str() );
+	ASSERT_STREQ("/usr/local/share/", fp2.toString().c_str());
 #endif
-
 }
 
 TEST(FilePath_class_test, Operators) {
@@ -121,7 +120,8 @@ TEST(FilePath_class_test, IsValid) {
 	ASSERT_FALSE(fp4.isValidPath());
 
 	FilePath fp5(""); // Bad Path
-	ASSERT_FALSE(fp5.isValidPath());;
+	ASSERT_FALSE(fp5.isValidPath());
+	;
 }
 
 TEST(FilePath_class_test, BasePath) {
@@ -142,12 +142,12 @@ TEST(FilePath_class_test, FileNameAndExtension) {
 
 	FilePath fp1("c:\\windows\\notepad.exe");
 	ASSERT_EQ(0, fp1.FileName().compare("notepad.exe"));
-	ASSERT_EQ(0, fp1.FileExtension().compare("exe") );
+	ASSERT_EQ(0, fp1.FileExtension().compare("exe"));
 }
 
 TEST(FilePath_class_test, Subpath) {
 	using namespace tec;
-	
+
 #if defined(WIN32)
 	FilePath fp("c:\\usr/local/share/MyApp/foo.ini");
 	auto sub1 = fp.Subpath(0, 1);
@@ -160,9 +160,9 @@ TEST(FilePath_class_test, Subpath) {
 	ASSERT_EQ(0, sub4.toString().compare("\\share\\MyApp\\foo.ini"));
 
 	auto sub5 = fp.SubpathFrom("share", true);
-	ASSERT_STREQ("share\\MyApp\\foo.ini", sub5.toString().c_str() );
+	ASSERT_STREQ("share\\MyApp\\foo.ini", sub5.toString().c_str());
 	auto sub6 = fp.SubpathFrom("share");
-	ASSERT_STREQ("MyApp\\foo.ini", sub6.toString().c_str() );
+	ASSERT_STREQ("MyApp\\foo.ini", sub6.toString().c_str());
 #else
 	FilePath fp("/usr/local/share/MyApp/foo.ini");
 	auto sub1 = fp.Subpath(0, 1);
@@ -175,9 +175,9 @@ TEST(FilePath_class_test, Subpath) {
 	ASSERT_EQ(0, sub4.toString().compare("/share/MyApp/foo.ini"));
 
 	auto sub5 = fp.SubpathFrom("share", true);
-	ASSERT_STREQ("share/MyApp/foo.ini", sub5.toString().c_str() );
+	ASSERT_STREQ("share/MyApp/foo.ini", sub5.toString().c_str());
 	auto sub6 = fp.SubpathFrom("share");
-	ASSERT_STREQ("MyApp/foo.ini", sub6.toString().c_str() );
+	ASSERT_STREQ("MyApp/foo.ini", sub6.toString().c_str());
 #endif
 }
 
@@ -237,12 +237,14 @@ TEST(FilePath_class_test, AssetsPath) {
 		ASSERT_FALSE(fp.empty());
 		ASSERT_TRUE(fp.isValidPath());
 
-		auto fp2 = FilePath::GetAssetPath("shaders/debug.vert"); // NOTE Rememeber to change this if debug.vert is moved
+		auto fp2 = FilePath::GetAssetPath(
+			"shaders/debug.vert"); // NOTE Rememeber to change this if debug.vert is moved
 		std::cout << fp2 << "\n";
 		ASSERT_TRUE(fp2.isValidPath());
 		ASSERT_TRUE(fp2.FileExists());
 	}
 	else {
-		std::cout << "Run test from root folder of the project or make a link to assets to check GetAssetsBasePath\n";
+		std::cout << "Run test from root folder of the project or make a link to assets to check "
+					 "GetAssetsBasePath\n";
 	}
 }

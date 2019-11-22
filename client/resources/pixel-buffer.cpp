@@ -9,7 +9,7 @@
 #include <spdlog/spdlog.h>
 
 namespace tec {
-	PixelBuffer::PixelBuffer(PixelBuffer && rv) {
+	PixelBuffer::PixelBuffer(PixelBuffer&& rv) {
 		writelock.lock();
 		rv.writelock.lock();
 		imagewidth = rv.imagewidth;
@@ -28,7 +28,8 @@ namespace tec {
 		rv.writelock.unlock();
 		writelock.unlock();
 	}
-	PixelBuffer::PixelBuffer(uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode) {
+	PixelBuffer::PixelBuffer(
+		uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode) {
 		imagepixelsize = 0;
 		imagewidth = 0;
 		imageheight = 0;
@@ -40,7 +41,7 @@ namespace tec {
 		Create(width, height, bitspersample, mode);
 	}
 
-	PixelBuffer & PixelBuffer::operator=(PixelBuffer && rv) {
+	PixelBuffer& PixelBuffer::operator=(PixelBuffer&& rv) {
 		writelock.lock();
 		rv.writelock.lock();
 		imagewidth = rv.imagewidth;
@@ -65,7 +66,7 @@ namespace tec {
 		// output a PPM image to stderr as a debug feature
 		std::fprintf(stderr, "P6\n%d\n%d\n%d\n", imagewidth, imageheight, (1 << imagebitdepth) - 1);
 		if (!blockptr) return;
-		uint8_t * p = blockptr.get();
+		uint8_t* p = blockptr.get();
 		switch (imagemode) {
 			case ImageColorMode::COLOR_RGB:
 				for (uint32_t i = 0; i < bufferpitch * imageheight; i++) {
@@ -84,7 +85,7 @@ namespace tec {
 				break;
 		}
 	}
-	void PixelBuffer::PPMDebug(const char * ofile) {
+	void PixelBuffer::PPMDebug(const char* ofile) {
 		// output a PPM image to stderr as a debug feature
 		std::fstream file(ofile, std::ios::out | std::ios::binary);
 		if (!file.is_open()) {
@@ -93,7 +94,7 @@ namespace tec {
 		file << "P6\n" << imagewidth << '\n' << imageheight << '\n';
 		file << ((1 << imagebitdepth) - 1) << '\n';
 		if (!blockptr) return;
-		uint8_t * p = blockptr.get();
+		uint8_t* p = blockptr.get();
 		switch (imagemode) {
 			case ImageColorMode::COLOR_RGB:
 				file.write((char*)p, bufferpitch * imageheight);
@@ -107,11 +108,11 @@ namespace tec {
 			case ImageColorMode::MONOCHROME_A:
 			case ImageColorMode::UNKNOWN_MODE:
 				break;
-
 		}
 	}
 
-	bool PixelBuffer::Create(uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode) {
+	bool PixelBuffer::Create(
+		uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode) {
 		uint8_t pixelsize;
 		switch (mode) {
 			case ImageColorMode::COLOR_RGB:
@@ -153,7 +154,8 @@ namespace tec {
 		return true;
 	}
 
-	std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string name, const FilePath& filename) {
+	std::shared_ptr<PixelBuffer> PixelBuffer::Create(
+		const std::string name, const FilePath& filename) {
 		auto pbuf = std::make_shared<PixelBuffer>();
 		PixelBufferMap::Set(name, pbuf);
 		if (!filename.empty()) {
@@ -172,7 +174,7 @@ namespace tec {
 		dirty = false;
 	}
 
-	const uint8_t * PixelBuffer::GetBlockBase() const {
+	const uint8_t* PixelBuffer::GetBlockBase() const {
 		if (blockptr) {
 			return blockptr.get();
 		}
@@ -184,10 +186,11 @@ namespace tec {
 
 	bool PixelBuffer::Load(const FilePath& filename) {
 		int num_components;
-		unsigned char *data;
-		// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a fopen to FileSystem ?
-		// Also we not are doing path valid or file existence check
-		data = stbi_load(filename.toString().c_str(), &this->imagewidth, &this->imageheight, &num_components, 0);
+		unsigned char* data;
+		// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a
+		// fopen to FileSystem ? Also we not are doing path valid or file existence check
+		data = stbi_load(
+			filename.toString().c_str(), &this->imagewidth, &this->imageheight, &num_components, 0);
 		if (data) {
 			switch (num_components) {
 				case 3:
@@ -212,13 +215,14 @@ namespace tec {
 			this->image_y = 0;
 			this->dirty = true;
 			this->bufferpitch = (8 * imagepixelsize);
-			this->bufferpitch = this->imagewidth * ((this->bufferpitch >> 3) +
-				((this->bufferpitch & 0x7) ? 1 : 0));
+			this->bufferpitch =
+				this->imagewidth * ((this->bufferpitch >> 3) + ((this->bufferpitch & 0x7) ? 1 : 0));
 			this->writelock.lock();
 			this->blockptr.reset(data);
 			this->writelock.unlock();
 
-			spdlog::get("console_log")->trace("[Pixel-Buffer] Loaded image {}", filename.FileName());
+			spdlog::get("console_log")
+				->trace("[Pixel-Buffer] Loaded image {}", filename.FileName());
 			return true;
 		}
 
@@ -226,4 +230,4 @@ namespace tec {
 		return false;
 	}
 
-}
+} // namespace tec

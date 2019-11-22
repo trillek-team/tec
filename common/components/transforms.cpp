@@ -59,7 +59,8 @@ namespace tec {
 
 		glm::quat qX = glm::angleAxis(amount.x, this->value * RIGHT_VECTOR);
 		glm::quat qY = glm::angleAxis(amount.y, this->value * UP_VECTOR);
-		glm::quat qZ = glm::angleAxis(amount.z, this->value * glm::vec3(0.0, 0.0, 1.0)); // Z axis not Forward
+		glm::quat qZ =
+			glm::angleAxis(amount.z, this->value * glm::vec3(0.0, 0.0, 1.0)); // Z axis not Forward
 		glm::quat change = qX * qY * qZ;
 
 		this->value = glm::normalize(change * this->value);
@@ -125,4 +126,4 @@ namespace tec {
 			this->value.z = comp.z();
 		}
 	}
-}
+} // namespace tec

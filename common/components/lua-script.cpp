@@ -3,17 +3,17 @@
 
 #include "lua-script.hpp"
 
-#include <memory>
 #include <map>
+#include <memory>
 
-#include "types.hpp"
 #include "resources/script-file.hpp"
+#include "types.hpp"
 
 namespace tec {
-	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
+	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>>
+		in_functors;
 
-	LuaScript::LuaScript()
-		: state() {
+	LuaScript::LuaScript() : state() {
 		this->ReloadScript();
 	}
 
@@ -26,9 +26,11 @@ namespace tec {
 		auto _log = spdlog::get("console_log");
 		if (!this->script_name.empty()) {
 			this->state.ForceGC();
-			auto print = [](std::string str1) { //, std::string str2=std::string(), std::string str3=std::string(), std::string str4=std::string()) {
-				spdlog::get("console_log")->info(str1); //, str2, str3, str4);
-			};
+			auto print =
+				[](std::string str1) { //, std::string str2=std::string(), std::string
+									   //str3=std::string(), std::string str4=std::string()) {
+					spdlog::get("console_log")->info(str1); //, str2, str3, str4);
+				};
 			this->state["print"] = print;
 			for (auto& add_kv : in_functors) {
 				std::string name = TypeName.at(add_kv.first);
@@ -36,7 +38,7 @@ namespace tec {
 				this->state[name.c_str()] = add_kv.second;
 			}
 
-			//this->state.LoadStr(this->script->GetScript());
+			// this->state.LoadStr(this->script->GetScript());
 		}
 	}
 
@@ -62,4 +64,4 @@ namespace tec {
 		}
 	}
 
-}
+} // namespace tec

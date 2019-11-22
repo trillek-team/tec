@@ -1,0 +1,21 @@
+﻿---
+BasedOnStyle: Google
+AccessModifierOffset: '-4'
+AlignAfterOpenBracket: DontAlign
+AlignTrailingComments: 'false'
+AllowShortFunctionsOnASingleLine: Empty
+ColumnLimit: '100'
+CompactNamespaces: 'true'
+Cpp11BracedListStyle: 'false'
+Language: Cpp
+NamespaceIndentation: All
+SpacesBeforeTrailingComments: '1'
+SpacesInContainerLiterals: 'false'
+IndentWidth: '4'
+TabWidth: '4'
+UseTab: Always
+BreakBeforeBraces: Custom
+BraceWrapping:
+  BeforeElse: 'true'
+
+...

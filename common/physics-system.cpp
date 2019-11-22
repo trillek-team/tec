@@ -4,8 +4,8 @@
 #include "physics-system.hpp"
 
 // #include "physics/physics-debug-drawer.hpp"
-#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h>
+#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "components/collision-body.hpp"
@@ -14,7 +14,6 @@
 #include "entity.hpp"
 #include "events.hpp"
 #include "multiton.hpp"
-
 
 namespace tec {
 	using CollisionBodyMap = Multiton<eid, CollisionBody*>;
@@ -28,15 +27,15 @@ namespace tec {
 		this->dispatcher = new btCollisionDispatcher(this->collisionConfiguration);
 		this->broadphase = new btDbvtBroadphase();
 		this->solver = new btSequentialImpulseConstraintSolver();
-		this->dynamicsWorld = new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
+		this->dynamicsWorld = new btDiscreteDynamicsWorld(
+			this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
 		this->dynamicsWorld->setGravity(btVector3(0, -10.0, 0));
 
 		btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
 
 		// #ifdef CLIENT_STANDALONE
-		// 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb);
-		// 		this->dynamicsWorld->setDebugDrawer(&debug_drawer);
-		// #endif
+		// 		debug_drawer.setDebugMode(btIDebugDraw::DBG_DrawWireframe |
+		// btIDebugDraw::DBG_DrawAabb); 		this->dynamicsWorld->setDebugDrawer(&debug_drawer); #endif
 	}
 
 	PhysicsSystem::~PhysicsSystem() {
@@ -73,14 +72,18 @@ namespace tec {
 			}
 			if (state.positions.find(entity_id) != state.positions.end()) {
 				glm::vec3 position = state.positions.at(entity_id).value;
-				if (std::isfinite(position.x) && std::isfinite(position.y) && std::isfinite(position.z)) {
-					collidable->motion_state.transform.setOrigin(btVector3(position.x, position.y, position.z));
+				if (std::isfinite(position.x) && std::isfinite(position.y) &&
+					std::isfinite(position.z)) {
+					collidable->motion_state.transform.setOrigin(
+						btVector3(position.x, position.y, position.z));
 				}
 			}
 			if (state.orientations.find(entity_id) != state.orientations.end()) {
 				glm::quat orientation = state.orientations.at(entity_id).value;
-				if (std::isfinite(orientation.x) && std::isfinite(orientation.y) && std::isfinite(orientation.z) && std::isfinite(orientation.w)) {
-					collidable->motion_state.transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+				if (std::isfinite(orientation.x) && std::isfinite(orientation.y) &&
+					std::isfinite(orientation.z) && std::isfinite(orientation.w)) {
+					collidable->motion_state.transform.setRotation(
+						btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 				}
 			}
 
@@ -112,10 +115,12 @@ namespace tec {
 
 			if (state.velocities.find(entity_id) != state.velocities.end()) {
 				const Velocity& vel = state.velocities.at(entity_id);
-				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.y) && std::isfinite(vel.linear.z)) {
+				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.y) &&
+					std::isfinite(vel.linear.z)) {
 					body->setLinearVelocity(vel.GetLinear() + body->getGravity());
 				}
-				if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.y) && std::isfinite(vel.angular.z)) {
+				if (std::isfinite(vel.angular.x) && std::isfinite(vel.angular.y) &&
+					std::isfinite(vel.angular.z)) {
 					body->setAngularVelocity(vel.GetAngular());
 				}
 			}
@@ -133,9 +138,12 @@ namespace tec {
 		return updated_entities;
 	}
 
-	glm::vec3 GetRayDirection(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) {
-		glm::vec4 ray_start_NDC((mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, -1.0, 1.0f);
-		glm::vec4 ray_end_NDC((mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, 0.0, 1.0f);
+	glm::vec3 GetRayDirection(float mouse_x, float mouse_y, float screen_width, float screen_height,
+		glm::mat4 view, glm::mat4 projection) {
+		glm::vec4 ray_start_NDC((mouse_x / screen_width - 0.5f) * 2.0f,
+			(mouse_y / screen_height - 0.5f) * -2.0f, -1.0, 1.0f);
+		glm::vec4 ray_end_NDC((mouse_x / screen_width - 0.5f) * 2.0f,
+			(mouse_y / screen_height - 0.5f) * -2.0f, 0.0, 1.0f);
 
 		glm::mat4 inverted_viewprojection = glm::inverse(projection * view);
 		glm::vec4 ray_start_WORLD = inverted_viewprojection * ray_start_NDC;
@@ -147,34 +155,37 @@ namespace tec {
 		return ray_direction_WORLD;
 	}
 
-	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
+	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y,
+		float screen_width, float screen_height) {
 		if (source_entity == 0 || (this->bodies.find(source_entity) == this->bodies.end())) {
 			return 0;
 		}
 		this->last_rayvalid = false;
 		this->last_entity_hit = 0;
 
-		auto pos = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getOrigin();
+		auto pos = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())
+					   ->motion_state.transform.getOrigin();
 		glm::vec3 position(pos.x(), pos.y(), pos.z());
-		auto rot = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getRotation();
+		auto rot = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())
+					   ->motion_state.transform.getRotation();
 		glm::quat orientation(rot.w(), rot.x(), rot.y(), rot.z());
 
 		if (screen_height == 0.0f) {
 			return 0;
 		}
 		// TODO: This could be pulled from something but it seems unlikely to change.
-		static glm::mat4 projection = glm::perspective(
-			glm::radians(45.0f),
-			screen_width / screen_height,
-			-1.0f,
-			300.0f
-		);
-		glm::mat4 view = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
+		static glm::mat4 projection =
+			glm::perspective(glm::radians(45.0f), screen_width / screen_height, -1.0f, 300.0f);
+		glm::mat4 view =
+			glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
 
-		glm::vec3 world_direction = position - GetRayDirection(static_cast<float>(mouse_x),
-															   static_cast<float>(mouse_y), screen_width, screen_height, view, projection) * 100.0f;
+		glm::vec3 world_direction =
+			position - GetRayDirection(static_cast<float>(mouse_x), static_cast<float>(mouse_y),
+						   screen_width, screen_height, view, projection) *
+						   100.0f;
 
-		btVector3 from(position.x, position.y, position.z), to(world_direction.x, world_direction.y, world_direction.z);
+		btVector3 from(position.x, position.y, position.z),
+			to(world_direction.x, world_direction.y, world_direction.z);
 		this->last_rayfrom = from;
 		btDynamicsWorld::AllHitsRayResultCallback ray_result_callback(from, to);
 		this->dynamicsWorld->rayTest(from, to, ray_result_callback);
@@ -186,7 +197,9 @@ namespace tec {
 			for (int i = 0; i < collision_object_count; i++) {
 				eid entity = 0;
 				double frc = ray_result_callback.m_hitFractions.at(i);
-				const CollisionBody* colbody = (const CollisionBody*)ray_result_callback.m_collisionObjects.at(i)->getUserPointer();
+				const CollisionBody* colbody =
+					(const CollisionBody*)ray_result_callback.m_collisionObjects.at(i)
+						->getUserPointer();
 				if (!colbody) {
 					continue;
 				}
@@ -234,7 +247,8 @@ namespace tec {
 			for (int i = 0; i < mx; i++) {
 				eid entity = 0;
 				double frc = cr.m_hitFractions.at(i);
-				const CollisionBody* coll = (const CollisionBody*)cr.m_collisionObjects.at(i)->getUserPointer();
+				const CollisionBody* coll =
+					(const CollisionBody*)cr.m_collisionObjects.at(i)->getUserPointer();
 				if (!coll) continue;
 				entity = coll->entity_id;
 				if (entity && entity != cam && entity != ign) {
@@ -293,7 +307,7 @@ namespace tec {
 		}
 
 		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
-																 &collision_body->motion_state, collision_body->shape.get(), fallInertia);
+			&collision_body->motion_state, collision_body->shape.get(), fallInertia);
 		auto body = new btRigidBody(fallRigidBodyCI);
 
 		if (!body) {
@@ -322,28 +336,25 @@ namespace tec {
 				mce_event->button = data->button;
 				mce_event->entity_id = this->last_entity_hit;
 				mce_event->ray_distance = this->last_raydist;
-				mce_event->ray_hit_piont_world = glm::vec3(this->last_raypos.getX(),
-														   this->last_raypos.getY(), this->last_raypos.getZ());
+				mce_event->ray_hit_piont_world = glm::vec3(
+					this->last_raypos.getX(), this->last_raypos.getY(), this->last_raypos.getZ());
 				EventSystem<MouseClickEvent>::Get()->Emit(mce_event);
 			}
 		}
 	}
-
 
 	void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
 		eid entity_id = data->entity.id();
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kCollisionBody:
-				{
+				case proto::Component::kCollisionBody: {
 					CollisionBody* collision_body = new CollisionBody();
 					collision_body->In(comp);
 					CollisionBodyMap::Set(entity_id, collision_body);
 					collision_body->entity_id = entity_id;
 					AddRigidBody(collision_body);
-				}
-				break;
+				} break;
 				case proto::Component::kRenderable:
 				case proto::Component::kPosition:
 				case proto::Component::kOrientation:
@@ -359,7 +370,7 @@ namespace tec {
 				case proto::Component::kComputer:
 				case proto::Component::kLuaScript:
 				case proto::Component::COMPONENT_NOT_SET:
-				break;
+					break;
 			}
 		}
 	}
@@ -372,7 +383,8 @@ namespace tec {
 
 	Position PhysicsSystem::GetPosition(eid entity_id) {
 		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
-			auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getOrigin();
+			auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())
+						   ->motion_state.transform.getOrigin();
 			Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
 
 			// TODO: remove this once center_offset is in renderable
@@ -386,7 +398,8 @@ namespace tec {
 
 	Orientation PhysicsSystem::GetOrientation(eid entity_id) {
 		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
-			auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getRotation();
+			auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())
+						   ->motion_state.transform.getRotation();
 			Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
 
 			// TODO: remove this once rotation_offset is in renderable
@@ -397,4 +410,4 @@ namespace tec {
 		}
 		return glm::quat();
 	}
-}
+} // namespace tec

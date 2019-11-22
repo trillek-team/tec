@@ -7,18 +7,17 @@
 #include <memory>
 #include <sstream>
 
-#include <glm/gtx/compatibility.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <spdlog/spdlog.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/compatibility.hpp>
 
 #include "md5mesh.hpp"
 
 namespace tec {
 	void MD5Anim::Joint::ComputeW() {
-		float t = 1.0f -
-			(this->base_orientation[0] * this->base_orientation[0]) -
-			(this->base_orientation[1] * this->base_orientation[1]) -
-			(this->base_orientation[2] * this->base_orientation[2]);
+		float t = 1.0f - (this->base_orientation[0] * this->base_orientation[0]) -
+				  (this->base_orientation[1] * this->base_orientation[1]) -
+				  (this->base_orientation[2] * this->base_orientation[2]);
 
 		if (t < 0.0f) {
 			this->base_orientation[3] = 0.0f;
@@ -29,10 +28,9 @@ namespace tec {
 	}
 
 	void MD5Anim::SkeletonJoint::ComputeW() {
-		float t = 1.0f -
-			(this->orientation[0] * this->orientation[0]) -
-			(this->orientation[1] * this->orientation[1]) -
-			(this->orientation[2] * this->orientation[2]);
+		float t = 1.0f - (this->orientation[0] * this->orientation[0]) -
+				  (this->orientation[1] * this->orientation[1]) -
+				  (this->orientation[2] * this->orientation[2]);
 
 		if (t < 0.0f) {
 			this->orientation[3] = 0.0f;
@@ -43,12 +41,12 @@ namespace tec {
 	}
 
 	/**
-	* \brief Cleans an input string by removing certain grouping characters.
-	*
-	* These characters include ", ', (, and ).
-	* \param[in] std::string str The string to clean.
-	* \return The cleaned string
-	*/
+	 * \brief Cleans an input string by removing certain grouping characters.
+	 *
+	 * These characters include ", ', (, and ).
+	 * \param[in] std::string str The string to clean.
+	 * \return The cleaned string
+	 */
 	extern std::string CleanString(std::string str);
 
 	std::shared_ptr<MD5Anim> MD5Anim::Create(const FilePath& fname, std::shared_ptr<MD5Mesh> mesh) {
@@ -74,12 +72,13 @@ namespace tec {
 
 	bool MD5Anim::Parse() {
 		auto _log = spdlog::get("console_log");
-		if (!this->path.isValidPath() || ! this->path.FileExists()) {
-			_log->error("[MD5Anim] Can't open the file {}. Invalid path or missing file.", path.toString());
+		if (!this->path.isValidPath() || !this->path.FileExists()) {
+			_log->error(
+				"[MD5Anim] Can't open the file {}. Invalid path or missing file.", path.toString());
 			// Can't open the file!
 			return false;
 		}
-		
+
 		std::ifstream f(this->path.GetNativePath(), std::ios::in);
 		if (!f.is_open()) {
 			_log->error("[MD5Anim] Error opening file {}", path.toString());
@@ -137,11 +136,16 @@ namespace tec {
 			}
 			else if (identifier == "bounds") {
 				while (std::getline(f, line)) {
-					if ((line.find("(") != std::string::npos) && (line.find(")") != std::string::npos)) {
+					if ((line.find("(") != std::string::npos) &&
+						(line.find(")") != std::string::npos)) {
 						ss.str(CleanString(line));
 						BoundingBox bbox;
-						ss >> bbox.min[0]; ss >> bbox.min[1]; ss >> bbox.min[2];
-						ss >> bbox.max[0]; ss >> bbox.max[1]; ss >> bbox.max[2];
+						ss >> bbox.min[0];
+						ss >> bbox.min[1];
+						ss >> bbox.min[2];
+						ss >> bbox.max[0];
+						ss >> bbox.max[1];
+						ss >> bbox.max[2];
 						this->bounds.push_back(std::move(bbox));
 					}
 					// Check if the line contained the closing brace. This is done after parsing
@@ -154,7 +158,8 @@ namespace tec {
 			else if (identifier == "baseframe") {
 				std::size_t index = 0;
 				while (std::getline(f, line)) {
-					if ((line.find("(") != std::string::npos) && (line.find(")") != std::string::npos)) {
+					if ((line.find("(") != std::string::npos) &&
+						(line.find(")") != std::string::npos)) {
 						ss.str(CleanString(line));
 						auto& joint = this->joints[index];
 						// Check if the base frame block is malformed.
@@ -213,7 +218,8 @@ namespace tec {
 			unsigned int j = 0;
 
 			// Start with the base frame position and orientation.
-			SkeletonJoint skeleton_joint = {joint.parent, joint.base_position, joint.base_orientation};
+			SkeletonJoint skeleton_joint = { joint.parent, joint.base_position,
+				joint.base_orientation };
 
 			if (joint.flags & 1) { // Pos.x
 				skeleton_joint.position.x = frame.parameters[joint.start_index + j++];
@@ -276,18 +282,18 @@ namespace tec {
 		return false;
 	}
 
-	MD5Anim::FrameSkeleton MD5Anim::InterpolateSkeletons(std::size_t frame_index_start,
-		std::size_t frame_index_end, float delta) {
+	MD5Anim::FrameSkeleton MD5Anim::InterpolateSkeletons(
+		std::size_t frame_index_start, std::size_t frame_index_end, float delta) {
 		const auto& skeleton0 = this->frames[frame_index_start].skeleton;
 		const auto& skeleton1 = this->frames[frame_index_end].skeleton;
 		FrameSkeleton final_skeleton;
 
 		std::size_t num_joints = this->joints.size();
 
-		final_skeleton.skeleton_joints.insert(final_skeleton.skeleton_joints.begin(),
-			num_joints, SkeletonJoint());
-		final_skeleton.bone_matrices.insert(final_skeleton.bone_matrices.begin(),
-			num_joints, glm::mat4(1.0f));
+		final_skeleton.skeleton_joints.insert(
+			final_skeleton.skeleton_joints.begin(), num_joints, SkeletonJoint());
+		final_skeleton.bone_matrices.insert(
+			final_skeleton.bone_matrices.begin(), num_joints, glm::mat4(1.0f));
 
 		for (std::size_t i = 0; i < num_joints; ++i) {
 			SkeletonJoint& finalJoint = final_skeleton.skeleton_joints[i];
@@ -303,9 +309,10 @@ namespace tec {
 
 			// Build the bone matrix for GPU skinning.
 			finalMatrix = (glm::translate(glm::mat4(1.0f), finalJoint.position) *
-				glm::toMat4(finalJoint.orientation)) * this->joints[i].bind_pose_inverse;
+							  glm::toMat4(finalJoint.orientation)) *
+						  this->joints[i].bind_pose_inverse;
 		}
 
 		return final_skeleton;
 	}
-}
+} // namespace tec

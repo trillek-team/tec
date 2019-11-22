@@ -18,7 +18,6 @@ namespace tec {
 	void FPSController::Update(double delta, GameState& state, EventList& commands) {
 		if (!this->orientation && state.orientations.find(entity_id) != state.orientations.end()) {
 			this->orientation = std::make_unique<Orientation>(state.orientations[entity_id]);
-			
 		}
 		if (!this->orientation) {
 			return;
@@ -58,7 +57,10 @@ namespace tec {
 			state.orientations[entity_id] = *this->orientation;
 		}
 
-		state.velocities[entity_id].linear = glm::vec4(this->orientation->value * glm::vec3(5.0 * strafeDirection, 0.0, 7.5 * forwardDirection), 1.0);
+		state.velocities[entity_id].linear =
+			glm::vec4(this->orientation->value *
+						  glm::vec3(5.0 * strafeDirection, 0.0, 7.5 * forwardDirection),
+				1.0);
 	}
 
 	proto::ClientCommands FPSController::GetClientCommands() {
@@ -134,7 +136,8 @@ namespace tec {
 			this->right_strafe = false;
 		}
 		if (this->orientation && proto_client_commands.has_orientation()) {
-			const proto::OrientationCommand& orientation_command = proto_client_commands.orientation();
+			const proto::OrientationCommand& orientation_command =
+				proto_client_commands.orientation();
 			this->orientation->value.x = orientation_command.x();
 			this->orientation->value.y = orientation_command.y();
 			this->orientation->value.z = orientation_command.z();
@@ -146,51 +149,51 @@ namespace tec {
 		switch (data.action) {
 			case KeyboardEvent::KEY_DOWN:
 			case KeyboardEvent::KEY_REPEAT:
-			switch (data.key) {
-				case GLFW_KEY_A:
-				if (!this->KEY_D_DOWN) {
-					this->KEY_A_FIRST = true;
+				switch (data.key) {
+					case GLFW_KEY_A:
+						if (!this->KEY_D_DOWN) {
+							this->KEY_A_FIRST = true;
+						}
+						this->KEY_A_DOWN = true;
+						break;
+					case GLFW_KEY_D:
+						this->KEY_D_DOWN = true;
+						break;
+					case GLFW_KEY_W:
+						if (!this->KEY_S_DOWN) {
+							this->KEY_W_FIRST = true;
+						}
+						this->KEY_W_DOWN = true;
+						break;
+					case GLFW_KEY_S:
+						this->KEY_S_DOWN = true;
+						break;
 				}
-				this->KEY_A_DOWN = true;
 				break;
-				case GLFW_KEY_D:
-				this->KEY_D_DOWN = true;
-				break;
-				case GLFW_KEY_W:
-				if (!this->KEY_S_DOWN) {
-					this->KEY_W_FIRST = true;
-				}
-				this->KEY_W_DOWN = true;
-				break;
-				case GLFW_KEY_S:
-				this->KEY_S_DOWN = true;
-				break;
-			}
-			break;
 			case KeyboardEvent::KEY_UP:
-			switch (data.key) {
-				case GLFW_KEY_A:
-				this->KEY_A_DOWN = false;
-				this->KEY_A_FIRST = false;
-				this->left_strafe = false;
+				switch (data.key) {
+					case GLFW_KEY_A:
+						this->KEY_A_DOWN = false;
+						this->KEY_A_FIRST = false;
+						this->left_strafe = false;
+						break;
+					case GLFW_KEY_D:
+						this->KEY_D_DOWN = false;
+						this->right_strafe = false;
+						break;
+					case GLFW_KEY_W:
+						this->KEY_W_DOWN = false;
+						this->KEY_W_FIRST = false;
+						this->forward = false;
+						break;
+					case GLFW_KEY_S:
+						this->KEY_S_DOWN = false;
+						this->backward = false;
+						break;
+				}
 				break;
-				case GLFW_KEY_D:
-				this->KEY_D_DOWN = false;
-				this->right_strafe = false;
-				break;
-				case GLFW_KEY_W:
-				this->KEY_W_DOWN = false;
-				this->KEY_W_FIRST = false;
-				this->forward = false;
-				break;
-				case GLFW_KEY_S:
-				this->KEY_S_DOWN = false;
-				this->backward = false;
-				break;
-			}
-			break;
 			default:
-			break;
+				break;
 		}
 	}
 
@@ -225,14 +228,16 @@ namespace tec {
 		}
 
 		if (change_x != 0) {
-			glm::quat rotX = glm::angleAxis(static_cast<float>(glm::radians(change_x * -50.0f * this->current_delta)),
-											glm::vec3(0.0, 1.0, 0.0));
+			glm::quat rotX = glm::angleAxis(
+				static_cast<float>(glm::radians(change_x * -50.0f * this->current_delta)),
+				glm::vec3(0.0, 1.0, 0.0));
 			this->orientation->value = rotX * this->orientation->value;
 		}
 		if (change_y != 0) {
-			glm::quat rotY = glm::angleAxis(static_cast<float>(glm::radians(change_y * -10.0f * this->current_delta)),
-											glm::vec3(1.0, 0.0, 0.0));
+			glm::quat rotY = glm::angleAxis(
+				static_cast<float>(glm::radians(change_y * -10.0f * this->current_delta)),
+				glm::vec3(1.0, 0.0, 0.0));
 			this->orientation->value = this->orientation->value * rotY;
 		}
 	}
-}
+} // namespace tec

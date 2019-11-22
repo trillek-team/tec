@@ -3,9 +3,9 @@
 
 #include "sound-system.hpp"
 
+#include "components/transforms.hpp"
 #include "entity.hpp"
 #include "physics-system.hpp" // TODO need to replace when Velocity component is extract.
-#include "components/transforms.hpp"
 #include "resources/vorbis-stream.hpp"
 
 namespace tec {
@@ -20,12 +20,14 @@ namespace tec {
 	SoundSystem::SoundSystem() {
 		_log = spdlog::get("console_log");
 
-		this->device = alcOpenDevice(NULL); alCheckError();
+		this->device = alcOpenDevice(NULL);
+		alCheckError();
 		if (!this->device) {
 			_log->warn("[Sound System] No OpenAL device selected.");
 		}
 
-		this->context = alcCreateContext(device, NULL); alCheckError();
+		this->context = alcCreateContext(device, NULL);
+		alCheckError();
 		if (!alcMakeContextCurrent(this->context)) {
 			_log->warn("[Sound System] No OpenAL context created.");
 		}
@@ -42,7 +44,8 @@ namespace tec {
 			ProcessCommandQueue();
 			EventQueue<EntityCreated>::ProcessEventQueue();
 
-			for (auto itr = AudioSourceComponentMap::Begin(); itr != AudioSourceComponentMap::End(); ++itr) {
+			for (auto itr = AudioSourceComponentMap::Begin(); itr != AudioSourceComponentMap::End();
+				 ++itr) {
 				if (this->queued_sources.find(itr->second) == this->queued_sources.end()) {
 					this->queued_sources.insert(itr->second);
 				}
@@ -56,7 +59,8 @@ namespace tec {
 				while (processed--) {
 					ALuint buffer = 0;
 
-					alSourceUnqueueBuffers(source->source, 1, &buffer); alCheckError();
+					alSourceUnqueueBuffers(source->source, 1, &buffer);
+					alCheckError();
 
 					if (source->vorbis_stream->BufferStream(buffer) <= 0) {
 						if (source->looping) {
@@ -64,23 +68,29 @@ namespace tec {
 							source->vorbis_stream->BufferStream(buffer);
 						}
 					}
-					alSourceQueueBuffers(source->source, 1, &buffer); alCheckError();
+					alSourceQueueBuffers(source->source, 1, &buffer);
+					alCheckError();
 				}
 				ALint state;
-				alGetSourcei(source->source, AL_SOURCE_STATE, &state); alCheckError();
-				alSourcef(source->source, AL_GAIN, source->gain / 100.0f); alCheckError();
+				alGetSourcei(source->source, AL_SOURCE_STATE, &state);
+				alCheckError();
+				alSourcef(source->source, AL_GAIN, source->gain / 100.0f);
+				alCheckError();
 
 				// If there was a state change to play then start playing
 				if (state != AL_PLAYING && source->source_state == AUDIOSOURCE_STATE::PLAYING) {
-					alSourcePlay(source->source); alCheckError();
+					alSourcePlay(source->source);
+					alCheckError();
 				}
 				else if (state == AL_PLAYING) {
 					if (source->source_state == AUDIOSOURCE_STATE::PAUSED) {
-						alSourcePause(source->source); alCheckError();
+						alSourcePause(source->source);
+						alCheckError();
 						alSourcei(source->source, AL_SOURCE_STATE, AL_PAUSED);
 					}
 					else if (source->source_state == AUDIOSOURCE_STATE::STOPPED) {
-						alSourceStop(source->source); alCheckError();
+						alSourceStop(source->source);
+						alCheckError();
 						alSourcei(source->source, AL_SOURCE_STATE, AL_STOPPED);
 					}
 				}
@@ -98,10 +108,13 @@ namespace tec {
 			if (!source->vorbis_stream) {
 				return;
 			}
-			alGenSources(1, &source->source); alCheckError();
+			alGenSources(1, &source->source);
+			alCheckError();
 
-			alSourcef(source->source, AL_PITCH, 1); alCheckError();
-			alSourcef(source->source, AL_GAIN, source->gain / 100.0f); alCheckError();
+			alSourcef(source->source, AL_PITCH, 1);
+			alCheckError();
+			alSourcef(source->source, AL_GAIN, source->gain / 100.0f);
+			alCheckError();
 			if (Entity(entity_id).Has<Position>()) {
 				const Position* pos = Entity(entity_id).Get<Position>();
 				alSource3f(source->source, AL_POSITION, pos->value.x, pos->value.y, pos->value.z);
@@ -111,21 +124,25 @@ namespace tec {
 			}
 			if (Entity(entity_id).Has<Velocity>()) {
 				const Velocity* vel = Entity(entity_id).Get<Velocity>();
-				alSource3f(source->source, AL_VELOCITY, vel->linear.x, vel->linear.y, vel->linear.z);
+				alSource3f(
+					source->source, AL_VELOCITY, vel->linear.x, vel->linear.y, vel->linear.z);
 			}
 			else {
 				alSource3f(source->source, AL_VELOCITY, 0, 0, 0);
 			}
 
-			// Don't use for looping or it will loop over the same segment, not the overall stream, use AudioSource::looping instead.
+			// Don't use for looping or it will loop over the same segment, not the overall stream,
+			// use AudioSource::looping instead.
 			alSourcei(source->source, AL_LOOPING, AL_FALSE);
 
-			alGenBuffers(2, &source->buffer[0]); alCheckError();
+			alGenBuffers(2, &source->buffer[0]);
+			alCheckError();
 
 			source->vorbis_stream->BufferStream(source->buffer[0]);
 			source->vorbis_stream->BufferStream(source->buffer[1]);
 
-			alSourceQueueBuffers(source->source, 2, source->buffer); alCheckError();
+			alSourceQueueBuffers(source->source, 2, source->buffer);
+			alCheckError();
 			switch (source->source_state) {
 				case AUDIOSOURCE_STATE::PLAYING:
 					alSourcei(source->source, AL_SOURCE_STATE, AL_PLAYING);
@@ -138,7 +155,5 @@ namespace tec {
 			}
 		}
 	}
-	void SoundSystem::On(std::shared_ptr<EntityDestroyed> data) {
-
-	}
-}
+	void SoundSystem::On(std::shared_ptr<EntityDestroyed> data) {}
+} // namespace tec

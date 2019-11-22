@@ -8,8 +8,8 @@
 #include "vertex-buffer-object.hpp"
 
 namespace tec {
-	Renderable::Renderable(std::shared_ptr<VertexBufferObject> buf,
-		std::shared_ptr<Shader> shader) : buffer(buf), shader(shader) {
+	Renderable::Renderable(std::shared_ptr<VertexBufferObject> buf, std::shared_ptr<Shader> shader)
+		: buffer(buf), shader(shader) {
 		if (this->buffer) {
 			if (this->vertex_groups.size() == 0) {
 				std::size_t group_count = this->buffer->GetVertexGroupCount();
@@ -49,4 +49,4 @@ namespace tec {
 			this->hidden = comp.hidden();
 		}
 	}
-}
+} // namespace tec
