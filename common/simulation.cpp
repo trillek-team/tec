@@ -84,11 +84,11 @@ namespace tec {
 	}
 
 	void Simulation::On(std::shared_ptr<ControllerAddedEvent> data) {
-		AddController(data->controller);
+		AddController(data->controller.get());
 	}
 
 	void Simulation::On(std::shared_ptr<ControllerRemovedEvent> data) {
-		RemoveController(data->controller);
+		RemoveController(data->controller.get());
 	}
 
 	void Simulation::On(std::shared_ptr<ClientCommandsEvent> data) {

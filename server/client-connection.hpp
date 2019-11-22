@@ -78,7 +78,7 @@ namespace tec {
 			proto::Entity entity;
 			static std::mutex write_msg_mutex;
 
-			FPSController* controller{ nullptr };
+			std::shared_ptr<FPSController> controller;
 
 			state_id_t last_confirmed_state_id{ 0 }; // That last state_id the client confirmed it received.
 			state_id_t last_recv_command_id{ 0 };
