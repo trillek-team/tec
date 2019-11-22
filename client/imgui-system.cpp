@@ -101,7 +101,7 @@ namespace tec {
 
 	extern eid active_entity;
 
-	void IMGUISystem::CreateGUI(OS* os, networking::ServerConnection* connection, Console* console) {
+	void IMGUISystem::CreateGUI(networking::ServerConnection* connection, Console* console) {
 		this->AddWindowDrawFunction("connect_window", [connection] () {
 			ImGui::SetNextWindowPosCenter();
 			ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);

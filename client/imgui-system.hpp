@@ -44,7 +44,7 @@ namespace tec {
 		IMGUISystem(GLFWwindow* window);
 		~IMGUISystem();
 
-		void CreateGUI(OS* os, networking::ServerConnection* connection, Console* console);
+		void CreateGUI(networking::ServerConnection* connection, Console* console);
 
 		void Update(double delta);
 
