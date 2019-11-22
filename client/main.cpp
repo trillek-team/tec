@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
 
-	gui.CreateGUI(&os, &connection, &console);
+	gui.CreateGUI(&connection, &console);
 
 	log->info("Initializing rendering system...");
 	tec::RenderSystem rs;
