@@ -57,7 +57,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x32, x64]
+        arch: [x86, x64]
     steps:
     - uses: actions/checkout@v1
       with:
@@ -79,9 +79,11 @@ jobs:
       run: cmake --build .
       
   build-macos:
-
     runs-on: macOS-latest
-    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macOS-latest]
     steps:
     - uses: actions/checkout@v1
       with:
