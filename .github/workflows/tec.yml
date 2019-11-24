@@ -17,14 +17,14 @@ jobs:
             compiler: gcc
             version: "7"
     steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
     - run: echo "runner.workspace dir:" ${{runner.workspace}}
     - run: echo "GITHUB_WORKSPACE dir:" ${{GITHUB_WORKSPACE}}
     - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
     - run: echo "matrix.os:" ${{ matrix.os }}
     - run: echo "matrix.arch:" ${{ matrix.arch }}
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
     - name: Install GCC (Linux)
       if: runner.os == 'Linux'
       run: |
@@ -68,14 +68,14 @@ jobs:
         os: [windows-latest]
         arch: [x86, x64]
     steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
     - run: echo "runner.workspace dir:" ${{runner.workspace}}
     - run: echo "GITHUB_WORKSPACE dir:" ${{GITHUB_WORKSPACE}}
     - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
     - run: echo "matrix.os:" ${{ matrix.os }}
     - run: echo "matrix.arch:" ${{ matrix.arch }}
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
@@ -102,14 +102,14 @@ jobs:
       matrix:
         os: [macOS-latest]
     steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
     - run: echo "runner.workspace dir:" ${{runner.workspace}}
     - run: echo "GITHUB_WORKSPACE dir:" ${{GITHUB_WORKSPACE}}
     - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
     - run: echo "matrix.os:" ${{ matrix.os }}
     - run: echo "matrix.arch:" ${{ matrix.arch }}
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
