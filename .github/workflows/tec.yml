@@ -56,7 +56,7 @@ jobs:
     - name: Configure CMake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      run: cmake ${{runner.workspace}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
@@ -100,7 +100,7 @@ jobs:
     - name: Configure cmake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      run: cmake ${{runner.workspace}} -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
@@ -132,15 +132,12 @@ jobs:
     - name: Checkout vcpkg
       shell: bash
       run: if [ ! -d '$HOME/vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git $HOME/vcpkg; fi  
-    - run: ls $HOME/vcpkg
     - name: Bootstrap vcpkg
       shell: bash
-      working-directory: $HOME/vcpkg
-      run: ./bootstrap-vcpkg.sh
+      run: $HOME/vcpkg/bootstrap-vcpkg.sh
     - name: Install deps vcpkg
       shell: bash
-      working-directory: $HOME/vcpkg
-      run: ./vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: $HOME/vcpkg/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Install bullet (MacOS)
       if: runner.os == 'macOS'
       run: brew install bullet
@@ -150,7 +147,7 @@ jobs:
     - name: Configure cmake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake ${{runner.workspace}} -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
