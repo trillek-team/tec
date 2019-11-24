@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, ubuntu-16.04]
-     include:
+      include:
         - os: ubuntu-16.04
           compiler: gcc
           version: "7"
