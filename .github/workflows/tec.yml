@@ -8,6 +8,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, ubuntu-16.04]
+     include:
+        - os: ubuntu-16.04
+          compiler: gcc
+          version: "7"
     
     steps:
     - uses: actions/checkout@v1
@@ -17,15 +21,8 @@ jobs:
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Cache vcpkg installed
       uses: actions/cache@v1
-      if: contains(runner.os, '16.04')
       with:
-        key: ${{ runner.OS }}-vcpkg-1604
-        path: /usr/local/share/vcpkg/installed
-    - name: Cache vcpkg installed
-      uses: actions/cache@v1
-      if: contains(runner.os, 'latest')
-      with:
-        key: ${{ runner.OS }}-vcpkg
+        key: ${{ runner.OS }}-vcpkg-${{ matrix.os }}
         path: /usr/local/share/vcpkg/installed
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
