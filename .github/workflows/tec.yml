@@ -54,9 +54,8 @@ jobs:
       shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure CMake
-      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake ${{runner.workspace}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
@@ -98,9 +97,8 @@ jobs:
       shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
-      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake ${{runner.workspace}} -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
@@ -145,9 +143,8 @@ jobs:
       shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
-      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake ${{runner.workspace}} -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
