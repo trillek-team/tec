@@ -22,6 +22,7 @@ jobs:
     - name: Install (Linux)
       if: runner.os == 'Linux'
       run: |
+        sudo apt-get update
         if [ "${{ matrix.compiler }}" = "gcc" ]; then
           sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
           echo "::set-env name=CC::gcc-${{ matrix.version }}"
