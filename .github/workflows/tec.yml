@@ -12,29 +12,42 @@ jobs:
           - os: ubuntu-16.04
             compiler: gcc
             version: "7"
-    
+        include:
+          - os: ubuntu-latest
+            compiler: gcc
+            version: "7"
     steps:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    - name: Install (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        if [ "${{ matrix.compiler }}" = "gcc" ]; then
+          sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
+          echo "::set-env name=CC::gcc-${{ matrix.version }}"
+          echo "::set-env name=CXX::g++-${{ matrix.version }}"
+        else
+          sudo apt-get install -y clang-${{ matrix.version }} g++-multilib
+          echo "::set-env name=CC::clang-${{ matrix.version }}"
+          echo "::set-env name=CXX::clang++-${{ matrix.version }}"
+        fi
     - name: Install os deps
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
-        key: ${{ runner.OS }}-vcpkg-${{ matrix.os }}
+        key: vcpkg-${{ matrix.os }}
         path: /usr/local/share/vcpkg/installed
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure CMake
-      shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake
     - name: Build
       working-directory: ${{runner.workspace}}/build
-      shell: bash
       run: cmake --build .
       
   build-windows:
