@@ -53,10 +53,11 @@ jobs:
       run: cmake --build .
       
   build-windows:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [windows-latest]
         arch: [x86, x64]
     steps:
     - uses: actions/checkout@v1
@@ -79,7 +80,7 @@ jobs:
       run: cmake --build .
       
   build-macos:
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
