@@ -20,7 +20,7 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
-    - name: Install (Linux)
+    - name: Install GCC (Linux)
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
@@ -47,7 +47,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure CMake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
@@ -74,7 +74,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
@@ -100,13 +100,14 @@ jobs:
       run: ../vcpkg/bootstrap-vcpkg.sh
     - name: Install deps vcpkg
       run: ../vcpkg/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
-    - name: install bullet
+    - name: Install bullet (MacOS)
+      if: matrix.os == 'MacOS'
       run: brew install bullet
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake ${{GITHUB_WORKSPACE}} -DCMAKE_TOOLCHAIN_FILE=../../../vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
