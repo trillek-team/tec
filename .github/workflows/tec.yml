@@ -44,11 +44,14 @@ jobs:
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Create Build Environment
+      shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure CMake
+      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake $GITHUB_WORKSPACE 
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
+      shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
       
@@ -71,11 +74,14 @@ jobs:
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.arch }}-${{ runner.OS }}
     - name: Create Build Environment
+      shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
+      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake $GITHUB_WORKSPACE 
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
+      shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
       
@@ -104,11 +110,14 @@ jobs:
       if: matrix.os == 'macOS'
       run: brew install bullet
     - name: Create Build Environment
+      shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
+      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake -DCMAKE_TOOLCHAIN_FILE=../../../vcpkg/scripts/buildsystems/vcpkg.cmake $GITHUB_WORKSPACE 
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
+      shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
 
