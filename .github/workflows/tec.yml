@@ -23,8 +23,6 @@ jobs:
     - run: echo "runner.workspace dir:" ${{runner.workspace}}
     - run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
     - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
-    - run: echo "VCPKG_ROOT dir:" $VCPKG_ROOT
-    - run: echo "HOME dir:" $HOME
     - run: echo "runner.os:" ${{ runner.os }}
     - run: echo "matrix.os:" ${{ matrix.os }}
     - run: echo "matrix.arch:" ${{ matrix.arch }}
@@ -78,10 +76,11 @@ jobs:
     - shell: bash
       run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
     - shell: bash
-      run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
-    - run: echo "VCPKG_ROOT dir:" $VCPKG_ROOT
+      run: echo "/$GITHUB_WORKSPACE" | sed -e 's/\\/\//g' -e 's/://'
     - shell: bash
-      run: echo "HOME dir:" $HOME
+      run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
+    - shell: bash
+      run: echo "/$VCPKG_INSTALLATION_ROOT" | sed -e 's/\\/\//g' -e 's/://'
     - shell: bash
       run: echo "runner.os:" ${{ runner.os }}
     - shell: bash
@@ -99,6 +98,9 @@ jobs:
       shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
+      env:
+        VCPKG_INSTALLATION_ROOT: "/$VCPKG_INSTALLATION_ROOT" | sed -e 's/\\/\//g' -e 's/://'
+        GITHUB_WORKSPACE: "/$GITHUB_WORKSPACE" | sed -e 's/\\/\//g' -e 's/://'
       working-directory: ${{runner.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
@@ -112,6 +114,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-latest]
+    env:
+      VCPKG_INSTALLATION_ROOT: /usr/local/share/vcpkg
     steps:
     - uses: actions/checkout@v1
       with:
@@ -119,8 +123,6 @@ jobs:
     - run: echo "runner.workspace dir:" ${{runner.workspace}}
     - run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
     - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
-    - run: echo "VCPKG_ROOT dir:" $VCPKG_ROOT
-    - run: echo "HOME dir:" $HOME
     - run: echo "matrix.os:" ${{ matrix.os }}
     - run: echo "runner.os:" ${{ runner.os }}
     - run: echo "matrix.arch:" ${{ matrix.arch }}
@@ -128,16 +130,16 @@ jobs:
       uses: actions/cache@v1
       with:
         key: vcpkg-${{ matrix.os }}
-        path: $HOME/vcpkg
+        path: $VCPKG_INSTALLATION_ROOT/installed
     - name: Checkout vcpkg
       shell: bash
-      run: if [ ! -d '$HOME/vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git $HOME/vcpkg; fi  
+      run: if [ ! -d '$VCPKG_INSTALLATION_ROOT' ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi  
     - name: Bootstrap vcpkg
       shell: bash
-      run: $HOME/vcpkg/bootstrap-vcpkg.sh
+      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
     - name: Install deps vcpkg
       shell: bash
-      run: $HOME/vcpkg/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Install bullet (MacOS)
       if: runner.os == 'macOS'
       run: brew install bullet
@@ -146,7 +148,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
