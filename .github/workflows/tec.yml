@@ -108,20 +108,21 @@ jobs:
     - run: echo "runner.workspace dir:" ${{runner.workspace}}
     - run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
     - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
+    - run: echo "HOME dir:" $HOME
     - run: echo "matrix.os:" ${{ matrix.os }}
     - run: echo "matrix.arch:" ${{ matrix.arch }}
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
         key: vcpkg-${{ matrix.os }}
-        path: ${{HOME}}/vcpkg
+        path: $HOME/vcpkg
     - name: Checkout vcpkg
-      run: if [ ! -d '${{HOME}}/vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ${{HOME}}/vcpkg; fi
+      run: if [ ! -d '$HOME/vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git $HOME/vcpkg; fi
     - name: Bootstrap vcpkg
-      working-directory: ${{HOME}}/vcpkg
+      working-directory: $HOME/vcpkg
       run: ./bootstrap-vcpkg.sh
     - name: Install deps vcpkg
-      working-directory: ${{HOME}}/vcpkg
+      working-directory: $HOME/vcpkg
       run: ./vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Install bullet (MacOS)
       if: runner.os == 'macOS'
