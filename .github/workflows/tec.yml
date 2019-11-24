@@ -4,17 +4,26 @@ on: [pull_request]
 
 jobs:
   build-linux:
-
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest,ubuntu-16.04]
+    runs-on: ${{ matrix.os }}
     
     steps:
     - uses: actions/checkout@v1
       with:
         submodules: true
     - name: Install os deps
-      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y   
+      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Cache vcpkg installed
       uses: actions/cache@v1
+      if: contains(runner.os, '16.04')
+      with:
+        key: ${{ runner.OS }}-vcpkg-1604
+        path: /usr/local/share/vcpkg/installed
+    - name: Cache vcpkg installed
+      uses: actions/cache@v1
+      if: !contains(runner.os, '16.04')
       with:
         key: ${{ runner.OS }}-vcpkg
         path: /usr/local/share/vcpkg/installed
