@@ -99,8 +99,8 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       env:
-        VCPKG_INSTALLATION_ROOT: ${{$VCPKG_INSTALLATION_ROOT | sed -e 's/\\/\//g' -e 's/://'}}
-        GITHUB_WORKSPACE: ${{$GITHUB_WORKSPACE | sed -e 's/\\/\//g' -e 's/://'}}
+        VCPKG_INSTALLATION_ROOT: ${{echo $VCPKG_INSTALLATION_ROOT | sed -e 's/\\/\//g' -e 's/://'}}
+        GITHUB_WORKSPACE: ${{echo $GITHUB_WORKSPACE | sed -e 's/\\/\//g' -e 's/://'}}
       working-directory: ${{runner.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
