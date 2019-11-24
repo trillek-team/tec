@@ -78,6 +78,8 @@ namespace tec {
 		glDepthMask(GL_TRUE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glCullFace(GL_BACK);
 	}
 
 	void GBuffer::EndGeometryPass() {
@@ -90,7 +92,7 @@ namespace tec {
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_CULL_FACE);
 		glClear(GL_STENCIL_BUFFER_BIT);
-		glStencilFunc(GL_ALWAYS, 1, 1);
+		glStencilFunc(GL_ALWAYS, 0, 0);
 
 		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
@@ -98,6 +100,13 @@ namespace tec {
 
 	void GBuffer::BeginLightPass() {
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 		for (unsigned int i = 0; i < this->num_color_textures; i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, this->color_textures[i]);
@@ -105,27 +114,13 @@ namespace tec {
 	}
 
 	void GBuffer::BeginDirLightPass() {
-		glDisable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
 	}
 
 	void GBuffer::BeginPointLightPass() {
-		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
-
-		glDisable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_ONE, GL_ONE);
-
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
 	}
 
 	void GBuffer::EndPointLightPass() {
-		//glCullFace(GL_BACK);
-		glDisable(GL_BLEND);
+		//glDisable(GL_BLEND);
 	}
 
 	void GBuffer::FinalPass() {

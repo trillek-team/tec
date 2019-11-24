@@ -19,8 +19,12 @@
 #include <chrono>
 #include <vector>
 
+#include "event-system.hpp"
+
 namespace tec {
-	class OS {
+	struct KeyboardEvent;
+
+	class OS : public EventQueue<KeyboardEvent> {
 	public:
 		/**
 		* \brief Initialize the rendering window and makes the window's context the current one.
@@ -29,15 +33,21 @@ namespace tec {
 		* \param[in] const std::string title The title to show in the title bar and task manager.
 		* \param[in] const glMajor OpenGL major version number. Must be >= 3
 		* \param[in] const glMinor OpenGL minor version. If major = 3, must be 3 (OpenGL 3.3)
+		* \param[in] bool fullscreen Whether the window should be started in fullscreen mode.
 		* \return bool If creation was successful or not.
 		*/
 		bool InitializeWindow(const int width, const int height, const std::string title,
-			const int glMajor = 3, const int glMinor = 3);
+							  const int glMajor = 3, const int glMinor = 3, bool fullscreen = false);
 
 		/** \brief Make the context of the window current for the calling thread
 		*
 		*/
 		void MakeCurrent();
+
+		/** \brief Toggles between fullscreen and windowed mode based.
+		*
+		*/
+		void ToggleFullScreen();
 
 		/** \brief Detach the context of the window from the calling thread
 		*
@@ -51,7 +61,7 @@ namespace tec {
 		* \return void
 		*/
 		static void Terminate();
-		
+
 		/**
 		* \brief Tells the OS that the active window should close.
 		*
@@ -212,6 +222,15 @@ namespace tec {
 
 	private:
 		/**
+		* \brief Keyboard event listener, useful for events such as alt-enter to toggle fullscreen.
+		*
+		* \param[in] std::shared_ptr<KeyboardEvent> data Keyboard event data
+		* \return void
+		*/
+		using EventQueue<KeyboardEvent>::On;
+		void On(std::shared_ptr<KeyboardEvent> data);
+
+		/**
 		* \brief Updates the internal size variables from the windowResized callback.
 		*
 		* \param[in] const int width, height The new client width and height of the window
@@ -256,7 +275,7 @@ namespace tec {
 		* \return void
 		*/
 		void DispatchMouseScrollEvent(const double xoffset, const double yoffset);
-		
+
 		/**
 		* \brief Dispatches mouse button events from the callback.
 		*
@@ -282,5 +301,6 @@ namespace tec {
 		double old_mouse_x{ 0 }, old_mouse_y{ 0 };
 		double last_time{ 0 }; // The time at the last call to GetDeltaTime().
 		bool mouse_lock{ false }; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
+		bool fullscreen{ false }; // False if the game is in windowed mode
 	};
 }

@@ -118,7 +118,6 @@ namespace tec {
 		glEnable(GL_STENCIL_TEST);
 		BeginPointLightPass();
 		glDisable(GL_STENCIL_TEST);
-		glDisable(GL_BLEND);
 		DirectionalLightPass();
 
 		FinalPass();
@@ -140,7 +139,7 @@ namespace tec {
 		def_shader->Use();
 		glUniformMatrix4fv(def_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 		glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-		glUniform1i(def_shader->GetUniformLocation("gColorMap"), 0);
+		//glUniform1i(def_shader->GetUniformLocation("gColorMap"), 0);
 		GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
 		GLint animated_loc = def_shader->GetUniformLocation("animated");
 		GLint model_index = def_shader->GetUniformLocation("model");
@@ -151,7 +150,7 @@ namespace tec {
 				shader_list.first->Use();
 				glUniformMatrix4fv(shader_list.first->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 				glUniformMatrix4fv(shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-				glUniform1i(shader_list.first->GetUniformLocation("gColorMap"), 0);
+				//glUniform1i(shader_list.first->GetUniformLocation("gColorMap"), 0);
 				animatrix_loc = shader_list.first->GetUniformLocation("animation_matrix");
 				animated_loc = shader_list.first->GetUniformLocation("animated");
 				model_index = shader_list.first->GetUniformLocation("model");
@@ -274,7 +273,6 @@ namespace tec {
 	}
 
 	void RenderSystem::DirectionalLightPass() {
-		this->light_gbuffer.BeginLightPass();
 		this->light_gbuffer.BeginDirLightPass();
 		std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get("deferred_dirlight");
 		def_dl_shader->Use();
@@ -291,7 +289,7 @@ namespace tec {
 		glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
 		glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"), static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
 		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), (GLfloat)this->window_width, (GLfloat)this->window_height);
-		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), 0, 0, 0);
+		glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), camera_matrix[3].x, camera_matrix[3].y, camera_matrix[3].z);
 		GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 		GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
 		GLint DiffuseIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.DiffuseIntensity");
@@ -348,6 +346,7 @@ namespace tec {
 		glBlitFramebuffer(0, 0, this->window_width, this->window_height,
 						  this->window_width - QuarterWidth, HalfHeight + QuarterHeight, this->window_width, this->window_height, GL_DEPTH_BUFFER_BIT, GL_LINEAR);
 		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	}
 
 	using RenderableMap = Multiton<eid, Renderable*>;

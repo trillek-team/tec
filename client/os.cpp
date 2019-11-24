@@ -19,7 +19,7 @@
 // We can't just include objc/runtime.h and objc/message.h because glfw is too forward thinking for its own good.
 typedef void* SEL;
 extern "C" id objc_msgSend(id self, SEL op, ...);
-extern "C" SEL sel_getUid(const char *str);
+extern "C" SEL sel_getUid(const char* str);
 #endif
 
 namespace tec {
@@ -31,9 +31,10 @@ namespace tec {
 	}
 
 	bool OS::InitializeWindow(const int width, const int height, const std::string title,
-		const int glMajor /*= 3*/, const int glMinor /*= 3*/) {
+							  const int glMajor /*= 3*/, const int glMinor /*= 3*/, bool _fullscreen /*= false*/) {
+		this->fullscreen = _fullscreen;
 		assert(glMajor >= 3);
-		assert(glMajor*10 + glMinor >= 30);
+		assert(glMajor * 10 + glMinor >= 30);
 		glfwSetErrorCallback(ErrorCallback);
 
 		auto l = spdlog::get("console_log");
@@ -51,9 +52,22 @@ namespace tec {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glMajor);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glMinor);
 		// Enable Core profile if the requested GL version is >= 3.2
-		if (glMajor > 3 || (glMajor >= 3 && glMinor >= 2))
+		if (glMajor > 3 || (glMajor >= 3 && glMinor >= 2)) {
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+		}
+		glfwWindowHint(GLFW_AUTO_ICONIFY, false); // Don't minimize when a fullscreen window loses focus
+		if (_fullscreen) {
+			const auto monitor = glfwGetPrimaryMonitor();
+			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+			glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+			this->window = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, NULL);
+		}
+		else {
+			this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+		}
 
 		if (!this->window) {
 			// still not right, give up
@@ -77,7 +91,7 @@ namespace tec {
 		std::string glcx_version((char*)glGetString(GL_VERSION));
 		int glcx_major = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
 		int glcx_minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
-		if ( glcx_major < glMajor || ( glcx_major == glMajor && glcx_minor < glMinor) ) {
+		if (glcx_major < glMajor || (glcx_major == glMajor && glcx_minor < glMinor)) {
 			glfwTerminate();
 			l->critical("[OS] Initializing OpenGL failed, unsupported version: {} '\n' Press \"Enter\" to exit\n", glcx_version);
 			std::cin.get();
@@ -87,27 +101,27 @@ namespace tec {
 		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
 		const char* glcx_renderer = (char*)glGetString(GL_RENDERER);
 		l->info("{} - {}", glcx_vendor, std::string{ glcx_renderer });
-	
+
 		// Check that GLSL is >= 3.30
 		std::string glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 		std::string glsl_major = glcx_glslver.substr(0, glcx_glslver.find('.', 0));
-		std::string glsl_minor = glcx_glslver.substr(glcx_glslver.find('.', 0)+1, 1);
+		std::string glsl_minor = glcx_glslver.substr(glcx_glslver.find('.', 0) + 1, 1);
 		if (glsl_major.at(0) < '3') {
 			l->critical("[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version : {} GLSL version : {} \n Press \"Enter\" to exit\n", glcx_version, glcx_glslver);
 			std::cin.get();
 			return false;
-		} else if (glsl_major.at(0) == '3') { 
+		}
+		else if (glsl_major.at(0) == '3') {
 			if (glsl_minor.at(0) < '3') {
 				l->critical("[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version : {} GLSL version : {} \n Press \"Enter\" to exit\n", glcx_version, glcx_glslver);
 				std::cin.get();
 				return false;
 			}
 		}
-		
+
 		l->info("GL version : {} GLSL version : {}", glcx_version, glcx_glslver);
-		
-		this->client_width = width;
-		this->client_height = height;
+
+		glfwGetWindowSize(this->window, &this->client_width, &this->client_height);
 
 #ifdef __APPLE__
 		// Force retina displays to create a 1x framebuffer so we don't choke our fill rate.
@@ -122,15 +136,15 @@ namespace tec {
 		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
 		l->info("Extensions {} : ", num_exts);
 		std::string ext("");
-		for (GLint e=0; e < num_exts; e++) {
-			ext += "[" + std::string((const char*) glGetStringi(GL_EXTENSIONS, e)) + "] ";
+		for (GLint e = 0; e < num_exts; e++) {
+			ext += "[" + std::string((const char*)glGetStringi(GL_EXTENSIONS, e)) + "] ";
 			if (e != 0 && e % 5 == 0) {
-				l->info(ext);
+				l->debug(ext);
 				ext = "";
 			}
 		}
-		l->info(ext);
-		
+		l->debug(ext);
+
 		// Associate a pointer for this instance with this window.
 		glfwSetWindowUserPointer(this->window, this);
 
@@ -157,6 +171,71 @@ namespace tec {
 		glfwMakeContextCurrent(this->window);
 	}
 
+	GLFWmonitor* get_current_monitor(GLFWwindow* window) {
+		int nmonitors, i;
+		int wx, wy, ww, wh;
+		int mx, my, mw, mh;
+		int overlap, bestoverlap;
+		GLFWmonitor* bestmonitor;
+		GLFWmonitor** monitors;
+		const GLFWvidmode* mode;
+
+		bestoverlap = 0;
+		bestmonitor = NULL;
+
+		glfwGetWindowPos(window, &wx, &wy);
+		glfwGetWindowSize(window, &ww, &wh);
+		monitors = glfwGetMonitors(&nmonitors);
+
+		for (i = 0; i < nmonitors; i++) {
+			mode = glfwGetVideoMode(monitors[i]);
+			glfwGetMonitorPos(monitors[i], &mx, &my);
+			mw = mode->width;
+			mh = mode->height;
+
+			overlap =
+				std::max(0, std::min(wx + ww, mx + mw) - std::max(wx, mx)) *
+				std::max(0, std::min(wy + wh, my + mh) - std::max(wy, my));
+
+			if (bestoverlap < overlap) {
+				bestoverlap = overlap;
+				bestmonitor = monitors[i];
+			}
+		}
+
+		return bestmonitor;
+	}
+
+	void OS::ToggleFullScreen() {
+		const auto monitor{ get_current_monitor(this->window) };
+		if (!this->fullscreen && monitor) {
+			this->fullscreen = true;
+			const auto mode = glfwGetVideoMode(monitor);
+			glfwSetWindowMonitor(this->window,
+								 monitor,
+								 0,
+								 0,
+								 mode->width,
+								 mode->height,
+								 mode->refreshRate
+			);
+		}
+		else if (monitor) {
+			int wx, wy;
+			glfwGetWindowPos(window, &wx, &wy);
+			const auto mode = glfwGetVideoMode(monitor);
+			this->fullscreen = false;
+			glfwSetWindowMonitor(this->window,
+								 nullptr,
+								 wx + mode->width / 2 - this->client_width / 2, // Position window in center of monitor it was fullscreen on
+								 wy + mode->height / 2 - this->client_height / 2, // Position window in center of monitor it was fullscreen on
+								 this->client_width,
+								 this->client_height,
+								 GLFW_DONT_CARE
+			);
+		}
+	}
+
 	void OS::DetachContext() {
 		glfwMakeContextCurrent(NULL);
 	}
@@ -164,7 +243,7 @@ namespace tec {
 	void OS::Terminate() {
 		glfwTerminate();
 	}
-	
+
 	void OS::Quit() {
 		glfwSetWindowShouldClose(this->window, true);
 	}
@@ -179,6 +258,7 @@ namespace tec {
 
 	void OS::OSMessageLoop() {
 		glfwPollEvents();
+		EventQueue<KeyboardEvent>::ProcessEventQueue();
 	}
 
 	int OS::GetWindowWidth() {
@@ -278,18 +358,26 @@ namespace tec {
 		os->DispatchFileDropEvent(count, paths);
 	}
 
+	void OS::On(std::shared_ptr<KeyboardEvent> data) {
+		if (data->action == KeyboardEvent::KEY_UP && data->key == GLFW_KEY_ENTER && data->mods & GLFW_MOD_ALT) {
+			this->ToggleFullScreen();
+		}
+	}
+
 	void OS::UpdateWindowSize(const int width, const int height) {
 		std::shared_ptr<WindowResizedEvent> resize_event = std::make_shared<WindowResizedEvent>(
-			WindowResizedEvent {this->client_width, this->client_height, width, height});
+			WindowResizedEvent{ this->client_width, this->client_height, width, height });
 		EventSystem<WindowResizedEvent>::Get()->Emit(resize_event);
 
-		this->client_width = width;
-		this->client_height = height;
+		if (!fullscreen) {
+			this->client_width = width;
+			this->client_height = height;
+		}
 	}
 
 	void OS::DispatchKeyboardEvent(const int key, const int scancode, const int action, const int mods) {
 		std::shared_ptr<KeyboardEvent> key_event = std::make_shared<KeyboardEvent>(
-			KeyboardEvent {key, scancode, KeyboardEvent::KEY_DOWN, mods});
+			KeyboardEvent{ key, scancode, KeyboardEvent::KEY_DOWN, mods });
 		// Default is KEY_DOWN, check if it is REPEAT or UP instead.
 		if (action == GLFW_REPEAT) {
 			key_event->action = KeyboardEvent::KEY_REPEAT;
@@ -303,31 +391,31 @@ namespace tec {
 
 	void OS::DispatchCharacterEvent(const unsigned int uchar) {
 		std::shared_ptr<KeyboardEvent> key_event = std::make_shared<KeyboardEvent>(
-			KeyboardEvent {(const int)uchar, 0, KeyboardEvent::KEY_CHAR, 0});
+			KeyboardEvent{ (const int)uchar, 0, KeyboardEvent::KEY_CHAR, 0 });
 		EventSystem<KeyboardEvent>::Get()->Emit(key_event);
 	}
 
 	void OS::DispatchMouseMoveEvent(const double x, const double y) {
 		std::shared_ptr<MouseMoveEvent> mmov_event = std::make_shared<MouseMoveEvent>(
-			MouseMoveEvent {
+			MouseMoveEvent{
 			static_cast<double>(x) / this->client_width,
 			static_cast<double>(y) / this->client_height,
 			static_cast<int>(this->old_mouse_x),
 			static_cast<int>(this->old_mouse_y),
 			static_cast<int>(x),
 			static_cast<int>(y)
-		});
+			});
 		EventSystem<MouseMoveEvent>::Get()->Emit(mmov_event);
 		this->old_mouse_x = x;
 		this->old_mouse_y = y;
 	}
-	
+
 	void OS::DispatchMouseScrollEvent(const double xoffset, const double yoffset) {
 		std::shared_ptr<MouseScrollEvent> mscroll_event = std::make_shared<MouseScrollEvent>(
-			MouseScrollEvent {
+			MouseScrollEvent{
 			static_cast<double>(xoffset),
 			static_cast<double>(yoffset),
-		});
+			});
 		EventSystem<MouseScrollEvent>::Get()->Emit(mscroll_event);
 
 	}
@@ -362,14 +450,14 @@ namespace tec {
 		}
 		EventSystem<FileDropEvent>::Get()->Emit(fd_event);
 	}
-	
+
 	void OS::EnableMouseLock() {
 		if (!this->mouse_lock) {
 			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 		this->mouse_lock = true;
 	}
-	
+
 	void OS::DisableMouseLock() {
 		if (this->mouse_lock) {
 			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -386,5 +474,4 @@ namespace tec {
 			glfwGetCursorPos(OS::focused_window, x, y);
 		}
 	}
-
 }
