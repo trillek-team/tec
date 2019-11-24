@@ -17,6 +17,11 @@ jobs:
             compiler: gcc
             version: "7"
     steps:
+    - run: echo "runner.workspace dir:" ${{runner.workspace}}
+    - run: echo "GITHUB_WORKSPACE dir:" ${{GITHUB_WORKSPACE}}
+    - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
+    - run: echo "matrix.os:" ${{ matrix.os }}
+    - run: echo "matrix.arch:" ${{ matrix.arch }}
     - uses: actions/checkout@v1
       with:
         submodules: true
@@ -63,6 +68,11 @@ jobs:
         os: [windows-latest]
         arch: [x86, x64]
     steps:
+    - run: echo "runner.workspace dir:" ${{runner.workspace}}
+    - run: echo "GITHUB_WORKSPACE dir:" ${{GITHUB_WORKSPACE}}
+    - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
+    - run: echo "matrix.os:" ${{ matrix.os }}
+    - run: echo "matrix.arch:" ${{ matrix.arch }}
     - uses: actions/checkout@v1
       with:
         submodules: true
@@ -92,6 +102,11 @@ jobs:
       matrix:
         os: [macOS-latest]
     steps:
+    - run: echo "runner.workspace dir:" ${{runner.workspace}}
+    - run: echo "GITHUB_WORKSPACE dir:" ${{GITHUB_WORKSPACE}}
+    - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
+    - run: echo "matrix.os:" ${{ matrix.os }}
+    - run: echo "matrix.arch:" ${{ matrix.arch }}
     - uses: actions/checkout@v1
       with:
         submodules: true
@@ -99,15 +114,17 @@ jobs:
       uses: actions/cache@v1
       with:
         key: vcpkg-${{ matrix.os }}
-        path: ../vcpkg
+        path: ${{HOME}}/vcpkg
     - name: Checkout vcpkg
-      run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
+      run: if [ ! -d '${{HOME}}/vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ${{HOME}}/vcpkg; fi
     - name: Bootstrap vcpkg
-      run: ../vcpkg/bootstrap-vcpkg.sh
+      working-directory: ${{HOME}}/vcpkg
+      run: ./bootstrap-vcpkg.sh
     - name: Install deps vcpkg
-      run: ../vcpkg/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      working-directory: ${{HOME}}/vcpkg
+      run: ./vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Install bullet (MacOS)
-      if: matrix.os == 'macOS'
+      if: runner.os == 'macOS'
       run: brew install bullet
     - name: Create Build Environment
       shell: bash
@@ -115,7 +132,7 @@ jobs:
     - name: Configure cmake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
