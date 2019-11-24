@@ -8,10 +8,10 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, ubuntu-16.04]
-      include:
-        - os: ubuntu-16.04
-          compiler: gcc
-          version: "7"
+        include:
+          - os: ubuntu-16.04
+            compiler: gcc
+            version: "7"
     
     steps:
     - uses: actions/checkout@v1
@@ -22,7 +22,7 @@ jobs:
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
-        key: ${{ runner.OS }}-vcpkg-${{ runner.OS }}
+        key: ${{ runner.OS }}-vcpkg-${{ matrix.os }}
         path: /usr/local/share/vcpkg/installed
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
