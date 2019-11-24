@@ -6,6 +6,7 @@ jobs:
   build-linux:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-16.04]
         include:
@@ -33,6 +34,7 @@ jobs:
           echo "::set-env name=CXX::clang++-${{ matrix.version }}"
         fi
     - name: Install os deps
+      if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Cache vcpkg installed
       uses: actions/cache@v1
@@ -51,9 +53,11 @@ jobs:
       run: cmake --build .
       
   build-windows:
-
     runs-on: windows-latest
-    
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x32, x64]
     steps:
     - uses: actions/checkout@v1
       with:
@@ -61,14 +65,18 @@ jobs:
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
-        key: ${{ runner.OS }}-vcpkg
+        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
         path: C:/vcpkg/installed
     - name: Install deps vcpkg
-      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet x64-windows
+      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.arch }}-${{ runner.OS }}
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
-      run: cmake -G"Visual Studio 16 2019" -Ax64 -Bbuild -S. -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake
     - name: Build
-      run: cmake --build build
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --build .
       
   build-macos:
 
@@ -81,7 +89,7 @@ jobs:
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
-        key: ${{ runner.OS }}-vcpkg
+        key: vcpkg-${{ matrix.os }}
         path: ../vcpkg
     - name: Checkout vcpkg
       run: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
@@ -91,8 +99,12 @@ jobs:
       run: ../vcpkg/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: install bullet
       run: brew install bullet
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
-      run: cmake -B build -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
-      run: cmake --build build
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --build .
 
