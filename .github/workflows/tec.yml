@@ -127,11 +127,11 @@ jobs:
     - run: echo "matrix.os:" ${{ matrix.os }}
     - run: echo "runner.os:" ${{ runner.os }}
     - run: echo "matrix.arch:" ${{ matrix.arch }}
-    - name: Cache vcpkg installed
+    - name: Cache vcpkg
       uses: actions/cache@v1
       with:
         key: vcpkg-${{ matrix.os }}
-        path: /usr/local/share/vcpkg/installed
+        path: /usr/local/share/vcpkg
     - name: Checkout vcpkg
       shell: bash
       run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi  
