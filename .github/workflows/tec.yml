@@ -103,7 +103,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $env:GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      run: cmake $env:GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
