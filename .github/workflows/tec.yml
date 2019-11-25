@@ -76,13 +76,13 @@ jobs:
     - shell: bash
       run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
     - shell: bash
-      run: export GITHUB_WORKSPACE = $(sed -e 's/\\/\//g' -e 's/://' <<< "$GITHUB_WORKSPACE")
+      run: export GITHUB_WORKSPACE=$(sed -e 's/\\/\//g' -e 's/://' <<< "$GITHUB_WORKSPACE")
     - shell: bash
       run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
     - shell: bash
       run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
     - shell: bash
-      run: export VCPKG_INSTALLATION_ROOT = $(sed -e 's/\\/\//g' -e 's/://' <<< "$VCPKG_INSTALLATION_ROOT")
+      run: export VCPKG_INSTALLATION_ROOT=$(sed -e 's/\\/\//g' -e 's/://' <<< "$VCPKG_INSTALLATION_ROOT")
     - shell: bash
       run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
     - shell: bash
