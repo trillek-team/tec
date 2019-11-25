@@ -14,15 +14,15 @@ jobs:
             compiler: gcc
             version: "7"
             arch: x64
-            vcpkg-triplett: x64-linux
+            vcpkg-triplet: x64-linux
           - os: ubuntu-latest
             compiler: gcc
             version: "7"
             arch: x64
-            vcpkg-triplett: x64-linux
+            vcpkg-triplet: x64-linux
           - os: macOS-latest
             arch: x64
-            vcpkg-triplett: x64-osx
+            vcpkg-triplet: x64-osx
     env:
       VCPKG_INSTALLATION_ROOT: /usr/local/share/vcpkg
     steps:
@@ -70,18 +70,20 @@ jobs:
       
     # Shared
     - name: Install deps vcpkg
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
+      
     - name: Install bullet with vcpkg (non MacOS)
       if: runner.os != 'macOS'
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install bullet3
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install bullet3 --triplet ${{ matrix.vcpkg-triplet }}
     - name: Install bullet with brew (MacOS)
       if: runner.os == 'macOS'
       run: brew install bullet
+      
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure CMake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
@@ -95,9 +97,9 @@ jobs:
         arch: [Win32, x64]
         include:
           - arch: x64
-            vcpkg-triplett: x64-windows
+            vcpkg-triplet: x64-windows
           - arch: Win32
-            vcpkg-triplett: x86-windows
+            vcpkg-triplet: x86-windows
     steps:
     - uses: actions/checkout@v1
       with:
@@ -108,7 +110,7 @@ jobs:
         key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
         path: C:/vcpkg/installed
     - name: Install deps vcpkg
-      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplett }}
+      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
