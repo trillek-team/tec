@@ -87,6 +87,8 @@ jobs:
         os: [windows-latest]
         arch: [x86, x64]
     steps:
+    - run: echo "GITHUB_WORKSPACE dir:" %GITHUB_WORKSPACE%
+    - run: echo "VCPKG_INSTALLATION_ROOT dir:" %VCPKG_INSTALLATION_ROOT%
     - uses: actions/checkout@v1
       with:
         submodules: true
@@ -118,14 +120,11 @@ jobs:
     - name: Install deps vcpkg
       run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.arch }}-${{ runner.OS }}
     - name: Create Build Environment
-      shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
-      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake %GITHUB_WORKSPACE% -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake %GITHUB_WORKSPACE% -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%/scripts/buildsystems/vcpkg.cmake
     - name: Build
-      shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
       
