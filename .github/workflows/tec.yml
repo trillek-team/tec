@@ -55,7 +55,7 @@ jobs:
       uses: actions/cache@v1
       if: runner.os == 'macOS'
       with:
-        key: vcpkg-${{ matrix.os }}2
+        key: vcpkg-${{ matrix.os }}
         path: /usr/local/share/vcpkg
     - name: Bootstrap vcpkg (MacOS)
       if: runner.os == 'macOS'
@@ -66,7 +66,7 @@ jobs:
       run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Install bullet with vcpkg (non MacOS)
       if: runner.os != 'macOS'
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg bullet3
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install bullet3
     - name: Install bullet with brew (MacOS)
       if: runner.os == 'macOS'
       run: brew install bullet
@@ -123,7 +123,7 @@ jobs:
     - name: Configure cmake
       shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake $(sed -e 's/\\/\//g' -e 's/://' <<< "$GITHUB_WORKSPACE") -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+      run: cmake %GITHUB_WORKSPACE% -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
