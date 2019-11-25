@@ -86,6 +86,11 @@ jobs:
       matrix:
         os: [windows-latest]
         arch: [x86, x64]
+        include:
+          - arch: x64
+            cmake-arch: x64
+          - arch: x86
+            cmake-arch: Win32
     steps:
     - run: echo "GITHUB_WORKSPACE dir:" $env:GITHUB_WORKSPACE
     - run: echo "VCPKG_INSTALLATION_ROOT dir:" $env:VCPKG_INSTALLATION_ROOT
@@ -103,7 +108,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $env:GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+      run: cmake $env:GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.cmake-arch}} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
