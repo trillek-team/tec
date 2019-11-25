@@ -16,16 +16,12 @@ jobs:
           - os: ubuntu-latest
             compiler: gcc
             version: "7"
+    env:
+      VCPKG_INSTALLATION_ROOT: /usr/local/share/vcpkg
     steps:
     - uses: actions/checkout@v1
       with:
         submodules: true
-    - run: echo "runner.workspace dir:" ${{runner.workspace}}
-    - run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
-    - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
-    - run: echo "runner.os:" ${{ runner.os }}
-    - run: echo "matrix.os:" ${{ matrix.os }}
-    - run: echo "matrix.arch:" ${{ matrix.arch }}
     - name: Install GCC (Linux)
       if: runner.os == 'Linux'
       run: |
@@ -44,11 +40,12 @@ jobs:
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Cache vcpkg installed
       uses: actions/cache@v1
+      if: runner.os == 'Linux'
       with:
         key: vcpkg-${{ matrix.os }}
         path: /usr/local/share/vcpkg/installed
     - name: Install deps vcpkg
-      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Create Build Environment
       shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -103,7 +100,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+      run: cmake -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ../tec
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
