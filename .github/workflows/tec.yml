@@ -50,32 +50,32 @@ jobs:
     # MacOS specific
     - name: Checkout vcpkg (MacOS)
       if: runner.os == 'macOS'
-      shell: bash
       run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi
     - name: Cache vcpkg (MacOS)
       uses: actions/cache@v1
       if: runner.os == 'macOS'
       with:
-        key: vcpkg-${{ matrix.os }}
+        key: vcpkg-${{ matrix.os }}2
         path: /usr/local/share/vcpkg
     - name: Bootstrap vcpkg (MacOS)
-      shell: bash
-      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
-    - name: Install bullet (MacOS)
       if: runner.os == 'macOS'
-      run: brew install bullet
+      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
       
     # Shared
     - name: Install deps vcpkg
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
+    - name: Install bullet with vcpkg (non MacOS)
+      if: runner.os != 'macOS'
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg bullet3
+    - name: Install bullet with brew (MacOS)
+      if: runner.os == 'macOS'
+      run: brew install bullet
     - name: Create Build Environment
-      shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure CMake
       working-directory: ${{runner.workspace}}/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
-      shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
       
@@ -121,56 +121,11 @@ jobs:
       shell: bash
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
+      shell: bash
       working-directory: ${{runner.workspace}}/build
-      run: cmake -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+      run: cmake $(sed -e 's/\\/\//g' -e 's/://' <<< "$GITHUB_WORKSPACE") -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
       
-  build-macos:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macOS-latest]
-    env:
-      VCPKG_INSTALLATION_ROOT: /usr/local/share/vcpkg
-    steps:
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
-    - run: echo "runner.workspace dir:" ${{runner.workspace}}
-    - run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
-    - run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
-    - run: echo "matrix.os:" ${{ matrix.os }}
-    - run: echo "runner.os:" ${{ runner.os }}
-    - run: echo "matrix.arch:" ${{ matrix.arch }}
-    - name: Cache vcpkg
-      uses: actions/cache@v1
-      with:
-        key: vcpkg-${{ matrix.os }}
-        path: "$VCPKG_INSTALLATION_ROOT"
-    - name: Checkout vcpkg
-      shell: bash
-      run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi  
-    - name: Bootstrap vcpkg
-      shell: bash
-      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
-    - name: Install deps vcpkg
-      shell: bash
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
-    - name: Install bullet (MacOS)
-      if: runner.os == 'macOS'
-      run: brew install bullet
-    - name: Create Build Environment
-      shell: bash
-      run: cmake -E make_directory ${{runner.workspace}}/build
-    - name: Configure cmake
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
-    - name: Build
-      shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
-
