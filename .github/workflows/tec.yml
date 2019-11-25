@@ -131,7 +131,7 @@ jobs:
       uses: actions/cache@v1
       with:
         key: vcpkg-${{ matrix.os }}
-        path: /usr/local/share/vcpkg
+        path: "$VCPKG_INSTALLATION_ROOT"
     - name: Checkout vcpkg
       shell: bash
       run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi  
