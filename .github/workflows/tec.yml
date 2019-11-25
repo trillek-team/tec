@@ -3,12 +3,12 @@ name: Trillek Engine CI
 on: [pull_request]
 
 jobs:
-  build-linux:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-16.04]
+        os: [ubuntu-latest, ubuntu-16.04, macOS-latest]
         include:
           - os: ubuntu-16.04
             compiler: gcc
@@ -22,6 +22,8 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    
+    # Linux specific
     - name: Install GCC (Linux)
       if: runner.os == 'Linux'
       run: |
@@ -35,15 +37,35 @@ jobs:
           echo "::set-env name=CC::clang-${{ matrix.version }}"
           echo "::set-env name=CXX::clang++-${{ matrix.version }}"
         fi
-    - name: Install os deps
+    - name: Install os deps (Linux)
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-    - name: Cache vcpkg installed
+    - name: Cache vcpkg installed (Linux)
       uses: actions/cache@v1
       if: runner.os == 'Linux'
       with:
         key: vcpkg-${{ matrix.os }}
         path: /usr/local/share/vcpkg/installed
+        
+    # MacOS specific
+    - name: Checkout vcpkg (MacOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi
+    - name: Cache vcpkg (MacOS)
+      uses: actions/cache@v1
+      if: runner.os == 'macOS'
+      with:
+        key: vcpkg-${{ matrix.os }}
+        path: /usr/local/share/vcpkg
+    - name: Bootstrap vcpkg (MacOS)
+      shell: bash
+      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
+    - name: Install bullet (MacOS)
+      if: runner.os == 'macOS'
+      run: brew install bullet
+      
+    # Shared
     - name: Install deps vcpkg
       run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     - name: Create Build Environment
@@ -100,7 +122,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ../tec
+      run: cmake -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ..
     - name: Build
       shell: bash
       working-directory: ${{runner.workspace}}/build
