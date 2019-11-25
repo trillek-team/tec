@@ -87,31 +87,11 @@ jobs:
         os: [windows-latest]
         arch: [x86, x64]
     steps:
-    - run: echo "GITHUB_WORKSPACE dir:" %GITHUB_WORKSPACE%
-    - run: echo "VCPKG_INSTALLATION_ROOT dir:" %VCPKG_INSTALLATION_ROOT%
+    - run: echo "GITHUB_WORKSPACE dir:" $env:GITHUB_WORKSPACE
+    - run: echo "VCPKG_INSTALLATION_ROOT dir:" $env:VCPKG_INSTALLATION_ROOT
     - uses: actions/checkout@v1
       with:
         submodules: true
-    - shell: bash
-      run: echo "runner.workspace dir:" ${{runner.workspace}}
-    - shell: bash
-      run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
-    - shell: bash
-      run: export GITHUB_WORKSPACE=$(sed -e 's/\\/\//g' -e 's/://' <<< "$GITHUB_WORKSPACE")
-    - shell: bash
-      run: echo "GITHUB_WORKSPACE dir:" $GITHUB_WORKSPACE
-    - shell: bash
-      run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
-    - shell: bash
-      run: export VCPKG_INSTALLATION_ROOT=$(sed -e 's/\\/\//g' -e 's/://' <<< "$VCPKG_INSTALLATION_ROOT")
-    - shell: bash
-      run: echo "VCPKG_INSTALLATION_ROOT dir:" $VCPKG_INSTALLATION_ROOT
-    - shell: bash
-      run: echo "runner.os:" ${{ runner.os }}
-    - shell: bash
-      run: echo "matrix.os:" ${{ matrix.os }}
-    - shell: bash
-      run: echo "matrix.arch:" ${{ matrix.arch }}
     - name: Cache vcpkg installed
       uses: actions/cache@v1
       with:
@@ -123,7 +103,7 @@ jobs:
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake
       working-directory: ${{runner.workspace}}/build
-      run: cmake %GITHUB_WORKSPACE% -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=%VCPKG_INSTALLATION_ROOT%/scripts/buildsystems/vcpkg.cmake
+      run: cmake $env:GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
     - name: Build
       working-directory: ${{runner.workspace}}/build
       run: cmake --build .
