@@ -90,7 +90,8 @@ namespace tec {
 		}
 		GLint magfilter = GL_LINEAR; // TODO Add a get/set magfilter and add code to generate mipmaps
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 		err = glGetError();
 		if (err) {
 			_log->trace("[Texture-Object] Error setting texture filters");
@@ -102,6 +103,7 @@ namespace tec {
 			_log->trace("[Texture-Object] Error coping texture data to GPU");
 			return;
 		}
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
@@ -144,6 +146,8 @@ namespace tec {
 			_log->trace("[Texture-Object] Error coping texture data to GPU");
 			return;
 		}
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void TextureObject::Generate(GLuint width, GLuint height, bool usealpha) {
@@ -162,7 +166,8 @@ namespace tec {
 			return;
 		}
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
 		err = glGetError();
 		if (err) {
 			_log->trace("[Texture-Object] Error setting texture filters");
@@ -179,6 +184,7 @@ namespace tec {
 			_log->trace("[Texture-Object] Error writing texture data on GPU");
 			return;
 		}
+		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
