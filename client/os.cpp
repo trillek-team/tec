@@ -56,6 +56,7 @@ namespace tec {
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		}
 		glfwWindowHint(GLFW_AUTO_ICONIFY, false); // Don't minimize when a fullscreen window loses focus
+		glfwWindowHint(GLFW_SAMPLES, 4); // A basic multi-sampling at the hardware level
 		if (_fullscreen) {
 			const auto monitor = glfwGetPrimaryMonitor();
 			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
