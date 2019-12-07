@@ -9,6 +9,7 @@
 
 #include <imgui.h>
 #include <spdlog/sinks/sink.h>
+#include <spdlog/details/pattern_formatter.h>
 
 #include "ring-buffer.hpp"
 #include "os.hpp"
@@ -103,6 +104,7 @@ namespace tec {
 				formatter_ = std::move(sink_formatter);
 			}
 			std::mutex mutex_;
+			std::unique_ptr<spdlog::formatter> formatter_;
 	};
 	
 }
