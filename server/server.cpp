@@ -116,7 +116,7 @@ namespace tec {
 
 						static ServerMessage connecting_client_entity_msg;
 						other_entity.set_id(client->GetID());
-						connecting_client_entity_msg.SetBodyLength(other_entity.ByteSize());
+						connecting_client_entity_msg.SetBodyLength(other_entity.ByteSizeLong());
 						other_entity.SerializeToArray(connecting_client_entity_msg.GetBodyPTR(), static_cast<int>(connecting_client_entity_msg.GetBodyLength()));
 						connecting_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
 						connecting_client_entity_msg.encode_header();
@@ -124,7 +124,7 @@ namespace tec {
 						static ServerMessage other_client_entity_msg;
 						for (auto other_client : clients) {
 							other_entity.set_id(other_client->GetID());
-							other_client_entity_msg.SetBodyLength(other_entity.ByteSize());
+							other_client_entity_msg.SetBodyLength(other_entity.ByteSizeLong());
 							other_entity.SerializeToArray(other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
 							other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
 							other_client_entity_msg.encode_header();
@@ -133,7 +133,7 @@ namespace tec {
 							other_client->QueueWrite(connecting_client_entity_msg);
 						}
 						for (auto entity : entities) {
-							other_client_entity_msg.SetBodyLength(entity.second.ByteSize());
+							other_client_entity_msg.SetBodyLength(entity.second.ByteSizeLong());
 							entity.second.SerializeToArray(other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
 							other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
 							other_client_entity_msg.encode_header();

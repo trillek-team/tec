@@ -191,8 +191,8 @@ int main(int argc, char* argv[]) {
 				client_commands.set_commandid(command_id++);
 				update_message.SetStateID(connection.GetLastRecvStateID());
 				update_message.SetMessageType(tec::networking::MessageType::CLIENT_COMMAND);
-				client_commands.SerializeToArray(update_message.GetBodyPTR(), client_commands.ByteSize());
-				update_message.SetBodyLength(client_commands.ByteSize());
+				update_message.SetBodyLength(client_commands.ByteSizeLong());
+				client_commands.SerializeToArray(update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
 				update_message.encode_header();
 				connection.Send(update_message);
 				game_state_queue.SetCommandID(command_id);

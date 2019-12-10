@@ -7,6 +7,7 @@
 #include <memory>
 #include <set>
 #include <iostream>
+#include <thread>
 
 #include <al.h>
 #include <alc.h>

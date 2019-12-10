@@ -11,9 +11,7 @@ option(BUILD_TESTS "Build tests" OFF)
 list(APPEND CMAKE_MODULE_PATH ${trillek_SOURCE_DIR}/deps)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-include_directories(${trillek_SOURCE_DIR}/common)
 
-add_definitions(-DFMT_HEADER_ONLY)
 add_definitions(-DASIO_STANDALONE)
 
 if (MSVC)
@@ -29,6 +27,8 @@ set(BUILD_STATIC_VCOMPUTER TRUE CACHE BOOL "Build Trillek VCOMPUTER library - st
 set(BUILD_DYNAMIC_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER library - dynamic version")
 set(BUILD_TOOLS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tools")
 set(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
+
+include_directories(${trillek_SOURCE_DIR}/common)
 
 add_subdirectory(deps/trillek-vcomputer ${trillek_BINARY_DIR}/deps/trillek-vcomputer)
 add_subdirectory(common)
