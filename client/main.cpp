@@ -1,30 +1,20 @@
 // Copyright (c) 2013-2016 Trillek contributors. See AUTHORS.txt for details
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
-#include <future>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <thread>
 
+#include "game.hpp"
+
 #include "server-connection.hpp"
 #include "server-message.hpp"
-#include "controllers/fps-controller.hpp"
-#include "events.hpp"
-#include "event-system.hpp"
 #include "filesystem.hpp"
 #include "gui/console.hpp"
+#include "gui/server-connect.hpp"
+#include "gui/active-entity-tooltip.hpp"
 #include "imgui-system.hpp"
-#include "lua-system.hpp"
 #include "os.hpp"
-#include "graphics/view.hpp"
-#include "physics-system.hpp"
-#include "render-system.hpp"
-#include "simulation.hpp"
-#include "game-state-queue.hpp"
-#include "sound-system.hpp"
-#include "vcomputer-system.hpp"
-#include "voxel-volume.hpp"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_sinks.h>
@@ -33,18 +23,24 @@ namespace tec {
 	extern void InitializeComponents();
 	extern void InitializeFileFactories();
 	extern void BuildTestEntities();
-	extern void ProtoLoad();
-	eid active_entity;
+	extern void ProtoLoad(std::string filename);
 }
 
-int main(int argc, char* argv[]) {
+auto InitializeLogger(spdlog::level::level_enum log_level, tec::Console& console) {
+	std::vector<spdlog::sink_ptr> sinks;
+	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+	sinks.push_back(std::make_shared<tec::ConsoleSink>(console));
+	auto log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
+	log->set_level(log_level);
+	log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
+	spdlog::register_logger(log);
+	return log;
+}
+
+// TODO write a proper arguments parser
+// Now only search for -v or -vv to set log level
+auto ParseLogLevel(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
-
-
-	tec::InitializeComponents();
-	tec::InitializeFileFactories();
-	// TODO write a proper arguments parser
-	// Now only search for -v or -vv to set log level
 	for (int i = 1; i < argc; i++) {
 		if (std::string(argv[i]).compare("-v")) {
 			loglevel = spdlog::level::debug;
@@ -53,16 +49,15 @@ int main(int argc, char* argv[]) {
 			loglevel = spdlog::level::trace;
 		}
 	}
-	// Console and logging initialization
+	return loglevel;
+}
+
+int main(int argc, char* argv[]) {
 	tec::Console console;
 
-	std::vector<spdlog::sink_ptr> sinks;
-	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
-	sinks.push_back(std::make_shared<tec::ConsoleSink>(console));
-	auto log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
-	log->set_level(loglevel);
-	log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
-	spdlog::register_logger(log);
+	auto log = InitializeLogger(ParseLogLevel(argc, argv), console);
+
+	log->info(std::string("Asset path: ") + tec::FilePath::GetAssetsBasePath().toString());
 
 	log->info("Initializing OpenGL...");
 	tec::OS os;
@@ -76,11 +71,13 @@ int main(int argc, char* argv[]) {
 		[&os] (const char*) {
 			os.Quit();
 		});
-	std::thread* asio_thread = nullptr;
-	std::thread* sync_thread = nullptr;
-	tec::Simulation simulation;
-	tec::GameStateQueue game_state_queue;
-	tec::networking::ServerConnection connection;
+
+	tec::Game game(os.GetWindowWidth(), os.GetWindowHeight());
+	tec::ActiveEntityTooltip active_entity_tooltip(game);
+
+	tec::networking::ServerConnection& connection = game.GetServerConnection();
+	tec::ServerConnectWindow server_connect_window(connection);
+	tec::PingTimesWindow ping_times_window(connection);
 
 	console.AddConsoleCommand(
 		"msg",
@@ -95,148 +92,45 @@ int main(int argc, char* argv[]) {
 			connection.SendChatMessage(message);
 		});
 
-	console.AddConsoleCommand(
-		"connect",
-		"connect ip : Connects to the server at ip",
-		[&connection, &log] (const char* args) {
-			const char* end_arg = args;
-			while (*end_arg != '\0' && *end_arg != ' ') {
-				end_arg++;
-			}
-			// Args now points were the arguments begins
-			std::string ip(args, end_arg - args);
-
-			if (!connection.Connect(ip.c_str())) {
-				log->error("Failed to connect to " + ip);
-			}
-		});
-
-	log->info(std::string("Loading assets from: ") + tec::FilePath::GetAssetsBasePath().toString());
-
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
-
-	gui.CreateGUI(&connection, &console);
-
-	log->info("Initializing rendering system...");
-	tec::RenderSystem rs;
-	rs.SetViewportSize(os.GetWindowWidth(), os.GetWindowHeight());
-
-	log->info("Initializing simulation system...");
-	tec::PhysicsSystem& ps = simulation.GetPhysicsSystem();
-	tec::VComputerSystem vcs;
-
-	log->info("Initializing sound system...");
-	tec::SoundSystem ss;
-
-	//log->info("Initializing voxel system...");
-	//tec::VoxelSystem vox_sys;
-
-	log->info("Initializing script system...");
-	tec::LuaSystem lua_sys;
-
-	tec::BuildTestEntities();
-	tec::ProtoLoad();
-
-	std::shared_ptr<tec::FPSController> camera_controller;
-
-	double delta = os.GetDeltaTime();
-	double mouse_x, mouse_y;
-
-	std::thread ss_thread([&] () { ss.Update(); });
+	gui.CreateGUI();
+	gui.AddWindowDrawFunction("connect_window", [&server_connect_window] () {server_connect_window.Draw(); });
+	gui.AddWindowDrawFunction("ping_times", [&ping_times_window] () {ping_times_window.Draw(); });
+	gui.AddWindowDrawFunction("console", [&console] () { console.Draw(); });
+	gui.ShowWindow("console");
+	gui.AddWindowDrawFunction("active_entity", [&active_entity_tooltip] () { active_entity_tooltip.Draw(); });
+	gui.ShowWindow("active_entity");
 
 	connection.RegisterMessageHandler(
 		tec::networking::MessageType::CLIENT_ID,
-		[&game_state_queue, &connection, &camera_controller, &log, &gui] (const tec::networking::ServerMessage&) {
-			auto client_id = connection.GetClientID();
-			log->info("You are connected as client ID " + std::to_string(client_id));
-			camera_controller = std::make_shared<tec::FPSController>(client_id);
-			tec::Entity camera(client_id);
-			camera.Add<tec::View>(true);
-			std::shared_ptr<tec::ControllerAddedEvent> cae_event = std::make_shared<tec::ControllerAddedEvent>();
-			cae_event->controller = camera_controller;
-			tec::EventSystem<tec::ControllerAddedEvent>::Get()->Emit(cae_event);
-			game_state_queue.SetClientID(client_id);
-
+		[&gui, &log] (const tec::networking::ServerMessage& message) {
+			std::string client_id(message.GetBodyPTR(), message.GetBodyLength());
+			log->info("You are connected as client ID " + client_id);
 			gui.HideWindow("connect_window");
+			gui.ShowWindow("ping_times");
 		});
 
-	connection.RegisterConnectFunc(
-		[&connection, &asio_thread, &sync_thread] () {
-			asio_thread = new std::thread([&connection] () { connection.StartRead(); });
-			sync_thread = new std::thread([&connection] () { connection.StartSync(); });
-		});
+	tec::InitializeComponents();
+	tec::InitializeFileFactories();
+	tec::BuildTestEntities();
+	tec::ProtoLoad("json/test.json");
 
-	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
-	tec::state_id_t command_id = 0;
+	double mouse_x, mouse_y;
 
+	double delta = os.GetDeltaTime();
 	while (!os.Closing()) {
 		os.OSMessageLoop();
 		delta = os.GetDeltaTime();
-		delta_accumulator += delta;
 
-		ss.SetDelta(delta);
-		/*std::async(std::launch::async, [&vox_sys, delta] () {
-			vox_sys.Update(delta);
-		});*/
+		os.GetMousePosition(&mouse_x, &mouse_y);
 
-		game_state_queue.ProcessEventQueue();
-		game_state_queue.Interpolate(delta);
-
-		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
-		if (delta_accumulator >= tec::UPDATE_RATE) {
-			if (camera_controller) {
-				tec::networking::ServerMessage update_message;
-				tec::proto::ClientCommands client_commands = camera_controller->GetClientCommands();
-				client_commands.set_commandid(command_id++);
-				update_message.SetStateID(connection.GetLastRecvStateID());
-				update_message.SetMessageType(tec::networking::MessageType::CLIENT_COMMAND);
-				update_message.SetBodyLength(client_commands.ByteSizeLong());
-				client_commands.SerializeToArray(update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
-				update_message.encode_header();
-				connection.Send(update_message);
-				game_state_queue.SetCommandID(command_id);
-			}
-
-			delta_accumulator -= tec::UPDATE_RATE;
-		}
-
-		vcs.Update(delta);
-
-		rs.Update(delta, client_state);
-
-		lua_sys.Update(delta);
-
-		//ps.DebugDraw();
-		if (camera_controller != nullptr) {
-			if (camera_controller->mouse_look) {
-				os.EnableMouseLock();
-				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), static_cast<float>(os.GetWindowWidth()) / 2.0f, static_cast<float>(os.GetWindowHeight()) / 2.0f,
-														 static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
-			}
-			else {
-				os.DisableMouseLock();
-				os.GetMousePosition(&mouse_x, &mouse_y);
-				tec::active_entity = ps.RayCastMousePick(connection.GetClientID(), mouse_x, mouse_y,
-														 static_cast<float>(os.GetWindowWidth()), static_cast<float>(os.GetWindowHeight()));
-			}
-		}
+		game.Update(delta, mouse_x, mouse_y, os.GetWindowWidth(), os.GetWindowHeight());
 
 		gui.Update(delta);
 		console.Update(delta);
 		os.SwapBuffers();
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
-
-	ss.Stop();
-	ss_thread.join();
-	connection.Disconnect();
-	connection.Stop();
-	if (asio_thread) {
-		asio_thread->join();
-	}
-	if (sync_thread) {
-		sync_thread->join();
 	}
 
 	return 0;

@@ -9,13 +9,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "graphics/vertex-buffer-object.hpp"
+#include "graphics/texture-object.hpp"
 #include "events.hpp"
 #include "entity.hpp"
 #include "components/transforms.hpp"
 
+
 namespace tec {
 	VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh)
-		: mesh(mesh), entity_id(entity_id) { }
+		: mesh(mesh), entity_id(entity_id) {
+		auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"));
+		auto tex = std::make_shared<TextureObject>(pixbuf);
+		TextureMap::Set("metal_wall", tex);
+	}
 
 	VoxelVolume::~VoxelVolume() { }
 

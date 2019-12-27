@@ -3,8 +3,9 @@
 
 #include "sound-system.hpp"
 
+#include "event-system.hpp"
 #include "entity.hpp"
-#include "physics-system.hpp" // TODO need to replace when Velocity component is extract.
+#include "components/velocity.hpp"
 #include "components/transforms.hpp"
 #include "resources/vorbis-stream.hpp"
 
@@ -20,18 +21,18 @@ namespace tec {
 	SoundSystem::SoundSystem() {
 		_log = spdlog::get("console_log");
 
-		this->device = alcOpenDevice(NULL); alCheckError();
+		this->device = alcOpenDevice(NULL);// alCheckError();
 		if (!this->device) {
 			_log->warn("[Sound System] No OpenAL device selected.");
 		}
 
-		this->context = alcCreateContext(device, NULL); alCheckError();
+		this->context = alcCreateContext(device, NULL);// alCheckError();
 		if (!alcMakeContextCurrent(this->context)) {
 			_log->warn("[Sound System] No OpenAL context created.");
 		}
-		alListener3f(AL_POSITION, 0, 0, 0);
-		alListener3f(AL_VELOCITY, 0, 0, 0);
-		alListener3f(AL_ORIENTATION, 0, 0, -1);
+		alListener3f(AL_POSITION, 0, 0, 0); alCheckError();
+		alListener3f(AL_VELOCITY, 0, 0, 0); alCheckError();
+		//alListener3f(AL_DIRECTION, 0, 0,-1); alCheckError();
 	}
 
 	void SoundSystem::Update() {
@@ -93,6 +94,34 @@ namespace tec {
 	void SoundSystem::On(std::shared_ptr<EntityCreated> data) {
 		const proto::Entity& entity = data->entity;
 		eid entity_id = entity.id();
+		for (int i = 0; i < data->entity.components_size(); ++i) {
+			const proto::Component& comp = data->entity.components(i);
+			switch (comp.component_case()) {
+				case proto::Component::kAudioSource:
+				{
+					AudioSource* audio_source = new AudioSource();
+					audio_source->In(comp);
+					AudioSourceComponentMap::Set(entity_id, audio_source);
+				}
+				break;
+				case proto::Component::kRenderable:
+				case proto::Component::kPointLight:
+				case proto::Component::kDirectionalLight:
+				case proto::Component::kPosition:
+				case proto::Component::kOrientation:
+				case proto::Component::kView:
+				case proto::Component::kAnimation:
+				case proto::Component::kScale:
+				case proto::Component::kCollisionBody:
+				case proto::Component::kVelocity:
+				case proto::Component::kSpotLight:
+				case proto::Component::kVoxelVolume:
+				case proto::Component::kComputer:
+				case proto::Component::kLuaScript:
+				case proto::Component::COMPONENT_NOT_SET:
+				break;
+			}
+		}
 		if (AudioSourceComponentMap::Has(entity_id)) {
 			AudioSource* source = AudioSourceComponentMap::Get(entity_id);
 			if (!source->vorbis_stream) {

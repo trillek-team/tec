@@ -55,6 +55,8 @@ namespace tec {
 		void FinalPass();
 		void RenderGbuffer();
 
+		void SetupDefaultShaders();
+
 		using EventQueue<WindowResizedEvent>::On;
 		using EventQueue<EntityDestroyed>::On;
 		using EventQueue<EntityCreated>::On;

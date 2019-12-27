@@ -37,7 +37,7 @@ namespace tec {
 				delete[] this->rom;
 			}
 		}
-		std::uint8_t *rom;
+		std::uint8_t* rom;
 		std::string rom_name;
 		std::size_t rom_size;
 		VComputer vc;
@@ -72,11 +72,15 @@ namespace tec {
 
 	struct KeyboardEvent;
 	struct MouseBtnEvent;
+	struct EntityCreated;
+	struct EntityDestroyed;
 
 	class VComputerSystem final :
-        public CommandQueue<VComputerSystem>,
+		public CommandQueue<VComputerSystem>,
 		public EventQueue<KeyboardEvent>,
-        public EventQueue<MouseBtnEvent> {
+		public EventQueue<MouseBtnEvent>,
+		public EventQueue < EntityCreated >,
+		public EventQueue < EntityDestroyed > {
 	public:
 		VComputerSystem();
 
@@ -128,16 +132,20 @@ namespace tec {
 
 		using EventQueue<KeyboardEvent>::On;
 		using EventQueue<MouseBtnEvent>::On;
+		using EventQueue<EntityCreated>::On;
+		using EventQueue<EntityDestroyed>::On;
 		void On(std::shared_ptr<KeyboardEvent> data);
 		void On(std::shared_ptr<MouseBtnEvent> data);
+		void On(std::shared_ptr<EntityCreated> data);
+		void On(std::shared_ptr<EntityDestroyed> data);
 	private:
 		std::shared_ptr<spdlog::logger> _log;
-		typedef Multiton<eid, std::shared_ptr<Computer>> ComputerComponentMap;
-		typedef Multiton<eid, std::shared_ptr<ComputerKeyboard>> KeyboardComponentMap;
+		typedef Multiton<eid, Computer*> ComputerComponentMap;
+		typedef Multiton<eid, ComputerKeyboard*> KeyboardComponentMap;
 
 		double delta{ 0 }; // The time since the last Update was called.
 
-		std::map<eid, std::shared_ptr<Computer>> computers;
+		std::map<eid, Computer*> computers;
 	};
 
 }

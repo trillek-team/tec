@@ -80,6 +80,8 @@ namespace tec {
 
 		std::shared_ptr<TextureObject> default_texture = std::make_shared<TextureObject>(default_pbuffer);
 		TextureMap::Set("default", default_texture);
+
+		this->SetupDefaultShaders();
 	}
 
 	void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
@@ -349,7 +351,49 @@ namespace tec {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	}
 
+	void RenderSystem::SetupDefaultShaders() {
+		auto debug_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
+		};
+		auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
+
+		auto debug_fill = Material::Create("material_debug");
+		debug_fill->SetPolygonMode(GL_LINE);
+		debug_fill->SetDrawElementsMode(GL_LINES);
+
+		auto deferred_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
+		};
+		auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
+
+		auto deferred_pl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
+		};
+		auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
+
+		auto deferred_dl_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
+		};
+		auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
+
+		auto deferred_stencil_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+		};
+		auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_stencil_shader_files);
+
+		auto deferred_shadow_shader_files = std::list < std::pair<Shader::ShaderType, FilePath> >{
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")),
+				std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
+		};
+		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
+	}
+
 	using RenderableMap = Multiton<eid, Renderable*>;
+	using AnimationMap = Multiton<eid, Animation*>;
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
@@ -371,16 +415,35 @@ namespace tec {
 					RenderableMap::Set(entity_id, renderable);
 				}
 				break;
+				case proto::Component::kPointLight:
+				{
+					PointLight* point_light = new PointLight();
+					point_light->In(comp);
+					PointLightMap::Set(entity_id, point_light);
+				}
+				break;
+				case proto::Component::kDirectionalLight:
+				{
+					DirectionalLight* dir_light = new DirectionalLight();
+					dir_light->In(comp);
+					DirectionalLightMap::Set(entity_id, dir_light);
+				}
+				break;
+				case proto::Component::kAnimation:
+				{
+					Animation* animation = new Animation();
+					animation->In(comp);
+
+					AnimationMap::Set(entity_id, animation);
+				}
+				break;
 				case proto::Component::kPosition:
 				case proto::Component::kOrientation:
 				case proto::Component::kView:
-				case proto::Component::kAnimation:
 				case proto::Component::kScale:
 				case proto::Component::kCollisionBody:
 				case proto::Component::kVelocity:
 				case proto::Component::kAudioSource:
-				case proto::Component::kPointLight:
-				case proto::Component::kDirectionalLight:
 				case proto::Component::kSpotLight:
 				case proto::Component::kVoxelVolume:
 				case proto::Component::kComputer:
@@ -406,13 +469,13 @@ namespace tec {
 			if (renderable->hidden) {
 				continue;
 			}
-			glm::vec3 position;
+			glm::vec3 position  = renderable->local_translation.value;
 			if (state.positions.find(entity_id) != state.positions.end()) {
-				position = state.positions.at(entity_id).value + state.positions.at(entity_id).center_offset;
+				position += state.positions.at(entity_id).value;
 			}
-			glm::quat orientation;
+			glm::quat orientation = renderable->local_orientation.value;
 			if (state.orientations.find(entity_id) != state.orientations.end()) {
-				orientation = state.orientations.at(entity_id).value * glm::quat(state.orientations.at(entity_id).rotation_offset);
+				orientation = state.orientations.at(entity_id).value * orientation;
 			}
 			glm::vec3 scale(1.0);
 			Entity e(entity_id);
@@ -446,7 +509,7 @@ namespace tec {
 				ri.vertex_groups = &renderable->vertex_groups;
 
 				if (Multiton<eid, Animation*>::Has(e.GetID())) {
-					Animation* anim = Multiton<eid, Animation*>::Get(e.GetID());
+					Animation* anim = AnimationMap::Get(e.GetID());
 					anim->UpdateAnimation(delta);
 					if (anim->bone_matrices.size() > 0) {
 						ri.animated = true;

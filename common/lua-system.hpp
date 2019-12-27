@@ -7,26 +7,30 @@
  */
 
 #include <spdlog/spdlog.h>
-#include <selene.h>
 
-#include "multiton.hpp"
 #include "types.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
 #include "components/lua-script.hpp"
 
 namespace tec {
-	
 	class LuaSystem;
 	typedef Command<LuaSystem> LuaCommand;
-	
-	class LuaSystem : public CommandQueue<LuaSystem> {
-	public:		
+	struct EntityCreated;
+	struct EntityDestroyed;
+
+	class LuaSystem : public CommandQueue< LuaSystem >,
+		public EventQueue < EntityCreated >,
+		public EventQueue < EntityDestroyed > {
+	public:
 		void Update(const double delta);
-		
+
+		using EventQueue<EntityCreated>::On;
+		using EventQueue<EntityDestroyed>::On;
+
+		void On(std::shared_ptr<EntityCreated> data);
+		void On(std::shared_ptr<EntityDestroyed> data);
 	private:
-		using ScriptsMap_t = Multiton<eid, std::shared_ptr<LuaScript>>;
-        ScriptsMap_t scripts_map;
 	};
-	
+
 }

@@ -7,10 +7,6 @@
 
 #include <glm/gtx/quaternion.hpp>
 
-#define GLFW_INCLUDE_GL3
-#define GL_SILENCE_DEPRECATION
-#include <GLFW/glfw3.h> // TODO: included for key constants
-
 #include "components/transforms.hpp"
 #include "events.hpp"
 
@@ -147,43 +143,43 @@ namespace tec {
 			case KeyboardEvent::KEY_DOWN:
 			case KeyboardEvent::KEY_REPEAT:
 			switch (data.key) {
-				case GLFW_KEY_A:
+				case 'A':
 				if (!this->KEY_D_DOWN) {
 					this->KEY_A_FIRST = true;
 				}
 				this->KEY_A_DOWN = true;
 				break;
-				case GLFW_KEY_D:
+				case 'D':
 				this->KEY_D_DOWN = true;
 				break;
-				case GLFW_KEY_W:
+				case 'W':
 				if (!this->KEY_S_DOWN) {
 					this->KEY_W_FIRST = true;
 				}
 				this->KEY_W_DOWN = true;
 				break;
-				case GLFW_KEY_S:
+				case 'S':
 				this->KEY_S_DOWN = true;
 				break;
 			}
 			break;
 			case KeyboardEvent::KEY_UP:
 			switch (data.key) {
-				case GLFW_KEY_A:
+				case 'A':
 				this->KEY_A_DOWN = false;
 				this->KEY_A_FIRST = false;
 				this->left_strafe = false;
 				break;
-				case GLFW_KEY_D:
+				case 'D':
 				this->KEY_D_DOWN = false;
 				this->right_strafe = false;
 				break;
-				case GLFW_KEY_W:
+				case 'W':
 				this->KEY_W_DOWN = false;
 				this->KEY_W_FIRST = false;
 				this->forward = false;
 				break;
-				case GLFW_KEY_S:
+				case 'S':
 				this->KEY_S_DOWN = false;
 				this->backward = false;
 				break;

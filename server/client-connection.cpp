@@ -57,7 +57,7 @@ namespace tec {
 		void ClientConnection::DoJoin() {
 			// Build an entity
 			Entity self(this->id);
-			self.Add<Position, Orientation, Velocity, View>(glm::vec3(5, 1.0, 5), glm::vec3(.5f, 0.f, 0.f), Velocity(), true);
+			self.Add<Position, Orientation, Velocity, View>(glm::vec3(5, 1.0, 5), glm::vec3(0.0f, 0.0f, 0.0f), Velocity(), true);
 			CollisionBody* body = new CollisionBody();
 			proto::Component* component = this->entity.add_components();
 			proto::CollisionBody* body_component = component->mutable_collision_body();

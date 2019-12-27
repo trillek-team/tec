@@ -11,6 +11,7 @@
 #include <devices/tda.hpp>
 #include <devices/gkeyb.hpp>
 
+#include "filesystem.hpp"
 #include "entity.hpp"
 #include "events.hpp"
 
@@ -68,9 +69,29 @@ namespace tec {
 					this->devices[device.slot()] = screen;
 				}
 				break;
+				case proto::Computer::Device::kComputerKeyboard:
+				{
+					std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
+					keybaord->In(device);
+					this->vc.AddDevice(device.slot(), keybaord->device);
+					this->devices[device.slot()] = keybaord;
+				}
+				break;
 				case proto::Computer::Device::DEVICE_NOT_SET:
 				break;
 			}
+		}
+
+		std::string fname{ comp.rom_file() };
+		int size = LoadROM(FilePath::GetAssetPath(fname).toString(), this->rom);
+		if (size < 0) {
+			std::shared_ptr<spdlog::logger> _log = spdlog::get("console_log");
+			_log->error("An error hapen when was reading the file {}", fname);
+		}
+		else {
+			this->rom_size = size;
+			this->rom_name = fname;
+			this->vc.SetROM(this->rom, this->rom_size);
 		}
 	}
 
@@ -181,6 +202,8 @@ namespace tec {
 	void VComputerSystem::Update(double _delta) {
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
+		EventQueue<EntityCreated>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
 		for (auto computer_itr = ComputerComponentMap::Begin(); computer_itr != ComputerComponentMap::End(); ++computer_itr) {
 			if (this->computers.find(computer_itr->first) == this->computers.end()) {
 				this->computers[computer_itr->first] = computer_itr->second;
@@ -217,7 +240,7 @@ namespace tec {
 
 	bool VComputerSystem::LoadROMFile(const eid entity_id, std::string fname) {
 		if (this->computers.find(entity_id) != this->computers.end()) {
-			std::shared_ptr<Computer> computer = this->computers[entity_id];
+			auto computer = this->computers[entity_id];
 			int size = LoadROM(fname, computer->rom);
 			if (size < 0) {
 				_log->error("An error hapen when was reading the file {}", fname);
@@ -243,7 +266,7 @@ namespace tec {
 		}
 	}
 
-	extern eid active_entity;
+	eid active_entity{ 0 };
 
 	void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 		std::shared_ptr<gkeyboard::GKeyboardDev> active_keybaord;
@@ -284,5 +307,40 @@ namespace tec {
 				}
 			}
 		}
+	}
+	void VComputerSystem::On(std::shared_ptr<EntityCreated> data) {
+		eid entity_id = data->entity.id();
+		for (int i = 0; i < data->entity.components_size(); ++i) {
+			const proto::Component& comp = data->entity.components(i);
+			switch (comp.component_case()) {
+				case proto::Component::kComputer:
+				{
+					Computer* computer = new Computer();
+					computer->In(comp);
+					ComputerComponentMap::Set(entity_id, computer);
+				}
+				break;
+				case proto::Component::kCollisionBody:
+				case proto::Component::kRenderable:
+				case proto::Component::kPosition:
+				case proto::Component::kOrientation:
+				case proto::Component::kView:
+				case proto::Component::kAnimation:
+				case proto::Component::kScale:
+				case proto::Component::kVelocity:
+				case proto::Component::kAudioSource:
+				case proto::Component::kPointLight:
+				case proto::Component::kDirectionalLight:
+				case proto::Component::kSpotLight:
+				case proto::Component::kVoxelVolume:
+				case proto::Component::kLuaScript:
+				case proto::Component::COMPONENT_NOT_SET:
+				break;
+			}
+		}
+	}
+
+	void VComputerSystem::On(std::shared_ptr<EntityDestroyed> data) {
+		ComputerComponentMap::Remove(data->entity_id);
 	}
 }
