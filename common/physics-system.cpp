@@ -210,16 +210,15 @@ namespace tec {
 		return this->last_entity_hit;
 	}
 
-	eid PhysicsSystem::RayCastIgnore(eid ign) {
-		eid cam = 1; // TODO: This hard-coded number should be the active camera id.
+	eid PhysicsSystem::RayCastIgnore(eid source_entity, eid ignore_entity) {
 		last_rayvalid = false;
 		glm::vec3 position;
-		if (Entity(cam).Has<Position>()) {
-			position = (Entity(cam).Get<Position>())->value;
+		if (Entity(source_entity).Has<Position>()) {
+			position = (Entity(source_entity).Get<Position>())->value;
 		}
 		glm::quat orientation;
-		if (Entity(cam).Has<Orientation>()) {
-			orientation = (Entity(cam).Get<Orientation>())->value;
+		if (Entity(source_entity).Has<Orientation>()) {
+			orientation = (Entity(source_entity).Get<Orientation>())->value;
 		}
 		auto fv = position + glm::rotate(orientation, FORWARD_VECTOR * 300.f);
 		btVector3 from(position.x, position.y, position.z), to(fv.x, fv.y, fv.z);
@@ -237,7 +236,7 @@ namespace tec {
 				const CollisionBody* coll = (const CollisionBody*)cr.m_collisionObjects.at(i)->getUserPointer();
 				if (!coll) continue;
 				entity = coll->entity_id;
-				if (entity && entity != cam && entity != ign) {
+				if (entity && entity != source_entity && entity != ignore_entity) {
 					if (frc < lastfrac) {
 						entity_hit = entity;
 						hc = i;
@@ -373,13 +372,7 @@ namespace tec {
 	Position PhysicsSystem::GetPosition(eid entity_id) {
 		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
 			auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getOrigin();
-			Position position(glm::vec3(pos.x(), pos.y(), pos.z()));
-
-			// TODO: remove this once center_offset is in renderable
-			if (Entity(entity_id).Has<Position>()) {
-				position.center_offset = Entity(entity_id).Get<Position>()->center_offset;
-			}
-			return position;
+			return glm::vec3(pos.x(), pos.y(), pos.z());
 		}
 		return glm::vec3();
 	}
@@ -387,13 +380,7 @@ namespace tec {
 	Orientation PhysicsSystem::GetOrientation(eid entity_id) {
 		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
 			auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getRotation();
-			Orientation orientation(glm::quat(rot.w(), rot.x(), rot.y(), rot.z()));
-
-			// TODO: remove this once rotation_offset is in renderable
-			if (Entity(entity_id).Has<Orientation>()) {
-				orientation.rotation_offset = Entity(entity_id).Get<Orientation>()->rotation_offset;
-			}
-			return orientation;
+			return glm::quat(rot.w(), rot.x(), rot.y(), rot.z());
 		}
 		return glm::quat();
 	}

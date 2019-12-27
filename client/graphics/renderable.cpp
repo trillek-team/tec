@@ -25,6 +25,8 @@ namespace tec {
 		comp->set_mesh_name(this->mesh_name);
 		comp->set_shader_name(this->shader_name);
 		comp->set_hidden(this->hidden);
+		this->local_translation.Out(comp->mutable_position());
+		this->local_orientation.Out(comp->mutable_orientation());
 	}
 
 	extern std::map<std::string, std::function<void(std::string)>> file_factories;
@@ -47,6 +49,12 @@ namespace tec {
 		}
 		if (comp.has_hidden()) {
 			this->hidden = comp.hidden();
+		}
+		if (comp.has_position()) {
+			this->local_translation.In(comp.position());
+		}
+		if (comp.has_orientation()) {
+			this->local_orientation.In(comp.orientation());
 		}
 	}
 }

@@ -12,9 +12,12 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "filesystem.hpp"
+#include "multiton.hpp"
 
 namespace tec {
 	class MD5Mesh;
+	class MD5Anim;
+	typedef Multiton<std::string, std::shared_ptr<MD5Anim>> AnimationMap;
 
 	class MD5Anim final {
 	public:
@@ -62,11 +65,11 @@ namespace tec {
 		* \brief Returns a resource with the specified name.
 		*
 		* The only used initialization property is "filename".
+		* CheckMesh() must be called with the appropriate mesh to complete the building process.
 		* \param[in] const std::vector<Property>& properties The creation properties for the resource.
-		* \param[in] std::shared_ptr<MD5Mesh> mesh The mesh file this animation will be animating.
 		* \return std::shared_ptr<MD5Anim> The create MD5Anim resource.
 		*/
-		static std::shared_ptr<MD5Anim> Create(const FilePath& fname, std::shared_ptr<MD5Mesh> mesh);
+		static std::shared_ptr<MD5Anim> Create(const FilePath& fname);
 
 		/**
 		* \brief Loads the MD5Anim file from disk and parses it.

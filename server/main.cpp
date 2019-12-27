@@ -22,8 +22,6 @@ using asio::ip::tcp;
 tec::state_id_t current_state_id = 0;
 
 namespace tec {
-	eid active_entity;
-
 	std::string LoadJSON(const FilePath& fname) {
 		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 		if (!input.good())

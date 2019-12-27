@@ -51,10 +51,7 @@ namespace tec {
 	*/
 	extern std::string CleanString(std::string str);
 
-	std::shared_ptr<MD5Anim> MD5Anim::Create(const FilePath& fname, std::shared_ptr<MD5Mesh> mesh) {
-		if (!mesh) {
-			return nullptr;
-		}
+	std::shared_ptr<MD5Anim> MD5Anim::Create(const FilePath& fname) {
 		auto anim = std::make_shared<MD5Anim>();
 		anim->SetName(fname.SubpathFrom("assets").toGenericString());
 		anim->SetFileName(fname);
@@ -63,9 +60,8 @@ namespace tec {
 			for (std::size_t i = 0; i < anim->frames.size(); ++i) {
 				anim->BuildFrameSkeleton(i);
 			}
-			if (anim->CheckMesh(mesh)) {
-				return anim;
-			}
+			AnimationMap::Set(anim->GetName(), anim);
+			return anim;
 		}
 
 		spdlog::get("console_log")->warn("[MD5Anim] Error parsing file {}", fname.toString());

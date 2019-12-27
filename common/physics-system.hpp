@@ -31,7 +31,7 @@ namespace tec {
 
 		eid RayCastMousePick(eid source_entity, double mouse_x = 0.0f, double mouse_y = 0.0f,
 							 float screen_width = 1.0f, float screen_height = 1.0f);
-		eid RayCastIgnore(eid);
+		eid RayCastIgnore(eid source_entity, eid ignore_entity);
 		glm::vec3 GetLastRayPos() const {
 			return glm::vec3(last_raypos.getX(), last_raypos.getY(), last_raypos.getZ());
 		}

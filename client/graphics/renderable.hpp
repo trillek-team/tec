@@ -10,6 +10,8 @@
 
 #include <components.pb.h>
 
+#include "components/transforms.hpp"
+
 namespace tec {
 	class Shader;
 	class MeshFile;
@@ -18,7 +20,7 @@ namespace tec {
 
 	struct Renderable {
 		Renderable(std::shared_ptr<VertexBufferObject> buf,
-			std::shared_ptr<Shader> shader = nullptr);
+				   std::shared_ptr<Shader> shader = nullptr);
 		Renderable() {
 
 		}
@@ -32,6 +34,8 @@ namespace tec {
 		std::shared_ptr<MeshFile> mesh;
 		std::string shader_name;
 		std::shared_ptr<Shader> shader;
+		Position local_translation;
+		Orientation local_orientation;
 		bool hidden{ false };
 	};
 }

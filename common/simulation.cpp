@@ -26,9 +26,9 @@ namespace tec {
 		EventQueue<ControllerAddedEvent>::ProcessEventQueue();
 		EventQueue<ControllerRemovedEvent>::ProcessEventQueue();
 
-		/*auto vcomp_future = std::async(std::launch::async, [&] () {
+		auto vcomp_future = std::async(std::launch::async, [&] () {
 			vcomp_sys.Update(delta_time);
-			});*/
+									   });
 
 		for (Controller* controller : this->controllers) {
 			controller->Update(delta_time, interpolated_state, this->event_list);
@@ -40,9 +40,9 @@ namespace tec {
 		this->event_list.mouse_click_events.clear();
 
 		GameState client_state = interpolated_state;
-		std::future<std::set<eid>> phys_future = std::async(std::launch::async, [=, &interpolated_state]() -> std::set < eid > {
+		std::future<std::set<eid>> phys_future = std::async(std::launch::async, [=, &interpolated_state] () -> std::set < eid > {
 			return phys_sys.Update(delta_time, interpolated_state);
-		});
+															});
 		std::set<eid> phys_results = phys_future.get();
 
 		if (phys_results.size() > 0) {
@@ -54,7 +54,7 @@ namespace tec {
 				}
 			}
 		}
-		//vcomp_future.get();
+		vcomp_future.wait();
 
 		return client_state;
 	}

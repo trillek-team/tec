@@ -14,10 +14,6 @@
 #include "client/server-connection.hpp"
 #include "types.hpp"
 
-namespace tec {
-	eid active_entity; // used in physics-system so when accessor is made remove
-}
-
 TEST(ClientServerConnection_test, Constructor) {
 	std::vector<spdlog::sink_ptr> sinks;
 	auto log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));

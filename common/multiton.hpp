@@ -90,7 +90,6 @@ namespace tec {
 	protected:
 		static T default_value; // Default instance.
 
-		// TODO: Replace this with a weak_ptr to allow pruning?
 		static std::map<ID_T, T> instances; // Mapping of ID to instance.
 	};
 

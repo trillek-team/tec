@@ -101,6 +101,9 @@ namespace tec {
 	class MD5Mesh;
 	MAKE_EXTTYPE(MD5Mesh, "md5mesh");
 
+	class MD5Anim;
+	MAKE_EXTTYPE(MD5Anim, "md5anim");
+
 	class OBJ;
 	MAKE_EXTTYPE(OBJ, "obj");
 

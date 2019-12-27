@@ -22,10 +22,11 @@ namespace tec {
 		void Translate(const glm::vec3 amount, const glm::quat orientation);
 
 		glm::vec3 value = {0.0f, 0.0f, 0.0f};
-		glm::vec3 center_offset = {0.0f, 0.0f, 0.0f};
 
 		void Out(proto::Component* target);
+		void Out(proto::Position* comp); // Can be used to save into a specific component
 		void In(const proto::Component& source);
+		void In(const proto::Position& comp); // Can be used to load in a specific component
 	};
 
 	struct Orientation {
@@ -39,12 +40,13 @@ namespace tec {
 		// Adds the rotation amount based on the current orientation.
 		void OrientedRotate(const glm::vec3 amount);
 
-		glm::quat value{ 0.f,0.f,0.f,1.f };
+		glm::quat value{ 1.f, 0.f, 0.f, 0.f }; // w first
 		glm::vec3 rotation{ 0.f,0.f,0.f };
-		glm::vec3 rotation_offset{ 0.f,0.f,0.f };
 
 		void Out(proto::Component* target);
+		void Out(proto::Orientation* comp); // Can be used to save into a specific component
 		void In(const proto::Component& source);
+		void In(const proto::Orientation& comp); // Can be used to load in a specific component
 	};
 
 	struct Scale {

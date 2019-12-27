@@ -88,7 +88,7 @@ namespace tec {
 			_log->trace("[Texture-Object] Error binding texture");
 			return;
 		}
-		GLint magfilter = GL_LINEAR; // TODO Add a get/set magfilter and add code to generate mipmaps
+		GLint magfilter = GL_LINEAR; // TODO Add a get/set magfilter
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 

@@ -97,13 +97,21 @@ namespace tec {
 				std::string filename;
 				ss >> filename;
 				currentMTL->ambientMap = filename;
-				//TODO Load ambient map to a PixelBuffer
+				if (!TextureMap::Has(currentMTL->diffuseMap)) {
+					auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
+					auto tex = std::make_shared<TextureObject>(pixbuf);
+					TextureMap::Set(currentMTL->diffuseMap, tex);
+				}
 			}
 			else if (identifier == "map_Bump") {
 				std::string filename;
 				ss >> filename;
 				currentMTL->normalMap = filename;
-				//TODO Load bump map to a PixelBuffer
+				if (!TextureMap::Has(currentMTL->diffuseMap)) {
+					auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
+					auto tex = std::make_shared<TextureObject>(pixbuf);
+					TextureMap::Set(currentMTL->diffuseMap, tex);
+				}
 			}
 		}
 		return true;

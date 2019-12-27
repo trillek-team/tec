@@ -36,7 +36,7 @@ namespace tec {
 				this->state[name.c_str()] = add_kv.second;
 			}
 
-			//this->state.LoadStr(this->script->GetScript());
+			this->state.Load(this->script->GetScript());
 		}
 	}
 
@@ -59,6 +59,7 @@ namespace tec {
 				}
 			}
 			this->script = ScriptMap::Get(this->script_name);
+			this->ReloadScript();
 		}
 	}
 

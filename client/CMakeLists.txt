@@ -23,6 +23,7 @@ else ()
 endif ()
 
 set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
+	${trillek-client_SOURCE_DIR}/game.cpp
 	${trillek-client_SOURCE_DIR}/imgui-system.cpp
 	${trillek-client_SOURCE_DIR}/os.cpp
 	${trillek-client_SOURCE_DIR}/render-system.cpp
@@ -38,6 +39,8 @@ set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-client_SOURCE_DIR}/graphics/texture-object.cpp
 	${trillek-client_SOURCE_DIR}/graphics/vertex-buffer-object.cpp
 	${trillek-client_SOURCE_DIR}/gui/console.cpp
+	${trillek-client_SOURCE_DIR}/gui/active-entity-tooltip.cpp
+	${trillek-client_SOURCE_DIR}/gui/server-connect.cpp
 	${trillek-client_SOURCE_DIR}/resources/md5anim.cpp
 	${trillek-client_SOURCE_DIR}/resources/md5mesh.cpp
 	${trillek-client_SOURCE_DIR}/resources/obj.cpp
