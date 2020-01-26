@@ -91,7 +91,11 @@ namespace tec {
 		GLint magfilter = GL_LINEAR; // TODO Add a get/set magfilter and add code to generate mipmaps
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magfilter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+
+#ifndef __APPLE__
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f); // GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
+#endif
+
 		err = glGetError();
 		if (err) {
 			_log->trace("[Texture-Object] Error setting texture filters");
@@ -167,7 +171,11 @@ namespace tec {
 		}
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+
+#ifndef __APPLE__
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f); // GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
+#endif
+
 		err = glGetError();
 		if (err) {
 			_log->trace("[Texture-Object] Error setting texture filters");
