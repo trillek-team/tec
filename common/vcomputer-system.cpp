@@ -266,8 +266,6 @@ namespace tec {
 		}
 	}
 
-	eid active_entity{ 0 };
-
 	void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 		std::shared_ptr<gkeyboard::GKeyboardDev> active_keybaord;
 		for (auto keyboard_itr = KeyboardComponentMap::Begin();
@@ -280,8 +278,8 @@ namespace tec {
 			switch (data->action) {
 				case KeyboardEvent::KEY_DOWN:
 				if (data->key == GLFW_KEY_ESCAPE) {
-					if (KeyboardComponentMap::Has(active_entity)) {
-						KeyboardComponentMap::Get(active_entity)->has_focus = false;
+					if (KeyboardComponentMap::Has(this->active_entity)) {
+						KeyboardComponentMap::Get(this->active_entity)->has_focus = false;
 					}
 				}
 				else if (data->key == GLFW_KEY_BACKSPACE) {
@@ -302,7 +300,7 @@ namespace tec {
 		if (data->action == MouseBtnEvent::DOWN && data->button == MouseBtnEvent::LEFT) {
 			for (auto keyboard_itr = KeyboardComponentMap::Begin();
 				 keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
-				if (keyboard_itr->first == active_entity) {
+				if (keyboard_itr->first == this->active_entity) {
 					keyboard_itr->second->has_focus = true;
 				}
 			}
