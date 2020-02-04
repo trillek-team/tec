@@ -36,8 +36,14 @@ namespace tec {
 
 		this->server_connection.RegisterConnectFunc(
 			[this] () {
-				asio_thread = new std::thread([this] () { server_connection.StartRead(); });
-				sync_thread = new std::thread([this] () { server_connection.StartSync(); });
+				asio_thread = new std::thread(
+					[this] () {
+						server_connection.StartRead();
+					});
+				sync_thread = new std::thread(
+					[this] () {
+						server_connection.StartSync();
+					});
 			});
 
 		this->rs.SetViewportSize(viewport_width, viewport_height);

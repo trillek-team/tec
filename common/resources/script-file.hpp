@@ -35,6 +35,7 @@ namespace tec {
 			scriptfile->SetName(fname.SubpathFrom("assets").toGenericString());
 
 			if (scriptfile->Load(fname)) {
+				ScriptMap::Set(scriptfile->GetName(), scriptfile);
 				return scriptfile;
 			}
 			spdlog::get("console_log")->warn("[ScriptFile] Error loading script file {}", fname.toString());

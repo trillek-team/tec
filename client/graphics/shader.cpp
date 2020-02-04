@@ -98,11 +98,13 @@ namespace tec {
 			GLint max_length = 0;
 			glGetProgramiv(this->program, GL_INFO_LOG_LENGTH, &max_length);
 
-			std::vector<GLchar> info_log(max_length);
-			glGetProgramInfoLog(this->program, max_length, &max_length, &info_log[0]);
-			std::string str(info_log.data());
-			str += '\0';
-			spdlog::get("console_log")->error("[Shader] Error linking : {}", str);
+			if (max_length > 0) {
+				std::vector<GLchar> info_log(max_length);
+				glGetProgramInfoLog(this->program, max_length, &max_length, &info_log[0]);
+				std::string str(info_log.data());
+				str += '\0';
+				spdlog::get("console_log")->error("[Shader] Error linking : {}", str);
+			}
 
 			DeleteProgram();
 

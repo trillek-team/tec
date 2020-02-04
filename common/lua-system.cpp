@@ -19,7 +19,7 @@ namespace tec {
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
-			auto entity_id = itr->first;
+			//auto entity_id = itr->first;
 			if (!itr->second->script_name.empty()) { // Check that have a assigned script with onUpdate function
 				//lscript->state["this"].SetObj(Entity(entity_id) //,
 					//"add", &Entity::Add,

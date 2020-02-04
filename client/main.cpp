@@ -116,22 +116,34 @@ int main(int argc, char* argv[]) {
 	tec::BuildTestEntities();
 	tec::ProtoLoad("json/test.json");
 
-	double mouse_x, mouse_y;
+	os.DetachContext();
 
-	double delta = os.GetDeltaTime();
+	std::thread gameThread(
+		[&] () {
+			os.MakeCurrent();
+			
+			double mouse_x, mouse_y;
+			double delta = os.GetDeltaTime();
+
+			while (!os.Closing()) {
+				delta = os.GetDeltaTime();
+
+				os.GetMousePosition(&mouse_x, &mouse_y);
+
+				game.Update(delta, mouse_x, mouse_y, os.GetWindowWidth(), os.GetWindowHeight());
+
+				gui.Update(delta);
+				console.Update(delta);
+				os.SwapBuffers();
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+		});
+
 	while (!os.Closing()) {
 		os.OSMessageLoop();
-		delta = os.GetDeltaTime();
-
-		os.GetMousePosition(&mouse_x, &mouse_y);
-
-		game.Update(delta, mouse_x, mouse_y, os.GetWindowWidth(), os.GetWindowHeight());
-
-		gui.Update(delta);
-		console.Update(delta);
-		os.SwapBuffers();
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
+
+	gameThread.join();
 
 	return 0;
 }
