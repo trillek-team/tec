@@ -145,6 +145,8 @@ namespace tec {
 
 		double delta{ 0 }; // The time since the last Update was called.
 
+		eid active_entity{ 0 }; // The entity that has focus such as for keyboard input
+
 		std::map<eid, Computer*> computers;
 	};
 
