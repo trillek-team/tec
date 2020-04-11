@@ -26,28 +26,6 @@
 #include "events.hpp"
 
 namespace tec {
-	// Remove below by fixing the above todos
-	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
-
-	template <typename T>
-	void AddInOutFunctors() {
-		in_functors[GetTypeID<T>()] = [](const proto::Entity& entity, const proto::Component& proto_comp) {
-			T* comp = new T();
-			comp->In(proto_comp);
-			Multiton<eid, T*>::Set(entity.id(), comp);
-		};
-		update_functors[GetTypeID<T>()] = [](const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t) {
-			T* comp = new T();
-			comp->In(proto_comp);
-			Multiton<eid, T*>::Set(entity.id(), comp);
-		};
-	}
-
-	void InitializeComponents() {
-		AddInOutFunctors<Scale>();
-	}
-
 	void BuildTestEntities() {
 		auto voxvol = VoxelVolume::Create(1000, "bob");
 		auto voxvol_shared = voxvol.lock();
@@ -105,14 +83,6 @@ namespace tec {
 		google::protobuf::util::JsonStringToMessage(json_string, &data->entity);
 		data->entity_id = data->entity.id();
 		EventSystem<EntityCreated>::Get()->Emit(data);
-
-		// TODO: remove when above todos are done
-		for (int i = 0; i < data->entity.components_size(); ++i) {
-			const proto::Component& comp = data->entity.components(i);
-			if (in_functors.find(comp.component_case()) != in_functors.end()) {
-				in_functors[comp.component_case()](data->entity, comp);
-			}
-		}
 	}
 
 	void ProtoLoad(std::string filename) {

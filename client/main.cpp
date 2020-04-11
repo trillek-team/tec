@@ -20,7 +20,6 @@
 #include <spdlog/sinks/stdout_sinks.h>
 
 namespace tec {
-	extern void InitializeComponents();
 	extern void InitializeFileFactories();
 	extern void BuildTestEntities();
 	extern void ProtoLoad(std::string filename);
@@ -111,7 +110,6 @@ int main(int argc, char* argv[]) {
 			gui.ShowWindow("ping_times");
 		});
 
-	tec::InitializeComponents();
 	tec::InitializeFileFactories();
 	tec::BuildTestEntities();
 	tec::ProtoLoad("json/test.json");
