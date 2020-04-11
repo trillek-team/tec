@@ -97,9 +97,11 @@ jobs:
         arch: [Win32, x64]
         include:
           - arch: x64
-            vcpkg-triplet: x64-windows
+            triplet: x64-windows
+            vcpkgPackages: asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
           - arch: Win32
-            vcpkg-triplet: x86-windows
+            triplet: x86-windows
+            vcpkgPackages: asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
     steps:
     - uses: actions/checkout@v1
       with:
@@ -109,14 +111,20 @@ jobs:
       with:
         key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
         path: C:/vcpkg/installed
-    - name: Install deps vcpkg
-      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
-    - name: Configure cmake
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $env:GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
+    - name: Install deps with vcpkg
+      uses: lukka/run-vcpkg@master
+      id: runvcpkg
+      with:
+        vcpkgArguments: '${{ matrix.vcpkgPackages }}'
+        vcpkgTriplet: '${{ matrix.triplet }}'
+        vcpkgDirectory: C:/vcpkg
+    - name:  Configure cmake and build
+      uses: lukka/run-cmake@master
+      id: runcmake_cmd
+      with:
+        cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        useVcpkgToolchainFile: true
+        buildWithCMakeArgs: '-DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}}'
+        buildWithCMake: true
       
