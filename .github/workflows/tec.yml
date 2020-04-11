@@ -118,6 +118,7 @@ jobs:
         vcpkgArguments: '${{ matrix.vcpkgPackages }}'
         vcpkgTriplet: '${{ matrix.triplet }}'
         vcpkgDirectory: C:/vcpkg
+        vcpkgGitCommitId: 7aebb481085de7387f8a9975652c26f9053f66df
     - name:  Configure cmake and build
       uses: lukka/run-cmake@master
       id: runcmake_cmd
