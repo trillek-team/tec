@@ -127,11 +127,12 @@ namespace tec {
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 		EventQueue<MouseScrollEvent>::ProcessEventQueue();
+		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 
 		// Setup inputs
 		// (we already got mouse wheel, keyboard keys & characters from event system
-		if (glfwGetWindowAttrib(IMGUISystem::window, GLFW_FOCUSED)) {
+		if (IMGUISystem::window == OS::GetFocusedWindow()) {
 			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;  // Convert mouse coordinates to pixels
 			this->mouse_pos.y *= (float)this->framebuffer_height / this->window_height;
 			io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
@@ -416,7 +417,11 @@ namespace tec {
 		this->mouse_wheel.x = static_cast<float>(data->x_offset);
 		this->mouse_wheel.y = static_cast<float>(data->y_offset);
 	}
+	
 
+	void IMGUISystem::On(std::shared_ptr<MouseBtnEvent> data) {
+		this->mouse_pressed[data->button] = data->action == MouseBtnEvent::DOWN;
+	}
 
 	void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
 		auto& io = ImGui::GetIO();

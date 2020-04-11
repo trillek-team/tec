@@ -38,6 +38,7 @@ namespace tec {
 		public EventQueue<KeyboardEvent>,
 		public EventQueue<MouseMoveEvent>,
 		public EventQueue<MouseScrollEvent>,
+		public EventQueue<MouseBtnEvent>,
 		public EventQueue<WindowResizedEvent> {
 		typedef Command<IMGUISystem> GUICommand;
 	public:
@@ -79,10 +80,12 @@ namespace tec {
 		using EventQueue<WindowResizedEvent>::On;
 		using EventQueue<MouseMoveEvent>::On;
 		using EventQueue<MouseScrollEvent>::On;
+		using EventQueue<MouseBtnEvent>::On;
 		using EventQueue<KeyboardEvent>::On;
 		void On(std::shared_ptr<WindowResizedEvent> data);
 		void On(std::shared_ptr<MouseMoveEvent > data);
 		void On(std::shared_ptr<MouseScrollEvent > data);
+		void On(std::shared_ptr<MouseBtnEvent > data);
 		void On(std::shared_ptr<KeyboardEvent> data);
 
 		void UpdateDisplaySize();
