@@ -112,6 +112,10 @@ namespace tec {
 			_orientation->set_z(this->orientation->value.z);
 			_orientation->set_w(this->orientation->value.w);
 		}
+		this->forward = false;
+		this->backward = false;
+		this->left_strafe = false;
+		this->right_strafe = false;
 		return proto_client_commands;
 	}
 
@@ -168,20 +172,16 @@ namespace tec {
 				case 'A':
 				this->KEY_A_DOWN = false;
 				this->KEY_A_FIRST = false;
-				this->left_strafe = false;
 				break;
 				case 'D':
 				this->KEY_D_DOWN = false;
-				this->right_strafe = false;
 				break;
 				case 'W':
 				this->KEY_W_DOWN = false;
 				this->KEY_W_FIRST = false;
-				this->forward = false;
 				break;
 				case 'S':
 				this->KEY_S_DOWN = false;
-				this->backward = false;
 				break;
 			}
 			break;

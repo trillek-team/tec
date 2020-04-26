@@ -14,34 +14,33 @@ namespace tec {
 		}
 		if (this->server_states.size() >= 2) {
 			interpolation_accumulator += delta_time;
-			{
-				if (interpolation_accumulator >= INTERPOLATION_RATE) {
-					const GameState& to_state = this->server_states.front();
-					if (this->client_id != 0) {
-						this->predictions.emplace(std::make_pair(this->command_id, this->interpolated_state.positions[this->client_id]));
-					}
-					for (auto position : to_state.positions) {
-						this->base_state.positions[position.first] = position.second;
-						this->interpolated_state.positions[position.first] = position.second;
-					}
-					if (this->client_id != 0) {
-						this->base_state.positions[this->client_id] = this->predictions.at(this->command_id);
-						this->interpolated_state.positions[this->client_id] = this->predictions.at(this->command_id);
-					}
-					for (auto velocity : to_state.velocities) {
-						this->base_state.velocities[velocity.first] = velocity.second;
-						this->interpolated_state.velocities[velocity.first] = velocity.second;
-					}
-					for (auto orientation : to_state.orientations) {
-						this->base_state.orientations[orientation.first] = orientation.second;
-						this->interpolated_state.orientations[orientation.first] = orientation.second;
-					}
-					interpolation_accumulator -= INTERPOLATION_RATE;
-					this->base_state.state_id = to_state.state_id;
-					this->server_states.pop();
+
+			if (interpolation_accumulator >= INTERPOLATION_RATE) {
+				const GameState& to_state = this->server_states.front();
+				if (this->client_id != 0) {
+					this->predictions.emplace(std::make_pair(this->command_id, this->interpolated_state.positions[this->client_id]));
 				}
+				for (auto position : to_state.positions) {
+					this->base_state.positions[position.first] = position.second;
+					this->interpolated_state.positions[position.first] = position.second;
+				}
+				if (this->client_id != 0) {
+					this->base_state.positions[this->client_id] = this->predictions.at(this->command_id);
+					this->interpolated_state.positions[this->client_id] = this->predictions.at(this->command_id);
+				}
+				for (auto velocity : to_state.velocities) {
+					this->base_state.velocities[velocity.first] = velocity.second;
+					this->interpolated_state.velocities[velocity.first] = velocity.second;
+				}
+				for (auto orientation : to_state.orientations) {
+					this->base_state.orientations[orientation.first] = orientation.second;
+					this->interpolated_state.orientations[orientation.first] = orientation.second;
+				}
+				interpolation_accumulator -= INTERPOLATION_RATE;
+				this->base_state.state_id = to_state.state_id;
+				this->server_states.pop();
 			}
-			{
+			else {
 				const GameState& to_state = this->server_states.front();
 				float lerp_percent = static_cast<float>(interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
 				if (lerp_percent > 0.0) {
@@ -114,10 +113,10 @@ namespace tec {
 			}
 			if (this->predictions.find(new_state.command_id) != this->predictions.end()) {
 				if (new_state.positions.find(this->client_id) != new_state.positions.end()) {
-					auto dif = new_state.positions[this->client_id].value - this->predictions[new_state.state_id].value;
+					auto dif = new_state.positions[this->client_id].value - this->predictions[new_state.command_id].value;
 					std::cout << "Diff (" << dif.x << ", " << dif.y << ", " << dif.z << ") <> Predictions size = " << this->predictions.size() << std::endl;
 				}
-				this->predictions.erase(new_state.state_id);
+				this->predictions.erase(new_state.command_id);
 			}
 		}
 	}
@@ -128,43 +127,43 @@ namespace tec {
 		for (int i = 0; i < entity.components_size(); ++i) {
 			const proto::Component& comp = entity.components(i);
 			switch (comp.component_case()) {
-			case proto::Component::kPosition:
-			{
-				Position pos;
-				pos.In(comp);
-				this->interpolated_state.positions[entity_id] = pos;
-				this->base_state.positions[entity_id] = pos;
-			}
-			break;
-			case proto::Component::kOrientation:
-			{
-				Orientation orientation;
-				orientation.In(comp);
-				this->interpolated_state.orientations[entity_id] = orientation;
-				this->base_state.orientations[entity_id] = orientation;
-			}
-			break;
-			case proto::Component::kVelocity:
-			{
-				Velocity vel;
-				vel.In(comp);
-				this->interpolated_state.velocities[entity_id] = vel;
-				this->base_state.velocities[entity_id] = vel;
-			}
-			break;
-			case proto::Component::kRenderable:
-			case proto::Component::kView:
-			case proto::Component::kAnimation:
-			case proto::Component::kScale:
-			case proto::Component::kCollisionBody:
-			case proto::Component::kAudioSource:
-			case proto::Component::kPointLight:
-			case proto::Component::kDirectionalLight:
-			case proto::Component::kSpotLight:
-			case proto::Component::kVoxelVolume:
-			case proto::Component::kComputer:
-			case proto::Component::kLuaScript:
-			case proto::Component::COMPONENT_NOT_SET:
+				case proto::Component::kPosition:
+				{
+					Position pos;
+					pos.In(comp);
+					this->interpolated_state.positions[entity_id] = pos;
+					this->base_state.positions[entity_id] = pos;
+				}
+				break;
+				case proto::Component::kOrientation:
+				{
+					Orientation orientation;
+					orientation.In(comp);
+					this->interpolated_state.orientations[entity_id] = orientation;
+					this->base_state.orientations[entity_id] = orientation;
+				}
+				break;
+				case proto::Component::kVelocity:
+				{
+					Velocity vel;
+					vel.In(comp);
+					this->interpolated_state.velocities[entity_id] = vel;
+					this->base_state.velocities[entity_id] = vel;
+				}
+				break;
+				case proto::Component::kRenderable:
+				case proto::Component::kView:
+				case proto::Component::kAnimation:
+				case proto::Component::kScale:
+				case proto::Component::kCollisionBody:
+				case proto::Component::kAudioSource:
+				case proto::Component::kPointLight:
+				case proto::Component::kDirectionalLight:
+				case proto::Component::kSpotLight:
+				case proto::Component::kVoxelVolume:
+				case proto::Component::kComputer:
+				case proto::Component::kLuaScript:
+				case proto::Component::COMPONENT_NOT_SET:
 				break;
 			}
 		}
