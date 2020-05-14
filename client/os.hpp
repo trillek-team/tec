@@ -220,6 +220,10 @@ namespace tec {
 		*/
 		static void GetMousePosition(double* x, double* y);
 
+		static const GLFWwindow* GetFocusedWindow() {
+			return OS::focused_window;
+		}
+
 	private:
 		/**
 		* \brief Keyboard event listener, useful for events such as alt-enter to toggle fullscreen.

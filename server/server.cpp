@@ -6,6 +6,7 @@
 #include <thread>
 
 #include <components.pb.h>
+#include <google/protobuf/util/json_util.h>
 
 #include "server.hpp"
 #include "client-connection.hpp"
@@ -78,15 +79,29 @@ namespace tec {
 			this->io_service.stop();
 		}
 
+
+		std::string LoadJSON(const FilePath& fname) {
+			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
+			std::string in;
+			input.seekg(0, std::ios::end);
+			in.reserve(static_cast<std::size_t>(input.tellg()));
+			input.seekg(0, std::ios::beg);
+			std::copy((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>(), std::back_inserter(in));
+			input.close();
+			return in;
+		}
+
+
 		void LoadProtoPack(proto::Entity& entity, const FilePath& fname) {
 			if (fname.isValidPath() && fname.FileExists()) {
-				std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
-				entity.ParseFromIstream(&input);
+				std::string json_string = LoadJSON(fname);
+				google::protobuf::util::JsonStringToMessage(json_string, &entity);
 			}
 			else {
 				std::cout << "error loading protopack " << fname.toString() << std::endl;
 			}
 		}
+
 
 		void Server::On(std::shared_ptr<EntityCreated> data) {
 			this->entities[data->entity_id] = data->entity;
@@ -107,7 +122,7 @@ namespace tec {
 						std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
 
 						// self_protopack does contain a renderable component
-						static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.proto");
+						static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.json");
 						proto::Entity other_entity;
 						LoadProtoPack(other_entity, others_protopack);
 

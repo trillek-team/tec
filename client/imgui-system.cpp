@@ -127,11 +127,12 @@ namespace tec {
 		EventQueue<WindowResizedEvent>::ProcessEventQueue();
 		EventQueue<MouseMoveEvent>::ProcessEventQueue();
 		EventQueue<MouseScrollEvent>::ProcessEventQueue();
+		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 
 		// Setup inputs
 		// (we already got mouse wheel, keyboard keys & characters from event system
-		if (glfwGetWindowAttrib(IMGUISystem::window, GLFW_FOCUSED)) {
+		if (IMGUISystem::window == OS::GetFocusedWindow()) {
 			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;  // Convert mouse coordinates to pixels
 			this->mouse_pos.y *= (float)this->framebuffer_height / this->window_height;
 			io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
@@ -144,7 +145,7 @@ namespace tec {
 		}
 
 		for (int i = 0; i < 3; i++) {
-			io.MouseDown[i] = mouse_pressed[i] || glfwGetMouseButton(IMGUISystem::window, i) != 0;    // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
+			io.MouseDown[i] = mouse_pressed[i]; // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
 			mouse_pressed[i] = false;
 		}
 
@@ -233,7 +234,7 @@ namespace tec {
 		unsigned char* pixels;
 		int width, height;
 		auto& io = ImGui::GetIO();
-		io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);   // Load as RGBA 32-bits for OpenGL3 demo because it is more likely to be compatible with user's existing shader.
+		io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height); // Load as RGBA 32-bits for OpenGL3 demo because it is more likely to be compatible with user's existing shader.
 
 		glGenTextures(1, &font_texture);
 		glBindTexture(GL_TEXTURE_2D, font_texture);
@@ -334,53 +335,6 @@ namespace tec {
 			}
 		}
 
-		/*
-
-		// Grow our buffer according to what we need
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		size_t total_vtx_count = 0;
-		for (int n = 0; n < draw_data->CmdListsCount; n++) {
-			total_vtx_count += draw_data->CmdLists[n]->VtxBuffer.size();
-		}
-		size_t needed_vtx_size = total_vtx_count * sizeof(ImDrawVert);
-		if (vbo_size < needed_vtx_size) {
-			vbo_size = needed_vtx_size + 5000 * sizeof(ImDrawVert);  // Grow buffer
-			glBufferData(GL_ARRAY_BUFFER, vbo_size, NULL, GL_STREAM_DRAW);
-		}
-
-		// Copy and convert all vertices into a single contiguous buffer
-		unsigned char* buffer_data = (unsigned char*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-		if (!buffer_data)
-			return;
-		for (int n = 0; n < draw_data->CmdListsCount; n++) {
-			const ImDrawList* cmd_list = draw_data->CmdLists[n];
-			memcpy(buffer_data, &cmd_list->VtxBuffer[0], cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
-			buffer_data += cmd_list->VtxBuffer.size() * sizeof(ImDrawVert);
-		}
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(vao);
-
-		int cmd_offset = 0;
-		for (int n = 0; n < draw_data->CmdListsCount; n++) {
-			const ImDrawList* cmd_list = draw_data->CmdLists[n];
-			int vtx_offset = cmd_offset;
-			const ImDrawCmd* pcmd_end = cmd_list->CmdBuffer.end();
-			for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != pcmd_end; pcmd++) {
-				if (pcmd->UserCallback) {
-					pcmd->UserCallback(cmd_list, pcmd);
-				}
-				else {
-					glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
-					glScissor((int)pcmd->ClipRect.x, (int)(height - pcmd->ClipRect.w),
-						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x), (int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
-					glDrawArrays(GL_TRIANGLES, vtx_offset, pcmd->ElemCount);
-				}
-				vtx_offset += pcmd->ElemCount;
-			}
-			cmd_offset = vtx_offset;
-		}
-		*/
 		// Restore modified state
 		glBindVertexArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -417,6 +371,10 @@ namespace tec {
 		this->mouse_wheel.y = static_cast<float>(data->y_offset);
 	}
 
+
+	void IMGUISystem::On(std::shared_ptr<MouseBtnEvent> data) {
+		this->mouse_pressed[data->button] = data->action == MouseBtnEvent::DOWN;
+	}
 
 	void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
 		auto& io = ImGui::GetIO();
