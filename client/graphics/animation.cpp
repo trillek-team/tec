@@ -65,7 +65,7 @@ namespace tec {
 		comp->set_animation_name(this->animation_name);
 	}
 
-	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 	void Animation::In(const proto::Component& source) {
 		const proto::Animation& comp = source.animation();
 		if (comp.has_animation_name()) {

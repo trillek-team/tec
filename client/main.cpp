@@ -21,7 +21,7 @@
 
 namespace tec {
 	extern void InitializeFileFactories();
-	extern void BuildTestEntities();
+	extern void BuildTestVoxelVolume();
 	extern void ProtoLoad(std::string filename);
 }
 
@@ -111,7 +111,7 @@ int main(int argc, char* argv[]) {
 		});
 
 	tec::InitializeFileFactories();
-	tec::BuildTestEntities();
+	tec::BuildTestVoxelVolume();
 	tec::ProtoLoad("json/test.json");
 
 	os.DetachContext();

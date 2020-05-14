@@ -43,7 +43,7 @@ namespace tec {
 		comp->set_script_name(this->script_name);
 	}
 
-	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 
 	void LuaScript::In(const proto::Component& source) {
 		const proto::LuaScript& comp = source.luascript();

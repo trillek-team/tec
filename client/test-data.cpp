@@ -2,31 +2,20 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include <iostream>
-#include <map>
-#include <set>
+#include <fstream>
 #include <memory>
 
 #include <spdlog/spdlog.h>
 #include <google/protobuf/util/json_util.h>
 #include <components.pb.h>
 
-// Used in InitializeComponents
-#include "components/transforms.hpp" // TODO: Figured out who should handle loading Scale component
 #include "voxel-volume.hpp"
 
-// Used in InitializeFileFactories 
-#include "resources/md5mesh.hpp"
-#include "resources/obj.hpp"
-#include "resources/md5anim.hpp"
-#include "resources/vorbis-stream.hpp"
-#include "resources/script-file.hpp"
-
-#include "entity.hpp"
-#include "types.hpp"
 #include "events.hpp"
+#include "filesystem.hpp"
 
 namespace tec {
-	void BuildTestEntities() {
+	void BuildTestVoxelVolume() {
 		auto voxvol = VoxelVolume::Create(1000, "bob");
 		auto voxvol_shared = voxvol.lock();
 
@@ -40,30 +29,6 @@ namespace tec {
 		});
 		VoxelVolume::QueueCommand(std::move(add_voxel));
 		voxvol_shared->Update(0.0);
-	}
-
-	// Move below to more appropriate classes or files
-
-	std::map<std::string, std::function<void(std::string)>> file_factories;
-	template <typename T>
-	void AddFileFactory() {
-		file_factories[GetTypeEXT<T>()] = [](std::string fname) {
-			FilePath path(fname);
-			if (path.isAbsolutePath()) {
-				T::Create(fname);
-			}
-			else {
-				T::Create(FilePath::GetAssetPath(fname));
-			}
-		};
-	}
-
-	void InitializeFileFactories() {
-		AddFileFactory<MD5Mesh>();
-		AddFileFactory<MD5Anim>();
-		AddFileFactory<OBJ>();
-		AddFileFactory<VorbisStream>();
-		AddFileFactory<ScriptFile>();
 	}
 
 	std::string LoadJSON(const FilePath& fname) {
