@@ -133,24 +133,24 @@ namespace tec {
 				pos.In(comp);
 				this->interpolated_state.positions[entity_id] = pos;
 				this->base_state.positions[entity_id] = pos;
+				break;
 			}
-			break;
 			case proto::Component::kOrientation:
 			{
 				Orientation orientation;
 				orientation.In(comp);
 				this->interpolated_state.orientations[entity_id] = orientation;
 				this->base_state.orientations[entity_id] = orientation;
+				break;
 			}
-			break;
 			case proto::Component::kVelocity:
 			{
 				Velocity vel;
 				vel.In(comp);
 				this->interpolated_state.velocities[entity_id] = vel;
 				this->base_state.velocities[entity_id] = vel;
+				break;
 			}
-			break;
 			case proto::Component::kRenderable:
 			case proto::Component::kView:
 			case proto::Component::kAnimation:
@@ -164,7 +164,7 @@ namespace tec {
 			case proto::Component::kComputer:
 			case proto::Component::kLuaScript:
 			case proto::Component::COMPONENT_NOT_SET:
-			break;
+				break;
 			}
 		}
 	}
