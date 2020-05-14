@@ -127,44 +127,44 @@ namespace tec {
 		for (int i = 0; i < entity.components_size(); ++i) {
 			const proto::Component& comp = entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kPosition:
-				{
-					Position pos;
-					pos.In(comp);
-					this->interpolated_state.positions[entity_id] = pos;
-					this->base_state.positions[entity_id] = pos;
-				}
-				break;
-				case proto::Component::kOrientation:
-				{
-					Orientation orientation;
-					orientation.In(comp);
-					this->interpolated_state.orientations[entity_id] = orientation;
-					this->base_state.orientations[entity_id] = orientation;
-				}
-				break;
-				case proto::Component::kVelocity:
-				{
-					Velocity vel;
-					vel.In(comp);
-					this->interpolated_state.velocities[entity_id] = vel;
-					this->base_state.velocities[entity_id] = vel;
-				}
-				break;
-				case proto::Component::kRenderable:
-				case proto::Component::kView:
-				case proto::Component::kAnimation:
-				case proto::Component::kScale:
-				case proto::Component::kCollisionBody:
-				case proto::Component::kAudioSource:
-				case proto::Component::kPointLight:
-				case proto::Component::kDirectionalLight:
-				case proto::Component::kSpotLight:
-				case proto::Component::kVoxelVolume:
-				case proto::Component::kComputer:
-				case proto::Component::kLuaScript:
-				case proto::Component::COMPONENT_NOT_SET:
-				break;
+			case proto::Component::kPosition:
+			{
+				Position pos;
+				pos.In(comp);
+				this->interpolated_state.positions[entity_id] = pos;
+				this->base_state.positions[entity_id] = pos;
+			}
+			break;
+			case proto::Component::kOrientation:
+			{
+				Orientation orientation;
+				orientation.In(comp);
+				this->interpolated_state.orientations[entity_id] = orientation;
+				this->base_state.orientations[entity_id] = orientation;
+			}
+			break;
+			case proto::Component::kVelocity:
+			{
+				Velocity vel;
+				vel.In(comp);
+				this->interpolated_state.velocities[entity_id] = vel;
+				this->base_state.velocities[entity_id] = vel;
+			}
+			break;
+			case proto::Component::kRenderable:
+			case proto::Component::kView:
+			case proto::Component::kAnimation:
+			case proto::Component::kScale:
+			case proto::Component::kCollisionBody:
+			case proto::Component::kAudioSource:
+			case proto::Component::kPointLight:
+			case proto::Component::kDirectionalLight:
+			case proto::Component::kSpotLight:
+			case proto::Component::kVoxelVolume:
+			case proto::Component::kComputer:
+			case proto::Component::kLuaScript:
+			case proto::Component::COMPONENT_NOT_SET:
+			break;
 			}
 		}
 	}
