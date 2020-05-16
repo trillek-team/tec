@@ -371,7 +371,6 @@ namespace tec {
 		this->mouse_wheel.y = static_cast<float>(data->y_offset);
 	}
 
-
 	void IMGUISystem::On(std::shared_ptr<MouseBtnEvent> data) {
 		this->mouse_pressed[data->button] = data->action == MouseBtnEvent::DOWN;
 	}

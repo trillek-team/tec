@@ -58,7 +58,6 @@ namespace tec {
 	}
 
 	std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) {
-		std::set<eid> updated_entities;
 		ProcessCommandQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
@@ -123,6 +122,7 @@ namespace tec {
 
 		this->dynamicsWorld->stepSimulation(static_cast<btScalar>(delta), 10);
 
+		std::set<eid> updated_entities;
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
 			if (itr->second->motion_state.transform_updated) {

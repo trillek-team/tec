@@ -10,8 +10,6 @@
 #include "resources/script-file.hpp"
 
 namespace tec {
-	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-
 	LuaScript::LuaScript()
 		: state() {
 		this->ReloadScript();
@@ -30,11 +28,11 @@ namespace tec {
 				spdlog::get("console_log")->info(str1); //, str2, str3, str4);
 			};
 			this->state["print"] = print;
-			for (auto& add_kv : in_functors) {
+			/*for (auto& add_kv : in_functors) {
 				std::string name = TypeName.at(add_kv.first);
 				name = "add" + name;
 				this->state[name.c_str()] = add_kv.second;
-			}
+			}*/
 
 			this->state.Load(this->script->GetScript());
 		}
@@ -45,7 +43,7 @@ namespace tec {
 		comp->set_script_name(this->script_name);
 	}
 
-	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 
 	void LuaScript::In(const proto::Component& source) {
 		const proto::LuaScript& comp = source.luascript();

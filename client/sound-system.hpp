@@ -26,7 +26,7 @@ namespace tec {
 
 	enum class AUDIOSOURCE_STATE { PLAYING, PAUSED, STOPPED };
 
-	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 	struct AudioSource {
 		AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play) :
 			vorbis_stream(stream), source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED) {}
