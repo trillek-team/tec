@@ -90,7 +90,7 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Install and cache deps with vcpkg
-      uses: lukka/run-vcpkg@v2
+      uses: lukka/run-vcpkg@v2.1
       id: runvcpkg
       with:
         vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
@@ -103,6 +103,5 @@ jobs:
         cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
         useVcpkgToolchainFile: true
-        buildWithCMakeArgs: '-DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}}'
         buildWithCMake: true
       
