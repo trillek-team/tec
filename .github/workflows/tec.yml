@@ -12,7 +12,7 @@ jobs:
         arch: [x64]
         include:
           - os: windows-latest
-            arch: Win32
+            arch: x86
     steps:
     - uses: actions/checkout@v2
       with:
@@ -20,7 +20,7 @@ jobs:
     - name: Set vcpkg's response file path used as part of cache's key.
       uses: lukka/set-shell-env@master
       with:
-        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.arhc }}-${{ matrix.os }}.txt
+        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.arch }}-${{ runner.os }}.txt
     # Linux specific
     - name: Install GCC 7 (Ubuntu 16.04 only)
       if: matrix.os == 'ubuntu-16.04'
