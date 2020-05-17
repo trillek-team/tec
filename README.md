@@ -14,7 +14,7 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
 	 1. **MacOS MAYBE** `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /` if `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help
 	 1. **Linux** `apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
 	 1. **OPTIONAL** `./vcpkg integrate install`
-	 1. `./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui`
+	 1. `./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
 
 # Building
 1. `git submodule update --init` in the root directory.
@@ -22,7 +22,7 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
 1. `cd build/`
 1. Follow platform specific instructions 
    1. Linux (G++ 7 or CLang 4) **Unsupported at this moment due to have cmake is setup**
-       1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, spdlog, Dear ImGui, and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC.)
+       1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, spdlog, Dear ImGui, sol2, and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC.)
             1. If you are on Ubuntu/Debian/etc. (something with `apt`):
                 1. Run `apt-get install libglew-dev libglfw3 libglm-dev libasio-dev`
                 2. Run `apt-get install liblua5.2-dev libopenal-dev  libbullet-dev`
@@ -42,7 +42,7 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
       1. Click generate; then open and build the solution in Visual Studio.
       1. In the project properties for `trillek-client` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
       1. **Potentially** Download and install oalinst.zip (OpenAL installer) http://openal.org/downloads/ and install it.
-   1. MaxOS X 10.14
+   1. MaxOS X 10.15 (10.14 should work, following the instructions above)
       1. `brew install bullet`
       1. `cmake -DCMAKE_TOOLCHAIN_FILE=**VCPKG_DIR**/scripts/buildsystems/vcpkg.cmake ..` in the build directory
       1. `make` in the build directory
