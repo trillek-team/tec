@@ -8,25 +8,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-2019, ubuntu-latest, ubuntu-16.04, macOS-latest]
+        os: [windows-latest, ubuntu-latest, ubuntu-16.04, macOS-latest]
+        arch: [x64]
         include:
           - os: windows-latest
-            arch: x64
-            triplet: x64-windows
-          - os: windows-2019
             arch: Win32
-            triplet: x86-windows
-          - os: ubuntu-16.04
-            compiler: gcc
-            version: "7"
-            arch: x64
-            triplet: x64-linux
-          - os: ubuntu-latest
-            arch: x64
-            triplet: x64-linux
-          - os: macOS-latest
-            arch: x64
-            triplet: x64-osx
     steps:
     - uses: actions/checkout@v2
       with:
@@ -34,7 +20,7 @@ jobs:
     - name: Set vcpkg's response file path used as part of cache's key.
       uses: lukka/set-shell-env@master
       with:
-        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
+        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.arhc }}-${{ matrix.os }}.txt
     # Linux specific
     - name: Install GCC 7 (Ubuntu 16.04 only)
       if: matrix.os == 'ubuntu-16.04'
