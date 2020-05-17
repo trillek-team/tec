@@ -47,11 +47,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, ubuntu-16.04]
-        arch: [Win32, x64]
         include:
-          - arch: x64
+          - os: windows-latest
+            arch: x64
             triplet: x64-windows
-          - arch: Win32
+          - os: windows-latest
+            arch: Win32
             triplet: x86-windows
           - os: ubuntu-16.04
             compiler: gcc
