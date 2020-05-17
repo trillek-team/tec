@@ -58,14 +58,14 @@ jobs:
             compiler: gcc
             version: "7"
             arch: x64
-            vcpkg-triplet: x64-linux
+            triplet: x64-linux
           - os: ubuntu-latest
             compiler: gcc
             version: "7"
             arch: x64
-            vcpkg-triplet: x64-linux
+            triplet: x64-linux
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: true
     - name: Set vcpkg's response file path used as part of cache's key.
@@ -94,7 +94,6 @@ jobs:
       id: runvcpkg
       with:
         vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
-        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         appendedCacheKey: ${{ hashFiles(env.VCPKGRESPONSEFILE) }}
     - name:  Configure cmake and build
       uses: lukka/run-cmake@master
