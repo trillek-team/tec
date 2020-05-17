@@ -3,50 +3,50 @@ name: Trillek Engine CI
 on: [pull_request]
 
 jobs:
+#  build:
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        os: [macOS-latest]
+#        include:
+#          - os: macOS-latest
+#            arch: x64
+#            vcpkg-triplet: x64-osx
+#    env:
+#      VCPKG_INSTALLATION_ROOT: /usr/local/share/vcpkg
+#    steps:
+#    - uses: actions/checkout@v1
+#      with:
+#        submodules: true
+#    - name: Cache vcpkg (MacOS)
+#      uses: actions/cache@v1
+#      with:
+#        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
+#        path: /usr/local/share/vcpkg      
+#    - name: Checkout vcpkg (MacOS)
+#      run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi
+#    - name: Bootstrap vcpkg (MacOS)
+#      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
+#    - name: Install deps vcpkg
+#      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
+#    - name: Install bullet with brew (MacOS)
+#      run: brew install bullet   
+#    - name: Create Build Environment
+#      run: cmake -E make_directory ${{runner.workspace}}/build
+#    - name: Configure CMake
+#      working-directory: ${{runner.workspace}}/build
+#      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+#    - name: Build
+#      working-directory: ${{runner.workspace}}/build
+#      run: cmake --build .
+      
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS-latest]
-        include:
-          - os: macOS-latest
-            arch: x64
-            vcpkg-triplet: x64-osx
-    env:
-      VCPKG_INSTALLATION_ROOT: /usr/local/share/vcpkg
-    steps:
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
-    - name: Cache vcpkg (MacOS)
-      uses: actions/cache@v1
-      with:
-        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
-        path: /usr/local/share/vcpkg      
-    - name: Checkout vcpkg (MacOS)
-      run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi
-    - name: Bootstrap vcpkg (MacOS)
-      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
-    - name: Install deps vcpkg
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
-    - name: Install bullet with brew (MacOS)
-      run: brew install bullet   
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
-    - name: Configure CMake
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
-      
-  build-windows:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest, ubuntu-16.04]
+        os: [windows-latest, ubuntu-latest, ubuntu-16.04, macOS-latest]
         include:
           - os: windows-latest
             arch: x64
@@ -64,6 +64,9 @@ jobs:
             version: "7"
             arch: x64
             triplet: x64-linux
+          - os: macOS-latest
+            arch: x64
+            triplet: x64-osx
     steps:
     - uses: actions/checkout@v2
       with:
@@ -89,11 +92,12 @@ jobs:
     - name: Install os deps (Linux)
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-    - name: Install and cache deps with vcpkg
+    - name: Restore artifacts, or run vcpkg, build and cache artifacts
       uses: lukka/run-vcpkg@v2.1
       id: runvcpkg
       with:
         vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         appendedCacheKey: ${{ hashFiles(env.VCPKGRESPONSEFILE) }}
     - name:  Configure cmake and build
       uses: lukka/run-cmake@master
