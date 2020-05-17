@@ -8,18 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-16.04, macOS-latest]
+        os: [macOS-latest]
         include:
-          - os: ubuntu-16.04
-            compiler: gcc
-            version: "7"
-            arch: x64
-            vcpkg-triplet: x64-linux
-          - os: ubuntu-latest
-            compiler: gcc
-            version: "7"
-            arch: x64
-            vcpkg-triplet: x64-linux
           - os: macOS-latest
             arch: x64
             vcpkg-triplet: x64-osx
@@ -31,17 +21,56 @@ jobs:
         submodules: true
     - name: Cache vcpkg (MacOS)
       uses: actions/cache@v1
-      if: runner.os == 'macOS'
       with:
         key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
-        path: /usr/local/share/vcpkg
-    - name: Cache vcpkg installed (Linux)
-      uses: actions/cache@v1
-      if: runner.os == 'Linux'
+        path: /usr/local/share/vcpkg      
+    - name: Checkout vcpkg (MacOS)
+      run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi
+    - name: Bootstrap vcpkg (MacOS)
+      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
+    - name: Install deps vcpkg
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
+    - name: Install bullet with brew (MacOS)
+      run: brew install bullet   
+    - name: Create Build Environment
+      run: cmake -E make_directory ${{runner.workspace}}/build
+    - name: Configure CMake
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      run: cmake --build .
+      
+  build-windows:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, ubuntu-16.04]
+        arch: [Win32, x64]
+        include:
+          - arch: x64
+            triplet: x64-windows
+          - arch: Win32
+            triplet: x86-windows
+          - os: ubuntu-16.04
+            compiler: gcc
+            version: "7"
+            arch: x64
+            vcpkg-triplet: x64-linux
+          - os: ubuntu-latest
+            compiler: gcc
+            version: "7"
+            arch: x64
+            vcpkg-triplet: x64-linux
+    steps:
+    - uses: actions/checkout@v1
       with:
-        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
-        path: /usr/local/share/vcpkg/installed
-    
+        submodules: true
+    - name: Set vcpkg's response file path used as part of cache's key.
+      uses: lukka/set-shell-env@master
+      with:
+        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
     # Linux specific
     - name: Install GCC (Linux)
       if: runner.os == 'Linux'
@@ -59,66 +88,13 @@ jobs:
     - name: Install os deps (Linux)
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-        
-    # MacOS specific
-    - name: Checkout vcpkg (MacOS)
-      if: runner.os == 'macOS'
-      run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi
-    - name: Bootstrap vcpkg (MacOS)
-      if: runner.os == 'macOS'
-      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
-      
-    # Shared
-    - name: Install deps vcpkg
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
-      
-    - name: Install bullet with vcpkg (non MacOS)
-      if: runner.os != 'macOS'
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install bullet3 --triplet ${{ matrix.vcpkg-triplet }}
-    - name: Install bullet with brew (MacOS)
-      if: runner.os == 'macOS'
-      run: brew install bullet
-      
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
-    - name: Configure CMake
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
-      
-  build-windows:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest]
-        arch: [Win32, x64]
-        include:
-          - arch: x64
-            triplet: x64-windows
-            vcpkgPackages: asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
-          - arch: Win32
-            triplet: x86-windows
-            vcpkgPackages: asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog
-    steps:
-    - uses: actions/checkout@v1
-      with:
-        submodules: true
-    - name: Cache vcpkg installed
-      uses: actions/cache@v1
-      with:
-        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
-        path: C:/vcpkg/installed
-    - name: Install deps with vcpkg
-      uses: lukka/run-vcpkg@master
+    - name: Install and cache deps with vcpkg
+      uses: lukka/run-vcpkg@v2
       id: runvcpkg
       with:
-        vcpkgArguments: '${{ matrix.vcpkgPackages }}'
-        vcpkgTriplet: '${{ matrix.triplet }}'
-        vcpkgDirectory: C:/vcpkg
-        vcpkgGitCommitId: 7aebb481085de7387f8a9975652c26f9053f66df
+        vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        appendedCacheKey: ${{ hashFiles(env.VCPKGRESPONSEFILE) }}
     - name:  Configure cmake and build
       uses: lukka/run-cmake@master
       id: runcmake_cmd

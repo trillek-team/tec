@@ -1,0 +1,13 @@
+asio
+bullet3
+glew
+glfw3
+glm
+lua
+openal-soft
+protobuf
+zlib
+imgui
+spdlog
+--triplet
+x64-linux
