@@ -8,3 +8,6 @@
 [submodule "deps/selene"]
 	path = deps/selene
 	url = https://github.com/jeremyong/Selene
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg
