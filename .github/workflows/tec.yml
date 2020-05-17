@@ -8,25 +8,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-2019, ubuntu-latest, ubuntu-16.04, macOS-latest]
+        name: [windows-x86, windows-64, ubuntu-latest, ubuntu-16.04, macOS-latest]
         include:
-          - os: windows-latest
+          - name: windows-x64
+            os: windows-latest
             arch: x64
             triplet: x64-windows
-          - os: windows-2019
+          - name: windows-x86
+            os: windows-latest
             arch: Win32
             triplet: x86-windows
-          - os: ubuntu-16.04
+          - name: ubuntu-16.04
+            os: ubuntu-16.04
             compiler: gcc
             version: "7"
             arch: x64
             triplet: x64-linux
-          - os: ubuntu-latest
+          - name: ubuntu-latest
+            os: ubuntu-latest
             compiler: gcc
             version: "7"
             arch: x64
             triplet: x64-linux
-          - os: macOS-latest
+          - name: macOS-latest
+            os: macOS-latest
             arch: x64
             triplet: x64-osx
     steps:
@@ -38,19 +43,19 @@ jobs:
       with:
         VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
     # Linux specific
-    - name: Install GCC (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        if [ "${{ matrix.compiler }}" = "gcc" ]; then
-          sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
-          echo "::set-env name=CC::gcc-${{ matrix.version }}"
-          echo "::set-env name=CXX::g++-${{ matrix.version }}"
-        else
-          sudo apt-get install -y clang-${{ matrix.version }} g++-multilib
-          echo "::set-env name=CC::clang-${{ matrix.version }}"
-          echo "::set-env name=CXX::clang++-${{ matrix.version }}"
-        fi
+    #- name: Install GCC (Linux)
+    #  if: runner.os == 'Linux'
+    #  run: |
+    #    sudo apt-get update
+    #    if [ "${{ matrix.compiler }}" = "gcc" ]; then
+    #      sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
+    #      echo "::set-env name=CC::gcc-${{ matrix.version }}"
+    #      echo "::set-env name=CXX::g++-${{ matrix.version }}"
+    #    else
+    #      sudo apt-get install -y clang-${{ matrix.version }} g++-multilib
+    #      echo "::set-env name=CC::clang-${{ matrix.version }}"
+    #      echo "::set-env name=CXX::clang++-${{ matrix.version }}"
+    #    fi
     - name: Install os deps (Linux)
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
