@@ -23,6 +23,8 @@ jobs:
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
+            compiler: gcc
+            version: "7"
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
