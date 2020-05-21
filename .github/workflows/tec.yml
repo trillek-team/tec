@@ -41,6 +41,7 @@ jobs:
       uses: lukka/set-shell-env@master
       with:
         VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
+        VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
     # Linux specific
     - name: Install GCC 7 (Ubuntu 16.04 only)
       if: matrix.os == 'ubuntu-16.04'
@@ -62,7 +63,7 @@ jobs:
       uses: lukka/run-vcpkg@v2.1
       id: runvcpkg
       with:
-        vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
+        vcpkgArguments: '@${{ env.VCPKGCOMMONRESPONSEFILE }} @${{ env.VCPKGRESPONSEFILE }}'
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         appendedCacheKey: ${{ hashFiles(env.VCPKGRESPONSEFILE) }}
         vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
