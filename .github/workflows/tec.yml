@@ -14,20 +14,25 @@ jobs:
           - os: windows-latest
             arch: x86
             triplet: x86-windows
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
           - os: windows-latest
             arch: x64
             triplet: x64-windows
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
           - os: ubuntu-latest
             arch: x64
             triplet: x64-linux
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
             compiler: gcc
             version: "7"
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
     steps:
     - uses: actions/checkout@v2
       with:
@@ -60,6 +65,7 @@ jobs:
         vcpkgArguments: '@${{ env.VCPKGRESPONSEFILE }}'
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         appendedCacheKey: ${{ hashFiles(env.VCPKGRESPONSEFILE) }}
+        vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
     - name:  Configure cmake and build
       uses: lukka/run-cmake@master
       id: runcmake_cmd
