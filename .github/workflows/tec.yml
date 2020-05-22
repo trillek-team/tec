@@ -65,7 +65,7 @@ jobs:
       with:
         vcpkgArguments: '@${{ env.VCPKGCOMMONRESPONSEFILE }} @${{ env.VCPKGRESPONSEFILE }}'
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-        appendedCacheKey: ${{ hashFiles(env.VCPKGRESPONSEFILE) }}
+        appendedCacheKey: '${{ hashFiles(env.VCPKGCOMMONRESPONSEFILE) }}${{ hashFiles(env.VCPKGRESPONSEFILE) }}'
         vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
     - name:  Configure cmake and build
       uses: lukka/run-cmake@master
