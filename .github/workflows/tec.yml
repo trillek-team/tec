@@ -70,7 +70,7 @@ jobs:
       
     # Shared
     - name: Install deps vcpkg
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
+      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog sol2 --triplet ${{ matrix.vcpkg-triplet }}
       
     - name: Install bullet with vcpkg (non MacOS)
       if: runner.os != 'macOS'
@@ -110,7 +110,7 @@ jobs:
         key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
         path: C:/vcpkg/installed
     - name: Install deps vcpkg
-      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog --triplet ${{ matrix.vcpkg-triplet }}
+      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog sol2 --triplet ${{ matrix.vcpkg-triplet }}
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
     - name: Configure cmake

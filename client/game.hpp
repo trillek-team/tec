@@ -39,6 +39,10 @@ namespace tec {
 			return this->active_entity;
 		}
 
+		LuaSystem* GetLuaSystem() {
+			return &this->lua_sys;
+		}
+
 	private:
 		void UpdateVComputerScreenTextures();
 

@@ -50,8 +50,13 @@ namespace tec {
 		 * @param func Function to be executed when the command is called
 		 */
 		void AddConsoleCommand(std::string name, std::string help, std::function<void(const char*)> && func);
-		
 
+		/**
+		* Register a slash handler that handles all '/' commands
+		* @param func Function to be executed when the command is called
+		*/
+		void AddSlashHandler(std::function<void(const char*)>&& func);
+		
 	private:
 		std::shared_ptr<tec::RingBuffer< std::tuple< ImVec4, std::string >, 4096>> buf;
 		std::mutex input_mutex; /// Mutex to serialize write to Console buffer
@@ -67,11 +72,13 @@ namespace tec {
 			| ImGuiWindowFlags_NoCollapse;
 
 		std::map<std::string, std::tuple<std::function<void(const char*)>, std::string>> commands; /// Storage of commands and help info
-			
+
 		using EventQueue<WindowResizedEvent>::On;
 		using EventQueue<KeyboardEvent>::On;
 		void On(std::shared_ptr<WindowResizedEvent> data);
 		void On(std::shared_ptr<KeyboardEvent> data);
+
+		std::function<void(const char*)> slash_handler;
 	};
 
 	class ConsoleSink : 

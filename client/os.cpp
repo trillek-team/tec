@@ -475,4 +475,25 @@ namespace tec {
 			glfwGetCursorPos(OS::focused_window, x, y);
 		}
 	}
+
+	void OS::LuaStateRegistration(sol::state& state) {
+		state.new_usertype<OS>(
+			"OS", sol::no_constructor, // single instance
+			"quit", &OS::Quit,
+			"exit", &OS::Quit,
+			"get_window_width", &OS::GetWindowWidth,
+			"get_window_height", &OS::GetWindowHeight,
+			"get_mouse_x", [this] () {
+				double x;
+				this->GetMousePosition(&x, nullptr);
+				return x;
+			},
+			"get_mouse_y", [this] () {
+				double y;
+				this->GetMousePosition(nullptr, &y);
+				return y;
+			}
+			);
+		state.set("OS", this); // register instance
+	}
 }

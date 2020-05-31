@@ -19,6 +19,8 @@
 #include <chrono>
 #include <vector>
 
+#include <sol/sol.hpp>
+
 #include "event-system.hpp"
 
 namespace tec {
@@ -223,6 +225,8 @@ namespace tec {
 		static const GLFWwindow* GetFocusedWindow() {
 			return OS::focused_window;
 		}
+
+		void LuaStateRegistration(sol::state& state);
 
 	private:
 		/**

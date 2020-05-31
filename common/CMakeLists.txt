@@ -10,6 +10,7 @@ find_package(Protobuf REQUIRED) # For protobuf_generate_cpp
 find_package(Bullet REQUIRED)
 find_package(Lua REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
+find_package(sol2 CONFIG REQUIRED)
 
 include_directories(SYSTEM ${trillek_BINARY_DIR}/common)
 include_directories(SYSTEM ${BULLET_INCLUDE_DIR})
@@ -47,5 +48,5 @@ else ()
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
 endif ()
 
-target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES}
+target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES} sol2::sol2
 	protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite spdlog::spdlog VCOMPUTER_STATIC)

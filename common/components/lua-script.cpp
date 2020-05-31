@@ -10,31 +10,26 @@
 #include "resources/script-file.hpp"
 
 namespace tec {
-	LuaScript::LuaScript()
-		: state() {
+	LuaScript::LuaScript() {
 		this->ReloadScript();
 	}
 
 	LuaScript::LuaScript(std::shared_ptr<ScriptFile> scriptfile)
-		: script_name(scriptfile->GetName()), script(scriptfile), state() {
+		: script_name(scriptfile->GetName()), script(scriptfile) {
 		this->ReloadScript();
 	}
 
-	void LuaScript::ReloadScript() {
-		auto _log = spdlog::get("console_log");
-		if (!this->script_name.empty()) {
-			this->state.ForceGC();
-			auto print = [](std::string str1) { //, std::string str2=std::string(), std::string str3=std::string(), std::string str4=std::string()) {
-				spdlog::get("console_log")->info(str1); //, str2, str3, str4);
-			};
-			this->state["print"] = print;
-			/*for (auto& add_kv : in_functors) {
-				std::string name = TypeName.at(add_kv.first);
-				name = "add" + name;
-				this->state[name.c_str()] = add_kv.second;
-			}*/
+	void LuaScript::SetupEnvironment(sol::state* global_state) {
+		this->global_state = global_state;
+		this->environment = sol::environment(*global_state, sol::create, global_state->globals());
+	}
 
-			this->state.Load(this->script->GetScript());
+	void LuaScript::ReloadScript() {
+		if (!this->global_state) {
+			return;
+		}
+		if (!this->script_name.empty()) {
+			this->global_state->script(this->script->GetScript(), environment);
 		}
 	}
 
@@ -60,5 +55,4 @@ namespace tec {
 			this->ReloadScript();
 		}
 	}
-
 }
