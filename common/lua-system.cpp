@@ -3,14 +3,21 @@
 
 #include "lua-system.hpp"
 
-#include <selene.h>
-
 #include "entity.hpp"
 #include "events.hpp"
 #include "multiton.hpp"
+#include "components/lua-script.hpp"
 
 namespace tec {
 	using LuaScriptMap = Multiton<eid, LuaScript*>;
+
+	LuaSystem::LuaSystem() {
+		this->lua.open_libraries(sol::lib::base, sol::lib::package);
+
+		this->lua["print"] = [] (std::string str) {
+			spdlog::get("console_log")->info(str);
+		};
+	}
 
 	void LuaSystem::Update(const double delta) {
 		auto _log = spdlog::get("console_log");
@@ -19,14 +26,9 @@ namespace tec {
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
-			//auto entity_id = itr->first;
-			if (!itr->second->script_name.empty()) { // Check that have a assigned script with onUpdate function
-				//lscript->state["this"].SetObj(Entity(entity_id) //,
-					//"add", &Entity::Add,
-					//"has", &Entity::Has,
-				//	);
-				// TODO: comeback to this when changed to sol
-				//itr->second->state["onUpdate"](delta); // call to Lua onUpdate method
+			auto entity_id = itr->first;
+			if (!itr->second->script_name.empty() && itr->second->environment["onUpdate"].valid()) {
+				itr->second->environment["onUpdate"](delta);
 			}
 		}
 	}
@@ -36,28 +38,29 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kLuaScript:
-				{
-					LuaScript* script = new LuaScript();
-					script->In(comp);
-					LuaScriptMap::Set(entity_id, script);
-				}
-				break;
-				case proto::Component::kCollisionBody:
-				case proto::Component::kRenderable:
-				case proto::Component::kPosition:
-				case proto::Component::kOrientation:
-				case proto::Component::kView:
-				case proto::Component::kAnimation:
-				case proto::Component::kScale:
-				case proto::Component::kVelocity:
-				case proto::Component::kAudioSource:
-				case proto::Component::kPointLight:
-				case proto::Component::kDirectionalLight:
-				case proto::Component::kSpotLight:
-				case proto::Component::kVoxelVolume:
-				case proto::Component::kComputer:
-				case proto::Component::COMPONENT_NOT_SET:
+			case proto::Component::kLuaScript:
+			{
+				LuaScript* script = new LuaScript();
+				script->SetupEnvironment(&this->lua);
+				script->In(comp);
+				LuaScriptMap::Set(entity_id, script);
+			}
+			break;
+			case proto::Component::kCollisionBody:
+			case proto::Component::kRenderable:
+			case proto::Component::kPosition:
+			case proto::Component::kOrientation:
+			case proto::Component::kView:
+			case proto::Component::kAnimation:
+			case proto::Component::kScale:
+			case proto::Component::kVelocity:
+			case proto::Component::kAudioSource:
+			case proto::Component::kPointLight:
+			case proto::Component::kDirectionalLight:
+			case proto::Component::kSpotLight:
+			case proto::Component::kVoxelVolume:
+			case proto::Component::kComputer:
+			case proto::Component::COMPONENT_NOT_SET:
 				break;
 			}
 		}
@@ -65,5 +68,9 @@ namespace tec {
 
 	void LuaSystem::On(std::shared_ptr<EntityDestroyed> data) {
 		LuaScriptMap::Remove(data->entity_id);
+	}
+
+	void LuaSystem::ExecuteString(std::string script_string) {
+		this->lua.script(script_string);
 	}
 }

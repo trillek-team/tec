@@ -2,53 +2,20 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include <iostream>
-#include <map>
-#include <set>
+#include <fstream>
 #include <memory>
 
 #include <spdlog/spdlog.h>
 #include <google/protobuf/util/json_util.h>
 #include <components.pb.h>
 
-// Used in InitializeComponents
-#include "components/transforms.hpp" // TODO: Figured out who should handle loading Scale component
 #include "voxel-volume.hpp"
 
-// Used in InitializeFileFactories 
-#include "resources/md5mesh.hpp"
-#include "resources/obj.hpp"
-#include "resources/md5anim.hpp"
-#include "resources/vorbis-stream.hpp"
-#include "resources/script-file.hpp"
-
-#include "entity.hpp"
-#include "types.hpp"
 #include "events.hpp"
+#include "filesystem.hpp"
 
 namespace tec {
-	// Remove below by fixing the above todos
-	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
-
-	template <typename T>
-	void AddInOutFunctors() {
-		in_functors[GetTypeID<T>()] = [](const proto::Entity& entity, const proto::Component& proto_comp) {
-			T* comp = new T();
-			comp->In(proto_comp);
-			Multiton<eid, T*>::Set(entity.id(), comp);
-		};
-		update_functors[GetTypeID<T>()] = [](const proto::Entity& entity, const proto::Component& proto_comp, const state_id_t) {
-			T* comp = new T();
-			comp->In(proto_comp);
-			Multiton<eid, T*>::Set(entity.id(), comp);
-		};
-	}
-
-	void InitializeComponents() {
-		AddInOutFunctors<Scale>();
-	}
-
-	void BuildTestEntities() {
+	void BuildTestVoxelVolume() {
 		auto voxvol = VoxelVolume::Create(1000, "bob");
 		auto voxvol_shared = voxvol.lock();
 
@@ -62,30 +29,6 @@ namespace tec {
 		});
 		VoxelVolume::QueueCommand(std::move(add_voxel));
 		voxvol_shared->Update(0.0);
-	}
-
-	// Move below to more appropriate classes or files
-
-	std::map<std::string, std::function<void(std::string)>> file_factories;
-	template <typename T>
-	void AddFileFactory() {
-		file_factories[GetTypeEXT<T>()] = [](std::string fname) {
-			FilePath path(fname);
-			if (path.isAbsolutePath()) {
-				T::Create(fname);
-			}
-			else {
-				T::Create(FilePath::GetAssetPath(fname));
-			}
-		};
-	}
-
-	void InitializeFileFactories() {
-		AddFileFactory<MD5Mesh>();
-		AddFileFactory<MD5Anim>();
-		AddFileFactory<OBJ>();
-		AddFileFactory<VorbisStream>();
-		AddFileFactory<ScriptFile>();
 	}
 
 	std::string LoadJSON(const FilePath& fname) {
@@ -105,14 +48,6 @@ namespace tec {
 		google::protobuf::util::JsonStringToMessage(json_string, &data->entity);
 		data->entity_id = data->entity.id();
 		EventSystem<EntityCreated>::Get()->Emit(data);
-
-		// TODO: remove when above todos are done
-		for (int i = 0; i < data->entity.components_size(); ++i) {
-			const proto::Component& comp = data->entity.components(i);
-			if (in_functors.find(comp.component_case()) != in_functors.end()) {
-				in_functors[comp.component_case()](data->entity, comp);
-			}
-		}
 	}
 
 	void ProtoLoad(std::string filename) {

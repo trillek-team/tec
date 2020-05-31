@@ -29,7 +29,7 @@ namespace tec {
 		this->local_orientation.Out(comp->mutable_orientation());
 	}
 
-	extern std::map<std::string, std::function<void(std::string)>> file_factories;
+	extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 
 	void Renderable::In(const proto::Component& source) {
 		const proto::Renderable& comp = source.renderable();

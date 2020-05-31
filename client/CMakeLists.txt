@@ -25,6 +25,7 @@ endif ()
 set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-client_SOURCE_DIR}/game.cpp
 	${trillek-client_SOURCE_DIR}/imgui-system.cpp
+	${trillek-client_SOURCE_DIR}/file-factories.cpp
 	${trillek-client_SOURCE_DIR}/os.cpp
 	${trillek-client_SOURCE_DIR}/render-system.cpp
 	${trillek-client_SOURCE_DIR}/server-connection.cpp

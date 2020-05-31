@@ -158,8 +158,8 @@ namespace tec {
 									static_cast<int>(current_read_msg.GetBodyLength()));
 								this->last_confirmed_state_id = current_read_msg.GetStateID();
 								std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
-								data->client_commands = std::move(proto_client_commands);
 								this->last_recv_command_id = proto_client_commands.commandid();
+								data->client_commands = std::move(proto_client_commands);
 								EventSystem<ClientCommandsEvent>::Get()->Emit(data);
 							}
 							break;

@@ -29,6 +29,9 @@
 namespace tec {
 	using PointLightMap = Multiton<eid, PointLight*>;
 	using DirectionalLightMap = Multiton<eid, DirectionalLight*>;
+	using RenderableMap = Multiton<eid, Renderable*>;
+	using AnimationMap = Multiton<eid, Animation*>;
+	using ScaleMap = Multiton<eid, Scale*>;
 
 	RenderSystem::RenderSystem() {
 		_log = spdlog::get("console_log");
@@ -238,8 +241,8 @@ namespace tec {
 			if (Multiton<eid, Orientation*>::Has(entity_id)) {
 				orientation = Multiton<eid, Orientation*>::Get(entity_id)->value;
 			}
-			if (Multiton<eid, Scale*>::Has(entity_id)) {
-				scale = Multiton<eid, Scale*>::Get(entity_id)->value;
+			if (ScaleMap::Has(entity_id)) {
+				scale = ScaleMap::Get(entity_id)->value;
 			}
 
 			glm::mat4 transform_matrix = glm::scale(glm::translate(glm::mat4(1.0), position) *
@@ -392,8 +395,6 @@ namespace tec {
 		auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 	}
 
-	using RenderableMap = Multiton<eid, Renderable*>;
-	using AnimationMap = Multiton<eid, Animation*>;
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
 		SetViewportSize(data->new_width, data->new_height);
 	}
@@ -437,10 +438,17 @@ namespace tec {
 					AnimationMap::Set(entity_id, animation);
 				}
 				break;
+				case proto::Component::kScale:
+				{
+					Scale* scale = new Scale();
+					scale->In(comp);
+
+					ScaleMap::Set(entity_id, scale);
+				}
+				break;
 				case proto::Component::kPosition:
 				case proto::Component::kOrientation:
 				case proto::Component::kView:
-				case proto::Component::kScale:
 				case proto::Component::kCollisionBody:
 				case proto::Component::kVelocity:
 				case proto::Component::kAudioSource:
@@ -479,8 +487,8 @@ namespace tec {
 			}
 			glm::vec3 scale(1.0);
 			Entity e(entity_id);
-			if (Multiton<eid, Scale*>::Has(entity_id)) {
-				scale = Multiton<eid, Scale*>::Get(entity_id)->value;
+			if (ScaleMap::Has(entity_id)) {
+				scale = ScaleMap::Get(entity_id)->value;
 			}
 
 			this->model_matricies[entity_id] = glm::scale(glm::translate(glm::mat4(1.0), position) *

@@ -9,3 +9,4 @@ protobuf
 zlib
 imgui
 spdlog
+sol2

@@ -7,14 +7,15 @@ namespace tec {
 
 	void ServerConnectWindow::Draw() {
 		if (this->show) {
-			ImGui::SetNextWindowPosCenter();
+			ImGuiIO& io = ImGui::GetIO();
+			ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f), 0, ImVec2(0.5f, 0.5f));
 			ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
 			static int octets[4] = { 127, 0, 0, 1 };
 
 			float width = ImGui::CalcItemWidth();
 			ImGui::PushID("IP");
-			ImGui::AlignFirstTextHeightToWidgets();
+			ImGui::AlignTextToFramePadding();
 			ImGui::TextUnformatted("IP");
 			ImGui::SameLine();
 			for (int i = 0; i < 4; i++) {

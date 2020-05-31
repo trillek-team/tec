@@ -19,6 +19,8 @@
 #include <chrono>
 #include <vector>
 
+#include <sol/sol.hpp>
+
 #include "event-system.hpp"
 
 namespace tec {
@@ -219,6 +221,12 @@ namespace tec {
 		* \return void
 		*/
 		static void GetMousePosition(double* x, double* y);
+
+		static const GLFWwindow* GetFocusedWindow() {
+			return OS::focused_window;
+		}
+
+		void LuaStateRegistration(sol::state& state);
 
 	private:
 		/**

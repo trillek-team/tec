@@ -34,7 +34,7 @@ namespace tec {
 	template<class TYPE> constexpr const char* GetTypeEXT(void) { return "UNKNOWN"; }
 
 	/*
-	 * Use this macro to associate a component to an type id and generat a string withthe name
+	 * Use this macro to associate a component to an type id and generate a string with the name
 	 * Only works if the struct and component name on .proto file are the same (see the list on message Component )
 	 */
 #define MAKE_IDTYPE(a) \

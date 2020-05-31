@@ -20,9 +20,6 @@
 using asio::ip::tcp;
 
 namespace tec {
-	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&)>> in_functors;
-	extern std::map<tid, std::function<void(const proto::Entity&, const proto::Component&, const state_id_t)>> update_functors;
-
 	namespace networking {
 		extern const std::string_view SERVER_PORT;
 		extern const std::string_view LOCAL_HOST;

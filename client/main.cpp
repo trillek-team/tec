@@ -20,9 +20,8 @@
 #include <spdlog/sinks/stdout_sinks.h>
 
 namespace tec {
-	extern void InitializeComponents();
 	extern void InitializeFileFactories();
-	extern void BuildTestEntities();
+	extern void BuildTestVoxelVolume();
 	extern void ProtoLoad(std::string filename);
 }
 
@@ -111,17 +110,47 @@ int main(int argc, char* argv[]) {
 			gui.ShowWindow("ping_times");
 		});
 
-	tec::InitializeComponents();
+	tec::LuaSystem* lua_sys = game.GetLuaSystem();
+	os.LuaStateRegistration(lua_sys->GetGlobalState());
+
 	tec::InitializeFileFactories();
-	tec::BuildTestEntities();
+	tec::BuildTestVoxelVolume();
 	tec::ProtoLoad("json/test.json");
+
+	console.AddConsoleCommand(
+		"lua",
+		"lua : Execute a string in lua",
+		[&lua_sys] (const char* args) {
+			const char* end_arg = args;
+			while (*end_arg != '\0') {
+				end_arg++;
+			}
+			// Args now points were the arguments begins
+			std::string message(args, end_arg - args);
+			lua_sys->ExecuteString(message);
+		});
+	console.AddSlashHandler(
+		[&lua_sys] (const char* args) {
+			const char* end_arg = args;
+			while (*end_arg != '\0') {
+				end_arg++;
+			}
+
+			// TODO: Add processor for commands with arguments
+			// TODO: Add check if command exists and report if it doesn't
+
+			// Args now points were the arguments begins
+			std::string message(args, end_arg - args);
+			message = "OS:" + message + "()";
+			lua_sys->ExecuteString(message);
+		});
 
 	os.DetachContext();
 
 	std::thread gameThread(
 		[&] () {
 			os.MakeCurrent();
-			
+
 			double mouse_x, mouse_y;
 			double delta = os.GetDeltaTime();
 
