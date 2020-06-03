@@ -75,5 +75,4 @@ jobs:
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
         useVcpkgToolchainFile: true
         buildWithCMake: true
-        cmakeAppendedArgs: '-GNinja '
       
