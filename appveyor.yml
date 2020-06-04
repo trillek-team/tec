@@ -16,7 +16,7 @@ for:
     - sh: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - sh: if [ ! -d '../vcpkg' ]; then git clone https://github.com/microsoft/vcpkg.git ../vcpkg; fi
     - sh: ../vcpkg/bootstrap-vcpkg.sh
-    - sh: ../vcpkg/vcpkg install @vcpkg_response_files/vcpkg_x64-linux.txt
+    - sh: ../vcpkg/vcpkg install @vcpkg_response_files/vcpkg_common.txt @vcpkg_response_files/vcpkg_x64-linux.txt
   before_build:
     - mkdir -p build; cd build; cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake -DBUILD_TESTS=true ..
   build_script:
@@ -44,7 +44,7 @@ for:
        - image: Visual Studio 2019
   install:
      - git submodule update --init
-     - cmd: vcpkg install @vcpkg_response_files/vcpkg_x64-windows.txt
+     - cmd: vcpkg install @vcpkg_response_files/vcpkg_common.txt @vcpkg_response_files/vcpkg_x64-windows.txt
      - cmd: mkdir build
      - cmd: cd build
   before_build:
