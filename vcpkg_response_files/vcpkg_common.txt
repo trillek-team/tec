@@ -10,3 +10,4 @@ zlib
 imgui
 spdlog
 sol2
+gtest

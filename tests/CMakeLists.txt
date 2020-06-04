@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.9)
 
 enable_testing()
 find_package(GTest MODULE REQUIRED)
-find_package(GTest MODULE REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 find_package(Bullet REQUIRED)
 find_package(Lua REQUIRED)
