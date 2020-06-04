@@ -81,10 +81,10 @@ namespace tec {
 			else {
 				Entity screen_entity(comp.first);
 				if (screen_entity.Has<Renderable>()) {
-					const Renderable* ren = screen_entity.Get<Renderable>();
+					const auto* ren = screen_entity.Get<Renderable>();
 					if (ren->buffer) {
 						if (ren->buffer->GetVertexGroupCount() > 0) {
-							comp_screen->texture = ren->buffer->GetVertexGroup(0)->material->GetTexutre(0);
+							comp_screen->texture = ren->buffer->GetVertexGroup(0)->material->GetTexture(0);
 						}
 					}
 				}

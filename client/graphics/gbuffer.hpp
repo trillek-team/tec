@@ -31,12 +31,12 @@ namespace tec {
 								const unsigned int width, const unsigned int height);
 		void ResizeDepthAttachment(const unsigned int width, const unsigned int height);
 		bool CheckCompletion() const;
-		void StartFrame();
+		void StartFrame() const;
 
-		void BeginGeometryPass();
-		void EndGeometryPass();
+		void BeginGeometryPass() const;
+		static void EndGeometryPass();
 
-		void StencilPass();
+		static void StencilPass();
 
 		void BeginLightPass();
 
@@ -45,12 +45,12 @@ namespace tec {
 		void BeginPointLightPass();
 		void EndPointLightPass();
 
-		void FinalPass();
+		void FinalPass() const;
 
 		void BindForWriting() const;
 		void BindForRendering() const;
 
-		void SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) const;
+		static void SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) ;
 
 		GLuint GetDepthTexture() const {
 			return this->depth_texture;

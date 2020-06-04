@@ -64,10 +64,10 @@ namespace tec {
 			glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 			glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 			glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
-			this->window = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, NULL);
+			this->window = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);
 		}
 		else {
-			this->window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+			this->window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 		}
 
 		if (!this->window) {
@@ -132,12 +132,11 @@ namespace tec {
 #endif
 
 		// Getting a list of the avail extensions
-		std::string extensions = "";
 		GLint num_exts = 0;
 		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
 		l->info("Extensions {} : ", num_exts);
 		std::string ext("");
-		for (GLint e = 0; e < num_exts; e++) {
+		for (GLuint e = 0; e < num_exts; e++) {
 			ext += "[" + std::string((const char*)glGetStringi(GL_EXTENSIONS, e)) + "] ";
 			if (e != 0 && e % 5 == 0) {
 				l->debug(ext);
@@ -182,7 +181,7 @@ namespace tec {
 		const GLFWvidmode* mode;
 
 		bestoverlap = 0;
-		bestmonitor = NULL;
+		bestmonitor = nullptr;
 
 		glfwGetWindowPos(window, &wx, &wy);
 		glfwGetWindowSize(window, &ww, &wh);
@@ -238,7 +237,7 @@ namespace tec {
 	}
 
 	void OS::DetachContext() {
-		glfwMakeContextCurrent(NULL);
+		glfwMakeContextCurrent(nullptr);
 	}
 
 	void OS::Terminate() {
@@ -262,11 +261,11 @@ namespace tec {
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 	}
 
-	int OS::GetWindowWidth() {
+	int OS::GetWindowWidth() const {
 		return this->client_width;
 	}
 
-	int OS::GetWindowHeight() {
+	int OS::GetWindowHeight() const {
 		return this->client_height;
 	}
 
@@ -399,8 +398,8 @@ namespace tec {
 	void OS::DispatchMouseMoveEvent(const double x, const double y) {
 		std::shared_ptr<MouseMoveEvent> mmov_event = std::make_shared<MouseMoveEvent>(
 			MouseMoveEvent{
-			static_cast<double>(x) / this->client_width,
-			static_cast<double>(y) / this->client_height,
+			x / this->client_width,
+			y / this->client_height,
 			static_cast<int>(this->old_mouse_x),
 			static_cast<int>(this->old_mouse_y),
 			static_cast<int>(x),
@@ -413,10 +412,8 @@ namespace tec {
 
 	void OS::DispatchMouseScrollEvent(const double xoffset, const double yoffset) {
 		std::shared_ptr<MouseScrollEvent> mscroll_event = std::make_shared<MouseScrollEvent>(
-			MouseScrollEvent{
-			static_cast<double>(xoffset),
-			static_cast<double>(yoffset),
-			});
+			MouseScrollEvent{xoffset, yoffset}
+        );
 		EventSystem<MouseScrollEvent>::Get()->Emit(mscroll_event);
 
 	}
@@ -484,12 +481,12 @@ namespace tec {
 			"get_window_width", &OS::GetWindowWidth,
 			"get_window_height", &OS::GetWindowHeight,
 			"get_mouse_x", [this] () {
-				double x;
+				double x = 0;
 				this->GetMousePosition(&x, nullptr);
 				return x;
 			},
 			"get_mouse_y", [this] () {
-				double y;
+				double y = 0;
 				this->GetMousePosition(nullptr, &y);
 				return y;
 			}

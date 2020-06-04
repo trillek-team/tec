@@ -98,12 +98,12 @@ namespace tec {
 				}
 			}
 			else if (identifier == "numFrames") {
-				int num_frames;
+				unsigned int num_frames;
 				ss >> num_frames;
 				this->frames.reserve(num_frames);
 			}
 			else if (identifier == "numJoints") {
-				int njoints;
+				unsigned int njoints;
 				ss >> njoints;
 				this->joints.reserve(njoints);
 			}

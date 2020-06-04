@@ -60,49 +60,22 @@ namespace tec {
 	proto::ClientCommands FPSController::GetClientCommands() {
 		proto::ClientCommands proto_client_commands;
 		proto_client_commands.set_id(this->entity_id);
-		proto::MovementCommand* movement_command = nullptr;
+		proto::MovementCommand* movement_command = proto_client_commands.mutable_movement();
+        movement_command->set_forward(false);
+        movement_command->set_backward(false);
+        movement_command->set_leftstrafe(false);
+        movement_command->set_rightstrafe(false);
 		if (this->forward) {
-			if (!movement_command) {
-				movement_command = proto_client_commands.mutable_movement();
-				movement_command->set_backward(false);
-				movement_command->set_leftstrafe(false);
-				movement_command->set_rightstrafe(false);
-			}
 			movement_command->set_forward(true);
 		}
 		else if (this->backward) {
-			if (!movement_command) {
-				movement_command = proto_client_commands.mutable_movement();
-				movement_command->set_forward(false);
-				movement_command->set_leftstrafe(false);
-				movement_command->set_rightstrafe(false);
-			}
 			movement_command->set_backward(true);
 		}
 		if (this->left_strafe) {
-			if (!movement_command) {
-				movement_command = proto_client_commands.mutable_movement();
-				movement_command->set_forward(false);
-				movement_command->set_backward(false);
-				movement_command->set_rightstrafe(false);
-			}
 			movement_command->set_leftstrafe(true);
 		}
 		else if (this->right_strafe) {
-			if (!movement_command) {
-				movement_command = proto_client_commands.mutable_movement();
-				movement_command->set_forward(false);
-				movement_command->set_backward(false);
-				movement_command->set_leftstrafe(false);
-			}
 			movement_command->set_rightstrafe(true);
-		}
-		if (!movement_command) {
-			movement_command = proto_client_commands.mutable_movement();
-			movement_command->set_forward(false);
-			movement_command->set_backward(false);
-			movement_command->set_leftstrafe(false);
-			movement_command->set_rightstrafe(false);
 		}
 
 		if (this->orientation) {

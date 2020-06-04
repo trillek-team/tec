@@ -44,7 +44,7 @@ namespace tec {
 		}
 
 	private:
-		void UpdateVComputerScreenTextures();
+		static void UpdateVComputerScreenTextures();
 
 		typedef Multiton<eid, Computer*> ComputerComponentMap;
 

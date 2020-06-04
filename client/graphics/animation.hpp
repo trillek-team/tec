@@ -6,7 +6,6 @@
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
-#include <glm/ext.hpp>
 
 #include <components.pb.h>
 

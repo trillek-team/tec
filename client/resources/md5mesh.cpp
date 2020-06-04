@@ -103,8 +103,8 @@ namespace tec {
 	 * \return The parsed triangle or a default one if the parsing failed.
 	 */
 	MD5Mesh::Triangle ParseTriangle(std::stringstream& ss) {
-		MD5Mesh::Triangle t;
-		int index;
+		MD5Mesh::Triangle t{};
+		int index = 0;
 		ss >> index;
 		ss >> t.verts[0]; ss >> t.verts[1]; ss >> t.verts[2];
 		return t;
@@ -174,12 +174,12 @@ namespace tec {
 				}
 			}
 			else if (identifier == "numJoints") {
-				int njoints;
+				unsigned int njoints;
 				ss >> njoints;
 				this->joints.reserve(njoints);
 			}
 			else if (identifier == "numMeshes") {
-				int nmeshes;
+				unsigned int nmeshes;
 				ss >> nmeshes;
 				this->meshes_internal.reserve(nmeshes);
 			}
@@ -217,7 +217,7 @@ namespace tec {
 						}
 					}
 					else if (identifier == "numverts") {
-						int nverts;
+						unsigned int nverts;
 						ss >> nverts;
 						mesh.verts.reserve(nverts);
 					}
@@ -225,7 +225,7 @@ namespace tec {
 						mesh.verts.push_back(ParseVertex(ss));
 					}
 					else if (identifier == "numtris") {
-						int ntris;
+						unsigned int ntris;
 						ss >> ntris;
 						mesh.tris.reserve(ntris);
 					}
@@ -233,7 +233,7 @@ namespace tec {
 						mesh.tris.push_back(ParseTriangle(ss));
 					}
 					else if (identifier == "numweights") {
-						int nweights;
+						unsigned int nweights;
 						ss >> nweights;
 						mesh.weights.reserve(nweights);
 					}
@@ -280,7 +280,7 @@ namespace tec {
 					/* the sum of all weight->bias should be 1.0 */
 					vdata.position += (this->joints[weight.joint].position + wv) * weight.bias;
 					vdata.bone_indices[k] = static_cast<glm::u32>(weight.joint);
-					vdata.bone_weights[k] = static_cast<float>(weight.bias);
+					vdata.bone_weights[k] = weight.bias;
 				}
 
 				// Cache the calculated position for later
@@ -366,10 +366,10 @@ namespace tec {
 			if (objgroup->indices.size() < int_mesh.tris.size()) {
 				objgroup->indices.reserve(int_mesh.tris.size() * 3);
 			}
-			for (std::size_t j = 0; j < int_mesh.tris.size(); ++j) {
-				objgroup->indices.push_back(int_mesh.tris[j].verts[0]);
-				objgroup->indices.push_back(int_mesh.tris[j].verts[1]);
-				objgroup->indices.push_back(int_mesh.tris[j].verts[2]);
+			for (auto tri : int_mesh.tris) {
+				objgroup->indices.push_back(tri.verts[0]);
+				objgroup->indices.push_back(tri.verts[1]);
+				objgroup->indices.push_back(tri.verts[2]);
 			}
 			MaterialGroup mat_group = {0, static_cast<unsigned int>(objgroup->indices.size()), material_name};
 			mat_group.textures.push_back(int_mesh.shader);

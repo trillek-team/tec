@@ -25,7 +25,7 @@ namespace tec {
 	public:
 		Console();
 
-		void Update(double delta);
+		void Update(double delta) override;
 
 		/**
 		 * Clears console output
@@ -37,9 +37,9 @@ namespace tec {
 		
 		void Printfln(const char* cstr, ...) IM_FMTARGS(2);
 
-		void Draw();
+		void Draw() override;
 		
-		bool isCollapsed() const {
+		bool isCollapsed() const override {
 			return false;
 		}
 		
@@ -49,7 +49,7 @@ namespace tec {
 		 * @param help String with help text
 		 * @param func Function to be executed when the command is called
 		 */
-		void AddConsoleCommand(std::string name, std::string help, std::function<void(const char*)> && func);
+		void AddConsoleCommand(const std::string& name, const std::string& help, std::function<void(const char*)> && func);
 
 		/**
 		* Register a slash handler that handles all '/' commands
@@ -61,7 +61,7 @@ namespace tec {
 		std::shared_ptr<tec::RingBuffer< std::tuple< ImVec4, std::string >, 4096>> buf;
 		std::mutex input_mutex; /// Mutex to serialize write to Console buffer
 		bool scrollToBottom{ false };
-		char inputBuf[256];
+		char inputBuf[256]{};
 
 		bool resize = true;
 		static const ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoTitleBar 
@@ -75,8 +75,8 @@ namespace tec {
 
 		using EventQueue<WindowResizedEvent>::On;
 		using EventQueue<KeyboardEvent>::On;
-		void On(std::shared_ptr<WindowResizedEvent> data);
-		void On(std::shared_ptr<KeyboardEvent> data);
+		void On(std::shared_ptr<WindowResizedEvent> data) override;
+		void On(std::shared_ptr<KeyboardEvent> data) override;
 
 		std::function<void(const char*)> slash_handler;
 	};

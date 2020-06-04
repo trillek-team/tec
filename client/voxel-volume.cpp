@@ -134,18 +134,17 @@ namespace tec {
 			if (this->changed_queue.size() == 0) {
 				return;
 			}
-			Mesh* _mesh = nullptr;
+			Mesh* _mesh;
 			if (m->GetMeshCount() > 0) {
 				_mesh = m->GetMesh(0);
 			}
 			else {
 				_mesh = m->CreateMesh();
 			}
-			ObjectGroup* objgroup = nullptr;
 			if (_mesh->object_groups.size() == 0) {
 				_mesh->object_groups.push_back(new ObjectGroup());
 			}
-			objgroup = _mesh->object_groups[0];
+            ObjectGroup* objgroup = _mesh->object_groups[0];
 			while (this->changed_queue.size() > 0) {
 				std::int64_t index = this->changed_queue.front();
 				this->changed_queue.pop();

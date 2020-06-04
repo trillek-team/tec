@@ -220,13 +220,9 @@ bool FilePath::DirExists() const {
 	struct stat s;
 	int err = stat(path.c_str(), &s);
 #endif
-	if (-1 == err) {
-		// does not exist or error
-		// if  errno == ENOENT --> not exist
-		return false;
-	} else {
-		return true;
-	}
+    // does not exist or error
+    // if  errno == ENOENT --> not exist
+    return -1 != err;
 }
 
 bool FilePath::FileExists() const {
@@ -242,10 +238,7 @@ bool FilePath::MkDir(const FilePath& path) {
 	#else // Windows
 	int ret = _wmkdir(path.GetNativePath().c_str());
 	#endif
-	if (ret == 0 || errno == EEXIST) {
-		return true;
-	}
-	return false;
+    return ret == 0 || errno == EEXIST;
 }
 
 bool FilePath::MkPath(const FilePath& path) {

@@ -8,6 +8,7 @@
 #include <set>
 #include <iostream>
 #include <thread>
+#include <utility>
 
 #include <al.h>
 #include <alc.h>
@@ -29,14 +30,14 @@ namespace tec {
 	extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 	struct AudioSource {
 		AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play) :
-			vorbis_stream(stream), source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED) {}
+			vorbis_stream(std::move(stream)), source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED) {}
 		AudioSource() = default;
 
-		void Out(proto::Component* target) {
+		void Out(proto::Component* target) const {
 			proto::AudioSource* comp = target->mutable_audio_source();
 			comp->set_audio_name(this->audio_name);
 			comp->set_looping(this->looping);
-			comp->set_playing((this->source_state == AUDIOSOURCE_STATE::PLAYING) ? true : false);
+			comp->set_playing(this->source_state == AUDIOSOURCE_STATE::PLAYING);
 			comp->set_volume(this->gain);
 		}
 		void In(const proto::Component& _source) {
@@ -45,7 +46,7 @@ namespace tec {
 				this->audio_name = comp.audio_name();
 				if (!SoundMap::Has(this->audio_name)) {
 					std::string ext = this->audio_name.substr(
-						this->audio_name.find_last_of(".") + 1);
+						this->audio_name.find_last_of('.') + 1);
 					if (file_factories.find(ext) != file_factories.end()) {
 						file_factories[ext](this->audio_name);
 					}

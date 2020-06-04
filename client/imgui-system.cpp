@@ -133,9 +133,9 @@ namespace tec {
 		// Setup inputs
 		// (we already got mouse wheel, keyboard keys & characters from event system
 		if (IMGUISystem::window == OS::GetFocusedWindow()) {
-			this->mouse_pos.x *= (float)this->framebuffer_width / this->window_width;  // Convert mouse coordinates to pixels
-			this->mouse_pos.y *= (float)this->framebuffer_height / this->window_height;
-			io.MousePos = ImVec2((float)mouse_pos.x, (float)mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
+			this->mouse_pos.x *= (float)this->framebuffer_width / (float)this->window_width;  // Convert mouse coordinates to pixels
+			this->mouse_pos.y *= (float)this->framebuffer_height / (float)this->window_height;
+			io.MousePos = ImVec2(mouse_pos.x, mouse_pos.y);   // Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
 			io.MouseWheel += this->mouse_wheel.y; // ImGUI not support x axis scroll :(
 			this->mouse_wheel.y = 0;
 			this->mouse_wheel.x = 0;
@@ -191,8 +191,8 @@ namespace tec {
 		IMGUISystem::shader_program = glCreateProgram();
 		IMGUISystem::vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 		IMGUISystem::fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(IMGUISystem::vertex_shader, 1, &_vertex_shader, 0);
-		glShaderSource(IMGUISystem::fragment_shader, 1, &_fragment_shader, 0);
+		glShaderSource(IMGUISystem::vertex_shader, 1, &_vertex_shader, nullptr);
+		glShaderSource(IMGUISystem::fragment_shader, 1, &_fragment_shader, nullptr);
 		GLint success = 0;
 		glCompileShader(IMGUISystem::vertex_shader);
 		glGetShaderiv(IMGUISystem::vertex_shader, GL_COMPILE_STATUS, &success);
@@ -202,7 +202,7 @@ namespace tec {
 		glAttachShader(IMGUISystem::shader_program, IMGUISystem::fragment_shader);
 		glLinkProgram(IMGUISystem::shader_program);
 		GLint isLinked = 0;
-		glGetProgramiv(IMGUISystem::shader_program, GL_LINK_STATUS, (int*)&isLinked);
+		glGetProgramiv(IMGUISystem::shader_program, GL_LINK_STATUS, &isLinked);
 
 		IMGUISystem::texture_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "Texture");
 		IMGUISystem::projmtx_attribute_location = glGetUniformLocation(IMGUISystem::shader_program, "ProjMtx");
@@ -357,7 +357,7 @@ namespace tec {
 	}
 
 
-	void IMGUISystem::On(std::shared_ptr<WindowResizedEvent> data) {
+	void IMGUISystem::On(std::shared_ptr<WindowResizedEvent>) {
 		this->UpdateDisplaySize();
 	}
 

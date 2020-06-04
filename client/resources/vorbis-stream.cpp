@@ -54,11 +54,13 @@ namespace tec {
 		}
 
 		int size = 0;
-		int  num_read = 0;
+		int  num_read;
 
 		while (size < this->buffer_size) {
 			num_read = stb_vorbis_get_samples_short_interleaved(this->stream,
-																this->info.channels, this->sbuffer + size, this->buffer_size - size);
+																this->info.channels,
+																this->sbuffer + size,
+																this->buffer_size - size);
 			if (num_read > 0) {
 				size += num_read * this->info.channels;
 			}
@@ -69,7 +71,7 @@ namespace tec {
 
 
 		if (size == 0) {
-			return false;
+			return 0;
 		}
 
 		alBufferData(buffer, this->format, this->sbuffer, size * sizeof(ALshort), this->info.sample_rate);
@@ -117,7 +119,7 @@ namespace tec {
 		int error;
 		// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a fopen to FileSystem ?
 		// Als we not are doing path valid or file existence check
-		stream->stream = stb_vorbis_open_filename(filename.toString().c_str(), &error, NULL);
+		stream->stream = stb_vorbis_open_filename(filename.toString().c_str(), &error, nullptr);
 		if (stream->stream) {
 			stream->info = stb_vorbis_get_info(stream->stream);
 			if (stream->info.channels == 2) {

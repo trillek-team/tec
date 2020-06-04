@@ -5,12 +5,9 @@
 
 #include <vector>
 #include <functional>
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
 
 #include "resources/md5anim.hpp"
 #include "resources/md5mesh.hpp"
-#include "resources/mesh.hpp"
 
 namespace tec {
 	Animation::Animation(std::shared_ptr<MD5Anim> animation) {
@@ -35,8 +32,8 @@ namespace tec {
 
 		// Figure out which frame we're on
 		double frame_number = this->animation_time * frame_rate;
-		int frame_index0 = static_cast<int>(floor(frame_number)) % frame_count;
-		int frame_index1 = static_cast<int>(ceil(frame_number)) % frame_count;
+		std::size_t frame_index0 = static_cast<std::size_t>(floor(frame_number)) % frame_count;
+		std::size_t frame_index1 = static_cast<std::size_t>(ceil(frame_number)) % frame_count;
 		this->current_frame_index = frame_index0;
 
 		float fInterpolate = static_cast<float>(fmod(this->animation_time, this->frame_duration));

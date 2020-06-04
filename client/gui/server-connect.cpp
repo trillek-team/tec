@@ -9,7 +9,7 @@ namespace tec {
 		if (this->show) {
 			ImGuiIO& io = ImGui::GetIO();
 			ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f), 0, ImVec2(0.5f, 0.5f));
-			ImGui::Begin("Connect to Server", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+			ImGui::Begin("Connect to Server", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
 			static int octets[4] = { 127, 0, 0, 1 };
 
@@ -60,7 +60,7 @@ namespace tec {
 
 	void PingTimesWindow::Draw() {
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
-		ImGui::Begin("ping_times", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
+		ImGui::Begin("ping_times", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
 		static float arr[10];
 		std::list<tec::networking::ping_time_t> recent_pings = this->server_connection.GetRecentPings();
 		std::size_t i = 0;

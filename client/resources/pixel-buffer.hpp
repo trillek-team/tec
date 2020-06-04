@@ -37,8 +37,8 @@ namespace tec {
 		PixelBuffer(const PixelBuffer&) = delete;
 		PixelBuffer& operator=(const PixelBuffer&) = delete;
 
-		PixelBuffer(PixelBuffer&&);
-		PixelBuffer& operator=(PixelBuffer&&);
+		PixelBuffer(PixelBuffer&&) noexcept;
+		PixelBuffer& operator=(PixelBuffer&&) noexcept;
 
 		/** \brief Construct a new pixel buffer.
 		 * \param width the width of the buffer in pixels
@@ -79,7 +79,7 @@ namespace tec {
 		 * \param const FilePath filename The optional filename of the image to load.
 		 * \return std::shared_ptr<PixelBuffer> The created PixelBuffer.
 		 */
-		static std::shared_ptr<PixelBuffer> Create(const std::string name, const FilePath& filename = FilePath());
+		static std::shared_ptr<PixelBuffer> Create(const std::string& name, const FilePath& filename = FilePath());
 
 		bool IsDirty() const;
 		/** \brief Mark dirty */
@@ -97,8 +97,8 @@ namespace tec {
 		std::mutex& GetWritelock() { return this->writelock; }
 		std::uint8_t* GetPtr() { return this->blockptr.get(); }
 
-		std::uint32_t Width() const { return imagewidth; }
-		std::uint32_t Height() const { return imageheight; }
+		std::uint32_t Width() const { return imagewidth > 0 ? static_cast<std::uint32_t>(imagewidth) : 0 ; }
+		std::uint32_t Height() const { return imageheight > 0 ? static_cast<std::uint32_t>(imageheight) : 0 ; }
 		std::uint32_t Pitch() const { return bufferpitch; }
 		std::uint32_t PixelSize() const { return imagepixelsize; }
 		ImageColorMode GetFormat() const { return imagemode; }
