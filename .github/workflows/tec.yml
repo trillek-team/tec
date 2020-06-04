@@ -2,49 +2,49 @@ name: Trillek Engine CI
 
 on: [pull_request]
 
-jobs:
+jobs:      
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-16.04, macOS-latest]
+        os: [windows-latest, ubuntu-latest, ubuntu-16.04, macOS-latest]
+        arch: [x64]
         include:
-          - os: ubuntu-16.04
-            compiler: gcc
-            version: "7"
+          - os: windows-latest
+            arch: x86
+            triplet: x86-windows
+            vcpkgCommitId: 'c7ab9d3110813979a873b2dbac630a9ab79850dc'
+          - os: windows-latest
             arch: x64
-            vcpkg-triplet: x64-linux
+            triplet: x64-windows
+            vcpkgCommitId: 'c7ab9d3110813979a873b2dbac630a9ab79850dc'
           - os: ubuntu-latest
+            arch: x64
+            triplet: x64-linux
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
+          - os: ubuntu-16.04
+            arch: x64
+            triplet: x64-linux
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
             compiler: gcc
             version: "7"
-            arch: x64
-            vcpkg-triplet: x64-linux
           - os: macOS-latest
             arch: x64
-            vcpkg-triplet: x64-osx
-    env:
-      VCPKG_INSTALLATION_ROOT: /usr/local/share/vcpkg
+            triplet: x64-osx
+            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: true
-    - name: Cache vcpkg (MacOS)
-      uses: actions/cache@v1
-      if: runner.os == 'macOS'
+    - name: Set vcpkg's response file path used as part of cache's key.
+      uses: lukka/set-shell-env@master
       with:
-        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
-        path: /usr/local/share/vcpkg
-    - name: Cache vcpkg installed (Linux)
-      uses: actions/cache@v1
-      if: runner.os == 'Linux'
-      with:
-        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
-        path: /usr/local/share/vcpkg/installed
-    
+        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
+        VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
     # Linux specific
-    - name: Install GCC (Linux)
-      if: runner.os == 'Linux'
+    - name: Install GCC 7 (Ubuntu 16.04 only)
+      if: matrix.os == 'ubuntu-16.04'
       run: |
         sudo apt-get update
         if [ "${{ matrix.compiler }}" = "gcc" ]; then
@@ -59,64 +59,20 @@ jobs:
     - name: Install os deps (Linux)
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-        
-    # MacOS specific
-    - name: Checkout vcpkg (MacOS)
-      if: runner.os == 'macOS'
-      run: if [ ! -d "$VCPKG_INSTALLATION_ROOT" ]; then git clone https://github.com/microsoft/vcpkg.git $VCPKG_INSTALLATION_ROOT; fi
-    - name: Bootstrap vcpkg (MacOS)
-      if: runner.os == 'macOS'
-      run: $VCPKG_INSTALLATION_ROOT/bootstrap-vcpkg.sh
-      
-    # Shared
-    - name: Install deps vcpkg
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install asio glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog sol2 --triplet ${{ matrix.vcpkg-triplet }}
-      
-    - name: Install bullet with vcpkg (non MacOS)
-      if: runner.os != 'macOS'
-      run: $VCPKG_INSTALLATION_ROOT/vcpkg install bullet3 --triplet ${{ matrix.vcpkg-triplet }}
-    - name: Install bullet with brew (MacOS)
-      if: runner.os == 'macOS'
-      run: brew install bullet
-      
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
-    - name: Configure CMake
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
-      
-  build-windows:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest]
-        arch: [Win32, x64]
-        include:
-          - arch: x64
-            vcpkg-triplet: x64-windows
-          - arch: Win32
-            vcpkg-triplet: x86-windows
-    steps:
-    - uses: actions/checkout@v1
+    - name: Restore artifacts, or run vcpkg, build and cache artifacts
+      uses: lukka/run-vcpkg@v2.1
+      id: runvcpkg
       with:
-        submodules: true
-    - name: Cache vcpkg installed
-      uses: actions/cache@v1
+        vcpkgArguments: '@${{ env.VCPKGCOMMONRESPONSEFILE }} @${{ env.VCPKGRESPONSEFILE }}'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        appendedCacheKey: '${{ hashFiles(env.VCPKGCOMMONRESPONSEFILE) }}${{ hashFiles(env.VCPKGRESPONSEFILE) }}'
+        vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
+    - name:  Configure cmake and build
+      uses: lukka/run-cmake@master
+      id: runcmake_cmd
       with:
-        key: vcpkg-${{ matrix.os }}-${{ matrix.arch }}
-        path: C:/vcpkg/installed
-    - name: Install deps vcpkg
-      run: vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib imgui spdlog sol2 --triplet ${{ matrix.vcpkg-triplet }}
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
-    - name: Configure cmake
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $env:GITHUB_WORKSPACE -DCMAKE_GENERATOR_PLATFORM=${{matrix.arch}} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      run: cmake --build .
+        cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        useVcpkgToolchainFile: true
+        buildWithCMake: true
       
