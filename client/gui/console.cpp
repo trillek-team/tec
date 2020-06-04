@@ -112,7 +112,7 @@ namespace tec {
 
 			ImGui::Begin("Console", nullptr, window_flags);
 			ImGui::BeginChild("ScrollingRegion",
-				ImVec2(0, -ImGui::GetItemsLineHeightWithSpacing()),
+				ImVec2(0, -ImGui::GetFrameHeightWithSpacing()),
 				false,
 				ImGuiWindowFlags_NoScrollbar);
 			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
@@ -190,7 +190,7 @@ namespace tec {
 			}
 			// Demonstrate keeping auto focus on the input box
 			if (ImGui::IsItemHovered()
-				|| (ImGui::IsRootWindowOrAnyChildFocused()
+				|| (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)
 					&& !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))) {
 				ImGui::SetKeyboardFocusHere(-1); // Auto focus
 			}
