@@ -14,11 +14,11 @@ jobs:
           - os: windows-latest
             arch: x86
             triplet: x86-windows
-            vcpkgCommitId: 'c7ab9d3110813979a873b2dbac630a9ab79850dc'
+            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
           - os: windows-latest
             arch: x64
             triplet: x64-windows
-            vcpkgCommitId: 'c7ab9d3110813979a873b2dbac630a9ab79850dc'
+            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
           - os: ubuntu-latest
             arch: x64
             triplet: x64-linux
