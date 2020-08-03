@@ -22,17 +22,17 @@ jobs:
           - os: ubuntu-latest
             arch: x64
             triplet: x64-linux
-            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
+            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
-            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
+            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: gcc
             version: "7"
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
-            vcpkgCommitId: '7aebb481085de7387f8a9975652c26f9053f66df'
+            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
     steps:
     - uses: actions/checkout@v2
       with:
