@@ -9,7 +9,7 @@
 
 #include <imgui.h>
 #include <spdlog/sinks/sink.h>
-#include <spdlog/details/pattern_formatter.h>
+#include <spdlog/pattern_formatter.h>
 
 #include "ring-buffer.hpp"
 #include "os.hpp"
