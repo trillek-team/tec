@@ -20,7 +20,6 @@ namespace tec {
 	}
 
 	void LuaSystem::Update(const double delta) {
-		auto _log = spdlog::get("console_log");
 		ProcessCommandQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();

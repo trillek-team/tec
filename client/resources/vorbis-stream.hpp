@@ -70,8 +70,8 @@ namespace tec {
 	private:
 		std::string name;
 		stb_vorbis* stream{ nullptr };
-		stb_vorbis_info info;
-		ALenum format;
+		stb_vorbis_info info{};
+		ALenum format{};
 		int buffer_size{ 0 };
 		std::size_t totalSamplesLeft{ 0 };
 		ALshort* sbuffer{ nullptr };

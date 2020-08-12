@@ -16,7 +16,7 @@
 #include <components.pb.h>
 
 namespace tec {
-	typedef std::int64_t state_id_t;
+	typedef std::uint64_t state_id_t;
 	#define PRI_STATE_ID_T PRId64
 
 	typedef std::int64_t GUID; /// Global Unique ID

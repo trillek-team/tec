@@ -48,7 +48,7 @@ namespace tec {
 		this->textures.push_back(tex);
 	}
 	
-	std::shared_ptr<TextureObject> Material::GetTexutre(std::size_t index) {
+	std::shared_ptr<TextureObject> Material::GetTexture(std::size_t index) {
 		if (index < this->textures.size()) {
 			return this->textures[index];
 		}

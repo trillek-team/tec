@@ -7,7 +7,7 @@ namespace tec {
 
 	class AbstractWindow {
 	public:
-		virtual ~AbstractWindow() {}
+		virtual ~AbstractWindow() = default;
 
 		virtual void Update(double) {};
 

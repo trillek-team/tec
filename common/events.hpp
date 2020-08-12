@@ -11,7 +11,7 @@
 
 namespace tec {
 	struct MouseHover {
-		glm::vec3 ray_hit_piont_world;
+		glm::vec3 ray_hit_point_world;
 	};
 
 	struct KeyboardEvent {

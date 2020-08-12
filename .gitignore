@@ -48,3 +48,5 @@ bin/
 
 temp/
 .vs/
+build-idea/
+.idea/

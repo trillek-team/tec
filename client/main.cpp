@@ -41,10 +41,10 @@ auto InitializeLogger(spdlog::level::level_enum log_level, tec::Console& console
 auto ParseLogLevel(int argc, char* argv[]) {
 	auto loglevel = spdlog::level::info;
 	for (int i = 1; i < argc; i++) {
-		if (std::string(argv[i]).compare("-v")) {
+		if (std::string(argv[i]) == "-v") {
 			loglevel = spdlog::level::debug;
 		}
-		else if (std::string(argv[i]).compare("-vv")) {
+		else if (std::string(argv[i]) == "-vv") {
 			loglevel = spdlog::level::trace;
 		}
 	}
@@ -152,12 +152,12 @@ int main(int argc, char* argv[]) {
 			os.MakeCurrent();
 
 			double mouse_x, mouse_y;
-			double delta = os.GetDeltaTime();
+			double delta;
 
 			while (!os.Closing()) {
 				delta = os.GetDeltaTime();
 
-				os.GetMousePosition(&mouse_x, &mouse_y);
+				tec::OS::GetMousePosition(&mouse_x, &mouse_y);
 
 				game.Update(delta, mouse_x, mouse_y, os.GetWindowWidth(), os.GetWindowHeight());
 
@@ -173,6 +173,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	gameThread.join();
+	tec::OS::Terminate();
 
 	return 0;
 }

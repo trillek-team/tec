@@ -98,14 +98,14 @@ namespace tec {
 		*
 		* \return int The window width.
 		*/
-		int GetWindowWidth();
+		int GetWindowWidth() const;
 
 		/**
 		* \brief Gets the cached window height.
 		*
 		* \return int The window height.
 		*/
-		int GetWindowHeight();
+		int GetWindowHeight() const;
 
 		/**
 		* \brief Returns the time since the start of the program.

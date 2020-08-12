@@ -93,7 +93,7 @@ namespace tec {
 		glLinkProgram(this->program);
 
 		GLint is_linked = 0;
-		glGetProgramiv(this->program, GL_LINK_STATUS, (int*)&is_linked);
+		glGetProgramiv(this->program, GL_LINK_STATUS, &is_linked);
 		if (is_linked == GL_FALSE) {
 			GLint max_length = 0;
 			glGetProgramiv(this->program, GL_INFO_LOG_LENGTH, &max_length);
@@ -146,7 +146,6 @@ namespace tec {
 			}
 			return uniform_id;
 		}
-		return 0;
 	}
 
 	GLint Shader::GetAttributeLocation(const std::string name) {
@@ -160,7 +159,6 @@ namespace tec {
 			}
 			return attribute_id;
 		}
-		return 0;
 	}
 
 	std::shared_ptr<Shader> Shader::CreateFromFile(const std::string name,

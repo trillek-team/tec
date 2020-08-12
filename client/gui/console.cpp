@@ -12,7 +12,7 @@ namespace tec {
 		this->AddConsoleCommand( "cmdlist",
 			"cmdlist : List all commands",
 		[this ] (const char*) {
-			for (auto command : this->commands) {
+			for (const auto& command : this->commands) {
 				this->Println(command.first);
 			}
 		});
@@ -200,7 +200,7 @@ namespace tec {
 		}
 	}
 
-	void Console::On(std::shared_ptr<WindowResizedEvent> data) {
+	void Console::On(std::shared_ptr<WindowResizedEvent>) {
 		resize = true;
 	}
 
@@ -211,7 +211,7 @@ namespace tec {
 		}
 	}
 
-	void Console::AddConsoleCommand(std::string name, std::string help, std::function<void(const char*)> && func) {
+	void Console::AddConsoleCommand(const std::string& name, const std::string& help, std::function<void(const char*)> && func) {
 		auto tmp = std::make_tuple(std::move(func), help);
 		this->commands[name] = tmp;
 	}

@@ -7,6 +7,7 @@
 #include <cmath>
 
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <spdlog/spdlog.h>
@@ -232,7 +233,6 @@ namespace tec {
 			eid entity_id = itr->first;
 			PointLight* light = itr->second;
 
-			Entity e(entity_id);
 			glm::vec3 position, scale(1.0);
 			glm::quat orientation;
 			if (Multiton<eid, Position*>::Has(entity_id)) {
@@ -396,7 +396,8 @@ namespace tec {
 	}
 
 	void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
-		SetViewportSize(data->new_width, data->new_height);
+		SetViewportSize(data->new_width > 0 ? static_cast<unsigned int>(data->new_width) : 0,
+		        data->new_height > 0 ? static_cast<unsigned int>(data->new_height) : 0);
 	}
 
 	void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) {

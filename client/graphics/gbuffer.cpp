@@ -58,19 +58,16 @@ namespace tec {
 		this->BindForWriting();
 		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		if (status != GL_FRAMEBUFFER_COMPLETE) {
-			return false;
-		}
-		return true;
-	}
+        return status == GL_FRAMEBUFFER_COMPLETE;
+    }
 
-	void GBuffer::StartFrame() {
+	void GBuffer::StartFrame() const {
 		this->BindForWriting();
 		glDrawBuffer(GL_COLOR_ATTACHMENT4);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void GBuffer::BeginGeometryPass() {
+	void GBuffer::BeginGeometryPass() const {
 		this->BindForWriting();
 		GLenum DrawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 		glDrawBuffers(this->num_color_textures, DrawBuffers);
@@ -123,7 +120,7 @@ namespace tec {
 		//glDisable(GL_BLEND);
 	}
 
-	void GBuffer::FinalPass() {
+	void GBuffer::FinalPass() const {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		this->BindForRendering();
 		glReadBuffer(GL_COLOR_ATTACHMENT4);
@@ -138,7 +135,7 @@ namespace tec {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->frame_buffer_object);
 	}
 
-	void GBuffer::SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) const {
+	void GBuffer::SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) {
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + static_cast<int>(TextureType));
 	}
 }

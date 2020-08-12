@@ -58,7 +58,7 @@ namespace tec {
 			this->source_mesh = mesh;
 			std::vector<GLuint> all_indices;
 			std::vector<VertexData> all_verts;
-			GLuint vert_offset = 0;
+			GLuint vert_offset;
 			this->vertex_groups.clear();
 			for (std::size_t i = 0; i < mesh->GetMeshCount(); ++i) {
 				Mesh* mfmesh = mesh->GetMesh(i);

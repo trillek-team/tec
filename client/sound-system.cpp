@@ -167,7 +167,7 @@ namespace tec {
 			}
 		}
 	}
-	void SoundSystem::On(std::shared_ptr<EntityDestroyed> data) {
+	void SoundSystem::On(std::shared_ptr<EntityDestroyed>) {
 
 	}
 }

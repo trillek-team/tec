@@ -9,7 +9,7 @@
 #include <spdlog/spdlog.h>
 
 namespace tec {
-	PixelBuffer::PixelBuffer(PixelBuffer && rv) {
+	PixelBuffer::PixelBuffer(PixelBuffer && rv) noexcept {
 		writelock.lock();
 		rv.writelock.lock();
 		imagewidth = rv.imagewidth;
@@ -40,7 +40,7 @@ namespace tec {
 		Create(width, height, bitspersample, mode);
 	}
 
-	PixelBuffer & PixelBuffer::operator=(PixelBuffer && rv) {
+	PixelBuffer & PixelBuffer::operator=(PixelBuffer && rv) noexcept {
 		writelock.lock();
 		rv.writelock.lock();
 		imagewidth = rv.imagewidth;
@@ -63,7 +63,7 @@ namespace tec {
 
 	void PixelBuffer::PPMDebug() {
 		// output a PPM image to stderr as a debug feature
-		std::fprintf(stderr, "P6\n%d\n%d\n%d\n", imagewidth, imageheight, (1 << imagebitdepth) - 1);
+		std::fprintf(stderr, "P6\n%d\n%d\n%d\n", imagewidth, imageheight, (1u << imagebitdepth) - 1);
 		if (!blockptr) return;
 		uint8_t * p = blockptr.get();
 		switch (imagemode) {
@@ -91,7 +91,7 @@ namespace tec {
 			return;
 		}
 		file << "P6\n" << imagewidth << '\n' << imageheight << '\n';
-		file << ((1 << imagebitdepth) - 1) << '\n';
+		file << ((1u << imagebitdepth) - 1) << '\n';
 		if (!blockptr) return;
 		uint8_t * p = blockptr.get();
 		switch (imagemode) {
@@ -127,9 +127,7 @@ namespace tec {
 				pixelsize = 2;
 				break;
 			default:
-				pixelsize = 0;
 				return false;
-				break;
 		}
 		writelock.lock();
 		imagepixelsize = pixelsize;
@@ -141,7 +139,7 @@ namespace tec {
 		image_y = 0;
 		dirty = true;
 		bufferpitch = (bitspersample * imagepixelsize);
-		bufferpitch = width * ((bufferpitch >> 3) + ((bufferpitch & 0x7) ? 1 : 0));
+		bufferpitch = width * ((bufferpitch >> 3u) + ((bufferpitch & 0x7u) ? 1 : 0));
 
 		blockptr = std::unique_ptr<uint8_t[]>(new uint8_t[bufferpitch * height]);
 		if (!blockptr) {
@@ -153,7 +151,7 @@ namespace tec {
 		return true;
 	}
 
-	std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string name, const FilePath& filename) {
+	std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string& name, const FilePath& filename) {
 		auto pbuf = std::make_shared<PixelBuffer>();
 		PixelBufferMap::Set(name, pbuf);
 		if (!filename.empty()) {
@@ -206,14 +204,14 @@ namespace tec {
 					this->imagemode = ImageColorMode::UNKNOWN_MODE;
 					break;
 			}
-			this->imagepixelsize = num_components;
+			this->imagepixelsize = num_components > 0 ? static_cast<unsigned int>(num_components) : 0;
 			this->imagebitdepth = 8;
 			this->image_x = 0;
 			this->image_y = 0;
 			this->dirty = true;
 			this->bufferpitch = (8 * imagepixelsize);
-			this->bufferpitch = this->imagewidth * ((this->bufferpitch >> 3) +
-				((this->bufferpitch & 0x7) ? 1 : 0));
+			this->bufferpitch = this->imagewidth * ((this->bufferpitch >> 3u) +
+				((this->bufferpitch & 0x7u) ? 1 : 0));
 			this->writelock.lock();
 			this->blockptr.reset(data);
 			this->writelock.unlock();
