@@ -101,7 +101,7 @@ namespace tec {
 
 		const char* glcx_vendor = (char*)glGetString(GL_VENDOR);
 		const char* glcx_renderer = (char*)glGetString(GL_RENDERER);
-		l->info("{} - {}", glcx_vendor, std::string{ glcx_renderer });
+		l->info("{} - {}", glcx_vendor, std::string{glcx_renderer});
 
 		// Check that GLSL is >= 3.30
 		std::string glcx_glslver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);

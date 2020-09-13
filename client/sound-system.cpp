@@ -78,11 +78,9 @@ namespace tec {
 				else if (state == AL_PLAYING) {
 					if (source->source_state == AUDIOSOURCE_STATE::PAUSED) {
 						alSourcePause(source->source); alCheckError();
-						alSourcei(source->source, AL_SOURCE_STATE, AL_PAUSED);
 					}
 					else if (source->source_state == AUDIOSOURCE_STATE::STOPPED) {
 						alSourceStop(source->source); alCheckError();
-						alSourcei(source->source, AL_SOURCE_STATE, AL_STOPPED);
 					}
 				}
 			}
@@ -157,12 +155,13 @@ namespace tec {
 			alSourceQueueBuffers(source->source, 2, source->buffer); alCheckError();
 			switch (source->source_state) {
 				case AUDIOSOURCE_STATE::PLAYING:
-					alSourcei(source->source, AL_SOURCE_STATE, AL_PLAYING);
+					alSourcePlay(source->source);
 					break;
 				case AUDIOSOURCE_STATE::PAUSED:
-					alSourcei(source->source, AL_SOURCE_STATE, AL_PAUSED);
+					alSourcePause(source->source);
 					break;
 				case AUDIOSOURCE_STATE::STOPPED:
+					alSourceStop(source->source);
 					break;
 			}
 		}
