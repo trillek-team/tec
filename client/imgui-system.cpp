@@ -15,8 +15,12 @@
 #include "filesystem.hpp"
 #include "os.hpp"
 #include "events.hpp"
+#include "multiton.hpp"
+#include "components/lua-script.hpp"
 
 namespace tec {
+	using LuaScriptMap = Multiton<eid, LuaScript*>;
+
 	GLFWwindow* IMGUISystem::window = nullptr;
 	int IMGUISystem::shader_program = 0, IMGUISystem::vertex_shader = 0, IMGUISystem::fragment_shader = 0;
 	int IMGUISystem::texture_attribute_location = 0, IMGUISystem::projmtx_attribute_location = 0;
@@ -155,6 +159,12 @@ namespace tec {
 		for (auto window_name : this->visible_windows) {
 			if (this->window_draw_funcs.find(window_name) != this->window_draw_funcs.end()) {
 				this->window_draw_funcs.at(window_name)();
+			}
+		}
+
+		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
+			if (!itr->second->script_name.empty() && itr->second->environment["gui"].valid()) {
+				itr->second->environment["gui"](delta);
 			}
 		}
 		ImGui::Render();

@@ -13,8 +13,13 @@
 
 #include "events.hpp"
 #include "filesystem.hpp"
+#include "gui/sol_ImGui.h"
 
 namespace tec {
+	void InitLuaGui(sol::state& state) {
+		sol_ImGui::Init(state);
+	}
+
 	void BuildTestVoxelVolume() {
 		auto voxvol = VoxelVolume::Create(1000, "bob");
 		auto voxvol_shared = voxvol.lock();

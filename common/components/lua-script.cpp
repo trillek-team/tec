@@ -29,7 +29,13 @@ namespace tec {
 			return;
 		}
 		if (!this->script_name.empty()) {
-			this->global_state->script(this->script->GetScript(), environment);
+			if (this->script->ReloadFromDisk()) {
+				try {
+					this->global_state->script(this->script->GetScript(), environment);
+				} catch (std::exception& e) {
+					std::cout << "error reloading script." << e.what() << std::endl;
+				}
+			}
 		}
 	}
 

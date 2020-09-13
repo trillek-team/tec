@@ -23,6 +23,7 @@ namespace tec {
 	extern void InitializeFileFactories();
 	extern void BuildTestVoxelVolume();
 	extern void ProtoLoad(std::string filename);
+	extern void InitLuaGui(sol::state&);
 }
 
 auto InitializeLogger(spdlog::level::level_enum log_level, tec::Console& console) {
@@ -112,6 +113,7 @@ int main(int argc, char* argv[]) {
 
 	tec::LuaSystem* lua_sys = game.GetLuaSystem();
 	os.LuaStateRegistration(lua_sys->GetGlobalState());
+	tec::InitLuaGui(lua_sys->GetGlobalState());
 
 	tec::InitializeFileFactories();
 	tec::BuildTestVoxelVolume();
@@ -128,6 +130,12 @@ int main(int argc, char* argv[]) {
 			// Args now points were the arguments begins
 			std::string message(args, end_arg - args);
 			lua_sys->ExecuteString(message);
+		});
+	console.AddConsoleCommand(
+		"reload_lua",
+		"reload_lua : Reloads all lua scripts",
+		[&lua_sys] (const char* args) {
+			lua_sys->Reload();
 		});
 	console.AddSlashHandler(
 		[&lua_sys] (const char* args) {

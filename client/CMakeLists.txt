@@ -39,6 +39,7 @@ set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-client_SOURCE_DIR}/graphics/shader.cpp
 	${trillek-client_SOURCE_DIR}/graphics/texture-object.cpp
 	${trillek-client_SOURCE_DIR}/graphics/vertex-buffer-object.cpp
+    ${trillek-client_SOURCE_DIR}/gui/sol_ImGui.h
 	${trillek-client_SOURCE_DIR}/gui/console.cpp
 	${trillek-client_SOURCE_DIR}/gui/active-entity-tooltip.cpp
 	${trillek-client_SOURCE_DIR}/gui/server-connect.cpp
@@ -69,6 +70,7 @@ add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCE_DIR}/main.cpp $
 
 if (MSVC)
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 else ()
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
 endif ()

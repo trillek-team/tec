@@ -60,6 +60,7 @@ namespace tec {
 
 					script = std::string((std::istreambuf_iterator<char>(file)),
 										 std::istreambuf_iterator<char>());
+					this->filename = filename;
 					_log->trace("[Script] Read script file {} of {} bytes", filename.FileName(), script.length());
 				}
 				else {
@@ -73,6 +74,10 @@ namespace tec {
 			}
 			_log->trace("[Script] Loaded scriptfile {}", filename.FileName());
 			return true;
+		}
+
+		bool ReloadFromDisk() {
+			return this->Load(this->filename);
 		}
 
 		/**
@@ -139,6 +144,7 @@ namespace tec {
 	protected:
 		std::string name;
 		std::string script;
+		FilePath filename;
 		bool dirty{ false };
 	};
 }

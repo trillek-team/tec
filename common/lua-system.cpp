@@ -11,12 +11,36 @@
 namespace tec {
 	using LuaScriptMap = Multiton<eid, LuaScript*>;
 
+	int my_exception_handler(lua_State* L, sol::optional<const std::exception&> maybe_exception, sol::string_view description) {
+		// L is the lua state, which you can wrap in a state_view if necessary
+		// maybe_exception will contain exception, if it exists
+		// description will either be the what() of the exception or a description saying that we hit the general-case catch(...)
+		std::cout << "An exception occurred in a function, here's what it says ";
+		if (maybe_exception) {
+			std::cout << "(straight from the exception): ";
+			const std::exception& ex = *maybe_exception;
+			std::cout << ex.what() << std::endl;
+		}
+		else {
+			std::cout << "(from the description parameter): ";
+			std::cout.write(description.data(), description.size());
+			std::cout << std::endl;
+		}
+
+		// you must push 1 element onto the stack to be
+		// transported through as the error object in Lua
+		// note that Lua -- and 99.5% of all Lua users and libraries -- expects a string
+		// so we push a single string (in our case, the description of the error)
+		return sol::stack::push(L, description);
+	}
+
 	LuaSystem::LuaSystem() {
-		this->lua.open_libraries(sol::lib::base, sol::lib::package);
+		this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table);
 
 		this->lua["print"] = [] (std::string str) {
 			spdlog::get("console_log")->info(str);
 		};
+		this->lua.set_exception_handler(&my_exception_handler);
 	}
 
 	void LuaSystem::Update(const double delta) {
@@ -29,6 +53,12 @@ namespace tec {
 			if (!itr->second->script_name.empty() && itr->second->environment["onUpdate"].valid()) {
 				itr->second->environment["onUpdate"](delta);
 			}
+		}
+	}
+
+	void LuaSystem::Reload() {
+		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
+			itr->second->ReloadScript();
 		}
 	}
 

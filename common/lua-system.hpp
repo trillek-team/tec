@@ -37,7 +37,10 @@ namespace tec {
 		sol::state& GetGlobalState() {
 			return this->lua;
 		}
+
+		void Reload();
 	private:
 		sol::state lua;
+
 	};
 }
