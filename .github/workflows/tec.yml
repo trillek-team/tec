@@ -16,27 +16,32 @@ jobs:
             triplet: x86-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: cl
+            compilerXX: cl
           - os: windows-latest
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: clang
+            compilerXX: clang++
           - os: ubuntu-latest
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: gcc
+            compilerXX: g++
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: gcc
+            compilerXX: g++
             version: "7"
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: clang
+            compilerXX: clang++
     steps:
     - uses: actions/checkout@v2
       with:
@@ -76,7 +81,8 @@ jobs:
       uses: lukka/run-cmake@v3
       id: runcmake_cmd
       env:
-          CC: ${{ matrix.compiler }}
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compilerCXX }}
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
