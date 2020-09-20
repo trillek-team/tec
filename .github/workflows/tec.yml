@@ -15,14 +15,14 @@ jobs:
             arch: x86
             triplet: x86-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            CC: clang-cl
-            CXX: clang-cl
+            cc: clang-cl.exe
+            cxx: clang-cl.exe
           - os: windows-latest
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            CC: clang-cl
-            CXX: clang-cl
+            cc: clang-cl.exe
+            cxx: clang-cl.exe
           - os: windows-2016
             arch: x86
             triplet: x86-windows
@@ -50,6 +50,12 @@ jobs:
       with:
         submodules: true
     - uses: lukka/get-cmake@latest
+    - name: Set compiler to clang on windows-latest
+      uses: lukka/set-shell-env@v1
+      if: contains( matrix.os, 'windows-latest')
+      with:
+          CXX: ${{ matrix.cxx }}
+          CC: ${{ matrix.cc }}
     - name: Set vcpkg's response file path used as part of cache's key.
       uses: lukka/set-shell-env@v1
       with:
