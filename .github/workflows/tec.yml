@@ -21,8 +21,8 @@ jobs:
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: clang
-            compilerCXX: clang++
+            compiler: clang-cl
+            compilerCXX: clang-cl
           - os: windows-2016
             arch: x86
             triplet: x86-windows
@@ -39,14 +39,14 @@ jobs:
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: gcc-7
-            compilerCXX: g++-7
+            compiler: gcc
+            compilerCXX: g++
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: gcc
-            compilerCXX: g++
+            compiler: gcc-7
+            compilerCXX: g++-7
             version: "7"
           - os: macOS-latest
             arch: x64
