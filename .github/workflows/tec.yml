@@ -15,14 +15,17 @@ jobs:
             arch: x86
             triplet: x86-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            compiler: cl
           - os: windows-latest
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            compiler: clang
           - os: ubuntu-latest
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            compiler: gcc
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
@@ -33,6 +36,7 @@ jobs:
             arch: x64
             triplet: x64-osx
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            compiler: clang
     steps:
     - uses: actions/checkout@v2
       with:
@@ -71,6 +75,8 @@ jobs:
     - name:  Configure cmake and build
       uses: lukka/run-cmake@v3
       id: runcmake_cmd
+      env:
+          CC: ${{ matrix.compiler }}
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
