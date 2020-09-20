@@ -37,8 +37,9 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - uses: lukka/get-cmake@latest
     - name: Set vcpkg's response file path used as part of cache's key.
-      uses: lukka/set-shell-env@master
+      uses: lukka/set-shell-env@v1
       with:
         VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
         VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
@@ -60,7 +61,7 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Restore artifacts, or run vcpkg, build and cache artifacts
-      uses: lukka/run-vcpkg@v2.1
+      uses: lukka/run-vcpkg@v4
       id: runvcpkg
       with:
         vcpkgArguments: '@${{ env.VCPKGCOMMONRESPONSEFILE }} @${{ env.VCPKGRESPONSEFILE }}'
@@ -68,11 +69,10 @@ jobs:
         appendedCacheKey: '${{ hashFiles(env.VCPKGCOMMONRESPONSEFILE) }}${{ hashFiles(env.VCPKGRESPONSEFILE) }}'
         vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
     - name:  Configure cmake and build
-      uses: lukka/run-cmake@master
+      uses: lukka/run-cmake@v3
       id: runcmake_cmd
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
         useVcpkgToolchainFile: true
         buildWithCMake: true
-      
