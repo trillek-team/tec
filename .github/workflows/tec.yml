@@ -15,45 +15,36 @@ jobs:
             arch: x86
             triplet: x86-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: cl
-            compilerCXX: cl
+            CC: clang-cl
+            CXX: clang-cl
           - os: windows-latest
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: clang-cl
-            compilerCXX: clang-cl
+            CC: clang-cl
+            CXX: clang-cl
           - os: windows-2016
             arch: x86
             triplet: x86-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: cl
-            compilerCXX: cl
           - os: windows-2016
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: cl
-            compilerCXX: cl
           - os: ubuntu-latest
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: gcc
-            compilerCXX: g++
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: gcc-7
-            compilerCXX: g++-7
+            compiler: gcc
             version: "7"
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: clang
-            compilerCXX: clang++
     steps:
     - uses: actions/checkout@v2
       with:
@@ -92,9 +83,6 @@ jobs:
     - name:  Configure cmake and build
       uses: lukka/run-cmake@v3
       id: runcmake_cmd
-      env:
-        CC: ${{ matrix.compiler }}
-        CXX: ${{ matrix.compilerCXX }}
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
