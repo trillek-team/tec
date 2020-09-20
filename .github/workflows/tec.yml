@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, ubuntu-16.04, macOS-latest]
+        os: [windows-latest, windows-2016, ubuntu-latest, ubuntu-16.04, macOS-latest]
         arch: [x64]
         include:
           - os: windows-latest
@@ -16,32 +16,44 @@ jobs:
             triplet: x86-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: cl
-            compilerXX: cl
+            compilerCXX: cl
           - os: windows-latest
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: clang
-            compilerXX: clang++
+            compilerCXX: clang++
+          - os: windows-2016
+            arch: x86
+            triplet: x86-windows
+            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            compiler: cl
+            compilerCXX: cl
+          - os: windows-2016
+            arch: x64
+            triplet: x64-windows
+            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            compiler: cl
+            compilerCXX: cl
           - os: ubuntu-latest
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: gcc
-            compilerXX: g++
+            compiler: gcc-7
+            compilerCXX: g++-7
           - os: ubuntu-16.04
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: gcc
-            compilerXX: g++
+            compilerCXX: g++
             version: "7"
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             compiler: clang
-            compilerXX: clang++
+            compilerCXX: clang++
     steps:
     - uses: actions/checkout@v2
       with:
