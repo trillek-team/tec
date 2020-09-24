@@ -100,7 +100,7 @@ jobs:
         name: 'trillek-${{ matrix.os }}'
         path: |
             assets/
-            build/client/trillek-client*
-            build/client/Release/*.dll
-            build/server/trillek-server*
+            client/trillek-client*
+            client/Release/*.dll
+            server/trillek-server*
         if-no-files-found: ignore
