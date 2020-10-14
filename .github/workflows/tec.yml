@@ -101,7 +101,9 @@ jobs:
         name: 'trillek-${{ matrix.os }}'
         path: |
             assets/
-            ${{ github.workspace }}/build/client/trillek-client*
+            ${{ github.workspace }}/build/client/trillek-clientd
+            ${{ github.workspace }}/build/client/trillek-client.exe
             ${{ github.workspace }}/build/client/*.dll
-            ${{ github.workspace }}/build/server/trillek-server*
+            ${{ github.workspace }}/build/server/trillek-serverd
+            ${{ github.workspace }}/build/server/trillek-server.exe
         if-no-files-found: ignore
