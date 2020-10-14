@@ -94,17 +94,18 @@ jobs:
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
         useVcpkgToolchainFile: true
         buildWithCMake: true
+        buildDirectory: '${{ github.workspace }}/build'
     - name: Upload the build artifact
       uses: actions/upload-artifact@v2
       with:
         name: 'trillek-${{ matrix.os }}'
         path: |
             assets/
-            ${{ github.workspace }}/../../_temp/client/
-            ${{ github.workspace }}/../../_temp/client/trillek-clientd
-            ${{ github.workspace }}/../../_temp/client/trillek-client.exe
-            ${{ github.workspace }}/../../_temp/client/Release/*.dll
-            ${{ github.workspace }}/../../_temp/server/
-            ${{ github.workspace }}/../../_temp/server/trillek-serverd
-            ${{ github.workspace }}/../../_temp/server/trillek-server.exe
+            ${{ github.workspace }}/build/client/
+            ${{ github.workspace }}/build/client/trillek-clientd
+            ${{ github.workspace }}/build/client/trillek-client.exe
+            ${{ github.workspace }}/build/client/Release/*.dll
+            ${{ github.workspace }}/build/server/
+            ${{ github.workspace }}/build/server/trillek-serverd
+            ${{ github.workspace }}/build/server/trillek-server.exe
         if-no-files-found: ignore
