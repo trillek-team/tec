@@ -102,7 +102,6 @@ jobs:
         path: |
             assets/
             ${{ github.workspace }}/build/client/trillek-client*
-            ${{ github.workspace }}/build/client/Release/*.dll
-            ${{ github.workspace }}/build/server/trillek-serverd
-            ${{ github.workspace }}/build/server/trillek-server.exe
+            ${{ github.workspace }}/build/client/*.dll
+            ${{ github.workspace }}/build/server/trillek-server*
         if-no-files-found: ignore
