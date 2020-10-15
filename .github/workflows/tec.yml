@@ -1,15 +1,15 @@
 name: Trillek Engine CI
 
-on: [pull_request]
+on: [ pull_request ]
 
-jobs:      
+jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, windows-2016, ubuntu-latest, ubuntu-16.04, macOS-latest]
-        arch: [x64]
+        os: [ windows-latest, windows-2016, ubuntu-latest, ubuntu-16.04, macOS-latest ]
+        arch: [ x64 ]
         include:
           - os: windows-latest
             arch: x86
@@ -46,64 +46,99 @@ jobs:
             triplet: x64-osx
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
-    - uses: lukka/get-cmake@latest
-    - name: Set compiler to clang on windows-latest
-      uses: lukka/set-shell-env@v1
-      if: contains( matrix.os, 'windows-latest')
-      with:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: lukka/get-cmake@latest
+      - name: Set compiler to clang on windows-latest
+        uses: lukka/set-shell-env@v1
+        if: contains( matrix.os, 'windows-latest')
+        with:
           CXX: ${{ matrix.cxx }}
           CC: ${{ matrix.cc }}
-    - name: Set vcpkg's response file path used as part of cache's key.
-      uses: lukka/set-shell-env@v1
-      with:
-        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
-        VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
-    # Linux specific
-    - name: Install GCC 7 (Ubuntu 16.04 only)
-      if: matrix.os == 'ubuntu-16.04'
-      run: |
-        sudo apt-get update
-        if [ "${{ matrix.compiler }}" = "gcc" ]; then
-          sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
-          echo "::set-env name=CC::gcc-${{ matrix.version }}"
-          echo "::set-env name=CXX::g++-${{ matrix.version }}"
-        else
-          sudo apt-get install -y clang-${{ matrix.version }} g++-multilib
-          echo "::set-env name=CC::clang-${{ matrix.version }}"
-          echo "::set-env name=CXX::clang++-${{ matrix.version }}"
-        fi
-    - name: Install os deps (Linux)
-      if: runner.os == 'Linux'
-      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-    - name: Restore artifacts, or run vcpkg, build and cache artifacts
-      uses: lukka/run-vcpkg@v4
-      id: runvcpkg
-      with:
-        vcpkgArguments: '@${{ env.VCPKGCOMMONRESPONSEFILE }} @${{ env.VCPKGRESPONSEFILE }}'
-        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-        appendedCacheKey: '${{ hashFiles(env.VCPKGCOMMONRESPONSEFILE) }}${{ hashFiles(env.VCPKGRESPONSEFILE) }}'
-        vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
-    - name:  Configure cmake and build
-      uses: lukka/run-cmake@v3
-      id: runcmake_cmd
-      with:
-        cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-        useVcpkgToolchainFile: true
-        buildWithCMake: true
-        buildDirectory: '${{ github.workspace }}/build'
-    - name: Upload the build artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: 'trillek-${{ matrix.os }}'
-        path: |
+      - name: Set vcpkg's response file path used as part of cache's key.
+        uses: lukka/set-shell-env@v1
+        with:
+          VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
+          VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
+      # Linux specific
+      - name: Install GCC 7 (Ubuntu 16.04 only)
+        if: matrix.os == 'ubuntu-16.04'
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.compiler }}" = "gcc" ]; then
+            sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
+            echo "::set-env name=CC::gcc-${{ matrix.version }}"
+            echo "::set-env name=CXX::g++-${{ matrix.version }}"
+          else
+            sudo apt-get install -y clang-${{ matrix.version }} g++-multilib
+            echo "::set-env name=CC::clang-${{ matrix.version }}"
+            echo "::set-env name=CXX::clang++-${{ matrix.version }}"
+          fi
+      - name: Install os deps (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
+      - name: Restore artifacts, or run vcpkg, build and cache artifacts
+        uses: lukka/run-vcpkg@v4
+        id: runvcpkg
+        with:
+          vcpkgArguments: '@${{ env.VCPKGCOMMONRESPONSEFILE }} @${{ env.VCPKGRESPONSEFILE }}'
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          appendedCacheKey: '${{ hashFiles(env.VCPKGCOMMONRESPONSEFILE) }}${{ hashFiles(env.VCPKGRESPONSEFILE) }}'
+          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
+      - name: Configure cmake and build
+        uses: lukka/run-cmake@v3
+        id: runcmake_cmd
+        with:
+          cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          buildWithCMake: true
+          buildDirectory: '${{ github.workspace }}/build'
+      - name: Upload the build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'trillek-${{ matrix.os }}'
+          path: |
             assets/
-            ${{ github.workspace }}/build/client/trillek-clientd
+            ${{ github.workspace }}/build/client/trillek-client
             ${{ github.workspace }}/build/client/trillek-client.exe
             ${{ github.workspace }}/build/client/*.dll
             ${{ github.workspace }}/build/server/trillek-serverd
             ${{ github.workspace }}/build/server/trillek-server.exe
-        if-no-files-found: ignore
+          if-no-files-found: ignore
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Download a single artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: 'trillek-${{ matrix.os }}'
+      - name: Package release
+        run: |
+          zip --junk-paths -r -u  trillek-${{ matrix.os }} build/client
+          zip --junk-paths -r -u  trillek-${{ matrix.os }} build/server
+          zip -u trillek-${{ matrix.os }} assets/
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: './trillek-${{ matrix.os }}.zip'
+          asset_name: 'trillek-${{ matrix.os }}.zip'
+          asset_content_type: application/zip
