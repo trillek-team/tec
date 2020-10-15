@@ -10,8 +10,8 @@ charset = utf-8
 indent_style = tab
 indent_size = 4
 
-# If we need finetuning the rules for other files, we can add they here
-[CMakeList.txt]
+# If we need fine tuning the rules for other files, we can add they here
+[{CMakeList.txt, *.yml}]
 indent_style = space
 indent_size = 2
 
