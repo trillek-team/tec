@@ -1,6 +1,9 @@
 name: Trillek Engine CI
 
-on: [ pull_request ]
+on:
+  pull_request:
+  push:
+    tags: [ v* ]
 
 jobs:
   build:
