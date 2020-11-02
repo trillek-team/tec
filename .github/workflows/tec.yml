@@ -111,10 +111,14 @@ jobs:
             ${{ github.workspace }}/build/server/trillek-server.exe
           if-no-files-found: ignore
   publish:
-    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest, windows-2016, ubuntu-latest, ubuntu-16.04, macOS-latest ]
+        arch: [ x64 ]
     if: startsWith(github.ref, 'refs/tags/v')
     name: Upload Release Asset
-    runs-on: ubuntu-latest
     steps:
       - name: Create Release
         id: create_release
