@@ -141,8 +141,19 @@ message Computer {
 			required bool skiping = 7;
 			required bool sleeping = 8;
 		}
+		message DCPU16N {
+			repeated uint32 registers = 1;
+			required uint32 pc = 2;
+			required uint32 wait_cycles = 3;
+			required uint32 int_msg = 4;
+			required bool interrupt = 5;
+			required bool step_mode = 6;
+			required bool skiping = 7;
+			required bool sleeping = 8;
+		}
 		oneof cpu {
 			TR3200 tr3200 = 1;
+			DCPU16N dcpu16n = 2;
 		}
 	}
 	required CPU cpu = 3;

@@ -8,6 +8,7 @@
 #include <vcomputer.hpp>
 #include <auxiliar.hpp>
 #include <tr3200/tr3200.hpp>
+#include <dcpu16n/dcpu16n.hpp>
 #include <devices/tda.hpp>
 #include <devices/gkeyb.hpp>
 
@@ -47,6 +48,21 @@ namespace tec {
 				this->vc.SetCPU(std::move(trcpu));
 				this->vc.On();
 				this->vc.SetState(&state, sizeof(TR3200State));
+			}
+			break;
+			case proto::Computer::CPU::kDcpu16N:
+			{
+				const proto::Computer::CPU::DCPU16N& dcpu16n = cpu.dcpu16n();
+				DCPU16NState state;
+				for (int i = 0; i < dcpu16n.registers_size(); ++i) {
+					state.r[i] = dcpu16n.registers(i);
+				}
+				state.pc = dcpu16n.pc();
+				state.wait_cycles = dcpu16n.wait_cycles();
+				std::unique_ptr <DCPU16N> dcpucpu = std::make_unique<DCPU16N>();
+				this->vc.SetCPU(std::move(dcpucpu));
+				this->vc.On();
+				this->vc.SetState(&state, sizeof(DCPU16NState));
 			}
 			break;
 			case proto::Computer::CPU::CPU_NOT_SET:
