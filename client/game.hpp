@@ -25,9 +25,11 @@ namespace tec {
 
 	class Game {
 	public:
-		Game(const unsigned int viewport_width, const unsigned int viewport_height);
+		Game(std::string config_file_name = "scripts/config.lua");
 
 		~Game();
+
+		void Startup();
 
 		void Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height);
 
@@ -42,6 +44,8 @@ namespace tec {
 		LuaSystem* GetLuaSystem() {
 			return &this->lua_sys;
 		}
+
+		std::shared_ptr<LuaScript> config_script;
 
 	private:
 		static void UpdateVComputerScreenTextures();

@@ -23,7 +23,7 @@ namespace tec {
 			GBUFFER_DEPTH_TYPE_STENCIL
 		};
 
-		GBuffer();
+		GBuffer() {}
 		~GBuffer() {}
 		void AddColorAttachments(const unsigned int window_width, const unsigned int window_height);
 		void ResizeColorAttachments(const unsigned int window_width, const unsigned int window_height);

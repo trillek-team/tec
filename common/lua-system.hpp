@@ -12,6 +12,8 @@
 #include "types.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
+#include "filesystem.hpp"
+#include "components/lua-script.hpp"
 
 namespace tec {
 	class LuaSystem;
@@ -33,6 +35,8 @@ namespace tec {
 		void On(std::shared_ptr<EntityDestroyed> data);
 
 		void ExecuteString(std::string script_string);
+
+		std::shared_ptr<LuaScript> LoadFile(FilePath filepath);
 
 		sol::state& GetGlobalState() {
 			return this->lua;

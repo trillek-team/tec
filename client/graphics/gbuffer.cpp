@@ -4,10 +4,10 @@
 #include "gbuffer.hpp"
 
 namespace tec {
-	GBuffer::GBuffer() {
-		glGenFramebuffers(1, &this->frame_buffer_object);
-	}
 	void GBuffer::AddColorAttachments(const unsigned int window_width, const unsigned int window_height) {
+		if (this->frame_buffer_object == 0) {
+			glGenFramebuffers(1, &this->frame_buffer_object);
+		}
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
 		glGenTextures(this->num_color_textures, this->color_textures);
 		glGenTextures(1, &this->final_texture);

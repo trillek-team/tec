@@ -51,6 +51,10 @@ auto ParseLogLevel(int argc, char* argv[]) {
 	return loglevel;
 }
 
+const unsigned int WINDOW_WIDTH = 1024;
+const unsigned int WINDOW_HEIGHT = 768;
+const std::string ASPECT_RATIO = "16:9";
+
 int main(int argc, char* argv[]) {
 	tec::Console console;
 
@@ -58,22 +62,31 @@ int main(int argc, char* argv[]) {
 
 	log->info(std::string("Asset path: ") + tec::FilePath::GetAssetsBasePath().toString());
 
+	tec::Game game;
+
+	const unsigned int window_width = game.config_script->environment.get_or("window_width", WINDOW_WIDTH);
+	const unsigned int window_height = game.config_script->environment.get_or("window_height", WINDOW_HEIGHT);
+
 	log->info("Initializing OpenGL...");
 	tec::OS os;
-	if (!os.InitializeWindow(1024, 768, "TEC 0.1", 4, 0)) {
+	if (!os.InitializeWindow(window_width, window_height, "TEC 0.1", 4, 0)) {
 		log->info("Exiting. The context wasn't created properly please update drivers and try again.");
 		exit(1);
 	}
+
+	const std::string aspect_ratio = game.config_script->environment.get_or("aspect_ratio", ASPECT_RATIO);
+	auto numer = stoi(aspect_ratio.substr(0, aspect_ratio.find(':')));
+	auto denom = stoi(aspect_ratio.substr(aspect_ratio.find(':') + 1));
+	os.SetWindowAspectRatio(numer, denom);
 	console.AddConsoleCommand(
 		"exit",
 		"exit : Exit from TEC",
 		[&os] (const char*) {
 			os.Quit();
 		});
+	game.Startup();
 
-	tec::Game game(os.GetWindowWidth(), os.GetWindowHeight());
 	tec::ActiveEntityTooltip active_entity_tooltip(game);
-
 	tec::networking::ServerConnection& connection = game.GetServerConnection();
 	tec::ServerConnectWindow server_connect_window(connection);
 	tec::PingTimesWindow ping_times_window(connection);

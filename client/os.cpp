@@ -171,6 +171,10 @@ namespace tec {
 		glfwMakeContextCurrent(this->window);
 	}
 
+	void OS::SetWindowAspectRatio(const unsigned int numerator, const unsigned int denominator) {
+		glfwSetWindowAspectRatio(this->window, numerator, denominator);
+	}
+
 	GLFWmonitor* get_current_monitor(GLFWwindow* window) {
 		int nmonitors, i;
 		int wx, wy, ww, wh;
