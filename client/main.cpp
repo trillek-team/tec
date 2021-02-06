@@ -129,6 +129,18 @@ int main(int argc, char* argv[]) {
 			std::string message(args, end_arg - args);
 			lua_sys->ExecuteString(message);
 		});
+	console.AddConsoleCommand(
+		"connect",
+		"connect [ip] : Connect to a server [ip]",
+		[&connection] (const char* args) {
+			const char* end_arg = args;
+			while (*end_arg != '\0') {
+				end_arg++;
+			}
+			// Args now points were the arguments begins
+			std::string ip(args, end_arg - args);
+			connection.Connect(ip);
+		});
 	console.AddSlashHandler(
 		[&lua_sys] (const char* args) {
 			const char* end_arg = args;
