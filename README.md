@@ -49,4 +49,4 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
 1. Run it from `tec/`
 
 ### Unit tests
-To generate the unit tests, follow the same instructions that before, but set to true the flag BUILD_TESTS_TEC
+To generate the unit tests, follow the same instructions from before, but set to true the flag BUILD_TESTS_TEC
