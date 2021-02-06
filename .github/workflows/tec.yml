@@ -145,9 +145,9 @@ jobs:
           name: 'trillek-${{ matrix.os }}'
       - name: Package release
         run: |
-          zip --junk-paths -r -u  trillek-${{ matrix.os }} build/client
-          zip --junk-paths -r -u  trillek-${{ matrix.os }} build/server
-          zip -r -u trillek-${{ matrix.os }} assets/
+          zip --junk-paths -r -u  trillek-${{ matrix.os }}.zip build/client
+          zip --junk-paths -r -u  trillek-${{ matrix.os }}.zip build/server
+          zip -r -u trillek-${{ matrix.os }}.zip assets/
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
