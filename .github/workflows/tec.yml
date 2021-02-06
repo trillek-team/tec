@@ -1,21 +1,36 @@
 name: Trillek Engine CI
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    tags: [ v* ]
 
-jobs:      
+jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, ubuntu-latest, ubuntu-16.04, macOS-latest]
-        arch: [x64]
+        os: [ windows-2016, ubuntu-latest, ubuntu-16.04, macOS-latest ]
+        arch: [ x64 ]
         include:
-          - os: windows-latest
+#          - os: windows-latest
+#            arch: x86
+#            triplet: x86-windows
+#            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+#            cc: clang
+#            cxx: clang
+#          - os: windows-latest
+#            arch: x64
+#            triplet: x64-windows
+#            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+#            cc: clang
+#            cxx: clang
+          - os: windows-2016
             arch: x86
             triplet: x86-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-          - os: windows-latest
+          - os: windows-2016
             arch: x64
             triplet: x64-windows
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
