@@ -1,6 +1,3 @@
-
-
-
 #include "material.hpp"
 
 #include "texture-object.hpp"

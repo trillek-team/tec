@@ -1,6 +1,3 @@
-
-
-
 #include "texture-object.hpp"
 
 #include <spdlog/spdlog.h>

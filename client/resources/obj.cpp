@@ -1,6 +1,3 @@
-
-
-
 #include "obj.hpp"
 
 #include <fstream>

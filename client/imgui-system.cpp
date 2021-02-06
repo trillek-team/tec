@@ -1,6 +1,3 @@
-
-
-
 #include "imgui-system.hpp"
 
 #include <spdlog/spdlog.h>

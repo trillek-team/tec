@@ -1,6 +1,3 @@
-
-
-
 #include "sound-system.hpp"
 
 #include "event-system.hpp"

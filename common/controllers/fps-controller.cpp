@@ -1,6 +1,3 @@
-
-
-
 #include "controllers/fps-controller.hpp"
 
 #include <iostream>

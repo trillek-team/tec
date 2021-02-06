@@ -1,6 +1,3 @@
-
-
-
 #include "collision-body.hpp"
 
 namespace tec {

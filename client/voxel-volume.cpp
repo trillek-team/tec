@@ -1,6 +1,3 @@
-
-
-
 #include "voxel-volume.hpp"
 
 #include <cmath>

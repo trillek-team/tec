@@ -1,6 +1,3 @@
-
-
-
 #include "gbuffer.hpp"
 
 namespace tec {

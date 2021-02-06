@@ -1,6 +1,3 @@
-
-
-
 #include "server-connection.hpp"
 #include "events.hpp"
 #include "event-system.hpp"

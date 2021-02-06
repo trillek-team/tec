@@ -1,6 +1,3 @@
-
-
-
 #pragma once
 
 #ifndef __APPLE__

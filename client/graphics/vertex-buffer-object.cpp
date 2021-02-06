@@ -1,6 +1,3 @@
-
-
-
 #include "vertex-buffer-object.hpp"
 
 #include "resources/mesh.hpp"

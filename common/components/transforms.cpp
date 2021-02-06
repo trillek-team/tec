@@ -1,6 +1,3 @@
-
-
-
 #include "transforms.hpp"
 
 namespace tec {

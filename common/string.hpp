@@ -1,6 +1,3 @@
-
-
-
 #pragma once
 /**
 * String handling stuff

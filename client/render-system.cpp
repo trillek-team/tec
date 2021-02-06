@@ -1,6 +1,3 @@
-
-
-
 #include "render-system.hpp"
 
 #include <thread>

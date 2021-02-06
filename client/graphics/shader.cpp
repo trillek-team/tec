@@ -1,6 +1,3 @@
-
-
-
 #include "shader.hpp"
 
 #include <iterator>

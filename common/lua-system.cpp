@@ -1,6 +1,3 @@
-
-
-
 #include "lua-system.hpp"
 
 #include "entity.hpp"

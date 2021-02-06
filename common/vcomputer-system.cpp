@@ -1,6 +1,3 @@
-
-
-
 #include "vcomputer-system.hpp"
 
 #include <GLFW/glfw3.h> // TODO: included for key constants

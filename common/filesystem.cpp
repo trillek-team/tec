@@ -1,6 +1,3 @@
-
-
-
 #include "filesystem.hpp"
 
 #include <fstream>

@@ -1,6 +1,3 @@
-
-
-
 #include "simulation.hpp"
 
 #include <thread>

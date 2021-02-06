@@ -1,6 +1,3 @@
-
-
-
 #pragma once
 /**
  * Ring buffer implementation

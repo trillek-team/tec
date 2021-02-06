@@ -1,6 +1,3 @@
-
-
-
 #ifndef TRILLEK_COMMON_TYPES_HPP
 #define TRILLEK_COMMON_TYPES_HPP
 

@@ -1,6 +1,3 @@
-
-
-
 #include "md5anim.hpp"
 
 #include <fstream>

@@ -1,6 +1,3 @@
-
-
-
 #include "animation.hpp"
 
 #include <vector>

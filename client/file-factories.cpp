@@ -1,6 +1,3 @@
-
-
-
 #include <functional>
 #include <unordered_map>
 

@@ -1,6 +1,3 @@
-
-
-
 #include "vorbis-stream.hpp"
 
 #include <spdlog/spdlog.h>

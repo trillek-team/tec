@@ -1,6 +1,3 @@
-
-
-
 #include "physics-system.hpp"
 
 // #include "physics/physics-debug-drawer.hpp"

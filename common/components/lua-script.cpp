@@ -1,6 +1,3 @@
-
-
-
 #include "lua-script.hpp"
 
 #include <memory>

@@ -1,6 +1,3 @@
-﻿
-
-
 #include "string.hpp"
 
 #include <algorithm>

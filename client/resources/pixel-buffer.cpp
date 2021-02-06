@@ -1,6 +1,3 @@
-
-
-
 #include "pixel-buffer.hpp"
 
 #include <cstring>

@@ -1,6 +1,3 @@
-
-
-
 #include "md5mesh.hpp"
 
 #include <fstream>

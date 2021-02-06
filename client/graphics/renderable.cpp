@@ -1,6 +1,3 @@
-
-
-
 #include "renderable.hpp"
 
 #include "resources/mesh.hpp"
