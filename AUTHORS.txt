@@ -15,6 +15,7 @@
  * jmf
  * Miles Rout <miles.rout@gmail.com>
  * Daniel Ekmann <daniel@ekmann.net>
+ * Dimaguy <Discord: Dimaguy#7491>
 
 
 --==General Licensing==--
@@ -32,11 +33,6 @@ The license text is available in licenses/cc-by-sa-4.0.txt
 
 --==Parts with other licensing==--
 
-*modules/FindGLEW.cmake
-Copyright 2012 Benjamin Eikel
-Distributed under the terms of the OSI-approved BSD license.
-The license text is available in licenses/bsd.txt
-
 *include/resources/stb_vorbis.c
 Released into public domain
 http://nothings.org/stb_vorbis/
@@ -48,52 +44,7 @@ http://nothings.org/stb_image.h
 
 --==Dependencies in the deps/ folder as git submodules==--
 
-*selene
-Copyright (c) 2013 Jeremy Ong
-Distributed under the terms of the zlib license.
-The license text is available in licenses/zlib.txt
-
 *trillek-vcomputer
 Copyright (c) 2013-2016 Trillek contributors
 Distributed under the terms of the GNU LESSER GENERAL PUBLIC LICENSE, Version 3.
 The license text is available in licenses/lgpl-3.0.txt
-
---==Dependencies included using vcpkg package manager (not part of Trillek)==--
-
-* asio
-Distributed under the terms of the Boost Software License, Version 1.0.
-The license text is available in licenses/bsl-1.0.txt
-
-* bullet3
-The files in that repository are licensed under the zlib license, except for the files under 'Extras' and examples/ThirdPartyLibs.
-The license text is available in licenses/zlib.txt
-
-* glfw3
-Copyright (c) 2002-2006 Marcus Geelnard
-Copyright (c) 2006-2010 Camilla Berglund <elmindreda@elmindreda.org>
-The license text is available in licenses/glfw.txt
-
-* glm
-Copyright (c) 2005 - 2015 G-Truc Creation
-GLM can be distributed and/or modified under the terms of either
-a) The Happy Bunny License, or b) the MIT License.
-The Happy Bunny License text is available in licenses/hbl.txt
-The MIT license is available in licenses/mit.txt
-
-* imgui
-Copyright (c) 2014-2015 Omar Cornut and ImGui contributors
-Distributed under the terms of the MIT license.
-The MIT license is available in licenses/mit.txt
-
-* openal-soft
-Distributed under the terms of the GNU LESSER GENERAL PUBLIC LICENSE, Version 2.0.
-The license text is available in licenses/lgpl-2.0.txt
-
-* protobuf
-Copyright 2014, Google Inc.  All rights reserved.
-The license text is available in licenses/protobuf.txt
-
-* spdlog
-Copyright (c) 2016 Gabi Melman
-Distributed under the terms of the MIT license.
-The license text is available in licenses/mit.txt
