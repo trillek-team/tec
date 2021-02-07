@@ -43,8 +43,8 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
 ##### VCPKG (G++ 7 or CLang 4)
    1. `cmake -DCMAKE_TOOLCHAIN_FILE=**VCPKG_DIR**/scripts/buildsystems/vcpkg.cmake ..` in the build directory
    1. `make` in the build directory
-##### G++ 7 or CLang 4 (Unsupported due to cmake)
-   1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, spdlog, Dear ImGui, sol3(also known as sol2), and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC.)
+##### NON-VCPKG - G++ 7 or CLang 4 (Unsupported due to cmake)
+   1. **INSTALL REQUIRED LIBS** bullet, glew, glfw3, glm, asio, lua, openal-soft, spdlog, Dear ImGui, sol3(also known as sol2), and protobuf. Some of these will need versions not in your distribution (just ask for help in the IRC or Discord.)
       1. If you are on Ubuntu/Debian/etc. (something with `apt`):
          1. Run `apt-get install libglew-dev libglfw3 libglm-dev libasio-dev`
          2. Run `apt-get install liblua5.2-dev libopenal-dev  libbullet-dev`
