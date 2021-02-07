@@ -58,7 +58,6 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
    1. `brew install bullet`
    1. `cmake -DCMAKE_TOOLCHAIN_FILE=**VCPKG_DIR**/scripts/buildsystems/vcpkg.cmake ..` in the build directory
    1. `make` in the build directory
-   1. Run it from `tec/`
 
 ### Part 3 (Unit Tests)
 To generate the unit tests, follow the same instructions from before, but set to true the flag BUILD_TESTS_TEC
