@@ -31,7 +31,7 @@ namespace tec {
 	using AnimationMap = Multiton<eid, Animation*>;
 	using ScaleMap = Multiton<eid, Scale*>;
 
-	RenderSystem::RenderSystem() {
+	void RenderSystem::Startup() {
 		_log = spdlog::get("console_log");
 
 		GLenum err = glGetError();

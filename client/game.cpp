@@ -1,6 +1,7 @@
 #include "game.hpp"
 
 #include <devices/tda.hpp>
+#include <default-config.hpp>
 
 #include "controllers/fps-controller.hpp"
 #include "server-message.hpp"
@@ -12,15 +13,17 @@
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/renderable.hpp"
 #include "resources/pixel-buffer.hpp"
+#include "components/lua-script.hpp"
 
 namespace tec {
 	using networking::ServerMessage;
 	using networking::MessageType;
 
-	Game::Game(const unsigned int viewport_width, const unsigned int viewport_height) :
+	Game::Game(std::string config_file_name) :
 		ps(this->simulation.GetPhysicsSystem()),
 		vcs(this->simulation.GetVComputerSystem()),
 		sound_thread([this] () { ss.Update(); }) {
+		this->config_script = this->lua_sys.LoadFile(FilePath::GetAssetPath(config_file_name));
 		this->server_connection.RegisterMessageHandler(
 			MessageType::CLIENT_ID,
 			[this] (const ServerMessage&) {
@@ -45,11 +48,17 @@ namespace tec {
 						server_connection.StartSync();
 					});
 			});
+	}
 
-		this->rs.SetViewportSize(viewport_width, viewport_height);
+	void Game::Startup() {
+		this->rs.Startup();
+		const unsigned int window_width = this->config_script->environment.get_or("window_width", WINDOW_WIDTH);
+		const unsigned int window_height = this->config_script->environment.get_or("window_height", WINDOW_HEIGHT);
+		this->rs.SetViewportSize(window_width, window_height);
 	}
 
 	Game::~Game() {
+		this->config_script.reset();
 		this->ss.Stop();
 		this->sound_thread.join();
 

@@ -38,7 +38,7 @@ namespace tec {
 		public EventQueue<WindowResizedEvent>,
 		public EventQueue<EntityDestroyed>, public EventQueue<EntityCreated> {
 	public:
-		RenderSystem();
+		void Startup();
 
 		void SetViewportSize(const unsigned int width, const unsigned int height);
 

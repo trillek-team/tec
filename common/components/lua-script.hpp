@@ -25,6 +25,6 @@ namespace tec {
 		std::shared_ptr<ScriptFile> script;
 
 		sol::environment environment;
-		sol::state* global_state;
+		sol::state* global_state = nullptr;
 	};
 }

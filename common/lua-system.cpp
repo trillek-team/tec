@@ -3,13 +3,13 @@
 #include "entity.hpp"
 #include "events.hpp"
 #include "multiton.hpp"
-#include "components/lua-script.hpp"
+#include "resources/script-file.hpp"
 
 namespace tec {
 	using LuaScriptMap = Multiton<eid, LuaScript*>;
 
 	LuaSystem::LuaSystem() {
-		this->lua.open_libraries(sol::lib::base, sol::lib::package);
+		this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table);
 
 		this->lua["print"] = [] (std::string str) {
 			spdlog::get("console_log")->info(str);
@@ -60,6 +60,13 @@ namespace tec {
 				break;
 			}
 		}
+	}
+
+	std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
+		std::shared_ptr<LuaScript> script = std::make_shared<LuaScript>(ScriptFile::Create(filepath));
+		script->SetupEnvironment(&this->lua);
+		script->ReloadScript();
+		return script;
 	}
 
 	void LuaSystem::On(std::shared_ptr<EntityDestroyed> data) {

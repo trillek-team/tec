@@ -43,6 +43,11 @@ namespace tec {
 		*/
 		void MakeCurrent();
 
+		/** \brief Sets the desired window aspect ratio numerator:denominator e.g. 16:9, 4:3
+		*
+		*/
+		void SetWindowAspectRatio(const unsigned int numerator = 16, const unsigned int denominator = 9);
+
 		/** \brief Toggles between fullscreen and windowed mode based.
 		*
 		*/
