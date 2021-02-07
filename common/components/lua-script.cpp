@@ -19,9 +19,9 @@ namespace tec {
 		this->ReloadScript();
 	}
 
-	void LuaScript::SetupEnvironment(sol::state* global_state) {
-		this->global_state = global_state;
-		this->environment = sol::environment(*global_state, sol::create, global_state->globals());
+	void LuaScript::SetupEnvironment(sol::state* _global_state) {
+		this->global_state = _global_state;
+		this->environment = sol::environment(*this->global_state, sol::create, this->global_state->globals());
 	}
 
 	void LuaScript::ReloadScript() {

@@ -1,6 +1,7 @@
 #include "game.hpp"
 
 #include <devices/tda.hpp>
+#include <default-config.hpp>
 
 #include "controllers/fps-controller.hpp"
 #include "server-message.hpp"
@@ -51,8 +52,8 @@ namespace tec {
 
 	void Game::Startup() {
 		this->rs.Startup();
-		const unsigned int window_width = this->config_script->environment.get_or("window_width", 800);
-		const unsigned int window_height = this->config_script->environment.get_or("window_height", 800);
+		const unsigned int window_width = this->config_script->environment.get_or("window_width", WINDOW_WIDTH);
+		const unsigned int window_height = this->config_script->environment.get_or("window_height", WINDOW_HEIGHT);
 		this->rs.SetViewportSize(window_width, window_height);
 	}
 

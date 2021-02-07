@@ -2,8 +2,12 @@
 // Licensed under the terms of the LGPLv3. See licenses/lgpl-3.0.txt
 
 #include <iostream>
+#include <numeric>
+#include <sstream>
 #include <string>
 #include <thread>
+
+#include <default-config.hpp>
 
 #include "game.hpp"
 
@@ -51,9 +55,25 @@ auto ParseLogLevel(int argc, char* argv[]) {
 	return loglevel;
 }
 
-const unsigned int WINDOW_WIDTH = 1024;
-const unsigned int WINDOW_HEIGHT = 768;
-const std::string ASPECT_RATIO = "16:9";
+/**
+* \brief Finds an approximate aspect ratio
+* Adapated from https://www.geeksforgeeks.org/convert-given-decimal-number-into-an-irreducible-fraction/
+* Could be further enhanced to compare values against a known set of ratios to find the best match
+* \return std:string The aspect ratio in the form of "A:B"
+*/
+std::string CalculateAspectRatioString(const unsigned int window_width, const unsigned int window_height) {
+	double ratio = static_cast<double>(window_width) / static_cast<double>(window_height);
+	double intVal = std::floor(ratio);
+	double precision = 1000;
+	double fraction = std::round((ratio - intVal) * precision);
+	double gcd = std::gcd(static_cast<int>(fraction), static_cast<int>(precision));
+	double numer = fraction / gcd;
+	double denom = precision / gcd;
+
+	std::ostringstream aspect_ratio;
+	aspect_ratio << static_cast<int>(std::round((intVal * denom) + numer)) << ":" << static_cast<int>(std::round(denom));
+	return aspect_ratio.str();
+}
 
 int main(int argc, char* argv[]) {
 	tec::Console console;
@@ -74,7 +94,8 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-	const std::string aspect_ratio = game.config_script->environment.get_or("aspect_ratio", ASPECT_RATIO);
+	const std::string default_aspect_ratio = CalculateAspectRatioString(window_width, window_height);
+	const std::string aspect_ratio = game.config_script->environment.get_or("aspect_ratio", default_aspect_ratio);
 	auto numer = stoi(aspect_ratio.substr(0, aspect_ratio.find(':')));
 	auto denom = stoi(aspect_ratio.substr(aspect_ratio.find(':') + 1));
 	os.SetWindowAspectRatio(numer, denom);
