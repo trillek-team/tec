@@ -69,6 +69,7 @@ namespace tec {
 
 	struct KeyboardEvent;
 	struct MouseBtnEvent;
+	struct MouseClickEvent;
 	struct EntityCreated;
 	struct EntityDestroyed;
 
@@ -76,6 +77,7 @@ namespace tec {
 		public CommandQueue<VComputerSystem>,
 		public EventQueue<KeyboardEvent>,
 		public EventQueue<MouseBtnEvent>,
+		public EventQueue<MouseClickEvent>,
 		public EventQueue < EntityCreated >,
 		public EventQueue < EntityDestroyed > {
 	public:
@@ -129,10 +131,12 @@ namespace tec {
 
 		using EventQueue<KeyboardEvent>::On;
 		using EventQueue<MouseBtnEvent>::On;
+		using EventQueue<MouseClickEvent>::On;
 		using EventQueue<EntityCreated>::On;
 		using EventQueue<EntityDestroyed>::On;
 		void On(std::shared_ptr<KeyboardEvent> data);
 		void On(std::shared_ptr<MouseBtnEvent> data);
+		void On(std::shared_ptr<MouseClickEvent> data);
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
 	private:

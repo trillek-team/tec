@@ -215,6 +215,7 @@ namespace tec {
 	void VComputerSystem::Update(double _delta) {
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
 		EventQueue<MouseBtnEvent>::ProcessEventQueue();
+		EventQueue<MouseClickEvent>::ProcessEventQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
 		for (auto computer_itr = ComputerComponentMap::Begin(); computer_itr != ComputerComponentMap::End(); ++computer_itr) {
@@ -293,6 +294,11 @@ namespace tec {
 				if (data->key == GLFW_KEY_ESCAPE) {
 					if (KeyboardComponentMap::Has(this->active_entity)) {
 						KeyboardComponentMap::Get(this->active_entity)->has_focus = false;
+						std::shared_ptr<FocusBlurEvent> blur_data = std::make_shared<FocusBlurEvent>();
+						blur_data->entity_id = this->active_entity;
+						blur_data->keyboard = true;
+						EventSystem<FocusBlurEvent>::Get()->Emit(blur_data);
+						this->active_entity = -1;
 					}
 				}
 				else if (data->key == GLFW_KEY_BACKSPACE) {
@@ -314,9 +320,34 @@ namespace tec {
 			for (auto keyboard_itr = KeyboardComponentMap::Begin();
 				 keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
 				if (keyboard_itr->first == this->active_entity) {
-					keyboard_itr->second->has_focus = true;
+					// Send mouse input to keyboard?
+					// This would be how to send generic input to device
 				}
 			}
+		}
+	}
+
+	void VComputerSystem::On(std::shared_ptr<MouseClickEvent> data) {
+		if (this->active_entity != data->entity_id) {
+			// Remove focus from the old keyboard
+			for (auto keyboard_itr = KeyboardComponentMap::Begin();
+				keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
+				if (keyboard_itr->first == this->active_entity) {
+					keyboard_itr->second->has_focus = false;
+				}
+			}
+		}
+		for (auto keyboard_itr = KeyboardComponentMap::Begin();
+				keyboard_itr != KeyboardComponentMap::End(); ++keyboard_itr) {
+			// Add focus to the new keyboard and send notification out about the focus capture
+			if (keyboard_itr->first == data->entity_id) {
+				this->active_entity = keyboard_itr->first;
+				keyboard_itr->second->has_focus = true;
+				std::shared_ptr<FocusCapturedEvent> focus_data = std::make_shared<FocusCapturedEvent>();
+				focus_data->entity_id = this->active_entity;
+				focus_data->keyboard = true;
+				EventSystem<FocusCapturedEvent>::Get()->Emit(focus_data);
+			} 
 		}
 	}
 	void VComputerSystem::On(std::shared_ptr<EntityCreated> data) {
@@ -329,6 +360,11 @@ namespace tec {
 					Computer* computer = new Computer();
 					computer->In(comp);
 					ComputerComponentMap::Set(entity_id, computer);
+					for (auto device : computer->devices) {
+						if (device.second->device->DevType() == 0x03) { // 0x03 is keyboard DevType
+							KeyboardComponentMap::Set(entity_id, static_cast<ComputerKeyboard*>(device.second.get()));
+						}
+					}
 				}
 				break;
 				case proto::Component::kCollisionBody:

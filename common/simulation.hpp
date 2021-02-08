@@ -24,7 +24,8 @@ namespace tec {
 		public EventQueue<KeyboardEvent>, public EventQueue<MouseBtnEvent>,
 		public EventQueue<MouseMoveEvent>, public EventQueue<MouseClickEvent>,
 		public EventQueue<ClientCommandsEvent>, public EventQueue<ControllerAddedEvent>,
-		public EventQueue<ControllerRemovedEvent> {
+		public EventQueue<ControllerRemovedEvent>, public EventQueue<FocusCapturedEvent>,
+		public EventQueue<FocusBlurEvent> {
 	public:
 		GameState Simulate(const double delta_time, GameState& interpolated_state);
 
@@ -53,6 +54,8 @@ namespace tec {
 		void On(std::shared_ptr<ClientCommandsEvent> data);
 		void On(std::shared_ptr<ControllerAddedEvent> data);
 		void On(std::shared_ptr<ControllerRemovedEvent> data);
+		void On(std::shared_ptr<FocusCapturedEvent> data);
+		void On(std::shared_ptr<FocusBlurEvent> data);
 	private:
 		PhysicsSystem phys_sys;
 		VComputerSystem vcomp_sys;
