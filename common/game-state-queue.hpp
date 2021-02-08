@@ -8,7 +8,7 @@
 #include "event-queue.hpp"
 #include "event-system.hpp"
 #include "game-state.hpp"
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	class GameStateQueue : public EventQueue<EntityCreated>,

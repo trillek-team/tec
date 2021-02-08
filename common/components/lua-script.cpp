@@ -3,7 +3,7 @@
 #include <memory>
 #include <map>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "resources/script-file.hpp"
 
 namespace tec {

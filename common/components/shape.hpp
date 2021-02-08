@@ -3,7 +3,7 @@
 #include <memory>
 #include <functional>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	struct Shape {

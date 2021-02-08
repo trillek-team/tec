@@ -4,7 +4,7 @@
 #include <components.pb.h>
 #include <commands.pb.h>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	struct MouseHover {

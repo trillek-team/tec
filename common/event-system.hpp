@@ -5,7 +5,7 @@
 #include <memory>
 #include <mutex>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "event-queue.hpp"
 
 namespace tec {

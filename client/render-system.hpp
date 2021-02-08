@@ -11,7 +11,7 @@
 #include <OpenGL/gl3.h>
 #endif
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "game-state.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"

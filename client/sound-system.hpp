@@ -14,7 +14,7 @@
 #include "multiton.hpp"
 #include "entity.hpp"
 #include "events.hpp"
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "command-queue.hpp"
 #include "event-queue.hpp"
 

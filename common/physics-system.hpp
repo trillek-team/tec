@@ -6,7 +6,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <glm/glm.hpp>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "command-queue.hpp"
 #include "event-system.hpp"
 #include "game-state.hpp"

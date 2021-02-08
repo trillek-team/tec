@@ -6,7 +6,7 @@
 
 #include <game_state.pb.h>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "components/transforms.hpp"
 #include "components/velocity.hpp"
 #include "events.hpp"

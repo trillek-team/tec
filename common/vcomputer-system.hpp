@@ -7,7 +7,7 @@
 #include <vcomputer.hpp>
 #include <spdlog/spdlog.h>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
 #include "multiton.hpp"

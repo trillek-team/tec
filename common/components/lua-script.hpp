@@ -6,7 +6,7 @@
 #include <sol/sol.hpp>
 #include <components.pb.h>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	class ScriptFile;

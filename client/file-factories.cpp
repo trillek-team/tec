@@ -7,7 +7,7 @@
 #include "resources/vorbis-stream.hpp"
 #include "resources/script-file.hpp"
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "filesystem.hpp"
 
 namespace tec {

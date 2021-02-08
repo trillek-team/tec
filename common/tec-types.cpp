@@ -5,7 +5,7 @@
  */
 
 #define __TYPES_CPP_
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	
