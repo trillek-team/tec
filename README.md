@@ -58,8 +58,7 @@ Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/Comma
    1. `cmake ..` in the build directory
    1. `make tec` in the build directory
 
-#### Mac OS (10.15 Recommended, 10.14 Should work)
-   1. `brew install bullet`
+#### Mac OS
    1. `cmake -DCMAKE_TOOLCHAIN_FILE=**VCPKG_DIR**/scripts/buildsystems/vcpkg.cmake ..` in the build directory
    1. `make` in the build directory
 
