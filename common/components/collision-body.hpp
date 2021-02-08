@@ -5,7 +5,7 @@
 #include <btBulletCollisionCommon.h>
 #include <btBulletDynamicsCommon.h>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	ATTRIBUTE_ALIGNED16(struct) CollisionBody {

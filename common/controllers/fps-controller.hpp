@@ -4,7 +4,7 @@
 
 #include <commands.pb.h>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "game-state.hpp"
 #include "events.hpp"
 

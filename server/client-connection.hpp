@@ -5,7 +5,7 @@
 #include <mutex>
 #include <deque>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "server-message.hpp"
 #include "game-state.hpp"
 

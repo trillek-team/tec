@@ -27,6 +27,7 @@
 *.out
 *.app
 *.pyc
+*.lnk
 
 # macOS stuff
 *.DS_Store

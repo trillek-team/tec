@@ -6,7 +6,7 @@
 #include <spdlog/spdlog.h>
 #include <sol/sol.hpp>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 #include "event-system.hpp"
 #include "command-queue.hpp"
 #include "filesystem.hpp"

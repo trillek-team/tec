@@ -6,7 +6,7 @@
 #include <cstring>
 #include <cinttypes>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	namespace networking {

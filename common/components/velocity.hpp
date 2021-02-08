@@ -3,7 +3,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <glm/glm.hpp>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	struct Velocity {

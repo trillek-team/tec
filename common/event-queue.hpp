@@ -4,7 +4,7 @@
 #include <memory>
 #include <atomic>
 
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	// Container to hold event data. This is stored in the queue rather than raw event data.

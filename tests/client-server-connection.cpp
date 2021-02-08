@@ -9,7 +9,7 @@
 #include <spdlog/sinks/stdout_sinks.h>
 #include "server/server.hpp"
 #include "client/server-connection.hpp"
-#include "types.hpp"
+#include "tec-types.hpp"
 
 TEST(ClientServerConnection_test, Constructor) {
 	std::vector<spdlog::sink_ptr> sinks;

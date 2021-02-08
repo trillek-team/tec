@@ -2,7 +2,7 @@
 
 #include <map>
 #include <vector>
-#include "types.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	/* Based class to be used for instance or state storage.
