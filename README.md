@@ -24,7 +24,7 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
 Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /` if `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help
 
 	./bootstrap-vcpkg.sh
-**OPTIONAL** 	./vcpkg integrate install
+	**OPTIONAL** ./vcpkg integrate install
 	./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2
 
 #### Linux
