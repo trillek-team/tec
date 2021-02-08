@@ -51,13 +51,20 @@ set(trillek-client_SOURCES ${trillek-client_SOURCES} PARENT_SCOPE) # so tests ca
 
 # macOS needs to link libobjc
 set(OSX_LIBRARIES "")
-if (APPLE)
-	set(OSX_LIBRARIES "/usr/lib/libobjc.dylib")
-	
+
+IF (APPLE)
+	EXEC_PROGRAM(uname ARGS -v OUTPUT_VARIABLE DARWIN_VERSION)
+	STRING(REGEX MATCH "[0-9]+" DARWIN_VERSION ${DARWIN_VERSION})
+
+	IF (DARWIN_VERSION LESS 20)
+		# No longer needed as of 11.0.1, see issue #179
+		set(OSX_LIBRARIES "/usr/lib/libobjc.dylib")
+	ENDIF (DARWIN_VERSION LESS 20)
+
 	# Rather wonderfully, Apple decided to mark every single fucking OpenGL function
 	# as deprecated because they have 'deprecated' OpenGL. Brilliant!
-    add_definitions(-DGL_SILENCE_DEPRECATION)
-endif (APPLE)
+	add_definitions(-DGL_SILENCE_DEPRECATION)
+ENDIF(APPLE)
 
 if (UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
