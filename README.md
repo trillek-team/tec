@@ -18,16 +18,16 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
 	`./bootstrap-vcpkg.bat`
 	**OPTIONAL** `./vcpkg integrate install`
 	`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
-#### MacOS (NOT TESTED) 
-	 `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /` if `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help
-	 `./bootstrap-vcpkg.sh`
-	 **OPTIONAL** `./vcpkg integrate install`
-	 `./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
+#### MacOS
+	Prior to 11.0.1, first run (NOT TESTED): `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /` if `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help 
+	./bootstrap-vcpkg.sh
+	**OPTIONAL** ./vcpkg integrate install
+	./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2
 #### Linux
-	 `apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
-	 `./bootstrap-vcpkg.sh`
-	 **OPTIONAL** `./vcpkg integrate install`
-	 `./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
+	`apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
+	`./bootstrap-vcpkg.sh`
+	**OPTIONAL** `./vcpkg integrate install`
+	`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
 
 ### Part 2 (Building)
 1. `git submodule update --init` in the root directory.
