@@ -14,20 +14,24 @@ TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua
 ### Part 1 (VCPKG/Requirements)
 1. `git clone https://github.com/Microsoft/vcpkg.git` (If you already have **VCPKG**, move onto Part 2))
 1. Navigate to the `vcpkg/` directory.
+
 #### Windows
-	`./bootstrap-vcpkg.bat`
-	**OPTIONAL** `./vcpkg integrate install`
-	`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
+`./bootstrap-vcpkg.bat`
+**OPTIONAL** `./vcpkg integrate install`
+`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
+
 #### MacOS
-	Prior to 11.0.1, first run (NOT TESTED): `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /` if `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help 
-	./bootstrap-vcpkg.sh
-	**OPTIONAL** ./vcpkg integrate install
-	./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2
+Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /` if `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help
+
+`./bootstrap-vcpkg.sh`
+**OPTIONAL** `./vcpkg integrate install`
+`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
+
 #### Linux
-	`apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
-	`./bootstrap-vcpkg.sh`
-	**OPTIONAL** `./vcpkg integrate install`
-	`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
+`apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
+`./bootstrap-vcpkg.sh`
+**OPTIONAL** `./vcpkg integrate install`
+`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
 
 ### Part 2 (Building)
 1. `git submodule update --init` in the root directory.
