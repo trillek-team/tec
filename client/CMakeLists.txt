@@ -59,11 +59,11 @@ IF (APPLE)
 	IF (DARWIN_VERSION LESS 20)
 		# No longer needed as of 11.0.1, see issue #179
 		set(OSX_LIBRARIES "/usr/lib/libobjc.dylib")
-
-		# Rather wonderfully, Apple decided to mark every single fucking OpenGL function
-		# as deprecated because they have 'deprecated' OpenGL. Brilliant!
-		add_definitions(-DGL_SILENCE_DEPRECATION)
 	ENDIF (DARWIN_VERSION LESS 20)
+
+	# Rather wonderfully, Apple decided to mark every single fucking OpenGL function
+	# as deprecated because they have 'deprecated' OpenGL. Brilliant!
+	add_definitions(-DGL_SILENCE_DEPRECATION)
 ENDIF(APPLE)
 
 if (UNIX AND NOT APPLE)
