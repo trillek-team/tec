@@ -22,10 +22,12 @@ namespace tec {
 		EventQueue<ClientCommandsEvent>::ProcessEventQueue();
 		EventQueue<ControllerAddedEvent>::ProcessEventQueue();
 		EventQueue<ControllerRemovedEvent>::ProcessEventQueue();
+		EventQueue<FocusCapturedEvent>::ProcessEventQueue();
+		EventQueue<FocusBlurEvent>::ProcessEventQueue();
 
 		auto vcomp_future = std::async(std::launch::async, [&] () {
 			vcomp_sys.Update(delta_time);
-									   });
+			});
 
 		for (Controller* controller : this->controllers) {
 			controller->Update(delta_time, interpolated_state, this->event_list);
@@ -87,6 +89,18 @@ namespace tec {
 
 	void Simulation::On(std::shared_ptr<ControllerRemovedEvent> data) {
 		RemoveController(data->controller.get());
+	}
+
+	void Simulation::On(std::shared_ptr<FocusCapturedEvent> data) {
+		for (Controller* controller : this->controllers) {
+			controller->SetFocus(!data->keyboard, !data->mouse);
+		}
+	}
+
+	void Simulation::On(std::shared_ptr<FocusBlurEvent> data) {
+		for (Controller* controller : this->controllers) {
+			controller->SetFocus(data->keyboard, data->mouse);
+		}
 	}
 
 	void Simulation::On(std::shared_ptr<ClientCommandsEvent> data) {

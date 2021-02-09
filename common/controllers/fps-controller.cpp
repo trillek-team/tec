@@ -17,14 +17,18 @@ namespace tec {
 			return;
 		}
 		this->current_delta = delta;
-		for (const KeyboardEvent& key_event : commands.keyboard_events) {
-			Handle(key_event, state);
+		if (keyboard_focus) {
+			for (const KeyboardEvent& key_event : commands.keyboard_events) {
+				Handle(key_event, state);
+			}
 		}
-		for (const MouseBtnEvent& mouse_button_event : commands.mouse_button_events) {
-			Handle(mouse_button_event, state);
-		}
-		for (const MouseMoveEvent& mouse_move_event : commands.mouse_move_events) {
-			Handle(mouse_move_event, state);
+		if (mouse_focus) {
+			for (const MouseBtnEvent& mouse_button_event : commands.mouse_button_events) {
+				Handle(mouse_button_event, state);
+			}
+			for (const MouseMoveEvent& mouse_move_event : commands.mouse_move_events) {
+				Handle(mouse_move_event, state);
+			}
 		}
 
 		int forwardDirection = 0;

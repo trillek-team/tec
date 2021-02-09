@@ -74,5 +74,14 @@ namespace tec {
 	struct ControllerRemovedEvent {
 		std::shared_ptr<Controller> controller{nullptr};
 	};
-
+	struct FocusCapturedEvent {
+		eid entity_id;
+		bool keyboard;
+		bool mouse;
+	};
+	struct FocusBlurEvent {
+		eid entity_id;
+		bool keyboard;
+		bool mouse;
+	};
 }

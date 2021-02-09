@@ -22,7 +22,14 @@ namespace tec {
 
 		virtual void ApplyClientCommands(proto::ClientCommands) = 0;
 
+		void SetFocus(bool keyboard, bool mouse) {
+			this->keyboard_focus = keyboard;
+			this->mouse_focus = mouse;
+		}
+
 		eid entity_id;
+		bool keyboard_focus = true;
+		bool mouse_focus = true;
 	};
 
 	// TODO: Remove this class as it is only for testing and should really be
