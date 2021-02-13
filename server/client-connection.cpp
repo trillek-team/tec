@@ -160,6 +160,13 @@ namespace tec {
 								EventSystem<ClientCommandsEvent>::Get()->Emit(data);
 							}
 							break;
+							case MessageType::ENTITY_CREATE:
+							case MessageType::ENTITY_DESTROY:
+							case MessageType::CLIENT_JOIN:
+							case MessageType::CLIENT_ID:
+							case MessageType::CLIENT_LEAVE:
+							case MessageType::GAME_STATE_UPDATE:
+								break;
 						}
 						std::this_thread::sleep_for(std::chrono::milliseconds(1));
 						read_header();
