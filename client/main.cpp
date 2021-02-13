@@ -5,6 +5,7 @@
 #include <thread>
 
 #include <default-config.hpp>
+#include <file-factories.hpp>
 
 #include "game.hpp"
 
@@ -17,11 +18,23 @@
 #include "imgui-system.hpp"
 #include "os.hpp"
 
+#include "resources/md5mesh.hpp"
+#include "resources/obj.hpp"
+#include "resources/md5anim.hpp"
+#include "resources/vorbis-stream.hpp"
+#include "resources/script-file.hpp"
+
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_sinks.h>
 
 namespace tec {
-	extern void InitializeFileFactories();
+	void RegisterFileFactories() {
+		AddFileFactory<MD5Mesh>();
+		AddFileFactory<MD5Anim>();
+		AddFileFactory<OBJ>();
+		AddFileFactory<VorbisStream>();
+		AddFileFactory<ScriptFile>();
+	}
 	extern void BuildTestVoxelVolume();
 	extern void ProtoLoad(std::string filename);
 }
@@ -144,7 +157,7 @@ int main(int argc, char* argv[]) {
 	tec::LuaSystem* lua_sys = game.GetLuaSystem();
 	os.LuaStateRegistration(lua_sys->GetGlobalState());
 
-	tec::InitializeFileFactories();
+	tec::RegisterFileFactories();
 	tec::BuildTestVoxelVolume();
 	tec::ProtoLoad("json/test.json");
 

@@ -8,17 +8,24 @@
 #include <google/protobuf/util/json_util.h>
 #include <game_state.pb.h>
 
+#include <file-factories.hpp>
+
 #include "filesystem.hpp"
 #include "server.hpp"
 #include "client-connection.hpp"
 #include "game-state-queue.hpp"
 #include "simulation.hpp"
 
+#include "resources/script-file.hpp"
+
 using asio::ip::tcp;
 
 tec::state_id_t current_state_id = 0;
 
 namespace tec {
+	void RegisterFileFactories() {
+		AddFileFactory<ScriptFile>();
+	}
 	std::string LoadJSON(const FilePath& fname) {
 		std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 		if (!input.good())
@@ -43,6 +50,7 @@ namespace tec {
 }
 
 int main() {
+	tec::RegisterFileFactories();
 	std::chrono::high_resolution_clock::time_point last_time, next_time;
 	std::chrono::duration<double> elapsed_seconds;
 	bool closing = false;
