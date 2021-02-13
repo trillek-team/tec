@@ -28,6 +28,7 @@ namespace tec {
 			this->velocities = other.velocities;
 			this->state_id = other.state_id;
 			this->command_id = other.command_id;
+			this->timestamp = other.timestamp;
 		}
 		GameState(GameState&& other) noexcept {
 			this->positions = std::move(other.positions);
@@ -35,6 +36,7 @@ namespace tec {
 			this->velocities = std::move(other.velocities);
 			this->state_id = other.state_id;
 			this->command_id = other.command_id;
+			this->timestamp = other.timestamp;
 		}
 
 		GameState& operator=(const GameState& other) {
@@ -46,6 +48,7 @@ namespace tec {
 			this->velocities = other.velocities;
 			this->state_id = other.state_id;
 			this->command_id = other.command_id;
+			this->timestamp = other.timestamp;
 			return *this;
 		}
 		GameState& operator=(GameState&& other) noexcept {
@@ -55,6 +58,7 @@ namespace tec {
 				this->velocities = std::move(other.velocities);
 				this->state_id = other.state_id;
 				this->command_id = other.command_id;
+				this->timestamp = other.timestamp;
 			}
 			return *this;
 		}
@@ -62,6 +66,7 @@ namespace tec {
 		void In(const proto::GameStateUpdate& gsu) {
 			this->state_id = gsu.state_id();
 			this->command_id = gsu.command_id();
+			this->timestamp = gsu.timestamp();
 			for (int e = 0; e < gsu.entity_size(); ++e) {
 				const proto::Entity& entity = gsu.entity(e);
 				eid entity_id = entity.id();
@@ -99,6 +104,7 @@ namespace tec {
 
 		void Out(proto::GameStateUpdate* gsu) const {
 			gsu->set_state_id(this->state_id);
+			gsu->set_timestamp(this->timestamp);
 			for (auto pos : this->positions) {
 				tec::proto::Entity* entity = gsu->add_entity();
 				entity->set_id(pos.first);
@@ -115,6 +121,7 @@ namespace tec {
 		}
 		state_id_t state_id = 0;
 		state_id_t command_id = 0;
+		uint64_t timestamp = 0;
 	};
 
 	struct NewGameStateEvent {

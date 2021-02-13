@@ -48,6 +48,7 @@ namespace tec {
 		btScalar mass = 0.0f;              // For static objects mass must be 0.
 		bool disable_deactivation = false; // Whether to disable automatic deactivation.
 		bool disable_rotation = false;     // prevent rotation from physics simulation.
+		bool in_world = false;
 		std::shared_ptr<btCollisionShape> shape;
 		eid entity_id = 0; // Stored to use when doing lookups during collision
 		MotionState motion_state;

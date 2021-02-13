@@ -13,6 +13,7 @@
 #include <spdlog/spdlog.h>
 
 #include "server-message.hpp"
+#include "server-stats.hpp"
 
 using asio::ip::tcp;
 
@@ -29,7 +30,7 @@ namespace tec {
 // Used to connect to a server.
 		class ServerConnection {
 		public:
-			ServerConnection();
+			ServerConnection(ServerStats& s);
 
 			bool Connect(std::string_view ip = LOCAL_HOST); // Connects to a server.
 
@@ -61,6 +62,9 @@ namespace tec {
 				return this->average_ping;
 			}
 
+			ping_time_t GetEstimatedDelay() {
+				return this->stats.estimated_server_time - this->stats.last_state_time;
+			}
 			// Get the client ID assigned by the server.
 			eid GetClientID() {
 				return this->client_id;
@@ -97,6 +101,11 @@ namespace tec {
 			std::list<ping_time_t> recent_pings;
 			static std::mutex recent_ping_mutex;
 			ping_time_t average_ping{ 0 };
+
+			// Stats and Status
+		public:
+			ServerStats& stats;
+		private:
 
 			// Server-assigned client ID
 			eid client_id{ 0 };

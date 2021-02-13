@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TRILLEK_SERVER_CLIENT_CONNECTION_HPP
+#define TRILLEK_SERVER_CLIENT_CONNECTION_HPP
 
 #include <memory>
 #include <asio.hpp>
@@ -58,7 +59,7 @@ namespace tec {
 
 			void UpdateGameState(const GameState& full_state);
 
-			tec::networking::ServerMessage PrepareGameStateUpdateMessage(state_id_t current_state_id);
+			tec::networking::ServerMessage PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
 
 		private:
 			void read_header();
@@ -81,5 +82,7 @@ namespace tec {
 			state_id_t last_recv_command_id{ 0 };
 			GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.
 		};
-	}
-}
+	} // end namespace networking
+} // end namespace tec
+
+#endif //TRILLEK_SERVER_CLIENT_CONNECTION_HPP

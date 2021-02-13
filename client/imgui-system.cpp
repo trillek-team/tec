@@ -142,8 +142,9 @@ namespace tec {
 		}
 
 		for (int i = 0; i < 3; i++) {
-			io.MouseDown[i] = mouse_pressed[i]; // If a mouse press event came, always pass it as "mouse held this frame", so we don't miss click-release events that are shorter than 1 frame.
-			mouse_pressed[i] = false;
+			// If a mouse press event came, always pass it as "mouse held this frame"
+			// so we don't miss click-release events that are shorter than 1 frame.
+			io.MouseDown[i] = mouse_pressed[i]; 
 		}
 
 		// Start the frame
@@ -155,6 +156,13 @@ namespace tec {
 			}
 		}
 		ImGui::Render();
+
+		for (int i = 0; i < 3; i++) {
+			if (mouse_released[i]) {
+				mouse_pressed[i] = false;
+			}
+			mouse_released[i] = false;
+		}
 		this->RenderDrawLists(ImGui::GetDrawData());
 	}
 
@@ -369,7 +377,15 @@ namespace tec {
 	}
 
 	void IMGUISystem::On(std::shared_ptr<MouseBtnEvent> data) {
-		this->mouse_pressed[data->button] = data->action == MouseBtnEvent::DOWN;
+		if (data->action == MouseBtnEvent::DOWN) {
+			this->mouse_pressed[data->button] = true;
+		}
+		// Imgui processes mouse events per frame, so if a click lasts less than a frame could be missed
+		// so here we track if the mouse was released, and clear the button state at the end of the Imgui frame
+		// this handles shorter-than-one-frame clicks, but could still miss double clicks!
+		if (data->action == MouseBtnEvent::UP) {
+			this->mouse_released[data->button] = true;
+		}
 	}
 
 	void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
@@ -393,4 +409,4 @@ namespace tec {
 		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 	}
-}
+} // end namespace tec

@@ -11,7 +11,7 @@
 #include "controllers/fps-controller.hpp"
 
 namespace tec {
-	double UPDATE_RATE = 10.0 / 60.0;
+	double UPDATE_RATE = 1.0 / 8.0; // 8 per second
 	double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
 	GameState Simulation::Simulate(const double delta_time, GameState& interpolated_state) {
 		ProcessCommandQueue();
@@ -99,7 +99,7 @@ namespace tec {
 
 	void Simulation::On(std::shared_ptr<FocusBlurEvent> data) {
 		for (Controller* controller : this->controllers) {
-			controller->SetFocus(data->keyboard, data->mouse);
+			controller->SetFocus(true, true);
 		}
 	}
 
@@ -110,4 +110,4 @@ namespace tec {
 			}
 		}
 	}
-}
+} // end namespace tec

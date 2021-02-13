@@ -22,7 +22,7 @@ namespace tec {
 
 		virtual void ApplyClientCommands(proto::ClientCommands) = 0;
 
-		void SetFocus(bool keyboard, bool mouse) {
+		virtual void SetFocus(bool keyboard, bool mouse) {
 			this->keyboard_focus = keyboard;
 			this->mouse_focus = mouse;
 		}
@@ -66,6 +66,7 @@ namespace tec {
 		bool KEY_S_DOWN{ false };
 		bool KEY_D_DOWN{ false };
 
+		void SetFocus(bool keyboard, bool mouse) override;
 		void ApplyClientCommands(proto::ClientCommands proto_client_commands) override;
 	};
 }

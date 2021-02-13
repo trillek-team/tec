@@ -67,14 +67,22 @@ namespace tec {
 			if (!collidable) {
 				continue;
 			}
-			if (state.positions.find(entity_id) != state.positions.end()) {
-				glm::vec3 position = state.positions.at(entity_id).value;
+			// fill in the transform for our collidable from the current state
+			auto position_iter = state.positions.find(entity_id);
+			if (position_iter != state.positions.end()) {
+				glm::vec3 position = position_iter->second.value;
 				if (std::isfinite(position.x) && std::isfinite(position.y) && std::isfinite(position.z)) {
 					collidable->motion_state.transform.setOrigin(btVector3(position.x, position.y, position.z));
 				}
 			}
-			if (state.orientations.find(entity_id) != state.orientations.end()) {
-				glm::quat orientation = state.orientations.at(entity_id).value;
+			else {
+				// no position! that's not good
+				// wait to add the physics body to the world for now
+				continue;
+			}
+			auto orientation_iter = state.orientations.find(entity_id);
+			if (orientation_iter != state.orientations.end()) {
+				glm::quat orientation = orientation_iter->second.value;
 				if (std::isfinite(orientation.x) && std::isfinite(orientation.y) && std::isfinite(orientation.z) && std::isfinite(orientation.w)) {
 					collidable->motion_state.transform.setRotation(btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 				}
@@ -84,7 +92,8 @@ namespace tec {
 			if (!body) {
 				continue;
 			}
-			this->dynamicsWorld->removeRigidBody(body);
+
+			// if the mass changed, update mass related parameters.
 			if (collidable->mass != body->getInvMass()) {
 				btVector3 fallInertia(0, 0, 0);
 				collidable->shape->calculateLocalInertia(collidable->mass, fallInertia);
@@ -93,6 +102,7 @@ namespace tec {
 				body->clearForces();
 			}
 
+			// handle changes to desired deactivation mode
 			if (collidable->disable_deactivation) {
 				body->forceActivationState(DISABLE_DEACTIVATION);
 			}
@@ -100,14 +110,39 @@ namespace tec {
 				body->forceActivationState(ACTIVE_TAG);
 			}
 
+			// prevent the simulation from rotating the object
+			// this doesn't account for change after creation, once disabled there isn't a re-enable
 			if (collidable->disable_rotation) {
 				body->setAngularFactor(btVector3(0.0, 0, 0.0));
 			}
-			body->setWorldTransform(collidable->motion_state.transform);
-			this->dynamicsWorld->addRigidBody(body);
 
-			if (state.velocities.find(entity_id) != state.velocities.end()) {
-				const Velocity& vel = state.velocities.at(entity_id);
+			// here we add the body to the world if it's not yet
+			// this can later expand to handling multiple dynamics worlds if need be
+			if (!collidable->in_world) {
+				// snap the body to it's position when we add it
+				body->setWorldTransform(collidable->motion_state.transform);
+				collidable->in_world = true;
+				this->dynamicsWorld->addRigidBody(body);
+			}
+			else {
+				btTransform& body_transform = body->getWorldTransform();
+				// simulation motion estimation lite
+				// on the server, this doesn't really do anything
+				// on the client however, this smooths out the motion between the local estimation and server state
+				// this provides a crude motion estimate until a proper one is added ;)
+				if (body_transform.getOrigin().distance(collidable->motion_state.transform.getOrigin()) > 0.01) {
+					body->translate((collidable->motion_state.transform.getOrigin() - body_transform.getOrigin()) * 0.125);
+					// use this to snap back to the current state, it's unpleasent without restitution
+					//body_transform.setOrigin(collidable->motion_state.transform.getOrigin());
+				}
+				// for now, just always update the orientation
+				body_transform.setBasis(collidable->motion_state.transform.getBasis());
+			}
+
+			// always copy in the velocities from the state
+			auto velocity_iter = state.velocities.find(entity_id);
+			if (velocity_iter != state.velocities.end()) {
+				const Velocity& vel = velocity_iter->second;
 				if (std::isfinite(vel.linear.x) && std::isfinite(vel.linear.y) && std::isfinite(vel.linear.z)) {
 					body->setLinearVelocity(vel.GetLinear() + body->getGravity());
 				}
@@ -117,8 +152,11 @@ namespace tec {
 			}
 		}
 
+		// using a delta time here makes physics far less deterministic
+		// this can be changed if it becomes a problem
 		this->dynamicsWorld->stepSimulation(static_cast<btScalar>(delta), 10);
 
+		// build a set of entity IDs that changed this step
 		std::set<eid> updated_entities;
 		for (auto itr = CollisionBodyMap::Begin(); itr != CollisionBodyMap::End(); ++itr) {
 			auto entity_id = itr->first;
@@ -318,8 +356,8 @@ namespace tec {
 				mce_event->button = data->button;
 				mce_event->entity_id = this->last_entity_hit;
 				mce_event->ray_distance = this->last_raydist;
-				mce_event->ray_hit_piont_world = glm::vec3(this->last_raypos.getX(),
-														   this->last_raypos.getY(), this->last_raypos.getZ());
+				mce_event->ray_hit_point_world =
+					glm::vec3(this->last_raypos.getX(), this->last_raypos.getY(), this->last_raypos.getZ());
 				EventSystem<MouseClickEvent>::Get()->Emit(mce_event);
 			}
 		}
@@ -331,30 +369,19 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kCollisionBody:
-				{
-					CollisionBody* collision_body = new CollisionBody();
-					collision_body->In(comp);
-					CollisionBodyMap::Set(entity_id, collision_body);
-					collision_body->entity_id = entity_id;
-					AddRigidBody(collision_body);
-				}
+			case proto::Component::kCollisionBody:
+			{
+				CollisionBody* collision_body = new CollisionBody();
+				collision_body->In(comp);
+				CollisionBodyMap::Set(entity_id, collision_body);
+				collision_body->entity_id = entity_id;
+				AddRigidBody(collision_body);
 				break;
-				case proto::Component::kRenderable:
-				case proto::Component::kPosition:
-				case proto::Component::kOrientation:
-				case proto::Component::kView:
-				case proto::Component::kAnimation:
-				case proto::Component::kScale:
-				case proto::Component::kVelocity:
-				case proto::Component::kAudioSource:
-				case proto::Component::kPointLight:
-				case proto::Component::kDirectionalLight:
-				case proto::Component::kSpotLight:
-				case proto::Component::kVoxelVolume:
-				case proto::Component::kComputer:
-				case proto::Component::kLuaScript:
-				case proto::Component::COMPONENT_NOT_SET:
+			}
+			case proto::Component::kPosition:
+			case proto::Component::kOrientation:
+					break;
+			default:
 				break;
 			}
 		}
@@ -381,4 +408,4 @@ namespace tec {
 		}
 		return glm::quat();
 	}
-}
+} // end namespace tec

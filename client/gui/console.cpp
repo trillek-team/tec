@@ -189,11 +189,12 @@ namespace tec {
 				inputBuf[0] = '\0';
 			}
 			// Demonstrate keeping auto focus on the input box
+			/* Annoying AF btw
 			if (ImGui::IsItemHovered()
 				|| (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)
 					&& !ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))) {
 				ImGui::SetKeyboardFocusHere(-1); // Auto focus
-			}
+			}*/
 
 			ImGui::End();
 			ImGui::PopStyleVar();
@@ -221,7 +222,7 @@ namespace tec {
 	}
 
 	void ConsoleSink::log(const spdlog::details::log_msg& msg) {
-		std::string str(msg.payload.data());
+		std::string str(msg.payload.data(), msg.payload.size());
 		ImVec4 color(255, 255, 255, 255);
 		switch (msg.level) {
 			case spdlog::level::trace :

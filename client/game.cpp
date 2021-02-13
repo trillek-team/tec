@@ -19,7 +19,11 @@ namespace tec {
 	using networking::ServerMessage;
 	using networking::MessageType;
 
-	Game::Game(std::string config_file_name) :
+	Game::Game(OS &_os, std::string config_file_name) :
+		os(_os),
+		stats(),
+		game_state_queue(this->stats),
+		server_connection(this->stats),
 		ps(this->simulation.GetPhysicsSystem()),
 		vcs(this->simulation.GetVComputerSystem()),
 		sound_thread([this] () { ss.Update(); }) {
@@ -135,7 +139,7 @@ namespace tec {
 
 		if (this->player_camera != nullptr) {
 			if (this->player_camera->mouse_look) {
-				//os.EnableMouseLock(); // TODO: create event to change to mouse look
+				os.EnableMouseLock(); // TODO: create event to change to mouse look
 				this->active_entity = ps.RayCastMousePick(
 					this->server_connection.GetClientID(),
 					static_cast<float>(window_width) / 2.0f,
@@ -145,7 +149,7 @@ namespace tec {
 				);
 			}
 			else {
-				//os.DisableMouseLock(); // TODO: create event to change from mouse look
+				os.DisableMouseLock(); // TODO: create event to change from mouse look
 				this->active_entity = ps.RayCastMousePick(
 					this->server_connection.GetClientID(), mouse_x, mouse_y,
 					static_cast<float>(window_width),

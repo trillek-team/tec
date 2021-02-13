@@ -328,6 +328,7 @@ namespace tec {
 	}
 
 	void VComputerSystem::On(std::shared_ptr<MouseClickEvent> data) {
+		if (data->button != MouseBtnEvent::LEFT) return;
 		if (this->active_entity != data->entity_id) {
 			// Remove focus from the old keyboard
 			for (auto keyboard_itr = KeyboardComponentMap::Begin();
@@ -355,33 +356,20 @@ namespace tec {
 		for (int i = 0; i < data->entity.components_size(); ++i) {
 			const proto::Component& comp = data->entity.components(i);
 			switch (comp.component_case()) {
-				case proto::Component::kComputer:
-				{
-					Computer* computer = new Computer();
-					computer->In(comp);
-					ComputerComponentMap::Set(entity_id, computer);
-					for (auto device : computer->devices) {
-						if (device.second->device->DevType() == 0x03) { // 0x03 is keyboard DevType
-							KeyboardComponentMap::Set(entity_id, static_cast<ComputerKeyboard*>(device.second.get()));
-						}
+			case proto::Component::kComputer:
+			{
+				Computer* computer = new Computer();
+				computer->In(comp);
+				ComputerComponentMap::Set(entity_id, computer);
+				for (auto device : computer->devices) {
+					if (device.second->device->DevType() == 0x03) { // 0x03 is keyboard DevType
+						KeyboardComponentMap::Set(entity_id, static_cast<ComputerKeyboard*>(device.second.get()));
 					}
 				}
+			}
 				break;
-				case proto::Component::kCollisionBody:
-				case proto::Component::kRenderable:
-				case proto::Component::kPosition:
-				case proto::Component::kOrientation:
-				case proto::Component::kView:
-				case proto::Component::kAnimation:
-				case proto::Component::kScale:
-				case proto::Component::kVelocity:
-				case proto::Component::kAudioSource:
-				case proto::Component::kPointLight:
-				case proto::Component::kDirectionalLight:
-				case proto::Component::kSpotLight:
-				case proto::Component::kVoxelVolume:
-				case proto::Component::kLuaScript:
-				case proto::Component::COMPONENT_NOT_SET:
+			case proto::Component::kLuaScript:
+			default:
 				break;
 			}
 		}

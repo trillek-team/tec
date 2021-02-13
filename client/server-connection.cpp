@@ -14,7 +14,7 @@ namespace tec {
 		std::shared_ptr<spdlog::logger> ServerConnection::_log;
 		std::mutex ServerConnection::recent_ping_mutex;
 
-		ServerConnection::ServerConnection() : socket(io_service) {
+		ServerConnection::ServerConnection(ServerStats& s) : socket(io_service), stats(s) {
 			_log = spdlog::get("console_log");
 			RegisterMessageHandler(MessageType::SYNC, [this] (const ServerMessage& message) {
 				this->SyncHandler(message);
@@ -170,9 +170,12 @@ namespace tec {
 			}
 		}
 
-		void ServerConnection::SyncHandler(const ServerMessage&) {
+		void ServerConnection::SyncHandler(const ServerMessage& message) {
 			std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
 			std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
+			if(message.GetBodyLength() >= 8) {
+				memcpy(&this->stats.estimated_server_time, message.GetBodyPTR(), 8);
+			}
 			if (this->recent_pings.size() >= 10) {
 				this->recent_pings.pop_front();
 			}
@@ -182,6 +185,7 @@ namespace tec {
 				total_pings += ping;
 			}
 			this->average_ping = total_pings / 10;
+			this->stats.estimated_server_time += average_ping;
 		}
 
 		void ServerConnection::GameStateUpdateHandler(const ServerMessage& message) {

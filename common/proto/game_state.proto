@@ -7,5 +7,6 @@ import "components.proto";
 message GameStateUpdate {
 	required uint64 state_id = 1;
 	required uint64 command_id = 2;
-	repeated Entity entity = 3;
+	required uint64 timestamp = 3;
+	repeated Entity entity = 7;
 }

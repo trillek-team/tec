@@ -12,8 +12,9 @@
 
 #include "filesystem.hpp"
 #include "server.hpp"
+#include "server-stats.hpp"
 #include "client-connection.hpp"
-#include "game-state-queue.hpp"
+#include "server-game-state-queue.hpp"
 #include "simulation.hpp"
 
 #include "resources/script-file.hpp"
@@ -58,7 +59,8 @@ int main() {
 	// Accumulated deltas since the last update was sent.
 	double delta_accumulator = 0.0;
 
-	tec::GameStateQueue game_state_queue;
+	tec::ServerStats stats;
+	tec::ServerGameStateQueue game_state_queue(stats);
 	tec::Simulation simulation;
 
 	try {
@@ -73,14 +75,20 @@ int main() {
 			[&] () {
 				while (!closing) {
 					next_time = std::chrono::high_resolution_clock::now();
+					uint64_t current_timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(next_time.time_since_epoch()).count();
 					elapsed_seconds = next_time - last_time;
 					last_time = next_time;
 					delta_accumulator += elapsed_seconds.count();
+					double delta = (double)std::chrono::duration_cast<std::chrono::microseconds>(elapsed_seconds).count();
+					delta *= 0.000001;
+
+					game_state_queue.ProcessEventQueue();
+					tec::GameState full_state = simulation.Simulate(delta, game_state_queue.GetBaseState());
+					
 					if (delta_accumulator >= tec::UPDATE_RATE) {
 						current_state_id++;
-						game_state_queue.ProcessEventQueue();
-						tec::GameState full_state = simulation.Simulate(tec::UPDATE_RATE, game_state_queue.GetBaseState());
 						full_state.state_id = current_state_id;
+						full_state.timestamp = current_timestamp;
 						tec::proto::GameStateUpdate full_state_update;
 						full_state_update.set_command_id(current_state_id);
 						full_state.Out(&full_state_update);
@@ -90,7 +98,7 @@ int main() {
 						full_state_update_message.SetBodyLength(full_state_update.ByteSizeLong());
 						full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), static_cast<int>(full_state_update_message.GetBodyLength()));
 						full_state_update_message.encode_header();
-						
+
 						{
 							std::lock_guard lg(server.client_list_mutex);
 							for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
@@ -100,14 +108,14 @@ int main() {
 									std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
 								}
 								else {
-									server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id));
+									server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id, current_timestamp));
 								}
 							}
 						}
 
 						delta_accumulator -= tec::UPDATE_RATE;
-						game_state_queue.SetBaseState(std::move(full_state));
 					}
+					game_state_queue.SetBaseState(std::move(full_state));
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				}
 			});

@@ -69,7 +69,14 @@ namespace tec {
 		}
 		ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
 		ImGui::SameLine();
-		ImGui::Text("%" PRI_PING_TIME_T, this->server_connection.GetAveragePing());
+		ImGui::Text("% 3" PRI_PING_TIME_T " ms", this->server_connection.GetAveragePing());
+		ImGui::Text("State Delay: %05" PRId64 " ms", this->server_connection.GetEstimatedDelay());
+		ImGui::Text("States: %" PRIu64, this->server_connection.stats.server_state_count);
+		ImGui::Text("   Cmd: % 9" PRIu64 " Ack: % 9" PRIu64,
+			this->server_connection.stats.current_command_id,
+			this->server_connection.stats.current_acked_id);
+		glm::vec3 pos = this->server_connection.stats.client_entity_position;
+		ImGui::Text("X: %1.3f, %1.3f, %1.3f", pos.x, pos.y, pos.z);
 		ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
 		ImGui::End();
 		ImGui::SetWindowSize("ping_times", ImVec2(0, 0));
