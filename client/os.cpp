@@ -405,17 +405,36 @@ namespace tec {
 
 	void OS::DispatchMouseMoveEvent(const double x, const double y) {
 		if (OS::mouse_locked) {
+			// mouse lock is where we hide the cursor and constrain it to the window
+			// we also request raw mouse motion if available
 			std::shared_ptr<MouseMoveEvent> mmov_event = std::make_shared<MouseMoveEvent>(
 				MouseMoveEvent{
 					x / this->client_width,
 					y / this->client_height,
-					this->client_width / 2,
-					this->client_height / 2,
+					static_cast<int>(this->old_mouse_x),
+					static_cast<int>(this->old_mouse_y),
 					static_cast<int>(x),
 					static_cast<int>(y)
 				});
 			EventSystem<MouseMoveEvent>::Get()->Emit(mmov_event);
-			glfwSetCursorPos(this->window, static_cast<double>(this->client_width / 2), static_cast<double>(this->client_height / 2));
+			double client_center_x = static_cast<double>(this->client_width / 2);
+			double client_center_y = static_cast<double>(this->client_height / 2);
+			// constrain the mouse towards the center of the window
+			// we do this to prevent an initial frame of "overshoot"
+			// and also to prevent anything using absolute mode from wandering away, i.e. tooltip window
+			if (x < client_center_x && x > this->old_mouse_x) {
+				this->old_mouse_x = x;
+			}
+			if (x > client_center_x && x < this->old_mouse_x) {
+				this->old_mouse_x = x;
+			}
+			if (y < client_center_y && y > this->old_mouse_y) {
+				this->old_mouse_y = y;
+			}
+			if (y > client_center_y && y < this->old_mouse_y) {
+				this->old_mouse_y = y;
+			}
+			glfwSetCursorPos(this->window, this->old_mouse_x, this->old_mouse_y);
 			return;
 		}
 		std::shared_ptr<MouseMoveEvent> mmov_event = std::make_shared<MouseMoveEvent>(

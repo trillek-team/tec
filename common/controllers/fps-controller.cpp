@@ -58,11 +58,6 @@ namespace tec {
 		state.velocities[entity_id].linear = glm::vec4(this->orientation->value * glm::vec3(5.0 * strafeDirection, 0.0, 7.5 * forwardDirection), 1.0);
 	}
 
-	void FPSController::SetFocus(bool keyboard, bool mouse) {
-		this->keyboard_focus = keyboard;
-		this->mouse_focus = mouse;
-	}
-
 	proto::ClientCommands FPSController::GetClientCommands() {
 		proto::ClientCommands proto_client_commands;
 		proto_client_commands.set_id(this->entity_id);

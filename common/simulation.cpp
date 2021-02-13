@@ -11,6 +11,7 @@
 #include "controllers/fps-controller.hpp"
 
 namespace tec {
+
 	double UPDATE_RATE = 1.0 / 8.0; // 8 per second
 	double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
 	GameState Simulation::Simulate(const double delta_time, GameState& interpolated_state) {
@@ -91,15 +92,23 @@ namespace tec {
 		RemoveController(data->controller.get());
 	}
 
+	/// \brief This event is sent to indicate that focus had been captured by an entity
+	/// it specifies which was captured: keyboard or mouse, if either of these parameters is true,
+	/// then prevent normal processing of those events
+	/// a controller implementing this should logically AND NOT these inputs with it's current settings
 	void Simulation::On(std::shared_ptr<FocusCapturedEvent> data) {
 		for (Controller* controller : this->controllers) {
-			controller->SetFocus(!data->keyboard, !data->mouse);
+			controller->ClearFocus(data->keyboard, data->mouse);
 		}
 	}
 
+	/// \brief This event is sent to indicate that focus had been released (blur) from an owning entity
+	/// it specifies which was blurred: keyboard or mouse, if either of these parameters is true,
+	/// then restore normal processing of those events
+	/// a controller implementing this should logically OR these inputs with it's current settings
 	void Simulation::On(std::shared_ptr<FocusBlurEvent> data) {
 		for (Controller* controller : this->controllers) {
-			controller->SetFocus(true, true);
+			controller->SetFocus(data->keyboard, data->mouse);
 		}
 	}
 
@@ -110,4 +119,5 @@ namespace tec {
 			}
 		}
 	}
+
 } // end namespace tec
