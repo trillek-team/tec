@@ -56,8 +56,8 @@ namespace tec {
 		GameStateQueue game_state_queue;
 		ServerConnection server_connection;
 		RenderSystem rs;
-		VComputerSystem& vcs;
 		PhysicsSystem& ps;
+		VComputerSystem& vcs;
 		SoundSystem ss;
 		LuaSystem lua_sys;
 
