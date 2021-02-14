@@ -31,16 +31,9 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 	if (interpolation_accumulator >= INTERPOLATION_RATE) {
 		// remove a state from the queue and make it the base state
 		// also initialize the interpolated state with it
-		if (this->client_id != 0) {
-			this->predictions.emplace(std::make_pair(this->command_id, this->interpolated_state.positions[this->client_id]));
-		}
 		for (auto position : to_state.positions) {
 			this->base_state.positions[position.first] = position.second;
 			this->interpolated_state.positions[position.first] = position.second;
-		}
-		if (this->client_id != 0) {
-			this->base_state.positions[this->client_id] = this->predictions.at(this->command_id);
-			this->interpolated_state.positions[this->client_id] = this->predictions.at(this->command_id);
 		}
 		for (auto velocity : to_state.velocities) {
 			this->base_state.velocities[velocity.first] = velocity.second;
@@ -50,6 +43,17 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 			this->base_state.orientations[orientation.first] = orientation.second;
 			this->interpolated_state.orientations[orientation.first] = orientation.second;
 		}
+		// the client controlled entities can use the predicted state
+		if (this->client_id != 0) {
+			auto itr = this->predictions.find(this->command_id);
+			if (itr != this->predictions.end()) {
+				this->base_state.positions[this->client_id] = itr->second.positions[this->client_id];
+				this->base_state.velocities[this->client_id] = itr->second.velocities[this->client_id];
+				this->interpolated_state.positions[this->client_id] = itr->second.positions[this->client_id];
+				this->interpolated_state.velocities[this->client_id] = itr->second.velocities[this->client_id];
+			}
+		}
+
 		// when too many states, discard the rest! what could possibly go wrong!?
 		// we just interpolate between them anyways
 		while (interpolation_accumulator >= INTERPOLATION_RATE) {
@@ -127,27 +131,57 @@ void ClientGameStateQueue::QueueServerState(GameState&& new_state) {
 }
 
 void ClientGameStateQueue::CheckPredictionResult(GameState& new_state) {
-	if (this->client_id != 0) {
-		//std::cout << "Client command id: " << this->command_id << " server ack: " << new_state.command_id << std::endl;
-		this->stats.current_command_id = this->command_id;
-		this->stats.current_acked_id = new_state.command_id;
-		for (auto itr = this->predictions.begin(); itr != this->predictions.end(); ) {
-			if ((itr->first + 1) < new_state.command_id) {
-				itr = this->predictions.erase(itr);
-			}
-			else {
-				++itr;
-			}
-		}
-		if (this->predictions.find(new_state.command_id) != this->predictions.end()) {
-			if (new_state.positions.find(this->client_id) != new_state.positions.end()) {
-				stats.client_entity_position = new_state.positions[this->client_id].value;
-				auto dif = new_state.positions[this->client_id].value - this->predictions[new_state.command_id].value;
-				//std::cout << "Diff (" << dif.x << ", " << dif.y << ", " << dif.z << ") <> Predictions size = " << this->predictions.size() << std::endl;
-			}
-			this->predictions.erase(new_state.command_id);
-		}
+	if (this->client_id == 0) {
+		return;
 	}
+	this->stats.current_acked_id = new_state.command_id;
+	// Buffer past one incoming state
+	// FIXME we don't actually know when the server applies the commands it ACKs!
+	// so which state we should consider for the error reference is highly ping dependant
+	// this would require changes to how the server reports movement commands
+	// for now, waiting one state seems good enough, at least on localhost, over the net is different...
+	glm::vec3 state_pos = this->stats.server_position_next;
+	this->stats.server_position = this->stats.server_position_next;
+	this->stats.server_position_next = new_state.positions[this->client_id].value;
+
+	glm::vec3 position_diff = glm::vec3();
+	glm::vec3 velocity_diff = glm::vec3();
+
+	// delete from the prediction queue anything that's not newer than the latest ack
+	for (auto itr = this->predictions.begin(); itr != this->predictions.end(); ) {
+		if (itr->first <= new_state.command_id) {
+			// if this was an acked command, calculate the difference between where we thought we were
+			// this gives feedback on how good our prediction was
+			if (itr->first == new_state.command_id) {
+				glm::vec3 predict_pos = itr->second.positions[this->client_id].value;
+				position_diff = state_pos - predict_pos;
+				glm::vec3 state_vel = new_state.velocities[this->client_id].linear;
+				glm::vec3 predict_vel = itr->second.velocities[this->client_id].linear;
+				velocity_diff = state_vel - predict_vel;
+			}
+			itr = this->predictions.erase(itr);
+			continue;
+		}
+		++itr;
+	}
+	// debugging stats, also used by reconciliation
+	stats.client_position = position_diff;
+	stats.client_velocity = velocity_diff;
+}
+
+/** \brief Explicitly update the current prediction
+*/
+void ClientGameStateQueue::UpdatePredictions(GameState& new_state) {
+	if (this->client_id == 0) {
+		return;
+	}
+	this->stats.current_command_id = this->command_id;
+	GameState predict_state;
+	// basic reconciliation, attempt to resolve errors by nudging current predictions
+	predict_state.positions[this->client_id].value = new_state.positions[this->client_id].value + stats.client_position * 0.125f;
+	predict_state.velocities[this->client_id] = new_state.velocities[this->client_id];
+	predict_state.orientations[this->client_id] = new_state.orientations[this->client_id];
+	this->predictions.emplace(std::make_pair(this->command_id, predict_state));
 }
 
 void ClientGameStateQueue::On(std::shared_ptr<EntityCreated> data) {

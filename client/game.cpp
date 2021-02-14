@@ -110,13 +110,16 @@ namespace tec {
 	}
 
 	void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
+		// TODO: a better representation of commands so we can send them less often
+		const double COMMAND_RATE = 1.0 / 30.0;
 		delta_accumulator += delta;
-
 		game_state_queue.ProcessEventQueue();
 		game_state_queue.Interpolate(delta);
 
 		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
-		if (delta_accumulator >= UPDATE_RATE) {
+		game_state_queue.UpdatePredictions(client_state);
+
+		while (delta_accumulator >= COMMAND_RATE) {
 			if (this->player_camera) {
 				ServerMessage update_message;
 				proto::ClientCommands client_commands = this->player_camera->GetClientCommands();
@@ -130,8 +133,9 @@ namespace tec {
 				game_state_queue.SetCommandID(command_id);
 			}
 
-			delta_accumulator -= UPDATE_RATE;
+			delta_accumulator -= COMMAND_RATE;
 		}
+
 		UpdateVComputerScreenTextures();
 		ss.SetDelta(delta);
 		rs.Update(delta, client_state);

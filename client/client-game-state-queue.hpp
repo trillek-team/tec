@@ -25,6 +25,8 @@ public:
 
 	void QueueServerState(GameState&& new_state);
 
+	void UpdatePredictions(GameState& new_state);
+
 	void CheckPredictionResult(GameState& new_state);
 
 	void ProcessEventQueue();
@@ -76,7 +78,7 @@ private:
 	state_id_t command_id{ 0 };
 	double interpolation_accumulator{ 0.0 };
 	eid client_id{ 0 };
-	std::map<state_id_t, Position> predictions;
+	std::map<state_id_t, GameState> predictions;
 };
 
 } // end namespace tec

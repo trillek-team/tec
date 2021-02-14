@@ -35,24 +35,11 @@ public:
 		this->base_state = std::move(new_state);
 	}
 
-private:
-	static const unsigned int SERVER_STATES_ARRAY_SIZE{ 5 };
-
-	GameState server_states_array[SERVER_STATES_ARRAY_SIZE];
-	int server_state_array_index{ SERVER_STATES_ARRAY_SIZE - 1 };
-	GameState predicted_states[SERVER_STATES_ARRAY_SIZE];
-	int predicted_states_array_index{ 0 };
-
+public:
 	ServerStats& stats;
+
+private:
 	GameState base_state;
-	//GameState interpolated_state;
-	std::queue<GameState> server_states;
-	std::mutex server_state_mutex;
-	//state_id_t last_server_state_id{ 0 };
-	//state_id_t command_id{ 0 };
-	//double interpolation_accumulator{ 0.0 };
-	//eid client_id{ 0 };
-	//std::map<state_id_t, Position> predictions;
 };
 
 } // end namespace tec

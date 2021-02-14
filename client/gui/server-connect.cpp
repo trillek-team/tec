@@ -70,13 +70,26 @@ namespace tec {
 		ImGui::PlotHistogram("Ping", arr, 10, 0, nullptr, 0.0f, 100.0f);
 		ImGui::SameLine();
 		ImGui::Text("% 3" PRI_PING_TIME_T " ms", this->server_connection.GetAveragePing());
-		ImGui::Text("State Delay: %05" PRId64 " ms", this->server_connection.GetEstimatedDelay());
-		ImGui::Text("States: %" PRIu64, this->server_connection.stats.server_state_count);
+		auto& connection_stats = this->server_connection.stats;
+		connection_stats.estimated_delay_accumulator += this->server_connection.GetEstimatedDelay();
+		connection_stats.estimated_delay_count++;
+		if (connection_stats.estimated_delay_count >= 10) {
+			connection_stats.estimated_delay =
+				connection_stats.estimated_delay_accumulator / connection_stats.estimated_delay_count;
+			connection_stats.estimated_delay_count = 0;
+			connection_stats.estimated_delay_accumulator = 0;
+		}
+		ImGui::Text("State Delay: %05" PRId64 " ms", connection_stats.estimated_delay);
+		ImGui::Text("States:% 2" PRIu64 "  Cmd In-flight:% 2" PRIu64,
+			connection_stats.server_state_count,
+			connection_stats.current_command_id - connection_stats.current_acked_id);
 		ImGui::Text("   Cmd: % 9" PRIu64 " Ack: % 9" PRIu64,
-			this->server_connection.stats.current_command_id,
-			this->server_connection.stats.current_acked_id);
-		glm::vec3 pos = this->server_connection.stats.client_entity_position;
+			connection_stats.current_command_id,
+			connection_stats.current_acked_id);
+		glm::vec3 pos = connection_stats.client_position;
+		glm::vec3 vel = connection_stats.client_velocity;
 		ImGui::Text("X: %1.3f, %1.3f, %1.3f", pos.x, pos.y, pos.z);
+		ImGui::Text("V: %1.3f, %1.3f, %1.3f", vel.x, vel.y, vel.z);
 		ImGui::SetWindowPos("ping_times", ImVec2(ImGui::GetIO().DisplaySize.x - ImGui::GetWindowSize().x - 10, 20));
 		ImGui::End();
 		ImGui::SetWindowSize("ping_times", ImVec2(0, 0));

@@ -63,7 +63,9 @@ namespace tec {
 			}
 
 			ping_time_t GetEstimatedDelay() {
-				return this->stats.estimated_server_time - this->stats.last_state_time;
+				ping_time_t since_recv = std::chrono::duration_cast<std::chrono::milliseconds>(
+					std::chrono::high_resolution_clock::now() - recv_time).count();
+				return (this->stats.estimated_server_time - this->stats.last_state_time) + since_recv;
 			}
 			// Get the client ID assigned by the server.
 			eid GetClientID() {

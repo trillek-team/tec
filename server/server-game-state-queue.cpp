@@ -19,7 +19,6 @@ void ServerGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 		{
 			Position pos;
 			pos.In(comp);
-			//this->interpolated_state.positions[entity_id] = pos;
 			this->base_state.positions[entity_id] = pos;
 			break;
 		}
@@ -27,7 +26,6 @@ void ServerGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 		{
 			Orientation orientation;
 			orientation.In(comp);
-			//this->interpolated_state.orientations[entity_id] = orientation;
 			this->base_state.orientations[entity_id] = orientation;
 			break;
 		}
@@ -35,7 +33,6 @@ void ServerGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 		{
 			Velocity vel;
 			vel.In(comp);
-			//this->interpolated_state.velocities[entity_id] = vel;
 			this->base_state.velocities[entity_id] = vel;
 			break;
 		}
@@ -47,11 +44,8 @@ void ServerGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 
 void ServerGameStateQueue::On(std::shared_ptr<EntityDestroyed> data) {
 	const eid entity_id = data->entity_id;
-	//this->interpolated_state.positions.erase(entity_id);
 	this->base_state.positions.erase(entity_id);
-	//this->interpolated_state.orientations.erase(entity_id);
 	this->base_state.orientations.erase(entity_id);
-	//this->interpolated_state.velocities.erase(entity_id);
 	this->base_state.velocities.erase(entity_id);
 }
 

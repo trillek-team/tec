@@ -19,6 +19,8 @@
 
 #include "resources/script-file.hpp"
 
+const double SERVER_SIMULATE_RATE = 1.0 / 60.0;
+
 using asio::ip::tcp;
 
 tec::state_id_t current_state_id = 0;
@@ -58,10 +60,15 @@ int main() {
 
 	// Accumulated deltas since the last update was sent.
 	double delta_accumulator = 0.0;
+	// Accumulated deltas since the last physics simulation.
+	double step_accumulator = 0.0;
 
 	tec::ServerStats stats;
 	tec::ServerGameStateQueue game_state_queue(stats);
 	tec::Simulation simulation;
+
+	// use constant mode stepping, because we don't need interpolated states on the server
+	simulation.GetPhysicsSystem().SetSubstepping(0);
 
 	try {
 		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::PORT);
@@ -78,45 +85,51 @@ int main() {
 					uint64_t current_timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(next_time.time_since_epoch()).count();
 					elapsed_seconds = next_time - last_time;
 					last_time = next_time;
-					delta_accumulator += elapsed_seconds.count();
-					double delta = (double)std::chrono::duration_cast<std::chrono::microseconds>(elapsed_seconds).count();
-					delta *= 0.000001;
+					double delta = elapsed_seconds.count();
+					delta_accumulator += delta;
+					step_accumulator += delta;
 
-					game_state_queue.ProcessEventQueue();
-					tec::GameState full_state = simulation.Simulate(delta, game_state_queue.GetBaseState());
-					
-					if (delta_accumulator >= tec::UPDATE_RATE) {
-						current_state_id++;
-						full_state.state_id = current_state_id;
-						full_state.timestamp = current_timestamp;
-						tec::proto::GameStateUpdate full_state_update;
-						full_state_update.set_command_id(current_state_id);
-						full_state.Out(&full_state_update);
-						tec::networking::ServerMessage full_state_update_message;
-						full_state_update_message.SetStateID(current_state_id);
-						full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
-						full_state_update_message.SetBodyLength(full_state_update.ByteSizeLong());
-						full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), static_cast<int>(full_state_update_message.GetBodyLength()));
-						full_state_update_message.encode_header();
+					if (step_accumulator >= SERVER_SIMULATE_RATE) {
+						step_accumulator -= SERVER_SIMULATE_RATE;
+						game_state_queue.ProcessEventQueue();
+						tec::GameState full_state = simulation.Simulate(SERVER_SIMULATE_RATE, game_state_queue.GetBaseState());
 
-						{
-							std::lock_guard lg(server.client_list_mutex);
-							for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
-								client->UpdateGameState(full_state);
-								if (current_state_id - client->GetLastConfirmedStateID() > tec::TICKS_PER_SECOND * 2.0) {
-									server.Deliver(client, full_state_update_message);
-									std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
-								}
-								else {
-									server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id, current_timestamp));
+						if (delta_accumulator >= tec::UPDATE_RATE) {
+							current_state_id++;
+							full_state.state_id = current_state_id;
+							full_state.timestamp = current_timestamp;
+							tec::proto::GameStateUpdate full_state_update;
+							full_state_update.set_command_id(current_state_id);
+							full_state.Out(&full_state_update);
+							tec::networking::ServerMessage full_state_update_message;
+							full_state_update_message.SetStateID(current_state_id);
+							full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
+							full_state_update_message.SetBodyLength(full_state_update.ByteSizeLong());
+							full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(), static_cast<int>(full_state_update_message.GetBodyLength()));
+							full_state_update_message.encode_header();
+
+							{
+								std::lock_guard lg(server.client_list_mutex);
+								for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
+									client->UpdateGameState(full_state);
+									if (current_state_id - client->GetLastConfirmedStateID() > tec::TICKS_PER_SECOND * 2.0) {
+										server.Deliver(client, full_state_update_message);
+										std::cout << "sending full state " << current_state_id << " to: " << client->GetID() << " client state ID was: " << client->GetLastConfirmedStateID() << std::endl;
+									}
+									else {
+										server.Deliver(client, client->PrepareGameStateUpdateMessage(current_state_id, current_timestamp));
+									}
 								}
 							}
+
+							delta_accumulator -= tec::UPDATE_RATE;
 						}
 
-						delta_accumulator -= tec::UPDATE_RATE;
+						game_state_queue.SetBaseState(std::move(full_state));
 					}
-					game_state_queue.SetBaseState(std::move(full_state));
-					std::this_thread::sleep_for(std::chrono::milliseconds(1));
+					else {
+						std::this_thread::sleep_for(std::chrono::milliseconds(1));
+					}
 				}
 			});
 		std::cout << "Starting time: " << last_time.time_since_epoch().count() << std::endl;

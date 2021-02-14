@@ -129,10 +129,12 @@ namespace tec {
 				// simulation motion estimation lite
 				// on the server, this doesn't really do anything
 				// on the client however, this smooths out the motion between the local estimation and server state
-				// this provides a crude motion estimate until a proper one is added ;)
+				// this provides a crude but effective error correction until a better one is added ;)
 				if (body_transform.getOrigin().distance(collidable->motion_state.transform.getOrigin()) > 0.01) {
-					body->translate((collidable->motion_state.transform.getOrigin() - body_transform.getOrigin()) * 0.125);
-					// use this to snap back to the current state, it's unpleasent without restitution
+					// FIXME there is a race condition outside of PhysicsSystem, where the position of the entity
+					// is momentarily at origin (0,0,0) during entity creation (affects server)
+					body->translate(0.5 * (collidable->motion_state.transform.getOrigin() - body_transform.getOrigin()));
+					// use this to snap back to the current state, it's unpleasent without any form of restitution
 					//body_transform.setOrigin(collidable->motion_state.transform.getOrigin());
 				}
 				// for now, just always update the orientation
@@ -154,7 +156,7 @@ namespace tec {
 
 		// using a delta time here makes physics far less deterministic
 		// this can be changed if it becomes a problem
-		this->dynamicsWorld->stepSimulation(static_cast<btScalar>(delta), 10);
+		this->dynamicsWorld->stepSimulation(static_cast<btScalar>(delta), this->simulation_substeps);
 
 		// build a set of entity IDs that changed this step
 		std::set<eid> updated_entities;
@@ -183,15 +185,20 @@ namespace tec {
 	}
 
 	eid PhysicsSystem::RayCastMousePick(eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
-		if (source_entity == 0 || (this->bodies.find(source_entity) == this->bodies.end())) {
+		if (source_entity == 0) {
+			return 0;
+		}
+		auto body_iter = this->bodies.find(source_entity);
+		if (this->bodies.find(source_entity) == this->bodies.end()) {
 			return 0;
 		}
 		this->last_rayvalid = false;
 		this->last_entity_hit = 0;
 
-		auto pos = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getOrigin();
+		CollisionBody* body = static_cast<CollisionBody*>(body_iter->second->getUserPointer());
+		auto pos = body->motion_state.transform.getOrigin();
 		glm::vec3 position(pos.x(), pos.y(), pos.z());
-		auto rot = static_cast<CollisionBody*>(this->bodies.at(source_entity)->getUserPointer())->motion_state.transform.getRotation();
+		auto rot = body->motion_state.transform.getRotation();
 		glm::quat orientation(rot.w(), rot.x(), rot.y(), rot.z());
 
 		if (screen_height == 0.0f) {
@@ -326,8 +333,11 @@ namespace tec {
 			}
 		}
 
-		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(collision_body->mass,
-																 &collision_body->motion_state, collision_body->shape.get(), fallInertia);
+		btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(
+			collision_body->mass,
+			&collision_body->motion_state,
+			collision_body->shape.get(),
+			fallInertia);
 		auto body = new btRigidBody(fallRigidBodyCI);
 
 		if (!body) {
@@ -380,7 +390,7 @@ namespace tec {
 			}
 			case proto::Component::kPosition:
 			case proto::Component::kOrientation:
-					break;
+				break;
 			default:
 				break;
 			}
@@ -394,16 +404,20 @@ namespace tec {
 	}
 
 	Position PhysicsSystem::GetPosition(eid entity_id) {
-		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
-			auto pos = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getOrigin();
+		auto body_iter = this->bodies.find(entity_id);
+		if (body_iter != this->bodies.end() && body_iter->second) {
+			//CollisionBody* body = static_cast<CollisionBody*>(body_iter->second->getUserPointer());
+			auto pos = body_iter->second->getWorldTransform().getOrigin();
 			return glm::vec3(pos.x(), pos.y(), pos.z());
 		}
 		return glm::vec3();
 	}
 
 	Orientation PhysicsSystem::GetOrientation(eid entity_id) {
-		if (this->bodies.find(entity_id) != this->bodies.end() && this->bodies.at(entity_id)) {
-			auto rot = static_cast<CollisionBody*>(this->bodies.at(entity_id)->getUserPointer())->motion_state.transform.getRotation();
+		auto body_iter = this->bodies.find(entity_id);
+		if (body_iter != this->bodies.end() && body_iter->second) {
+			//CollisionBody* body = static_cast<CollisionBody*>(body_iter->second->getUserPointer());
+			auto rot = body_iter->second->getWorldTransform().getRotation();
 			return glm::quat(rot.w(), rot.x(), rot.y(), rot.z());
 		}
 		return glm::quat();
