@@ -32,8 +32,8 @@ namespace tec {
 		ProcessCommandQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
-		EventQueue<ControllerAddedEvent>::ProcessEventQueue();
-		EventQueue<ControllerRemovedEvent>::ProcessEventQueue();
+		EventQueue<ClientConnectedEvent>::ProcessEventQueue();
+		EventQueue<ClientDisconnectedEvent>::ProcessEventQueue();
 	}
 
 	void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
