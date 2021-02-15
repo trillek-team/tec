@@ -1,5 +1,4 @@
-#ifndef TRILLEK_CLIENT_SERVER_CONNECTION_HPP
-#define TRILLEK_CLIENT_SERVER_CONNECTION_HPP
+#pragma once
 
 #include <asio.hpp>
 #include <memory>
@@ -22,6 +21,8 @@ namespace tec {
 		extern const std::string_view SERVER_PORT;
 		extern const std::string_view LOCAL_HOST;
 
+		const size_t PING_HISTORY_SIZE = 10;
+		const size_t DELAY_HISTORY_SIZE = 10;
 		typedef std::chrono::milliseconds::rep ping_time_t;
 		// std::chrono::milliseconds::rep is required to be signed and at least
 		// 45 bits, so it should be std::int64_t.
@@ -119,7 +120,5 @@ namespace tec {
 
 			std::function<void()> onConnect = nullptr;
 		};
-	}
-}
-
-#endif
+	} // end of namespace networking
+} // end of namespace tec

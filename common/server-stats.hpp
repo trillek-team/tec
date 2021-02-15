@@ -1,5 +1,4 @@
-#ifndef TRILLEK_CLIENT_SERVER_STATS_HPP
-#define TRILLEK_CLIENT_SERVER_STATS_HPP
+#pragma once
 
 #include <cinttypes>
 #include <memory>
@@ -27,6 +26,4 @@ public:
 	size_t estimated_delay_count;
 };
 
-}
-
-#endif
+} // end namespace tec

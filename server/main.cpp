@@ -58,9 +58,8 @@ int main() {
 	std::chrono::duration<double> elapsed_seconds;
 	bool closing = false;
 
-	// Accumulated deltas since the last update was sent.
+	// Accumulated deltas since the last update send and physics simulation.
 	double delta_accumulator = 0.0;
-	// Accumulated deltas since the last physics simulation.
 	double step_accumulator = 0.0;
 
 	tec::ServerStats stats;

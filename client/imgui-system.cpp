@@ -380,7 +380,7 @@ namespace tec {
 		if (data->action == MouseBtnEvent::DOWN) {
 			this->mouse_pressed[data->button] = true;
 		}
-		// Imgui processes mouse events per frame, so if a click lasts less than a frame could be missed
+		// Imgui processes a single mouse event (up or down) per Imgui frame, the minimum for a click is two frames
 		// so here we track if the mouse was released, and clear the button state at the end of the Imgui frame
 		// this handles shorter-than-one-frame clicks, but could still miss double clicks!
 		if (data->action == MouseBtnEvent::UP) {

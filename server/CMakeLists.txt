@@ -31,7 +31,7 @@ add_executable(${trillek-server_PROGRAM}
 	${trillek-server_SOURCE_DIR}/main.cpp
 	${trillek-server_SOURCES}
 	${trillek-server_HEADERS}
-	)
+)
 
 if (MSVC)
 	set_property(TARGET ${trillek-server_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)

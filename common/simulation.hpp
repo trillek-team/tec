@@ -1,5 +1,4 @@
-#ifndef TRILLEK_COMMON_SIMULATION_HPP
-#define TRILLEK_COMMON_SIMULATION_HPP
+#pragma once
 
 #include <memory>
 #include <queue>
@@ -66,4 +65,3 @@ namespace tec {
 		std::list<Controller*> controllers;
 	};
 } // end namespace tec
-#endif // TRILLEK_COMMON_SIMULATION_HPP

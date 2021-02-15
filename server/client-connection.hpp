@@ -1,5 +1,4 @@
-#ifndef TRILLEK_SERVER_CLIENT_CONNECTION_HPP
-#define TRILLEK_SERVER_CLIENT_CONNECTION_HPP
+#pragma once
 
 #include <memory>
 #include <asio.hpp>
@@ -84,5 +83,3 @@ namespace tec {
 		};
 	} // end namespace networking
 } // end namespace tec
-
-#endif //TRILLEK_SERVER_CLIENT_CONNECTION_HPP

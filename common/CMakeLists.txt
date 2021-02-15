@@ -52,7 +52,7 @@ add_library(${trillek-common_LIBRARY} STATIC
 	${trillek-common_SOURCES}
 	${trillek-common_HEADERS}
 	${trillek-common_PROTOCOLS}
-	)
+)
 
 if (MSVC)
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)

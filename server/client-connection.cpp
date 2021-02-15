@@ -148,8 +148,8 @@ namespace tec {
 					{
 						ServerMessage sync_response;
 						sync_response.SetMessageType(MessageType::SYNC);
-						sync_response.SetBodyLength(8);
-						memcpy(sync_response.GetBodyPTR(), &current_timestamp, 8);
+						sync_response.SetBodyLength(sizeof(uint64_t));
+						memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
 						sync_response.encode_header();
 						QueueWrite(sync_response);
 						break;

@@ -422,16 +422,16 @@ namespace tec {
 			// constrain the mouse towards the center of the window
 			// we do this to prevent an initial frame of "overshoot"
 			// and also to prevent anything using absolute mode from wandering away, i.e. tooltip window
-			if (x < client_center_x && x > this->old_mouse_x) {
+			if (IsBetween(x, this->old_mouse_x, client_center_x)) {
 				this->old_mouse_x = x;
 			}
-			if (x > client_center_x && x < this->old_mouse_x) {
+			if (IsBetween(x, client_center_x, this->old_mouse_x)) {
 				this->old_mouse_x = x;
 			}
-			if (y < client_center_y && y > this->old_mouse_y) {
+			if (IsBetween(y, this->old_mouse_y, client_center_y)) {
 				this->old_mouse_y = y;
 			}
-			if (y > client_center_y && y < this->old_mouse_y) {
+			if (IsBetween(y, client_center_y, this->old_mouse_y)) {
 				this->old_mouse_y = y;
 			}
 			glfwSetCursorPos(this->window, this->old_mouse_x, this->old_mouse_y);
@@ -467,7 +467,9 @@ namespace tec {
 		else if(action == GLFW_RELEASE) {
 			mbtn_event->action = MouseBtnEvent::UP;
 		}
-		else return;
+		else { // other mouse button action?
+			return;
+		}
 		if (button == GLFW_MOUSE_BUTTON_LEFT) {
 			mbtn_event->button = MouseBtnEvent::LEFT;
 		}

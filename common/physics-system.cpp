@@ -93,15 +93,6 @@ namespace tec {
 				continue;
 			}
 
-			// if the mass changed, update mass related parameters.
-			if (collidable->mass != body->getInvMass()) {
-				btVector3 fallInertia(0, 0, 0);
-				collidable->shape->calculateLocalInertia(collidable->mass, fallInertia);
-				body->setMassProps(collidable->mass, fallInertia);
-				body->updateInertiaTensor();
-				body->clearForces();
-			}
-
 			// handle changes to desired deactivation mode
 			if (collidable->disable_deactivation) {
 				body->forceActivationState(DISABLE_DEACTIVATION);
@@ -110,15 +101,28 @@ namespace tec {
 				body->forceActivationState(ACTIVE_TAG);
 			}
 
-			// prevent the simulation from rotating the object
-			// this doesn't account for change after creation, once disabled there isn't a re-enable
-			if (collidable->disable_rotation) {
-				body->setAngularFactor(btVector3(0.0, 0, 0.0));
-			}
-
 			// here we add the body to the world if it's not yet
 			// this can later expand to handling multiple dynamics worlds if need be
 			if (!collidable->in_world) {
+				// TODO if we want to change any of these parameters later, we *might* have to remove the body from the world.
+				// The Bullet documentation is rather unhelpful in this regard.
+				// so for now we'll just update them when we put it in the world.
+
+				// if the mass changed, update mass related parameters.
+				if (collidable->mass != body->getInvMass()) {
+					btVector3 fallInertia(0, 0, 0);
+					collidable->shape->calculateLocalInertia(collidable->mass, fallInertia);
+					body->setMassProps(collidable->mass, fallInertia);
+					body->updateInertiaTensor();
+					body->clearForces();
+				}
+
+				// prevent the simulation from rotating the object
+				// this doesn't account for change after creation, once disabled there isn't a re-enable
+				if (collidable->disable_rotation) {
+					body->setAngularFactor(btVector3(0.0, 0, 0.0));
+				}
+
 				// snap the body to it's position when we add it
 				body->setWorldTransform(collidable->motion_state.transform);
 				collidable->in_world = true;

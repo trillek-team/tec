@@ -90,4 +90,4 @@ namespace tec {
 		bool last_rayvalid{ false };
 		eid last_entity_hit{ 0 };
 	};
-}
+} // end namespace tec

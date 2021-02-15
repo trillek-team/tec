@@ -20,8 +20,8 @@ namespace tec {
 	using networking::MessageType;
 
 	Game::Game(OS &_os, std::string config_file_name) :
-		os(_os),
 		stats(),
+		os(_os),
 		game_state_queue(this->stats),
 		server_connection(this->stats),
 		ps(this->simulation.GetPhysicsSystem()),

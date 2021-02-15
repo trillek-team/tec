@@ -1,5 +1,4 @@
-#ifndef TRILLEK_SERVER_GAME_STATE_QUEUE_HPP
-#define TRILLEK_SERVER_GAME_STATE_QUEUE_HPP
+#pragma once
 
 #include <queue>
 #include <iostream>
@@ -43,4 +42,3 @@ private:
 };
 
 } // end namespace tec
-#endif

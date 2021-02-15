@@ -1,5 +1,4 @@
-#ifndef TRILLEK_CLIENT_GAME_STATE_QUEUE_HPP
-#define TRILLEK_CLIENT_GAME_STATE_QUEUE_HPP
+#pragma once
 
 #include <queue>
 #include <iostream>
@@ -66,8 +65,6 @@ private:
 
 	GameState server_states_array[SERVER_STATES_ARRAY_SIZE];
 	int server_state_array_index{ SERVER_STATES_ARRAY_SIZE - 1 };
-	GameState predicted_states[SERVER_STATES_ARRAY_SIZE];
-	int predicted_states_array_index{ 0 };
 
 	ServerStats& stats;
 	GameState base_state;
@@ -82,5 +79,3 @@ private:
 };
 
 } // end namespace tec
-
-#endif

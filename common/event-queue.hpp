@@ -1,5 +1,4 @@
-#ifndef TRILLEK_COMMON_EVENT_QUEUE_HPP
-#define TRILLEK_COMMON_EVENT_QUEUE_HPP
+#pragma once
 
 #include <queue>
 #include <memory>
@@ -76,4 +75,3 @@ protected:
 };
 
 } // end namespace tec
-#endif // TRILLEK_COMMON_EVENT_QUEUE_HPP

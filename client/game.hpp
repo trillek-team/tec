@@ -1,5 +1,4 @@
-#ifndef TRILLEK_CLIENT_GAME_HPP
-#define TRILLEK_CLIENT_GAME_HPP
+#pragma once
 
 #include <future>
 #include <iostream>
@@ -59,8 +58,8 @@ namespace tec {
 		ClientGameStateQueue game_state_queue;
 		ServerConnection server_connection;
 		RenderSystem rs;
-		VComputerSystem& vcs;
 		PhysicsSystem& ps;
+		VComputerSystem& vcs;
 		SoundSystem ss;
 		LuaSystem lua_sys;
 		OS& os;
@@ -75,5 +74,3 @@ namespace tec {
 		std::thread* sync_thread = nullptr;
 	};
 } // end namespace tec
-
-#endif

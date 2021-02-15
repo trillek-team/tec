@@ -173,10 +173,10 @@ namespace tec {
 		void ServerConnection::SyncHandler(const ServerMessage& message) {
 			std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
 			std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
-			if(message.GetBodyLength() >= 8) {
-				memcpy(&this->stats.estimated_server_time, message.GetBodyPTR(), 8);
+			if(message.GetBodyLength() >= sizeof(uint64_t)) {
+				memcpy(&this->stats.estimated_server_time, message.GetBodyPTR(), sizeof(uint64_t));
 			}
-			if (this->recent_pings.size() >= 10) {
+			if (this->recent_pings.size() >= PING_HISTORY_SIZE) {
 				this->recent_pings.pop_front();
 			}
 			this->recent_pings.push_back(round_trip.count() / 2);
@@ -184,7 +184,7 @@ namespace tec {
 			for (ping_time_t ping : this->recent_pings) {
 				total_pings += ping;
 			}
-			this->average_ping = total_pings / 10;
+			this->average_ping = total_pings / PING_HISTORY_SIZE;
 			this->stats.estimated_server_time += average_ping;
 		}
 
