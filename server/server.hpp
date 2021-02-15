@@ -7,6 +7,9 @@
 #include <asio.hpp>
 #include <components.pb.h>
 
+#include "lua-system.hpp"
+#include "components/lua-script.hpp"
+
 #include "server-message.hpp"
 #include "event-queue.hpp"
 #include "event-system.hpp"
@@ -45,6 +48,11 @@ namespace tec {
 				return this->clients;
 			}
 
+			// For calling ProcessEvents() in main.cpp
+			LuaSystem* GetLuaSystem() {
+				return &this->lua_sys;
+			}
+
 			using EventQueue<EntityCreated>::On;
 			using EventQueue<EntityDestroyed>::On;
 			void On(std::shared_ptr<EntityCreated> data);
@@ -53,12 +61,17 @@ namespace tec {
 			// Method that handles and accepts incoming connections.
 			void AcceptHandler();
 			
+			// Lua system
+			LuaSystem lua_sys;
+			//std::shared_ptr<LuaScript> test_script;
+
 			// ASIO variables
 			asio::io_service io_service;
 			tcp::acceptor acceptor;
 			tcp::socket socket;
-
-			ServerMessage greeting_msg; // Greeting chat message.
+			
+			// Greeting chat message.
+			ServerMessage greeting_msg; 
 
 			std::map<eid, proto::Entity> entities;
 

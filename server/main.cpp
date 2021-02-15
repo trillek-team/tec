@@ -18,6 +18,9 @@
 
 #include "resources/script-file.hpp"
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_sinks.h>
+
 using asio::ip::tcp;
 
 tec::state_id_t current_state_id = 0;
@@ -40,6 +43,7 @@ namespace tec {
 		return in;
 	}
 
+	// Loads a given json file into the system
 	void ProtoLoadEntity(const FilePath& fname) {
 		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 		std::string json_string = LoadJSON(fname);
@@ -49,7 +53,18 @@ namespace tec {
 	}
 }
 
+std::shared_ptr<spdlog::logger> tec_log;
+void InitializeLogger() {
+    std::vector<spdlog::sink_ptr> sinks;
+    sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+    tec_log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
+    tec_log->set_level(spdlog::level::debug);
+    tec_log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
+    spdlog::register_logger(tec_log);
+}
+
 int main() {
+	InitializeLogger();
 	tec::RegisterFileFactories();
 	std::chrono::high_resolution_clock::time_point last_time, next_time;
 	std::chrono::duration<double> elapsed_seconds;
@@ -107,12 +122,17 @@ int main() {
 
 						delta_accumulator -= tec::UPDATE_RATE;
 						game_state_queue.SetBaseState(std::move(full_state));
+
+						// Processing events in LuaSystem
+						tec::LuaSystem* lua_sys = server.GetLuaSystem();
+						lua_sys->ProcessEvents();
 					}
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				}
 			});
 		std::cout << "Starting time: " << last_time.time_since_epoch().count() << std::endl;
 		server.Start();
+
 		closing = true;
 		simulation_thread.join();
 	}

@@ -24,6 +24,9 @@ namespace tec {
 			memcpy(this->greeting_msg.GetBodyPTR(), message.c_str(), this->greeting_msg.GetBodyLength());
 			this->greeting_msg.encode_header();
 
+			// Load test script
+			//this->test_script = this->lua_sys.LoadFile(FilePath::GetAssetPath("scripts/server-test.lua"));
+			
 			AcceptHandler();
 		}
 
@@ -75,7 +78,6 @@ namespace tec {
 			}
 			this->io_service.stop();
 		}
-
 
 		std::string LoadJSON(const FilePath& fname) {
 			std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);

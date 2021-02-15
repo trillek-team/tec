@@ -17,16 +17,22 @@ namespace tec {
 	}
 
 	void LuaSystem::Update(const double delta) {
-		ProcessCommandQueue();
-		EventQueue<EntityCreated>::ProcessEventQueue();
-		EventQueue<EntityDestroyed>::ProcessEventQueue();
-
+		ProcessEvents();
+		
 		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
-			auto entity_id = itr->first;
+			//auto entity_id = itr->first; <------ commented as it is currently unused
 			if (!itr->second->script_name.empty() && itr->second->environment["onUpdate"].valid()) {
 				itr->second->environment["onUpdate"](delta);
 			}
 		}
+	}
+
+	void LuaSystem::ProcessEvents() {
+		ProcessCommandQueue();
+		EventQueue<EntityCreated>::ProcessEventQueue();
+		EventQueue<EntityDestroyed>::ProcessEventQueue();
+		EventQueue<ControllerAddedEvent>::ProcessEventQueue();
+		EventQueue<ControllerRemovedEvent>::ProcessEventQueue();
 	}
 
 	void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
@@ -62,10 +68,32 @@ namespace tec {
 		}
 	}
 
+	// Client connected
+	void LuaSystem::On(std::shared_ptr<ControllerAddedEvent> data) {
+		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
+			if (!itr->second->script_name.empty() && itr->second->environment["onClientConnected"].valid()) {
+				itr->second->environment["onClientConnected"]();
+			}
+		}
+	}
+
+	// Client Disconnected
+	void LuaSystem::On(std::shared_ptr<ControllerRemovedEvent> data) {
+		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
+			if (!itr->second->script_name.empty() && itr->second->environment["onClientDisconnected"].valid()) {
+				itr->second->environment["onClientDisconnected"]();
+			}
+		}
+	}
+
 	std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
 		std::shared_ptr<LuaScript> script = std::make_shared<LuaScript>(ScriptFile::Create(filepath));
 		script->SetupEnvironment(&this->lua);
 		script->ReloadScript();
+
+		// Register loaded script on the Script map multiton
+		eid id{ 0 };
+		LuaScriptMap::Set(id, &*script);
 		return script;
 	}
 

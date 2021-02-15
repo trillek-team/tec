@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <components.pb.h>
 #include <commands.pb.h>
+#include <asio.hpp>
 
 #include "tec-types.hpp"
 
@@ -65,6 +66,14 @@ namespace tec {
 
 	struct ClientCommandsEvent {
 		proto::ClientCommands client_commands;
+	};
+
+	// Used for server Lua API
+	struct ClientConnectedEvent {
+		asio::ip::tcp::endpoint endpoint;
+	};
+	struct ClientDisonnectedEvent {
+		asio::ip::tcp::endpoint endpoint;
 	};
 
 	struct Controller;
