@@ -25,8 +25,8 @@ namespace tec {
 			this->greeting_msg.encode_header();
 
 			// Load test script
-			//this->test_script = this->lua_sys.LoadFile(FilePath::GetAssetPath("scripts/server-test.lua"));
-			
+			this->lua_sys.LoadFile(FilePath::GetAssetPath("scripts/server-test.lua"));
+
 			AcceptHandler();
 		}
 

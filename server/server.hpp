@@ -63,7 +63,6 @@ namespace tec {
 			
 			// Lua system
 			LuaSystem lua_sys;
-			//std::shared_ptr<LuaScript> test_script;
 
 			// ASIO variables
 			asio::io_service io_service;

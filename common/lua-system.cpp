@@ -8,6 +8,7 @@
 namespace tec {
 	using LuaScriptMap = Multiton<eid, LuaScript*>;
 
+
 	LuaSystem::LuaSystem() {
 		this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table);
 
@@ -68,20 +69,25 @@ namespace tec {
 		}
 	}
 
-	// Client connected
-	void LuaSystem::On(std::shared_ptr<ControllerAddedEvent> data) {
-		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
-			if (!itr->second->script_name.empty() && itr->second->environment["onClientConnected"].valid()) {
-				itr->second->environment["onClientConnected"]();
-			}
-		}
+	void LuaSystem::On(std::shared_ptr<ClientConnectedEvent> data) {
+		CallFunction("onClientConnected");
+	}
+	
+	void LuaSystem::On(std::shared_ptr<ClientDisconnectedEvent> data) {
+		CallFunction("onClientDisconnected");
 	}
 
-	// Client Disconnected
-	void LuaSystem::On(std::shared_ptr<ControllerRemovedEvent> data) {
+	void LuaSystem::CallFunction(std::string function_name) {
+		// multiton <eid, LuaScript*>
 		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
-			if (!itr->second->script_name.empty() && itr->second->environment["onClientDisconnected"].valid()) {
-				itr->second->environment["onClientDisconnected"]();
+			if (!itr->second->script_name.empty() && itr->second->environment[function_name].valid()) {
+				itr->second->environment[function_name]();
+			}
+		}
+		// list<scripts>
+		for (auto script = scripts.begin(); script != scripts.end(); script++) {
+			if (!script->script_name.empty() && script->environment[function_name].valid()) {
+				script->environment[function_name]();
 			}
 		}
 	}
@@ -91,9 +97,8 @@ namespace tec {
 		script->SetupEnvironment(&this->lua);
 		script->ReloadScript();
 
-		// Register loaded script on the Script map multiton
-		eid id{ 0 };
-		LuaScriptMap::Set(id, &*script);
+		// add to list of scripts
+		scripts.push_back(*script);
 		return script;
 	}
 
