@@ -17,12 +17,19 @@ namespace tec {
 	struct EntityCreated;
 	struct EntityDestroyed;
 
-	class PhysicsSystem : public CommandQueue < PhysicsSystem >,
-		EventQueue < MouseBtnEvent >, EventQueue < EntityCreated >,
-		EventQueue < EntityDestroyed > {
+	class PhysicsSystem :
+		public CommandQueue<PhysicsSystem>,
+		EventQueue<MouseBtnEvent>,
+		EventQueue<EntityCreated>,
+		EventQueue<EntityDestroyed> {
 	public:
 		PhysicsSystem();
 		~PhysicsSystem();
+
+		// sets a different substep limit, if zero, then update delta must be a constant
+		void SetSubstepping(int substep) {
+			simulation_substeps = substep;
+		}
 
 		std::set<eid> Update(const double delta, const GameState& state);
 
@@ -72,6 +79,7 @@ namespace tec {
 		btCollisionDispatcher* dispatcher;
 		btSequentialImpulseConstraintSolver* solver;
 		btDynamicsWorld* dynamicsWorld;
+		int simulation_substeps = 10;
 
 		std::map<eid, btRigidBody*> bodies;
 
@@ -82,4 +90,4 @@ namespace tec {
 		bool last_rayvalid{ false };
 		eid last_entity_hit{ 0 };
 	};
-}
+} // end namespace tec

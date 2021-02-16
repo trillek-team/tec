@@ -23,6 +23,7 @@ endif ()
 set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-client_SOURCE_DIR}/game.cpp
 	${trillek-client_SOURCE_DIR}/imgui-system.cpp
+	${trillek-client_SOURCE_DIR}/client-game-state-queue.cpp
 	${trillek-client_SOURCE_DIR}/os.cpp
 	${trillek-client_SOURCE_DIR}/render-system.cpp
 	${trillek-client_SOURCE_DIR}/server-connection.cpp
@@ -48,6 +49,11 @@ set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 
 set(trillek-client_SOURCES ${trillek-client_SOURCES} PARENT_SCOPE) # so tests can use them
 
+# Used by IDEs to nicely view header files
+file(GLOB_RECURSE trillek-client_HEADERS LIST_DIRECTORIES false ${trillek-client_SOURCE_DIR}/*.hpp)
+source_group(Headers FILES ${trillek-client_HEADERS})
+set_property(SOURCE ${trillek-client_HEADERS} PROPERTY HEADER_FILE_ONLY true)
+
 # macOS needs to link libobjc
 set(OSX_LIBRARIES "")
 
@@ -69,7 +75,7 @@ if (UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
 endif (UNIX AND NOT APPLE)
 
-add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCE_DIR}/main.cpp ${trillek-client_SOURCES})
+add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCE_DIR}/main.cpp ${trillek-client_SOURCES} ${trillek-client_HEADERS})
 
 if (MSVC)
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)

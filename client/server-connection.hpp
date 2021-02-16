@@ -1,5 +1,4 @@
-#ifndef TRILLEK_CLIENT_SERVER_CONNECTION_HPP
-#define TRILLEK_CLIENT_SERVER_CONNECTION_HPP
+#pragma once
 
 #include <asio.hpp>
 #include <memory>
@@ -13,6 +12,7 @@
 #include <spdlog/spdlog.h>
 
 #include "server-message.hpp"
+#include "server-stats.hpp"
 
 using asio::ip::tcp;
 
@@ -21,6 +21,8 @@ namespace tec {
 		extern const std::string_view SERVER_PORT;
 		extern const std::string_view LOCAL_HOST;
 
+		const size_t PING_HISTORY_SIZE = 10;
+		const size_t DELAY_HISTORY_SIZE = 10;
 		typedef std::chrono::milliseconds::rep ping_time_t;
 		// std::chrono::milliseconds::rep is required to be signed and at least
 		// 45 bits, so it should be std::int64_t.
@@ -29,7 +31,7 @@ namespace tec {
 // Used to connect to a server.
 		class ServerConnection {
 		public:
-			ServerConnection();
+			ServerConnection(ServerStats& s);
 
 			bool Connect(std::string_view ip = LOCAL_HOST); // Connects to a server.
 
@@ -61,6 +63,11 @@ namespace tec {
 				return this->average_ping;
 			}
 
+			ping_time_t GetEstimatedDelay() {
+				ping_time_t since_recv = std::chrono::duration_cast<std::chrono::milliseconds>(
+					std::chrono::high_resolution_clock::now() - recv_time).count();
+				return (this->stats.estimated_server_time - this->stats.last_state_time) + since_recv;
+			}
 			// Get the client ID assigned by the server.
 			eid GetClientID() {
 				return this->client_id;
@@ -98,6 +105,11 @@ namespace tec {
 			static std::mutex recent_ping_mutex;
 			ping_time_t average_ping{ 0 };
 
+			// Stats and Status
+		public:
+			ServerStats& stats;
+		private:
+
 			// Server-assigned client ID
 			eid client_id{ 0 };
 
@@ -108,7 +120,5 @@ namespace tec {
 
 			std::function<void()> onConnect = nullptr;
 		};
-	}
-}
-
-#endif
+	} // end of namespace networking
+} // end of namespace tec

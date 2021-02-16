@@ -132,48 +132,55 @@ namespace tec {
 				socket,
 				asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
 				[this, self] (std::error_code error, std::size_t /*length*/) {
-					if (!error) {
-						switch (this->current_read_msg.GetMessageType()) {
-							case MessageType::CHAT_MESSAGE:
-							server->Deliver(this->current_read_msg);
-							std::cout.write(this->current_read_msg.GetBodyPTR(),
-											this->current_read_msg.GetBodyLength()) << std::endl;
-							break;
-							case MessageType::SYNC:
-							QueueWrite(this->current_read_msg);
-							break;
-							case MessageType::CLIENT_COMMAND:
-							{
-								// Pass this along to be handled in simulation to allow for
-								// processing of string commands as well as movement.
-
-								// TODO: just apply movement commands here and split string commands
-								// to a different message.
-								proto::ClientCommands proto_client_commands;
-								proto_client_commands.ParseFromArray(
-									current_read_msg.GetBodyPTR(),
-									static_cast<int>(current_read_msg.GetBodyLength()));
-								this->last_confirmed_state_id = current_read_msg.GetStateID();
-								std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
-								this->last_recv_command_id = proto_client_commands.commandid();
-								data->client_commands = std::move(proto_client_commands);
-								EventSystem<ClientCommandsEvent>::Get()->Emit(data);
-							}
-							break;
-							case MessageType::ENTITY_CREATE:
-							case MessageType::ENTITY_DESTROY:
-							case MessageType::CLIENT_JOIN:
-							case MessageType::CLIENT_ID:
-							case MessageType::CLIENT_LEAVE:
-							case MessageType::GAME_STATE_UPDATE:
-								break;
-						}
-						std::this_thread::sleep_for(std::chrono::milliseconds(1));
-						read_header();
-					}
-					else {
+					auto now_time = std::chrono::high_resolution_clock::now();
+					uint64_t current_timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
+					if (error) {
 						server->Leave(shared_from_this());
+						return;
 					}
+					switch (this->current_read_msg.GetMessageType()) {
+					case MessageType::CHAT_MESSAGE:
+						server->Deliver(this->current_read_msg);
+						std::cout.write(this->current_read_msg.GetBodyPTR(),
+										this->current_read_msg.GetBodyLength()) << std::endl;
+						break;
+					case MessageType::SYNC:
+					{
+						ServerMessage sync_response;
+						sync_response.SetMessageType(MessageType::SYNC);
+						sync_response.SetBodyLength(sizeof(uint64_t));
+						memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
+						sync_response.encode_header();
+						QueueWrite(sync_response);
+						break;
+					}
+					case MessageType::CLIENT_COMMAND:
+					{
+						// Pass this along to be handled in simulation to allow for
+						// processing of string commands as well as movement.
+
+						// TODO: just apply movement commands here and split string commands
+						// to a different message.
+						proto::ClientCommands proto_client_commands;
+						proto_client_commands.ParseFromArray(
+							current_read_msg.GetBodyPTR(),
+							static_cast<int>(current_read_msg.GetBodyLength()));
+						this->last_confirmed_state_id = current_read_msg.GetStateID();
+						std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
+						this->last_recv_command_id = proto_client_commands.commandid();
+						data->client_commands = std::move(proto_client_commands);
+						EventSystem<ClientCommandsEvent>::Get()->Emit(data);
+						break;
+					}
+					case MessageType::ENTITY_CREATE:
+					case MessageType::ENTITY_DESTROY:
+					case MessageType::CLIENT_JOIN:
+					case MessageType::CLIENT_ID:
+					case MessageType::CLIENT_LEAVE:
+					case MessageType::GAME_STATE_UPDATE:
+						break;
+					}
+					read_header();
 				});
 		}
 
@@ -216,10 +223,11 @@ namespace tec {
 			}
 		}
 
-		tec::networking::ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id) {
+		tec::networking::ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp) {
 			tec::proto::GameStateUpdate gsu_msg;
 			gsu_msg.set_state_id(current_state_id);
 			gsu_msg.set_command_id(this->last_recv_command_id);
+			gsu_msg.set_timestamp(current_timestamp);
 			for (auto pos : this->state_changes_since_confirmed.positions) {
 				tec::proto::Entity* _entity = gsu_msg.add_entity();
 				_entity->set_id(pos.first);

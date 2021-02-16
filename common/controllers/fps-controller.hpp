@@ -9,6 +9,7 @@
 #include "events.hpp"
 
 namespace tec {
+
 	// TODO: Create Controller system that calls update on all controller
 	// instances.
 	struct Controller {
@@ -22,9 +23,16 @@ namespace tec {
 
 		virtual void ApplyClientCommands(proto::ClientCommands) = 0;
 
-		void SetFocus(bool keyboard, bool mouse) {
-			this->keyboard_focus = keyboard;
-			this->mouse_focus = mouse;
+		/// \brief called to indicate focus has been restored to controller
+		virtual void SetFocus(bool keyboard, bool mouse) {
+			this->keyboard_focus = keyboard || this->keyboard_focus;
+			this->mouse_focus = mouse || this->mouse_focus;
+		}
+
+		/// \brief called to indicate focus has been captured from controller
+		virtual void ClearFocus(bool keyboard, bool mouse) {
+			this->keyboard_focus = this->keyboard_focus && !keyboard;
+			this->mouse_focus = this->mouse_focus && !mouse;
 		}
 
 		eid entity_id;
@@ -68,4 +76,5 @@ namespace tec {
 
 		void ApplyClientCommands(proto::ClientCommands proto_client_commands) override;
 	};
-}
+
+} // end namespace tec

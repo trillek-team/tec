@@ -14,7 +14,7 @@ namespace tec {
 		std::shared_ptr<spdlog::logger> ServerConnection::_log;
 		std::mutex ServerConnection::recent_ping_mutex;
 
-		ServerConnection::ServerConnection() : socket(io_service) {
+		ServerConnection::ServerConnection(ServerStats& s) : socket(io_service), stats(s) {
 			_log = spdlog::get("console_log");
 			RegisterMessageHandler(MessageType::SYNC, [this] (const ServerMessage& message) {
 				this->SyncHandler(message);
@@ -170,10 +170,13 @@ namespace tec {
 			}
 		}
 
-		void ServerConnection::SyncHandler(const ServerMessage&) {
+		void ServerConnection::SyncHandler(const ServerMessage& message) {
 			std::chrono::milliseconds round_trip = std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
 			std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
-			if (this->recent_pings.size() >= 10) {
+			if(message.GetBodyLength() >= sizeof(uint64_t)) {
+				memcpy(&this->stats.estimated_server_time, message.GetBodyPTR(), sizeof(uint64_t));
+			}
+			if (this->recent_pings.size() >= PING_HISTORY_SIZE) {
 				this->recent_pings.pop_front();
 			}
 			this->recent_pings.push_back(round_trip.count() / 2);
@@ -181,7 +184,8 @@ namespace tec {
 			for (ping_time_t ping : this->recent_pings) {
 				total_pings += ping;
 			}
-			this->average_ping = total_pings / 10;
+			this->average_ping = total_pings / PING_HISTORY_SIZE;
+			this->stats.estimated_server_time += average_ping;
 		}
 
 		void ServerConnection::GameStateUpdateHandler(const ServerMessage& message) {

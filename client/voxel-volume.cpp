@@ -236,7 +236,7 @@ namespace tec {
 				const Position* pos = Entity(entity_id).Get<Position>();
 				const Orientation* orientation = Entity(entity_id).Get<Orientation>();
 				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
-				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_piont_world, 1.0f);
+				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
 				std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
 				local_coords.y += FLT_EPSILON * (std::signbit(local_coords.y) ? -1.0f : 0.0f);
 				std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
@@ -250,7 +250,7 @@ namespace tec {
 				const Position* pos = Entity(entity_id).Get<Position>();
 				const Orientation* orientation = Entity(entity_id).Get<Orientation>();
 				glm::mat4 model_view = glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
-				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_piont_world, 1.0f);
+				glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
 				std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
 				local_coords.y -= FLT_EPSILON * (std::signbit(local_coords.y) ? 0.0f : 1.0f);
 				std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));

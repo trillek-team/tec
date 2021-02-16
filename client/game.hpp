@@ -8,12 +8,13 @@
 
 #include <vcomputer.hpp>
 
+#include "os.hpp"
 #include "server-connection.hpp"
 #include "lua-system.hpp"
 #include "physics-system.hpp"
 #include "render-system.hpp"
 #include "simulation.hpp"
-#include "game-state-queue.hpp"
+#include "client-game-state-queue.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
 #include "multiton.hpp"
@@ -25,7 +26,7 @@ namespace tec {
 
 	class Game {
 	public:
-		Game(std::string config_file_name = "scripts/config.lua");
+		Game(OS &_os, std::string config_file_name = "scripts/config.lua");
 
 		~Game();
 
@@ -52,14 +53,16 @@ namespace tec {
 
 		typedef Multiton<eid, Computer*> ComputerComponentMap;
 
+		ServerStats stats;
 		Simulation simulation;
-		GameStateQueue game_state_queue;
+		ClientGameStateQueue game_state_queue;
 		ServerConnection server_connection;
 		RenderSystem rs;
-		VComputerSystem& vcs;
 		PhysicsSystem& ps;
+		VComputerSystem& vcs;
 		SoundSystem ss;
 		LuaSystem lua_sys;
+		OS& os;
 
 		double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 		state_id_t command_id = 0;
@@ -70,4 +73,4 @@ namespace tec {
 		std::thread* asio_thread = nullptr;
 		std::thread* sync_thread = nullptr;
 	};
-}
+} // end namespace tec

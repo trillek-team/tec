@@ -64,5 +64,4 @@ namespace tec {
 
 		std::list<Controller*> controllers;
 	};
-}
-
+} // end namespace tec

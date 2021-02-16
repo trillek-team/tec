@@ -1,5 +1,4 @@
-#ifndef TRILLEK_COMMON_TYPES_HPP
-#define TRILLEK_COMMON_TYPES_HPP
+#pragma once
 
 /**
  * @file types.hpp
@@ -22,6 +21,8 @@ namespace tec {
 	#define PRI_EID PRId64
 
 	typedef std::uint32_t tid; /// Type ID
+
+	template<class T> bool IsBetween(T value, T lower, T upper) { return (value > lower) && (value < upper); }
 
 	/// Returns the name of an component on compile time
 	template<class TYPE> constexpr const char* GetTypeName(void) { return "UNKNOWN"; }
@@ -118,6 +119,4 @@ namespace tec {
 #undef MAKE_IDTYPE_NAMESPACE
 #undef MAKE_IDTYPE
 
-}
-
-#endif
+} // end namespace tec

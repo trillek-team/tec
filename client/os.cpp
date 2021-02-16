@@ -21,6 +21,7 @@ extern "C" SEL sel_getUid(const char* str);
 
 namespace tec {
 	GLFWwindow* OS::focused_window;
+	bool OS::mouse_locked = false;
 
 	// Error helper function used by GLFW for error messaging.
 	static void ErrorCallback(int error_no, const char* description) {
@@ -156,10 +157,12 @@ namespace tec {
 		glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
 		glfwGetCursorPos(this->window, &this->old_mouse_x, &this->old_mouse_y);
+		glfwSetInputMode(this->window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
 		UpdateWindowSize(width, height);
 
 		OS::focused_window = this->window;
+		OS::mouse_locked = false;
 
 		return true;
 	}
@@ -260,6 +263,10 @@ namespace tec {
 	void OS::OSMessageLoop() {
 		glfwPollEvents();
 		EventQueue<KeyboardEvent>::ProcessEventQueue();
+		if (this->mouse_lock != OS::mouse_locked) {
+			OS::mouse_locked = this->mouse_lock;
+			glfwSetInputMode(this->window, GLFW_CURSOR, OS::mouse_locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+		}
 	}
 
 	int OS::GetWindowWidth() const {
@@ -397,6 +404,39 @@ namespace tec {
 	}
 
 	void OS::DispatchMouseMoveEvent(const double x, const double y) {
+		if (OS::mouse_locked) {
+			// mouse lock is where we hide the cursor and constrain it to the window
+			// we also request raw mouse motion if available
+			std::shared_ptr<MouseMoveEvent> mmov_event = std::make_shared<MouseMoveEvent>(
+				MouseMoveEvent{
+					x / this->client_width,
+					y / this->client_height,
+					static_cast<int>(this->old_mouse_x),
+					static_cast<int>(this->old_mouse_y),
+					static_cast<int>(x),
+					static_cast<int>(y)
+				});
+			EventSystem<MouseMoveEvent>::Get()->Emit(mmov_event);
+			double client_center_x = static_cast<double>(this->client_width / 2);
+			double client_center_y = static_cast<double>(this->client_height / 2);
+			// constrain the mouse towards the center of the window
+			// we do this to prevent an initial frame of "overshoot"
+			// and also to prevent anything using absolute mode from wandering away, i.e. tooltip window
+			if (IsBetween(x, this->old_mouse_x, client_center_x)) {
+				this->old_mouse_x = x;
+			}
+			if (IsBetween(x, client_center_x, this->old_mouse_x)) {
+				this->old_mouse_x = x;
+			}
+			if (IsBetween(y, this->old_mouse_y, client_center_y)) {
+				this->old_mouse_y = y;
+			}
+			if (IsBetween(y, client_center_y, this->old_mouse_y)) {
+				this->old_mouse_y = y;
+			}
+			glfwSetCursorPos(this->window, this->old_mouse_x, this->old_mouse_y);
+			return;
+		}
 		std::shared_ptr<MouseMoveEvent> mmov_event = std::make_shared<MouseMoveEvent>(
 			MouseMoveEvent{
 			x / this->client_width,
@@ -424,8 +464,11 @@ namespace tec {
 		if (action == GLFW_PRESS) {
 			mbtn_event->action = MouseBtnEvent::DOWN;
 		}
-		else {
+		else if(action == GLFW_RELEASE) {
 			mbtn_event->action = MouseBtnEvent::UP;
+		}
+		else { // other mouse button action?
+			return;
 		}
 		if (button == GLFW_MOUSE_BUTTON_LEFT) {
 			mbtn_event->button = MouseBtnEvent::LEFT;
@@ -451,16 +494,10 @@ namespace tec {
 	}
 
 	void OS::EnableMouseLock() {
-		if (!this->mouse_lock) {
-			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		}
 		this->mouse_lock = true;
 	}
 
 	void OS::DisableMouseLock() {
-		if (this->mouse_lock) {
-			glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
 		this->mouse_lock = false;
 	}
 
@@ -470,6 +507,11 @@ namespace tec {
 
 	void OS::GetMousePosition(double* x, double* y) {
 		if (focused_window) {
+			if (OS::mouse_locked) {
+				if(x) *x = 0.5;
+				if(y) *y = 0.5;
+				return;
+			}
 			glfwGetCursorPos(OS::focused_window, x, y);
 		}
 	}

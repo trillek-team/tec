@@ -310,7 +310,8 @@ namespace tec {
 		int client_width{ 0 }, client_height{ 0 }; // Current window's client width and height.
 		double old_mouse_x{ 0 }, old_mouse_y{ 0 };
 		double last_time{ 0 }; // The time at the last call to GetDeltaTime().
-		bool mouse_lock{ false }; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
+		bool mouse_lock{ false }; // If mouse lock is requested.
+		static bool mouse_locked; // If mouse lock is enabled causing the cursor to snap to mid-window each movement event.
 		bool fullscreen{ false }; // False if the game is in windowed mode
 	};
 }
