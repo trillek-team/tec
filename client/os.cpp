@@ -134,7 +134,7 @@ namespace tec {
 		glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
 		l->info("Extensions {} : ", num_exts);
 		std::string ext("");
-		for (GLuint e = 0; e < num_exts; e++) {
+		for (GLint e = 0; e < num_exts; e++) {
 			ext += "[" + std::string((const char*)glGetStringi(GL_EXTENSIONS, e)) + "] ";
 			if (e != 0 && e % 5 == 0) {
 				l->debug(ext);

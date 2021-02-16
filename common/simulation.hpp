@@ -47,15 +47,17 @@ namespace tec {
 		using EventQueue<ClientCommandsEvent>::On;
 		using EventQueue<ControllerAddedEvent>::On;
 		using EventQueue<ControllerRemovedEvent>::On;
-		void On(std::shared_ptr<KeyboardEvent> data) override;
-		void On(std::shared_ptr<MouseBtnEvent> data) override;
-		void On(std::shared_ptr<MouseMoveEvent> data) override;
-		void On(std::shared_ptr<MouseClickEvent> data) override;
-		void On(std::shared_ptr<ClientCommandsEvent> data) override;
-		void On(std::shared_ptr<ControllerAddedEvent> data) override;
-		void On(std::shared_ptr<ControllerRemovedEvent> data) override;
-		void On(std::shared_ptr<FocusCapturedEvent> data) override;
-		void On(std::shared_ptr<FocusBlurEvent> data) override;
+		using EventQueue<FocusCapturedEvent>::On;
+		using EventQueue<FocusBlurEvent>::On;
+		void On(std::shared_ptr<KeyboardEvent> data);
+		void On(std::shared_ptr<MouseBtnEvent> data);
+		void On(std::shared_ptr<MouseMoveEvent> data);
+		void On(std::shared_ptr<MouseClickEvent> data);
+		void On(std::shared_ptr<ClientCommandsEvent> data);
+		void On(std::shared_ptr<ControllerAddedEvent> data);
+		void On(std::shared_ptr<ControllerRemovedEvent> data);
+		void On(std::shared_ptr<FocusCapturedEvent> data);
+		void On(std::shared_ptr<FocusBlurEvent> data);
 	private:
 		PhysicsSystem phys_sys;
 		VComputerSystem vcomp_sys;
