@@ -17,11 +17,21 @@ endif ()
 set(trillek-server_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-server_SOURCE_DIR}/client-connection.cpp
 	${trillek-server_SOURCE_DIR}/server.cpp
+	${trillek-server_SOURCE_DIR}/server-game-state-queue.cpp
 )
 
 set(trillek-server_SOURCES ${trillek-server_SOURCES} PARENT_SCOPE) # so tests can use them
 
-add_executable(${trillek-server_PROGRAM} ${trillek-server_SOURCE_DIR}/main.cpp ${trillek-server_SOURCES})
+# Used by IDEs to nicely view header files, don't depend on this to work!
+file(GLOB_RECURSE trillek-server_HEADERS LIST_DIRECTORIES false ${trillek-server_SOURCE_DIR}/*.hpp)
+source_group(Headers FILES ${trillek-server_HEADERS})
+set_property(SOURCE ${trillek-server_HEADERS} PROPERTY HEADER_FILE_ONLY true)
+
+add_executable(${trillek-server_PROGRAM}
+	${trillek-server_SOURCE_DIR}/main.cpp
+	${trillek-server_SOURCES}
+	${trillek-server_HEADERS}
+)
 
 if (MSVC)
 	set_property(TARGET ${trillek-server_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)

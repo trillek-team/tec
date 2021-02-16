@@ -1,5 +1,4 @@
-#ifndef TRILLEK_COMMON_SERVER_MESSAGE_HPP
-#define TRILLEK_COMMON_SERVER_MESSAGE_HPP
+#pragma once
 
 #include <cstdio>
 #include <cstdlib>
@@ -106,7 +105,5 @@ namespace tec {
 			state_id_t last_recv_state_id;
 			MessageType message_type;
 		};
-	}
-}
-
-#endif
+	} // end namespace networking
+} // end of namespace tec

@@ -19,7 +19,11 @@ namespace tec {
 	using networking::ServerMessage;
 	using networking::MessageType;
 
-	Game::Game(std::string config_file_name) :
+	Game::Game(OS &_os, std::string config_file_name) :
+		stats(),
+		os(_os),
+		game_state_queue(this->stats),
+		server_connection(this->stats),
 		ps(this->simulation.GetPhysicsSystem()),
 		vcs(this->simulation.GetVComputerSystem()),
 		sound_thread([this] () { ss.Update(); }) {
@@ -106,13 +110,16 @@ namespace tec {
 	}
 
 	void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
+		// TODO: a better representation of commands so we can send them less often
+		const double COMMAND_RATE = 1.0 / 30.0;
 		delta_accumulator += delta;
-
 		game_state_queue.ProcessEventQueue();
 		game_state_queue.Interpolate(delta);
 
 		auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
-		if (delta_accumulator >= UPDATE_RATE) {
+		game_state_queue.UpdatePredictions(client_state);
+
+		while (delta_accumulator >= COMMAND_RATE) {
 			if (this->player_camera) {
 				ServerMessage update_message;
 				proto::ClientCommands client_commands = this->player_camera->GetClientCommands();
@@ -126,8 +133,9 @@ namespace tec {
 				game_state_queue.SetCommandID(command_id);
 			}
 
-			delta_accumulator -= UPDATE_RATE;
+			delta_accumulator -= COMMAND_RATE;
 		}
+
 		UpdateVComputerScreenTextures();
 		ss.SetDelta(delta);
 		rs.Update(delta, client_state);
@@ -135,7 +143,7 @@ namespace tec {
 
 		if (this->player_camera != nullptr) {
 			if (this->player_camera->mouse_look) {
-				//os.EnableMouseLock(); // TODO: create event to change to mouse look
+				os.EnableMouseLock(); // TODO: create event to change to mouse look
 				this->active_entity = ps.RayCastMousePick(
 					this->server_connection.GetClientID(),
 					static_cast<float>(window_width) / 2.0f,
@@ -145,7 +153,7 @@ namespace tec {
 				);
 			}
 			else {
-				//os.DisableMouseLock(); // TODO: create event to change from mouse look
+				os.DisableMouseLock(); // TODO: create event to change from mouse look
 				this->active_entity = ps.RayCastMousePick(
 					this->server_connection.GetClientID(), mouse_x, mouse_y,
 					static_cast<float>(window_width),

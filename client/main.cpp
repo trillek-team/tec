@@ -87,18 +87,18 @@ std::string CalculateAspectRatioString(const unsigned int window_width, const un
 
 int main(int argc, char* argv[]) {
 	tec::Console console;
+	tec::OS os;
 
 	auto log = InitializeLogger(ParseLogLevel(argc, argv), console);
 
 	log->info(std::string("Asset path: ") + tec::FilePath::GetAssetsBasePath().toString());
 
-	tec::Game game;
+	tec::Game game(os);
 
 	const unsigned int window_width = game.config_script->environment.get_or("window_width", WINDOW_WIDTH);
 	const unsigned int window_height = game.config_script->environment.get_or("window_height", WINDOW_HEIGHT);
 
 	log->info("Initializing OpenGL...");
-	tec::OS os;
 	if (!os.InitializeWindow(window_width, window_height, "TEC 0.1", 4, 0)) {
 		log->info("Exiting. The context wasn't created properly please update drivers and try again.");
 		exit(1);

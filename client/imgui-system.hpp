@@ -90,6 +90,7 @@ namespace tec {
 		int framebuffer_width{ 0 }, framebuffer_height{ 0 };
 		int window_width{ 0 }, window_height{ 0 };
 		bool mouse_pressed[3]{ false, false, false };
+		bool mouse_released[3]{ false, false, false };
 		ImVec2 mouse_pos{ 0, 0 };
 		ImVec2 mouse_wheel{ 0, 0 };
 

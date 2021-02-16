@@ -22,10 +22,10 @@ namespace tec {
 				Handle(key_event, state);
 			}
 		}
+		for (const MouseBtnEvent& mouse_button_event : commands.mouse_button_events) {
+			Handle(mouse_button_event, state);
+		}
 		if (mouse_focus) {
-			for (const MouseBtnEvent& mouse_button_event : commands.mouse_button_events) {
-				Handle(mouse_button_event, state);
-			}
 			for (const MouseMoveEvent& mouse_move_event : commands.mouse_move_events) {
 				Handle(mouse_move_event, state);
 			}
@@ -166,10 +166,7 @@ namespace tec {
 
 	void FPSController::Handle(const MouseBtnEvent& data, const GameState&) {
 		if ((data.action == MouseBtnEvent::DOWN) && (data.button == MouseBtnEvent::RIGHT)) {
-			this->mouse_look = true;
-		}
-		else if ((data.action == MouseBtnEvent::UP) && (data.button == MouseBtnEvent::RIGHT)) {
-			this->mouse_look = false;
+			this->mouse_look = !this->mouse_look;
 		}
 	}
 
@@ -195,12 +192,12 @@ namespace tec {
 		}
 
 		if (change_x != 0) {
-			glm::quat rotX = glm::angleAxis(static_cast<float>(glm::radians(change_x * -50.0f * this->current_delta)),
+			glm::quat rotX = glm::angleAxis(static_cast<float>(glm::radians(change_x * -8.0f * this->current_delta)),
 											glm::vec3(0.0, 1.0, 0.0));
 			this->orientation->value = rotX * this->orientation->value;
 		}
 		if (change_y != 0) {
-			glm::quat rotY = glm::angleAxis(static_cast<float>(glm::radians(change_y * -10.0f * this->current_delta)),
+			glm::quat rotY = glm::angleAxis(static_cast<float>(glm::radians(change_y * -8.0f * this->current_delta)),
 											glm::vec3(1.0, 0.0, 0.0));
 			this->orientation->value = this->orientation->value * rotY;
 		}

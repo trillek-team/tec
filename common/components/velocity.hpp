@@ -7,13 +7,13 @@
 
 namespace tec {
 	struct Velocity {
-		Velocity() : linear(0, 0, 0, 0), angular(0, 0, 0, 0) { };
+		Velocity() : linear(0, 0, 0), angular(0, 0, 0) { };
 
-		Velocity(glm::vec4 linear, glm::vec4 angular)
+		Velocity(glm::vec3 linear, glm::vec3 angular)
 			: linear(linear), angular(angular) { };
 
-		glm::vec4 linear;
-		glm::vec4 angular;
+		glm::vec3 linear;
+		glm::vec3 angular;
 		btVector3 GetLinear() const {
 			return btVector3(linear.x, linear.y, linear.z);
 		}

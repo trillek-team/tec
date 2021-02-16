@@ -23,7 +23,6 @@ set(trillek-common_LIBRARY "tec" CACHE STRING "Name of the library with code com
 
 set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/filesystem.cpp
-	${trillek-common_SOURCE_DIR}/game-state-queue.cpp
 	${trillek-common_SOURCE_DIR}/lua-system.cpp
 	${trillek-common_SOURCE_DIR}/physics-system.cpp
 	${trillek-common_SOURCE_DIR}/simulation.cpp
@@ -38,7 +37,22 @@ set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/resources/script-file.cpp
 )
 
-add_library(${trillek-common_LIBRARY} STATIC ${COMPONENTS_SOURCES} ${GAME_STATE_SOURCES} ${COMMANDS_SOURCES} ${trillek-common_SOURCES})
+# Used by IDEs to nicely view header files, dont GLOB cpp though!
+file(GLOB_RECURSE trillek-common_HEADERS LIST_DIRECTORIES false ${trillek-common_SOURCE_DIR}/*.hpp)
+source_group(Headers FILES ${trillek-common_HEADERS})
+set_property(SOURCE ${trillek-common_HEADERS} PROPERTY HEADER_FILE_ONLY true)
+file(GLOB trillek-common_PROTOCOLS LIST_DIRECTORIES false ${trillek-common_SOURCE_DIR}/proto/*.proto)
+source_group(Proto FILES ${trillek-common_PROTOCOLS})
+set_property(SOURCE ${trillek-common_PROTOCOLS} PROPERTY HEADER_FILE_ONLY true)
+
+add_library(${trillek-common_LIBRARY} STATIC
+	${COMPONENTS_SOURCES}
+	${GAME_STATE_SOURCES}
+	${COMMANDS_SOURCES}
+	${trillek-common_SOURCES}
+	${trillek-common_HEADERS}
+	${trillek-common_PROTOCOLS}
+)
 
 if (MSVC)
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
