@@ -32,8 +32,6 @@ namespace tec {
 		ProcessCommandQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
-		EventQueue<ClientConnectedEvent>::ProcessEventQueue();
-		EventQueue<ClientDisconnectedEvent>::ProcessEventQueue();
 	}
 
 	void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
@@ -69,14 +67,7 @@ namespace tec {
 		}
 	}
 
-	void LuaSystem::On(std::shared_ptr<ClientConnectedEvent> data) {
-		CallFunction("onClientConnected");
-	}
-	
-	void LuaSystem::On(std::shared_ptr<ClientDisconnectedEvent> data) {
-		CallFunction("onClientDisconnected");
-	}
-
+	// TODO: Add parameters to function calls
 	void LuaSystem::CallFunction(std::string function_name) {
 		// multiton <eid, LuaScript*>
 		for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {

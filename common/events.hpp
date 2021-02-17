@@ -68,14 +68,6 @@ namespace tec {
 		proto::ClientCommands client_commands;
 	};
 
-	// Used for server Lua API
-	struct ClientConnectedEvent {
-		asio::ip::tcp::endpoint endpoint;
-	};
-	struct ClientDisonnectedEvent {
-		asio::ip::tcp::endpoint endpoint;
-	};
-
 	struct Controller;
 	struct ControllerAddedEvent {
 		std::shared_ptr<Controller> controller{ nullptr };

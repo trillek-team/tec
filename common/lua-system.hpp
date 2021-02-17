@@ -17,14 +17,10 @@ namespace tec {
 	typedef Command<LuaSystem> LuaCommand;
 	struct EntityCreated;
 	struct EntityDestroyed;
-	struct ClientConnectedEvent;
-	struct ClientDisconnectedEvent;
 
 	class LuaSystem : public CommandQueue< LuaSystem >,
 		public EventQueue < EntityCreated >,
-		public EventQueue < EntityDestroyed >,
-		public EventQueue < ClientConnectedEvent >,
-		public EventQueue < ClientDisconnectedEvent > {
+		public EventQueue < EntityDestroyed > {
 	public:
 		LuaSystem();
 
@@ -33,12 +29,8 @@ namespace tec {
 
 		using EventQueue<EntityCreated>::On;
 		using EventQueue<EntityDestroyed>::On;
-		using EventQueue<ClientConnectedEvent>::On;
-		using EventQueue<ClientDisconnectedEvent>::On;
 		void On(std::shared_ptr<EntityCreated> data);
 		void On(std::shared_ptr<EntityDestroyed> data);
-		void On(std::shared_ptr<ClientConnectedEvent> data);
-		void On(std::shared_ptr<ClientDisconnectedEvent> data);
 
 		void ExecuteString(std::string script_string);
 
