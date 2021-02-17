@@ -65,7 +65,8 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 	else {
 		// figure out how many states we are behind
 		// this should likely use timestamps instead...
-		float lerp_percent = static_cast<float>(interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
+		float lerp_percent = static_cast<float>(
+			interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
 		// if this is zero, then we don't write to the interpolated state?
 		// that seem weird
 		if (lerp_percent > 0.0) {
@@ -115,9 +116,7 @@ void ClientGameStateQueue::ProcessEventQueue() {
 	EventQueue<NewGameStateEvent>::ProcessEventQueue();
 }
 
-void ClientGameStateQueue::On(std::shared_ptr<NewGameStateEvent> data) {
-	QueueServerState(std::move(data->new_state));
-}
+void ClientGameStateQueue::On(std::shared_ptr<NewGameStateEvent> data) { QueueServerState(std::move(data->new_state)); }
 
 void ClientGameStateQueue::QueueServerState(GameState&& new_state) {
 	if (new_state.state_id > this->last_server_state_id) {
@@ -148,7 +147,7 @@ void ClientGameStateQueue::CheckPredictionResult(GameState& new_state) {
 	glm::vec3 velocity_diff = glm::vec3();
 
 	// delete from the prediction queue anything that's not newer than the latest ack
-	for (auto itr = this->predictions.begin(); itr != this->predictions.end(); ) {
+	for (auto itr = this->predictions.begin(); itr != this->predictions.end();) {
 		if (itr->first <= new_state.command_id) {
 			// if this was an acked command, calculate the difference between where we thought we were
 			// this gives feedback on how good our prediction was
@@ -178,7 +177,8 @@ void ClientGameStateQueue::UpdatePredictions(GameState& new_state) {
 	this->stats.current_command_id = this->command_id;
 	GameState predict_state;
 	// basic reconciliation, attempt to resolve errors by nudging current predictions
-	predict_state.positions[this->client_id].value = new_state.positions[this->client_id].value + stats.client_position * 0.125f;
+	predict_state.positions[this->client_id].value =
+		new_state.positions[this->client_id].value + stats.client_position * 0.125f;
 	predict_state.velocities[this->client_id] = new_state.velocities[this->client_id];
 	predict_state.orientations[this->client_id] = new_state.orientations[this->client_id];
 	this->predictions.emplace(std::make_pair(this->command_id, predict_state));
@@ -214,8 +214,7 @@ void ClientGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 			this->base_state.velocities[entity_id] = vel;
 			break;
 		}
-		default:
-			break;
+		default: break;
 		}
 	}
 }

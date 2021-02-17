@@ -1,4 +1,3 @@
 #include "script-file.hpp"
 
-namespace tec {
-}
+namespace tec {}

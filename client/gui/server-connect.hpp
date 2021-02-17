@@ -8,29 +8,29 @@
 #include "server-connection.hpp"
 
 namespace tec {
-	using networking::ServerConnection;
+using networking::ServerConnection;
 
-	class ServerConnectWindow : public AbstractWindow {
-	public:
-		ServerConnectWindow(ServerConnection& server_connection);
+class ServerConnectWindow : public AbstractWindow {
+public:
+	ServerConnectWindow(ServerConnection& server_connection);
 
-		void Update(double) override;
+	void Update(double) override;
 
-		void Draw() override;
+	void Draw() override;
 
-	private:
-		ServerConnection& server_connection;
-	};
+private:
+	ServerConnection& server_connection;
+};
 
-	class PingTimesWindow : public AbstractWindow {
-	public:
-		PingTimesWindow(ServerConnection& server_connection);
+class PingTimesWindow : public AbstractWindow {
+public:
+	PingTimesWindow(ServerConnection& server_connection);
 
-		void Update(double) override;
+	void Update(double) override;
 
-		void Draw() override;
+	void Draw() override;
 
-	private:
-		ServerConnection& server_connection;
-	};
-}
+private:
+	ServerConnection& server_connection;
+};
+} // namespace tec
