@@ -4,6 +4,8 @@
 #include <iostream>
 #include <memory>
 #include <set>
+#include <thread>
+#include <utility>
 
 #include <al.h>
 #include <alc.h>
