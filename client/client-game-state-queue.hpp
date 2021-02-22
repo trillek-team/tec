@@ -13,10 +13,10 @@
 
 namespace tec {
 
-class ClientGameStateQueue :
-	public EventQueue<EntityCreated>,
-	public EventQueue<EntityDestroyed>,
-	public EventQueue<NewGameStateEvent> {
+class ClientGameStateQueue:
+		public EventQueue<EntityCreated>,
+		public EventQueue<EntityDestroyed>,
+		public EventQueue<NewGameStateEvent> {
 public:
 	ClientGameStateQueue(ServerStats& s);
 

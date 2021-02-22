@@ -278,8 +278,8 @@ void MD5Mesh::CalculateVertexPositions() {
 			// Compute vertex position based on joint position.
 			for (std::uint8_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
 				Weight& weight =
-					int_mesh
-						.weights[static_cast<std::size_t>(int_mesh.verts[j].startWeight) + static_cast<std::size_t>(k)];
+						int_mesh.weights
+								[static_cast<std::size_t>(int_mesh.verts[j].startWeight) + static_cast<std::size_t>(k)];
 
 				/* Calculate transformed vertex for this weight */
 				glm::vec3 wv = this->joints[weight.joint].orientation * weight.position;
@@ -366,8 +366,9 @@ void MD5Mesh::UpdateIndexList() {
 		}
 		ObjectGroup* objgroup = this->meshes[i]->object_groups[0];
 		std::string material_name = int_mesh.shader;
-		material_name = material_name.substr(material_name.find_last_of("/") + 1,
-							material_name.find_last_of(".") - material_name.find_last_of("/") - 1)
+		material_name = material_name.substr(
+								material_name.find_last_of("/") + 1,
+								material_name.find_last_of(".") - material_name.find_last_of("/") - 1)
 						+ "_material";
 		if (objgroup->indices.size() < int_mesh.tris.size()) {
 			objgroup->indices.reserve(int_mesh.tris.size() * 3);

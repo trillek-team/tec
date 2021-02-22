@@ -9,7 +9,7 @@
 namespace tec {
 class VertexBufferObject;
 
-class PhysicsDebugDrawer : public btIDebugDraw {
+class PhysicsDebugDrawer: public btIDebugDraw {
 public:
 	PhysicsDebugDrawer();
 
@@ -18,7 +18,11 @@ public:
 	virtual void drawAABB(const btVector3& from, const btVector3& to, const btVector3& color);
 
 	virtual void drawContactPoint(
-		const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color);
+			const btVector3& PointOnB,
+			const btVector3& normalOnB,
+			btScalar distance,
+			int lifeTime,
+			const btVector3& color);
 
 	virtual void reportErrorWarning(const char* warningString);
 

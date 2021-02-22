@@ -8,7 +8,7 @@
 namespace tec {
 VertexBufferObject::VertexBufferObject() {}
 
-VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) : source_mesh(mesh) { Load(mesh); }
+VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh): source_mesh(mesh) { Load(mesh); }
 
 VertexBufferObject::~VertexBufferObject() { Destroy(); }
 
@@ -99,15 +99,17 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
 	// If the size hasn't changed we can call update
 	if (this->vertex_count >= verts.size()) {
-		auto* buffer = glMapBufferRange(GL_ARRAY_BUFFER,
-			0,
-			this->vertex_count * sizeof(VertexData),
-			GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+		auto* buffer = glMapBufferRange(
+				GL_ARRAY_BUFFER,
+				0,
+				this->vertex_count * sizeof(VertexData),
+				GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 		if (buffer) {
 			std::memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
-			std::memset((char*)buffer + verts.size() * sizeof(VertexData) - 1,
-				0,
-				(this->vertex_count - verts.size()) * sizeof(VertexData));
+			std::memset(
+					(char*)buffer + verts.size() * sizeof(VertexData) - 1,
+					0,
+					(this->vertex_count - verts.size()) * sizeof(VertexData));
 			glUnmapBuffer(GL_ARRAY_BUFFER);
 		}
 		else {
@@ -120,7 +122,7 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 	}
 
 	glVertexAttribPointer(
-		(GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, position));
+			(GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, position));
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer((GLuint)1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, color));
 	glEnableVertexAttribArray(1);
@@ -129,23 +131,25 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 	glVertexAttribPointer((GLuint)3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, uv));
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(
-		(GLuint)4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, bone_weights));
+			(GLuint)4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, bone_weights));
 	glEnableVertexAttribArray(4);
 	glVertexAttribIPointer(
-		(GLuint)5, 4, GL_UNSIGNED_INT, sizeof(VertexData), (GLvoid*)offsetof(VertexData, bone_indices));
+			(GLuint)5, 4, GL_UNSIGNED_INT, sizeof(VertexData), (GLvoid*)offsetof(VertexData, bone_indices));
 	glEnableVertexAttribArray(5);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 	if (this->index_count >= indices.size()) {
-		auto* buffer = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER,
-			0,
-			this->index_count * sizeof(GLuint),
-			GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+		auto* buffer = glMapBufferRange(
+				GL_ELEMENT_ARRAY_BUFFER,
+				0,
+				this->index_count * sizeof(GLuint),
+				GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 		if (buffer) {
 			std::memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
-			std::memset((char*)buffer + indices.size() * sizeof(GLuint) - 1,
-				0,
-				(this->index_count - indices.size()) * sizeof(GLuint));
+			std::memset(
+					(char*)buffer + indices.size() * sizeof(GLuint) - 1,
+					0,
+					(this->index_count - indices.size()) * sizeof(GLuint));
 			glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 		}
 		else {

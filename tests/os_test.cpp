@@ -6,16 +6,14 @@
 
 #include <gtest/gtest.h>
 
-#include <cstring>
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <ctime>
 
 TEST(OS_class_test, Constructor) {
-  std::printf("Hello world\n");
-  tec::OS os();
+	std::printf("Hello world\n");
+	tec::OS os();
 
-  ASSERT_EQ(0, 0);
-
+	ASSERT_EQ(0, 0);
 }
-

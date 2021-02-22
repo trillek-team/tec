@@ -7,9 +7,9 @@
 
 namespace tec {
 struct Velocity {
-	Velocity() : linear(0, 0, 0), angular(0, 0, 0){};
+	Velocity(): linear(0, 0, 0), angular(0, 0, 0){};
 
-	Velocity(glm::vec3 linear, glm::vec3 angular) : linear(linear), angular(angular){};
+	Velocity(glm::vec3 linear, glm::vec3 angular): linear(linear), angular(angular){};
 
 	glm::vec3 linear;
 	glm::vec3 angular;

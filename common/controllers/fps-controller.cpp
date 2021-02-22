@@ -55,7 +55,7 @@ void FPSController::Update(double delta, GameState& state, EventList& commands) 
 	}
 
 	state.velocities[entity_id].linear =
-		glm::vec4(this->orientation->value * glm::vec3(5.0 * strafeDirection, 0.0, 7.5 * forwardDirection), 1.0);
+			glm::vec4(this->orientation->value * glm::vec3(5.0 * strafeDirection, 0.0, 7.5 * forwardDirection), 1.0);
 }
 
 proto::ClientCommands FPSController::GetClientCommands() {
@@ -184,12 +184,12 @@ void FPSController::Handle(const MouseMoveEvent& data, const GameState&) {
 
 	if (change_x != 0) {
 		glm::quat rotX = glm::angleAxis(
-			static_cast<float>(glm::radians(change_x * -8.0f * this->current_delta)), glm::vec3(0.0, 1.0, 0.0));
+				static_cast<float>(glm::radians(change_x * -8.0f * this->current_delta)), glm::vec3(0.0, 1.0, 0.0));
 		this->orientation->value = rotX * this->orientation->value;
 	}
 	if (change_y != 0) {
 		glm::quat rotY = glm::angleAxis(
-			static_cast<float>(glm::radians(change_y * -8.0f * this->current_delta)), glm::vec3(1.0, 0.0, 0.0));
+				static_cast<float>(glm::radians(change_y * -8.0f * this->current_delta)), glm::vec3(1.0, 0.0, 0.0));
 		this->orientation->value = this->orientation->value * rotY;
 	}
 }

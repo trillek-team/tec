@@ -18,7 +18,7 @@ typedef Command<LuaSystem> LuaCommand;
 struct EntityCreated;
 struct EntityDestroyed;
 
-class LuaSystem : public CommandQueue<LuaSystem>, public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
+class LuaSystem: public CommandQueue<LuaSystem>, public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
 public:
 	LuaSystem();
 

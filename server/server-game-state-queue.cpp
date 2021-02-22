@@ -2,7 +2,7 @@
 
 namespace tec {
 
-ServerGameStateQueue::ServerGameStateQueue(ServerStats& s) : stats(s) {}
+ServerGameStateQueue::ServerGameStateQueue(ServerStats& s): stats(s) {}
 
 void ServerGameStateQueue::ProcessEventQueue() {
 	EventQueue<EntityCreated>::ProcessEventQueue();

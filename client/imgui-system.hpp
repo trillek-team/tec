@@ -30,13 +30,13 @@ namespace networking {
 class ServerConnection;
 }
 
-class IMGUISystem :
-	public CommandQueue<IMGUISystem>,
-	public EventQueue<KeyboardEvent>,
-	public EventQueue<MouseMoveEvent>,
-	public EventQueue<MouseScrollEvent>,
-	public EventQueue<MouseBtnEvent>,
-	public EventQueue<WindowResizedEvent> {
+class IMGUISystem:
+		public CommandQueue<IMGUISystem>,
+		public EventQueue<KeyboardEvent>,
+		public EventQueue<MouseMoveEvent>,
+		public EventQueue<MouseScrollEvent>,
+		public EventQueue<MouseBtnEvent>,
+		public EventQueue<WindowResizedEvent> {
 	typedef Command<IMGUISystem> GUICommand;
 
 public:

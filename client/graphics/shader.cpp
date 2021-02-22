@@ -151,8 +151,8 @@ GLint Shader::GetAttributeLocation(const std::string name) {
 	}
 }
 
-std::shared_ptr<Shader> Shader::CreateFromFile(
-	const std::string name, std::list<std::pair<Shader::ShaderType, FilePath>> filenames) {
+std::shared_ptr<Shader>
+Shader::CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, FilePath>> filenames) {
 	auto s = std::make_shared<Shader>();
 	for (auto pair : filenames) {
 		s->LoadFromFile(pair.first, pair.second);
@@ -162,8 +162,8 @@ std::shared_ptr<Shader> Shader::CreateFromFile(
 	return s;
 }
 
-std::shared_ptr<Shader> Shader::CreateFromString(
-	const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
+std::shared_ptr<Shader>
+Shader::CreateFromString(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
 	auto s = std::make_shared<Shader>();
 	for (auto pair : source_code) {
 		s->LoadFromString(pair.first, pair.second);

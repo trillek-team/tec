@@ -13,11 +13,12 @@ const std::string_view LOCAL_HOST = "127.0.0.1";
 std::shared_ptr<spdlog::logger> ServerConnection::_log;
 std::mutex ServerConnection::recent_ping_mutex;
 
-ServerConnection::ServerConnection(ServerStats& s) : socket(io_service), stats(s) {
+ServerConnection::ServerConnection(ServerStats& s): socket(io_service), stats(s) {
 	_log = spdlog::get("console_log");
 	RegisterMessageHandler(MessageType::SYNC, [this](const ServerMessage& message) { this->SyncHandler(message); });
-	RegisterMessageHandler(MessageType::GAME_STATE_UPDATE,
-		[this](const ServerMessage& message) { this->GameStateUpdateHandler(message); });
+	RegisterMessageHandler(MessageType::GAME_STATE_UPDATE, [this](const ServerMessage& message) {
+		this->GameStateUpdateHandler(message);
+	});
 	RegisterMessageHandler(MessageType::CHAT_MESSAGE, [](const ServerMessage& message) {
 		std::string msg(message.GetBodyPTR(), message.GetBodyLength());
 		_log->info(msg);
@@ -161,7 +162,7 @@ void ServerConnection::StartSync() {
 
 void ServerConnection::SyncHandler(const ServerMessage& message) {
 	std::chrono::milliseconds round_trip =
-		std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
+			std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
 	std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
 	if (message.GetBodyLength() >= sizeof(uint64_t)) {
 		memcpy(&this->stats.estimated_server_time, message.GetBodyPTR(), sizeof(uint64_t));

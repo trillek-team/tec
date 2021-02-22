@@ -19,7 +19,7 @@ typedef Multiton<std::string, std::shared_ptr<TextureObject>> TextureMap;
 
 class TextureObject final {
 public:
-	TextureObject() : texture_id(0), compare(false) {}
+	TextureObject(): texture_id(0), compare(false) {}
 	~TextureObject();
 
 	/**

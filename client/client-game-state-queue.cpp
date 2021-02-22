@@ -7,7 +7,7 @@
 
 namespace tec {
 
-ClientGameStateQueue::ClientGameStateQueue(ServerStats& s) : stats(s) {}
+ClientGameStateQueue::ClientGameStateQueue(ServerStats& s): stats(s) {}
 
 void ClientGameStateQueue::Interpolate(const double delta_time) {
 	std::lock_guard<std::mutex> lg(this->server_state_mutex);
@@ -66,7 +66,7 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 		// figure out how many states we are behind
 		// this should likely use timestamps instead...
 		float lerp_percent = static_cast<float>(
-			interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
+				interpolation_accumulator / (INTERPOLATION_RATE * (to_state.state_id - this->base_state.state_id)));
 		// if this is zero, then we don't write to the interpolated state?
 		// that seem weird
 		if (lerp_percent > 0.0) {
@@ -76,7 +76,7 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 				auto base_position_iter = this->base_state.positions.find(position.first);
 				if (base_position_iter != this->base_state.positions.end()) {
 					this->interpolated_state.positions[position.first].value =
-						glm::lerp(base_position_iter->second.value, position.second.value, lerp_percent);
+							glm::lerp(base_position_iter->second.value, position.second.value, lerp_percent);
 				}
 				else {
 					this->interpolated_state.positions[position.first] = position.second;
@@ -86,9 +86,9 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 				auto base_velocity_iter = this->base_state.velocities.find(velocity.first);
 				if (base_velocity_iter != this->base_state.velocities.end()) {
 					this->interpolated_state.velocities[velocity.first].linear =
-						glm::lerp(base_velocity_iter->second.linear, velocity.second.linear, lerp_percent);
+							glm::lerp(base_velocity_iter->second.linear, velocity.second.linear, lerp_percent);
 					this->interpolated_state.velocities[velocity.first].angular =
-						glm::lerp(base_velocity_iter->second.angular, velocity.second.angular, lerp_percent);
+							glm::lerp(base_velocity_iter->second.angular, velocity.second.angular, lerp_percent);
 				}
 				else {
 					this->interpolated_state.velocities[velocity.first].linear = velocity.second.linear;
@@ -100,7 +100,7 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 				auto base_orientation_iter = this->base_state.orientations.find(orientation.first);
 				if (base_orientation_iter != this->base_state.orientations.end()) {
 					this->interpolated_state.orientations[orientation.first].value =
-						glm::slerp(base_orientation_iter->second.value, orientation.second.value, lerp_percent);
+							glm::slerp(base_orientation_iter->second.value, orientation.second.value, lerp_percent);
 				}
 				else {
 					this->interpolated_state.orientations[orientation.first] = orientation.second;
@@ -178,7 +178,7 @@ void ClientGameStateQueue::UpdatePredictions(GameState& new_state) {
 	GameState predict_state;
 	// basic reconciliation, attempt to resolve errors by nudging current predictions
 	predict_state.positions[this->client_id].value =
-		new_state.positions[this->client_id].value + stats.client_position * 0.125f;
+			new_state.positions[this->client_id].value + stats.client_position * 0.125f;
 	predict_state.velocities[this->client_id] = new_state.velocities[this->client_id];
 	predict_state.orientations[this->client_id] = new_state.orientations[this->client_id];
 	this->predictions.emplace(std::make_pair(this->command_id, predict_state));

@@ -11,8 +11,8 @@ namespace tec {
 
 // Container to hold event data. This is stored in the queue rather than raw event data.
 template <class T> struct Event {
-	Event(eid entity_id, std::shared_ptr<T> data) : entity_id(entity_id), data(data) {}
-	Event(Event&& other) noexcept : entity_id(other.entity_id), data(other.data) {}
+	Event(eid entity_id, std::shared_ptr<T> data): entity_id(entity_id), data(data) {}
+	Event(Event&& other) noexcept: entity_id(other.entity_id), data(other.data) {}
 	eid entity_id;
 	std::shared_ptr<T> data;
 };
@@ -37,12 +37,12 @@ template <typename T> class EventSystem;
 // qualify the call with the base class and template type to avoid ambiguity.
 template <class T> class EventQueue {
 public:
-	EventQueue() : read_event_queue(new Queue<Event<T>>()), write_event_queue(new Queue<Event<T>>()) {
+	EventQueue(): read_event_queue(new Queue<Event<T>>()), write_event_queue(new Queue<Event<T>>()) {
 		EventSystem<T>::Get()->Subscribe(this);
 	}
 	// Causes subscribing to events for only a specific entity_id.
-	EventQueue(eid entity_id) :
-		read_event_queue(new std::queue<Event<T>>()), write_event_queue(new std::queue<Event<T>>()) {
+	EventQueue(eid entity_id):
+			read_event_queue(new std::queue<Event<T>>()), write_event_queue(new std::queue<Event<T>>()) {
 		EventSystem<T>::Get()->Subscribe(entity_id, this);
 	}
 	virtual ~EventQueue() {}

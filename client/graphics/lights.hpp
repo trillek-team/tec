@@ -17,7 +17,7 @@ struct BaseLight {
 	BaseLight() = default;
 };
 
-struct DirectionalLight : public BaseLight {
+struct DirectionalLight: public BaseLight {
 	glm::vec3 direction{0.f, 0.f, -1.f};
 
 	DirectionalLight() = default;
@@ -61,7 +61,7 @@ struct DirectionalLight : public BaseLight {
 	}
 };
 
-struct PointLight : public BaseLight {
+struct PointLight: public BaseLight {
 	struct {
 		float constant{0.f};
 		float linear{0.f};
@@ -117,18 +117,18 @@ struct PointLight : public BaseLight {
 	float UpdateBoundingRadius() {
 		float MaxChannel = fmax(fmax(this->color.x, this->color.y), this->color.z);
 
-		return this->bounding_radius =
-				   (-this->Attenuation.linear
-					   + sqrtf(this->Attenuation.linear * this->Attenuation.linear
-							   - 4 * this->Attenuation.exponential
-									 * (this->Attenuation.exponential - 256 * MaxChannel * this->diffuse_intensity)))
-				   / 2 * this->Attenuation.exponential;
+		return this->bounding_radius = (-this->Attenuation.linear
+										+ sqrtf(this->Attenuation.linear * this->Attenuation.linear
+												- 4 * this->Attenuation.exponential
+														  * (this->Attenuation.exponential
+															 - 256 * MaxChannel * this->diffuse_intensity)))
+									   / 2 * this->Attenuation.exponential;
 	}
 
 	float bounding_radius{0.f};
 };
 
-struct SpotLight : public DirectionalLight {
+struct SpotLight: public DirectionalLight {
 	float cutoff{0.f};
 
 	SpotLight() = default;

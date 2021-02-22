@@ -20,17 +20,17 @@ struct PredictedClientState {
 	Velocity vel;
 };
 
-class Simulation final :
-	public CommandQueue<Simulation>,
-	public EventQueue<KeyboardEvent>,
-	public EventQueue<MouseBtnEvent>,
-	public EventQueue<MouseMoveEvent>,
-	public EventQueue<MouseClickEvent>,
-	public EventQueue<ClientCommandsEvent>,
-	public EventQueue<ControllerAddedEvent>,
-	public EventQueue<ControllerRemovedEvent>,
-	public EventQueue<FocusCapturedEvent>,
-	public EventQueue<FocusBlurEvent> {
+class Simulation final:
+		public CommandQueue<Simulation>,
+		public EventQueue<KeyboardEvent>,
+		public EventQueue<MouseBtnEvent>,
+		public EventQueue<MouseMoveEvent>,
+		public EventQueue<MouseClickEvent>,
+		public EventQueue<ClientCommandsEvent>,
+		public EventQueue<ControllerAddedEvent>,
+		public EventQueue<ControllerRemovedEvent>,
+		public EventQueue<FocusCapturedEvent>,
+		public EventQueue<FocusBlurEvent> {
 public:
 	GameState Simulate(const double delta_time, GameState& interpolated_state);
 

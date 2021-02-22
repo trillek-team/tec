@@ -10,7 +10,7 @@ TextureObject::TextureObject(const PixelBuffer& image) {
 	Load(image);
 }
 
-TextureObject::TextureObject(std::weak_ptr<PixelBuffer> pbp) : source_ptr(pbp) {
+TextureObject::TextureObject(std::weak_ptr<PixelBuffer> pbp): source_ptr(pbp) {
 	this->texture_id = 0;
 	auto locked_ptr = pbp.lock();
 	if (locked_ptr) {
@@ -80,7 +80,7 @@ void TextureObject::Load(const PixelBuffer& image) {
 
 #ifndef __APPLE__
 	glTexParameterf(
-		GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f); // GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
+			GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f); // GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
 #endif
 
 	err = glGetError();
@@ -152,7 +152,7 @@ void TextureObject::Generate(GLuint width, GLuint height, bool usealpha) {
 
 #ifndef __APPLE__
 	glTexParameterf(
-		GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f); // GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
+			GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f); // GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
 #endif
 
 	err = glGetError();
@@ -233,7 +233,7 @@ void TextureObject::GenerateDepth(GLuint width, GLuint height, bool stencil) {
 	}
 	else {
 		glTexImage2D(
-			GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, nullptr);
+				GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, nullptr);
 	}
 	err = glGetError();
 	if (err) {

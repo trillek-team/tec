@@ -38,8 +38,10 @@ GameState Simulation::Simulate(const double delta_time, GameState& interpolated_
 	this->event_list.mouse_click_events.clear();
 
 	GameState client_state = interpolated_state;
-	std::future<std::set<eid>> phys_future = std::async(std::launch::async,
-		[=, &interpolated_state]() -> std::set<eid> { return phys_sys.Update(delta_time, interpolated_state); });
+	std::future<std::set<eid>> phys_future =
+			std::async(std::launch::async, [=, &interpolated_state]() -> std::set<eid> {
+				return phys_sys.Update(delta_time, interpolated_state);
+			});
 	std::set<eid> phys_results = phys_future.get();
 
 	if (phys_results.size() > 0) {

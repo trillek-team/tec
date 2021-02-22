@@ -137,12 +137,12 @@ int main(int argc, char* argv[]) {
 	gui.ShowWindow("active_entity");
 
 	connection.RegisterMessageHandler(
-		tec::networking::MessageType::CLIENT_ID, [&gui, &log](const tec::networking::ServerMessage& message) {
-			std::string client_id(message.GetBodyPTR(), message.GetBodyLength());
-			log->info("You are connected as client ID " + client_id);
-			gui.HideWindow("connect_window");
-			gui.ShowWindow("ping_times");
-		});
+			tec::networking::MessageType::CLIENT_ID, [&gui, &log](const tec::networking::ServerMessage& message) {
+				std::string client_id(message.GetBodyPTR(), message.GetBodyLength());
+				log->info("You are connected as client ID " + client_id);
+				gui.HideWindow("connect_window");
+				gui.ShowWindow("ping_times");
+			});
 
 	tec::LuaSystem* lua_sys = game.GetLuaSystem();
 	os.LuaStateRegistration(lua_sys->GetGlobalState());

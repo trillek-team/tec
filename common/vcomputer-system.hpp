@@ -46,7 +46,7 @@ struct Computer final {
 };
 
 class TextureObject;
-struct ComputerScreen : DeviceBase {
+struct ComputerScreen: DeviceBase {
 	ComputerScreen();
 	virtual ~ComputerScreen() = default;
 	std::shared_ptr<TextureObject> texture;
@@ -56,7 +56,7 @@ struct ComputerScreen : DeviceBase {
 	void Out(proto::Computer::Device* target);
 };
 
-struct ComputerKeyboard : DeviceBase {
+struct ComputerKeyboard: DeviceBase {
 	ComputerKeyboard();
 	virtual ~ComputerKeyboard() = default;
 
@@ -73,13 +73,13 @@ struct MouseClickEvent;
 struct EntityCreated;
 struct EntityDestroyed;
 
-class VComputerSystem final :
-	public CommandQueue<VComputerSystem>,
-	public EventQueue<KeyboardEvent>,
-	public EventQueue<MouseBtnEvent>,
-	public EventQueue<MouseClickEvent>,
-	public EventQueue<EntityCreated>,
-	public EventQueue<EntityDestroyed> {
+class VComputerSystem final:
+		public CommandQueue<VComputerSystem>,
+		public EventQueue<KeyboardEvent>,
+		public EventQueue<MouseBtnEvent>,
+		public EventQueue<MouseClickEvent>,
+		public EventQueue<EntityCreated>,
+		public EventQueue<EntityDestroyed> {
 public:
 	VComputerSystem();
 

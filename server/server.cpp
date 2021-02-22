@@ -16,7 +16,7 @@ namespace networking {
 unsigned short PORT = 0xa10c;
 std::mutex Server::recent_msgs_mutex;
 
-Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
+Server::Server(tcp::endpoint& endpoint): acceptor(io_service, endpoint), socket(io_service) {
 	// Create a simple greeting chat message that all clients get.
 	std::string message("Hello from server\n");
 	this->greeting_msg.SetBodyLength(message.size());
@@ -115,8 +115,9 @@ void Server::AcceptHandler() {
 			static ServerMessage connecting_client_entity_msg;
 			other_entity.set_id(client->GetID());
 			connecting_client_entity_msg.SetBodyLength(other_entity.ByteSize());
-			other_entity.SerializeToArray(connecting_client_entity_msg.GetBodyPTR(),
-				static_cast<int>(connecting_client_entity_msg.GetBodyLength()));
+			other_entity.SerializeToArray(
+					connecting_client_entity_msg.GetBodyPTR(),
+					static_cast<int>(connecting_client_entity_msg.GetBodyLength()));
 			connecting_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
 			connecting_client_entity_msg.encode_header();
 
@@ -125,7 +126,8 @@ void Server::AcceptHandler() {
 				other_entity.set_id(other_client->GetID());
 				other_client_entity_msg.SetBodyLength(other_entity.ByteSize());
 				other_entity.SerializeToArray(
-					other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
+						other_client_entity_msg.GetBodyPTR(),
+						static_cast<int>(other_client_entity_msg.GetBodyLength()));
 				other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
 				other_client_entity_msg.encode_header();
 
@@ -135,7 +137,8 @@ void Server::AcceptHandler() {
 			for (auto entity : entities) {
 				other_client_entity_msg.SetBodyLength(entity.second.ByteSize());
 				entity.second.SerializeToArray(
-					other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
+						other_client_entity_msg.GetBodyPTR(),
+						static_cast<int>(other_client_entity_msg.GetBodyLength()));
 				other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
 				other_client_entity_msg.encode_header();
 

@@ -36,7 +36,7 @@
 
 namespace tec {
 typedef Multiton<std::string, std::shared_ptr<VorbisStream>> SoundMap;
-VorbisStream::VorbisStream(int buffer_size) : buffer_size(buffer_size) {
+VorbisStream::VorbisStream(int buffer_size): buffer_size(buffer_size) {
 	this->sbuffer = new ALshort[this->buffer_size];
 }
 
@@ -54,7 +54,7 @@ std::size_t VorbisStream::BufferStream(ALint buffer) {
 
 	while (size < this->buffer_size) {
 		num_read = stb_vorbis_get_samples_short_interleaved(
-			this->stream, this->info.channels, this->sbuffer + size, this->buffer_size - size);
+				this->stream, this->info.channels, this->sbuffer + size, this->buffer_size - size);
 		if (num_read > 0) {
 			size += num_read * this->info.channels;
 		}
@@ -115,10 +115,10 @@ std::shared_ptr<VorbisStream> VorbisStream::Create(const FilePath& filename) {
 	}
 	else {
 		spdlog::get("console_log")
-			->warn("[Vorbis-Stream] Can't load file {} code {} : {}",
-				filename.toString(),
-				error,
-				VorbisErrorToString(error));
+				->warn("[Vorbis-Stream] Can't load file {} code {} : {}",
+					   filename.toString(),
+					   error,
+					   VorbisErrorToString(error));
 		stream.reset();
 	}
 	return stream;

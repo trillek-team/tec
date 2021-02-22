@@ -7,8 +7,8 @@
 
 namespace tec {
 template <class T> struct Command {
-	Command(std::function<void(T*)>&& command) : command(std::move(command)) {}
-	Command(Command&& c) noexcept : command(std::move(c.command)) {}
+	Command(std::function<void(T*)>&& command): command(std::move(command)) {}
+	Command(Command&& c) noexcept: command(std::move(c.command)) {}
 	std::function<void(T*)> command;
 };
 
@@ -16,7 +16,7 @@ template <class T> struct Command {
 // iterate over all queued commands when it is safe to modify state.
 template <class T> class CommandQueue {
 public:
-	CommandQueue() : local_queue(new std::queue<Command<T>>()) {
+	CommandQueue(): local_queue(new std::queue<Command<T>>()) {
 		if (!global_command_queue.load()) {
 			global_command_queue.store(new std::queue<Command<T>>());
 		}

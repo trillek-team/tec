@@ -62,7 +62,7 @@ void RenderSystem::Startup() {
 
 	this->light_gbuffer.AddColorAttachments(this->window_width, this->window_height);
 	this->light_gbuffer.SetDepthAttachment(
-		GBuffer::GBUFFER_DEPTH_TYPE::GBUFFER_DEPTH_TYPE_STENCIL, this->window_width, this->window_height);
+			GBuffer::GBUFFER_DEPTH_TYPE::GBUFFER_DEPTH_TYPE_STENCIL, this->window_width, this->window_height);
 	if (!this->light_gbuffer.CheckCompletion()) {
 		_log->error("[RenderSystem] Failed to create Light GBuffer.");
 	}
@@ -146,9 +146,9 @@ void RenderSystem::GeometryPass() {
 			def_shader->UnUse();
 			shader_list.first->Use();
 			glUniformMatrix4fv(
-				shader_list.first->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
+					shader_list.first->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 			glUniformMatrix4fv(
-				shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
+					shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
 			//glUniform1i(shader_list.first->GetUniformLocation("gColorMap"), 0);
 			animatrix_loc = shader_list.first->GetUniformLocation("animation_matrix");
 			animated_loc = shader_list.first->GetUniformLocation("animated");
@@ -161,19 +161,21 @@ void RenderSystem::GeometryPass() {
 			if (render_item.animated) {
 				glUniform1i(animated_loc, 1);
 				auto& animmatricies = render_item.animation->bone_matrices;
-				glUniformMatrix4fv(animatrix_loc,
-					static_cast<GLsizei>(animmatricies.size()),
-					GL_FALSE,
-					glm::value_ptr(animmatricies[0]));
+				glUniformMatrix4fv(
+						animatrix_loc,
+						static_cast<GLsizei>(animmatricies.size()),
+						GL_FALSE,
+						glm::value_ptr(animmatricies[0]));
 			}
 			for (VertexGroup* vertex_group : *render_item.vertex_groups) {
 				glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
 				vertex_group->material->Activate();
 				glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
-				glDrawElements(vertex_group->material->GetDrawElementsMode(),
-					static_cast<GLsizei>(vertex_group->index_count),
-					GL_UNSIGNED_INT,
-					(GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
+				glDrawElements(
+						vertex_group->material->GetDrawElementsMode(),
+						static_cast<GLsizei>(vertex_group->index_count),
+						GL_UNSIGNED_INT,
+						(GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
 				vertex_group->material->Deactivate();
 			}
 		}
@@ -205,14 +207,19 @@ void RenderSystem::BeginPointLightPass() {
 	def_pl_shader->Use();
 	glUniformMatrix4fv(def_pl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 	glUniformMatrix4fv(def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-	glUniform1i(def_pl_shader->GetUniformLocation("gPositionMap"),
-		static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
-	glUniform1i(def_pl_shader->GetUniformLocation("gNormalMap"),
-		static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
-	glUniform1i(def_pl_shader->GetUniformLocation("gColorMap"),
-		static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
+	glUniform1i(
+			def_pl_shader->GetUniformLocation("gPositionMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
+	glUniform1i(
+			def_pl_shader->GetUniformLocation("gNormalMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
+	glUniform1i(
+			def_pl_shader->GetUniformLocation("gColorMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
 	glUniform2f(
-		def_pl_shader->GetUniformLocation("gScreenSize"), (GLfloat)this->window_width, (GLfloat)this->window_height);
+			def_pl_shader->GetUniformLocation("gScreenSize"),
+			(GLfloat)this->window_width,
+			(GLfloat)this->window_height);
 	GLint model_index = def_pl_shader->GetUniformLocation("model");
 	GLint Color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
 	GLint AmbientIntensity_index = def_pl_shader->GetUniformLocation("gPointLight.Base.AmbientIntensity");
@@ -226,7 +233,7 @@ void RenderSystem::BeginPointLightPass() {
 	GLint stencil_model_index = def_stencil_shader->GetUniformLocation("model");
 	glUniformMatrix4fv(def_stencil_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 	glUniformMatrix4fv(
-		def_stencil_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
+			def_stencil_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
 
 	glBindVertexArray(this->sphere_vbo.GetVAO());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->sphere_vbo.GetIBO());
@@ -249,7 +256,7 @@ void RenderSystem::BeginPointLightPass() {
 		}
 
 		glm::mat4 transform_matrix =
-			glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
+				glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
 
 		light->UpdateBoundingRadius();
 		glm::mat4 scale_matrix = glm::scale(transform_matrix, glm::vec3(light->bounding_radius));
@@ -292,14 +299,19 @@ void RenderSystem::DirectionalLightPass() {
 			camera_matrix = view->view_matrix;
 		}
 	}
-	glUniform1i(def_dl_shader->GetUniformLocation("gPositionMap"),
-		static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
-	glUniform1i(def_dl_shader->GetUniformLocation("gNormalMap"),
-		static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
-	glUniform1i(def_dl_shader->GetUniformLocation("gColorMap"),
-		static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
+	glUniform1i(
+			def_dl_shader->GetUniformLocation("gPositionMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
+	glUniform1i(
+			def_dl_shader->GetUniformLocation("gNormalMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
+	glUniform1i(
+			def_dl_shader->GetUniformLocation("gColorMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
 	glUniform2f(
-		def_dl_shader->GetUniformLocation("gScreenSize"), (GLfloat)this->window_width, (GLfloat)this->window_height);
+			def_dl_shader->GetUniformLocation("gScreenSize"),
+			(GLfloat)this->window_width,
+			(GLfloat)this->window_height);
 	glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), 0, 0, 0);
 	GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 	GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
@@ -329,16 +341,17 @@ void RenderSystem::DirectionalLightPass() {
 void RenderSystem::FinalPass() {
 	this->light_gbuffer.FinalPass();
 
-	glBlitFramebuffer(0,
-		0,
-		this->window_width,
-		this->window_height,
-		0,
-		0,
-		this->window_width,
-		this->window_height,
-		GL_COLOR_BUFFER_BIT,
-		GL_LINEAR);
+	glBlitFramebuffer(
+			0,
+			0,
+			this->window_width,
+			this->window_height,
+			0,
+			0,
+			this->window_width,
+			this->window_height,
+			GL_COLOR_BUFFER_BIT,
+			GL_LINEAR);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -350,60 +363,64 @@ void RenderSystem::RenderGbuffer() {
 	GLsizei QuarterHeight = (GLsizei)(this->window_height / 4.0f);
 
 	this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION);
-	glBlitFramebuffer(0,
-		0,
-		this->window_width,
-		this->window_height,
-		this->window_width - QuarterWidth,
-		0,
-		this->window_width,
-		QuarterHeight,
-		GL_COLOR_BUFFER_BIT,
-		GL_LINEAR);
+	glBlitFramebuffer(
+			0,
+			0,
+			this->window_width,
+			this->window_height,
+			this->window_width - QuarterWidth,
+			0,
+			this->window_width,
+			QuarterHeight,
+			GL_COLOR_BUFFER_BIT,
+			GL_LINEAR);
 
 	this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-	glBlitFramebuffer(0,
-		0,
-		this->window_width,
-		this->window_height,
-		this->window_width - QuarterWidth,
-		QuarterHeight,
-		this->window_width,
-		HalfHeight,
-		GL_COLOR_BUFFER_BIT,
-		GL_LINEAR);
+	glBlitFramebuffer(
+			0,
+			0,
+			this->window_width,
+			this->window_height,
+			this->window_width - QuarterWidth,
+			QuarterHeight,
+			this->window_width,
+			HalfHeight,
+			GL_COLOR_BUFFER_BIT,
+			GL_LINEAR);
 
 	this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL);
-	glBlitFramebuffer(0,
-		0,
-		this->window_width,
-		this->window_height,
-		this->window_width - QuarterWidth,
-		HalfHeight,
-		this->window_width,
-		HalfHeight + QuarterHeight,
-		GL_COLOR_BUFFER_BIT,
-		GL_LINEAR);
+	glBlitFramebuffer(
+			0,
+			0,
+			this->window_width,
+			this->window_height,
+			this->window_width - QuarterWidth,
+			HalfHeight,
+			this->window_width,
+			HalfHeight + QuarterHeight,
+			GL_COLOR_BUFFER_BIT,
+			GL_LINEAR);
 
 	glReadBuffer(GL_DEPTH_ATTACHMENT);
-	glBlitFramebuffer(0,
-		0,
-		this->window_width,
-		this->window_height,
-		this->window_width - QuarterWidth,
-		HalfHeight + QuarterHeight,
-		this->window_width,
-		this->window_height,
-		GL_DEPTH_BUFFER_BIT,
-		GL_LINEAR);
+	glBlitFramebuffer(
+			0,
+			0,
+			this->window_width,
+			this->window_height,
+			this->window_width - QuarterWidth,
+			HalfHeight + QuarterHeight,
+			this->window_width,
+			this->window_height,
+			GL_DEPTH_BUFFER_BIT,
+			GL_LINEAR);
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }
 
 void RenderSystem::SetupDefaultShaders() {
 	auto debug_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-		std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")),
-		std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")),
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
 	};
 	auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
 
@@ -412,38 +429,39 @@ void RenderSystem::SetupDefaultShaders() {
 	debug_fill->SetDrawElementsMode(GL_LINES);
 
 	auto deferred_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-		std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
-		std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
 	};
 	auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
 
 	auto deferred_pl_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-		std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
-		std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
 	};
 	auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
 
 	auto deferred_dl_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-		std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
-		std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
 	};
 	auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
 
 	auto deferred_stencil_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-		std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
 	};
 	auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_stencil_shader_files);
 
 	auto deferred_shadow_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-		std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")),
-		std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
+			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")),
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
 	};
 	auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 }
 
 void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
-	SetViewportSize(data->new_width > 0 ? static_cast<unsigned int>(data->new_width) : 0,
-		data->new_height > 0 ? static_cast<unsigned int>(data->new_height) : 0);
+	SetViewportSize(
+			data->new_width > 0 ? static_cast<unsigned int>(data->new_width) : 0,
+			data->new_height > 0 ? static_cast<unsigned int>(data->new_height) : 0);
 }
 
 void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { RenderableMap::Remove(data->entity_id); }
@@ -531,7 +549,7 @@ void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		}
 
 		this->model_matricies[entity_id] =
-			glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
+				glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
 		if (!renderable->buffer) {
 			renderable->buffer = std::make_shared<VertexBufferObject>();
 			renderable->buffer->Load(renderable->mesh);

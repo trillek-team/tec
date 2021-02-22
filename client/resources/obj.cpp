@@ -262,7 +262,7 @@ bool OBJ::Parse() {
 			if (!current_face_group) {
 				current_face_group = new OBJGroup::FaceGroup();
 				current_face_group->faces.reserve(
-					static_cast<std::size_t>(object_face_count[this->vertexGroups.size()]) * 2);
+						static_cast<std::size_t>(object_face_count[this->vertexGroups.size()]) * 2);
 				current_face_group->mtl = mtlname;
 				currentVGroup->face_groups.push_back(current_face_group);
 			}
@@ -366,8 +366,9 @@ void OBJ::PopulateMeshGroups() {
 			if (this->materials.find(face_group->mtl) != this->materials.end()) {
 				std::shared_ptr<MTL> material = this->materials[face_group->mtl];
 				std::string material_name = material->diffuseMap;
-				material_name = material_name.substr(material_name.find_last_of("/") + 1,
-									material_name.find_last_of(".") - material_name.find_last_of("/") - 1)
+				material_name = material_name.substr(
+										material_name.find_last_of("/") + 1,
+										material_name.find_last_of(".") - material_name.find_last_of("/") - 1)
 								+ "_material";
 				mat_group.material_name = material_name;
 				mat_group.textures.push_back(this->materials[face_group->mtl]->diffuseMap);

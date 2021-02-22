@@ -10,7 +10,7 @@ static glm::vec3 UP_VECTOR = {0.0f, 1.0f, 0.0f};
 static glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
 
 struct Position {
-	Position(glm::vec3 pos) : value(pos) {}
+	Position(glm::vec3 pos): value(pos) {}
 	Position() = default;
 	// Translates by amount.
 	void Translate(const glm::vec3 amount);
@@ -28,7 +28,7 @@ struct Position {
 
 struct Orientation {
 	Orientation(glm::vec3 rot) { Rotate(rot); }
-	Orientation(glm::quat q) : value(q), rotation(glm::eulerAngles(q)) {}
+	Orientation(glm::quat q): value(q), rotation(glm::eulerAngles(q)) {}
 	Orientation() = default;
 	void Rotate(const glm::vec3 amount = glm::vec3(0.0f));
 
@@ -45,7 +45,7 @@ struct Orientation {
 };
 
 struct Scale {
-	Scale(glm::vec3 scale) : value(scale) {}
+	Scale(glm::vec3 scale): value(scale) {}
 	Scale() = default;
 
 	glm::vec3 value{0, 0, 0};

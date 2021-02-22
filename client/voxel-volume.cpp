@@ -12,7 +12,7 @@
 #include "graphics/vertex-buffer-object.hpp"
 
 namespace tec {
-VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh) : mesh(mesh), entity_id(entity_id) {
+VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh): mesh(mesh), entity_id(entity_id) {
 	auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"));
 	auto tex = std::make_shared<TextureObject>(pixbuf);
 	TextureMap::Set("metal_wall", tex);
@@ -90,36 +90,36 @@ void VoxelVolume::Update(double) {
 
 void VoxelVolume::UpdateMesh() {
 	static std::vector<VertexData> IdentityVerts({
-		// Front
-		VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-		VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-		VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-		VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
-		// Back
-		VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-		VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-		VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-		VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top left
-		// Left
-		VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-		VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-		VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-		VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
-		// Right
-		VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-		VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-		VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-		VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
-		// Top
-		VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-		VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-		VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-		VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
-		// Bottom
-		VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-		VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-		VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-		VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f) // Top Left
+			// Front
+			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
+			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
+			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
+			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			// Back
+			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
+			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
+			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top left
+			// Left
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
+			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
+			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
+			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			// Right
+			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
+			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
+			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
+			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			// Top
+			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
+			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
+			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
+			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			// Bottom
+			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
+			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
+			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
+			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f) // Top Left
 	});
 
 	// TODO: Sort voxels by material and update object group material groups.
@@ -149,14 +149,15 @@ void VoxelVolume::UpdateMesh() {
 				std::int16_t z = static_cast<std::int16_t>(index & 0xFFFF);
 				std::size_t vertex_offset = _mesh->verts.size();
 				for (std::size_t i = 0; i < 24; ++i) {
-					_mesh->verts.push_back(VertexData(IdentityVerts[i].position[0] + x,
-						IdentityVerts[i].position[1] + y,
-						IdentityVerts[i].position[2] + z,
-						IdentityVerts[i].color[0],
-						IdentityVerts[i].color[1],
-						IdentityVerts[i].color[2],
-						IdentityVerts[i].uv[0],
-						IdentityVerts[i].uv[1]));
+					_mesh->verts.push_back(VertexData(
+							IdentityVerts[i].position[0] + x,
+							IdentityVerts[i].position[1] + y,
+							IdentityVerts[i].position[2] + z,
+							IdentityVerts[i].color[0],
+							IdentityVerts[i].color[1],
+							IdentityVerts[i].color[2],
+							IdentityVerts[i].uv[0],
+							IdentityVerts[i].uv[1]));
 				}
 				this->vertex_index[index] = vertex_offset;
 				for (std::size_t i = 0; i < 6; ++i) {
@@ -190,16 +191,16 @@ void VoxelVolume::UpdateMesh() {
 						VertexData& vert = _mesh->verts[this->vertex_index[index]];
 
 						std::int16_t x =
-							static_cast<std::int16_t>(floor(vert.position.x - IdentityVerts[0].position[0]));
+								static_cast<std::int16_t>(floor(vert.position.x - IdentityVerts[0].position[0]));
 						std::int16_t y =
-							static_cast<std::int16_t>(floor(vert.position.y - IdentityVerts[0].position[1]));
+								static_cast<std::int16_t>(floor(vert.position.y - IdentityVerts[0].position[1]));
 						std::int16_t z =
-							static_cast<std::int16_t>(floor(vert.position.z - IdentityVerts[0].position[2]));
+								static_cast<std::int16_t>(floor(vert.position.z - IdentityVerts[0].position[2]));
 
 						std::int64_t changed_index =
-							(static_cast<std::uint64_t>(y & 0xFFFF) << static_cast<std::uint64_t>(32))
-							+ (static_cast<std::uint32_t>(x & 0xFFFF) << static_cast<std::uint32_t>(16))
-							+ static_cast<std::uint16_t>(z & 0xFFFF);
+								(static_cast<std::uint64_t>(y & 0xFFFF) << static_cast<std::uint64_t>(32))
+								+ (static_cast<std::uint32_t>(x & 0xFFFF) << static_cast<std::uint32_t>(16))
+								+ static_cast<std::uint16_t>(z & 0xFFFF);
 
 						this->vertex_index[changed_index] = this->vertex_index[index];
 					}
@@ -241,7 +242,7 @@ void VoxelVolume::On(std::shared_ptr<MouseClickEvent> data) {
 			const Position* pos = Entity(entity_id).Get<Position>();
 			const Orientation* orientation = Entity(entity_id).Get<Orientation>();
 			glm::mat4 model_view =
-				glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
+					glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
 			glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
 			std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
 			local_coords.y += FLT_EPSILON * (std::signbit(local_coords.y) ? -1.0f : 0.0f);
@@ -256,7 +257,7 @@ void VoxelVolume::On(std::shared_ptr<MouseClickEvent> data) {
 			const Position* pos = Entity(entity_id).Get<Position>();
 			const Orientation* orientation = Entity(entity_id).Get<Orientation>();
 			glm::mat4 model_view =
-				glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
+					glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
 			glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
 			std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
 			local_coords.y -= FLT_EPSILON * (std::signbit(local_coords.y) ? 0.0f : 1.0f);

@@ -50,9 +50,9 @@ std::string FilePath::cache_folder = "";
 
 std::string FilePath::assets_base = "";
 
-FilePath::FilePath() : path("") {}
+FilePath::FilePath(): path("") {}
 
-FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
+FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count): path(other, pos, count) {
 	this->NormalizePath();
 }
 
@@ -411,10 +411,12 @@ void FilePath::NormalizePath() {
 	}
 #endif
 	// Prune duplicate path separators (like "\\\\")
-	path.erase(std::unique(path.begin(),
-				   path.end(),
-				   [](const char& a, const char& b) { return a == PATH_SEPARATOR_C && b == PATH_SEPARATOR_C; }),
-		path.end());
+	path.erase(
+			std::unique(
+					path.begin(),
+					path.end(),
+					[](const char& a, const char& b) { return a == PATH_SEPARATOR_C && b == PATH_SEPARATOR_C; }),
+			path.end());
 
 	// TODO handled relative path stuff like "\foo\bar\..\shaders\debug.vert"
 }

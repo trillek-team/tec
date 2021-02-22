@@ -114,95 +114,98 @@ void ClientConnection::OnClientLeave(eid entity_id) {
 
 void ClientConnection::read_header() {
 	auto self(shared_from_this());
-	asio::async_read(socket,
-		asio::buffer(current_read_msg.GetDataPTR(), ServerMessage::header_length),
-		[this, self](std::error_code error, std::size_t /*length*/) {
-			if (!error && current_read_msg.decode_header()) {
-				read_body();
-			}
-			else {
-				server->Leave(shared_from_this());
-			}
-		});
+	asio::async_read(
+			socket,
+			asio::buffer(current_read_msg.GetDataPTR(), ServerMessage::header_length),
+			[this, self](std::error_code error, std::size_t /*length*/) {
+				if (!error && current_read_msg.decode_header()) {
+					read_body();
+				}
+				else {
+					server->Leave(shared_from_this());
+				}
+			});
 }
 
 void ClientConnection::read_body() {
 	auto self(shared_from_this());
-	asio::async_read(socket,
-		asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
-		[this, self](std::error_code error, std::size_t /*length*/) {
-			auto now_time = std::chrono::high_resolution_clock::now();
-			uint64_t current_timestamp =
-				std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
-			if (error) {
-				server->Leave(shared_from_this());
-				return;
-			}
-			switch (this->current_read_msg.GetMessageType()) {
-			case MessageType::CHAT_MESSAGE:
-				server->Deliver(this->current_read_msg);
-				std::cout.write(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength())
-					<< std::endl;
-				break;
-			case MessageType::SYNC:
-			{
-				ServerMessage sync_response;
-				sync_response.SetMessageType(MessageType::SYNC);
-				sync_response.SetBodyLength(sizeof(uint64_t));
-				memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
-				sync_response.encode_header();
-				QueueWrite(sync_response);
-				break;
-			}
-			case MessageType::CLIENT_COMMAND:
-			{
-				// Pass this along to be handled in simulation to allow for
-				// processing of string commands as well as movement.
+	asio::async_read(
+			socket,
+			asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
+			[this, self](std::error_code error, std::size_t /*length*/) {
+				auto now_time = std::chrono::high_resolution_clock::now();
+				uint64_t current_timestamp =
+						std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
+				if (error) {
+					server->Leave(shared_from_this());
+					return;
+				}
+				switch (this->current_read_msg.GetMessageType()) {
+				case MessageType::CHAT_MESSAGE:
+					server->Deliver(this->current_read_msg);
+					std::cout.write(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength())
+							<< std::endl;
+					break;
+				case MessageType::SYNC:
+				{
+					ServerMessage sync_response;
+					sync_response.SetMessageType(MessageType::SYNC);
+					sync_response.SetBodyLength(sizeof(uint64_t));
+					memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
+					sync_response.encode_header();
+					QueueWrite(sync_response);
+					break;
+				}
+				case MessageType::CLIENT_COMMAND:
+				{
+					// Pass this along to be handled in simulation to allow for
+					// processing of string commands as well as movement.
 
-				// TODO: just apply movement commands here and split string commands
-				// to a different message.
-				proto::ClientCommands proto_client_commands;
-				proto_client_commands.ParseFromArray(
-					current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
-				this->last_confirmed_state_id = current_read_msg.GetStateID();
-				this->last_recv_command_id = proto_client_commands.commandid();
-				std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
-				data->client_commands = std::move(proto_client_commands);
-				EventSystem<ClientCommandsEvent>::Get()->Emit(data);
-				break;
-			}
-			case MessageType::ENTITY_CREATE:
-			case MessageType::ENTITY_DESTROY:
-			case MessageType::CLIENT_JOIN:
-			case MessageType::CLIENT_ID:
-			case MessageType::CLIENT_LEAVE:
-			case MessageType::GAME_STATE_UPDATE: break;
-			}
-			read_header();
-		});
+					// TODO: just apply movement commands here and split string commands
+					// to a different message.
+					proto::ClientCommands proto_client_commands;
+					proto_client_commands.ParseFromArray(
+							current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
+					this->last_confirmed_state_id = current_read_msg.GetStateID();
+					this->last_recv_command_id = proto_client_commands.commandid();
+					std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
+					data->client_commands = std::move(proto_client_commands);
+					EventSystem<ClientCommandsEvent>::Get()->Emit(data);
+					break;
+				}
+				case MessageType::ENTITY_CREATE:
+				case MessageType::ENTITY_DESTROY:
+				case MessageType::CLIENT_JOIN:
+				case MessageType::CLIENT_ID:
+				case MessageType::CLIENT_LEAVE:
+				case MessageType::GAME_STATE_UPDATE: break;
+				}
+				read_header();
+			});
 }
 
 void ClientConnection::do_write() {
 	auto self(shared_from_this());
 	std::lock_guard<std::mutex> lg(write_msg_mutex);
-	asio::async_write(socket,
-		asio::buffer(write_msgs_.front().GetDataPTR(), write_msgs_.front().length()),
-		[this, self](std::error_code error, std::size_t /*length*/) {
-			if (!error) {
-				bool more_to_write = false;
-				{
-					std::lock_guard<std::mutex> lg(write_msg_mutex);
-					write_msgs_.pop_front();
-					more_to_write = !write_msgs_.empty();
+	asio::async_write(
+			socket,
+			asio::buffer(write_msgs_.front().GetDataPTR(), write_msgs_.front().length()),
+			[this, self](std::error_code error, std::size_t /*length*/) {
+				if (!error) {
+					bool more_to_write = false;
+					{
+						std::lock_guard<std::mutex> lg(write_msg_mutex);
+						write_msgs_.pop_front();
+						more_to_write = !write_msgs_.empty();
+					}
+					if (more_to_write) {
+						do_write();
+					}
 				}
-				if (more_to_write) {
-					do_write();
+				else {
+					server->Leave(shared_from_this());
 				}
-			}
-			else {
-				server->Leave(shared_from_this());
-			}
-		});
+			});
 }
 
 void ClientConnection::UpdateGameState(const GameState& full_state) {

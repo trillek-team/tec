@@ -5,7 +5,7 @@
 #include <string>
 
 namespace tec {
-Console::Console() : buf{new tec::RingBuffer<std::tuple<ImVec4, std::string>, 4096>()} {
+Console::Console(): buf{new tec::RingBuffer<std::tuple<ImVec4, std::string>, 4096>()} {
 	inputBuf[0] = '\0';
 
 	// Default embed commands
@@ -33,8 +33,9 @@ Console::Console() : buf{new tec::RingBuffer<std::tuple<ImVec4, std::string>, 40
 
 	this->AddConsoleCommand("clear", "clear : Clear console output", [this](const char*) { this->Clear(); });
 
-	this->AddConsoleCommand(
-		"echo", "echo [message] : Prints a message to the console", [this](const char* args) { this->Println(args); });
+	this->AddConsoleCommand("echo", "echo [message] : Prints a message to the console", [this](const char* args) {
+		this->Println(args);
+	});
 }
 
 void Console::Update(double) {
@@ -98,7 +99,7 @@ void Console::Draw() {
 		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
 		ImGui::Begin("Console", nullptr, window_flags);
 		ImGui::BeginChild(
-			"ScrollingRegion", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), false, ImGuiWindowFlags_NoScrollbar);
+				"ScrollingRegion", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), false, ImGuiWindowFlags_NoScrollbar);
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 
 		for (std::size_t i = 0; i < buf->size(); i++) {
@@ -131,12 +132,12 @@ void Console::Draw() {
 
 		// Command-line
 		if (ImGui::InputText(
-				"Input", inputBuf, (int)(sizeof(inputBuf) / sizeof(*inputBuf)), ImGuiInputTextFlags_EnterReturnsTrue
-				// | ImGuiInputTextFlags_CallbackCompletion
-				// | ImGuiInputTextFlags_CallbackHistory,
-				// nullptr, //&TextEditCallbackStub,
-				//(void*)this
-				)) {
+					"Input", inputBuf, (int)(sizeof(inputBuf) / sizeof(*inputBuf)), ImGuiInputTextFlags_EnterReturnsTrue
+					// | ImGuiInputTextFlags_CallbackCompletion
+					// | ImGuiInputTextFlags_CallbackHistory,
+					// nullptr, //&TextEditCallbackStub,
+					//(void*)this
+					)) {
 			char* input_end = inputBuf + strlen(inputBuf);
 			// Trim string
 			while (input_end > inputBuf && input_end[-1] == ' ') {

@@ -23,7 +23,7 @@
 namespace tec {
 struct KeyboardEvent;
 
-class OS : public EventQueue<KeyboardEvent> {
+class OS: public EventQueue<KeyboardEvent> {
 public:
 	/**
 	* \brief Initialize the rendering window and makes the window's context the current one.
@@ -35,12 +35,13 @@ public:
 	* \param[in] bool fullscreen Whether the window should be started in fullscreen mode.
 	* \return bool If creation was successful or not.
 	*/
-	bool InitializeWindow(const int width,
-		const int height,
-		const std::string title,
-		const int glMajor = 3,
-		const int glMinor = 3,
-		bool fullscreen = false);
+	bool InitializeWindow(
+			const int width,
+			const int height,
+			const std::string title,
+			const int glMajor = 3,
+			const int glMinor = 3,
+			bool fullscreen = false);
 
 	/** \brief Make the context of the window current for the calling thread
 	*
@@ -313,7 +314,7 @@ private:
 	double last_time{0}; // The time at the last call to GetDeltaTime().
 	bool mouse_lock{false}; // If mouse lock is requested.
 	static bool mouse_locked; // If mouse lock is enabled causing the cursor to snap to
-		// mid-window each movement event.
+			// mid-window each movement event.
 	bool fullscreen{false}; // False if the game is in windowed mode
 };
 } // namespace tec

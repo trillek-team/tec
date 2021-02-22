@@ -9,7 +9,7 @@
 namespace tec {
 LuaScript::LuaScript() { this->ReloadScript(); }
 
-LuaScript::LuaScript(std::shared_ptr<ScriptFile> scriptfile) : script_name(scriptfile->GetName()), script(scriptfile) {
+LuaScript::LuaScript(std::shared_ptr<ScriptFile> scriptfile): script_name(scriptfile->GetName()), script(scriptfile) {
 	this->ReloadScript();
 }
 

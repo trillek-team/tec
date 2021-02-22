@@ -79,7 +79,7 @@ int main() {
 			while (!closing) {
 				next_time = std::chrono::high_resolution_clock::now();
 				uint64_t current_timestamp =
-					std::chrono::duration_cast<std::chrono::milliseconds>(next_time.time_since_epoch()).count();
+						std::chrono::duration_cast<std::chrono::milliseconds>(next_time.time_since_epoch()).count();
 				elapsed_seconds = next_time - last_time;
 				last_time = next_time;
 				double delta = elapsed_seconds.count();
@@ -90,7 +90,7 @@ int main() {
 					step_accumulator -= SERVER_SIMULATE_RATE;
 					game_state_queue.ProcessEventQueue();
 					tec::GameState full_state =
-						simulation.Simulate(SERVER_SIMULATE_RATE, game_state_queue.GetBaseState());
+							simulation.Simulate(SERVER_SIMULATE_RATE, game_state_queue.GetBaseState());
 
 					if (delta_accumulator >= tec::UPDATE_RATE) {
 						current_state_id++;
@@ -103,8 +103,9 @@ int main() {
 						full_state_update_message.SetStateID(current_state_id);
 						full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
 						full_state_update_message.SetBodyLength(full_state_update.ByteSizeLong());
-						full_state_update.SerializeToArray(full_state_update_message.GetBodyPTR(),
-							static_cast<int>(full_state_update_message.GetBodyLength()));
+						full_state_update.SerializeToArray(
+								full_state_update_message.GetBodyPTR(),
+								static_cast<int>(full_state_update_message.GetBodyLength()));
 						full_state_update_message.encode_header();
 
 						{
@@ -119,8 +120,9 @@ int main() {
 											  << std::endl;
 								}
 								else {
-									server.Deliver(client,
-										client->PrepareGameStateUpdateMessage(current_state_id, current_timestamp));
+									server.Deliver(
+											client,
+											client->PrepareGameStateUpdateMessage(current_state_id, current_timestamp));
 								}
 							}
 						}

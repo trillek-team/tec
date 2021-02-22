@@ -37,7 +37,7 @@ IMGUISystem::IMGUISystem(GLFWwindow* _window) {
 	io.LogFilename = logfilename.c_str();
 #endif
 	io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to
-		// peek into the io.KeyDown[] array.
+			// peek into the io.KeyDown[] array.
 	io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
 	io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
 	io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
@@ -132,10 +132,10 @@ void IMGUISystem::Update(double delta) {
 	// (we already got mouse wheel, keyboard keys & characters from event system
 	if (IMGUISystem::window == OS::GetFocusedWindow()) {
 		this->mouse_pos.x *=
-			(float)this->framebuffer_width / (float)this->window_width; // Convert mouse coordinates to pixels
+				(float)this->framebuffer_width / (float)this->window_width; // Convert mouse coordinates to pixels
 		this->mouse_pos.y *= (float)this->framebuffer_height / (float)this->window_height;
 		io.MousePos = ImVec2(mouse_pos.x, mouse_pos.y); // Mouse position, in pixels (set to -1,-1 if no
-			// mouse / on another screen, etc.)
+				// mouse / on another screen, etc.)
 		io.MouseWheel += this->mouse_wheel.y; // ImGUI not support x axis scroll :(
 		this->mouse_wheel.y = 0;
 		this->mouse_wheel.x = 0;
@@ -228,24 +228,27 @@ void IMGUISystem::CreateDeviceObjects() {
 	glEnableVertexAttribArray(IMGUISystem::color_attribute_location);
 
 #define OFFSETOF(TYPE, ELEMENT) ((std::size_t) & (((TYPE*)0)->ELEMENT))
-	glVertexAttribPointer(IMGUISystem::position_attribute_location,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		sizeof(ImDrawVert),
-		(GLvoid*)OFFSETOF(ImDrawVert, pos));
-	glVertexAttribPointer(IMGUISystem::uv_attribute_location,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		sizeof(ImDrawVert),
-		(GLvoid*)OFFSETOF(ImDrawVert, uv));
-	glVertexAttribPointer(IMGUISystem::color_attribute_location,
-		4,
-		GL_UNSIGNED_BYTE,
-		GL_TRUE,
-		sizeof(ImDrawVert),
-		(GLvoid*)OFFSETOF(ImDrawVert, col));
+	glVertexAttribPointer(
+			IMGUISystem::position_attribute_location,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(ImDrawVert),
+			(GLvoid*)OFFSETOF(ImDrawVert, pos));
+	glVertexAttribPointer(
+			IMGUISystem::uv_attribute_location,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			sizeof(ImDrawVert),
+			(GLvoid*)OFFSETOF(ImDrawVert, uv));
+	glVertexAttribPointer(
+			IMGUISystem::color_attribute_location,
+			4,
+			GL_UNSIGNED_BYTE,
+			GL_TRUE,
+			sizeof(ImDrawVert),
+			(GLvoid*)OFFSETOF(ImDrawVert, col));
 #undef OFFSETOF
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -256,7 +259,7 @@ void IMGUISystem::CreateDeviceObjects() {
 	int width, height;
 	auto& io = ImGui::GetIO();
 	io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height); // Load as RGBA 32-bits for OpenGL3 demo because it is more
-		// likely to be compatible with user's existing shader.
+			// likely to be compatible with user's existing shader.
 
 	glGenTextures(1, &font_texture);
 	glBindTexture(GL_TEXTURE_2D, font_texture);
@@ -294,10 +297,10 @@ void IMGUISystem::RenderDrawLists(ImDrawData* draw_data) {
 	const float width = display_size.x;
 	const float height = ImGui::GetIO().DisplaySize.y;
 	const float ortho_projection[4][4] = {
-		{2.0f / width, 0.0f, 0.0f, 0.0f},
-		{0.0f, 2.0f / -height, 0.0f, 0.0f},
-		{0.0f, 0.0f, -1.0f, 0.0f},
-		{-1.0f, 1.0f, 0.0f, 1.0f},
+			{2.0f / width, 0.0f, 0.0f, 0.0f},
+			{0.0f, 2.0f / -height, 0.0f, 0.0f},
+			{0.0f, 0.0f, -1.0f, 0.0f},
+			{-1.0f, 1.0f, 0.0f, 1.0f},
 	};
 	glUseProgram(shader_program);
 	glUniform1i(texture_attribute_location, 0);
@@ -316,7 +319,7 @@ void IMGUISystem::RenderDrawLists(ImDrawData* draw_data) {
 		}
 
 		unsigned char* vtx_data = (unsigned char*)glMapBufferRange(
-			GL_ARRAY_BUFFER, 0, needed_vtx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+				GL_ARRAY_BUFFER, 0, needed_vtx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 		if (!vtx_data) {
 			continue;
@@ -333,7 +336,7 @@ void IMGUISystem::RenderDrawLists(ImDrawData* draw_data) {
 		}
 
 		unsigned char* idx_data = (unsigned char*)glMapBufferRange(
-			GL_ELEMENT_ARRAY_BUFFER, 0, needed_idx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+				GL_ELEMENT_ARRAY_BUFFER, 0, needed_idx_size, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 		if (!idx_data) {
 			continue;
@@ -347,10 +350,11 @@ void IMGUISystem::RenderDrawLists(ImDrawData* draw_data) {
 			}
 			else {
 				glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)pcmd->TextureId);
-				glScissor((int)pcmd->ClipRect.x,
-					(int)(height - pcmd->ClipRect.w),
-					(int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
-					(int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
+				glScissor(
+						(int)pcmd->ClipRect.x,
+						(int)(height - pcmd->ClipRect.w),
+						(int)(pcmd->ClipRect.z - pcmd->ClipRect.x),
+						(int)(pcmd->ClipRect.w - pcmd->ClipRect.y));
 				glDrawElements(GL_TRIANGLES, (GLsizei)pcmd->ElemCount, GL_UNSIGNED_SHORT, idx_buffer_offset);
 			}
 			idx_buffer_offset += pcmd->ElemCount;

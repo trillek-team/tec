@@ -10,7 +10,7 @@
 #include "resources/mesh.hpp"
 
 namespace tec {
-class MD5Mesh final : public MeshFile {
+class MD5Mesh final: public MeshFile {
 public:
 	/*****************************/
 	/* MD5Mesh helper structures */

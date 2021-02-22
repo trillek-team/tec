@@ -29,12 +29,13 @@ static void ErrorCallback(int error_no, const char* description) {
 	spdlog::get("console_log")->error("[OS] GLFW Error {} : {}", error_no, description);
 }
 
-bool OS::InitializeWindow(const int width,
-	const int height,
-	const std::string title,
-	const int glMajor /*= 3*/,
-	const int glMinor /*= 3*/,
-	bool _fullscreen /*= false*/) {
+bool OS::InitializeWindow(
+		const int width,
+		const int height,
+		const std::string title,
+		const int glMajor /*= 3*/,
+		const int glMinor /*= 3*/,
+		bool _fullscreen /*= false*/) {
 	this->fullscreen = _fullscreen;
 	assert(glMajor >= 3);
 	assert(glMajor * 10 + glMinor >= 30);
@@ -97,9 +98,10 @@ bool OS::InitializeWindow(const int width,
 	int glcx_minor = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MINOR);
 	if (glcx_major < glMajor || (glcx_major == glMajor && glcx_minor < glMinor)) {
 		glfwTerminate();
-		l->critical("[OS] Initializing OpenGL failed, unsupported version: {} '\n' Press \"Enter\" to "
-					"exit\n",
-			glcx_version);
+		l->critical(
+				"[OS] Initializing OpenGL failed, unsupported version: {} '\n' Press \"Enter\" to "
+				"exit\n",
+				glcx_version);
 		std::cin.get();
 		return false;
 	}
@@ -113,19 +115,21 @@ bool OS::InitializeWindow(const int width,
 	std::string glsl_major = glcx_glslver.substr(0, glcx_glslver.find('.', 0));
 	std::string glsl_minor = glcx_glslver.substr(glcx_glslver.find('.', 0) + 1, 1);
 	if (glsl_major.at(0) < '3') {
-		l->critical("[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version : "
-					"{} GLSL version : {} \n Press \"Enter\" to exit\n",
-			glcx_version,
-			glcx_glslver);
+		l->critical(
+				"[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version : "
+				"{} GLSL version : {} \n Press \"Enter\" to exit\n",
+				glcx_version,
+				glcx_glslver);
 		std::cin.get();
 		return false;
 	}
 	else if (glsl_major.at(0) == '3') {
 		if (glsl_minor.at(0) < '3') {
-			l->critical("[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version "
-						": {} GLSL version : {} \n Press \"Enter\" to exit\n",
-				glcx_version,
-				glcx_glslver);
+			l->critical(
+					"[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version "
+					": {} GLSL version : {} \n Press \"Enter\" to exit\n",
+					glcx_version,
+					glcx_glslver);
 			std::cin.get();
 			return false;
 		}
@@ -232,14 +236,16 @@ void OS::ToggleFullScreen() {
 		glfwGetWindowPos(window, &wx, &wy);
 		const auto mode = glfwGetVideoMode(monitor);
 		this->fullscreen = false;
-		glfwSetWindowMonitor(this->window,
-			nullptr,
-			wx + mode->width / 2 - this->client_width / 2, // Position window in center of monitor it was fullscreen on
-			wy + mode->height / 2
-				- this->client_height / 2, // Position window in center of monitor it was fullscreen on
-			this->client_width,
-			this->client_height,
-			GLFW_DONT_CARE);
+		glfwSetWindowMonitor(
+				this->window,
+				nullptr,
+				wx + mode->width / 2
+						- this->client_width / 2, // Position window in center of monitor it was fullscreen on
+				wy + mode->height / 2
+						- this->client_height / 2, // Position window in center of monitor it was fullscreen on
+				this->client_width,
+				this->client_height,
+				GLFW_DONT_CARE);
 	}
 }
 
@@ -359,7 +365,7 @@ void OS::On(std::shared_ptr<KeyboardEvent> data) {
 
 void OS::UpdateWindowSize(const int width, const int height) {
 	std::shared_ptr<WindowResizedEvent> resize_event = std::make_shared<WindowResizedEvent>(
-		WindowResizedEvent{this->client_width, this->client_height, width, height});
+			WindowResizedEvent{this->client_width, this->client_height, width, height});
 	EventSystem<WindowResizedEvent>::Get()->Emit(resize_event);
 
 	if (!fullscreen) {
@@ -370,7 +376,7 @@ void OS::UpdateWindowSize(const int width, const int height) {
 
 void OS::DispatchKeyboardEvent(const int key, const int scancode, const int action, const int mods) {
 	std::shared_ptr<KeyboardEvent> key_event =
-		std::make_shared<KeyboardEvent>(KeyboardEvent{key, scancode, KeyboardEvent::KEY_DOWN, mods});
+			std::make_shared<KeyboardEvent>(KeyboardEvent{key, scancode, KeyboardEvent::KEY_DOWN, mods});
 	// Default is KEY_DOWN, check if it is REPEAT or UP instead.
 	if (action == GLFW_REPEAT) {
 		key_event->action = KeyboardEvent::KEY_REPEAT;
@@ -384,7 +390,7 @@ void OS::DispatchKeyboardEvent(const int key, const int scancode, const int acti
 
 void OS::DispatchCharacterEvent(const unsigned int uchar) {
 	std::shared_ptr<KeyboardEvent> key_event =
-		std::make_shared<KeyboardEvent>(KeyboardEvent{(const int)uchar, 0, KeyboardEvent::KEY_CHAR, 0});
+			std::make_shared<KeyboardEvent>(KeyboardEvent{(const int)uchar, 0, KeyboardEvent::KEY_CHAR, 0});
 	EventSystem<KeyboardEvent>::Get()->Emit(key_event);
 }
 
@@ -393,12 +399,12 @@ void OS::DispatchMouseMoveEvent(const double x, const double y) {
 		// mouse lock is where we hide the cursor and constrain it to the window
 		// we also request raw mouse motion if available
 		std::shared_ptr<MouseMoveEvent> mmov_event =
-			std::make_shared<MouseMoveEvent>(MouseMoveEvent{x / this->client_width,
-				y / this->client_height,
-				static_cast<int>(this->old_mouse_x),
-				static_cast<int>(this->old_mouse_y),
-				static_cast<int>(x),
-				static_cast<int>(y)});
+				std::make_shared<MouseMoveEvent>(MouseMoveEvent{x / this->client_width,
+																y / this->client_height,
+																static_cast<int>(this->old_mouse_x),
+																static_cast<int>(this->old_mouse_y),
+																static_cast<int>(x),
+																static_cast<int>(y)});
 		EventSystem<MouseMoveEvent>::Get()->Emit(mmov_event);
 		double client_center_x = static_cast<double>(this->client_width / 2);
 		double client_center_y = static_cast<double>(this->client_height / 2);
@@ -421,12 +427,13 @@ void OS::DispatchMouseMoveEvent(const double x, const double y) {
 		glfwSetCursorPos(this->window, this->old_mouse_x, this->old_mouse_y);
 		return;
 	}
-	std::shared_ptr<MouseMoveEvent> mmov_event = std::make_shared<MouseMoveEvent>(MouseMoveEvent{x / this->client_width,
-		y / this->client_height,
-		static_cast<int>(this->old_mouse_x),
-		static_cast<int>(this->old_mouse_y),
-		static_cast<int>(x),
-		static_cast<int>(y)});
+	std::shared_ptr<MouseMoveEvent> mmov_event =
+			std::make_shared<MouseMoveEvent>(MouseMoveEvent{x / this->client_width,
+															y / this->client_height,
+															static_cast<int>(this->old_mouse_x),
+															static_cast<int>(this->old_mouse_y),
+															static_cast<int>(x),
+															static_cast<int>(y)});
 	EventSystem<MouseMoveEvent>::Get()->Emit(mmov_event);
 	this->old_mouse_x = x;
 	this->old_mouse_y = y;
@@ -434,8 +441,8 @@ void OS::DispatchMouseMoveEvent(const double x, const double y) {
 
 void OS::DispatchMouseScrollEvent(const double xoffset, const double yoffset) {
 	std::shared_ptr<MouseScrollEvent> mscroll_event = std::make_shared<MouseScrollEvent>(MouseScrollEvent{
-		static_cast<double>(xoffset),
-		static_cast<double>(yoffset),
+			static_cast<double>(xoffset),
+			static_cast<double>(yoffset),
 	});
 	EventSystem<MouseScrollEvent>::Get()->Emit(mscroll_event);
 }
@@ -495,28 +502,28 @@ void OS::GetMousePosition(double* x, double* y) {
 
 void OS::LuaStateRegistration(sol::state& state) {
 	state.new_usertype<OS>(
-		"OS",
-		sol::no_constructor, // single instance
-		"quit",
-		&OS::Quit,
-		"exit",
-		&OS::Quit,
-		"get_window_width",
-		&OS::GetWindowWidth,
-		"get_window_height",
-		&OS::GetWindowHeight,
-		"get_mouse_x",
-		[this]() {
-			double x = 0;
-			this->GetMousePosition(&x, nullptr);
-			return x;
-		},
-		"get_mouse_y",
-		[this]() {
-			double y = 0;
-			this->GetMousePosition(nullptr, &y);
-			return y;
-		});
+			"OS",
+			sol::no_constructor, // single instance
+			"quit",
+			&OS::Quit,
+			"exit",
+			&OS::Quit,
+			"get_window_width",
+			&OS::GetWindowWidth,
+			"get_window_height",
+			&OS::GetWindowHeight,
+			"get_mouse_x",
+			[this]() {
+				double x = 0;
+				this->GetMousePosition(&x, nullptr);
+				return x;
+			},
+			"get_mouse_y",
+			[this]() {
+				double y = 0;
+				this->GetMousePosition(nullptr, &y);
+				return y;
+			});
 	state.set("OS", this); // register instance
 }
 } // namespace tec

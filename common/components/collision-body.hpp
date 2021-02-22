@@ -12,10 +12,10 @@ ATTRIBUTE_ALIGNED16(struct) CollisionBody {
 
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	struct MotionState : public btMotionState {
+	struct MotionState: public btMotionState {
 		MotionState() { this->transform.setIdentity(); }
-		MotionState(MotionState&& other) noexcept :
-			transform(std::move(other.transform)), transform_updated(other.transform_updated) {}
+		MotionState(MotionState&& other) noexcept:
+				transform(std::move(other.transform)), transform_updated(other.transform_updated) {}
 
 		MotionState& operator=(MotionState&& other) noexcept {
 			transform_updated = other.transform_updated;

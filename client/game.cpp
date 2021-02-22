@@ -19,10 +19,10 @@ namespace tec {
 using networking::MessageType;
 using networking::ServerMessage;
 
-Game::Game(OS& _os, std::string config_file_name) :
-	stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
-	ps(this->simulation.GetPhysicsSystem()), vcs(this->simulation.GetVComputerSystem()),
-	sound_thread([this]() { ss.Update(); }) {
+Game::Game(OS& _os, std::string config_file_name):
+		stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
+		ps(this->simulation.GetPhysicsSystem()), vcs(this->simulation.GetVComputerSystem()),
+		sound_thread([this]() { ss.Update(); }) {
 	this->config_script = this->lua_sys.LoadFile(FilePath::GetAssetPath(config_file_name));
 	this->server_connection.RegisterMessageHandler(MessageType::CLIENT_ID, [this](const ServerMessage&) {
 		auto client_id = server_connection.GetClientID();
@@ -116,7 +116,7 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 			update_message.SetMessageType(MessageType::CLIENT_COMMAND);
 			update_message.SetBodyLength(client_commands.ByteSizeLong());
 			client_commands.SerializeToArray(
-				update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
+					update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
 			update_message.encode_header();
 			server_connection.Send(update_message);
 			game_state_queue.SetCommandID(command_id);
@@ -133,19 +133,21 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	if (this->player_camera != nullptr) {
 		if (this->player_camera->mouse_look) {
 			os.EnableMouseLock(); // TODO: create event to change to mouse look
-			this->active_entity = ps.RayCastMousePick(this->server_connection.GetClientID(),
-				static_cast<float>(window_width) / 2.0f,
-				static_cast<float>(window_height) / 2.0f,
-				static_cast<float>(window_width),
-				static_cast<float>(window_height));
+			this->active_entity = ps.RayCastMousePick(
+					this->server_connection.GetClientID(),
+					static_cast<float>(window_width) / 2.0f,
+					static_cast<float>(window_height) / 2.0f,
+					static_cast<float>(window_width),
+					static_cast<float>(window_height));
 		}
 		else {
 			os.DisableMouseLock(); // TODO: create event to change from mouse look
-			this->active_entity = ps.RayCastMousePick(this->server_connection.GetClientID(),
-				mouse_x,
-				mouse_y,
-				static_cast<float>(window_width),
-				static_cast<float>(window_height));
+			this->active_entity = ps.RayCastMousePick(
+					this->server_connection.GetClientID(),
+					mouse_x,
+					mouse_y,
+					static_cast<float>(window_width),
+					static_cast<float>(window_height));
 		}
 	}
 }

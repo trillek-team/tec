@@ -16,21 +16,21 @@ namespace tec {
 
 /// Maps on runtime the Type ID with the name
 const std::unordered_map<tid, const char*> TypeName = {MAKE_MAPPAIR(void),
-	MAKE_MAPPAIR(Renderable),
-	MAKE_MAPPAIR(Position),
-	MAKE_MAPPAIR(Orientation),
-	MAKE_MAPPAIR(View),
-	MAKE_MAPPAIR(Animation),
-	MAKE_MAPPAIR(Scale),
-	MAKE_MAPPAIR(CollisionBody),
-	MAKE_MAPPAIR(Velocity),
-	MAKE_MAPPAIR(AudioSource),
-	MAKE_MAPPAIR(PointLight),
-	MAKE_MAPPAIR(DirectionalLight),
-	// SpotLight
-	MAKE_MAPPAIR(VoxelVolume),
-	MAKE_MAPPAIR(Computer),
-	MAKE_MAPPAIR(LuaScript)};
+													   MAKE_MAPPAIR(Renderable),
+													   MAKE_MAPPAIR(Position),
+													   MAKE_MAPPAIR(Orientation),
+													   MAKE_MAPPAIR(View),
+													   MAKE_MAPPAIR(Animation),
+													   MAKE_MAPPAIR(Scale),
+													   MAKE_MAPPAIR(CollisionBody),
+													   MAKE_MAPPAIR(Velocity),
+													   MAKE_MAPPAIR(AudioSource),
+													   MAKE_MAPPAIR(PointLight),
+													   MAKE_MAPPAIR(DirectionalLight),
+													   // SpotLight
+													   MAKE_MAPPAIR(VoxelVolume),
+													   MAKE_MAPPAIR(Computer),
+													   MAKE_MAPPAIR(LuaScript)};
 
 #undef MAKE_MAPPAIR
 } // namespace tec

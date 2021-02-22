@@ -269,8 +269,8 @@ bool MD5Anim::CheckMesh(std::shared_ptr<MD5Mesh> mesh) {
 	return false;
 }
 
-MD5Anim::FrameSkeleton MD5Anim::InterpolateSkeletons(
-	std::size_t frame_index_start, std::size_t frame_index_end, float delta) {
+MD5Anim::FrameSkeleton
+MD5Anim::InterpolateSkeletons(std::size_t frame_index_start, std::size_t frame_index_end, float delta) {
 	const auto& skeleton0 = this->frames[frame_index_start].skeleton;
 	const auto& skeleton1 = this->frames[frame_index_end].skeleton;
 	FrameSkeleton final_skeleton;

@@ -25,7 +25,7 @@ PhysicsSystem::PhysicsSystem() {
 	this->broadphase = new btDbvtBroadphase();
 	this->solver = new btSequentialImpulseConstraintSolver();
 	this->dynamicsWorld =
-		new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
+			new btDiscreteDynamicsWorld(this->dispatcher, this->broadphase, this->solver, this->collisionConfiguration);
 	this->dynamicsWorld->setGravity(btVector3(0, -10.0, 0));
 
 	btGImpactCollisionAlgorithm::registerAlgorithm(this->dispatcher);
@@ -85,7 +85,7 @@ std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) 
 			if (std::isfinite(orientation.x) && std::isfinite(orientation.y) && std::isfinite(orientation.z)
 				&& std::isfinite(orientation.w)) {
 				collidable->motion_state.transform.setRotation(
-					btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
+						btQuaternion(orientation.x, orientation.y, orientation.z, orientation.w));
 			}
 		}
 
@@ -176,9 +176,9 @@ std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) 
 }
 
 glm::vec3 GetRayDirection(
-	float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) {
+		float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) {
 	glm::vec4 ray_start_NDC(
-		(mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, -1.0, 1.0f);
+			(mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, -1.0, 1.0f);
 	glm::vec4 ray_end_NDC((mouse_x / screen_width - 0.5f) * 2.0f, (mouse_y / screen_height - 0.5f) * -2.0f, 0.0, 1.0f);
 
 	glm::mat4 inverted_viewprojection = glm::inverse(projection * view);
@@ -192,7 +192,7 @@ glm::vec3 GetRayDirection(
 }
 
 eid PhysicsSystem::RayCastMousePick(
-	eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
+		eid source_entity, double mouse_x, double mouse_y, float screen_width, float screen_height) {
 	if (source_entity == 0) {
 		return 0;
 	}
@@ -216,11 +216,15 @@ eid PhysicsSystem::RayCastMousePick(
 	static glm::mat4 projection = glm::perspective(glm::radians(45.0f), screen_width / screen_height, -1.0f, 300.0f);
 	glm::mat4 view = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
 
-	glm::vec3 world_direction =
-		position
-		- GetRayDirection(
-			  static_cast<float>(mouse_x), static_cast<float>(mouse_y), screen_width, screen_height, view, projection)
-			  * 100.0f;
+	glm::vec3 world_direction = position
+								- GetRayDirection(
+										  static_cast<float>(mouse_x),
+										  static_cast<float>(mouse_y),
+										  screen_width,
+										  screen_height,
+										  view,
+										  projection)
+										  * 100.0f;
 
 	btVector3 from(position.x, position.y, position.z), to(world_direction.x, world_direction.y, world_direction.z);
 	this->last_rayfrom = from;
@@ -235,7 +239,7 @@ eid PhysicsSystem::RayCastMousePick(
 			eid entity = 0;
 			double frc = ray_result_callback.m_hitFractions.at(i);
 			const CollisionBody* colbody =
-				(const CollisionBody*)ray_result_callback.m_collisionObjects.at(i)->getUserPointer();
+					(const CollisionBody*)ray_result_callback.m_collisionObjects.at(i)->getUserPointer();
 			if (!colbody) {
 				continue;
 			}
@@ -342,7 +346,7 @@ bool PhysicsSystem::AddRigidBody(CollisionBody* collision_body) {
 	}
 
 	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(
-		collision_body->mass, &collision_body->motion_state, collision_body->shape.get(), fallInertia);
+			collision_body->mass, &collision_body->motion_state, collision_body->shape.get(), fallInertia);
 	auto body = new btRigidBody(fallRigidBodyCI);
 
 	if (!body) {
@@ -372,7 +376,7 @@ void PhysicsSystem::On(std::shared_ptr<MouseBtnEvent> data) {
 			mce_event->entity_id = this->last_entity_hit;
 			mce_event->ray_distance = this->last_raydist;
 			mce_event->ray_hit_point_world =
-				glm::vec3(this->last_raypos.getX(), this->last_raypos.getY(), this->last_raypos.getZ());
+					glm::vec3(this->last_raypos.getX(), this->last_raypos.getY(), this->last_raypos.getZ());
 			EventSystem<MouseClickEvent>::Get()->Emit(mce_event);
 		}
 	}

@@ -28,7 +28,7 @@ typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVolumeMap;
 
 typedef Command<VoxelVolume> VoxelCommand;
 
-class VoxelVolume : public CommandQueue<VoxelVolume>, public EventQueue<MouseClickEvent> {
+class VoxelVolume: public CommandQueue<VoxelVolume>, public EventQueue<MouseClickEvent> {
 public:
 	VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh);
 	~VoxelVolume();
@@ -56,8 +56,8 @@ public:
 	// sub-mesh.
 	static std::weak_ptr<VoxelVolume> Create(const eid entity_id, const std::string name);
 	// Creates a VoxelVolume for entity_id and uses PolygonMeshData and into sub-mesh.
-	static std::weak_ptr<VoxelVolume> Create(
-		const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
+	static std::weak_ptr<VoxelVolume>
+	Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 
 	using EventQueue<MouseClickEvent>::On;
 	void On(std::shared_ptr<MouseClickEvent> data);

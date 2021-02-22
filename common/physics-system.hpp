@@ -17,11 +17,11 @@ struct MouseBtnEvent;
 struct EntityCreated;
 struct EntityDestroyed;
 
-class PhysicsSystem :
-	public CommandQueue<PhysicsSystem>,
-	EventQueue<MouseBtnEvent>,
-	EventQueue<EntityCreated>,
-	EventQueue<EntityDestroyed> {
+class PhysicsSystem:
+		public CommandQueue<PhysicsSystem>,
+		EventQueue<MouseBtnEvent>,
+		EventQueue<EntityCreated>,
+		EventQueue<EntityDestroyed> {
 public:
 	PhysicsSystem();
 	~PhysicsSystem();
@@ -31,11 +31,12 @@ public:
 
 	std::set<eid> Update(const double delta, const GameState& state);
 
-	eid RayCastMousePick(eid source_entity,
-		double mouse_x = 0.0f,
-		double mouse_y = 0.0f,
-		float screen_width = 1.0f,
-		float screen_height = 1.0f);
+	eid RayCastMousePick(
+			eid source_entity,
+			double mouse_x = 0.0f,
+			double mouse_y = 0.0f,
+			float screen_width = 1.0f,
+			float screen_height = 1.0f);
 	eid RayCastIgnore(eid source_entity, eid ignore_entity);
 	glm::vec3 GetLastRayPos() const { return glm::vec3(last_raypos.getX(), last_raypos.getY(), last_raypos.getZ()); }
 	double GetLastRayDistance() const { return last_raydist; }

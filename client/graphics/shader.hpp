@@ -85,8 +85,8 @@ public:
 	* };
 	* \return is a weak_ptr to the created Shader.
 	*/
-	static std::shared_ptr<Shader> CreateFromFile(
-		const std::string name, std::list<std::pair<Shader::ShaderType, tec::FilePath>> filenames);
+	static std::shared_ptr<Shader>
+	CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, tec::FilePath>> filenames);
 
 	/**
 	* \brief Creates a Shader the provide source code stores it in ShaderMap under name.
@@ -99,8 +99,8 @@ public:
 	* };
 	* \return is a weak_ptr to the created Shader.
 	*/
-	static std::shared_ptr<Shader> CreateFromString(
-		const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code);
+	static std::shared_ptr<Shader>
+	CreateFromString(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code);
 
 	/**
 	* \brief Loads the specified ShaderType from file filename.

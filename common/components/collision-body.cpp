@@ -1,9 +1,9 @@
 #include "collision-body.hpp"
 
 namespace tec {
-CollisionBody::CollisionBody(CollisionBody&& other) noexcept :
-	mass(other.mass), disable_deactivation(other.disable_deactivation), disable_rotation(other.disable_rotation),
-	shape(std::move(other.shape)), entity_id(other.entity_id), motion_state(std::move(other.motion_state)) {}
+CollisionBody::CollisionBody(CollisionBody&& other) noexcept:
+		mass(other.mass), disable_deactivation(other.disable_deactivation), disable_rotation(other.disable_rotation),
+		shape(std::move(other.shape)), entity_id(other.entity_id), motion_state(std::move(other.motion_state)) {}
 
 CollisionBody& CollisionBody::operator=(CollisionBody&& other) noexcept {
 	mass = other.mass;

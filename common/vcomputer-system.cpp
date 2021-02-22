@@ -21,7 +21,7 @@
 namespace tec {
 using namespace trillek::computer;
 
-Computer::Computer() : rom(new std::uint8_t[32 * 1024]), rom_size(0) {}
+Computer::Computer(): rom(new std::uint8_t[32 * 1024]), rom_size(0) {}
 
 void Computer::In(const proto::Component& source) {
 	const proto::Computer& comp = source.computer();
@@ -290,14 +290,16 @@ void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 				}
 			}
 			else if (data->key == GLFW_KEY_BACKSPACE) {
-				active_keybaord->SendKeyEvent(static_cast<trillek::Word>(data->scancode),
-					gkeyboard::KEY_BACKSPACE,
-					gkeyboard::KEY_MODS::KEY_MOD_NONE);
+				active_keybaord->SendKeyEvent(
+						static_cast<trillek::Word>(data->scancode),
+						gkeyboard::KEY_BACKSPACE,
+						gkeyboard::KEY_MODS::KEY_MOD_NONE);
 			}
 			else {
-				active_keybaord->SendKeyEvent(static_cast<trillek::Word>(data->scancode),
-					static_cast<unsigned char>(data->key),
-					gkeyboard::KEY_MODS::KEY_MOD_NONE);
+				active_keybaord->SendKeyEvent(
+						static_cast<trillek::Word>(data->scancode),
+						static_cast<unsigned char>(data->key),
+						gkeyboard::KEY_MODS::KEY_MOD_NONE);
 			}
 		default: break;
 		}
