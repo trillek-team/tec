@@ -170,30 +170,33 @@ void IMGUISystem::Update(double delta) {
 }
 
 void IMGUISystem::CreateDeviceObjects() {
-	const GLchar* _vertex_shader = "#version 330\n"
-								   "uniform mat4 ProjMtx;\n"
-								   "in vec2 Position;\n"
-								   "in vec2 UV;\n"
-								   "in vec4 Color;\n"
-								   "out vec2 Frag_UV;\n"
-								   "out vec4 Frag_Color;\n"
-								   "void main()\n"
-								   "{\n"
-								   "	Frag_UV = UV;\n"
-								   "	Frag_Color = Color;\n"
-								   "	gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
-								   "}\n";
+	// clang-format off
+	const GLchar* _vertex_shader =
+		"#version 330\n"
+		"uniform mat4 ProjMtx;\n"
+		"in vec2 Position;\n"
+		"in vec2 UV;\n"
+		"in vec4 Color;\n"
+		"out vec2 Frag_UV;\n"
+		"out vec4 Frag_Color;\n"
+		"void main()\n"
+		"{\n"
+		"	Frag_UV = UV;\n"
+		"	Frag_Color = Color;\n"
+		"	gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
+		"}\n";
 
-	const GLchar* _fragment_shader = "#version 330\n"
-									 "uniform sampler2D Texture;\n"
-									 "in vec2 Frag_UV;\n"
-									 "in vec4 Frag_Color;\n"
-									 "out vec4 Out_Color;\n"
-									 "void main()\n"
-									 "{\n"
-									 "	Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
-									 "}\n";
-
+	const GLchar* _fragment_shader =
+		"#version 330\n"
+		"uniform sampler2D Texture;\n"
+		"in vec2 Frag_UV;\n"
+		"in vec4 Frag_Color;\n"
+		"out vec4 Out_Color;\n"
+		"void main()\n"
+		"{\n"
+		"	Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
+		"}\n";
+	// clang-format on
 	IMGUISystem::shader_program = glCreateProgram();
 	IMGUISystem::vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	IMGUISystem::fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
