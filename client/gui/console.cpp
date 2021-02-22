@@ -5,7 +5,7 @@
 #include <string>
 
 namespace tec {
-Console::Console(): buf{new tec::RingBuffer<std::tuple<ImVec4, std::string>, 4096>()} {
+Console::Console() : buf{new tec::RingBuffer<std::tuple<ImVec4, std::string>, 4096>()} {
 	inputBuf[0] = '\0';
 
 	// Default embed commands

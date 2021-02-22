@@ -34,7 +34,7 @@ typedef Command<RenderSystem> RenderCommand;
 struct WindowResizedEvent;
 struct EntityDestroyed;
 
-class RenderSystem:
+class RenderSystem :
 		public CommandQueue<RenderSystem>,
 		public EventQueue<WindowResizedEvent>,
 		public EventQueue<EntityDestroyed>,

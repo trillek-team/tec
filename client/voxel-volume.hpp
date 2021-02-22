@@ -28,7 +28,7 @@ typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVolumeMap;
 
 typedef Command<VoxelVolume> VoxelCommand;
 
-class VoxelVolume: public CommandQueue<VoxelVolume>, public EventQueue<MouseClickEvent> {
+class VoxelVolume : public CommandQueue<VoxelVolume>, public EventQueue<MouseClickEvent> {
 public:
 	VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh);
 	~VoxelVolume();

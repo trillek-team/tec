@@ -9,7 +9,7 @@
 namespace tec {
 class Game;
 
-class ActiveEntityTooltip: public AbstractWindow {
+class ActiveEntityTooltip : public AbstractWindow {
 public:
 	ActiveEntityTooltip(Game& game);
 

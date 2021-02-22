@@ -18,9 +18,9 @@ namespace networking {
 class Server;
 
 // Used to represent a client connection to the server.
-class ClientConnection: public std::enable_shared_from_this<ClientConnection> {
+class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
-	ClientConnection(tcp::socket socket, Server* server): socket(std::move(socket)), server(server) {}
+	ClientConnection(tcp::socket socket, Server* server) : socket(std::move(socket)), server(server) {}
 
 	~ClientConnection();
 

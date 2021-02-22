@@ -19,7 +19,7 @@ namespace tec {
 using networking::MessageType;
 using networking::ServerMessage;
 
-Game::Game(OS& _os, std::string config_file_name):
+Game::Game(OS& _os, std::string config_file_name) :
 		stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
 		ps(this->simulation.GetPhysicsSystem()), vcs(this->simulation.GetVComputerSystem()),
 		sound_thread([this]() { ss.Update(); }) {

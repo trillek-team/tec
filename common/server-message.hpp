@@ -26,7 +26,7 @@ public:
 	enum { header_length = 16 };
 	enum { max_body_length = 512 };
 
-	ServerMessage(): body_length(0), last_recv_state_id(0), message_type(MessageType::CHAT_MESSAGE) {}
+	ServerMessage() : body_length(0), last_recv_state_id(0), message_type(MessageType::CHAT_MESSAGE) {}
 
 	const char* GetDataPTR() const { return data; }
 

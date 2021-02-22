@@ -9,7 +9,7 @@
 namespace tec {
 class VertexBufferObject;
 
-class PhysicsDebugDrawer: public btIDebugDraw {
+class PhysicsDebugDrawer : public btIDebugDraw {
 public:
 	PhysicsDebugDrawer();
 

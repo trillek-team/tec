@@ -20,7 +20,7 @@ struct PredictedClientState {
 	Velocity vel;
 };
 
-class Simulation final:
+class Simulation final :
 		public CommandQueue<Simulation>,
 		public EventQueue<KeyboardEvent>,
 		public EventQueue<MouseBtnEvent>,

@@ -50,9 +50,9 @@ std::string FilePath::cache_folder = "";
 
 std::string FilePath::assets_base = "";
 
-FilePath::FilePath(): path("") {}
+FilePath::FilePath() : path("") {}
 
-FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count): path(other, pos, count) {
+FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
 	this->NormalizePath();
 }
 

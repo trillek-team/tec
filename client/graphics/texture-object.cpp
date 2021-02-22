@@ -10,7 +10,7 @@ TextureObject::TextureObject(const PixelBuffer& image) {
 	Load(image);
 }
 
-TextureObject::TextureObject(std::weak_ptr<PixelBuffer> pbp): source_ptr(pbp) {
+TextureObject::TextureObject(std::weak_ptr<PixelBuffer> pbp) : source_ptr(pbp) {
 	this->texture_id = 0;
 	auto locked_ptr = pbp.lock();
 	if (locked_ptr) {

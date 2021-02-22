@@ -11,7 +11,7 @@
 #include "resources/mesh.hpp"
 
 namespace tec {
-class OBJ final: public MeshFile {
+class OBJ final : public MeshFile {
 public:
 	// OBJ Helper struct for face vertex data indices.
 	struct Face {

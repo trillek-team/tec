@@ -16,7 +16,7 @@ namespace networking {
 unsigned short PORT = 0xa10c;
 std::mutex Server::recent_msgs_mutex;
 
-Server::Server(tcp::endpoint& endpoint): acceptor(io_service, endpoint), socket(io_service) {
+Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket(io_service) {
 	// Create a simple greeting chat message that all clients get.
 	std::string message("Hello from server\n");
 	this->greeting_msg.SetBodyLength(message.size());

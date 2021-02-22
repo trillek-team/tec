@@ -1,7 +1,7 @@
 #include "server-connect.hpp"
 
 namespace tec {
-ServerConnectWindow::ServerConnectWindow(ServerConnection& server_connection): server_connection(server_connection) {}
+ServerConnectWindow::ServerConnectWindow(ServerConnection& server_connection) : server_connection(server_connection) {}
 
 void ServerConnectWindow::Update(double) {}
 
@@ -57,7 +57,7 @@ void ServerConnectWindow::Draw() {
 	}
 }
 
-PingTimesWindow::PingTimesWindow(ServerConnection& server_connection): server_connection(server_connection) {}
+PingTimesWindow::PingTimesWindow(ServerConnection& server_connection) : server_connection(server_connection) {}
 
 void PingTimesWindow::Update(double) {}
 

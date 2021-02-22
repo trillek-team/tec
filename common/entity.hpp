@@ -7,7 +7,7 @@
 namespace tec {
 class Entity {
 public:
-	Entity(eid id): id(id) {}
+	Entity(eid id) : id(id) {}
 
 	// Add a component with constructor arguments.
 	template <typename T, typename... U> T* Add(U&&... args) {

@@ -17,7 +17,7 @@ struct MouseBtnEvent;
 struct EntityCreated;
 struct EntityDestroyed;
 
-class PhysicsSystem:
+class PhysicsSystem :
 		public CommandQueue<PhysicsSystem>,
 		EventQueue<MouseBtnEvent>,
 		EventQueue<EntityCreated>,

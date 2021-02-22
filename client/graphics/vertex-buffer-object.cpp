@@ -8,7 +8,7 @@
 namespace tec {
 VertexBufferObject::VertexBufferObject() {}
 
-VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh): source_mesh(mesh) { Load(mesh); }
+VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) : source_mesh(mesh) { Load(mesh); }
 
 VertexBufferObject::~VertexBufferObject() { Destroy(); }
 

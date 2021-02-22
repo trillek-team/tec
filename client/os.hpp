@@ -23,7 +23,7 @@
 namespace tec {
 struct KeyboardEvent;
 
-class OS: public EventQueue<KeyboardEvent> {
+class OS : public EventQueue<KeyboardEvent> {
 public:
 	/**
 	* \brief Initialize the rendering window and makes the window's context the current one.

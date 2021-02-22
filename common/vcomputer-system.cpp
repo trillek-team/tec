@@ -21,7 +21,7 @@
 namespace tec {
 using namespace trillek::computer;
 
-Computer::Computer(): rom(new std::uint8_t[32 * 1024]), rom_size(0) {}
+Computer::Computer() : rom(new std::uint8_t[32 * 1024]), rom_size(0) {}
 
 void Computer::In(const proto::Component& source) {
 	const proto::Computer& comp = source.computer();

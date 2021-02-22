@@ -18,7 +18,7 @@
 #include "ring-buffer.hpp"
 
 namespace tec {
-class Console: public AbstractWindow, public EventQueue<KeyboardEvent>, public EventQueue<WindowResizedEvent> {
+class Console : public AbstractWindow, public EventQueue<KeyboardEvent>, public EventQueue<WindowResizedEvent> {
 public:
 	Console();
 
@@ -74,9 +74,9 @@ private:
 	std::function<void(const char*)> slash_handler;
 };
 
-class ConsoleSink: public spdlog::sinks::sink {
+class ConsoleSink : public spdlog::sinks::sink {
 public:
-	ConsoleSink(Console& c): console(c){};
+	ConsoleSink(Console& c) : console(c){};
 
 	// SPDLog sink interface
 	void log(const spdlog::details::log_msg& msg) override;

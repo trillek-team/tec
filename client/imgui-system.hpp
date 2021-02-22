@@ -30,7 +30,7 @@ namespace networking {
 class ServerConnection;
 }
 
-class IMGUISystem:
+class IMGUISystem :
 		public CommandQueue<IMGUISystem>,
 		public EventQueue<KeyboardEvent>,
 		public EventQueue<MouseMoveEvent>,

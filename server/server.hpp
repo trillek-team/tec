@@ -22,7 +22,7 @@ static eid BASE_ENTITY_ID = 10000;
 
 class ClientConnection;
 
-class Server: public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
+class Server : public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
 public:
 	Server(tcp::endpoint& endpoint);
 

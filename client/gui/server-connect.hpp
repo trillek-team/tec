@@ -10,7 +10,7 @@
 namespace tec {
 using networking::ServerConnection;
 
-class ServerConnectWindow: public AbstractWindow {
+class ServerConnectWindow : public AbstractWindow {
 public:
 	ServerConnectWindow(ServerConnection& server_connection);
 
@@ -22,7 +22,7 @@ private:
 	ServerConnection& server_connection;
 };
 
-class PingTimesWindow: public AbstractWindow {
+class PingTimesWindow : public AbstractWindow {
 public:
 	PingTimesWindow(ServerConnection& server_connection);
 

@@ -8,7 +8,7 @@
 #include <spdlog/spdlog.h>
 
 namespace tec {
-PhysicsDebugDrawer::PhysicsDebugDrawer(): m_debugMode(0) {}
+PhysicsDebugDrawer::PhysicsDebugDrawer() : m_debugMode(0) {}
 
 void PhysicsDebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color) {
 	VertexData from_vert(from.getX(), from.getY(), from.getZ(), color.getX(), color.getY(), color.getZ());

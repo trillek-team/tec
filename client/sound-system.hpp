@@ -26,7 +26,7 @@ enum class AUDIOSOURCE_STATE { PLAYING, PAUSED, STOPPED };
 
 extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 struct AudioSource {
-	AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play):
+	AudioSource(std::shared_ptr<VorbisStream> stream, bool auto_play) :
 			vorbis_stream(stream), source_state(auto_play ? AUDIOSOURCE_STATE::PLAYING : AUDIOSOURCE_STATE::PAUSED) {}
 	AudioSource() = default;
 
@@ -69,7 +69,7 @@ struct AudioSource {
 	std::string audio_name;
 };
 
-class SoundSystem:
+class SoundSystem :
 		public CommandQueue<SoundSystem>,
 		public EventQueue<EntityCreated>,
 		public EventQueue<EntityDestroyed> {

@@ -36,7 +36,7 @@
 
 namespace tec {
 typedef Multiton<std::string, std::shared_ptr<VorbisStream>> SoundMap;
-VorbisStream::VorbisStream(int buffer_size): buffer_size(buffer_size) {
+VorbisStream::VorbisStream(int buffer_size) : buffer_size(buffer_size) {
 	this->sbuffer = new ALshort[this->buffer_size];
 }
 

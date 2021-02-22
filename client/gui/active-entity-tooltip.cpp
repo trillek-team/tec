@@ -2,7 +2,7 @@
 #include "game.hpp"
 
 namespace tec {
-ActiveEntityTooltip::ActiveEntityTooltip(Game& game): game(game) {}
+ActiveEntityTooltip::ActiveEntityTooltip(Game& game) : game(game) {}
 
 void ActiveEntityTooltip::Update(double) {}
 

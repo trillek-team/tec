@@ -17,7 +17,7 @@ struct BaseLight {
 	BaseLight() = default;
 };
 
-struct DirectionalLight: public BaseLight {
+struct DirectionalLight : public BaseLight {
 	glm::vec3 direction{0.f, 0.f, -1.f};
 
 	DirectionalLight() = default;
@@ -61,7 +61,7 @@ struct DirectionalLight: public BaseLight {
 	}
 };
 
-struct PointLight: public BaseLight {
+struct PointLight : public BaseLight {
 	struct {
 		float constant{0.f};
 		float linear{0.f};
@@ -128,7 +128,7 @@ struct PointLight: public BaseLight {
 	float bounding_radius{0.f};
 };
 
-struct SpotLight: public DirectionalLight {
+struct SpotLight : public DirectionalLight {
 	float cutoff{0.f};
 
 	SpotLight() = default;

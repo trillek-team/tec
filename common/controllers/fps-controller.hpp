@@ -13,7 +13,7 @@ namespace tec {
 // TODO: Create Controller system that calls update on all controller
 // instances.
 struct Controller {
-	Controller(eid entity_id): entity_id(entity_id) {}
+	Controller(eid entity_id) : entity_id(entity_id) {}
 
 	virtual void Update(double, GameState&, EventList&) {}
 
@@ -42,8 +42,8 @@ struct Controller {
 
 // TODO: Remove this class as it is only for testing and should really be
 // implemented in script.
-struct FPSController: public Controller {
-	FPSController(const eid entity_id): Controller(entity_id) {}
+struct FPSController : public Controller {
+	FPSController(const eid entity_id) : Controller(entity_id) {}
 	virtual ~FPSController() = default;
 
 	void Handle(const KeyboardEvent& data, const GameState& state);

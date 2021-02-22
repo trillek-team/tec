@@ -7,7 +7,7 @@
 
 namespace tec {
 
-ClientGameStateQueue::ClientGameStateQueue(ServerStats& s): stats(s) {}
+ClientGameStateQueue::ClientGameStateQueue(ServerStats& s) : stats(s) {}
 
 void ClientGameStateQueue::Interpolate(const double delta_time) {
 	std::lock_guard<std::mutex> lg(this->server_state_mutex);
