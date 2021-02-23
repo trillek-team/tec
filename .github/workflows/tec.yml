@@ -2,6 +2,7 @@ name: Trillek Engine CI
 
 on:
   pull_request:
+  pull_request_target:
   push:
     tags: [ v* ]
 
