@@ -199,8 +199,7 @@ void IMGUISystem::CreateDeviceObjects() {
 	// clang-format on
 	IMGUISystem::shader_program = glCreateProgram();
 	IMGUISystem::vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	IMGUISystem::fragment_shader =
-		glCreateShader(GL_FRAGMENT_SHADER);
+	IMGUISystem::fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(IMGUISystem::vertex_shader, 1, &_vertex_shader, nullptr);
 	glShaderSource(IMGUISystem::fragment_shader, 1, &_fragment_shader, nullptr);
 	GLint success = 0;
