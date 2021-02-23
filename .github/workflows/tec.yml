@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.head_ref }}
+        ref: refs/pull/${{ github.event.number }}/head
     - name: Clang format
       uses: DoozyX/clang-format-lint-action@v0.11
       with:
