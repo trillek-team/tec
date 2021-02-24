@@ -36,8 +36,7 @@ void ServerGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 			this->base_state.velocities[entity_id] = vel;
 			break;
 		}
-		default:
-			break;
+		default: break;
 		}
 	}
 }

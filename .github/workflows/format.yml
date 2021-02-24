@@ -1,0 +1,24 @@
+name: Clang Format
+
+on: push
+
+jobs:
+  format:
+    if: ${{ false }}  # disable for now
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
+    - name: Clang format
+      uses: DoozyX/clang-format-lint-action@v0.11
+      with:
+        source: '.'
+        clangFormatVersion: 11
+        inplace: True
+    - name: Commit any clang format changes
+      uses: EndBug/add-and-commit@v4
+      with:
+        message: 'Committing clang-format changes'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

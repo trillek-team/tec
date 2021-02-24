@@ -1,0 +1,6 @@
+./client/resources/stb_image.h
+./client/resources/stb_vorbis.c
+./client/resources/checker.c
+.git
+./deps/**.*
+./assets/**.8

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <cinttypes>
-#include <memory>
 #include <atomic>
 #include <chrono>
+#include <cinttypes>
+#include <memory>
 
-#include <glm/glm.hpp>
 #include "tec-types.hpp"
+#include <glm/glm.hpp>
 
 namespace tec {
 

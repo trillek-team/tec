@@ -1,4 +1,3 @@
 #include "mesh.hpp"
 
-namespace tec {
-}
+namespace tec {}
