@@ -274,12 +274,12 @@ void MD5Mesh::CalculateVertexPositions() {
 		}
 		for (std::size_t j = 0; j < int_mesh.verts.size(); ++j) {
 			VertexData vdata;
+			Vertex& vert = int_mesh.verts[j];
 
 			// Compute vertex position based on joint position.
-			for (std::uint8_t k = 0; k < int_mesh.verts[j].weight_count; ++k) {
-				Weight& weight =
-						int_mesh.weights
-								[static_cast<std::size_t>(int_mesh.verts[j].startWeight) + static_cast<std::size_t>(k)];
+			for (std::uint8_t k = 0; k < vert.weight_count; ++k) {
+				auto weight_index = static_cast<std::size_t>(vert.startWeight) + static_cast<std::size_t>(k);
+				Weight& weight = int_mesh.weights[weight_index];
 
 				/* Calculate transformed vertex for this weight */
 				glm::vec3 wv = this->joints[weight.joint].orientation * weight.position;
@@ -291,10 +291,10 @@ void MD5Mesh::CalculateVertexPositions() {
 			}
 
 			// Cache the calculated position for later
-			int_mesh.verts[j].position = vdata.position;
+			vert.position = vdata.position;
 
 			// Copy the texture coordinates
-			vdata.uv = int_mesh.verts[j].uv;
+			vdata.uv = vert.uv;
 
 			mesh->verts[j] = vdata;
 		}

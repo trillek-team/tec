@@ -45,7 +45,8 @@ void Computer::In(const proto::Component& source) {
 		this->vc.SetCPU(std::move(trcpu));
 		this->vc.On();
 		this->vc.SetState(&state, sizeof(TR3200State));
-	} break;
+		break;
+	}
 	case proto::Computer::CPU::kDcpu16N:
 	{
 		const proto::Computer::CPU::DCPU16N& dcpu16n = cpu.dcpu16n();
@@ -59,7 +60,8 @@ void Computer::In(const proto::Component& source) {
 		this->vc.SetCPU(std::move(dcpucpu));
 		this->vc.On();
 		this->vc.SetState(&state, sizeof(DCPU16NState));
-	} break;
+		break;
+	}
 	case proto::Computer::CPU::CPU_NOT_SET: break;
 	}
 	std::string buf = comp.ram();
@@ -76,14 +78,16 @@ void Computer::In(const proto::Component& source) {
 			screen->In(device);
 			this->vc.AddDevice(device.slot(), screen->device);
 			this->devices[device.slot()] = screen;
-		} break;
+			break;
+		}
 		case proto::Computer::Device::kComputerKeyboard:
 		{
 			std::shared_ptr<ComputerKeyboard> keybaord = std::make_shared<ComputerKeyboard>();
 			keybaord->In(device);
 			this->vc.AddDevice(device.slot(), keybaord->device);
 			this->devices[device.slot()] = keybaord;
-		} break;
+			break;
+		}
 		case proto::Computer::Device::DEVICE_NOT_SET: break;
 		}
 	}
@@ -214,29 +218,9 @@ void VComputerSystem::Update(double _delta) {
 	ProcessCommandQueue();
 	this->delta = _delta;
 	tda::TDAScreen screen;
-	//		static PixelBuffer local_pbuffer(320, 240, 8, ImageColorMode::COLOR_RGBA);
 	for (const auto& comp : this->computers) {
 		std::shared_ptr<ComputerScreen> comp_screen = std::static_pointer_cast<ComputerScreen>(comp.second->devices[5]);
 		comp.second->vc.Update(this->delta);
-		// #ifdef CLIENT_STANDALONE
-		// 			std::static_pointer_cast<tda::TDADev>(comp_screen->device)->DumpScreen(screen);
-		// 			tda::TDAtoRGBATexture(screen, (std::uint32_t*)local_pbuffer.LockWrite());
-		// 			local_pbuffer.UnlockWrite();
-		// 			if (comp_screen->texture) {
-		// 				comp_screen->texture->Load(local_pbuffer);
-		// 			}
-		// 			else {
-		// 				Entity screen_entity(comp.first);
-		// 				if (screen_entity.Has<Renderable>()) {
-		// 					Renderable* ren = screen_entity.Get<Renderable>();
-		// 					if (ren->buffer) {
-		// 						if (ren->buffer->GetVertexGroupCount() > 0) {
-		// 							comp_screen->texture = ren->buffer->GetVertexGroup(0)->material->GetTexture(0);
-		// 						}
-		// 					}
-		// 				}
-		// 			}
-		// #endif
 	}
 }
 

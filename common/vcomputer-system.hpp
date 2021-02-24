@@ -84,49 +84,49 @@ public:
 	VComputerSystem();
 
 	/** \brief Sets the specified device for the entity ID to device.
-		 *
-		 * \param const eid entityID The entity ID the computer/CPU belongs to.
-		 * \param const unsigned int The slot to assign device to.
-		 * \param std::shared_ptr<IDevice> device The device to install.
-		 */
+	*
+	* \param const eid entityID The entity ID the computer/CPU belongs to.
+	* \param const unsigned int The slot to assign device to.
+	* \param std::shared_ptr<IDevice> device The device to install.
+	*/
 	void SetDevice(const eid entity_id, const unsigned int slot, std::shared_ptr<DeviceBase> device);
 
 	/** \brief Remove a device from the specified slot.
-		 *
-		 * \param const eid entityID The entity ID the computer/CPU belongs to.
-		 * \param const unsigned int The slot to remove the device from.
-		 */
+	*
+	* \param const eid entityID The entity ID the computer/CPU belongs to.
+	* \param const unsigned int The slot to remove the device from.
+	*/
 	void RemoveDevice(const eid entity_id, const unsigned int slot);
 
 	/** \brief Load a ROM file from disk for the specified computer.
-		 *
-		 * \param const eid entityID The entity ID the computer belongs to.
-		 * \param const std::string fname The name of the ROM file to load.
-		 * \return bool Whether or not the file loaded successfully (also returns false if no computer exists for the given entity_id).
-		 */
+	*
+	* \param const eid entityID The entity ID the computer belongs to.
+	* \param const std::string fname The name of the ROM file to load.
+	* \return bool Whether or not the file loaded successfully (also returns false if no computer exists for the given entity_id).
+	*/
 	bool LoadROMFile(const eid entity_id, std::string fname);
 
 	/** \brief Turns specified the computer on.
-		 *
-		 * \param const eid entityID The entity ID the computer belongs to.
-		 */
+	*
+	* \param const eid entityID The entity ID the computer belongs to.
+	*/
 	void TurnComptuerOn(const eid entity_id);
 
 	/** \brief Turns specified the computer off.
-		 *
-		 * \param const eid entityID The entity ID the computer belongs to.
-		 */
+	*
+	* \param const eid entityID The entity ID the computer belongs to.
+	*/
 	void TurnComptuerOff(const eid entity_id);
 
 	/** \brief Handle incoming events to update data
-		 *
-		 * This function is called once every frame. It is the only
-		 * function that can write data. This function is in the critical
-		 * path, job done here must be simple.
-		 *
-		 * If event handling need some batch processing, a task list must be
-		 * prepared and stored temporarily to be retrieved by RunBatch().
-		 */
+	*
+	* This function is called once every frame. It is the only
+	* function that can write data. This function is in the critical
+	* path, job done here must be simple.
+	*
+	* If event handling need some batch processing, a task list must be
+	* prepared and stored temporarily to be retrieved by RunBatch().
+	*/
 	void Update(double delta);
 
 	using EventQueue<KeyboardEvent>::On;

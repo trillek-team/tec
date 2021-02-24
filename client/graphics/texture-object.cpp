@@ -205,16 +205,14 @@ void TextureObject::GenerateStencil(GLuint width, GLuint height) {
 }
 
 void TextureObject::GenerateDepth(GLuint width, GLuint height, bool stencil) {
-	auto err = glGetError();
-	if (err) {
+	if (glGetError()) {
 		return;
 	}
 	if (!this->texture_id) {
 		glGenTextures(1, &this->texture_id);
 	}
 	glBindTexture(GL_TEXTURE_2D, this->texture_id);
-	err = glGetError();
-	if (err) {
+	if (glGetError()) {
 		return;
 	}
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -224,19 +222,12 @@ void TextureObject::GenerateDepth(GLuint width, GLuint height, bool stencil) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_GEQUAL);
 	}
-	err = glGetError();
-	if (err) {
+	if (glGetError()) {
 		return;
 	}
-	if (stencil) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_STENCIL, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_BYTE, nullptr);
-	}
-	else {
-		glTexImage2D(
-				GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, nullptr);
-	}
-	err = glGetError();
-	if (err) {
+	auto format = stencil ? GL_DEPTH_STENCIL : GL_DEPTH_COMPONENT;
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
+	if (glGetError()) {
 		return;
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);

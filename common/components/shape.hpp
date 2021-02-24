@@ -20,18 +20,21 @@ struct Shape {
 			box->set_x_extent(this->half_extents[0]);
 			box->set_y_extent(this->half_extents[1]);
 			box->set_z_extent(this->half_extents[2]);
-		} break;
+			break;
+		}
 		case proto::Shape::ShapeCase::kSphere:
 		{
 			proto::Shape::Sphere* sphere = comp->mutable_sphere();
 			sphere->set_radius(this->radius);
-		} break;
+			break;
+		}
 		case proto::Shape::ShapeCase::kCapsule:
 		{
 			proto::Shape::Capsule* capsule = comp->mutable_capsule();
 			capsule->set_radius(this->radius);
 			capsule->set_height(this->height);
-		} break;
+			break;
+		}
 		}
 	}
 	void In(const proto::Component& source) {
@@ -43,16 +46,19 @@ struct Shape {
 			this->half_extents[0] = comp.box().x_extent();
 			this->half_extents[1] = comp.box().y_extent();
 			this->half_extents[2] = comp.box().z_extent();
-		} break;
+			break;
+		}
 		case proto::Shape::ShapeCase::kSphere:
 		{
 			this->radius = comp.sphere().radius();
-		} break;
+			break;
+		}
 		case proto::Shape::ShapeCase::kCapsule:
 		{
 			this->radius = comp.capsule().radius();
 			this->height = comp.capsule().height();
-		} break;
+			break;
+		}
 		}
 	}
 };

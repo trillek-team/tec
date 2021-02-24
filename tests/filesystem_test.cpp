@@ -240,7 +240,6 @@ TEST(FilePath_class_test, AssetsPath) {
 		ASSERT_TRUE(fp2.FileExists());
 	}
 	else {
-		std::cout << "Run test from root folder of the project or make a link to assets to check "
-					 "GetAssetsBasePath\n";
+		std::cout << "Run test from project root or make a link to assets to check GetAssetsBasePath\n";
 	}
 }

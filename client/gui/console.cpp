@@ -46,24 +46,24 @@ void Console::Update(double) {
 void Console::Clear() { buf->clear(); }
 
 void Console::Println(const std::string& str, ImVec4 color) {
-	{
-		std::lock_guard<std::mutex> lg(input_mutex);
-		if (buf->full()) {
-			buf->pop_back();
-		}
-		buf->push_front(std::make_tuple(color, str));
+
+	std::lock_guard<std::mutex> lg(input_mutex);
+	if (buf->full()) {
+		buf->pop_back();
 	}
+	buf->push_front(std::make_tuple(color, str));
+
 	scrollToBottom = true;
 }
 
 void Console::Println(const char* cstr, ImVec4 color) {
-	{
-		std::lock_guard<std::mutex> lg(input_mutex);
-		if (buf->full()) {
-			buf->pop_back();
-		}
-		buf->push_front(std::make_tuple(color, std::string(cstr)));
+
+	std::lock_guard<std::mutex> lg(input_mutex);
+	if (buf->full()) {
+		buf->pop_back();
 	}
+	buf->push_front(std::make_tuple(color, std::string(cstr)));
+
 	scrollToBottom = true;
 }
 
@@ -75,13 +75,12 @@ void Console::Printfln(const char* fmt, ...) {
 	tmp[1023] = 0;
 	va_end(args);
 
-	{
-		std::lock_guard<std::mutex> lg(input_mutex);
-		if (buf->full()) {
-			buf->pop_back();
-		}
-		buf->push_front(std::make_tuple(ImVec4(255, 255, 255, 255), std::string(tmp)));
+	std::lock_guard<std::mutex> lg(input_mutex);
+	if (buf->full()) {
+		buf->pop_back();
 	}
+	buf->push_front(std::make_tuple(ImVec4(255, 255, 255, 255), std::string(tmp)));
+
 	scrollToBottom = true;
 }
 

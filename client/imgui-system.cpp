@@ -36,8 +36,9 @@ IMGUISystem::IMGUISystem(GLFWwindow* _window) {
 #if defined(DEBUG) || defined(_DEBUG)
 	io.LogFilename = logfilename.c_str();
 #endif
-	io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB; // Keyboard mapping. ImGui will use those indices to
-			// peek into the io.KeyDown[] array.
+
+	// Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
+	io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
 	io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
 	io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
 	io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
@@ -131,11 +132,13 @@ void IMGUISystem::Update(double delta) {
 	// Setup inputs
 	// (we already got mouse wheel, keyboard keys & characters from event system
 	if (IMGUISystem::window == OS::GetFocusedWindow()) {
-		this->mouse_pos.x *=
-				(float)this->framebuffer_width / (float)this->window_width; // Convert mouse coordinates to pixels
+		// Convert mouse coordinates to pixels
+		this->mouse_pos.x *= (float)this->framebuffer_width / (float)this->window_width;
 		this->mouse_pos.y *= (float)this->framebuffer_height / (float)this->window_height;
-		io.MousePos = ImVec2(mouse_pos.x, mouse_pos.y); // Mouse position, in pixels (set to -1,-1 if no
-				// mouse / on another screen, etc.)
+
+		// Mouse position, in pixels (set to -1,-1 if no mouse / on another screen, etc.)
+		io.MousePos = ImVec2(mouse_pos.x, mouse_pos.y);
+
 		io.MouseWheel += this->mouse_wheel.y; // ImGUI not support x axis scroll :(
 		this->mouse_wheel.y = 0;
 		this->mouse_wheel.x = 0;

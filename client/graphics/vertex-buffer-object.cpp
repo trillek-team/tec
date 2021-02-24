@@ -105,11 +105,9 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 				this->vertex_count * sizeof(VertexData),
 				GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 		if (buffer) {
-			std::memcpy(buffer, &verts[0], verts.size() * sizeof(VertexData));
-			std::memset(
-					(char*)buffer + verts.size() * sizeof(VertexData) - 1,
-					0,
-					(this->vertex_count - verts.size()) * sizeof(VertexData));
+			auto buffer_size = verts.size() * sizeof(VertexData);
+			std::memcpy(buffer, &verts[0], buffer_size);
+			std::memset((char*)buffer + buffer_size - 1, 0, (this->vertex_count - verts.size()) * sizeof(VertexData));
 			glUnmapBuffer(GL_ARRAY_BUFFER);
 		}
 		else {
@@ -145,11 +143,9 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 				this->index_count * sizeof(GLuint),
 				GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 		if (buffer) {
-			std::memcpy(buffer, &indices[0], indices.size() * sizeof(GLuint));
-			std::memset(
-					(char*)buffer + indices.size() * sizeof(GLuint) - 1,
-					0,
-					(this->index_count - indices.size()) * sizeof(GLuint));
+			auto buffer_size = indices.size() * sizeof(GLuint);
+			std::memcpy(buffer, &indices[0], buffer_size);
+			std::memset((char*)buffer + buffer_size - 1, 0, (this->index_count - indices.size()) * sizeof(GLuint));
 			glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 		}
 		else {

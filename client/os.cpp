@@ -13,8 +13,7 @@
 #define GLFW_EXPOSE_NATIVE_COCOA 1
 #define GLFW_EXPOSE_NATIVE_NSGL 1
 #include <GLFW/glfw3native.h>
-// We can't just include objc/runtime.h and objc/message.h because glfw is too forward thinking for
-// its own good.
+// We can't just include objc/runtime.h and objc/message.h because glfw is too forward thinking for its own good.
 typedef void* SEL;
 extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char* str);
@@ -490,10 +489,12 @@ void OS::SetMousePosition(const double x, const double y) { glfwSetCursorPos(OS:
 void OS::GetMousePosition(double* x, double* y) {
 	if (focused_window) {
 		if (OS::mouse_locked) {
-			if (x)
+			if (x) {
 				*x = 0.5;
-			if (y)
+			}
+			if (y) {
 				*y = 0.5;
+			}
 			return;
 		}
 		glfwGetCursorPos(OS::focused_window, x, y);
@@ -501,29 +502,24 @@ void OS::GetMousePosition(double* x, double* y) {
 }
 
 void OS::LuaStateRegistration(sol::state& state) {
+	// clang-format off
 	state.new_usertype<OS>(
-			"OS",
-			sol::no_constructor, // single instance
-			"quit",
-			&OS::Quit,
-			"exit",
-			&OS::Quit,
-			"get_window_width",
-			&OS::GetWindowWidth,
-			"get_window_height",
-			&OS::GetWindowHeight,
-			"get_mouse_x",
-			[this]() {
+			"OS", sol::no_constructor, // single instance
+			"quit", &OS::Quit,
+			"exit", &OS::Quit,
+			"get_window_width", &OS::GetWindowWidth,
+			"get_window_height", &OS::GetWindowHeight,
+			"get_mouse_x", [this]() {
 				double x = 0;
 				this->GetMousePosition(&x, nullptr);
 				return x;
 			},
-			"get_mouse_y",
-			[this]() {
+			"get_mouse_y", [this]() {
 				double y = 0;
 				this->GetMousePosition(nullptr, &y);
 				return y;
 			});
+	// clang-format on
 	state.set("OS", this); // register instance
 }
 } // namespace tec

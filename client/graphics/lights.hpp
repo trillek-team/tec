@@ -117,12 +117,13 @@ struct PointLight : public BaseLight {
 	float UpdateBoundingRadius() {
 		float MaxChannel = fmax(fmax(this->color.x, this->color.y), this->color.z);
 
-		return this->bounding_radius = (-this->Attenuation.linear
-										+ sqrtf(this->Attenuation.linear * this->Attenuation.linear
-												- 4 * this->Attenuation.exponential
-														  * (this->Attenuation.exponential
-															 - 256 * MaxChannel * this->diffuse_intensity)))
-									   / 2 * this->Attenuation.exponential;
+		// I think this is fall off
+		auto fall_off = 4 * this->Attenuation.exponential
+						* (this->Attenuation.exponential - 256 * MaxChannel * this->diffuse_intensity);
+
+		this->bounding_radius = (-this->Attenuation.linear + sqrtf(pow(this->Attenuation.linear, 2) - fall_off)) / 2
+								* this->Attenuation.exponential;
+		return this->bounding_radius;
 	}
 
 	float bounding_radius{0.f};

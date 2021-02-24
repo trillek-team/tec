@@ -69,9 +69,8 @@ void Game::UpdateVComputerScreenTextures() {
 	tda::TDAScreen screen;
 	static PixelBuffer local_pbuffer(320, 240, 8, ImageColorMode::COLOR_RGBA);
 
-	for (auto computer_itr = ComputerComponentMap::Begin(); computer_itr != ComputerComponentMap::End();
-		 ++computer_itr) {
-		auto comp = *computer_itr;
+	for (auto itr = ComputerComponentMap::Begin(); itr != ComputerComponentMap::End(); ++itr) {
+		auto comp = *itr;
 		std::shared_ptr<ComputerScreen> comp_screen = std::static_pointer_cast<ComputerScreen>(comp.second->devices[5]);
 		std::static_pointer_cast<tda::TDADev>(comp_screen->device)->DumpScreen(screen);
 		std::lock_guard<std::mutex> lock(local_pbuffer.GetWritelock());

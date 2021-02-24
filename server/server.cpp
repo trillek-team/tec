@@ -36,11 +36,9 @@ void Server::Deliver(const ServerMessage& msg, bool save_to_recent) {
 		}
 	}
 
-	{
-		std::lock_guard<std::mutex> lg(client_list_mutex);
-		for (auto client : this->clients) {
-			client->QueueWrite(msg);
-		}
+	std::lock_guard<std::mutex> lg(client_list_mutex);
+	for (auto client : this->clients) {
+		client->QueueWrite(msg);
 	}
 }
 

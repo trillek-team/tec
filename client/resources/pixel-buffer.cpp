@@ -84,7 +84,7 @@ void PixelBuffer::PPMDebug() {
 	}
 }
 void PixelBuffer::PPMDebug(const char* ofile) {
-	// output a PPM image to stderr as a debug feature
+	// output a PPM image to file
 	std::fstream file(ofile, std::ios::out | std::ios::binary);
 	if (!file.is_open()) {
 		return;
