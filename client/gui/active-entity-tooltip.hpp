@@ -7,17 +7,17 @@
 #include "abs_window.hpp"
 
 namespace tec {
-	class Game;
+class Game;
 
-	class ActiveEntityTooltip : public AbstractWindow {
-	public:
-		ActiveEntityTooltip(Game& game);
+class ActiveEntityTooltip : public AbstractWindow {
+public:
+	ActiveEntityTooltip(Game& game);
 
-		void Update(double) override;
+	void Update(double) override;
 
-		void Draw() override;
+	void Draw() override;
 
-	private:
-		Game& game;
-	};
-}
+private:
+	Game& game;
+};
+} // namespace tec

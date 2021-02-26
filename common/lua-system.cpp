@@ -6,15 +6,11 @@
 #include "resources/script-file.hpp"
 
 namespace tec {
-	using LuaScriptMap = Multiton<eid, LuaScript*>;
-
+using LuaScriptMap = Multiton<eid, LuaScript*>;
 
 	LuaSystem::LuaSystem() {
 		this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table);
-
-		this->lua["print"] = [] (std::string str) {
-			spdlog::get("console_log")->info(str);
-		};
+    this->lua["print"] = [](std::string str) { spdlog::get("console_log")->info(str); };
 	}
 
 	void LuaSystem::Update(const double delta) {
@@ -27,8 +23,9 @@ namespace tec {
 			}
 		}
 	}
-
-	void LuaSystem::ProcessEvents() {
+}
+  
+  void LuaSystem::ProcessEvents() {
 		ProcessCommandQueue();
 		EventQueue<EntityCreated>::ProcessEventQueue();
 		EventQueue<EntityDestroyed>::ProcessEventQueue();
@@ -58,7 +55,7 @@ namespace tec {
 			case proto::Component::kAudioSource:
 			case proto::Component::kPointLight:
 			case proto::Component::kDirectionalLight:
-			case proto::Component::kSpotLight:
+			case proto::Component::kSpo tLight:
 			case proto::Component::kVoxelVolume:
 			case proto::Component::kComputer:
 			case proto::Component::COMPONENT_NOT_SET:
@@ -66,6 +63,7 @@ namespace tec {
 			}
 		}
 	}
+}
 
 	// TODO: Add parameters to function calls
 	void LuaSystem::CallFunction(std::string function_name) {
@@ -93,11 +91,7 @@ namespace tec {
 		return script;
 	}
 
-	void LuaSystem::On(std::shared_ptr<EntityDestroyed> data) {
-		LuaScriptMap::Remove(data->entity_id);
-	}
+void LuaSystem::On(std::shared_ptr<EntityDestroyed> data) { LuaScriptMap::Remove(data->entity_id); }
 
-	void LuaSystem::ExecuteString(std::string script_string) {
-		this->lua.script(script_string);
-	}
-}
+void LuaSystem::ExecuteString(std::string script_string) { this->lua.script(script_string); }
+} // namespace tec

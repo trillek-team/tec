@@ -3,14 +3,14 @@
  * Lua system
  */
 
-#include <spdlog/spdlog.h>
 #include <sol/sol.hpp>
+#include <spdlog/spdlog.h>
 
-#include "tec-types.hpp"
-#include "event-system.hpp"
 #include "command-queue.hpp"
-#include "filesystem.hpp"
 #include "components/lua-script.hpp"
+#include "event-system.hpp"
+#include "filesystem.hpp"
+#include "tec-types.hpp"
 
 namespace tec {
 	class LuaSystem;
@@ -18,9 +18,7 @@ namespace tec {
 	struct EntityCreated;
 	struct EntityDestroyed;
 
-	class LuaSystem : public CommandQueue< LuaSystem >,
-		public EventQueue < EntityCreated >,
-		public EventQueue < EntityDestroyed > {
+	class LuaSystem : public CommandQueue<LuaSystem>, public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
 	public:
 		LuaSystem();
 
@@ -36,13 +34,11 @@ namespace tec {
 
 		std::shared_ptr<LuaScript> LoadFile(FilePath filepath);
 
-		sol::state& GetGlobalState() {
-			return this->lua;
-		}
+		sol::state& GetGlobalState() { return this->lua; }
 	private:
 		sol::state lua;
 		std::list<LuaScript> scripts;
 
 		void CallFunction(std::string);
 	};
-}
+} // namespace tec

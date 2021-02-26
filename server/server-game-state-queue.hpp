@@ -1,9 +1,9 @@
 #pragma once
 
-#include <queue>
 #include <iostream>
-#include <mutex>
 #include <memory>
+#include <mutex>
+#include <queue>
 
 #include "event-queue.hpp"
 #include "event-system.hpp"
@@ -13,9 +13,7 @@
 
 namespace tec {
 
-class ServerGameStateQueue :
-	public EventQueue<EntityCreated>,
-	public EventQueue<EntityDestroyed> {
+class ServerGameStateQueue : public EventQueue<EntityCreated>, public EventQueue<EntityDestroyed> {
 public:
 	ServerGameStateQueue(ServerStats& s);
 
@@ -26,13 +24,9 @@ public:
 
 	void ProcessEventQueue();
 
-	GameState& GetBaseState() {
-		return this->base_state;
-	}
+	GameState& GetBaseState() { return this->base_state; }
 
-	void SetBaseState(GameState&& new_state) {
-		this->base_state = std::move(new_state);
-	}
+	void SetBaseState(GameState&& new_state) { this->base_state = std::move(new_state); }
 
 public:
 	ServerStats& stats;

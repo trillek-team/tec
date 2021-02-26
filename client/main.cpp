@@ -1,43 +1,40 @@
+#include <spdlog/sinks/stdout_sinks.h>
+#include <spdlog/spdlog.h>
+
+#include <default-config.hpp>
+#include <file-factories.hpp>
 #include <iostream>
 #include <numeric>
 #include <sstream>
 #include <string>
 #include <thread>
 
-#include <default-config.hpp>
-#include <file-factories.hpp>
-
-#include "game.hpp"
-
-#include "server-connection.hpp"
-#include "server-message.hpp"
 #include "filesystem.hpp"
+#include "game.hpp"
+#include "gui/active-entity-tooltip.hpp"
 #include "gui/console.hpp"
 #include "gui/server-connect.hpp"
-#include "gui/active-entity-tooltip.hpp"
 #include "imgui-system.hpp"
 #include "os.hpp"
-
+#include "resources/md5anim.hpp"
 #include "resources/md5mesh.hpp"
 #include "resources/obj.hpp"
-#include "resources/md5anim.hpp"
-#include "resources/vorbis-stream.hpp"
 #include "resources/script-file.hpp"
-
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_sinks.h>
+#include "resources/vorbis-stream.hpp"
+#include "server-connection.hpp"
+#include "server-message.hpp"
 
 namespace tec {
-	void RegisterFileFactories() {
-		AddFileFactory<MD5Mesh>();
-		AddFileFactory<MD5Anim>();
-		AddFileFactory<OBJ>();
-		AddFileFactory<VorbisStream>();
-		AddFileFactory<ScriptFile>();
-	}
-	extern void BuildTestVoxelVolume();
-	extern void ProtoLoad(std::string filename);
+void RegisterFileFactories() {
+	AddFileFactory<MD5Mesh>();
+	AddFileFactory<MD5Anim>();
+	AddFileFactory<OBJ>();
+	AddFileFactory<VorbisStream>();
+	AddFileFactory<ScriptFile>();
 }
+extern void BuildTestVoxelVolume();
+extern void ProtoLoad(std::string filename);
+} // namespace tec
 
 auto InitializeLogger(spdlog::level::level_enum log_level, tec::Console& console) {
 	std::vector<spdlog::sink_ptr> sinks;
@@ -66,11 +63,12 @@ auto ParseLogLevel(int argc, char* argv[]) {
 }
 
 /**
-* \brief Finds an approximate aspect ratio
-* Adapated from https://www.geeksforgeeks.org/convert-given-decimal-number-into-an-irreducible-fraction/
-* Could be further enhanced to compare values against a known set of ratios to find the best match
-* \return std:string The aspect ratio in the form of "A:B"
-*/
+ * \brief Finds an approximate aspect ratio
+ * Adapated from
+ * https://www.geeksforgeeks.org/convert-given-decimal-number-into-an-irreducible-fraction/ Could be
+ * further enhanced to compare values against a known set of ratios to find the best match \return
+ * std:string The aspect ratio in the form of "A:B"
+ */
 std::string CalculateAspectRatioString(const unsigned int window_width, const unsigned int window_height) {
 	double ratio = static_cast<double>(window_width) / static_cast<double>(window_height);
 	double intVal = std::floor(ratio);
@@ -81,7 +79,8 @@ std::string CalculateAspectRatioString(const unsigned int window_width, const un
 	double denom = precision / gcd;
 
 	std::ostringstream aspect_ratio;
-	aspect_ratio << static_cast<int>(std::round((intVal * denom) + numer)) << ":" << static_cast<int>(std::round(denom));
+	aspect_ratio << static_cast<int>(std::round((intVal * denom) + numer)) << ":"
+				 << static_cast<int>(std::round(denom));
 	return aspect_ratio.str();
 }
 
@@ -109,12 +108,7 @@ int main(int argc, char* argv[]) {
 	auto numer = stoi(aspect_ratio.substr(0, aspect_ratio.find(':')));
 	auto denom = stoi(aspect_ratio.substr(aspect_ratio.find(':') + 1));
 	os.SetWindowAspectRatio(numer, denom);
-	console.AddConsoleCommand(
-		"exit",
-		"exit : Exit from TEC",
-		[&os] (const char*) {
-			os.Quit();
-		});
+	console.AddConsoleCommand("exit", "exit : Exit from TEC", [&os](const char*) { os.Quit(); });
 	game.Startup();
 
 	tec::ActiveEntityTooltip active_entity_tooltip(game);
@@ -122,37 +116,33 @@ int main(int argc, char* argv[]) {
 	tec::ServerConnectWindow server_connect_window(connection);
 	tec::PingTimesWindow ping_times_window(connection);
 
-	console.AddConsoleCommand(
-		"msg",
-		"msg : Send a message to all clients.",
-		[&connection] (const char* args) {
-			const char* end_arg = args;
-			while (*end_arg != '\0') {
-				end_arg++;
-			}
-			// Args now points were the arguments begins
-			std::string message(args, end_arg - args);
-			connection.SendChatMessage(message);
-		});
+	console.AddConsoleCommand("msg", "msg : Send a message to all clients.", [&connection](const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0') {
+			end_arg++;
+		}
+		// Args now points were the arguments begins
+		std::string message(args, end_arg - args);
+		connection.SendChatMessage(message);
+	});
 
 	log->info("Initializing GUI system...");
 	tec::IMGUISystem gui(os.GetWindow());
 	gui.CreateGUI();
-	gui.AddWindowDrawFunction("connect_window", [&server_connect_window] () {server_connect_window.Draw(); });
-	gui.AddWindowDrawFunction("ping_times", [&ping_times_window] () {ping_times_window.Draw(); });
-	gui.AddWindowDrawFunction("console", [&console] () { console.Draw(); });
+	gui.AddWindowDrawFunction("connect_window", [&server_connect_window]() { server_connect_window.Draw(); });
+	gui.AddWindowDrawFunction("ping_times", [&ping_times_window]() { ping_times_window.Draw(); });
+	gui.AddWindowDrawFunction("console", [&console]() { console.Draw(); });
 	gui.ShowWindow("console");
-	gui.AddWindowDrawFunction("active_entity", [&active_entity_tooltip] () { active_entity_tooltip.Draw(); });
+	gui.AddWindowDrawFunction("active_entity", [&active_entity_tooltip]() { active_entity_tooltip.Draw(); });
 	gui.ShowWindow("active_entity");
 
 	connection.RegisterMessageHandler(
-		tec::networking::MessageType::CLIENT_ID,
-		[&gui, &log] (const tec::networking::ServerMessage& message) {
-			std::string client_id(message.GetBodyPTR(), message.GetBodyLength());
-			log->info("You are connected as client ID " + client_id);
-			gui.HideWindow("connect_window");
-			gui.ShowWindow("ping_times");
-		});
+			tec::networking::MessageType::CLIENT_ID, [&gui, &log](const tec::networking::ServerMessage& message) {
+				std::string client_id(message.GetBodyPTR(), message.GetBodyLength());
+				log->info("You are connected as client ID " + client_id);
+				gui.HideWindow("connect_window");
+				gui.ShowWindow("ping_times");
+			});
 
 	tec::LuaSystem* lua_sys = game.GetLuaSystem();
 	os.LuaStateRegistration(lua_sys->GetGlobalState());
@@ -161,68 +151,60 @@ int main(int argc, char* argv[]) {
 	tec::BuildTestVoxelVolume();
 	tec::ProtoLoad("json/test.json");
 
-	console.AddConsoleCommand(
-		"lua",
-		"lua : Execute a string in lua",
-		[&lua_sys] (const char* args) {
-			const char* end_arg = args;
-			while (*end_arg != '\0') {
-				end_arg++;
-			}
-			// Args now points were the arguments begins
-			std::string message(args, end_arg - args);
-			lua_sys->ExecuteString(message);
-		});
-	console.AddConsoleCommand(
-		"connect",
-		"connect [ip] : Connect to a server [ip]",
-		[&connection] (const char* args) {
-			const char* end_arg = args;
-			while (*end_arg != '\0') {
-				end_arg++;
-			}
-			// Args now points were the arguments begins
-			std::string ip(args, end_arg - args);
-			connection.Connect(ip);
-		});
-	console.AddSlashHandler(
-		[&lua_sys] (const char* args) {
-			const char* end_arg = args;
-			while (*end_arg != '\0') {
-				end_arg++;
-			}
+	console.AddConsoleCommand("lua", "lua : Execute a string in lua", [&lua_sys](const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0') {
+			end_arg++;
+		}
+		// Args now points were the arguments begins
+		std::string message(args, end_arg - args);
+		lua_sys->ExecuteString(message);
+	});
+	console.AddConsoleCommand("connect", "connect [ip] : Connect to a server [ip]", [&connection](const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0') {
+			end_arg++;
+		}
+		// Args now points were the arguments begins
+		std::string ip(args, end_arg - args);
+		connection.Connect(ip);
+	});
+	console.AddSlashHandler([&lua_sys](const char* args) {
+		const char* end_arg = args;
+		while (*end_arg != '\0') {
+			end_arg++;
+		}
 
-			// TODO: Add processor for commands with arguments
-			// TODO: Add check if command exists and report if it doesn't
+		// TODO: Add processor for commands with arguments
+		// TODO: Add check if command exists and report if it doesn't
 
-			// Args now points were the arguments begins
-			std::string message(args, end_arg - args);
-			message = "OS:" + message + "()";
-			lua_sys->ExecuteString(message);
-		});
+		// Args now points were the arguments begins
+		std::string message(args, end_arg - args);
+		message = "OS:" + message + "()";
+		lua_sys->ExecuteString(message);
+	});
 
 	os.DetachContext();
 
-	std::thread gameThread(
-		[&] () {
-			os.MakeCurrent();
+	std::thread gameThread([&]() {
+		os.MakeCurrent();
 
-			double mouse_x, mouse_y;
-			double delta;
+		double mouse_x, mouse_y;
+		double delta;
 
-			while (!os.Closing()) {
-				delta = os.GetDeltaTime();
+		while (!os.Closing()) {
+			delta = os.GetDeltaTime();
 
-				tec::OS::GetMousePosition(&mouse_x, &mouse_y);
+			tec::OS::GetMousePosition(&mouse_x, &mouse_y);
 
-				game.Update(delta, mouse_x, mouse_y, os.GetWindowWidth(), os.GetWindowHeight());
+			game.Update(delta, mouse_x, mouse_y, os.GetWindowWidth(), os.GetWindowHeight());
 
-				gui.Update(delta);
-				console.Update(delta);
-				os.SwapBuffers();
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
-			}
-		});
+			gui.Update(delta);
+			console.Update(delta);
+			os.SwapBuffers();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	});
 
 	while (!os.Closing()) {
 		os.OSMessageLoop();
