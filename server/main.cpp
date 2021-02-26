@@ -142,18 +142,14 @@ int main() {
 							}
 						}
 
-						game_state_queue.SetBaseState(std::move(full_state));
-
-						// Processing events in LuaSystem
-						tec::LuaSystem* lua_sys = server.GetLuaSystem();
-						lua_sys->ProcessEvents();
-					}
-					else {
-						std::this_thread::sleep_for(std::chrono::milliseconds(1));
 						delta_accumulator -= tec::UPDATE_RATE;
+						
 					}
-
 					game_state_queue.SetBaseState(std::move(full_state));
+
+					// Processing events in LuaSystem
+					tec::LuaSystem* lua_sys = server.GetLuaSystem();
+					lua_sys->ProcessEvents();
 				}
 				else {
 					std::this_thread::sleep_for(std::chrono::milliseconds(1));
