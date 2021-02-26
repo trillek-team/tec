@@ -10,7 +10,7 @@ using LuaScriptMap = Multiton<eid, LuaScript*>;
 
 LuaSystem::LuaSystem() {
 	this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table);
-this->lua["print"] = [](std::string str) { spdlog::get("console_log")->info(str); };
+	this->lua["print"] = [](std::string str) { spdlog::get("console_log")->info(str); };
 }
 
 void LuaSystem::Update(const double delta) {
@@ -23,7 +23,6 @@ void LuaSystem::Update(const double delta) {
 		}
 	}
 }
-
 
 void LuaSystem::ProcessEvents() {
 	ProcessCommandQueue();
@@ -42,8 +41,8 @@ void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
 			script->SetupEnvironment(&this->lua);
 			script->In(comp);
 			LuaScriptMap::Set(entity_id, script);
+			break;
 		}
-		break;
 		case proto::Component::kCollisionBody:
 		case proto::Component::kRenderable:
 		case proto::Component::kPosition:
