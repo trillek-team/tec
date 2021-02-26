@@ -56,12 +56,12 @@ void ProtoLoadEntity(const FilePath& fname) {
 
 std::shared_ptr<spdlog::logger> tec_log;
 void InitializeLogger() {
-    std::vector<spdlog::sink_ptr> sinks;
-    sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
-    tec_log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
-    tec_log->set_level(spdlog::level::debug);
-    tec_log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
-    spdlog::register_logger(tec_log);
+	std::vector<spdlog::sink_ptr> sinks;
+	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
+	tec_log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
+	tec_log->set_level(spdlog::level::debug);
+	tec_log->set_pattern("%v"); // [%l] [thread %t] %v"); // Format on stdout
+	spdlog::register_logger(tec_log);
 }
 
 int main() {
