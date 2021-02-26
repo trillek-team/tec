@@ -46,11 +46,11 @@ std::string LoadJSON(const FilePath& fname) {
 
 // Loads a given json file into the system
 void ProtoLoadEntity(const FilePath& fname) {
-  std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
-  std::string json_string = LoadJSON(fname);
-  google::protobuf::util::JsonStringToMessage(json_string, &data->entity);
-  data->entity_id = data->entity.id();
-  EventSystem<EntityCreated>::Get()->Emit(data);
+	std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
+	std::string json_string = LoadJSON(fname);
+	google::protobuf::util::JsonStringToMessage(json_string, &data->entity);
+	data->entity_id = data->entity.id();
+	EventSystem<EntityCreated>::Get()->Emit(data);
 }
 } // namespace tec
 
