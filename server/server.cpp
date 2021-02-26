@@ -24,7 +24,10 @@ Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket
 	this->greeting_msg.encode_header();
   
 	// Load test script
-	this->lua_sys.LoadFile(FilePath::GetAssetPath("scripts/server-test.lua"));
+	FilePath fp = FilePath::GetAssetPath("scripts/server-test.lua");
+	if(fp.FileExists()){
+		this->lua_sys.LoadFile(fp);
+	}
 
 	AcceptHandler();
 }
