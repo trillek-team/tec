@@ -96,11 +96,15 @@ int main(int argc, char* argv[]) {
 
 	const unsigned int window_width = game.config_script->environment.get_or("window_width", WINDOW_WIDTH);
 	const unsigned int window_height = game.config_script->environment.get_or("window_height", WINDOW_HEIGHT);
+	std::string window_title = "Trillek Engine 0.1";
 
 	log->info("Initializing OpenGL...");
-	if (!os.InitializeWindow(window_width, window_height, "TEC 0.1", 4, 0)) {
-		log->info("Exiting. The context wasn't created properly please update drivers and try again.");
-		exit(1);
+	if (!os.InitializeWindow(window_width, window_height, window_title, 4, 0)) {
+		log->warn("The OpenGL 4.0 context wasn't created properly, attempting fallback");
+		if (!os.InitializeWindow(window_width, window_height, window_title, 3, 3)) {
+			log->error("Exiting. Can not create OpenGL 4.0 or 3.3 context. please update drivers and try again.");
+			exit(1);
+		}
 	}
 
 	const std::string default_aspect_ratio = CalculateAspectRatioString(window_width, window_height);
