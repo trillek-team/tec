@@ -108,7 +108,9 @@ void RenderSystem::Update(const double delta, const GameState& state) {
 
 	GLenum err;
 	err = glGetError();
-	if(err) { _log->debug("[GL] Preframe error {}", err); }
+	if (err) {
+		_log->debug("[GL] Preframe error {}", err);
+	}
 	UpdateRenderList(delta, state);
 	this->light_gbuffer.StartFrame();
 
@@ -123,7 +125,9 @@ void RenderSystem::Update(const double delta, const GameState& state) {
 	FinalPass();
 	// RenderGbuffer();
 	err = glGetError();
-	if(err) { _log->debug("[GL] Postframe error {}", err); }
+	if (err) {
+		_log->debug("[GL] Postframe error {}", err);
+	}
 }
 
 void RenderSystem::GeometryPass() {
