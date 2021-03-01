@@ -106,6 +106,11 @@ void RenderSystem::Update(const double delta, const GameState& state) {
 	EventQueue<EntityCreated>::ProcessEventQueue();
 	EventQueue<EntityDestroyed>::ProcessEventQueue();
 
+	GLenum err;
+	err = glGetError();
+	if (err) {
+		_log->debug("[GL] Preframe error {}", err);
+	}
 	UpdateRenderList(delta, state);
 	this->light_gbuffer.StartFrame();
 
@@ -119,6 +124,10 @@ void RenderSystem::Update(const double delta, const GameState& state) {
 
 	FinalPass();
 	// RenderGbuffer();
+	err = glGetError();
+	if (err) {
+		_log->debug("[GL] Postframe error {}", err);
+	}
 }
 
 void RenderSystem::GeometryPass() {
@@ -448,6 +457,7 @@ void RenderSystem::SetupDefaultShaders() {
 
 	auto deferred_stencil_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
 			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
+			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_stencil.frag")),
 	};
 	auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_stencil_shader_files);
 
@@ -607,3 +617,4 @@ void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 	}
 }
 } // namespace tec
+
