@@ -7,6 +7,12 @@
 #include <asio.hpp>
 #include <components.pb.h>
 
+
+#include "lua-system.hpp"
+#include "components/lua-script.hpp"
+
+#include "server-message.hpp"
+
 #include "event-queue.hpp"
 #include "event-system.hpp"
 #include "events.hpp"
@@ -43,6 +49,11 @@ public:
 	// Get a list of all connected clients.
 	const std::set<std::shared_ptr<ClientConnection>>& GetClients() { return this->clients; }
 
+  // For calling ProcessEvents() in main.cpp
+  LuaSystem* GetLuaSystem() {
+    return &this->lua_sys;
+  }
+  
 	using EventQueue<EntityCreated>::On;
 	using EventQueue<EntityDestroyed>::On;
 	void On(std::shared_ptr<EntityCreated> data);
@@ -51,12 +62,15 @@ public:
 private:
 	// Method that handles and accepts incoming connections.
 	void AcceptHandler();
+  
+  // Lua system
+  LuaSystem lua_sys;
 
 	// ASIO variables
 	asio::io_service io_service;
 	tcp::acceptor acceptor;
 	tcp::socket socket;
-
+  
 	ServerMessage greeting_msg; // Greeting chat message.
 
 	std::map<eid, proto::Entity> entities;

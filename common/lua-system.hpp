@@ -23,6 +23,7 @@ public:
 	LuaSystem();
 
 	void Update(const double delta);
+	void ProcessEvents();
 
 	using EventQueue<EntityCreated>::On;
 	using EventQueue<EntityDestroyed>::On;
@@ -34,8 +35,10 @@ public:
 	std::shared_ptr<LuaScript> LoadFile(FilePath filepath);
 
 	sol::state& GetGlobalState() { return this->lua; }
-
 private:
 	sol::state lua;
+	std::list<LuaScript> scripts;
+
+	void CallFunction(std::string);
 };
 } // namespace tec
