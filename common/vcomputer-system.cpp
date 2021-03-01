@@ -253,18 +253,25 @@ void VComputerSystem::TurnComptuerOff(const eid entity_id) {
 }
 
 void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
-	std::shared_ptr<gkeyboard::GKeyboardDev> active_keybaord;
-	for (auto keyboard_itr = KeyboardComponentMap::Begin(); keyboard_itr != KeyboardComponentMap::End();
-		 ++keyboard_itr) {
-		if (keyboard_itr->second->has_focus) {
-			active_keybaord = std::static_pointer_cast<gkeyboard::GKeyboardDev>(keyboard_itr->second->device);
+	ComputerKeyboard* keyboard_component = nullptr;
+	for (auto itr = KeyboardComponentMap::Begin(); itr != KeyboardComponentMap::End(); ++itr) {
+		if (itr->second->has_focus) {
+			keyboard_component = itr->second;
 		}
 	}
-	if (active_keybaord) {
-		switch (data->action) {
-		case KeyboardEvent::KEY_DOWN:
-			if (data->key == GLFW_KEY_ESCAPE) {
+	if (keyboard_component && keyboard_component->device) {
+		std::shared_ptr<gkeyboard::GKeyboardDev> active_keyboard;
+		active_keyboard = std::static_pointer_cast<gkeyboard::GKeyboardDev>(keyboard_component->device);
+		if ((data->action == KeyboardEvent::KEY_DOWN) || (data->action == KeyboardEvent::KEY_REPEAT)) {
+			keyboard_component->modifiers_state = data->mods;
+			switch (data->key) {
+			case GLFW_KEY_ESCAPE:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_ESC,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
 				if (KeyboardComponentMap::Has(this->active_entity)) {
+					keyboard_component->modifiers_state = gkeyboard::KEY_MODS::KEY_MOD_NONE;
 					KeyboardComponentMap::Get(this->active_entity)->has_focus = false;
 					std::shared_ptr<FocusBlurEvent> blur_data = std::make_shared<FocusBlurEvent>();
 					blur_data->entity_id = this->active_entity;
@@ -272,20 +279,94 @@ void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 					EventSystem<FocusBlurEvent>::Get()->Emit(blur_data);
 					this->active_entity = -1;
 				}
-			}
-			else if (data->key == GLFW_KEY_BACKSPACE) {
-				active_keybaord->SendKeyEvent(
-						static_cast<trillek::Word>(data->scancode),
+				break;
+			case GLFW_KEY_BACKSPACE:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
 						gkeyboard::KEY_BACKSPACE,
-						gkeyboard::KEY_MODS::KEY_MOD_NONE);
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_TAB:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_TAB,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_INSERT:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_INSERT,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_DELETE:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_DELETE,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_RIGHT:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_ARROW_RIGHT,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_LEFT:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_ARROW_LEFT,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_DOWN:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_ARROW_DOWN,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_UP:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_ARROW_UP,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_ENTER:
+			case GLFW_KEY_KP_ENTER:
+				active_keyboard->SendKeyEvent(
+						gkeyboard::SCAN_ENTER,
+						gkeyboard::KEY_SHIFT,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_LEFT_SHIFT:
+			case GLFW_KEY_RIGHT_SHIFT:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_SHIFT,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_LEFT_CONTROL:
+			case GLFW_KEY_RIGHT_CONTROL:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_CONTROL,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			case GLFW_KEY_LEFT_ALT:
+			case GLFW_KEY_RIGHT_ALT:
+				active_keyboard->SendKeyEvent(
+						static_cast<trillek::Word>(data->key),
+						gkeyboard::KEY_ALT,
+						static_cast<trillek::Byte>(keyboard_component->modifiers_state));
+				break;
+			default: keyboard_component->last_keycode = data->key; break;
 			}
-			else {
-				active_keybaord->SendKeyEvent(
-						static_cast<trillek::Word>(data->scancode),
-						static_cast<unsigned char>(data->key),
-						gkeyboard::KEY_MODS::KEY_MOD_NONE);
-			}
-		default: break;
+		}
+		else if (data->action == KeyboardEvent::KEY_UP) {
+			keyboard_component->modifiers_state = data->mods;
+		}
+		else if (data->action == KeyboardEvent::KEY_CHAR) {
+			active_keyboard->SendKeyEvent(
+					static_cast<trillek::Word>(keyboard_component->last_keycode),
+					static_cast<unsigned char>(data->key),
+					static_cast<trillek::Byte>(keyboard_component->modifiers_state));
 		}
 	}
 }

@@ -107,8 +107,8 @@ message VoxelVolumen {
 }
 
 message ComputerScreen {
-	required bytes text_buffer = 1;
-	required bytes font_buffer = 2;
+	optional bytes text_buffer = 1;
+	optional bytes font_buffer = 2;
 	required uint32 buffer_ptr = 3;
 	required uint32 font_ptr = 4;
 	required uint32 vsync_msg = 5;

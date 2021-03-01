@@ -61,6 +61,8 @@ struct ComputerKeyboard : DeviceBase {
 	virtual ~ComputerKeyboard() = default;
 
 	bool has_focus{false};
+	int last_keycode{0};
+	int modifiers_state{0};
 
 	void In(const proto::Computer::Device& source);
 
