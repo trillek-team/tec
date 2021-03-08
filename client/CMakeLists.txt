@@ -40,6 +40,7 @@ set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-client_SOURCE_DIR}/gui/console.cpp
 	${trillek-client_SOURCE_DIR}/gui/active-entity-tooltip.cpp
 	${trillek-client_SOURCE_DIR}/gui/server-connect.cpp
+	${trillek-client_SOURCE_DIR}/gui/debug-info.cpp
 	${trillek-client_SOURCE_DIR}/resources/md5anim.cpp
 	${trillek-client_SOURCE_DIR}/resources/md5mesh.cpp
 	${trillek-client_SOURCE_DIR}/resources/obj.cpp

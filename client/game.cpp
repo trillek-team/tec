@@ -129,6 +129,17 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	rs.Update(delta, client_state);
 	lua_sys.Update(delta);
 
+	// Franes per second
+	//
+	// If one second has passed, we have the number of frames in that second, giving us frames per second
+	frame_deltas += delta;
+	frames++;
+	if (frame_deltas >= 1) {
+		fps = frames;
+		frame_deltas = 0;
+		frames = 0;
+	}
+
 	if (this->player_camera != nullptr) {
 		if (this->player_camera->mouse_look) {
 			os.EnableMouseLock(); // TODO: create event to change to mouse look

@@ -14,6 +14,7 @@
 #include "gui/active-entity-tooltip.hpp"
 #include "gui/console.hpp"
 #include "gui/server-connect.hpp"
+#include "gui/debug-info.hpp"
 #include "imgui-system.hpp"
 #include "os.hpp"
 #include "resources/md5anim.hpp"
@@ -119,6 +120,7 @@ int main(int argc, char* argv[]) {
 	tec::networking::ServerConnection& connection = game.GetServerConnection();
 	tec::ServerConnectWindow server_connect_window(connection);
 	tec::PingTimesWindow ping_times_window(connection);
+	tec::DebugInfo debug_info_window(game);
 
 	console.AddConsoleCommand("msg", "msg : Send a message to all clients.", [&connection](const char* args) {
 		const char* end_arg = args;
@@ -139,6 +141,7 @@ int main(int argc, char* argv[]) {
 	gui.ShowWindow("console");
 	gui.AddWindowDrawFunction("active_entity", [&active_entity_tooltip]() { active_entity_tooltip.Draw(); });
 	gui.ShowWindow("active_entity");
+	gui.AddWindowDrawFunction("debug_info", [&debug_info_window]() { debug_info_window.Draw(); });
 
 	connection.RegisterMessageHandler(
 			tec::networking::MessageType::CLIENT_ID, [&gui, &log](const tec::networking::ServerMessage& message) {

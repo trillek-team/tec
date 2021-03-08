@@ -42,10 +42,17 @@ public:
 
 	std::shared_ptr<LuaScript> config_script;
 
+	// Frames per second
+	unsigned int fps;
+
 private:
 	static void UpdateVComputerScreenTextures();
 
 	typedef Multiton<eid, Computer*> ComputerComponentMap;
+
+	// Frames per second
+	unsigned int frames = 0;
+	float frame_deltas = 0.0;
 
 	ServerStats stats;
 	Simulation simulation;
