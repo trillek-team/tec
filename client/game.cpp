@@ -138,7 +138,6 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 		fps = frames;
 		frame_deltas = 0;
 		frames = 0;
-		//std::cout << std::to_string(fps) << std::endl;
 	}
 
 	if (this->player_camera != nullptr) {
