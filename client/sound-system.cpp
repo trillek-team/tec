@@ -105,7 +105,12 @@ void SoundSystem::On(std::shared_ptr<EntityCreated> data) {
 		{
 			AudioSource* audio_source = new AudioSource();
 			audio_source->In(comp);
-			AudioSourceComponentMap::Set(entity_id, audio_source);
+			if (audio_source->vorbis_stream) {
+				AudioSourceComponentMap::Set(entity_id, audio_source);
+			}
+			else {
+				delete audio_source;
+			}
 		} break;
 		case proto::Component::kRenderable:
 		case proto::Component::kPointLight:
