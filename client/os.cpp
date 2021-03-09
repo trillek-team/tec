@@ -280,6 +280,10 @@ double OS::GetDeltaTime() {
 	return delta_time;
 }
 
+double OS::GetTime() {
+	return glfwGetTime();
+}
+
 void OS::WindowResized(GLFWwindow* window, int width, int height) {
 	// Get the user pointer and cast it.
 	OS* os = static_cast<OS*>(glfwGetWindowUserPointer(window));

@@ -44,6 +44,18 @@ public:
 
 	// Frames per second
 	unsigned int fps;
+	float avg_frame_time;
+
+	// Elapsed time spend on each section
+	float outside_game_time 	= 0.0;
+	float state_queue_time 		= 0.0;
+	float vcomputer_time 		= 0.0;
+	float sound_system_time 	= 0.0;
+	float render_system_time 	= 0.0;
+	float lua_system_time 		= 0.0;
+	float other_time 			= 0.0;
+
+	float total_time 			= 0.0;
 
 private:
 	static void UpdateVComputerScreenTextures();
@@ -53,6 +65,10 @@ private:
 	// Frames per second
 	unsigned int frames = 0;
 	float frame_deltas = 0.0;
+
+	// Elapsed time since last call, same as OS::GetDeltaTime()
+	double GetElapsedTime();
+	double last_time = 0.0;
 
 	ServerStats stats;
 	Simulation simulation;

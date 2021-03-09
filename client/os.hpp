@@ -123,6 +123,13 @@ public:
 	double GetDeltaTime();
 
 	/**
+	* \brief Returns the time since initialization from glfw.
+	*
+	* \return double The number of seconds since glfw was initialized.
+	*/
+	double GetTime();
+
+	/**
 	* \brief Returns the current active window.
 	*
 	* \return GLFWwindow* The current active window.
