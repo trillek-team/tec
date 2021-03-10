@@ -20,7 +20,8 @@ class Server;
 // Used to represent a client connection to the server.
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
-	ClientConnection(tcp::socket socket, Server* server) : socket(std::move(socket)), server(server) {}
+	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server) :
+			socket(std::move(_socket)), endpoint(std::move(_endpoint)), server(server) {}
 
 	~ClientConnection();
 
@@ -29,6 +30,8 @@ public:
 	void QueueWrite(const ServerMessage& msg);
 
 	eid GetID() { return this->id; }
+
+	tcp::endpoint GetEndpoint() { return this->endpoint; }
 
 	// Sets the client id and sends it to this client.
 	void SetID(eid id);
@@ -58,6 +61,7 @@ private:
 	void do_write();
 
 	tcp::socket socket;
+	tcp::endpoint endpoint;
 	ServerMessage current_read_msg;
 	std::deque<ServerMessage> write_msgs_;
 	Server* server;

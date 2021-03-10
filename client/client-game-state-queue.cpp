@@ -56,7 +56,7 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 
 		// when too many states, discard the rest! what could possibly go wrong!?
 		// we just interpolate between them anyways
-		while (interpolation_accumulator >= INTERPOLATION_RATE) {
+		while (!this->server_states.empty() && interpolation_accumulator >= INTERPOLATION_RATE) {
 			interpolation_accumulator -= INTERPOLATION_RATE;
 			this->base_state.state_id = to_state.state_id;
 			this->server_states.pop();

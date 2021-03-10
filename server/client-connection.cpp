@@ -68,7 +68,7 @@ void ClientConnection::DoJoin() {
 	self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
 
 	ServerMessage entity_create_msg;
-	entity_create_msg.SetBodyLength(this->entity.ByteSize());
+	entity_create_msg.SetBodyLength(this->entity.ByteSizeLong());
 	this->entity.SerializeToArray(entity_create_msg.GetBodyPTR(), static_cast<int>(entity_create_msg.GetBodyLength()));
 	entity_create_msg.SetMessageType(MessageType::ENTITY_CREATE);
 	entity_create_msg.encode_header();
@@ -252,7 +252,7 @@ ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current
 	}
 	tec::networking::ServerMessage update_message;
 	update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
-	update_message.SetBodyLength(gsu_msg.ByteSize());
+	update_message.SetBodyLength(gsu_msg.ByteSizeLong());
 	gsu_msg.SerializeToArray(update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
 	update_message.encode_header();
 	return update_message;

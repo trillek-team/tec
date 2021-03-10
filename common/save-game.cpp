@@ -40,7 +40,7 @@ std::list<proto::User>::iterator UserList::GetUserItr(uid id) {
 	return std::find_if(this->users.begin(), this->users.end(), [id](proto::User user) { return user.id() == id; });
 }
 
-extern std::string LoadJSON(const FilePath& fname);
+std::string LoadAsString(const FilePath& fname);
 
 bool SaveJSON(const FilePath& fname, std::string contents) {
 	std::fstream output(fname.GetNativePath(), std::ios::out);
@@ -60,7 +60,7 @@ bool SaveGame::Load(const FilePath _filepath) {
 		return false;
 	}
 
-	auto json_string = LoadJSON(this->filepath);
+	auto json_string = LoadAsString(this->filepath);
 	auto status = google::protobuf::util::JsonStringToMessage(json_string, &this->save);
 	if (!status.ok()) {
 		_log->error("Failed to parse save data");
@@ -123,7 +123,7 @@ void SaveGame::LoadWorld() {
 	for (int i = 0; i < world.entity_file_list_size(); i++) {
 		FilePath entity_filename = FilePath::GetAssetPath(world.entity_file_list(i));
 		if (entity_filename.isValidPath() && entity_filename.FileExists()) {
-			std::string json_string = LoadJSON(entity_filename);
+			std::string json_string = LoadAsString(entity_filename);
 			proto::Entity entity;
 			auto status = google::protobuf::util::JsonStringToMessage(json_string, &entity);
 			if (status.ok()) {

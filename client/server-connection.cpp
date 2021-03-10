@@ -65,6 +65,9 @@ bool ServerConnection::Connect(std::string_view ip) {
 		return false;
 	}
 
+	asio::ip::tcp::no_delay option(true);
+	this->socket.set_option(option);
+
 	if (this->onConnect) {
 		this->onConnect();
 	}
@@ -95,6 +98,7 @@ void ServerConnection::Send(ServerMessage& msg) {
 	}
 	catch (std::exception e) {
 		std::cerr << "ServerConnection::Send(ServerMessage&): asio::write:" << e.what() << std::endl;
+		Disconnect();
 	}
 }
 
@@ -154,7 +158,9 @@ void ServerConnection::StartSync() {
 		if (this->stopped) {
 			return;
 		}
-		Send(sync_msg);
+		if (this->client_id) {
+			Send(sync_msg);
+		}
 		this->sync_start = std::chrono::high_resolution_clock::now();
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
