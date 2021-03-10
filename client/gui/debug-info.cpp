@@ -21,9 +21,9 @@ void DebugInfo::Draw() {
 	float LS = game.lua_system_time / game.total_time;
 	float other = game.other_time / game.total_time;
 	float outside = game.outside_game_time / game.total_time;
-	ImGui::Text("SQ: %1.2f | VC: %1.2f | SS: %1.2f | RS: %1.2f", SQ, VC, SS, RS);
-	ImGui::Text("LS: %1.2f | other: %1.2f | outside: %1.2f", LS, other, outside);
-	ImGui::Text("Total time: %1.2f", game.total_time);
+	ImGui::Text("SQ: %1.3f | VC: %1.3f | SS: %1.3f | RS: %1.3f", SQ, VC, SS, RS);
+	ImGui::Text("LS: %1.3f | other: %1.3f | outside: %1.3f", LS, other, outside);
+	ImGui::Text("Total time: %1.3f", game.total_time);
 	ImGui::ProgressBar(SQ,ImVec2(0, 0),"SQ");
 	ImGui::ProgressBar(VC,ImVec2(0, 0),"VC");
 	ImGui::ProgressBar(SS,ImVec2(0, 0),"SS");

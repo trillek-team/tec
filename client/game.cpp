@@ -58,13 +58,6 @@ Game::~Game() {
 	}
 }
 
-double Game::GetElapsedTime() {
-	double new_time = os.GetTime();
-	double elapsed_time = new_time - this->last_time;
-	this->last_time = new_time;
-	return elapsed_time;
-}
-
 void Game::Startup() {
 	this->rs.Startup();
 	const unsigned int window_width = this->config_script->environment.get_or("window_width", WINDOW_WIDTH);
@@ -103,9 +96,16 @@ void Game::UpdateVComputerScreenTextures() {
 	}
 }
 
+double Game::GetElapsedTime() {
+	double new_time = os.GetTime();
+	double elapsed_time = new_time - this->last_time;
+	this->last_time = new_time;
+	return elapsed_time;
+}
+
 void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
 	// Elapsed time spend outside game loop
-	outside_game_time = GetElapsedTime();
+	outside_game_time 	= GetElapsedTime();
 
 	// TODO: a better representation of commands so we can send them less often
 	const double COMMAND_RATE = 1.0 / 30.0;
