@@ -99,7 +99,6 @@ int main() {
 						full_state_update.set_command_id(current_state_id);
 						full_state.Out(&full_state_update);
 						tec::networking::ServerMessage full_state_update_message;
-						full_state_update_message.SetStateID(current_state_id);
 						full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
 						full_state_update_message.SetBodyLength(full_state_update.ByteSizeLong());
 						full_state_update.SerializeToArray(

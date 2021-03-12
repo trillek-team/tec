@@ -17,6 +17,7 @@
 #include "gui/debug-info.hpp"
 #include "gui/server-connect.hpp"
 #include "imgui-system.hpp"
+#include "net-message.hpp"
 #include "os.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/md5mesh.hpp"
@@ -24,7 +25,6 @@
 #include "resources/script-file.hpp"
 #include "resources/vorbis-stream.hpp"
 #include "server-connection.hpp"
-#include "server-message.hpp"
 
 namespace tec {
 void RegisterFileFactories() {

@@ -13,7 +13,7 @@ const std::string_view LOCAL_HOST = "127.0.0.1";
 std::shared_ptr<spdlog::logger> ServerConnection::_log;
 std::mutex ServerConnection::recent_ping_mutex;
 
-ServerConnection::ServerConnection(ServerStats& s) : socket(io_service), stats(s) {
+ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s) {
 	_log = spdlog::get("console_log");
 	RegisterMessageHandler(MessageType::SYNC, [this](const ServerMessage& message) { this->SyncHandler(message); });
 	RegisterMessageHandler(MessageType::GAME_STATE_UPDATE, [this](const ServerMessage& message) {
@@ -30,7 +30,7 @@ ServerConnection::ServerConnection(ServerStats& s) : socket(io_service), stats(s
 	RegisterMessageHandler(MessageType::CLIENT_LEAVE, [](const ServerMessage& message) {
 		std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
 		eid entity_id = std::atoi(id_message.c_str());
-		_log->info("Entity " + std::to_string(entity_id) + " left");
+		_log->info("Entity {} left", entity_id);
 		std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
 		data->entity_id = entity_id;
 		EventSystem<EntityDestroyed>::Get()->Emit(data);
@@ -44,16 +44,18 @@ ServerConnection::ServerConnection(ServerStats& s) : socket(io_service), stats(s
 }
 
 bool ServerConnection::Connect(std::string_view ip) {
-	this->client_id = 0;
-	this->socket.close();
-	tcp::resolver resolver(this->io_service);
+	Disconnect();
+	tcp::resolver resolver(this->io_context);
 	tcp::resolver::query query(std::string(ip).data(), std::string(SERVER_PORT).data());
 	asio::error_code error = asio::error::host_not_found;
-	tcp::resolver::iterator endpoint_iterator = resolver.resolve(query), end;
+	tcp::resolver::results_type endpoints = resolver.resolve(query);
 	try {
-		while (error && endpoint_iterator != end) {
+		for (auto& point : endpoints) {
 			this->socket.close();
-			this->socket.connect(*endpoint_iterator++, error);
+			this->socket.connect(point, error);
+			if (!error) {
+				break;
+			}
 		}
 		if (error) {
 			this->socket.close();
@@ -61,7 +63,7 @@ bool ServerConnection::Connect(std::string_view ip) {
 		}
 	}
 	catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+		_log->error("Connect: {}", e.what());
 		return false;
 	}
 
@@ -71,16 +73,21 @@ bool ServerConnection::Connect(std::string_view ip) {
 	if (this->onConnect) {
 		this->onConnect();
 	}
+	read_header();
 
 	return true;
 }
 
 void ServerConnection::Disconnect() {
+	this->run_sync = false;
 	this->socket.close();
-	this->stopped = true;
+	this->client_id = 0;
 }
 
-void ServerConnection::Stop() { this->stopped = true; }
+void ServerConnection::Stop() {
+	this->run_dispatch = false;
+	this->run_sync = false;
+}
 
 void ServerConnection::SendChatMessage(std::string message) {
 	if (this->socket.is_open()) {
@@ -97,7 +104,7 @@ void ServerConnection::Send(ServerMessage& msg) {
 		asio::write(this->socket, asio::buffer(msg.GetDataPTR(), msg.length()));
 	}
 	catch (std::exception e) {
-		std::cerr << "ServerConnection::Send(ServerMessage&): asio::write:" << e.what() << std::endl;
+		_log->error("ServerConnection::Send(ServerMessage&): asio::write: {}", e.what());
 		Disconnect();
 	}
 }
@@ -105,47 +112,50 @@ void ServerConnection::Send(ServerMessage& msg) {
 void ServerConnection::RegisterConnectFunc(std::function<void()> func) { this->onConnect = std::move(func); }
 
 void ServerConnection::read_body() {
-	asio::error_code error = asio::error::eof;
-	asio::read(this->socket, asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()), error);
-
-	if (!error) {
-		for (auto handler : this->message_handlers[current_read_msg.GetMessageType()]) {
-			handler(current_read_msg);
-		}
-	}
-	else if (error) {
-		this->socket.close();
-		throw asio::system_error(error);
-	}
+	asio::async_read(
+			this->socket,
+			asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()),
+			[this](const asio::error_code& error, std::size_t) {
+				if (error) {
+					this->socket.close();
+					throw asio::system_error(error, "read_body");
+				}
+				for (auto handler : this->message_handlers[current_read_msg.GetMessageType()]) {
+					handler(current_read_msg);
+				}
+				read_header();
+			});
 }
 
 void ServerConnection::read_header() {
-	asio::error_code error = asio::error::eof;
-	asio::read(this->socket, asio::buffer(this->current_read_msg.GetDataPTR(), ServerMessage::header_length), error);
-	this->recv_time = std::chrono::high_resolution_clock::now();
-
-	if (!error && this->current_read_msg.decode_header()) {
-		read_body();
-	}
-	else if (error) {
-		this->socket.close();
-		throw asio::system_error(error);
-	}
+	asio::async_read(
+			this->socket,
+			asio::buffer(this->current_read_msg.GetDataPTR(), ServerMessage::header_length),
+			[this](const asio::error_code& error, std::size_t) {
+				if (error) {
+					this->socket.close();
+					throw asio::system_error(error, "read_header");
+				}
+				this->recv_time = std::chrono::high_resolution_clock::now();
+				if (this->current_read_msg.decode_header()) {
+					read_body();
+				}
+			});
 }
 
-void ServerConnection::StartRead() {
-	this->stopped = false;
-	while (!this->stopped) {
+void ServerConnection::StartDispatch() {
+	this->run_dispatch = true;
+	while (this->run_dispatch) {
 		try {
-			if (this->socket.is_open() && this->socket.available()) {
-				read_header();
-			}
+			this->io_context.run();
 		}
 		catch (std::exception e) {
-			std::cerr << "ServerConnection::StartRead(): Error reading header:" << e.what() << std::endl;
+			_log->error("ServerConnection asio exception: {}", e.what());
+			Disconnect();
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
+	_log->info("StartDispatch() is ending");
 }
 
 void ServerConnection::StartSync() {
@@ -154,10 +164,8 @@ void ServerConnection::StartSync() {
 	sync_msg.SetBodyLength(1);
 	sync_msg.SetMessageType(MessageType::SYNC);
 	sync_msg.encode_header();
-	while (1) {
-		if (this->stopped) {
-			return;
-		}
+	this->run_sync = true;
+	while (this->run_sync) {
 		if (this->client_id) {
 			Send(sync_msg);
 		}
@@ -200,7 +208,7 @@ void ServerConnection::GameStateUpdateHandler(const ServerMessage& message) {
 		new_game_state_msg->new_state = std::move(next_state);
 		EventSystem<NewGameStateEvent>::Get()->Emit(new_game_state_msg);
 	}
-	//_log->info(last_received_state_id);
 }
+
 } // namespace networking
 } // namespace tec

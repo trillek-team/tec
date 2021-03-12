@@ -12,8 +12,8 @@
 #include "graphics/texture-object.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/view.hpp"
+#include "net-message.hpp"
 #include "resources/pixel-buffer.hpp"
-#include "server-message.hpp"
 
 namespace tec {
 using networking::MessageType;
@@ -35,8 +35,13 @@ Game::Game(OS& _os, std::string config_file_name) :
 		EventSystem<ControllerAddedEvent>::Get()->Emit(cae_event);
 	});
 
+	asio_thread = new std::thread([this]() { server_connection.StartDispatch(); });
+
 	this->server_connection.RegisterConnectFunc([this]() {
-		asio_thread = new std::thread([this]() { server_connection.StartRead(); });
+		if (this->sync_thread) {
+			this->sync_thread->join();
+			delete this->sync_thread;
+		}
 		sync_thread = new std::thread([this]() { server_connection.StartSync(); });
 	});
 }
@@ -121,7 +126,7 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 			ServerMessage update_message;
 			proto::ClientCommands client_commands = this->player_camera->GetClientCommands();
 			client_commands.set_commandid(command_id++);
-			update_message.SetStateID(server_connection.GetLastRecvStateID());
+			client_commands.set_laststateid(server_connection.GetLastRecvStateID());
 			update_message.SetMessageType(MessageType::CLIENT_COMMAND);
 			update_message.SetBodyLength(client_commands.ByteSizeLong());
 			client_commands.SerializeToArray(

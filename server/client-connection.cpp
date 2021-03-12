@@ -133,63 +133,73 @@ void ClientConnection::read_body() {
 			socket,
 			asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
 			[this, self](std::error_code error, std::size_t /*length*/) {
-				auto now_time = std::chrono::high_resolution_clock::now();
-				uint64_t current_timestamp =
-						std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
 				if (error) {
 					server->Leave(shared_from_this());
 					return;
 				}
-				switch (this->current_read_msg.GetMessageType()) {
-				case MessageType::CHAT_MESSAGE:
-					server->Deliver(this->current_read_msg);
-					std::cout.write(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength())
-							<< std::endl;
-					break;
-				case MessageType::SYNC:
-				{
-					ServerMessage sync_response;
-					sync_response.SetMessageType(MessageType::SYNC);
-					sync_response.SetBodyLength(sizeof(uint64_t));
-					memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
-					sync_response.encode_header();
-					QueueWrite(sync_response);
-					break;
-				}
-				case MessageType::CLIENT_COMMAND:
-				{
-					// Pass this along to be handled in simulation to allow for
-					// processing of string commands as well as movement.
 
-					// TODO: just apply movement commands here and split string commands
-					// to a different message.
-					proto::ClientCommands proto_client_commands;
-					proto_client_commands.ParseFromArray(
-							current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
-					this->last_confirmed_state_id = current_read_msg.GetStateID();
-					this->last_recv_command_id = proto_client_commands.commandid();
-					std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
-					data->client_commands = std::move(proto_client_commands);
-					EventSystem<ClientCommandsEvent>::Get()->Emit(data);
-					break;
-				}
-				case MessageType::CHAT_COMMAND:
-				{
-					proto::ChatCommand chat_command;
-					chat_command.ParseFromArray(
-							this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength());
-					EventSystem<ChatCommandEvent>::Get()->Emit(std::make_shared<ChatCommandEvent>(chat_command));
-					break;
-				}
-				case MessageType::ENTITY_CREATE:
-				case MessageType::ENTITY_DESTROY:
-				case MessageType::CLIENT_JOIN:
-				case MessageType::CLIENT_ID:
-				case MessageType::CLIENT_LEAVE:
-				case MessageType::GAME_STATE_UPDATE: break;
-				}
+				process_message(); // TODO process a stream of multi-part messages
+
 				read_header();
 			});
+}
+
+void ClientConnection::process_message() {
+	auto _log = spdlog::get("console_log");
+	auto now_time = std::chrono::high_resolution_clock::now();
+	uint64_t current_timestamp =
+			std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
+
+	switch (this->current_read_msg.GetMessageType()) {
+	case MessageType::CHAT_MESSAGE:
+		server->Deliver(this->current_read_msg);
+		_log->info(
+				"[CHAT] {}", std::string(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()));
+		break;
+	case MessageType::SYNC:
+	{
+		ServerMessage sync_response;
+		sync_response.SetMessageType(MessageType::SYNC);
+		sync_response.SetBodyLength(sizeof(uint64_t));
+		memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
+		sync_response.encode_header();
+		QueueWrite(sync_response);
+		break;
+	}
+	case MessageType::CLIENT_COMMAND:
+	{
+		// Pass this along to be handled in simulation to allow for
+		// processing of string commands as well as movement.
+
+		// TODO: just apply movement commands here and split string commands
+		// to a different message.
+		proto::ClientCommands proto_client_commands;
+		proto_client_commands.ParseFromArray(
+				current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
+		if (proto_client_commands.has_laststateid()) {
+			this->last_confirmed_state_id = proto_client_commands.laststateid();
+		}
+		this->last_recv_command_id = proto_client_commands.commandid();
+		std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
+		data->client_commands = std::move(proto_client_commands);
+		EventSystem<ClientCommandsEvent>::Get()->Emit(data);
+		break;
+	}
+	case MessageType::CHAT_COMMAND:
+	{
+		proto::ChatCommand chat_command;
+		chat_command.ParseFromArray(
+			this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength());
+		EventSystem<ChatCommandEvent>::Get()->Emit(std::make_shared<ChatCommandEvent>(chat_command));
+		break;
+	}
+	case MessageType::ENTITY_CREATE:
+	case MessageType::ENTITY_DESTROY:
+	case MessageType::CLIENT_JOIN:
+	case MessageType::CLIENT_ID:
+	case MessageType::CLIENT_LEAVE:
+	case MessageType::GAME_STATE_UPDATE: break;
+	}
 }
 
 void ClientConnection::do_write() {

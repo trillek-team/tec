@@ -11,7 +11,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include "server-message.hpp"
+#include "net-message.hpp"
 #include "server-stats.hpp"
 
 using asio::ip::tcp;
@@ -37,11 +37,11 @@ public:
 
 	void Disconnect(); // Closes the socket connection and stops the read and sync loops.
 
-	void Stop(); // Stop read and sync loops.
+	void Stop(); // Stop all processing loops.
 
-	void StartRead(); // Starts the read loop.
+	void StartDispatch(); // Run the async dispatch loop.
 
-	void StartSync(); // Starts the sync loop.
+	void StartSync(); // Run the sync loop.
 
 	void SendChatMessage(std::string message); // Send a ServerMessage with type CHAT_MESSAGE.
 
@@ -88,12 +88,13 @@ private:
 	typedef std::function<void(const ServerMessage&)> handlerFunc;
 
 	// ASIO variables
-	asio::io_service io_service;
+	asio::io_context io_context;
 	asio::ip::tcp::socket socket;
 
 	// Read loop variables
 	ServerMessage current_read_msg;
-	std::atomic<bool> stopped;
+	std::atomic<bool> run_dispatch;
+	std::atomic<bool> run_sync;
 
 	// Ping variables
 	std::chrono::high_resolution_clock::time_point sync_start, recv_time;

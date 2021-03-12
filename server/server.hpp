@@ -10,12 +10,10 @@
 #include "components/lua-script.hpp"
 #include "lua-system.hpp"
 
-#include "server-message.hpp"
-
 #include "event-queue.hpp"
 #include "event-system.hpp"
 #include "events.hpp"
-#include "server-message.hpp"
+#include "net-message.hpp"
 
 using asio::ip::tcp;
 

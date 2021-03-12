@@ -6,7 +6,7 @@
 #include <mutex>
 
 #include "game-state.hpp"
-#include "server-message.hpp"
+#include "net-message.hpp"
 #include "tec-types.hpp"
 
 using asio::ip::tcp;
@@ -57,6 +57,8 @@ private:
 	void read_header();
 
 	void read_body();
+
+	void process_message();
 
 	void do_write();
 

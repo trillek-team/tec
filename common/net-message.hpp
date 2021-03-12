@@ -4,6 +4,9 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <google/protobuf/io/zero_copy_stream.h>
+#include <list>
+#include <memory>
 
 #include "tec-types.hpp"
 
@@ -27,7 +30,7 @@ public:
 	enum { header_length = 16 };
 	enum { max_body_length = 256 };
 
-	ServerMessage() : body_length(0), last_recv_state_id(0), message_type(MessageType::CHAT_MESSAGE) {}
+	ServerMessage() : body_length(0), message_type(MessageType::CHAT_MESSAGE) {}
 
 	const uint8_t* GetDataPTR() const { return data; }
 
@@ -38,10 +41,6 @@ public:
 	const char* GetBodyPTR() const { return reinterpret_cast<const char*>(data + header_length); }
 
 	char* GetBodyPTR() { return reinterpret_cast<char*>(data + header_length); }
-
-	state_id_t GetStateID() const { return this->last_recv_state_id; }
-
-	void SetStateID(state_id_t state_id) { this->last_recv_state_id = state_id; }
 
 	std::size_t GetBodyLength() const { return body_length; }
 
@@ -62,7 +61,6 @@ public:
 	bool decode_header() {
 		body_length = decode_32(&data[0]);
 		message_type = static_cast<MessageType>(decode_32(&data[4]));
-		last_recv_state_id = static_cast<state_id_t>(decode_64(&data[8]));
 		if (body_length > max_body_length) {
 			body_length = 0;
 			return false;
@@ -73,7 +71,6 @@ public:
 	void encode_header() {
 		encode_32(&data[0], static_cast<uint32_t>(body_length));
 		encode_32(&data[4], message_type);
-		encode_64(&data[8], last_recv_state_id);
 	}
 
 private:
@@ -95,6 +92,7 @@ private:
 			| (static_cast<uint64_t>(p[6]) << 48)
 			| (static_cast<uint64_t>(p[7]) << 56);
 	}
+	// clang-format on
 
 	static void encode_32(uint8_t* p, uint32_t value) {
 		p[0] = 0xff & (value);
@@ -113,12 +111,33 @@ private:
 		p[6] = 0xff & (value >> 48);
 		p[7] = 0xff & (value >> 56);
 	}
-	// clang-format on
 
 	uint8_t data[header_length + max_body_length]{0};
 	std::size_t body_length;
-	state_id_t last_recv_state_id;
 	MessageType message_type;
 };
+
+class MessageStream : public google::protobuf::io::ZeroCopyOutputStream {
+public:
+	MessageStream() {}
+	MessageStream(MessageType msg_type) : message_type(msg_type) {}
+
+	void SetMessageType(MessageType value) { this->message_type = value; }
+
+	MessageType GetMessageType() const { return this->message_type; }
+
+	// ZeroCopyOutputStream interface
+	virtual bool Next(void** data, int* size);
+	virtual void BackUp(int count);
+	virtual int64_t ByteCount() const { return payload_size; }
+	virtual bool WriteAliasedRaw(const void* /*data*/, int /*size*/) { return false; }
+	virtual bool AllowsAliasing() const { return false; }
+
+private:
+	MessageType message_type;
+	int64_t payload_size;
+	std::list<std::unique_ptr<ServerMessage>> message_list;
+};
+
 } // end namespace networking
 } // end of namespace tec
