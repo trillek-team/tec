@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <fstream>
 #include <iostream>
@@ -18,6 +19,7 @@
 #include "simulation.hpp"
 
 #include "resources/script-file.hpp"
+#include <save-game.hpp>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_sinks.h>
@@ -82,12 +84,18 @@ int main() {
 	// use constant mode stepping, because we don't need interpolated states on the server
 	simulation.GetPhysicsSystem().SetSubstepping(0);
 
+	tec::FilePath save_directory = tec::FilePath::GetAssetPath("save");
+
+	if (!save_directory.DirExists()) {
+		tec::FilePath::MkPath(save_directory);
+	}
+
 	try {
 		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::PORT);
 		tec::networking::Server server(endpoint);
-		std::cout << "Server ready" << std::endl;
 
-		tec::ProtoLoadEntity(tec::FilePath::GetAssetPath("json/1000.json"));
+		tec::SaveGame save;
+		save.Load(tec::FilePath::GetAssetPath("save/save1.json"));
 
 		last_time = std::chrono::high_resolution_clock::now();
 		std::thread simulation_thread([&]() {

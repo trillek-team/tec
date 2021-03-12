@@ -46,28 +46,29 @@ public:
 	* \param[in] const FilePath filename The filename of the image file to load.
 	* \return bool True if initialization finished with no errors.
 	*/
-	bool Load(const FilePath& filename) {
+	bool Load(const FilePath& _filename) {
 		auto _log = spdlog::get("console_log");
-		if (filename.isValidPath() && filename.FileExists()) {
-			std::fstream file(filename.GetNativePath(), std::ios_base::in);
+		if (_filename.isValidPath() && _filename.FileExists()) {
+			std::fstream file(_filename.GetNativePath(), std::ios_base::in);
 			if (file.is_open()) {
 				file.seekg(0, std::ios::end);
 				script.reserve(static_cast<std::size_t>(file.tellg())); // Allocate string to the file size
 				file.seekg(0, std::ios::beg);
 
 				script = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-				_log->trace("[Script] Read script file {} of {} bytes", filename.FileName(), script.length());
+				_log->trace("[Script] Read script file {} of {} bytes", _filename.FileName(), script.length());
+				this->filename = _filename;
 			}
 			else {
-				_log->warn("[Script] Error loading scriptfile {}", filename.FileName());
+				_log->warn("[Script] Error loading scriptfile {}", _filename.FileName());
 				return false;
 			}
 		}
 		else {
-			_log->warn("[Script] Error loading scriptfile {}. Invalid path.", filename.FileName());
+			_log->warn("[Script] Error loading scriptfile {}. Invalid path.", _filename.FileName());
 			return false;
 		}
-		_log->trace("[Script] Loaded scriptfile {}", filename.FileName());
+		_log->trace("[Script] Loaded scriptfile {}", _filename.FileName());
 		return true;
 	}
 
@@ -120,6 +121,7 @@ public:
 protected:
 	std::string name;
 	std::string script;
+	FilePath filename;
 	bool dirty{false};
 };
 } // namespace tec

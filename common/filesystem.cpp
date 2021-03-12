@@ -38,11 +38,6 @@ namespace tec {
 const std::string app_name("trillek"); // TODO Ask to tec::OS for the app name ?
 const char UNIX_PATH_SEPARATOR = '/'; /// *NIX file system path separator
 const char WIN_PATH_SEPARATOR = '\\'; /// Windows file system path separator
-#if defined(__unix__)
-const std::string FilePath::PATH_SEPARATOR = std::string("\\");
-#else
-const std::string FilePath::PATH_SEPARATOR = std::string("/");
-#endif
 
 std::string FilePath::settings_folder = "";
 std::string FilePath::udata_folder = "";

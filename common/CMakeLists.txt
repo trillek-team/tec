@@ -17,6 +17,7 @@ include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 
 protobuf_generate_cpp(COMPONENTS_SOURCES COMPONENTS_HEADERS ${trillek-common_SOURCE_DIR}/proto/components.proto)
 protobuf_generate_cpp(GAME_STATE_SOURCES GAME_STATE_HEADERS ${trillek-common_SOURCE_DIR}/proto/game_state.proto)
+protobuf_generate_cpp(SAVE_GAME_SOURCES SAVE_GAME_HEADERS ${trillek-common_SOURCE_DIR}/proto/save_game.proto)
 protobuf_generate_cpp(COMMANDS_SOURCES COMMANDS_HEADERS ${trillek-common_SOURCE_DIR}/proto/commands.proto)
 
 set(trillek-common_LIBRARY "tec" CACHE STRING "Name of the library with code common to both the client and the server")
@@ -25,6 +26,7 @@ set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/filesystem.cpp
 	${trillek-common_SOURCE_DIR}/lua-system.cpp
 	${trillek-common_SOURCE_DIR}/physics-system.cpp
+	${trillek-common_SOURCE_DIR}/save-game.cpp
 	${trillek-common_SOURCE_DIR}/simulation.cpp
 	${trillek-common_SOURCE_DIR}/string.cpp
 	${trillek-common_SOURCE_DIR}/tec-types.cpp
@@ -49,6 +51,7 @@ add_library(${trillek-common_LIBRARY} STATIC
 	${COMPONENTS_SOURCES}
 	${GAME_STATE_SOURCES}
 	${COMMANDS_SOURCES}
+	${SAVE_GAME_SOURCES}
 	${trillek-common_SOURCES}
 	${trillek-common_HEADERS}
 	${trillek-common_PROTOCOLS}

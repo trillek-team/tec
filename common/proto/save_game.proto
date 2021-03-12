@@ -1,0 +1,20 @@
+syntax = "proto2";
+
+package tec.proto;
+
+import "components.proto";
+
+message User {
+	required string id = 1;
+	required string username = 2;	
+	optional Position position = 3;
+}
+
+message World {
+	repeated string entity_file_list = 1;
+}
+
+message SaveGame {
+	repeated User users = 1;
+	required World world = 2;
+}
