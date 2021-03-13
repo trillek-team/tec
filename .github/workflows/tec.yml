@@ -12,38 +12,27 @@ jobs:
       fail-fast: false
       matrix:
         os: [ windows-latest, windows-2016, ubuntu-18.04, ubuntu-16.04, macOS-latest ]
-        arch: [ x64 ]
+        arch: [ x86, x64 ]
         include:
           - os: windows-latest
-            arch: x86
-            triplet: x86-windows
-            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
-          - os: windows-latest
-            arch: x64
-            triplet: x64-windows
             vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
           - os: windows-2016
-            arch: x86
-            triplet: x86-windows
-            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
-          - os: windows-2016
-            arch: x64
-            triplet: x64-windows
             vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
           - os: ubuntu-18.04
-            arch: x64
-            triplet: x64-linux
-            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
           - os: ubuntu-16.04
-            arch: x64
-            triplet: x64-linux
-            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
             cc: gcc-7
             cxx: g++-7
           - os: macOS-latest
-            arch: x64
-            triplet: x64-osx
-            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+        exclude:
+          - os: ubuntu-18.04
+            arch: x86
+          - os: ubuntu-16.04
+            arch: x86
+          - os: macOS-latest
+            arch: x86
     steps:
     - uses: actions/checkout@v2
       with:
@@ -61,7 +50,7 @@ jobs:
     - name: Set vcpkg's response file path used as part of cache's key.
       uses: lukka/set-shell-env@v1
       with:
-        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
+        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.arch }}-${{ matrix.triplet }}.txt
         VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
     - name: Restore artifacts, or run vcpkg, build and cache artifacts
       uses: lukka/run-vcpkg@v4
