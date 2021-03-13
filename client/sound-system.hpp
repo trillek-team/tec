@@ -47,7 +47,12 @@ struct AudioSource {
 					file_factories[ext](this->audio_name);
 				}
 			}
-			this->vorbis_stream = SoundMap::Get(this->audio_name);
+			if (SoundMap::Has(this->audio_name)) {
+				this->vorbis_stream = SoundMap::Get(this->audio_name);
+			}
+			else {
+				return;
+			}
 		}
 		if (comp.has_looping()) {
 			this->looping = comp.looping();
