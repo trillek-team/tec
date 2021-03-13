@@ -145,8 +145,8 @@ int main(int argc, char* argv[]) {
 	gui.AddWindowDrawFunction("debug_info", [&debug_info_window]() { debug_info_window.Draw(); });
 
 	connection.RegisterMessageHandler(
-			tec::networking::MessageType::CLIENT_ID, [&gui, &log](const tec::networking::ServerMessage& message) {
-				std::string client_id(message.GetBodyPTR(), message.GetBodyLength());
+			tec::networking::MessageType::CLIENT_ID, [&gui, &log](tec::networking::NetMessage::cptr_type message) {
+				std::string client_id(message->GetBodyPTR(), message->GetBodyLength());
 				log->info("You are connected as client ID " + client_id);
 				gui.HideWindow("connect_window");
 				gui.ShowWindow("ping_times");
@@ -199,11 +199,11 @@ int main(int argc, char* argv[]) {
 
 		if (connection.GetClientID() != 0) { // If connected, send command to server
 			tec::proto::ChatCommand chat_command(data->Out());
-			tec::networking::ServerMessage msg;
-			msg.SetMessageType(tec::networking::CHAT_COMMAND);
-			msg.SetBodyLength(chat_command.ByteSize());
-			chat_command.SerializeToArray(msg.GetBodyPTR(), static_cast<int>(msg.GetBodyLength()));
-			msg.encode_header();
+			tec::networking::NetMessage::shared_type msg;
+			msg->SetMessageType(tec::networking::CHAT_COMMAND);
+			msg->SetBodyLength(chat_command.ByteSize());
+			chat_command.SerializeToArray(msg->GetBodyPTR(), static_cast<int>(msg->GetBodyLength()));
+			msg->encode_header();
 			connection.Send(msg);
 		}
 	});

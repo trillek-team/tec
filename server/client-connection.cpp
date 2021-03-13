@@ -17,7 +17,12 @@
 
 namespace tec {
 namespace networking {
-std::mutex ClientConnection::write_msg_mutex;
+
+ClientConnection::ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server) :
+	socket(std::move(_socket)), endpoint(std::move(_endpoint)), server(server) {
+	current_read_msg = MessagePool::make_unique();
+}
+
 ClientConnection::~ClientConnection() {
 	std::shared_ptr<ControllerRemovedEvent> data = std::make_shared<ControllerRemovedEvent>();
 	data->controller = this->controller;
@@ -25,7 +30,7 @@ ClientConnection::~ClientConnection() {
 }
 void ClientConnection::StartRead() { read_header(); }
 
-void ClientConnection::QueueWrite(const ServerMessage& msg) {
+void ClientConnection::QueueWrite(NetMessage::shared_type msg) {
 	bool write_in_progress;
 	{
 		std::lock_guard<std::mutex> lg(write_msg_mutex);
@@ -41,12 +46,12 @@ void ClientConnection::SetID(eid _id) {
 	this->id = _id;
 	this->entity.set_id(this->id);
 	std::string message(std::to_string(this->id));
-	static ServerMessage id_message;
-	id_message.SetMessageType(MessageType::CLIENT_ID);
-	id_message.SetBodyLength(message.size());
-	memcpy(id_message.GetBodyPTR(), message.c_str(), id_message.GetBodyLength());
-	id_message.encode_header();
-	QueueWrite(id_message);
+	auto id_message = MessagePool::make_unique();
+	id_message->SetMessageType(MessageType::CLIENT_ID);
+	id_message->SetBodyLength(message.size());
+	memcpy(id_message->GetBodyPTR(), message.c_str(), id_message->GetBodyLength());
+	id_message->encode_header();
+	QueueWrite(std::move(id_message));
 }
 
 void ClientConnection::DoJoin() {
@@ -67,12 +72,12 @@ void ClientConnection::DoJoin() {
 	Multiton<eid, CollisionBody*>::Set(this->id, body);
 	self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
 
-	ServerMessage entity_create_msg;
-	entity_create_msg.SetBodyLength(this->entity.ByteSizeLong());
-	this->entity.SerializeToArray(entity_create_msg.GetBodyPTR(), static_cast<int>(entity_create_msg.GetBodyLength()));
-	entity_create_msg.SetMessageType(MessageType::ENTITY_CREATE);
-	entity_create_msg.encode_header();
-	QueueWrite(entity_create_msg);
+	auto entity_create_msg = MessagePool::make_unique();
+	entity_create_msg->SetBodyLength(this->entity.ByteSizeLong());
+	this->entity.SerializeToArray(entity_create_msg->GetBodyPTR(), static_cast<int>(entity_create_msg->GetBodyLength()));
+	entity_create_msg->SetMessageType(MessageType::ENTITY_CREATE);
+	entity_create_msg->encode_header();
+	QueueWrite(std::move(entity_create_msg));
 	std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 	data->entity = this->entity;
 	data->entity_id = this->entity.id();
@@ -85,12 +90,12 @@ void ClientConnection::DoJoin() {
 }
 
 void ClientConnection::DoLeave() {
-	static ServerMessage leave_msg;
-	leave_msg.SetMessageType(MessageType::CLIENT_LEAVE);
+	auto leave_msg = MessagePool::make_unique();
+	leave_msg->SetMessageType(MessageType::CLIENT_LEAVE);
 	std::string message(std::to_string(this->id));
-	leave_msg.SetBodyLength(message.size());
-	memcpy(leave_msg.GetBodyPTR(), message.c_str(), leave_msg.GetBodyLength());
-	leave_msg.encode_header();
+	leave_msg->SetBodyLength(message.size());
+	memcpy(leave_msg->GetBodyPTR(), message.c_str(), leave_msg->GetBodyLength());
+	leave_msg->encode_header();
 	this->server->Deliver(leave_msg, false);
 	std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
 	data->entity_id = this->id;
@@ -116,9 +121,9 @@ void ClientConnection::read_header() {
 	auto self(shared_from_this());
 	asio::async_read(
 			socket,
-			asio::buffer(current_read_msg.GetDataPTR(), ServerMessage::header_length),
+			asio::buffer(current_read_msg->GetDataPTR(), NetMessage::header_length),
 			[this, self](std::error_code error, std::size_t /*length*/) {
-				if (!error && current_read_msg.decode_header()) {
+				if (!error && current_read_msg->decode_header()) {
 					read_body();
 				}
 				else {
@@ -131,7 +136,7 @@ void ClientConnection::read_body() {
 	auto self(shared_from_this());
 	asio::async_read(
 			socket,
-			asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
+			asio::buffer(this->current_read_msg->GetBodyPTR(), this->current_read_msg->GetBodyLength()),
 			[this, self](std::error_code error, std::size_t /*length*/) {
 				if (error) {
 					server->Leave(shared_from_this());
@@ -150,20 +155,20 @@ void ClientConnection::process_message() {
 	uint64_t current_timestamp =
 			std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
 
-	switch (this->current_read_msg.GetMessageType()) {
+	switch (this->current_read_msg->GetMessageType()) {
 	case MessageType::CHAT_MESSAGE:
 		server->Deliver(this->current_read_msg);
 		_log->info(
-				"[CHAT] {}", std::string(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()));
+				"[CHAT] {}", std::string(this->current_read_msg->GetBodyPTR(), this->current_read_msg->GetBodyLength()));
 		break;
 	case MessageType::SYNC:
 	{
-		ServerMessage sync_response;
-		sync_response.SetMessageType(MessageType::SYNC);
-		sync_response.SetBodyLength(sizeof(uint64_t));
-		memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
-		sync_response.encode_header();
-		QueueWrite(sync_response);
+		auto sync_response = MessagePool::make_unique();
+		sync_response->SetMessageType(MessageType::SYNC);
+		sync_response->SetBodyLength(sizeof(uint64_t));
+		memcpy(sync_response->GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
+		sync_response->encode_header();
+		QueueWrite(std::move(sync_response));
 		break;
 	}
 	case MessageType::CLIENT_COMMAND:
@@ -175,7 +180,7 @@ void ClientConnection::process_message() {
 		// to a different message.
 		proto::ClientCommands proto_client_commands;
 		proto_client_commands.ParseFromArray(
-				current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
+				current_read_msg->GetBodyPTR(), static_cast<int>(current_read_msg->GetBodyLength()));
 		if (proto_client_commands.has_laststateid()) {
 			this->last_confirmed_state_id = proto_client_commands.laststateid();
 		}
@@ -189,7 +194,7 @@ void ClientConnection::process_message() {
 	{
 		proto::ChatCommand chat_command;
 		chat_command.ParseFromArray(
-			this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength());
+			this->current_read_msg->GetBodyPTR(), this->current_read_msg->GetBodyLength());
 		EventSystem<ChatCommandEvent>::Get()->Emit(std::make_shared<ChatCommandEvent>(chat_command));
 		break;
 	}
@@ -205,9 +210,10 @@ void ClientConnection::process_message() {
 void ClientConnection::do_write() {
 	auto self(shared_from_this());
 	std::lock_guard<std::mutex> lg(write_msg_mutex);
+	auto msg_ptr = write_msgs_.front().get();
 	asio::async_write(
 			socket,
-			asio::buffer(write_msgs_.front().GetDataPTR(), write_msgs_.front().length()),
+			asio::buffer(msg_ptr->GetDataPTR(), msg_ptr->length()),
 			[this, self](std::error_code error, std::size_t /*length*/) {
 				if (!error) {
 					bool more_to_write = false;
@@ -240,7 +246,7 @@ void ClientConnection::UpdateGameState(const GameState& full_state) {
 	}
 }
 
-ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp) {
+NetMessage::ptr_type ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp) {
 	tec::proto::GameStateUpdate gsu_msg;
 	gsu_msg.set_state_id(current_state_id);
 	gsu_msg.set_command_id(this->last_recv_command_id);
@@ -260,12 +266,12 @@ ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current
 			vel.Out(_entity->add_components());
 		}
 	}
-	tec::networking::ServerMessage update_message;
-	update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
-	update_message.SetBodyLength(gsu_msg.ByteSizeLong());
-	gsu_msg.SerializeToArray(update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
-	update_message.encode_header();
-	return update_message;
+	auto update_message = MessagePool::make_unique();
+	update_message->SetMessageType(MessageType::GAME_STATE_UPDATE);
+	update_message->SetBodyLength(gsu_msg.ByteSizeLong());
+	gsu_msg.SerializeToArray(update_message->GetBodyPTR(), static_cast<int>(update_message->GetBodyLength()));
+	update_message->encode_header();
+	return std::move(update_message);
 }
 } // namespace networking
 } // namespace tec

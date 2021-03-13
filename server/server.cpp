@@ -45,9 +45,10 @@ Server::Server(tcp::endpoint& endpoint) : acceptor(io_context, endpoint), peer_s
 
 	// Create a simple greeting chat message that all clients get.
 	std::string message("Hello from server\n");
-	this->greeting_msg.SetBodyLength(message.size());
-	memcpy(this->greeting_msg.GetBodyPTR(), message.c_str(), this->greeting_msg.GetBodyLength());
-	this->greeting_msg.encode_header();
+	this->greeting_msg = MessagePool::make_unique();
+	this->greeting_msg->SetBodyLength(message.size());
+	memcpy(this->greeting_msg->GetBodyPTR(), message.c_str(), this->greeting_msg->GetBodyLength());
+	this->greeting_msg->encode_header();
 
 	asio::ip::tcp::no_delay option(true);
 	acceptor.set_option(option);
@@ -88,10 +89,10 @@ Server::Server(tcp::endpoint& endpoint) : acceptor(io_context, endpoint), peer_s
 }
 
 // TODO: Implement a method to deliver a message to all clients except the source.
-void Server::Deliver(const ServerMessage& msg, bool save_to_recent) {
+void Server::Deliver(const NetMessage::ptr_type& msg, bool save_to_recent) {
 	if (save_to_recent) {
 		std::lock_guard<std::mutex> lg(recent_msgs_mutex);
-		this->recent_msgs.push_back(msg);
+		this->recent_msgs.push_back(std::make_unique<NetMessage>(*msg));
 		while (this->recent_msgs.size() > max_recent_msgs) {
 			this->recent_msgs.pop_front();
 		}
@@ -99,11 +100,13 @@ void Server::Deliver(const ServerMessage& msg, bool save_to_recent) {
 
 	std::lock_guard<std::mutex> lg(client_list_mutex);
 	for (auto client : this->clients) {
-		client->QueueWrite(msg);
+		client->QueueWrite(std::make_unique<NetMessage>(*msg));
 	}
 }
 
-void Server::Deliver(std::shared_ptr<ClientConnection> client, const ServerMessage& msg) { client->QueueWrite(msg); }
+void Server::Deliver(std::shared_ptr<ClientConnection> client, const NetMessage::ptr_type& msg) {
+	client->QueueWrite(std::make_unique<NetMessage>(*msg));
+}
 
 void Server::Leave(std::shared_ptr<ClientConnection> client) {
 	// setup a lua object for this event
@@ -171,12 +174,12 @@ void Server::AcceptHandler() {
 			std::string reject_reason = info_event.reason;
 			reject_reason.push_back('\n');
 
-			ServerMessage reject_msg; // default type is CHAT_MESSAGE
-			reject_msg.SetBodyLength(reject_reason.size());
-			memcpy(reject_msg.GetBodyPTR(), reject_reason.data(), reject_msg.GetBodyLength());
-			reject_msg.encode_header();
+			auto reject_msg = MessagePool::make_unique(); // default type is CHAT_MESSAGE
+			reject_msg->SetBodyLength(reject_reason.size());
+			memcpy(reject_msg->GetBodyPTR(), reject_reason.data(), reject_msg->GetBodyLength());
+			reject_msg->encode_header();
 
-			asio::write(this->peer_socket, asio::buffer(reject_msg.GetDataPTR(), reject_msg.length()));
+			asio::write(this->peer_socket, asio::buffer(reject_msg->GetDataPTR(), reject_msg->length()));
 			// hopefully the client side survives long enough to get our message
 			this->peer_socket.wait(asio::ip::tcp::socket::wait_write);
 			this->peer_socket.close();
@@ -184,7 +187,7 @@ void Server::AcceptHandler() {
 			return;
 		}
 		// write the standard greeting
-		asio::write(this->peer_socket, asio::buffer(greeting_msg.GetDataPTR(), greeting_msg.length()));
+		asio::write(this->peer_socket, asio::buffer(greeting_msg->GetDataPTR(), greeting_msg->length()));
 
 		std::shared_ptr<ClientConnection> client =
 				std::make_shared<ClientConnection>(std::move(this->peer_socket), std::move(this->peer_endpoint), this);
@@ -197,33 +200,33 @@ void Server::AcceptHandler() {
 		client->SetID(++base_id);
 		client->DoJoin();
 
-		static ServerMessage connecting_client_entity_msg;
+		auto connecting_client_entity_msg = MessagePool::make_shared();
 		other_entity.set_id(client->GetID());
-		connecting_client_entity_msg.SetBodyLength(other_entity.ByteSizeLong());
+		connecting_client_entity_msg->SetBodyLength(other_entity.ByteSizeLong());
 		other_entity.SerializeToArray(
-				connecting_client_entity_msg.GetBodyPTR(),
-				static_cast<int>(connecting_client_entity_msg.GetBodyLength()));
-		connecting_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
-		connecting_client_entity_msg.encode_header();
+				connecting_client_entity_msg->GetBodyPTR(),
+				static_cast<int>(connecting_client_entity_msg->GetBodyLength()));
+		connecting_client_entity_msg->SetMessageType(MessageType::ENTITY_CREATE);
+		connecting_client_entity_msg->encode_header();
 
-		static ServerMessage other_client_entity_msg;
+		auto other_client_entity_msg = MessagePool::make_shared();
 		for (auto other_client : clients) {
 			other_entity.set_id(other_client->GetID());
-			other_client_entity_msg.SetBodyLength(other_entity.ByteSizeLong());
+			other_client_entity_msg->SetBodyLength(other_entity.ByteSizeLong());
 			other_entity.SerializeToArray(
-					other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
-			other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
-			other_client_entity_msg.encode_header();
+					other_client_entity_msg->GetBodyPTR(), static_cast<int>(other_client_entity_msg->GetBodyLength()));
+			other_client_entity_msg->SetMessageType(MessageType::ENTITY_CREATE);
+			other_client_entity_msg->encode_header();
 
 			client->QueueWrite(other_client_entity_msg);
 			other_client->QueueWrite(connecting_client_entity_msg);
 		}
 		for (auto entity : entities) {
-			other_client_entity_msg.SetBodyLength(entity.second.ByteSizeLong());
+			other_client_entity_msg->SetBodyLength(entity.second.ByteSizeLong());
 			entity.second.SerializeToArray(
-					other_client_entity_msg.GetBodyPTR(), static_cast<int>(other_client_entity_msg.GetBodyLength()));
-			other_client_entity_msg.SetMessageType(MessageType::ENTITY_CREATE);
-			other_client_entity_msg.encode_header();
+					other_client_entity_msg->GetBodyPTR(), static_cast<int>(other_client_entity_msg->GetBodyLength()));
+			other_client_entity_msg->SetMessageType(MessageType::ENTITY_CREATE);
+			other_client_entity_msg->encode_header();
 
 			client->QueueWrite(other_client_entity_msg);
 		}

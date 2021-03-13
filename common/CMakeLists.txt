@@ -27,6 +27,7 @@ set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/lua-system.cpp
 	${trillek-common_SOURCE_DIR}/net-message.cpp
 	${trillek-common_SOURCE_DIR}/physics-system.cpp
+	${trillek-common_SOURCE_DIR}/proto-load.cpp
 	${trillek-common_SOURCE_DIR}/save-game.cpp
 	${trillek-common_SOURCE_DIR}/simulation.cpp
 	${trillek-common_SOURCE_DIR}/string.cpp

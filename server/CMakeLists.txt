@@ -16,7 +16,6 @@ endif ()
 
 set(trillek-server_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-server_SOURCE_DIR}/client-connection.cpp
-	${trillek-server_SOURCE_DIR}/proto-load.cpp
 	${trillek-server_SOURCE_DIR}/server.cpp
 	${trillek-server_SOURCE_DIR}/server-game-state-queue.cpp
 )

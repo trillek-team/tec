@@ -31,12 +31,11 @@ TEST(ClientServerConnection_test, Constructor) {
 
 	connection.RegisterMessageHandler(
 			tec::networking::MessageType::CLIENT_ID,
-			[&connection, &promise_client_id](const tec::networking::ServerMessage&) {
+			[&connection, &promise_client_id](tec::networking::NetMessage::cptr_type) {
 				promise_client_id.set_value(connection.GetClientID());
 			});
-	connection.RegisterConnectFunc([&]() {
-		asio_thread = std::make_shared<std::thread>(std::thread(([&connection]() { connection.StartRead(); })));
-	});
+	asio_thread = std::make_shared<std::thread>(std::thread(([&connection]() { connection.StartDispatch(); })));
+	connection.RegisterConnectFunc([&]() {});
 	connection.Connect();
 
 	auto status{client_id.wait_until(std::chrono::system_clock::now() + std::chrono::seconds(1))};

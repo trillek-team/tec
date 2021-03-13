@@ -98,13 +98,13 @@ int main() {
 						tec::proto::GameStateUpdate full_state_update;
 						full_state_update.set_command_id(current_state_id);
 						full_state.Out(&full_state_update);
-						tec::networking::ServerMessage full_state_update_message;
-						full_state_update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
-						full_state_update_message.SetBodyLength(full_state_update.ByteSizeLong());
+						auto full_state_update_message = tec::networking::MessagePool::make_unique();
+						full_state_update_message->SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
+						full_state_update_message->SetBodyLength(full_state_update.ByteSizeLong());
 						full_state_update.SerializeToArray(
-								full_state_update_message.GetBodyPTR(),
-								static_cast<int>(full_state_update_message.GetBodyLength()));
-						full_state_update_message.encode_header();
+								full_state_update_message->GetBodyPTR(),
+								static_cast<int>(full_state_update_message->GetBodyLength()));
+						full_state_update_message->encode_header();
 
 						{
 							std::lock_guard lg(server.client_list_mutex);

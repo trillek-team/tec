@@ -15,29 +15,30 @@ std::mutex ServerConnection::recent_ping_mutex;
 
 ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s) {
 	_log = spdlog::get("console_log");
-	RegisterMessageHandler(MessageType::SYNC, [this](const ServerMessage& message) { this->SyncHandler(message); });
-	RegisterMessageHandler(MessageType::GAME_STATE_UPDATE, [this](const ServerMessage& message) {
+	this->current_read_msg = MessagePool::make_unique();
+	RegisterMessageHandler(MessageType::SYNC, [this](NetMessage::cptr_type message) { this->SyncHandler(message); });
+	RegisterMessageHandler(MessageType::GAME_STATE_UPDATE, [this](NetMessage::cptr_type message) {
 		this->GameStateUpdateHandler(message);
 	});
-	RegisterMessageHandler(MessageType::CHAT_MESSAGE, [](const ServerMessage& message) {
-		std::string msg(message.GetBodyPTR(), message.GetBodyLength());
+	RegisterMessageHandler(MessageType::CHAT_MESSAGE, [](NetMessage::cptr_type message) {
+		std::string msg(message->GetBodyPTR(), message->GetBodyLength());
 		_log->info(msg);
 	});
-	RegisterMessageHandler(MessageType::CLIENT_ID, [this](const ServerMessage& message) {
-		std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
+	RegisterMessageHandler(MessageType::CLIENT_ID, [this](NetMessage::cptr_type message) {
+		std::string id_message(message->GetBodyPTR(), message->GetBodyLength());
 		this->client_id = std::atoi(id_message.c_str());
 	});
-	RegisterMessageHandler(MessageType::CLIENT_LEAVE, [](const ServerMessage& message) {
-		std::string id_message(message.GetBodyPTR(), message.GetBodyLength());
+	RegisterMessageHandler(MessageType::CLIENT_LEAVE, [](NetMessage::cptr_type message) {
+		std::string id_message(message->GetBodyPTR(), message->GetBodyLength());
 		eid entity_id = std::atoi(id_message.c_str());
 		_log->info("Entity {} left", entity_id);
 		std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
 		data->entity_id = entity_id;
 		EventSystem<EntityDestroyed>::Get()->Emit(data);
 	});
-	RegisterMessageHandler(MessageType::ENTITY_CREATE, [this](const ServerMessage&) {
+	RegisterMessageHandler(MessageType::ENTITY_CREATE, [this](NetMessage::cptr_type message) {
 		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
-		data->entity.ParseFromArray(current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
+		data->entity.ParseFromArray(message->GetBodyPTR(), static_cast<int>(message->GetBodyLength()));
 		data->entity_id = data->entity.id();
 		EventSystem<EntityCreated>::Get()->Emit(data);
 	});
@@ -91,21 +92,28 @@ void ServerConnection::Stop() {
 
 void ServerConnection::SendChatMessage(std::string message) {
 	if (this->socket.is_open()) {
-		ServerMessage msg;
-		msg.SetBodyLength(message.size());
-		memcpy(msg.GetBodyPTR(), message.c_str(), msg.GetBodyLength());
-		msg.encode_header();
-		Send(msg);
+		auto msg = MessagePool::make_unique();
+		msg->SetBodyLength(message.size());
+		memcpy(msg->GetBodyPTR(), message.c_str(), msg->GetBodyLength());
+		msg->encode_header();
+		Send(std::move(msg));
 	}
 }
 
-void ServerConnection::Send(ServerMessage& msg) {
+void ServerConnection::Send(NetMessage::shared_type msg) {
+	bool write_in_progress;
 	try {
-		asio::write(this->socket, asio::buffer(msg.GetDataPTR(), msg.length()));
+		std::lock_guard<std::mutex> guard(write_msg_mutex);
+		write_in_progress = !write_msg_queue.empty();
+		write_msg_queue.push_back(std::move(msg));
 	}
-	catch (std::exception e) {
-		_log->error("ServerConnection::Send(ServerMessage&): asio::write: {}", e.what());
+	catch (std::exception& e) {
+		_log->error("ServerConnection::Send(): {}", e.what());
 		Disconnect();
+		return;
+	}
+	if (!write_in_progress) {
+		do_write();
 	}
 }
 
@@ -114,14 +122,14 @@ void ServerConnection::RegisterConnectFunc(std::function<void()> func) { this->o
 void ServerConnection::read_body() {
 	asio::async_read(
 			this->socket,
-			asio::buffer(current_read_msg.GetBodyPTR(), current_read_msg.GetBodyLength()),
+			asio::buffer(this->current_read_msg->GetBodyPTR(), this->current_read_msg->GetBodyLength()),
 			[this](const asio::error_code& error, std::size_t) {
 				if (error) {
 					this->socket.close();
 					throw asio::system_error(error, "read_body");
 				}
-				for (auto handler : this->message_handlers[current_read_msg.GetMessageType()]) {
-					handler(current_read_msg);
+				for (auto handler : this->message_handlers[current_read_msg->GetMessageType()]) {
+					handler(current_read_msg.get());
 				}
 				read_header();
 			});
@@ -130,15 +138,37 @@ void ServerConnection::read_body() {
 void ServerConnection::read_header() {
 	asio::async_read(
 			this->socket,
-			asio::buffer(this->current_read_msg.GetDataPTR(), ServerMessage::header_length),
+			asio::buffer(this->current_read_msg->GetDataPTR(), NetMessage::header_length),
 			[this](const asio::error_code& error, std::size_t) {
 				if (error) {
 					this->socket.close();
 					throw asio::system_error(error, "read_header");
 				}
 				this->recv_time = std::chrono::high_resolution_clock::now();
-				if (this->current_read_msg.decode_header()) {
+				if (this->current_read_msg->decode_header()) {
 					read_body();
+				}
+			});
+}
+
+void ServerConnection::do_write() {
+	std::lock_guard<std::mutex> guard(write_msg_mutex);
+	auto msg_ptr = write_msg_queue.front().get();
+	asio::async_write(
+			this->socket,
+			asio::buffer(msg_ptr->GetDataPTR(), msg_ptr->length()),
+			[this](std::error_code error, std::size_t /*length*/) {
+				if (error) {
+					throw asio::system_error(error, "do_write");
+				}
+				bool more_to_write = false;
+				{
+					std::lock_guard<std::mutex> guard(write_msg_mutex);
+					write_msg_queue.pop_front();
+					more_to_write = !write_msg_queue.empty();
+				}
+				if (more_to_write) {
+					do_write();
 				}
 			});
 }
@@ -159,11 +189,11 @@ void ServerConnection::StartDispatch() {
 }
 
 void ServerConnection::StartSync() {
-	ServerMessage sync_msg;
+	auto sync_msg = MessagePool::make_shared();
+	sync_msg->SetBodyLength(1);
+	sync_msg->SetMessageType(MessageType::SYNC);
+	sync_msg->encode_header();
 
-	sync_msg.SetBodyLength(1);
-	sync_msg.SetMessageType(MessageType::SYNC);
-	sync_msg.encode_header();
 	this->run_sync = true;
 	while (this->run_sync) {
 		if (this->client_id) {
@@ -174,12 +204,12 @@ void ServerConnection::StartSync() {
 	}
 }
 
-void ServerConnection::SyncHandler(const ServerMessage& message) {
+void ServerConnection::SyncHandler(NetMessage::cptr_type message) {
 	std::chrono::milliseconds round_trip =
 			std::chrono::duration_cast<std::chrono::milliseconds>(recv_time - sync_start);
 	std::lock_guard<std::mutex> recent_ping_lock(recent_ping_mutex);
-	if (message.GetBodyLength() >= sizeof(uint64_t)) {
-		memcpy(&this->stats.estimated_server_time, message.GetBodyPTR(), sizeof(uint64_t));
+	if (message->GetBodyLength() >= sizeof(uint64_t)) {
+		memcpy(&this->stats.estimated_server_time, message->GetBodyPTR(), sizeof(uint64_t));
 	}
 	if (this->recent_pings.size() >= PING_HISTORY_SIZE) {
 		this->recent_pings.pop_front();
@@ -193,9 +223,9 @@ void ServerConnection::SyncHandler(const ServerMessage& message) {
 	this->stats.estimated_server_time += average_ping;
 }
 
-void ServerConnection::GameStateUpdateHandler(const ServerMessage& message) {
+void ServerConnection::GameStateUpdateHandler(NetMessage::cptr_type message) {
 	proto::GameStateUpdate gsu;
-	gsu.ParseFromArray(message.GetBodyPTR(), static_cast<int>(message.GetBodyLength()));
+	gsu.ParseFromArray(message->GetBodyPTR(), static_cast<int>(message->GetBodyLength()));
 	state_id_t recv_state_id = gsu.state_id();
 	if (recv_state_id <= this->last_received_state_id) {
 		_log->warn("Received an older GameStateUpdate");

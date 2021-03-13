@@ -20,14 +20,13 @@ class Server;
 // Used to represent a client connection to the server.
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
-	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server) :
-			socket(std::move(_socket)), endpoint(std::move(_endpoint)), server(server) {}
+	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server);
 
 	~ClientConnection();
 
 	void StartRead();
 
-	void QueueWrite(const ServerMessage& msg);
+	void QueueWrite(NetMessage::shared_type msg);
 
 	eid GetID() { return this->id; }
 
@@ -51,7 +50,7 @@ public:
 
 	void UpdateGameState(const GameState& full_state);
 
-	ServerMessage PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
+	NetMessage::ptr_type PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
 
 private:
 	void read_header();
@@ -64,12 +63,12 @@ private:
 
 	tcp::socket socket;
 	tcp::endpoint endpoint;
-	ServerMessage current_read_msg;
-	std::deque<ServerMessage> write_msgs_;
+	NetMessage::ptr_type current_read_msg;
+	std::deque<NetMessage::shared_type> write_msgs_;
 	Server* server;
 	eid id{0};
 	proto::Entity entity;
-	static std::mutex write_msg_mutex;
+	std::mutex write_msg_mutex;
 
 	std::shared_ptr<FPSController> controller;
 

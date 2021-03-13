@@ -14,6 +14,7 @@ namespace tec {
 namespace networking {
 enum MessageType : int {
 	SYNC,
+	MULTI_PART,
 	CLIENT_COMMAND,
 	ENTITY_CREATE,
 	ENTITY_DESTROY,
@@ -25,12 +26,18 @@ enum MessageType : int {
 	CHAT_COMMAND
 };
 
-class ServerMessage {
+class ServerConnection;
+class ClientConnection;
+
+class NetMessage {
 public:
+	typedef std::unique_ptr<NetMessage> ptr_type;
+	typedef const NetMessage* cptr_type;
+	typedef std::shared_ptr<NetMessage> shared_type;
 	enum { header_length = 16 };
 	enum { max_body_length = 256 };
 
-	ServerMessage() : body_length(0), message_type(MessageType::CHAT_MESSAGE) {}
+	NetMessage() : body_length(0), message_type(MessageType::CHAT_MESSAGE) {}
 
 	const uint8_t* GetDataPTR() const { return data; }
 
@@ -117,26 +124,82 @@ private:
 	MessageType message_type;
 };
 
-class MessageStream : public google::protobuf::io::ZeroCopyOutputStream {
+class MessagePool {
 public:
-	MessageStream() {}
-	MessageStream(MessageType msg_type) : message_type(msg_type) {}
+	static std::unique_ptr<NetMessage> make_unique() { return std::make_unique<NetMessage>(); }
+	static std::shared_ptr<NetMessage> make_shared() { return std::make_shared<NetMessage>(); }
+};
+
+class MessageOutStream : public google::protobuf::io::ZeroCopyOutputStream {
+	friend ServerConnection;
+	friend ClientConnection;
+
+public:
+	MessageOutStream() : message_type(MessageType::CHAT_MESSAGE), payload_written(0) {}
+	MessageOutStream(MessageType msg_type) : message_type(msg_type), payload_written(0) {}
+
+	// generate messages from a fixed buffer
+	void FromBuffer(const void* body, size_t length);
+
+	// generate messages from an existing string
+	void FromString(const std::string& body) { FromBuffer(body.data(), body.size()); }
 
 	void SetMessageType(MessageType value) { this->message_type = value; }
 
 	MessageType GetMessageType() const { return this->message_type; }
 
+	bool IsEmpty() const { return message_list.empty(); }
+
 	// ZeroCopyOutputStream interface
 	virtual bool Next(void** data, int* size);
 	virtual void BackUp(int count);
-	virtual int64_t ByteCount() const { return payload_size; }
+	virtual int64_t ByteCount() const { return payload_written; }
 	virtual bool WriteAliasedRaw(const void* /*data*/, int /*size*/) { return false; }
 	virtual bool AllowsAliasing() const { return false; }
 
 private:
 	MessageType message_type;
-	int64_t payload_size;
-	std::list<std::unique_ptr<ServerMessage>> message_list;
+	int64_t payload_written;
+	std::list<std::unique_ptr<NetMessage>> message_list;
+};
+
+class MessageInStream : public google::protobuf::io::ZeroCopyInputStream {
+	friend ServerConnection;
+	friend ClientConnection;
+
+public:
+	MessageInStream() : message_type(MessageType::CHAT_MESSAGE), payload_read(0), read_offset(0) {}
+	MessageInStream(MessageType msg_type) : message_type(msg_type), payload_read(0), read_offset(0) {}
+
+	// helper to copy to a fixed buffer, output will be truncated if buffer isn't large enough
+	void ToBuffer(void* body, size_t length);
+
+	// read body into a string
+	void AsString(std::string& body);
+
+	void SetMessageType(MessageType value) { this->message_type = value; }
+
+	MessageType GetMessageType() const { return this->message_type; }
+
+	bool IsEmpty() const { return message_list.empty(); }
+
+	size_t GetSize() const;
+
+	// ZeroCopyInputStream interface
+	virtual bool Next(const void** data, int* size);
+	virtual void BackUp(int count);
+	virtual bool Skip(int count);
+	// this returns the number of bytes currently read, not the total available
+	virtual int64_t ByteCount() const { return payload_read + read_offset; }
+
+private:
+	MessageType message_type;
+	int64_t payload_read;
+	size_t read_offset;
+
+	typedef std::list<std::unique_ptr<NetMessage>> list_type;
+	list_type message_list;
+	list_type::const_iterator read_index;
 };
 
 } // end namespace networking

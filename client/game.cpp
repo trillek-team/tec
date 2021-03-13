@@ -17,14 +17,14 @@
 
 namespace tec {
 using networking::MessageType;
-using networking::ServerMessage;
+using networking::NetMessage;
 
 Game::Game(OS& _os, std::string config_file_name) :
 		stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
 		ps(this->simulation.GetPhysicsSystem()), vcs(this->simulation.GetVComputerSystem()),
 		sound_thread([this]() { ss.Update(); }) {
 	this->config_script = this->lua_sys.LoadFile(FilePath::GetAssetPath(config_file_name));
-	this->server_connection.RegisterMessageHandler(MessageType::CLIENT_ID, [this](const ServerMessage&) {
+	this->server_connection.RegisterMessageHandler(MessageType::CLIENT_ID, [this](NetMessage::cptr_type) {
 		auto client_id = server_connection.GetClientID();
 		game_state_queue.SetClientID(client_id);
 
@@ -123,16 +123,16 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 
 	while (delta_accumulator >= COMMAND_RATE) {
 		if (this->player_camera) {
-			ServerMessage update_message;
+			auto update_message = networking::MessagePool::make_unique();
 			proto::ClientCommands client_commands = this->player_camera->GetClientCommands();
 			client_commands.set_commandid(command_id++);
 			client_commands.set_laststateid(server_connection.GetLastRecvStateID());
-			update_message.SetMessageType(MessageType::CLIENT_COMMAND);
-			update_message.SetBodyLength(client_commands.ByteSizeLong());
+			update_message->SetMessageType(MessageType::CLIENT_COMMAND);
+			update_message->SetBodyLength(client_commands.ByteSizeLong());
 			client_commands.SerializeToArray(
-					update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
-			update_message.encode_header();
-			server_connection.Send(update_message);
+					update_message->GetBodyPTR(), static_cast<int>(update_message->GetBodyLength()));
+			update_message->encode_header();
+			server_connection.Send(std::move(update_message));
 			game_state_queue.SetCommandID(command_id);
 		}
 
