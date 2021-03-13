@@ -16,16 +16,21 @@ jobs:
         include:
           - os: windows-latest
             vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+            vcpkgTripletOs: windows
           - os: windows-2016
             vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+            vcpkgTripletOs: windows
           - os: ubuntu-18.04
             vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgTripletOs: linux
           - os: ubuntu-16.04
             vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgTripletOs: linux
             cc: gcc-7
             cxx: g++-7
           - os: macOS-latest
             vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgTripletOs: osx
         exclude:
           - os: ubuntu-18.04
             arch: x86
@@ -50,7 +55,7 @@ jobs:
     - name: Set vcpkg's response file path used as part of cache's key.
       uses: lukka/set-shell-env@v1
       with:
-        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.arch }}-${{ matrix.triplet }}.txt
+        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}.txt
         VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
     - name: Restore artifacts, or run vcpkg, build and cache artifacts
       uses: lukka/run-vcpkg@v4
@@ -60,6 +65,7 @@ jobs:
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         appendedCacheKey: '${{ hashFiles(env.VCPKGCOMMONRESPONSEFILE) }}${{ hashFiles(env.VCPKGRESPONSEFILE) }}'
         vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
+        vcpkgTriplet: '${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}'
     - name: Configure cmake and build
       uses: lukka/run-cmake@v3
       id: runcmake_cmd
