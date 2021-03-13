@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <list>
 
 #include <save_game.pb.h>
 
@@ -9,20 +9,23 @@
 #include "tec-types.hpp"
 
 namespace tec {
+// The follow is used to align the type used used for UserList operations
+// with the type defined in the proto file definition. E.g if id is if type
+// string in the .proto file, UserList::AddUser expects a string id parameter.
 using uid = decltype(proto::User().id());
 
 class UserList {
 public:
 	template <typename T> void SetUsers(T begin, T end);
 	void AddUser(proto::User);
-	const std::vector<proto::User>* GetUsers();
+	const std::list<proto::User>* GetUsers();
 	proto::User* GetUser(uid);
 	bool RemoveUser(uid);
 	bool UserExists(uid);
 
 private:
-	std::vector<proto::User> users;
-	std::vector<proto::User>::iterator GetUserItr(uid);
+	std::list<proto::User> users;
+	std::list<proto::User>::iterator GetUserItr(uid);
 };
 
 class SaveGame {

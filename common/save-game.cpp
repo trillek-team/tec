@@ -15,7 +15,7 @@ template <typename T> void UserList::SetUsers(T begin, T end) { this->users.assi
 
 void UserList::AddUser(proto::User user) { return this->users.push_back(user); }
 
-const std::vector<proto::User>* UserList::GetUsers() { return &this->users; }
+const std::list<proto::User>* UserList::GetUsers() { return &this->users; }
 
 proto::User* UserList::GetUser(uid id) {
 	auto existing_user = this->GetUserItr(id);
@@ -36,7 +36,7 @@ bool UserList::RemoveUser(uid id) {
 
 bool UserList::UserExists(uid id) { return this->GetUserItr(id) != this->users.end(); }
 
-std::vector<proto::User>::iterator UserList::GetUserItr(uid id) {
+std::list<proto::User>::iterator UserList::GetUserItr(uid id) {
 	return std::find_if(this->users.begin(), this->users.end(), [id](proto::User user) { return user.id() == id; });
 }
 
@@ -55,49 +55,50 @@ bool SaveJSON(const FilePath& fname, std::string contents) {
 bool SaveGame::Load(const FilePath _filepath) {
 	auto _log = spdlog::get("console_log");
 	this->filepath = _filepath;
-	if (_filepath.FileExists()) {
-		auto json_string = LoadJSON(this->filepath);
-		auto status = google::protobuf::util::JsonStringToMessage(json_string, &this->save);
-		if (status.ok()) {
-			this->LoadUsers();
-			this->LoadWorld();
-			return true;
-		}
-		_log->error("Failed to parse save data");
+	if (!_filepath.FileExists()) {
+		_log->error("File does not exist: {}", _filepath.FileName());
 		return false;
 	}
 
-	_log->error("File does not exist: {}", _filepath.FileName());
-	return false;
+	auto json_string = LoadJSON(this->filepath);
+	auto status = google::protobuf::util::JsonStringToMessage(json_string, &this->save);
+	if (!status.ok()) {
+		_log->error("Failed to parse save data");
+		return false;
+	}
+	this->LoadUsers();
+	this->LoadWorld();
+	return true;
 }
 
 bool SaveGame::Save() { return this->Save(this->filepath); }
 
 bool SaveGame::Save(const FilePath _filepath) {
 	auto _log = spdlog::get("console_log");
-	if (_filepath.FileExists() || _filepath.isValidPath()) {
-		this->filepath = _filepath;
-		this->SaveUsers();
-		this->SaveWorld();
+	if (!_filepath.FileExists() || !_filepath.isValidPath()) {
+		_log->error("File does not exist or path is invalid: {}", _filepath.toString());
+		return false;
+	}
+	this->filepath = _filepath;
+	this->SaveUsers();
+	this->SaveWorld();
 
-		std::string json_string;
+	std::string json_string;
 
-		auto status = google::protobuf::util::MessageToJsonString(this->save, &json_string);
+	auto status = google::protobuf::util::MessageToJsonString(this->save, &json_string);
 
-		if (status.ok()) {
-			try {
-				SaveJSON(_filepath, json_string);
-			}
-			catch (std::runtime_error err) {
-				_log->error("Failed to save to file: {}", _filepath.FileName());
-			}
-			return true;
-		}
+	if (!status.ok()) {
 		_log->error("Failed to serialize save data");
 		return false;
 	}
-	_log->error("File does not exist or path is invalid: {}", _filepath.toString());
-	return false;
+
+	try {
+		return SaveJSON(_filepath, json_string);
+	}
+	catch (std::runtime_error err) {
+		_log->error("Failed to save to file: {}", _filepath.FileName());
+		return false;
+	}
 }
 
 UserList* SaveGame::GetUserList() { return &this->user_list; }
@@ -130,7 +131,7 @@ void SaveGame::LoadWorld() {
 						std::make_shared<EntityCreated>(EntityCreated{static_cast<eid>(entity.id()), entity}));
 			}
 			else {
-				_log->error("Failed to parse entity data");
+				_log->error("Failed to parse entity data from file: {}", entity_filename.toString());
 			}
 		}
 		else {

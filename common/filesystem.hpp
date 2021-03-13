@@ -10,7 +10,7 @@
 #include <string>
 
 namespace tec {
-#if defined(__unix__)
+#if defined(WIN32)
 const std::string PATH_SEPARATOR = std::string("\\"); /// OS File system path separator
 #else
 const std::string PATH_SEPARATOR = std::string("/"); /// OS File system path separator
