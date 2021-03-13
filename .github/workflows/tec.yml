@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ windows-latest, windows-2016, ubuntu-18.04, ubuntu-16.04, macOS-latest ]
+        arch: [ x64 ]
         include:
           - os: windows-latest
             arch: x86
@@ -38,7 +39,7 @@ jobs:
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
             cc: gcc-7
-            cxx: g++7
+            cxx: g++-7
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
