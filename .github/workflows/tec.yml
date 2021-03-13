@@ -11,30 +11,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2016, ubuntu-latest, ubuntu-16.04, macOS-latest ]
-        arch: [ x64 ]
+        os: [ windows-latest, windows-2016, ubuntu-18.04, ubuntu-16.04, macOS-latest ]
         include:
-#          - os: windows-latest
-#            arch: x86
-#            triplet: x86-windows
-#            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-#            cc: clang
-#            cxx: clang
-#          - os: windows-latest
-#            arch: x64
-#            triplet: x64-windows
-#            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-#            cc: clang
-#            cxx: clang
+          - os: windows-latest
+            arch: x86
+            triplet: x86-windows
+            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+          - os: windows-latest
+            arch: x64
+            triplet: x64-windows
+            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
           - os: windows-2016
             arch: x86
             triplet: x86-windows
-            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
+            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
           - os: windows-2016
             arch: x64
             triplet: x64-windows
-            vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-          - os: ubuntu-latest
+            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+          - os: ubuntu-18.04
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
@@ -42,8 +37,8 @@ jobs:
             arch: x64
             triplet: x64-linux
             vcpkgCommitId: '6185aa76504a5025f36754324abf307cc776f3da'
-            compiler: gcc
-            version: "7"
+            cc: gcc-7
+            cxx: g++7
           - os: macOS-latest
             arch: x64
             triplet: x64-osx
@@ -53,34 +48,20 @@ jobs:
       with:
         submodules: true
     - uses: lukka/get-cmake@latest
-    - name: Set compiler to clang on windows-latest
+    - name: Set compiler to gcc-7 on ubuntu-16.04
       uses: lukka/set-shell-env@v1
-      if: contains( matrix.os, 'windows-latest')
+      if: contains( matrix.os, 'ubuntu-16.04')
       with:
         CXX: ${{ matrix.cxx }}
         CC: ${{ matrix.cc }}
+    - name: Install os deps (Linux)
+      if: runner.os == 'Linux'
+      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Set vcpkg's response file path used as part of cache's key.
       uses: lukka/set-shell-env@v1
       with:
         VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.triplet }}.txt
         VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
-    # Linux specific
-    - name: Install GCC 7 (Ubuntu 16.04 only)
-      if: matrix.os == 'ubuntu-16.04'
-      run: |
-        sudo apt-get update
-        if [ "${{ matrix.compiler }}" = "gcc" ]; then
-          sudo apt-get install -y g++-${{ matrix.version }} g++-${{ matrix.version }}-multilib
-          echo "CC=gcc-${{ matrix.version }}" >> $GITHUB_ENV
-          echo "CXX=g++-${{ matrix.version }}" >> $GITHUB_ENV
-        else
-          sudo apt-get install -y clang-${{ matrix.version }} g++-multilib
-          echo "CC=clang-${{ matrix.version }}" >> $GITHUB_ENV
-          echo "CXX=clang++-${{ matrix.version }}" >> $GITHUB_ENV
-        fi
-    - name: Install os deps (Linux)
-      if: runner.os == 'Linux'
-      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Restore artifacts, or run vcpkg, build and cache artifacts
       uses: lukka/run-vcpkg@v4
       id: runvcpkg
@@ -134,7 +115,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ windows-2016, ubuntu-latest, ubuntu-16.04, macOS-latest ]
+        os: [ windows-latest, windows-2016, ubuntu-18.04, ubuntu-16.04, macOS-latest ]
         arch: [ x64 ]
     if: startsWith(github.ref, 'refs/tags/v')
     name: Upload Release Asset(s)
