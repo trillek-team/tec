@@ -18,6 +18,7 @@
 #include "simulation.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
+#include "time-frame-metrics.hpp"
 
 namespace tec {
 struct FPSController;
@@ -46,16 +47,7 @@ public:
 	unsigned int fps;
 	float avg_frame_time;
 
-	// Elapsed time spend on each section
-	float outside_game_time 	= 0.0;
-	float state_queue_time 		= 0.0;
-	float vcomputer_time 		= 0.0;
-	float sound_system_time 	= 0.0;
-	float render_system_time 	= 0.0;
-	float lua_system_time 		= 0.0;
-	float other_time 			= 0.0;
-
-	float total_time 			= 0.0;
+	TimeFrameMetrics tfm;
 
 private:
 	static void UpdateVComputerScreenTextures();

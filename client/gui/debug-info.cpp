@@ -14,16 +14,16 @@ void DebugInfo::Draw() {
 					| ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoInputs);
 	ImGui::Text("FPS: %i | avg: %1.3fs", game.fps, game.avg_frame_time);
 	// Procentages of time spend
-	float SQ = game.state_queue_time / game.total_time;
-	float VC = game.vcomputer_time / game.total_time;
-	float SS = game.sound_system_time / game.total_time;
-	float RS = game.render_system_time / game.total_time;
-	float LS = game.lua_system_time / game.total_time;
-	float other = game.other_time / game.total_time;
-	float outside = game.outside_game_time / game.total_time;
+	float SQ = game.tfm.state_queue_time / game.tfm.total_time;
+	float VC = game.tfm.vcomputer_time / game.tfm.total_time;
+	float SS = game.tfm.sound_system_time / game.tfm.total_time;
+	float RS = game.tfm.render_system_time / game.tfm.total_time;
+	float LS = game.tfm.lua_system_time / game.tfm.total_time;
+	float other = game.tfm.other_time / game.tfm.total_time;
+	float outside = game.tfm.outside_game_time / game.tfm.total_time;
 	ImGui::Text("SQ: %1.3f | VC: %1.3f | SS: %1.3f | RS: %1.3f", SQ, VC, SS, RS);
 	ImGui::Text("LS: %1.3f | other: %1.3f | outside: %1.3f", LS, other, outside);
-	ImGui::Text("Total time: %1.3f", game.total_time);
+	ImGui::Text("Total time: %1.3f", game.tfm.total_time);
 	ImGui::ProgressBar(SQ,ImVec2(0, 0),"SQ");
 	ImGui::ProgressBar(VC,ImVec2(0, 0),"VC");
 	ImGui::ProgressBar(SS,ImVec2(0, 0),"SS");
