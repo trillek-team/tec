@@ -23,3 +23,8 @@ message ClientCommands {
 	optional OrientationCommand orientation = 4;
 	repeated string commandList = 5;
 }
+
+message ChatCommand {
+	required string command = 1;
+	repeated string arguments = 2;
+}

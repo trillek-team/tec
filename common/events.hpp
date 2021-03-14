@@ -3,6 +3,7 @@
 #include <commands.pb.h>
 #include <components.pb.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 #include "tec-types.hpp"
 
@@ -83,5 +84,35 @@ struct FocusBlurEvent {
 	eid entity_id;
 	bool keyboard;
 	bool mouse;
+};
+struct ChatCommandEvent {
+	std::string command;
+	std::vector<std::string> args;
+	ChatCommandEvent() = default;
+	ChatCommandEvent(proto::ChatCommand chat_command) { this->In(chat_command); }
+	void In(proto::ChatCommand chat_command) {
+		this->command = chat_command.command();
+		auto arguments = chat_command.arguments();
+		this->args.reserve(arguments.size());
+		for (auto argument : arguments) {
+			this->args.push_back(argument);
+		}
+	}
+	void Out(proto::ChatCommand chat_command) {
+		chat_command.set_command(this->command);
+		auto arguments = chat_command.mutable_arguments();
+		for (const std::string argument : this->args) {
+			arguments->Add(std::string(argument));
+		}
+	}
+	proto::ChatCommand Out() {
+		proto::ChatCommand chat_command;
+		chat_command.set_command(this->command);
+		auto arguments = chat_command.mutable_arguments();
+		for (const std::string argument : this->args) {
+			arguments->Add(std::string(argument));
+		}
+		return std::move(chat_command);
+	}
 };
 } // namespace tec

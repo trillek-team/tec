@@ -173,6 +173,14 @@ void ClientConnection::read_body() {
 					EventSystem<ClientCommandsEvent>::Get()->Emit(data);
 					break;
 				}
+				case MessageType::CHAT_COMMAND:
+				{
+					proto::ChatCommand chat_command;
+					chat_command.ParseFromArray(
+							this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength());
+					EventSystem<ChatCommandEvent>::Get()->Emit(std::make_shared<ChatCommandEvent>(chat_command));
+					break;
+				}
 				case MessageType::ENTITY_CREATE:
 				case MessageType::ENTITY_DESTROY:
 				case MessageType::CLIENT_JOIN:

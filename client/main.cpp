@@ -5,6 +5,7 @@
 #include <file-factories.hpp>
 #include <iostream>
 #include <numeric>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -13,8 +14,8 @@
 #include "game.hpp"
 #include "gui/active-entity-tooltip.hpp"
 #include "gui/console.hpp"
-#include "gui/server-connect.hpp"
 #include "gui/debug-info.hpp"
+#include "gui/server-connect.hpp"
 #include "imgui-system.hpp"
 #include "os.hpp"
 #include "resources/md5anim.hpp"
@@ -176,19 +177,36 @@ int main(int argc, char* argv[]) {
 		std::string ip(args, end_arg - args);
 		connection.Connect(ip);
 	});
-	console.AddSlashHandler([&lua_sys](const char* args) {
+	console.AddSlashHandler([&lua_sys, &connection](const char* args) {
 		const char* end_arg = args;
 		while (*end_arg != '\0') {
 			end_arg++;
 		}
 
-		// TODO: Add processor for commands with arguments
-		// TODO: Add check if command exists and report if it doesn't
+		std::string chat_command_message(args, end_arg - args);
+		std::size_t argument_break_offset = chat_command_message.find_first_of(" ");
+		std::shared_ptr<tec::ChatCommandEvent> data = std::make_shared<tec::ChatCommandEvent>();
+		data->command = chat_command_message.substr(0, argument_break_offset);
 
-		// Args now points were the arguments begins
-		std::string message(args, end_arg - args);
-		message = "OS:" + message + "()";
-		lua_sys->ExecuteString(message);
+		// Split args at space
+		if (argument_break_offset < chat_command_message.size()) {
+			std::string command_args = chat_command_message.substr(argument_break_offset + 1);
+			auto regexz = std::regex(" ");
+			data->args = {
+					std::sregex_token_iterator(command_args.begin(), command_args.end(), regexz, -1),
+					std::sregex_token_iterator()};
+		}
+		tec::EventSystem<tec::ChatCommandEvent>::Get()->Emit(data); // Handle command locally
+
+		if (connection.GetClientID() != 0) { // If connected, send command to server
+			tec::proto::ChatCommand chat_command(data->Out());
+			tec::networking::ServerMessage msg;
+			msg.SetMessageType(tec::networking::CHAT_COMMAND);
+			msg.SetBodyLength(chat_command.ByteSize());
+			chat_command.SerializeToArray(msg.GetBodyPTR(), static_cast<int>(msg.GetBodyLength()));
+			msg.encode_header();
+			connection.Send(msg);
+		}
 	});
 
 	os.DetachContext();
