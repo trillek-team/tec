@@ -105,7 +105,7 @@ double Game::GetElapsedTime() {
 
 void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
 	// Elapsed time spend outside game loop
-	tfm.outside_game_time 	= GetElapsedTime();
+	tfm.outside_game_time = GetElapsedTime();
 
 	// TODO: a better representation of commands so we can send them less often
 	const double COMMAND_RATE = 1.0 / 30.0;
@@ -133,19 +133,19 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 
 		delta_accumulator -= COMMAND_RATE;
 	}
-	tfm.state_queue_time 	= GetElapsedTime();
+	tfm.state_queue_time = GetElapsedTime();
 
 	UpdateVComputerScreenTextures();
-	tfm.vcomputer_time 		= GetElapsedTime();
+	tfm.vcomputer_time = GetElapsedTime();
 
 	ss.SetDelta(delta);
-	tfm.sound_system_time 	= GetElapsedTime();
+	tfm.sound_system_time = GetElapsedTime();
 
 	rs.Update(delta, client_state);
-	tfm.render_system_time 	= GetElapsedTime();
+	tfm.render_system_time = GetElapsedTime();
 
 	lua_sys.Update(delta);
-	tfm.lua_system_time 	= GetElapsedTime();
+	tfm.lua_system_time = GetElapsedTime();
 
 	// Frames per second
 	//
@@ -180,12 +180,14 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 		}
 	}
 	tfm.other_time = GetElapsedTime();
-	tfm.total_time = tfm.outside_game_time 
-				+ tfm.state_queue_time 
-				+ tfm.vcomputer_time 
-				+ tfm.sound_system_time 
-				+ tfm.render_system_time 
-				+ tfm.lua_system_time 
+	// clang-format off
+	tfm.total_time = tfm.outside_game_time
+				+ tfm.state_queue_time
+				+ tfm.vcomputer_time
+				+ tfm.sound_system_time
+				+ tfm.render_system_time
+				+ tfm.lua_system_time
 				+ tfm.other_time;
+	// clang-format on
 }
 } // namespace tec

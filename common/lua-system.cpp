@@ -15,7 +15,7 @@ LuaSystem::LuaSystem() {
 
 void LuaSystem::Update(const double delta) {
 	ProcessEvents();
-	
+
 	for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
 		//auto entity_id = itr->first; <------ commented as it is currently unused
 		if (!itr->second->script_name.empty() && itr->second->environment["onUpdate"].valid()) {
