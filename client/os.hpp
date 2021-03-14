@@ -118,9 +118,16 @@ public:
 	/**
 	* \brief Returns the time since the start of the program.
 	*
-	* \return double The number of nanoseconds that have passed since the last call.
+	* \return double The amount of time that have passed since the last call in seconds.
 	*/
 	double GetDeltaTime();
+
+	/**
+	* \brief Returns the time since initialization from glfw.
+	*
+	* \return double The amount of time since glfw was initialized in seconds.
+	*/
+	double GetTime();
 
 	/**
 	* \brief Returns the current active window.

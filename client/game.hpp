@@ -18,6 +18,7 @@
 #include "simulation.hpp"
 #include "sound-system.hpp"
 #include "vcomputer-system.hpp"
+#include "time-frame-metrics.hpp"
 
 namespace tec {
 struct FPSController;
@@ -44,6 +45,9 @@ public:
 
 	// Frames per second
 	unsigned int fps;
+	float avg_frame_time;
+
+	TimeFrameMetrics tfm;
 
 private:
 	static void UpdateVComputerScreenTextures();
@@ -53,6 +57,10 @@ private:
 	// Frames per second
 	unsigned int frames = 0;
 	float frame_deltas = 0.0;
+
+	// Elapsed time since last call, same as OS::GetDeltaTime()
+	double GetElapsedTime();
+	double last_time = 0.0;
 
 	ServerStats stats;
 	Simulation simulation;
