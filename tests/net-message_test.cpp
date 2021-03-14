@@ -129,26 +129,40 @@ TEST(MessageOut, allocate) {
 	EXPECT_NE(buffer, &size);
 	EXPECT_GT(size, 0);
 	EXPECT_EQ(size, msg.ByteCount());
+	msg.BackUp(7);
+	size -= 7;
+	EXPECT_EQ(size, msg.ByteCount());
 	MessagePool::list_type msgs = msg.GetMessages();
 	EXPECT_EQ(msgs.size(), 1);
 	msgs.back()->decode_header();
 	EXPECT_EQ(msgs.back()->GetMessageType(), msg.GetMessageType());
+	EXPECT_EQ(size, msgs.back()->GetBodyLength());
 }
 TEST(MessageOut, FromString) {
 	MessageOut msg{MessageType::CLIENT_LEAVE};
 
-	auto teststring = GetLongTestString(2);
+	auto teststring = GetLongTestString(5);
 	msg.FromString(teststring);
 	EXPECT_EQ(teststring.size(), msg.ByteCount());
 	MessagePool::list_type msgs = msg.GetMessages();
-	EXPECT_GE(msgs.size(), 2);
+	EXPECT_GE(msgs.size(), 5);
 	size_t fragment_offset = 0;
+	uint32_t expected_sequence = 0;
+	size_t last_message_count = msgs.size() - 1;
 	for (auto msg_ptr : msgs) {
 		// did our large message get divided up and assigned correctly?
 		std::string fragment{msg_ptr->GetBodyPTR(), msg_ptr->GetBodyLength()};
 		size_t fragment_size = msg_ptr->GetBodyLength();
+		EXPECT_EQ(expected_sequence, msg_ptr->GetSequence());
+		if (expected_sequence == last_message_count) {
+			EXPECT_EQ(msg_ptr->GetMessageType(), MessageType::CLIENT_LEAVE);
+		}
+		else {
+			EXPECT_EQ(msg_ptr->GetMessageType(), MessageType::MULTI_PART);
+		}
 		EXPECT_EQ(teststring.substr(fragment_offset, fragment_size), fragment);
 		fragment_offset += fragment_size;
+		expected_sequence++;
 	}
 	EXPECT_EQ(fragment_offset, teststring.size());
 
@@ -156,6 +170,7 @@ TEST(MessageOut, FromString) {
 	EXPECT_TRUE(msgs.back()->decode_header());
 	EXPECT_EQ(msgs.back()->GetMessageType(), msg.GetMessageType());
 }
+
 TEST(MessageOut, Reuse) {
 	MessageOut msg{MessageType::CLIENT_LEAVE};
 
@@ -282,6 +297,40 @@ TEST(MessageIn, broken_stream) {
 	ASSERT_GE(i, 3); // we applied the conditions correctly?
 	EXPECT_FALSE(msgin.DecodeMessages()); // if so, we should have a broken stream
 }
+TEST(MessageIn, no_type_msg) {
+	MessageOut msgout{MessageType::ENTITY_CREATE};
+	auto teststring = GetLongTestString(3); // let's say it takes a few fragments
+	msgout.FromString(teststring);
+	MessagePool::list_type msgs = msgout.GetMessages();
+	MessageIn msgin;
+	for (auto& msg_ptr : msgs) { // fake send/receive
+		auto new_msg = MessagePool::get();
+		msg_ptr->SetMessageType(MULTI_PART); // only multi part messages
+		msg_ptr->encode_header();
+		memcpy(new_msg->GetDataPTR(), msg_ptr->GetDataPTR(), msg_ptr->length());
+		EXPECT_TRUE(new_msg->decode_header());
+		EXPECT_TRUE(msgin.PushMessage(new_msg));
+	}
+	EXPECT_FALSE(msgin.DecodeMessages()); // we should have an "incomplete" stream
+}
+TEST(MessageIn, missing_sequence) {
+	MessageOut msgout{MessageType::ENTITY_CREATE};
+	auto teststring = GetLongTestString(5); // let's say it takes a few fragments
+	msgout.FromString(teststring);
+	MessagePool::list_type msgs = msgout.GetMessages();
+	MessageIn msgin;
+	for (auto& msg_ptr : msgs) { // fake send/receive
+		if (msg_ptr->GetSequence() == 1) {
+			continue; // let's just skip one
+		}
+		auto new_msg = MessagePool::get();
+		memcpy(new_msg->GetDataPTR(), msg_ptr->GetDataPTR(), msg_ptr->length());
+		EXPECT_TRUE(new_msg->decode_header());
+		EXPECT_TRUE(msgin.PushMessage(new_msg));
+	}
+	EXPECT_FALSE(msgin.DecodeMessages()); // we should have an "incomplete" sequence because of the missing one
+}
+
 TEST(MessageIn, ToOut) {
 	MessageOut msgout{MessageType::ENTITY_CREATE};
 	auto teststring = GetLongTestString(3); // let's say it takes a few fragments

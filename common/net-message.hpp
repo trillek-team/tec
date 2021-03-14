@@ -30,10 +30,9 @@ class ClientConnection;
 
 class Message {
 public:
-	typedef std::shared_ptr<Message> ptr_type;
 	typedef const Message* cptr_type;
 	enum { header_length = 16 };
-	enum { max_body_length = 256 };
+	enum { max_body_length = 1024 };
 
 	Message() : body_length(0), sequence_number(0), message_type(MessageType::CHAT_MESSAGE), message_id(0) {}
 
@@ -137,10 +136,11 @@ private:
 
 class MessagePool {
 public:
+	typedef std::shared_ptr<Message> ptr_type;
+	typedef std::list<ptr_type> list_type;
 	// using heap allocation for now
 	// possible improvements would be to pool allocate and possibly deduplicate common messages
-	static Message::ptr_type get() { return std::make_shared<Message>(); }
-	typedef std::list<Message::ptr_type> list_type;
+	static ptr_type get() { return std::make_shared<Message>(); }
 };
 
 class MessageIn;
@@ -226,7 +226,7 @@ public:
 
 	size_t GetSize() const;
 
-	bool PushMessage(Message::ptr_type msg);
+	bool PushMessage(MessagePool::ptr_type msg);
 	bool DecodeMessages();
 	bool AssignMessages(MessagePool::list_type msgs);
 

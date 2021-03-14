@@ -27,7 +27,7 @@ public:
 
 	void StartRead();
 
-	void QueueWrite(Message::ptr_type msg);
+	void QueueWrite(MessagePool::ptr_type msg);
 	void QueueWrite(MessageOut& msg);
 	void QueueWrite(MessageOut&& msg);
 
@@ -71,9 +71,9 @@ private:
 	// address of peer
 	tcp::endpoint endpoint;
 	// message fragment being read
-	Message::ptr_type current_read_msg;
+	MessagePool::ptr_type current_read_msg;
 	// message fragments in-progress or waiting to be written
-	std::deque<Message::ptr_type> write_msg_queue;
+	std::deque<MessagePool::ptr_type> write_msg_queue;
 	// we must assure that this stream performs only a single write operation at a time
 	std::mutex write_msg_mutex;
 	// composite messages currently being read

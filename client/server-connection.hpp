@@ -51,7 +51,7 @@ public:
 
 	void SendChatMessage(std::string message); // Send a Message with type CHAT_MESSAGE.
 
-	void Send(Message::ptr_type msg);
+	void Send(MessagePool::ptr_type msg);
 	void Send(MessageOut& msg);
 	void Send(MessageOut&& msg);
 
@@ -102,12 +102,12 @@ private:
 	asio::ip::tcp::socket socket;
 
 	// Async dispatch and sync loop variables
-	Message::ptr_type current_read_msg;
+	MessagePool::ptr_type current_read_msg;
 	std::map<uint32_t, std::unique_ptr<MessageIn>> read_messages;
 
 	std::atomic<bool> run_dispatch;
 	std::atomic<bool> run_sync;
-	std::deque<Message::ptr_type> write_msg_queue;
+	std::deque<MessagePool::ptr_type> write_msg_queue;
 	std::mutex write_msg_mutex;
 
 	// Ping variables

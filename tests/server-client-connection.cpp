@@ -30,6 +30,7 @@ TEST(ServerClientCommunications, TCPConnection) {
 	std::vector<spdlog::sink_ptr> sinks;
 	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());
 	auto log = std::make_shared<spdlog::logger>("console_log", begin(sinks), end(sinks));
+	log->set_level(spdlog::level::trace);
 	spdlog::register_logger(log);
 
 	ClientCommandReceptor client_reply;
@@ -59,12 +60,17 @@ TEST(ServerClientCommunications, TCPConnection) {
 	bool connect_function_called = false;
 	connection.RegisterConnectFunc([&]() { connect_function_called = true; });
 	connection.Connect();
+	std::string teststring;
+	for (int i = 0; i < 500; i++) {
+		teststring.append("Test");
+	}
 	{
 		proto::ClientCommands proto_client_commands;
 		proto_client_commands.set_id(7);
 		proto_client_commands.set_commandid(16);
 		proto_client_commands.set_laststateid(42);
-		proto_client_commands.add_commandlist("TEST");
+
+		proto_client_commands.add_commandlist(teststring);
 		MessageOut command_message(MessageType::CLIENT_COMMAND);
 		proto_client_commands.SerializeToZeroCopyStream(&command_message);
 		connection.Send(command_message);
@@ -76,13 +82,16 @@ TEST(ServerClientCommunications, TCPConnection) {
 	auto clients = server.GetClients();
 	ASSERT_GE(clients.size(), 1);
 	ASSERT_TRUE(connect_function_called);
-	ASSERT_EQ(client_id_received, std::future_status::ready);
-	ASSERT_EQ(client_command_received, std::future_status::ready);
-
 	auto test_client = *clients.cbegin();
 	auto last_confirmed_state = test_client->GetLastConfirmedStateID();
 	size_t unfullfilled_messages_from_client = test_client->GetPartialMessageCount();
 	size_t unfullfilled_messages_from_server = connection.GetPartialMessageCount();
+	EXPECT_EQ(unfullfilled_messages_from_client, 0);
+	EXPECT_EQ(unfullfilled_messages_from_server, 0);
+
+	ASSERT_EQ(client_id_received, std::future_status::ready);
+	ASSERT_EQ(client_command_received, std::future_status::ready);
+
 	test_running = false;
 	response_thread.join();
 
@@ -91,8 +100,6 @@ TEST(ServerClientCommunications, TCPConnection) {
 	start_thread.join();
 	asio_thread.join();
 
-	EXPECT_EQ(unfullfilled_messages_from_client, 0);
-	EXPECT_EQ(unfullfilled_messages_from_server, 0);
 	EXPECT_EQ(client_id.get(), 10001);
 	std::shared_ptr<ClientCommandsEvent> result_event = client_reply.last_event.get();
 	ASSERT_TRUE(result_event);
@@ -100,8 +107,8 @@ TEST(ServerClientCommunications, TCPConnection) {
 	auto& client_commands = result_event->client_commands;
 	EXPECT_TRUE(client_commands.has_laststateid());
 	EXPECT_EQ(client_commands.laststateid(), 42);
-	EXPECT_EQ(client_commands.commandlist_size(), 1);
-	EXPECT_EQ(client_commands.commandlist(0), "TEST");
+	ASSERT_EQ(client_commands.commandlist_size(), 1);
+	EXPECT_EQ(client_commands.commandlist(0), teststring);
 }
 } // namespace networking
 } // namespace tec

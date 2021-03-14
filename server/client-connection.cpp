@@ -30,7 +30,7 @@ ClientConnection::~ClientConnection() {
 }
 void ClientConnection::StartRead() { read_header(); }
 
-void ClientConnection::QueueWrite(Message::ptr_type msg) {
+void ClientConnection::QueueWrite(MessagePool::ptr_type msg) {
 	bool write_in_progress;
 	{
 		std::lock_guard<std::mutex> lg(write_msg_mutex);
@@ -142,45 +142,54 @@ void ClientConnection::read_body() {
 	asio::async_read(
 			this->socket,
 			this->current_read_msg->buffer_body(),
-			[this, self](std::error_code error, std::size_t length) {
+			[this, self](std::error_code error, std::size_t /*length*/) {
 				if (error) {
 					server->Leave(shared_from_this());
 					return;
 				}
-				uint32_t current_msg_id = current_read_msg->GetMessageID();
+				auto _log = spdlog::get("console_log");
+
+				MessagePool::ptr_type last_read_msg = current_read_msg;
+				current_read_msg = MessagePool::get();
+				uint32_t current_msg_id = last_read_msg->GetMessageID();
 				auto message_iter = read_messages.find(current_msg_id);
-				std::unique_ptr<MessageIn> message_in;
-				if (current_read_msg->GetMessageType() == MessageType::MULTI_PART) {
+
+				if (last_read_msg->GetMessageType() == MessageType::MULTI_PART) {
 					if (message_iter == read_messages.cend()) {
-						message_in = std::make_unique<MessageIn>();
-						message_in->PushMessage(current_read_msg);
+						auto message_in = std::make_unique<MessageIn>();
+						message_in->PushMessage(last_read_msg);
 						read_messages[current_msg_id] = std::move(message_in);
-						current_read_msg = MessagePool::get();
+					}
+					else {
+						message_iter->second->PushMessage(last_read_msg);
 					}
 				}
 				else {
-					auto _log = spdlog::get("console_log");
-					uint32_t current_msg_seq = current_read_msg->GetSequence();
+					// used to hold onto a single use MessageIn object for this scope
+					std::unique_ptr<MessageIn> message_in_unique;
+					MessageIn* message_in; // the message pointer we use
+					uint32_t current_msg_seq = last_read_msg->GetSequence();
 					if (message_iter == read_messages.cend()) {
-						message_in = std::make_unique<MessageIn>();
-						message_in->PushMessage(current_read_msg);
+						message_in_unique = std::make_unique<MessageIn>();
+						message_in = message_in_unique.get();
 					}
 					else {
-						message_iter->second->PushMessage(current_read_msg);
+						message_in = message_iter->second.get();
 					}
-					if (message_in) {
-						if (message_in->DecodeMessages()) {
-							process_message(*message_in);
-						}
-						else {
-							_log->warn(
-									"ClientConnection read an invalid message sequence seq={} id={}",
-									current_msg_seq,
-									current_msg_id);
-						}
-						if (message_iter != read_messages.cend()) {
-							read_messages.erase(message_iter);
-						}
+					message_in->PushMessage(last_read_msg);
+
+					if (message_in->DecodeMessages()) {
+						process_message(*message_in);
+					}
+					else {
+						_log->warn(
+								"ClientConnection read an invalid message sequence seq={} id={}",
+								current_msg_seq,
+								current_msg_id);
+					}
+					// drop it after processing
+					if (message_iter != read_messages.cend()) {
+						read_messages.erase(message_iter);
 					}
 				}
 
@@ -247,7 +256,7 @@ void ClientConnection::do_write() {
 	auto self(shared_from_this());
 	std::lock_guard<std::mutex> lg(write_msg_mutex);
 	auto msg_ptr = write_msg_queue.front().get();
-	asio::async_write(this->socket, msg_ptr->buffer(), [this, self](std::error_code error, std::size_t length) {
+	asio::async_write(this->socket, msg_ptr->buffer(), [this, self](std::error_code error, std::size_t /*length*/) {
 		if (error) {
 			server->Leave(shared_from_this());
 			return;

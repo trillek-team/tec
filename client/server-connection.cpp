@@ -96,7 +96,7 @@ void ServerConnection::SendChatMessage(std::string message) {
 	}
 }
 
-void ServerConnection::Send(Message::ptr_type msg) {
+void ServerConnection::Send(MessagePool::ptr_type msg) {
 	bool write_in_progress;
 	try {
 		std::lock_guard<std::mutex> guard(write_msg_mutex);
@@ -138,53 +138,61 @@ void ServerConnection::read_body() {
 	asio::async_read(
 			this->socket,
 			this->current_read_msg->buffer_body(),
-			[this](const asio::error_code& error, std::size_t length) {
+			[this](const asio::error_code& error, std::size_t /*length*/) {
 				if (error) {
 					this->socket.close();
 					throw asio::system_error(error, "read_body");
 				}
-				uint32_t current_msg_id = current_read_msg->GetMessageID();
-				uint32_t current_msg_seq = current_read_msg->GetSequence();
+				auto _log = spdlog::get("console_log");
+
+				MessagePool::ptr_type last_read_msg = current_read_msg;
+				current_read_msg = MessagePool::get();
+				uint32_t current_msg_id = last_read_msg->GetMessageID();
 				auto message_iter = read_messages.find(current_msg_id);
-				std::unique_ptr<MessageIn> message_in;
-				switch (current_read_msg->GetMessageType()) {
-				case MessageType::SYNC: this->SyncHandler(current_read_msg.get()); break;
-				case MessageType::MULTI_PART:
+				auto last_type = last_read_msg->GetMessageType();
+
+				if (last_type == SYNC) {
+					this->SyncHandler(last_read_msg.get());
+				}
+				else if (last_type == MessageType::MULTI_PART) {
 					if (message_iter == read_messages.cend()) {
-						message_in = std::make_unique<MessageIn>();
-						message_in->PushMessage(current_read_msg);
-						read_messages[current_msg_id] = std::move(message_in);
-						current_read_msg = MessagePool::get();
-					}
-					break;
-				default:
-					if (message_iter == read_messages.cend()) {
-						message_in = std::make_unique<MessageIn>();
-						message_in->PushMessage(current_read_msg);
+						auto message_in = std::make_unique<MessageIn>();
+						message_in->PushMessage(last_read_msg);
+						this->read_messages[current_msg_id] = std::move(message_in);
 					}
 					else {
-						message_iter->second->PushMessage(current_read_msg);
+						message_iter->second->PushMessage(last_read_msg);
 					}
-					if (message_in) {
-						if (message_in->DecodeMessages()) {
-							for (auto handler : this->message_handlers[message_in->GetMessageType()]) {
-								handler(*message_in);
-							}
-							if (message_iter != read_messages.cend()) {
-								read_messages.erase(message_iter);
-							}
-						}
-						else {
-							_log->warn(
-									"ServerConnection read an invalid message sequence seq={} id={}",
-									current_msg_seq,
-									current_msg_id);
-							if (message_iter != read_messages.cend()) {
-								read_messages.erase(message_iter);
-							}
+				}
+				else {
+					// used to hold onto a single use MessageIn object for this scope
+					std::unique_ptr<MessageIn> message_in_unique;
+					MessageIn* message_in; // the message pointer we use
+					uint32_t current_msg_seq = last_read_msg->GetSequence();
+					if (message_iter == read_messages.cend()) {
+						message_in_unique = std::make_unique<MessageIn>();
+						message_in = message_in_unique.get();
+					}
+					else {
+						message_in = message_iter->second.get();
+					}
+					message_in->PushMessage(last_read_msg);
+
+					if (message_in->DecodeMessages()) {
+						for (auto handler : this->message_handlers[message_in->GetMessageType()]) {
+							handler(*message_in);
 						}
 					}
-					break;
+					else {
+						_log->warn(
+								"ClientConnection read an invalid message sequence seq={} id={}",
+								current_msg_seq,
+								current_msg_id);
+					}
+					// drop long messages after processing
+					if (message_iter != read_messages.cend()) {
+						read_messages.erase(message_iter);
+					}
 				}
 				read_header();
 			});
@@ -194,7 +202,7 @@ void ServerConnection::read_header() {
 	asio::async_read(
 			this->socket,
 			this->current_read_msg->buffer_header(),
-			[this](const asio::error_code& error, std::size_t length) {
+			[this](const asio::error_code& error, std::size_t /*length*/) {
 				if (error) {
 					this->socket.close();
 					throw asio::system_error(error, "read_header");
@@ -212,7 +220,7 @@ void ServerConnection::do_write() {
 	asio::async_write(
 			this->socket,
 			asio::buffer(msg_ptr->GetDataPTR(), msg_ptr->length()),
-			[this](std::error_code error, std::size_t length) {
+			[this](std::error_code error, std::size_t /*length*/) {
 				if (error) {
 					throw asio::system_error(error, "do_write");
 				}

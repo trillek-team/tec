@@ -125,7 +125,7 @@ size_t MessageIn::GetSize() const {
 	return total;
 }
 
-bool MessageIn::PushMessage(Message::ptr_type msg) {
+bool MessageIn::PushMessage(MessagePool::ptr_type msg) {
 	message_list.push_back(msg);
 	return true;
 }
@@ -146,10 +146,17 @@ MessageOut MessageIn::ToOut() const {
 
 bool MessageIn::DecodeMessages() {
 	auto iter = message_list.begin();
+	bool have_type = false;
+	uint32_t verify_sequence = 0;
 	while (iter != message_list.end()) {
+		if ((*iter)->GetSequence() != verify_sequence) {
+			return false;
+		}
+		verify_sequence++;
 		if ((*iter)->GetMessageType() != MULTI_PART) {
 			this->message_type = (*iter)->GetMessageType();
 			iter++;
+			have_type = true;
 			break;
 		}
 		iter++;
@@ -157,7 +164,7 @@ bool MessageIn::DecodeMessages() {
 	if (iter != message_list.end()) {
 		return false;
 	}
-	return true;
+	return have_type;
 }
 
 bool MessageIn::Next(const void** data, int* size) {
