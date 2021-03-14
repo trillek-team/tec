@@ -25,9 +25,14 @@ set(trillek-test_PROGRAM "tests")
 set(trillek-test_SOURCES
 	client-server-connection.cpp
 	filesystem_test.cpp
+	save-game_test.cpp
 )
 
-add_executable(${trillek-test_PROGRAM} ${trillek-test_SOURCES} ${trillek-server_SOURCES} ${trillek-client_SOURCES})
+add_executable(${trillek-test_PROGRAM}
+	${trillek-test_SOURCES}
+	${trillek-server_SOURCES}
+	${trillek-client_SOURCES}
+)
 target_link_libraries(${trillek-test_PROGRAM} PRIVATE ${OPENGL_gl_LIBRARY} ${X11_LIBRARIES} ${OSX_LIBRARIES}
-	GTest::GTest GTest::Main GLEW::GLEW OpenAL::OpenAL glfw imgui::imgui  ${trillek-common_LIBRARY} VCOMPUTER_STATIC)
+	GTest::GTest GTest::Main GLEW::GLEW OpenAL::OpenAL glfw imgui::imgui ${trillek-common_LIBRARY} VCOMPUTER_STATIC)
 gtest_discover_tests(${trillek-test_PROGRAM})

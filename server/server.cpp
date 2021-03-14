@@ -22,10 +22,10 @@ Server::Server(tcp::endpoint& endpoint) : acceptor(io_service, endpoint), socket
 	this->greeting_msg.SetBodyLength(message.size());
 	memcpy(this->greeting_msg.GetBodyPTR(), message.c_str(), this->greeting_msg.GetBodyLength());
 	this->greeting_msg.encode_header();
-  
+
 	// Load test script
 	FilePath fp = FilePath::GetAssetPath("scripts/server-test.lua");
-	if(fp.FileExists()){
+	if (fp.FileExists()) {
 		this->lua_sys.LoadFile(fp);
 	}
 
@@ -109,7 +109,7 @@ void Server::AcceptHandler() {
 			std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(std::move(socket), this);
 
 			// self_protopack does contain a renderable component
-			static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.proto");
+			static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.json");
 			proto::Entity other_entity;
 			LoadProtoPack(other_entity, others_protopack);
 

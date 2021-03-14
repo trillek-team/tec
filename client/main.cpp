@@ -157,7 +157,6 @@ int main(int argc, char* argv[]) {
 
 	tec::RegisterFileFactories();
 	tec::BuildTestVoxelVolume();
-	tec::ProtoLoad("json/test.json");
 
 	console.AddConsoleCommand("lua", "lua : Execute a string in lua", [&lua_sys](const char* args) {
 		const char* end_arg = args;

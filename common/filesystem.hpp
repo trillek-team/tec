@@ -10,9 +10,13 @@
 #include <string>
 
 namespace tec {
+#if defined(WIN32)
+const std::string PATH_SEPARATOR = std::string("\\"); /// OS File system path separator
+#else
+const std::string PATH_SEPARATOR = std::string("/"); /// OS File system path separator
+#endif
 class FilePath final {
 public:
-	const static std::string PATH_SEPARATOR; /// OS File system path separator
 #if defined(WIN32)
 	const static char PATH_SEPARATOR_C = '\\'; /// OS File system path separator
 	typedef std::wstring NFilePath; /// Native string format for paths

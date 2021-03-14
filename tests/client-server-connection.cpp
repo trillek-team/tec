@@ -5,9 +5,11 @@
 #include <gtest/gtest.h>
 
 #include "client/server-connection.hpp"
+#include "server-stats.hpp"
 #include "server/server.hpp"
 #include "tec-types.hpp"
 #include <asio.hpp>
+#include <file-factories.hpp>
 #include <spdlog/sinks/stdout_sinks.h>
 #include <spdlog/spdlog.h>
 
@@ -23,7 +25,8 @@ TEST(ClientServerConnection_test, Constructor) {
 	std::promise<tec::eid> promise_client_id;
 	std::future<tec::eid> client_id = promise_client_id.get_future();
 
-	tec::networking::ServerConnection connection;
+	tec::ServerStats stats;
+	tec::networking::ServerConnection connection(stats);
 	std::shared_ptr<std::thread> asio_thread;
 
 	connection.RegisterMessageHandler(
