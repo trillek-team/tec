@@ -28,6 +28,7 @@ void LuaSystem::ProcessEvents() {
 	ProcessCommandQueue();
 	EventQueue<EntityCreated>::ProcessEventQueue();
 	EventQueue<EntityDestroyed>::ProcessEventQueue();
+	EventQueue<ChatCommandEvent>::ProcessEventQueue();
 }
 
 void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
@@ -57,28 +58,26 @@ void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
 		case proto::Component::kSpotLight:
 		case proto::Component::kVoxelVolume:
 		case proto::Component::kComputer:
-		case proto::Component::COMPONENT_NOT_SET:
-			break;
+		case proto::Component::COMPONENT_NOT_SET: break;
 		}
 	}
 }
 
-
 // TODO: Add parameters to function calls
-void LuaSystem::CallFunction(std::string function_name) {
+template <typename... Types> void LuaSystem::CallFunction(std::string function_name, Types... args) {
 	// multiton <eid, LuaScript*>
 	for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
 		if (!itr->second->script_name.empty() && itr->second->environment[function_name].valid()) {
-			itr->second->environment[function_name]();
+			itr->second->environment[function_name](args...);
 		}
 	}
 	// list<scripts>
 	for (auto script = scripts.begin(); script != scripts.end(); script++) {
 		if (!script->script_name.empty() && script->environment[function_name].valid()) {
-			script->environment[function_name]();
+			script->environment[function_name](args...);
 		}
 	}
-}	
+}
 
 std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
 	std::shared_ptr<LuaScript> script = std::make_shared<LuaScript>(ScriptFile::Create(filepath));
@@ -91,6 +90,10 @@ std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
 }
 
 void LuaSystem::On(std::shared_ptr<EntityDestroyed> data) { LuaScriptMap::Remove(data->entity_id); }
+
+void LuaSystem::On(std::shared_ptr<ChatCommandEvent> data) {
+	this->CallFunction("onChatCommand", data->command, data->args);
+}
 
 void LuaSystem::ExecuteString(std::string script_string) { this->lua.script(script_string); }
 } // namespace tec

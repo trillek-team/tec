@@ -18,7 +18,8 @@ enum MessageType : int {
 	CLIENT_ID,
 	CLIENT_LEAVE,
 	GAME_STATE_UPDATE,
-	CHAT_MESSAGE
+	CHAT_MESSAGE,
+	CHAT_COMMAND
 };
 
 class ServerMessage {
