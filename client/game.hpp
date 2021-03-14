@@ -17,8 +17,8 @@
 #include "server-connection.hpp"
 #include "simulation.hpp"
 #include "sound-system.hpp"
-#include "vcomputer-system.hpp"
 #include "time-frame-metrics.hpp"
+#include "vcomputer-system.hpp"
 
 namespace tec {
 struct FPSController;
