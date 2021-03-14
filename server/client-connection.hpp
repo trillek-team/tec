@@ -2,6 +2,7 @@
 
 #include <asio.hpp>
 #include <deque>
+#include <map>
 #include <memory>
 #include <mutex>
 
@@ -26,7 +27,9 @@ public:
 
 	void StartRead();
 
-	void QueueWrite(NetMessage::shared_type msg);
+	void QueueWrite(Message::ptr_type msg);
+	void QueueWrite(MessageOut& msg);
+	void QueueWrite(MessageOut&& msg);
 
 	eid GetID() { return this->id; }
 
@@ -50,25 +53,35 @@ public:
 
 	void UpdateGameState(const GameState& full_state);
 
-	NetMessage::ptr_type PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
+	MessageOut PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
+
+	size_t GetPartialMessageCount() const { return read_messages.size(); }
 
 private:
 	void read_header();
 
 	void read_body();
 
-	void process_message();
+	void process_message(MessageIn&);
 
 	void do_write();
 
+	// peer connection
 	tcp::socket socket;
+	// address of peer
 	tcp::endpoint endpoint;
-	NetMessage::ptr_type current_read_msg;
-	std::deque<NetMessage::shared_type> write_msgs_;
+	// message fragment being read
+	Message::ptr_type current_read_msg;
+	// message fragments in-progress or waiting to be written
+	std::deque<Message::ptr_type> write_msg_queue;
+	// we must assure that this stream performs only a single write operation at a time
+	std::mutex write_msg_mutex;
+	// composite messages currently being read
+	std::map<uint32_t, std::unique_ptr<MessageIn>> read_messages;
+
 	Server* server;
 	eid id{0};
 	proto::Entity entity;
-	std::mutex write_msg_mutex;
 
 	std::shared_ptr<FPSController> controller;
 

@@ -23,9 +23,10 @@ include_directories(${trillek-server_SOURCE_DIR})
 set(trillek-test_PROGRAM "tests")
 
 set(trillek-test_SOURCES
-	client-server-connection.cpp
 	filesystem_test.cpp
+	net-message_test.cpp
 	save-game_test.cpp
+	server-client-connection.cpp
 )
 
 add_executable(${trillek-test_PROGRAM}

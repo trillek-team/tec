@@ -1,9 +1,8 @@
 #pragma once
 
+#include <asio/buffer.hpp>
 #include <cinttypes>
-#include <cstdio>
 #include <cstdlib>
-#include <cstring>
 #include <google/protobuf/io/zero_copy_stream.h>
 #include <list>
 #include <memory>
@@ -29,15 +28,14 @@ enum MessageType : int {
 class ServerConnection;
 class ClientConnection;
 
-class NetMessage {
+class Message {
 public:
-	typedef std::unique_ptr<NetMessage> ptr_type;
-	typedef const NetMessage* cptr_type;
-	typedef std::shared_ptr<NetMessage> shared_type;
+	typedef std::shared_ptr<Message> ptr_type;
+	typedef const Message* cptr_type;
 	enum { header_length = 16 };
 	enum { max_body_length = 256 };
 
-	NetMessage() : body_length(0), message_type(MessageType::CHAT_MESSAGE) {}
+	Message() : body_length(0), sequence_number(0), message_type(MessageType::CHAT_MESSAGE), message_id(0) {}
 
 	const uint8_t* GetDataPTR() const { return data; }
 
@@ -45,22 +43,29 @@ public:
 
 	std::size_t length() const { return header_length + body_length; }
 
+	asio::mutable_buffer buffer_header() { return asio::buffer(data, header_length); }
+	asio::mutable_buffer buffer_body() { return asio::buffer(GetBodyPTR(), GetBodyLength()); }
+	asio::const_buffer buffer() const { return asio::buffer(data, length()); }
+
 	const char* GetBodyPTR() const { return reinterpret_cast<const char*>(data + header_length); }
 
 	char* GetBodyPTR() { return reinterpret_cast<char*>(data + header_length); }
 
 	std::size_t GetBodyLength() const { return body_length; }
 
-	void SetMessageType(MessageType value) { this->message_type = value; }
+	void SetSequence(uint32_t value) { this->sequence_number = value; }
+	uint32_t GetSequence() const { return this->sequence_number; }
 
+	void SetMessageType(MessageType value) { this->message_type = value; }
 	MessageType GetMessageType() const { return this->message_type; }
 
+	void SetMessageID(uint32_t value) { this->message_id = value; }
+	uint32_t GetMessageID() const { return this->message_id; }
+
 	void SetBodyLength(std::size_t new_length) {
-		body_length = new_length;
-		if (body_length > max_body_length) {
-			printf("Message len %zd truncated by %d bytes\n",
-				   body_length,
-				   static_cast<int>(body_length - max_body_length));
+		body_length = static_cast<uint32_t>(new_length);
+		if (new_length > max_body_length) {
+			printf("Message len %zd truncated by %zd bytes\n", new_length, new_length - max_body_length);
 			body_length = max_body_length;
 		}
 	}
@@ -68,6 +73,8 @@ public:
 	bool decode_header() {
 		body_length = decode_32(&data[0]);
 		message_type = static_cast<MessageType>(decode_32(&data[4]));
+		message_id = decode_32(&data[8]);
+		sequence_number = decode_32(&data[12]);
 		if (body_length > max_body_length) {
 			body_length = 0;
 			return false;
@@ -78,6 +85,8 @@ public:
 	void encode_header() {
 		encode_32(&data[0], static_cast<uint32_t>(body_length));
 		encode_32(&data[4], message_type);
+		encode_32(&data[8], message_id);
+		encode_32(&data[12], sequence_number);
 	}
 
 private:
@@ -120,23 +129,39 @@ private:
 	}
 
 	uint8_t data[header_length + max_body_length]{0};
-	std::size_t body_length;
+	uint32_t body_length;
+	uint32_t sequence_number;
 	MessageType message_type;
+	uint32_t message_id;
 };
 
 class MessagePool {
 public:
-	static std::unique_ptr<NetMessage> make_unique() { return std::make_unique<NetMessage>(); }
-	static std::shared_ptr<NetMessage> make_shared() { return std::make_shared<NetMessage>(); }
+	// using heap allocation for now
+	// possible improvements would be to pool allocate and possibly deduplicate common messages
+	static Message::ptr_type get() { return std::make_shared<Message>(); }
+	typedef std::list<Message::ptr_type> list_type;
 };
 
-class MessageOutStream : public google::protobuf::io::ZeroCopyOutputStream {
+class MessageIn;
+
+class MessageOut : public google::protobuf::io::ZeroCopyOutputStream {
 	friend ServerConnection;
 	friend ClientConnection;
+	friend MessageIn;
 
 public:
-	MessageOutStream() : message_type(MessageType::CHAT_MESSAGE), payload_written(0) {}
-	MessageOutStream(MessageType msg_type) : message_type(msg_type), payload_written(0) {}
+	MessageOut() : message_type(MessageType::CHAT_MESSAGE), message_id(0), current_sequence(0), payload_written(0) {}
+	MessageOut(MessageType msg_type) : message_type(msg_type), message_id(0), current_sequence(0), payload_written(0) {}
+	MessageOut(const MessageOut& other) :
+			message_type(other.message_type), message_id(other.message_id), current_sequence(other.current_sequence),
+			payload_written(other.payload_written), message_list(other.message_list) {}
+	MessageOut(MessageOut&& other) :
+			message_type(other.message_type), message_id(other.message_id), current_sequence(other.current_sequence),
+			payload_written(other.payload_written), message_list(std::move(other.message_list)) {
+		other.payload_written = 0;
+		other.current_sequence = 0;
+	}
 
 	// generate messages from a fixed buffer
 	void FromBuffer(const void* body, size_t length);
@@ -145,10 +170,14 @@ public:
 	void FromString(const std::string& body) { FromBuffer(body.data(), body.size()); }
 
 	void SetMessageType(MessageType value) { this->message_type = value; }
+	void SetMessageID(uint32_t value) { this->message_id = value; }
 
 	MessageType GetMessageType() const { return this->message_type; }
+	uint32_t GetMessageID() const { return this->message_id; }
 
 	bool IsEmpty() const { return message_list.empty(); }
+
+	MessagePool::list_type GetMessages();
 
 	// ZeroCopyOutputStream interface
 	virtual bool Next(void** data, int* size);
@@ -159,31 +188,54 @@ public:
 
 private:
 	MessageType message_type;
+	uint32_t message_id;
+	uint32_t current_sequence;
 	int64_t payload_written;
-	std::list<std::unique_ptr<NetMessage>> message_list;
+	MessagePool::list_type message_list;
 };
 
-class MessageInStream : public google::protobuf::io::ZeroCopyInputStream {
+class MessageIn : public google::protobuf::io::ZeroCopyInputStream {
 	friend ServerConnection;
 	friend ClientConnection;
 
 public:
-	MessageInStream() : message_type(MessageType::CHAT_MESSAGE), payload_read(0), read_offset(0) {}
-	MessageInStream(MessageType msg_type) : message_type(msg_type), payload_read(0), read_offset(0) {}
+	MessageIn() : message_type(MessageType::CHAT_MESSAGE), message_id(0), payload_read(0), read_offset(0) {}
+	MessageIn(MessageType msg_type) : message_type(msg_type), message_id(0), payload_read(0), read_offset(0) {}
 
 	// helper to copy to a fixed buffer, output will be truncated if buffer isn't large enough
-	void ToBuffer(void* body, size_t length);
+	void ReadBuffer(void* body, size_t length);
 
-	// read body into a string
-	void AsString(std::string& body);
+	// read and append body data into a string
+	void ReadString(std::string& body);
+
+	// return body as a new string
+	std::string ToString() {
+		std::string body;
+		body.reserve(GetSize());
+		ReadString(body);
+		return std::move(body);
+	}
 
 	void SetMessageType(MessageType value) { this->message_type = value; }
+	void SetMessageID(uint32_t value) { this->message_id = value; }
 
 	MessageType GetMessageType() const { return this->message_type; }
+	uint32_t GetMessageID() const { return this->message_id; }
 
 	bool IsEmpty() const { return message_list.empty(); }
 
 	size_t GetSize() const;
+
+	bool PushMessage(Message::ptr_type msg);
+	bool DecodeMessages();
+	bool AssignMessages(MessagePool::list_type msgs);
+
+	MessageOut ToOut() const;
+
+	void Reset() {
+		this->payload_read = 0;
+		this->read_offset = 0;
+	}
 
 	// ZeroCopyInputStream interface
 	virtual bool Next(const void** data, int* size);
@@ -194,12 +246,12 @@ public:
 
 private:
 	MessageType message_type;
+	uint32_t message_id;
 	int64_t payload_read;
 	size_t read_offset;
 
-	typedef std::list<std::unique_ptr<NetMessage>> list_type;
-	list_type message_list;
-	list_type::const_iterator read_index;
+	MessagePool::list_type message_list;
+	MessagePool::list_type::const_iterator read_index;
 };
 
 } // end namespace networking

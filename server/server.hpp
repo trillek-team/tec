@@ -31,10 +31,12 @@ public:
 
 	// Deliver a message to all clients.
 	// save_to_recent is used to save a recent list of message each client gets when they connect.
-	void Deliver(const NetMessage::ptr_type& msg, bool save_to_recent = true);
+	void Deliver(MessageOut& msg, bool save_to_recent = true);
+	void Deliver(MessageOut&& msg, bool save_to_recent = true);
 
 	// Deliver a message to a specific client.
-	void Deliver(std::shared_ptr<ClientConnection> client, const NetMessage::ptr_type& msg);
+	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg);
+	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg);
 
 	// Calls when a client leaves, usually when the connection is no longer valid.
 	void Leave(std::shared_ptr<ClientConnection> client);
@@ -70,7 +72,7 @@ private:
 	// Server event log
 	std::shared_ptr<spdlog::logger> _log;
 
-	NetMessage::ptr_type greeting_msg; // Greeting chat message.
+	MessageOut greeting_msg; // Greeting chat message.
 
 	std::map<eid, proto::Entity> entities;
 
@@ -79,7 +81,7 @@ private:
 
 	// Recent message list all clients get on connecting,
 	enum { max_recent_msgs = 100 };
-	std::deque<NetMessage::shared_type> recent_msgs;
+	std::deque<std::unique_ptr<MessageOut>> recent_msgs;
 	static std::mutex recent_msgs_mutex;
 
 public:

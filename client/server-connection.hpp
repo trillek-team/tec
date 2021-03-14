@@ -7,6 +7,7 @@
 #include <deque>
 #include <iostream>
 #include <list>
+#include <map>
 #include <memory>
 #include <thread>
 
@@ -33,7 +34,7 @@ typedef std::chrono::milliseconds::rep ping_time_t;
 class ServerConnection {
 public:
 	// function to respond to incoming messages
-	typedef std::function<void(NetMessage::cptr_type)> messageHandlerFunc;
+	typedef std::function<void(MessageIn&)> messageHandlerFunc;
 
 public:
 	ServerConnection(ServerStats& s);
@@ -48,9 +49,11 @@ public:
 
 	void StartSync(); // Run the sync loop.
 
-	void SendChatMessage(std::string message); // Send a ServerMessage with type CHAT_MESSAGE.
+	void SendChatMessage(std::string message); // Send a Message with type CHAT_MESSAGE.
 
-	void Send(NetMessage::shared_type msg);
+	void Send(Message::ptr_type msg);
+	void Send(MessageOut& msg);
+	void Send(MessageOut&& msg);
 
 	// Gets the last received state ID.
 	state_id_t GetLastRecvStateID() { return this->last_received_state_id; }
@@ -80,6 +83,8 @@ public:
 
 	void RegisterConnectFunc(std::function<void()> func);
 
+	size_t GetPartialMessageCount() const { return read_messages.size(); }
+
 private:
 	// These are used by the read loop:
 	void read_header(); // Calls read_body after the header section is read.
@@ -87,8 +92,8 @@ private:
 	// Async writes
 	void do_write();
 
-	void SyncHandler(NetMessage::cptr_type message);
-	void GameStateUpdateHandler(NetMessage::cptr_type message);
+	void SyncHandler(Message::cptr_type message);
+	void GameStateUpdateHandler(MessageIn& message);
 
 	static std::shared_ptr<spdlog::logger> _log;
 
@@ -97,10 +102,12 @@ private:
 	asio::ip::tcp::socket socket;
 
 	// Async dispatch and sync loop variables
-	NetMessage::ptr_type current_read_msg;
+	Message::ptr_type current_read_msg;
+	std::map<uint32_t, std::unique_ptr<MessageIn>> read_messages;
+
 	std::atomic<bool> run_dispatch;
 	std::atomic<bool> run_sync;
-	std::deque<NetMessage::shared_type> write_msg_queue;
+	std::deque<Message::ptr_type> write_msg_queue;
 	std::mutex write_msg_mutex;
 
 	// Ping variables
