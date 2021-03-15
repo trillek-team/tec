@@ -9,6 +9,7 @@
 
 #include "event-system.hpp"
 #include "events.hpp"
+#include "proto-load.hpp"
 
 namespace tec {
 template <typename T> void UserList::SetUsers(T begin, T end) { this->users.assign(begin, end); }
@@ -40,18 +41,6 @@ std::list<proto::User>::iterator UserList::GetUserItr(uid id) {
 	return std::find_if(this->users.begin(), this->users.end(), [id](proto::User user) { return user.id() == id; });
 }
 
-extern std::string LoadJSON(const FilePath& fname);
-
-bool SaveJSON(const FilePath& fname, std::string contents) {
-	std::fstream output(fname.GetNativePath(), std::ios::out);
-	if (!output.good())
-		throw std::runtime_error("can't open ." + fname.toString());
-
-	output.write(contents.c_str(), contents.length());
-	output.close();
-	return true;
-}
-
 bool SaveGame::Load(const FilePath _filepath) {
 	auto _log = spdlog::get("console_log");
 	this->filepath = _filepath;
@@ -60,7 +49,7 @@ bool SaveGame::Load(const FilePath _filepath) {
 		return false;
 	}
 
-	auto json_string = LoadJSON(this->filepath);
+	auto json_string = LoadAsString(this->filepath);
 	auto status = google::protobuf::util::JsonStringToMessage(json_string, &this->save);
 	if (!status.ok()) {
 		_log->error("Failed to parse save data");
@@ -93,7 +82,7 @@ bool SaveGame::Save(const FilePath _filepath) {
 	}
 
 	try {
-		return SaveJSON(_filepath, json_string);
+		return SaveFromString(_filepath, json_string);
 	}
 	catch (std::runtime_error err) {
 		_log->error("Failed to save to file: {}", _filepath.FileName());
@@ -123,7 +112,7 @@ void SaveGame::LoadWorld() {
 	for (int i = 0; i < world.entity_file_list_size(); i++) {
 		FilePath entity_filename = FilePath::GetAssetPath(world.entity_file_list(i));
 		if (entity_filename.isValidPath() && entity_filename.FileExists()) {
-			std::string json_string = LoadJSON(entity_filename);
+			std::string json_string = LoadAsString(entity_filename);
 			proto::Entity entity;
 			auto status = google::protobuf::util::JsonStringToMessage(json_string, &entity);
 			if (status.ok()) {

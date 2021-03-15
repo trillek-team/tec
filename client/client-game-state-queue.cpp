@@ -13,7 +13,7 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 	std::lock_guard<std::mutex> lg(this->server_state_mutex);
 	stats.server_state_count = this->server_states.size();
 	if (this->server_states.size() > 10) { // so many!
-		std::cout << "getting flooded by state updates" << std::endl;
+		spdlog::get("console_log")->warn("getting flooded by state updates");
 	}
 	if (this->server_states.size() < 1) { // no states means nothing to do here
 		return;
@@ -56,7 +56,7 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 
 		// when too many states, discard the rest! what could possibly go wrong!?
 		// we just interpolate between them anyways
-		while (interpolation_accumulator >= INTERPOLATION_RATE) {
+		while (!this->server_states.empty() && interpolation_accumulator >= INTERPOLATION_RATE) {
 			interpolation_accumulator -= INTERPOLATION_RATE;
 			this->base_state.state_id = to_state.state_id;
 			this->server_states.pop();

@@ -49,7 +49,7 @@ void ServerConnectWindow::Draw() {
 		if (ImGui::Button("Connect")) {
 			std::stringstream ip;
 			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
-			printf("Connecting to %s\n", ip.str().c_str());
+			spdlog::get("console_log")->info("Connecting to {}", ip.str());
 			this->server_connection.Connect(ip.str());
 		}
 		ImGui::End();

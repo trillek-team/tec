@@ -7,16 +7,13 @@
 #include <asio.hpp>
 #include <components.pb.h>
 
-
-#include "lua-system.hpp"
 #include "components/lua-script.hpp"
-
-#include "server-message.hpp"
+#include "lua-system.hpp"
 
 #include "event-queue.hpp"
 #include "event-system.hpp"
 #include "events.hpp"
-#include "server-message.hpp"
+#include "net-message.hpp"
 
 using asio::ip::tcp;
 
@@ -34,10 +31,12 @@ public:
 
 	// Deliver a message to all clients.
 	// save_to_recent is used to save a recent list of message each client gets when they connect.
-	void Deliver(const ServerMessage& msg, bool save_to_recent = true);
+	void Deliver(MessageOut& msg, bool save_to_recent = true);
+	void Deliver(MessageOut&& msg, bool save_to_recent = true);
 
 	// Deliver a message to a specific client.
-	void Deliver(std::shared_ptr<ClientConnection> client, const ServerMessage& msg);
+	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg);
+	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg);
 
 	// Calls when a client leaves, usually when the connection is no longer valid.
 	void Leave(std::shared_ptr<ClientConnection> client);
@@ -49,11 +48,9 @@ public:
 	// Get a list of all connected clients.
 	const std::set<std::shared_ptr<ClientConnection>>& GetClients() { return this->clients; }
 
-  // For calling ProcessEvents() in main.cpp
-  LuaSystem* GetLuaSystem() {
-    return &this->lua_sys;
-  }
-  
+	// For calling ProcessEvents() in main.cpp
+	LuaSystem* GetLuaSystem() { return &this->lua_sys; }
+
 	using EventQueue<EntityCreated>::On;
 	using EventQueue<EntityDestroyed>::On;
 	void On(std::shared_ptr<EntityCreated> data);
@@ -62,16 +59,20 @@ public:
 private:
 	// Method that handles and accepts incoming connections.
 	void AcceptHandler();
-  
-  // Lua system
-  LuaSystem lua_sys;
+
+	// Lua system
+	LuaSystem lua_sys;
 
 	// ASIO variables
-	asio::io_service io_service;
+	asio::io_context io_context;
 	tcp::acceptor acceptor;
-	tcp::socket socket;
-  
-	ServerMessage greeting_msg; // Greeting chat message.
+	tcp::socket peer_socket;
+	tcp::endpoint peer_endpoint;
+
+	// Server event log
+	std::shared_ptr<spdlog::logger> _log;
+
+	MessageOut greeting_msg; // Greeting chat message.
 
 	std::map<eid, proto::Entity> entities;
 
@@ -80,7 +81,7 @@ private:
 
 	// Recent message list all clients get on connecting,
 	enum { max_recent_msgs = 100 };
-	std::deque<ServerMessage> recent_msgs;
+	std::deque<std::unique_ptr<MessageOut>> recent_msgs;
 	static std::mutex recent_msgs_mutex;
 
 public:

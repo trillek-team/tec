@@ -43,10 +43,17 @@ public:
 
 	sol::state& GetGlobalState() { return this->lua; }
 
+	template <typename... Args> void CallFunctions(std::string function_name, Args&&... args) {
+		for (auto& fn : GetAllFunctions(function_name)) {
+			fn(args...);
+		}
+	}
+
 private:
 	sol::state lua;
 	std::list<LuaScript> scripts;
 
-	template <typename... Types> void CallFunction(std::string, Types...);
+	std::list<sol::protected_function> GetAllFunctions(std::string);
 };
+
 } // namespace tec

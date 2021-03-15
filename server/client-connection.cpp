@@ -17,7 +17,12 @@
 
 namespace tec {
 namespace networking {
-std::mutex ClientConnection::write_msg_mutex;
+
+ClientConnection::ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server) :
+		socket(std::move(_socket)), endpoint(std::move(_endpoint)), server(server) {
+	current_read_msg = MessagePool::get();
+}
+
 ClientConnection::~ClientConnection() {
 	std::shared_ptr<ControllerRemovedEvent> data = std::make_shared<ControllerRemovedEvent>();
 	data->controller = this->controller;
@@ -25,28 +30,40 @@ ClientConnection::~ClientConnection() {
 }
 void ClientConnection::StartRead() { read_header(); }
 
-void ClientConnection::QueueWrite(const ServerMessage& msg) {
+void ClientConnection::QueueWrite(MessagePool::ptr_type msg) {
 	bool write_in_progress;
 	{
 		std::lock_guard<std::mutex> lg(write_msg_mutex);
-		write_in_progress = !write_msgs_.empty();
-		write_msgs_.push_back(msg);
+		write_in_progress = !write_msg_queue.empty();
+		write_msg_queue.push_back(msg);
 	}
 	if (!write_in_progress) {
 		do_write();
 	}
 }
 
+void ClientConnection::QueueWrite(MessageOut& msg) {
+	bool write_in_progress;
+	{
+		std::lock_guard<std::mutex> lg(write_msg_mutex);
+		write_in_progress = !write_msg_queue.empty();
+		for (auto& msg_ptr : msg.GetMessages()) {
+			write_msg_queue.push_back(msg_ptr);
+		}
+	}
+	if (!write_in_progress) {
+		do_write();
+	}
+}
+
+void ClientConnection::QueueWrite(MessageOut&& msg) { QueueWrite(msg); }
+
 void ClientConnection::SetID(eid _id) {
 	this->id = _id;
 	this->entity.set_id(this->id);
-	std::string message(std::to_string(this->id));
-	static ServerMessage id_message;
-	id_message.SetMessageType(MessageType::CLIENT_ID);
-	id_message.SetBodyLength(message.size());
-	memcpy(id_message.GetBodyPTR(), message.c_str(), id_message.GetBodyLength());
-	id_message.encode_header();
-	QueueWrite(id_message);
+	MessageOut id_message(MessageType::CLIENT_ID);
+	id_message.FromString(std::to_string(this->id));
+	QueueWrite(std::move(id_message));
 }
 
 void ClientConnection::DoJoin() {
@@ -67,11 +84,8 @@ void ClientConnection::DoJoin() {
 	Multiton<eid, CollisionBody*>::Set(this->id, body);
 	self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
 
-	ServerMessage entity_create_msg;
-	entity_create_msg.SetBodyLength(this->entity.ByteSize());
-	this->entity.SerializeToArray(entity_create_msg.GetBodyPTR(), static_cast<int>(entity_create_msg.GetBodyLength()));
-	entity_create_msg.SetMessageType(MessageType::ENTITY_CREATE);
-	entity_create_msg.encode_header();
+	MessageOut entity_create_msg(MessageType::ENTITY_CREATE);
+	this->entity.SerializeToZeroCopyStream(&entity_create_msg);
 	QueueWrite(entity_create_msg);
 	std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 	data->entity = this->entity;
@@ -85,12 +99,8 @@ void ClientConnection::DoJoin() {
 }
 
 void ClientConnection::DoLeave() {
-	static ServerMessage leave_msg;
-	leave_msg.SetMessageType(MessageType::CLIENT_LEAVE);
-	std::string message(std::to_string(this->id));
-	leave_msg.SetBodyLength(message.size());
-	memcpy(leave_msg.GetBodyPTR(), message.c_str(), leave_msg.GetBodyLength());
-	leave_msg.encode_header();
+	MessageOut leave_msg(MessageType::CLIENT_LEAVE);
+	leave_msg.FromString(std::to_string(this->id));
 	this->server->Deliver(leave_msg, false);
 	std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
 	data->entity_id = this->id;
@@ -115,10 +125,10 @@ void ClientConnection::OnClientLeave(eid entity_id) {
 void ClientConnection::read_header() {
 	auto self(shared_from_this());
 	asio::async_read(
-			socket,
-			asio::buffer(current_read_msg.GetDataPTR(), ServerMessage::header_length),
+			this->socket,
+			this->current_read_msg->buffer_header(),
 			[this, self](std::error_code error, std::size_t /*length*/) {
-				if (!error && current_read_msg.decode_header()) {
+				if (!error && current_read_msg->decode_header()) {
 					read_body();
 				}
 				else {
@@ -130,90 +140,136 @@ void ClientConnection::read_header() {
 void ClientConnection::read_body() {
 	auto self(shared_from_this());
 	asio::async_read(
-			socket,
-			asio::buffer(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength()),
+			this->socket,
+			this->current_read_msg->buffer_body(),
 			[this, self](std::error_code error, std::size_t /*length*/) {
-				auto now_time = std::chrono::high_resolution_clock::now();
-				uint64_t current_timestamp =
-						std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
 				if (error) {
 					server->Leave(shared_from_this());
 					return;
 				}
-				switch (this->current_read_msg.GetMessageType()) {
-				case MessageType::CHAT_MESSAGE:
-					server->Deliver(this->current_read_msg);
-					std::cout.write(this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength())
-							<< std::endl;
-					break;
-				case MessageType::SYNC:
-				{
-					ServerMessage sync_response;
-					sync_response.SetMessageType(MessageType::SYNC);
-					sync_response.SetBodyLength(sizeof(uint64_t));
-					memcpy(sync_response.GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
-					sync_response.encode_header();
-					QueueWrite(sync_response);
-					break;
-				}
-				case MessageType::CLIENT_COMMAND:
-				{
-					// Pass this along to be handled in simulation to allow for
-					// processing of string commands as well as movement.
+				auto _log = spdlog::get("console_log");
 
-					// TODO: just apply movement commands here and split string commands
-					// to a different message.
-					proto::ClientCommands proto_client_commands;
-					proto_client_commands.ParseFromArray(
-							current_read_msg.GetBodyPTR(), static_cast<int>(current_read_msg.GetBodyLength()));
-					this->last_confirmed_state_id = current_read_msg.GetStateID();
-					this->last_recv_command_id = proto_client_commands.commandid();
-					std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
-					data->client_commands = std::move(proto_client_commands);
-					EventSystem<ClientCommandsEvent>::Get()->Emit(data);
-					break;
+				MessagePool::ptr_type last_read_msg = current_read_msg;
+				current_read_msg = MessagePool::get();
+				uint32_t current_msg_id = last_read_msg->GetMessageID();
+				auto message_iter = read_messages.find(current_msg_id);
+
+				if (last_read_msg->GetMessageType() == MessageType::MULTI_PART) {
+					if (message_iter == read_messages.cend()) {
+						auto message_in = std::make_unique<MessageIn>();
+						message_in->PushMessage(last_read_msg);
+						read_messages[current_msg_id] = std::move(message_in);
+					}
+					else {
+						message_iter->second->PushMessage(last_read_msg);
+					}
 				}
-				case MessageType::CHAT_COMMAND:
-				{
-					proto::ChatCommand chat_command;
-					chat_command.ParseFromArray(
-							this->current_read_msg.GetBodyPTR(), this->current_read_msg.GetBodyLength());
-					EventSystem<ChatCommandEvent>::Get()->Emit(std::make_shared<ChatCommandEvent>(chat_command));
-					break;
+				else {
+					// a single use MessageIn object for single fragment messages
+					MessageIn short_message_in;
+					MessageIn* message_in; // pointer to the message we use
+					uint32_t current_msg_seq = last_read_msg->GetSequence();
+					if (message_iter == read_messages.cend()) {
+						message_in = &short_message_in;
+					}
+					else {
+						message_in = message_iter->second.get();
+					}
+					message_in->PushMessage(last_read_msg);
+
+					if (message_in->DecodeMessages()) {
+						process_message(*message_in);
+					}
+					else {
+						_log->warn(
+								"ClientConnection read an invalid message sequence seq={} id={}",
+								current_msg_seq,
+								current_msg_id);
+					}
+					// drop it after processing
+					if (message_iter != read_messages.cend()) {
+						read_messages.erase(message_iter);
+					}
 				}
-				case MessageType::ENTITY_CREATE:
-				case MessageType::ENTITY_DESTROY:
-				case MessageType::CLIENT_JOIN:
-				case MessageType::CLIENT_ID:
-				case MessageType::CLIENT_LEAVE:
-				case MessageType::GAME_STATE_UPDATE: break;
-				}
+
 				read_header();
 			});
+}
+
+void ClientConnection::process_message(MessageIn& msg) {
+	auto _log = spdlog::get("console_log");
+	auto now_time = std::chrono::high_resolution_clock::now();
+	uint64_t current_timestamp =
+			std::chrono::duration_cast<std::chrono::milliseconds>(now_time.time_since_epoch()).count();
+
+	switch (msg.GetMessageType()) {
+	case MessageType::CHAT_MESSAGE:
+		server->Deliver(msg.ToOut());
+		_log->info("[CHAT] {}", msg.ToString());
+		break;
+	case MessageType::SYNC:
+	{
+		auto sync_response = MessagePool::get();
+		sync_response->SetMessageType(MessageType::SYNC);
+		sync_response->SetBodyLength(sizeof(uint64_t));
+		memcpy(sync_response->GetBodyPTR(), &current_timestamp, sizeof(uint64_t));
+		sync_response->encode_header();
+		QueueWrite(std::move(sync_response));
+		break;
+	}
+	case MessageType::CLIENT_COMMAND:
+	{
+		// Pass this along to be handled in simulation to allow for
+		// processing of string commands as well as movement.
+
+		// TODO: just apply movement commands here and split string commands
+		// to a different message.
+		proto::ClientCommands proto_client_commands;
+		proto_client_commands.ParseFromZeroCopyStream(&msg);
+		if (proto_client_commands.has_laststateid()) {
+			this->last_confirmed_state_id = proto_client_commands.laststateid();
+		}
+		this->last_recv_command_id = proto_client_commands.commandid();
+		std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
+		data->client_commands = std::move(proto_client_commands);
+		EventSystem<ClientCommandsEvent>::Get()->Emit(data);
+		break;
+	}
+	case MessageType::CHAT_COMMAND:
+	{
+		proto::ChatCommand chat_command;
+		chat_command.ParseFromZeroCopyStream(&msg);
+		EventSystem<ChatCommandEvent>::Get()->Emit(std::make_shared<ChatCommandEvent>(chat_command));
+		break;
+	}
+	case MessageType::ENTITY_CREATE:
+	case MessageType::ENTITY_DESTROY:
+	case MessageType::CLIENT_JOIN:
+	case MessageType::CLIENT_ID:
+	case MessageType::CLIENT_LEAVE:
+	case MessageType::GAME_STATE_UPDATE: break;
+	}
 }
 
 void ClientConnection::do_write() {
 	auto self(shared_from_this());
 	std::lock_guard<std::mutex> lg(write_msg_mutex);
-	asio::async_write(
-			socket,
-			asio::buffer(write_msgs_.front().GetDataPTR(), write_msgs_.front().length()),
-			[this, self](std::error_code error, std::size_t /*length*/) {
-				if (!error) {
-					bool more_to_write = false;
-					{
-						std::lock_guard<std::mutex> lg(write_msg_mutex);
-						write_msgs_.pop_front();
-						more_to_write = !write_msgs_.empty();
-					}
-					if (more_to_write) {
-						do_write();
-					}
-				}
-				else {
-					server->Leave(shared_from_this());
-				}
-			});
+	auto msg_ptr = write_msg_queue.front().get();
+	asio::async_write(this->socket, msg_ptr->buffer(), [this, self](std::error_code error, std::size_t /*length*/) {
+		if (error) {
+			server->Leave(shared_from_this());
+			return;
+		}
+		bool more_to_write = false;
+		{
+			std::lock_guard<std::mutex> lg(write_msg_mutex);
+			write_msg_queue.pop_front();
+			more_to_write = !write_msg_queue.empty();
+		}
+		if (more_to_write) {
+			do_write();
+		}
+	});
 }
 
 void ClientConnection::UpdateGameState(const GameState& full_state) {
@@ -230,7 +286,7 @@ void ClientConnection::UpdateGameState(const GameState& full_state) {
 	}
 }
 
-ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp) {
+MessageOut ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp) {
 	tec::proto::GameStateUpdate gsu_msg;
 	gsu_msg.set_state_id(current_state_id);
 	gsu_msg.set_command_id(this->last_recv_command_id);
@@ -250,12 +306,9 @@ ServerMessage ClientConnection::PrepareGameStateUpdateMessage(state_id_t current
 			vel.Out(_entity->add_components());
 		}
 	}
-	tec::networking::ServerMessage update_message;
-	update_message.SetMessageType(tec::networking::MessageType::GAME_STATE_UPDATE);
-	update_message.SetBodyLength(gsu_msg.ByteSize());
-	gsu_msg.SerializeToArray(update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
-	update_message.encode_header();
-	return update_message;
+	MessageOut update_message(MessageType::GAME_STATE_UPDATE);
+	gsu_msg.SerializeToZeroCopyStream(&update_message);
+	return std::move(update_message);
 }
 } // namespace networking
 } // namespace tec

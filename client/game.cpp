@@ -12,19 +12,18 @@
 #include "graphics/texture-object.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/view.hpp"
+#include "net-message.hpp"
 #include "resources/pixel-buffer.hpp"
-#include "server-message.hpp"
 
 namespace tec {
 using networking::MessageType;
-using networking::ServerMessage;
 
 Game::Game(OS& _os, std::string config_file_name) :
 		stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
 		ps(this->simulation.GetPhysicsSystem()), vcs(this->simulation.GetVComputerSystem()),
 		sound_thread([this]() { ss.Update(); }) {
 	this->config_script = this->lua_sys.LoadFile(FilePath::GetAssetPath(config_file_name));
-	this->server_connection.RegisterMessageHandler(MessageType::CLIENT_ID, [this](const ServerMessage&) {
+	this->server_connection.RegisterMessageHandler(MessageType::CLIENT_ID, [this](networking::MessageIn&) {
 		auto client_id = server_connection.GetClientID();
 		game_state_queue.SetClientID(client_id);
 
@@ -35,8 +34,13 @@ Game::Game(OS& _os, std::string config_file_name) :
 		EventSystem<ControllerAddedEvent>::Get()->Emit(cae_event);
 	});
 
+	asio_thread = new std::thread([this]() { server_connection.StartDispatch(); });
+
 	this->server_connection.RegisterConnectFunc([this]() {
-		asio_thread = new std::thread([this]() { server_connection.StartRead(); });
+		if (this->sync_thread) {
+			this->sync_thread->join();
+			delete this->sync_thread;
+		}
 		sync_thread = new std::thread([this]() { server_connection.StartSync(); });
 	});
 }
@@ -96,11 +100,11 @@ void Game::UpdateVComputerScreenTextures() {
 	}
 }
 
-double Game::GetElapsedTime() {
+float Game::GetElapsedTime() {
 	double new_time = os.GetTime();
 	double elapsed_time = new_time - this->last_time;
 	this->last_time = new_time;
-	return elapsed_time;
+	return static_cast<float>(elapsed_time);
 }
 
 void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
@@ -118,16 +122,12 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 
 	while (delta_accumulator >= COMMAND_RATE) {
 		if (this->player_camera) {
-			ServerMessage update_message;
+			networking::MessageOut update_message(MessageType::CLIENT_COMMAND);
 			proto::ClientCommands client_commands = this->player_camera->GetClientCommands();
 			client_commands.set_commandid(command_id++);
-			update_message.SetStateID(server_connection.GetLastRecvStateID());
-			update_message.SetMessageType(MessageType::CLIENT_COMMAND);
-			update_message.SetBodyLength(client_commands.ByteSizeLong());
-			client_commands.SerializeToArray(
-					update_message.GetBodyPTR(), static_cast<int>(update_message.GetBodyLength()));
-			update_message.encode_header();
-			server_connection.Send(update_message);
+			client_commands.set_laststateid(server_connection.GetLastRecvStateID());
+			client_commands.SerializeToZeroCopyStream(&update_message);
+			server_connection.Send(std::move(update_message));
 			game_state_queue.SetCommandID(command_id);
 		}
 
@@ -154,7 +154,7 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	frames++;
 	if (frame_deltas >= 1) {
 		fps = frames;
-		avg_frame_time = frame_deltas / frames;
+		avg_frame_time = static_cast<float>(frame_deltas / frames);
 		frame_deltas = 0;
 		frames = 0;
 	}

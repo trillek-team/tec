@@ -17,6 +17,7 @@
 #include "gui/debug-info.hpp"
 #include "gui/server-connect.hpp"
 #include "imgui-system.hpp"
+#include "net-message.hpp"
 #include "os.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/md5mesh.hpp"
@@ -24,7 +25,6 @@
 #include "resources/script-file.hpp"
 #include "resources/vorbis-stream.hpp"
 #include "server-connection.hpp"
-#include "server-message.hpp"
 
 namespace tec {
 void RegisterFileFactories() {
@@ -34,8 +34,7 @@ void RegisterFileFactories() {
 	AddFileFactory<VorbisStream>();
 	AddFileFactory<ScriptFile>();
 }
-extern void BuildTestVoxelVolume();
-extern void ProtoLoad(std::string filename);
+void BuildTestVoxelVolume();
 } // namespace tec
 
 auto InitializeLogger(spdlog::level::level_enum log_level, tec::Console& console) {
@@ -145,9 +144,9 @@ int main(int argc, char* argv[]) {
 	gui.AddWindowDrawFunction("debug_info", [&debug_info_window]() { debug_info_window.Draw(); });
 
 	connection.RegisterMessageHandler(
-			tec::networking::MessageType::CLIENT_ID, [&gui, &log](const tec::networking::ServerMessage& message) {
-				std::string client_id(message.GetBodyPTR(), message.GetBodyLength());
-				log->info("You are connected as client ID " + client_id);
+			tec::networking::MessageType::CLIENT_ID, [&gui, &log](tec::networking::MessageIn& message) {
+				std::string client_id = message.ToString();
+				log->info("You are connected as client ID {}", client_id);
 				gui.HideWindow("connect_window");
 				gui.ShowWindow("ping_times");
 			});
@@ -199,11 +198,8 @@ int main(int argc, char* argv[]) {
 
 		if (connection.GetClientID() != 0) { // If connected, send command to server
 			tec::proto::ChatCommand chat_command(data->Out());
-			tec::networking::ServerMessage msg;
-			msg.SetMessageType(tec::networking::CHAT_COMMAND);
-			msg.SetBodyLength(chat_command.ByteSize());
-			chat_command.SerializeToArray(msg.GetBodyPTR(), static_cast<int>(msg.GetBodyLength()));
-			msg.encode_header();
+			tec::networking::MessageOut msg(tec::networking::CHAT_COMMAND);
+			chat_command.SerializeToZeroCopyStream(&msg);
 			connection.Send(msg);
 		}
 	});

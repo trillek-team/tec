@@ -4,14 +4,16 @@
 #include <atomic>
 #include <chrono>
 #include <cinttypes>
+#include <deque>
 #include <iostream>
 #include <list>
+#include <map>
 #include <memory>
 #include <thread>
 
 #include <spdlog/spdlog.h>
 
-#include "server-message.hpp"
+#include "net-message.hpp"
 #include "server-stats.hpp"
 
 using asio::ip::tcp;
@@ -31,21 +33,27 @@ typedef std::chrono::milliseconds::rep ping_time_t;
 // Used to connect to a server.
 class ServerConnection {
 public:
+	// function to respond to incoming messages
+	typedef std::function<void(MessageIn&)> messageHandlerFunc;
+
+public:
 	ServerConnection(ServerStats& s);
 
 	bool Connect(std::string_view ip = LOCAL_HOST); // Connects to a server.
 
 	void Disconnect(); // Closes the socket connection and stops the read and sync loops.
 
-	void Stop(); // Stop read and sync loops.
+	void Stop(); // Stop all processing loops.
 
-	void StartRead(); // Starts the read loop.
+	void StartDispatch(); // Run the async dispatch loop.
 
-	void StartSync(); // Starts the sync loop.
+	void StartSync(); // Run the sync loop.
 
-	void SendChatMessage(std::string message); // Send a ServerMessage with type CHAT_MESSAGE.
+	void SendChatMessage(std::string message); // Send a Message with type CHAT_MESSAGE.
 
-	void Send(ServerMessage& msg);
+	void Send(MessagePool::ptr_type msg);
+	void Send(MessageOut& msg);
+	void Send(MessageOut&& msg);
 
 	// Gets the last received state ID.
 	state_id_t GetLastRecvStateID() { return this->last_received_state_id; }
@@ -69,31 +77,38 @@ public:
 	eid GetClientID() { return this->client_id; }
 
 	// Register a message handler for a given MessageType.
-	void RegisterMessageHandler(MessageType type, std::function<void(const ServerMessage&)> handler) {
+	void RegisterMessageHandler(MessageType type, messageHandlerFunc handler) {
 		this->message_handlers[type].push_back(handler);
 	}
 
 	void RegisterConnectFunc(std::function<void()> func);
 
-private:
-	void read_body(); // Used by the read loop. Calls read_header after the whole body is read.
-	void read_header(); // Used by the read lop. Calls read_body after the header section is
-			// read.
+	size_t GetPartialMessageCount() const { return read_messages.size(); }
 
-	void SyncHandler(const ServerMessage& message);
-	void GameStateUpdateHandler(const ServerMessage& message);
+private:
+	// These are used by the read loop:
+	void read_header(); // Calls read_body after the header section is read.
+	void read_body(); // Calls read_header after the whole body is read.
+	// Async writes
+	void do_write();
+
+	void SyncHandler(Message::cptr_type message);
+	void GameStateUpdateHandler(MessageIn& message);
 
 	static std::shared_ptr<spdlog::logger> _log;
 
-	typedef std::function<void(const ServerMessage&)> handlerFunc;
-
 	// ASIO variables
-	asio::io_service io_service;
+	asio::io_context io_context;
 	asio::ip::tcp::socket socket;
 
-	// Read loop variables
-	ServerMessage current_read_msg;
-	std::atomic<bool> stopped;
+	// Async dispatch and sync loop variables
+	MessagePool::ptr_type current_read_msg;
+	std::map<uint32_t, std::unique_ptr<MessageIn>> read_messages;
+
+	std::atomic<bool> run_dispatch;
+	std::atomic<bool> run_sync;
+	std::deque<MessagePool::ptr_type> write_msg_queue;
+	std::mutex write_msg_mutex;
 
 	// Ping variables
 	std::chrono::high_resolution_clock::time_point sync_start, recv_time;
@@ -112,7 +127,7 @@ private:
 	// State management variables
 	state_id_t last_received_state_id{0};
 
-	std::unordered_map<MessageType, std::list<handlerFunc>> message_handlers;
+	std::unordered_map<MessageType, std::list<messageHandlerFunc>> message_handlers;
 
 	std::function<void()> onConnect = nullptr;
 };

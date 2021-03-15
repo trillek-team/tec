@@ -2,11 +2,12 @@
 
 #include <asio.hpp>
 #include <deque>
+#include <map>
 #include <memory>
 #include <mutex>
 
 #include "game-state.hpp"
-#include "server-message.hpp"
+#include "net-message.hpp"
 #include "tec-types.hpp"
 
 using asio::ip::tcp;
@@ -20,15 +21,19 @@ class Server;
 // Used to represent a client connection to the server.
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
-	ClientConnection(tcp::socket socket, Server* server) : socket(std::move(socket)), server(server) {}
+	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server);
 
 	~ClientConnection();
 
 	void StartRead();
 
-	void QueueWrite(const ServerMessage& msg);
+	void QueueWrite(MessagePool::ptr_type msg);
+	void QueueWrite(MessageOut& msg);
+	void QueueWrite(MessageOut&& msg);
 
 	eid GetID() { return this->id; }
+
+	tcp::endpoint GetEndpoint() { return this->endpoint; }
 
 	// Sets the client id and sends it to this client.
 	void SetID(eid id);
@@ -48,22 +53,35 @@ public:
 
 	void UpdateGameState(const GameState& full_state);
 
-	ServerMessage PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
+	MessageOut PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
+
+	size_t GetPartialMessageCount() const { return read_messages.size(); }
 
 private:
 	void read_header();
 
 	void read_body();
 
+	void process_message(MessageIn&);
+
 	void do_write();
 
+	// peer connection
 	tcp::socket socket;
-	ServerMessage current_read_msg;
-	std::deque<ServerMessage> write_msgs_;
+	// address of peer
+	tcp::endpoint endpoint;
+	// message fragment being read
+	MessagePool::ptr_type current_read_msg;
+	// message fragments in-progress or waiting to be written
+	std::deque<MessagePool::ptr_type> write_msg_queue;
+	// we must assure that this stream performs only a single write operation at a time
+	std::mutex write_msg_mutex;
+	// composite messages currently being read
+	std::map<uint32_t, std::unique_ptr<MessageIn>> read_messages;
+
 	Server* server;
 	eid id{0};
 	proto::Entity entity;
-	static std::mutex write_msg_mutex;
 
 	std::shared_ptr<FPSController> controller;
 

@@ -10,7 +10,17 @@ using LuaScriptMap = Multiton<eid, LuaScript*>;
 
 LuaSystem::LuaSystem() {
 	this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table);
-	this->lua["print"] = [](std::string str) { spdlog::get("console_log")->info(str); };
+	this->lua["print"] = [](sol::variadic_args va) {
+		std::string message;
+		for (auto v : va) {
+			std::string str = v;
+			if (!message.empty()) {
+				message.push_back(' ');
+			}
+			message.append(str);
+		}
+		spdlog::get("console_log")->info(message);
+	};
 }
 
 void LuaSystem::Update(const double delta) {
@@ -63,20 +73,22 @@ void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
 	}
 }
 
-// TODO: Add parameters to function calls
-template <typename... Types> void LuaSystem::CallFunction(std::string function_name, Types... args) {
+std::list<sol::protected_function> LuaSystem::GetAllFunctions(std::string function_name) {
+	std::list<sol::protected_function> functions;
+
 	// multiton <eid, LuaScript*>
 	for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
 		if (!itr->second->script_name.empty() && itr->second->environment[function_name].valid()) {
-			itr->second->environment[function_name](args...);
+			functions.push_back(itr->second->environment[function_name]);
 		}
 	}
 	// list<scripts>
 	for (auto script = scripts.begin(); script != scripts.end(); script++) {
 		if (!script->script_name.empty() && script->environment[function_name].valid()) {
-			script->environment[function_name](args...);
+			functions.push_back(script->environment[function_name]);
 		}
 	}
+	return functions;
 }
 
 std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
@@ -92,7 +104,7 @@ std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
 void LuaSystem::On(std::shared_ptr<EntityDestroyed> data) { LuaScriptMap::Remove(data->entity_id); }
 
 void LuaSystem::On(std::shared_ptr<ChatCommandEvent> data) {
-	this->CallFunction("onChatCommand", data->command, data->args);
+	this->CallFunctions("onChatCommand", data->command, data->args);
 }
 
 void LuaSystem::ExecuteString(std::string script_string) { this->lua.script(script_string); }
