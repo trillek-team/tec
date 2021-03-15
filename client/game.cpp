@@ -100,11 +100,11 @@ void Game::UpdateVComputerScreenTextures() {
 	}
 }
 
-double Game::GetElapsedTime() {
+float Game::GetElapsedTime() {
 	double new_time = os.GetTime();
 	double elapsed_time = new_time - this->last_time;
 	this->last_time = new_time;
-	return elapsed_time;
+	return static_cast<float>(elapsed_time);
 }
 
 void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
@@ -154,7 +154,7 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	frames++;
 	if (frame_deltas >= 1) {
 		fps = frames;
-		avg_frame_time = frame_deltas / frames;
+		avg_frame_time = static_cast<float>(frame_deltas / frames);
 		frame_deltas = 0;
 		frames = 0;
 	}

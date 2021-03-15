@@ -23,6 +23,16 @@ std::string LoadAsString(const FilePath& fname) {
 	return in;
 }
 
+bool SaveFromString(const FilePath& fname, std::string contents) {
+	std::fstream output(fname.GetNativePath(), std::ios::out);
+	if (!output.good())
+		throw std::runtime_error("can't open ." + fname.toString());
+
+	output.write(contents.c_str(), contents.length());
+	output.close();
+	return true;
+}
+
 // Loads a given entity json file
 bool LoadProtoPack(const FilePath& fname, proto::Entity& entity) {
 	auto _log = spdlog::get("console_log");

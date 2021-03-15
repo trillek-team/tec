@@ -34,8 +34,7 @@ void RegisterFileFactories() {
 	AddFileFactory<VorbisStream>();
 	AddFileFactory<ScriptFile>();
 }
-extern void BuildTestVoxelVolume();
-extern void ProtoLoad(std::string filename);
+void BuildTestVoxelVolume();
 } // namespace tec
 
 auto InitializeLogger(spdlog::level::level_enum log_level, tec::Console& console) {

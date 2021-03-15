@@ -11,6 +11,9 @@ namespace tec {
 // Load the contents of a file as a string
 std::string LoadAsString(const FilePath& fname);
 
+// Save a string directly to a file
+bool SaveFromString(const FilePath& fname, std::string contents);
+
 // Loads a given json file into a reference
 bool LoadProtoPack(const FilePath& fname, proto::Entity& entity);
 
