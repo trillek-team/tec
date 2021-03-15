@@ -3,6 +3,7 @@
 
 #include <asio/buffer.hpp>
 #include <gtest/gtest.h>
+#include <new>
 
 namespace tec {
 namespace networking {
@@ -30,7 +31,9 @@ std::string GetNamedMessageType(MessageType mt) {
 }
 
 std::ostream& operator<<(std::ostream& os, const MessageType mt) { return os << GetNamedMessageType(mt); }
+
 bool HeadersEqual(const Message& a, const Message& b) {
+	EXPECT_NE(&a, &b); // the same object twice? probably don't want that
 	return (a.GetMessageType() == b.GetMessageType()) && (a.GetMessageID() == b.GetMessageID())
 		   && (a.GetSequence() == b.GetSequence()) && (a.GetBodyLength() == b.GetBodyLength());
 }
@@ -55,20 +58,13 @@ static std::string GetLongTestString(size_t num_messages, bool variant = false) 
 	return std::move(teststring);
 }
 
-static void MessageListContentEqual(
-		MessagePool::list_type& list_a, MessagePool::list_type& list_b, bool pointers_should_equal = false) {
+static void MessageListContentEqual(MessagePool::list_type& list_a, MessagePool::list_type& list_b) {
 	EXPECT_NE(&list_a, &list_b);
 	auto iterator_a = list_a.begin();
 	auto iterator_b = list_b.begin();
 	while (iterator_a != list_a.end() && iterator_b != list_b.end()) {
 		auto& item_a = *iterator_a;
 		auto& item_b = *iterator_b;
-		if (pointers_should_equal) {
-			EXPECT_EQ(&*item_a, &*item_b);
-		}
-		else {
-			EXPECT_NE(&*item_a, &*item_b);
-		}
 		EXPECT_PRED2(HeadersEqual, *item_a, *item_b);
 		std::string value_a(item_a->GetBodyPTR(), item_a->GetBodyLength());
 		std::string value_b(item_b->GetBodyPTR(), item_b->GetBodyLength());
@@ -78,6 +74,60 @@ static void MessageListContentEqual(
 	}
 	bool lists_have_same_number_items = iterator_a == list_a.end() && iterator_b == list_b.end();
 	EXPECT_TRUE(lists_have_same_number_items);
+}
+
+static void ReceiveAsIs(size_t, MessagePool::ptr_type&) {}
+
+static void FakeSendReceive(
+		MessagePool::list_type& source, MessageIn* msgin, std::function<void(size_t, MessagePool::ptr_type&)> modifer) {
+	size_t index = 0;
+	for (auto msg_itr = source.begin(); msg_itr != source.end(); index++) {
+		auto& msg = *msg_itr;
+		auto new_msg = MessagePool::get();
+		memcpy(new_msg->GetDataPTR(), msg->GetDataPTR(), msg->length());
+		EXPECT_TRUE(new_msg->decode_header());
+		auto mod_msg = new_msg;
+		modifer(index, mod_msg);
+		if (msgin && mod_msg) {
+			EXPECT_TRUE(msgin->PushMessage(new_msg));
+			if (mod_msg != new_msg) {
+				// modifier generated a message, loop around again
+				continue;
+			}
+		}
+		msg_itr++;
+	}
+}
+
+// helpers to find uninitialized variables
+template <typename T> struct test_deallocate {
+	void operator()(T* p) { free(p); }
+};
+template <typename T, typename... Args> std::unique_ptr<T, test_deallocate<T>> make_test_unique(Args... args) {
+	uint8_t* p = reinterpret_cast<uint8_t*>(malloc(sizeof(T)));
+	for (size_t i = 0; i < sizeof(T); i++) {
+		p[i] = static_cast<uint8_t>(rand()); // filling with rand :)
+	}
+	return std::unique_ptr<T, test_deallocate<T>>(new (reinterpret_cast<T*>(p)) T(args...));
+}
+// a test class to make sure our tests are able to detect uninitialized values
+struct init_test_class {
+	init_test_class(int* p) { (this->observe = p)++; }
+	~init_test_class() { (*observe)--; } // makes sure dtor gets called
+	int value; // ctor doesn't initialize value, so it should be undefined data
+	int* observe;
+	bool operator!=(const init_test_class& other) const { return this->value != other.value; }
+};
+
+TEST(Message, initial) {
+	// sanity check
+	int leaked_objects = 0;
+	for (int i = 0; i < 1000; i++) {
+		ASSERT_NE(*make_test_unique<init_test_class>(&leaked_objects), *make_test_unique<init_test_class>(&leaked_objects));
+		ASSERT_EQ(leaked_objects, 0);
+	}
+	// do the actual test on Message
+	EXPECT_PRED2(HeadersEqual, *make_test_unique<Message>(), *make_test_unique<Message>());
 }
 
 TEST(Message, limits) {
@@ -90,9 +140,12 @@ TEST(Message, limits) {
 	msg.SetBodyLength(Message::max_body_length);
 	EXPECT_EQ(msg.GetBodyLength(), Message::max_body_length);
 	// can it get too big?
-	msg.SetBodyLength(Message::max_body_length + 1);
+	EXPECT_THROW(msg.SetBodyLength(Message::max_body_length + 1), std::length_error);
 	EXPECT_EQ(msg.GetBodyLength(), Message::max_body_length);
-	msg.SetBodyLength(Message::max_body_length * 2);
+	EXPECT_THROW(msg.SetBodyLength(Message::max_body_length * 2), std::length_error);
+	EXPECT_EQ(msg.GetBodyLength(), Message::max_body_length);
+	// unsigned weirdness?
+	EXPECT_THROW(msg.SetBodyLength(~0), std::length_error);
 	EXPECT_EQ(msg.GetBodyLength(), Message::max_body_length);
 	// can we shrink?
 	msg.SetBodyLength(0);
@@ -109,12 +162,13 @@ TEST(Message, reflexive) {
 	auto buf = asio::buffer(msg_a.GetDataPTR(), msg_a.length());
 	memcpy(msg_b.GetDataPTR(), buf.data(), buf.size());
 	msg_b.decode_header();
-	EXPECT_EQ(msg_b.GetBodyLength(), msg_a.GetBodyLength());
+	EXPECT_PRED2(HeadersEqual, msg_a, msg_b);
 	std::string result{msg_b.GetBodyPTR(), msg_b.GetBodyLength()};
 	EXPECT_EQ(test, result);
 }
 TEST(MessageOut, initial) {
-	MessageOut msg;
+	auto msg_ptr = make_test_unique<MessageOut>();
+	auto& msg = *msg_ptr;
 	EXPECT_TRUE(msg.IsEmpty());
 	EXPECT_EQ(msg.ByteCount(), 0);
 	EXPECT_EQ(msg.GetMessageType(), CHAT_MESSAGE);
@@ -203,7 +257,8 @@ TEST(MessageOut, Reuse) {
 }
 
 TEST(MessageIn, initial) {
-	MessageIn msg;
+	auto msg_ptr = make_test_unique<MessageIn>();
+	MessageIn& msg = *msg_ptr;
 	EXPECT_TRUE(msg.IsEmpty());
 	EXPECT_EQ(msg.ByteCount(), 0);
 	EXPECT_EQ(msg.GetSize(), 0);
@@ -216,18 +271,13 @@ TEST(MessageIn, initial) {
 	EXPECT_EQ(buffer, &size); // these values should remain unchanged if Next was false
 	EXPECT_EQ(size, 77);
 }
-TEST(MessageIn, reading_and_reset) {
+TEST(MessageIn, ReadingAndReset) {
 	MessageOut msgout{MessageType::CLIENT_LEAVE};
 	auto teststring = GetLongTestString(2);
 	msgout.FromString(teststring);
 	MessagePool::list_type msgs = msgout.GetMessages();
 	MessageIn msgin;
-	for (auto& msg_ptr : msgs) { // fake send/receive
-		auto new_msg = MessagePool::get();
-		memcpy(new_msg->GetDataPTR(), msg_ptr->GetDataPTR(), msg_ptr->length());
-		EXPECT_TRUE(new_msg->decode_header());
-		EXPECT_TRUE(msgin.PushMessage(new_msg));
-	}
+	FakeSendReceive(msgs, &msgin, ReceiveAsIs);
 	EXPECT_TRUE(msgin.DecodeMessages());
 	{
 		std::string result_ReadString;
@@ -271,63 +321,44 @@ TEST(MessageIn, reading_and_reset) {
 		EXPECT_EQ(teststring, result_ReadBuffer);
 	}
 }
-TEST(MessageIn, broken_stream) {
+TEST(MessageIn, BrokenStream) {
 	MessageOut msgout{MessageType::ENTITY_CREATE};
 	auto teststring = GetLongTestString(3); // let's say it takes a few fragments
 	msgout.FromString(teststring);
 	MessagePool::list_type msgs = msgout.GetMessages();
 	MessageIn msgin;
-	int i = 0;
-	for (auto& msg_ptr : msgs) { // fake send/receive
-		auto new_msg = MessagePool::get();
-		if (i == 1) {
-			auto bad_msg = MessagePool::get();
-			bad_msg->SetMessageType(MessageType::SYNC);
-			bad_msg->SetBodyLength(5);
-			bad_msg->encode_header();
-			bad_msg->decode_header();
-			// let's say something gets misplaced
-			EXPECT_TRUE(msgin.PushMessage(bad_msg));
+	FakeSendReceive(msgs, &msgin, [](size_t index, MessagePool::ptr_type& ptr) {
+		if (index == 1) {
+			ptr = MessagePool::get();
+			ptr->SetMessageType(MessageType::SYNC); // let's say something gets misplaced
+			ptr->SetBodyLength(5);
 		}
-		memcpy(new_msg->GetDataPTR(), msg_ptr->GetDataPTR(), msg_ptr->length());
-		EXPECT_TRUE(new_msg->decode_header());
-		EXPECT_TRUE(msgin.PushMessage(new_msg));
-		i++;
-	}
-	ASSERT_GE(i, 3); // we applied the conditions correctly?
+	});
+	ASSERT_GE(msgs.size(), 2); // we applied the conditions correctly?
 	EXPECT_FALSE(msgin.DecodeMessages()); // if so, we should have a broken stream
 }
-TEST(MessageIn, no_type_msg) {
+TEST(MessageIn, NoTypeMsg) {
 	MessageOut msgout{MessageType::ENTITY_CREATE};
 	auto teststring = GetLongTestString(3); // let's say it takes a few fragments
 	msgout.FromString(teststring);
 	MessagePool::list_type msgs = msgout.GetMessages();
 	MessageIn msgin;
-	for (auto& msg_ptr : msgs) { // fake send/receive
-		auto new_msg = MessagePool::get();
-		msg_ptr->SetMessageType(MULTI_PART); // only multi part messages
-		msg_ptr->encode_header();
-		memcpy(new_msg->GetDataPTR(), msg_ptr->GetDataPTR(), msg_ptr->length());
-		EXPECT_TRUE(new_msg->decode_header());
-		EXPECT_TRUE(msgin.PushMessage(new_msg));
-	}
+	FakeSendReceive(msgs, &msgin, [](size_t index, MessagePool::ptr_type& ptr) {
+		ptr->SetMessageType(MULTI_PART); // only multi part messages
+	});
 	EXPECT_FALSE(msgin.DecodeMessages()); // we should have an "incomplete" stream
 }
-TEST(MessageIn, missing_sequence) {
+TEST(MessageIn, MissingSequence) {
 	MessageOut msgout{MessageType::ENTITY_CREATE};
 	auto teststring = GetLongTestString(5); // let's say it takes a few fragments
 	msgout.FromString(teststring);
 	MessagePool::list_type msgs = msgout.GetMessages();
 	MessageIn msgin;
-	for (auto& msg_ptr : msgs) { // fake send/receive
-		if (msg_ptr->GetSequence() == 1) {
-			continue; // let's just skip one
+	FakeSendReceive(msgs, &msgin, [](size_t index, MessagePool::ptr_type& ptr) {
+		if (index == 1) { // let's just skip one
+			ptr.reset();
 		}
-		auto new_msg = MessagePool::get();
-		memcpy(new_msg->GetDataPTR(), msg_ptr->GetDataPTR(), msg_ptr->length());
-		EXPECT_TRUE(new_msg->decode_header());
-		EXPECT_TRUE(msgin.PushMessage(new_msg));
-	}
+	});
 	EXPECT_FALSE(msgin.DecodeMessages()); // we should have an "incomplete" sequence because of the missing one
 }
 
@@ -337,16 +368,11 @@ TEST(MessageIn, ToOut) {
 	msgout.FromString(teststring);
 	MessagePool::list_type msgs = msgout.GetMessages();
 	MessageIn msgin;
-	for (auto& msg_ptr : msgs) { // fake send/receive
-		auto new_msg = MessagePool::get();
-		memcpy(new_msg->GetDataPTR(), msg_ptr->GetDataPTR(), msg_ptr->length());
-		EXPECT_TRUE(new_msg->decode_header());
-		EXPECT_TRUE(msgin.PushMessage(new_msg));
-	}
+	FakeSendReceive(msgs, &msgin, ReceiveAsIs); // fake send/receive
 	EXPECT_TRUE(msgin.DecodeMessages());
 	MessageOut msgclone = msgin.ToOut();
 	EXPECT_EQ(msgout.ByteCount(), msgclone.ByteCount());
-	MessageListContentEqual(msgs, msgclone.GetMessages(), false);
+	MessageListContentEqual(msgs, msgclone.GetMessages());
 }
 
 } // namespace networking

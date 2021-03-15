@@ -22,10 +22,11 @@ public:
 	ClientCommandReceptor() { last_event = promised_event.get_future(); }
 	void process() { EventQueue<ClientCommandsEvent>::ProcessEventQueue(); }
 	using EventQueue<ClientCommandsEvent>::On;
-	virtual void On(std::shared_ptr<ClientCommandsEvent> data) { promised_event.set_value(data); }
+	void On(std::shared_ptr<ClientCommandsEvent> data) override { promised_event.set_value(data); }
 	std::promise<std::shared_ptr<ClientCommandsEvent>> promised_event;
 	std::future<std::shared_ptr<ClientCommandsEvent>> last_event;
 };
+
 TEST(ServerClientCommunications, TCPConnection) {
 	std::vector<spdlog::sink_ptr> sinks;
 	sinks.push_back(std::make_shared<spdlog::sinks::stdout_sink_mt>());

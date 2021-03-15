@@ -44,7 +44,7 @@ Server::Server(tcp::endpoint& endpoint) : acceptor(io_context, endpoint), peer_s
 	_log = spdlog::get("console_log");
 
 	// Create a simple greeting chat message that all clients get.
-	this->greeting_msg.FromString(std::string{ "Hello from server\n" });
+	this->greeting_msg.FromString(std::string{"Hello from server\n"});
 
 	asio::ip::tcp::no_delay option(true);
 	acceptor.set_option(option);
@@ -99,18 +99,21 @@ void Server::Deliver(MessageOut& msg, bool save_to_recent) {
 		client->QueueWrite(msg);
 	}
 }
-void Server::Deliver(MessageOut&& msg, bool save_to_recent) {
-	Deliver(msg, save_to_recent);
-}
-
-void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg) {
-	client->QueueWrite(msg);
-}
-void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg) {
-	client->QueueWrite(std::move(msg));
-}
+void Server::Deliver(MessageOut&& msg, bool save_to_recent) { Deliver(msg, save_to_recent); }
+void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg) { client->QueueWrite(msg); }
+void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg) { client->QueueWrite(std::move(msg)); }
 
 void Server::Leave(std::shared_ptr<ClientConnection> client) {
+	{
+		std::lock_guard lg(this->client_list_mutex);
+		auto which_client = this->clients.find(client);
+		if (which_client == this->clients.end()) {
+			// invalid client or already called Leave()
+			return;
+		}
+		this->clients.erase(which_client);
+	}
+
 	// setup a lua object for this event
 	client_connection_info info_event;
 	info_event.from_endpoint(client->GetEndpoint());
@@ -120,11 +123,6 @@ void Server::Leave(std::shared_ptr<ClientConnection> client) {
 
 	eid leaving_client_id = client->GetID();
 	client->DoLeave(); // Send out entity destroyed events and client leave messages.
-
-	{
-		std::lock_guard lg(this->client_list_mutex);
-		this->clients.erase(client);
-	}
 
 	// Notify other clients that a client left.
 	for (auto _client : this->clients) {

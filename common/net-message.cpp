@@ -17,7 +17,7 @@ void MessageOut::FromBuffer(const void* body, size_t length) {
 			spdlog::get("console_log")->warn("MessageStream::FromString failed to request buffer");
 			return;
 		}
-		if (!buffer_size) {
+		if (buffer_size <= 0) {
 			continue;
 		}
 		if (buffer_size <= remain) {
@@ -88,7 +88,7 @@ void MessageIn::ReadBuffer(void* body, size_t length) {
 			// error or end of stream
 			return;
 		}
-		if (!buffer_size) {
+		if (buffer_size <= 0) {
 			continue;
 		}
 		if (offset + buffer_size <= length) {
@@ -110,7 +110,7 @@ void MessageIn::ReadString(std::string& body) {
 	const void* buffer;
 	int buffer_size;
 	while (Next(&buffer, &buffer_size)) {
-		if (!buffer_size) { // zero length buffer is not an error
+		if (buffer_size <= 0) { // zero length buffer is not an error
 			continue;
 		}
 		body.append(reinterpret_cast<const char*>(buffer), buffer_size);

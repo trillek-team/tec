@@ -64,8 +64,9 @@ public:
 	void SetBodyLength(std::size_t new_length) {
 		body_length = static_cast<uint32_t>(new_length);
 		if (new_length > max_body_length) {
-			printf("Message len %zd truncated by %zd bytes\n", new_length, new_length - max_body_length);
 			body_length = max_body_length;
+			using namespace std::string_literals;
+			throw std::length_error("Message body length exceeded by "s + std::to_string(new_length - max_body_length));
 		}
 	}
 

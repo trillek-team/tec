@@ -165,13 +165,12 @@ void ServerConnection::read_body() {
 					}
 				}
 				else {
-					// used to hold onto a single use MessageIn object for this scope
-					std::unique_ptr<MessageIn> message_in_unique;
-					MessageIn* message_in; // the message pointer we use
+					// a single use MessageIn object for single fragment messages
+					MessageIn short_message_in;
+					MessageIn* message_in; // pointer to the message we use
 					uint32_t current_msg_seq = last_read_msg->GetSequence();
 					if (message_iter == read_messages.cend()) {
-						message_in_unique = std::make_unique<MessageIn>();
-						message_in = message_in_unique.get();
+						message_in = &short_message_in;
 					}
 					else {
 						message_in = message_iter->second.get();
@@ -180,12 +179,13 @@ void ServerConnection::read_body() {
 
 					if (message_in->DecodeMessages()) {
 						for (auto handler : this->message_handlers[message_in->GetMessageType()]) {
+							message_in->Reset(); // rewind the stream for each handler
 							handler(*message_in);
 						}
 					}
 					else {
 						_log->warn(
-								"ClientConnection read an invalid message sequence seq={} id={}",
+								"ServerConnection read an invalid message sequence seq={} id={}",
 								current_msg_seq,
 								current_msg_id);
 					}
