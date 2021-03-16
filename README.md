@@ -10,6 +10,14 @@ Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on b
 ## Requirements
 TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua, Bullet, Dear ImGui, sol3, Spdlog and OpenAL which can be installed most easily via [vcpkg](#vcpkg)
 
+## Documentation
+Documentation is done via Doxygen for C++ code and supplementary docs must be maintained for the Lua API in the `docs/` folder.
+
+Whenever there is a Lua API change please update the corresponding `docs/`.
+
+### Local Preview
+To preview the Lua API docs locally visit [MkDocs](https://www.mkdocs.org/) and follow their setup guide. Then from the root directory run `mkdocs serve`.
+
 ## Building from Source
 ### Part 1 (VCPKG/Requirements)
 1. `git clone https://github.com/Microsoft/vcpkg.git` (If you already have **VCPKG**, move onto Part 2))
