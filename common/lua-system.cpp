@@ -45,25 +45,26 @@ LuaSystem::LuaSystem() {
 
 	// a "simple" loader for require() to find scripts in the assets path
 	this->lua.add_package_loader(
-			[this](sol::string_view path) -> sol::protected_function {
-				spdlog::get("console_log")->debug("request to load Lua package \"{}\"", path);
-				FilePath scripts_base = FilePath::GetAssetsBasePath() / "scripts";
-				std::string path_str(path.data(), path.size());
-				if (path_str.find_first_of('.') == std::string::npos) {
-					path_str.append(".lua");
+			[this](sol::string_view package_name) -> sol::protected_function {
+				spdlog::get("console_log")->debug("request to load Lua package \"{}\"", package_name);
+				static FilePath scripts_base = FilePath::GetAssetsBasePath() / "scripts";
+				std::string package_path(package_name.data(), package_name.size());
+				if (package_path.find_first_of('.') == std::string::npos) {
+					package_path.append(".lua");
 				}
-				FilePath check = scripts_base / path_str;
+				// for now, we are going to look for a single lua file with by the same name as the package
+				FilePath package_script_path = scripts_base / package_path;
 				std::string source;
-				if (!check.FileExists()) {
+				if (!package_script_path.FileExists()) {
 					return sol::nil;
 				}
 				try {
-					source = LoadAsString(check);
+					source = LoadAsString(package_script_path);
 				}
-				catch (std::exception& e) {
+				catch (std::exception&) {
 					return sol::nil;
 				}
-				sol::load_result r = this->lua.load(source, check.toString());
+				sol::load_result r = this->lua.load(source, package_script_path.toString());
 				if (!r.valid()) {
 					return sol::nil;
 				}
@@ -72,15 +73,15 @@ LuaSystem::LuaSystem() {
 			},
 			false);
 
-	this->lua["print"] = [this](sol::variadic_args va) {
+	this->lua["print"] = [this](sol::variadic_args print_args) {
 		std::string message;
-		for (auto v : va) {
+		for (auto value : print_args) {
 			std::string str;
-			if (v.is<std::string>()) {
-				str = v.get<std::string>();
+			if (value.is<std::string>()) {
+				str = value.get<std::string>();
 			}
 			else { // explicitly convert arguments to strings if they are not
-				str = this->lua["tostring"](v);
+				str = this->lua["tostring"](value);
 			}
 			if (!message.empty()) {
 				message.push_back(' ');
