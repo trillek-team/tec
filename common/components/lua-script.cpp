@@ -23,7 +23,16 @@ void LuaScript::ReloadScript() {
 		return;
 	}
 	if (!this->script_name.empty()) {
-		this->global_state->script(this->script->GetScript(), environment);
+		this->global_state->safe_script(
+				this->script->GetScript(),
+				environment,
+				[](lua_State*, sol::protected_function_result pfr) {
+					sol::error err = pfr;
+					spdlog::get("console_log")->warn("Script error: {}", err.what());
+					// if we don't throw anything, then we have to return this
+					return pfr;
+				},
+				this->script_name);
 	}
 }
 
