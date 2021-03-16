@@ -1,0 +1,8 @@
+site_name: Trillek Engine
+repo_url: https://github.com/trillek-team/tec
+theme: readthedocs
+nav:
+  - Introduction: 'index.md'
+  - Lua API:
+    - General: 'lua/index.md'
+    - Callbacks: 'lua/callbacks.md'
