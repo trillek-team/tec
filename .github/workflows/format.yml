@@ -31,17 +31,15 @@ jobs:
     - name: Install Doxybook2 depds
       uses: lukka/run-vcpkg@v4
       id: runvcpkg
-      working-directory: doxybook2
       with:
-        vcpkgArguments: '--triplet linx-x64 $(cat vcpkg.txt)}'
+        vcpkgArguments: '--triplet linx-x64 $(cat ${{ github.workspace }}/doxybook2/vcpkg.txt)}'
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
     - name: Configure doxybook2 cmake and build
       uses: lukka/run-cmake@v3
       id: runcmake_cmd
-      working-directory: doxybook2
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-        cmakeListsTxtPath: 'CMakeLists.txt'
+        cmakeListsTxtPath: '${{ github.workspace }}/doxybook2/CMakeLists.txt'
         cmakeAppendedArgs: '-G"Unix Makefiles"'
         useVcpkgToolchainFile: true
         buildWithCMake: true
