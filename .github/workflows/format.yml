@@ -35,9 +35,9 @@ jobs:
       uses: lukka/run-vcpkg@v4
       id: runvcpkg
       with:
-        vcpkgArguments: '--triplet x64-linux $DOXYBOOK_PACKAGES --head'
+        vcpkgArguments: '--triplet x64-linux $DOXYBOOK_PACKAGES'
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-        vcpkgGitCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+        vcpkgGitCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
     - name: Configure doxybook2 cmake and build
       uses: lukka/run-cmake@v3
       id: runcmake_cmd
