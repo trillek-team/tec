@@ -1,8 +1,14 @@
 site_name: Trillek Engine
 repo_url: https://github.com/trillek-team/tec
 theme: readthedocs
+markdown_extensions:
+  - admonition
 nav:
   - Introduction: 'index.md'
+  - Engine:
+    - Pages: 'engine/index_pages.md'
+    - Namespaces: 'engine/index_namespaces.md'
+    - Classes: 'engine/index_classes.md'
   - Lua API:
     - General: 'lua/index.md'
     - Callbacks: 'lua/callbacks.md'

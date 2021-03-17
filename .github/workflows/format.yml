@@ -1,10 +1,10 @@
 name: Clang Format
 
-on: push
+on:
+  push: docs
 
 jobs:
   format:
-    if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -16,9 +16,41 @@ jobs:
         source: '.'
         clangFormatVersion: 11
         inplace: True
-    - name: Commit any clang format changes
-      uses: EndBug/add-and-commit@v4
+    - uses: mattnotmitt/doxygen-action@v1
+      name: Build docs
       with:
-        message: 'Committing clang-format changes'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: .
+        doxyfile-path: './Doxyfile'
+    - name: Checkout doxybook2
+      uses: actions/checkout@v2
+      with:
+        repository: matusnovak/doxybook2
+        path: doxybook2
+    - name: Install Doxybook2 depds
+      uses: lukka/run-vcpkg@v4
+      id: runvcpkg
+      working-directory: doxybook2
+      with:
+        vcpkgArguments: '--triplet linx-x64 $(cat vcpkg.txt)}'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+    - name: Configure doxybook2 cmake and build
+      uses: lukka/run-cmake@v3
+      id: runcmake_cmd
+      working-directory: doxybook2
+      with:
+        cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+        cmakeListsTxtPath: 'CMakeLists.txt'
+        cmakeAppendedArgs: '-G"Unix Makefiles"'
+        useVcpkgToolchainFile: true
+        buildWithCMake: true
+        buildDirectory: '${{ github.workspace }}/build'
+    - name: Build doxybook2 docs
+      run: ./build/MinSizeRel/doxybook2 --input doxygen/xml --output docs/engine --config .\.doxybook\config.json
+    - name: Display changed files
+      run: git status
+    #- name: Commit any clang format changes
+    #  uses: EndBug/add-and-commit@v4
+    #  with:
+    #    message: 'Committing clang-format changes'
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

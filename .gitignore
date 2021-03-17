@@ -51,3 +51,4 @@ temp/
 .vs/
 build-idea/
 .idea/
+doxygen/
