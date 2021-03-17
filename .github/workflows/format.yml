@@ -47,6 +47,7 @@ jobs:
         cmakeGenerator: UnixMakefiles
         cmakeBuildType: MinSizeRel
         useVcpkgToolchainFile: true
+        buildWithCMakeArgs: '--config MinSizeRel'
         buildWithCMake: true
         buildDirectory: '${{ github.workspace }}/doxybook2/build'
     - name: Build doxybook2 docs
