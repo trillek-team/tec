@@ -31,6 +31,13 @@ jobs:
     - name: Set doxybook2 vcpkg packages from file
       run: |
         echo "DOXYBOOK_PACKAGES=$(cat ${{ github.workspace }}/doxybook2/vcpkg.txt)" >> $GITHUB_ENV
+    - name: Install Doxybook2 inja head per bug issue (must do first!!)
+      uses: lukka/run-vcpkg@v4
+      id: runvcpkg
+      with:
+        vcpkgArguments: '--triplet x64-linux inja --head'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        vcpkgGitCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
     - name: Install Doxybook2 deps
       uses: lukka/run-vcpkg@v4
       id: runvcpkg
