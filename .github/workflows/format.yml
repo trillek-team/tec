@@ -49,7 +49,7 @@ jobs:
         buildWithCMake: true
         buildDirectory: '${{ github.workspace }}/doxybook2/build'
     - name: Build doxybook2 docs
-      run: ${{ github.workspace }}/doxybook2/build/MinSizeRel/doxybook2 --input ${{ github.workspace }}/doxygen/xml --output ${{ github.workspace }}/docs/engine --config ${{ github.workspace }}/.doxybook/config.json
+      run: ./${{ github.workspace }}/doxybook2/build/MinSizeRel/doxybook2 --input ${{ github.workspace }}/doxygen/xml --output ${{ github.workspace }}/docs/engine --config ${{ github.workspace }}/.doxybook/config.json
     - name: Display changed files
       run: git status
     #- name: Commit any clang format changes
