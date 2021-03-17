@@ -13,14 +13,14 @@ title: tec::Command
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Command](Classes/structtec_1_1_command.md#function-command)**(std::function< void(T *)> && command) |
-| | **[Command](Classes/structtec_1_1_command.md#function-command)**([Command](Classes/structtec_1_1_command.md) && c) |
+| | **[Command](/engine/Classes/structtec_1_1_command/#function-command)**(std::function< void(T *)> && command) |
+| | **[Command](/engine/Classes/structtec_1_1_command/#function-command)**([Command](/engine/Classes/structtec_1_1_command/) && c) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::function< void(T *)> | **[command](Classes/structtec_1_1_command.md#variable-command)**  |
+| std::function< void(T *)> | **[command](/engine/Classes/structtec_1_1_command/#variable-command)**  |
 
 ## Detailed Description
 
@@ -60,4 +60,4 @@ std::function< void(T *)> command;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

@@ -11,19 +11,19 @@ title: tec::networking::client_connection_info
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[from_endpoint](Classes/structtec_1_1networking_1_1client__connection__info.md#function-from_endpoint)**(const asio::ip::tcp::endpoint & endpoint) |
-| void | **[from_endpoint](Classes/structtec_1_1networking_1_1client__connection__info.md#function-from_endpoint)**(const asio::ip::udp::endpoint & endpoint) |
+| void | **[from_endpoint](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#function-from_endpoint)**(const asio::ip::tcp::endpoint & endpoint) |
+| void | **[from_endpoint](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#function-from_endpoint)**(const asio::ip::udp::endpoint & endpoint) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[cancel](Classes/structtec_1_1networking_1_1client__connection__info.md#variable-cancel)**  |
-| std::string | **[reason](Classes/structtec_1_1networking_1_1client__connection__info.md#variable-reason)**  |
-| int | **[port](Classes/structtec_1_1networking_1_1client__connection__info.md#variable-port)**  |
-| std::string | **[address](Classes/structtec_1_1networking_1_1client__connection__info.md#variable-address)**  |
-| std::string | **[family](Classes/structtec_1_1networking_1_1client__connection__info.md#variable-family)**  |
-| std::string | **[protocol](Classes/structtec_1_1networking_1_1client__connection__info.md#variable-protocol)**  |
+| bool | **[cancel](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#variable-cancel)**  |
+| std::string | **[reason](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#variable-reason)**  |
+| int | **[port](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#variable-port)**  |
+| std::string | **[address](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#variable-address)**  |
+| std::string | **[family](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#variable-family)**  |
+| std::string | **[protocol](/engine/Classes/structtec_1_1networking_1_1client__connection__info/#variable-protocol)**  |
 
 ## Public Functions Documentation
 
@@ -91,4 +91,4 @@ std::string protocol;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

@@ -7,77 +7,77 @@ title: tec::Console
 
 
 
-Inherits from [tec::AbstractWindow](Classes/classtec_1_1_abstract_window.md), [tec::EventQueue< KeyboardEvent >](Classes/classtec_1_1_event_queue.md), [tec::EventQueue< WindowResizedEvent >](Classes/classtec_1_1_event_queue.md)
+Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/), [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Console](Classes/classtec_1_1_console.md#function-console)**() |
-| virtual void | **[Update](Classes/classtec_1_1_console.md#function-update)**(double delta) override |
-| void | **[Clear](Classes/classtec_1_1_console.md#function-clear)**() |
-| void | **[Println](Classes/classtec_1_1_console.md#function-println)**(const std::string & str, ImVec4 color =ImVec4(255, 255, 255, 255)) |
-| void | **[Println](Classes/classtec_1_1_console.md#function-println)**(const char * cstr, ImVec4 color =ImVec4(255, 255, 255, 255)) |
-| void | **[Printfln](Classes/classtec_1_1_console.md#function-printfln)**(const char * cstr, ... ) |
-| virtual void | **[Draw](Classes/classtec_1_1_console.md#function-draw)**() override |
-| virtual bool | **[isCollapsed](Classes/classtec_1_1_console.md#function-iscollapsed)**() const override |
-| void | **[AddConsoleCommand](Classes/classtec_1_1_console.md#function-addconsolecommand)**(std::string name, std::string help, std::function< void(const char *)> && func) |
-| void | **[AddSlashHandler](Classes/classtec_1_1_console.md#function-addslashhandler)**(std::function< void(const char *)> && func) |
+| | **[Console](/engine/Classes/classtec_1_1_console/#function-console)**() |
+| virtual void | **[Update](/engine/Classes/classtec_1_1_console/#function-update)**(double delta) override |
+| void | **[Clear](/engine/Classes/classtec_1_1_console/#function-clear)**() |
+| void | **[Println](/engine/Classes/classtec_1_1_console/#function-println)**(const std::string & str, ImVec4 color =ImVec4(255, 255, 255, 255)) |
+| void | **[Println](/engine/Classes/classtec_1_1_console/#function-println)**(const char * cstr, ImVec4 color =ImVec4(255, 255, 255, 255)) |
+| void | **[Printfln](/engine/Classes/classtec_1_1_console/#function-printfln)**(const char * cstr, ... ) |
+| virtual void | **[Draw](/engine/Classes/classtec_1_1_console/#function-draw)**() override |
+| virtual bool | **[isCollapsed](/engine/Classes/classtec_1_1_console/#function-iscollapsed)**() const override |
+| void | **[AddConsoleCommand](/engine/Classes/classtec_1_1_console/#function-addconsolecommand)**(std::string name, std::string help, std::function< void(const char *)> && func) |
+| void | **[AddSlashHandler](/engine/Classes/classtec_1_1_console/#function-addslashhandler)**(std::function< void(const char *)> && func) |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::AbstractWindow](Classes/classtec_1_1_abstract_window.md)**
+**Public Functions inherited from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)**
 
 |                | Name           |
 | -------------- | -------------- |
-| virtual | **[~AbstractWindow](Classes/classtec_1_1_abstract_window.md#function-~abstractwindow)**() =default |
-| void | **[SetAlpha](Classes/classtec_1_1_abstract_window.md#function-setalpha)**(float a) |
-| float | **[GetAlpha](Classes/classtec_1_1_abstract_window.md#function-getalpha)**() const |
-| bool | **[isVisible](Classes/classtec_1_1_abstract_window.md#function-isvisible)**() const |
-| void | **[Hide](Classes/classtec_1_1_abstract_window.md#function-hide)**() |
-| void | **[Show](Classes/classtec_1_1_abstract_window.md#function-show)**() |
+| virtual | **[~AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/#function-~abstractwindow)**() =default |
+| void | **[SetAlpha](/engine/Classes/classtec_1_1_abstract_window/#function-setalpha)**(float a) |
+| float | **[GetAlpha](/engine/Classes/classtec_1_1_abstract_window/#function-getalpha)**() const |
+| bool | **[isVisible](/engine/Classes/classtec_1_1_abstract_window/#function-isvisible)**() const |
+| void | **[Hide](/engine/Classes/classtec_1_1_abstract_window/#function-hide)**() |
+| void | **[Show](/engine/Classes/classtec_1_1_abstract_window/#function-show)**() |
 
-**Protected Attributes inherited from [tec::AbstractWindow](Classes/classtec_1_1_abstract_window.md)**
-
-|                | Name           |
-| -------------- | -------------- |
-| float | **[alpha](Classes/classtec_1_1_abstract_window.md#variable-alpha)**  |
-| bool | **[collapsed](Classes/classtec_1_1_abstract_window.md#variable-collapsed)**  |
-| bool | **[show](Classes/classtec_1_1_abstract_window.md#variable-show)** <br>Collapsed ?  |
-
-**Public Functions inherited from [tec::EventQueue< KeyboardEvent >](Classes/classtec_1_1_event_queue.md)**
+**Protected Attributes inherited from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
-| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
-| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
+| float | **[alpha](/engine/Classes/classtec_1_1_abstract_window/#variable-alpha)**  |
+| bool | **[collapsed](/engine/Classes/classtec_1_1_abstract_window/#variable-collapsed)**  |
+| bool | **[show](/engine/Classes/classtec_1_1_abstract_window/#variable-show)** <br>Collapsed ?  |
 
-**Protected Attributes inherited from [tec::EventQueue< KeyboardEvent >](Classes/classtec_1_1_event_queue.md)**
+**Public Functions inherited from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
-| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
+| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
+| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
+| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
 
-**Public Functions inherited from [tec::EventQueue< WindowResizedEvent >](Classes/classtec_1_1_event_queue.md)**
-
-|                | Name           |
-| -------------- | -------------- |
-| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
-| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
-| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
-
-**Protected Attributes inherited from [tec::EventQueue< WindowResizedEvent >](Classes/classtec_1_1_event_queue.md)**
+**Protected Attributes inherited from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
-| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
+| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
+| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+
+**Public Functions inherited from [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+
+|                | Name           |
+| -------------- | -------------- |
+| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
+| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
+| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
+
+**Protected Attributes inherited from [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+
+|                | Name           |
+| -------------- | -------------- |
+| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
+| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
 
 
 ## Public Functions Documentation
@@ -98,7 +98,7 @@ virtual void Update(
 ```
 
 
-**Reimplements**: [tec::AbstractWindow::Update](Classes/classtec_1_1_abstract_window.md#function-update)
+**Reimplements**: [tec::AbstractWindow::Update](/engine/Classes/classtec_1_1_abstract_window/#function-update)
 
 
 ### function Clear
@@ -148,7 +148,7 @@ virtual void Draw() override
 ```
 
 
-**Reimplements**: [tec::AbstractWindow::Draw](Classes/classtec_1_1_abstract_window.md#function-draw)
+**Reimplements**: [tec::AbstractWindow::Draw](/engine/Classes/classtec_1_1_abstract_window/#function-draw)
 
 
 ### function isCollapsed
@@ -158,7 +158,7 @@ inline virtual bool isCollapsed() const override
 ```
 
 
-**Reimplements**: [tec::AbstractWindow::isCollapsed](Classes/classtec_1_1_abstract_window.md#function-iscollapsed)
+**Reimplements**: [tec::AbstractWindow::isCollapsed](/engine/Classes/classtec_1_1_abstract_window/#function-iscollapsed)
 
 
 ### function AddConsoleCommand
@@ -201,4 +201,4 @@ Register a slash handler that handles all '/' commands
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

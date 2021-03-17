@@ -13,14 +13,14 @@ title: tec::EventSystem
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [EventSystem](Classes/classtec_1_1_event_system.md)< T > > | **[Get](Classes/classtec_1_1_event_system.md#function-get)**() |
-| | **[~EventSystem](Classes/classtec_1_1_event_system.md#function-~eventsystem)**() |
-| void | **[Subscribe](Classes/classtec_1_1_event_system.md#function-subscribe)**(const [eid](Namespaces/namespacetec.md#typedef-eid) entity_id, [EventQueue](Classes/classtec_1_1_event_queue.md)< T > * subscriber)<br>Subscribes to be notified of events.  |
-| void | **[Subscribe](Classes/classtec_1_1_event_system.md#function-subscribe)**([EventQueue](Classes/classtec_1_1_event_queue.md)< T > * subscriber)<br>Subscribes to be notified of events for all entity IDs.  |
-| void | **[Unsubscribe](Classes/classtec_1_1_event_system.md#function-unsubscribe)**(const [eid](Namespaces/namespacetec.md#typedef-eid) entity_id, [EventQueue](Classes/classtec_1_1_event_queue.md)< T > * subscriber)<br>Unsubscribes to notification of events.  |
-| void | **[Unsubscribe](Classes/classtec_1_1_event_system.md#function-unsubscribe)**([EventQueue](Classes/classtec_1_1_event_queue.md)< T > * subscriber)<br>Unsubscribes to notification of events.  |
-| void | **[Emit](Classes/classtec_1_1_event_system.md#function-emit)**(const [eid](Namespaces/namespacetec.md#typedef-eid) entity_id, std::shared_ptr< T > data)<br>Emits an event to subscribers for a given entity_id and to all subscribers listening for events for any entity_id.  |
-| void | **[Emit](Classes/classtec_1_1_event_system.md#function-emit)**(std::shared_ptr< T > data)<br>Emits an event to all subscribers listening for events for any entity_id.  |
+| std::shared_ptr< [EventSystem](/engine/Classes/classtec_1_1_event_system/)< T > > | **[Get](/engine/Classes/classtec_1_1_event_system/#function-get)**() |
+| | **[~EventSystem](/engine/Classes/classtec_1_1_event_system/#function-~eventsystem)**() |
+| void | **[Subscribe](/engine/Classes/classtec_1_1_event_system/#function-subscribe)**(const [eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, [EventQueue](/engine/Classes/classtec_1_1_event_queue/)< T > * subscriber)<br>Subscribes to be notified of events.  |
+| void | **[Subscribe](/engine/Classes/classtec_1_1_event_system/#function-subscribe)**([EventQueue](/engine/Classes/classtec_1_1_event_queue/)< T > * subscriber)<br>Subscribes to be notified of events for all entity IDs.  |
+| void | **[Unsubscribe](/engine/Classes/classtec_1_1_event_system/#function-unsubscribe)**(const [eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, [EventQueue](/engine/Classes/classtec_1_1_event_queue/)< T > * subscriber)<br>Unsubscribes to notification of events.  |
+| void | **[Unsubscribe](/engine/Classes/classtec_1_1_event_system/#function-unsubscribe)**([EventQueue](/engine/Classes/classtec_1_1_event_queue/)< T > * subscriber)<br>Unsubscribes to notification of events.  |
+| void | **[Emit](/engine/Classes/classtec_1_1_event_system/#function-emit)**(const [eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< T > data)<br>Emits an event to subscribers for a given entity_id and to all subscribers listening for events for any entity_id.  |
+| void | **[Emit](/engine/Classes/classtec_1_1_event_system/#function-emit)**(std::shared_ptr< T > data)<br>Emits an event to all subscribers listening for events for any entity_id.  |
 
 ## Detailed Description
 
@@ -155,4 +155,4 @@ Emits an event to all subscribers listening for events for any entity_id.
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

@@ -11,18 +11,18 @@ title: tec::ServerStats
 
 |                | Name           |
 | -------------- | -------------- |
-| uint64_t | **[estimated_server_time](Classes/classtec_1_1_server_stats.md#variable-estimated_server_time)**  |
-| uint64_t | **[last_state_time](Classes/classtec_1_1_server_stats.md#variable-last_state_time)**  |
-| size_t | **[server_state_count](Classes/classtec_1_1_server_stats.md#variable-server_state_count)**  |
-| state_id_t | **[current_command_id](Classes/classtec_1_1_server_stats.md#variable-current_command_id)**  |
-| state_id_t | **[current_acked_id](Classes/classtec_1_1_server_stats.md#variable-current_acked_id)**  |
-| glm::vec3 | **[server_position](Classes/classtec_1_1_server_stats.md#variable-server_position)**  |
-| glm::vec3 | **[server_position_next](Classes/classtec_1_1_server_stats.md#variable-server_position_next)**  |
-| glm::vec3 | **[client_position](Classes/classtec_1_1_server_stats.md#variable-client_position)**  |
-| glm::vec3 | **[client_velocity](Classes/classtec_1_1_server_stats.md#variable-client_velocity)**  |
-| uint64_t | **[estimated_delay](Classes/classtec_1_1_server_stats.md#variable-estimated_delay)**  |
-| uint64_t | **[estimated_delay_accumulator](Classes/classtec_1_1_server_stats.md#variable-estimated_delay_accumulator)**  |
-| size_t | **[estimated_delay_count](Classes/classtec_1_1_server_stats.md#variable-estimated_delay_count)**  |
+| uint64_t | **[estimated_server_time](/engine/Classes/classtec_1_1_server_stats/#variable-estimated_server_time)**  |
+| uint64_t | **[last_state_time](/engine/Classes/classtec_1_1_server_stats/#variable-last_state_time)**  |
+| size_t | **[server_state_count](/engine/Classes/classtec_1_1_server_stats/#variable-server_state_count)**  |
+| state_id_t | **[current_command_id](/engine/Classes/classtec_1_1_server_stats/#variable-current_command_id)**  |
+| state_id_t | **[current_acked_id](/engine/Classes/classtec_1_1_server_stats/#variable-current_acked_id)**  |
+| glm::vec3 | **[server_position](/engine/Classes/classtec_1_1_server_stats/#variable-server_position)**  |
+| glm::vec3 | **[server_position_next](/engine/Classes/classtec_1_1_server_stats/#variable-server_position_next)**  |
+| glm::vec3 | **[client_position](/engine/Classes/classtec_1_1_server_stats/#variable-client_position)**  |
+| glm::vec3 | **[client_velocity](/engine/Classes/classtec_1_1_server_stats/#variable-client_velocity)**  |
+| uint64_t | **[estimated_delay](/engine/Classes/classtec_1_1_server_stats/#variable-estimated_delay)**  |
+| uint64_t | **[estimated_delay_accumulator](/engine/Classes/classtec_1_1_server_stats/#variable-estimated_delay_accumulator)**  |
+| size_t | **[estimated_delay_count](/engine/Classes/classtec_1_1_server_stats/#variable-estimated_delay_count)**  |
 
 ## Public Attributes Documentation
 
@@ -112,4 +112,4 @@ size_t estimated_delay_count;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

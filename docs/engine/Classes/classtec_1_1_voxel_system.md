@@ -11,7 +11,7 @@ title: tec::VoxelSystem
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[Update](Classes/classtec_1_1_voxel_system.md#function-update)**(double delta) |
+| void | **[Update](/engine/Classes/classtec_1_1_voxel_system/#function-update)**(double delta) |
 
 ## Public Functions Documentation
 
@@ -26,4 +26,4 @@ inline void Update(
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

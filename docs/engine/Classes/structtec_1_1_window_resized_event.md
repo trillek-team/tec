@@ -11,10 +11,10 @@ title: tec::WindowResizedEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| int | **[old_width](Classes/structtec_1_1_window_resized_event.md#variable-old_width)**  |
-| int | **[old_height](Classes/structtec_1_1_window_resized_event.md#variable-old_height)**  |
-| int | **[new_width](Classes/structtec_1_1_window_resized_event.md#variable-new_width)**  |
-| int | **[new_height](Classes/structtec_1_1_window_resized_event.md#variable-new_height)**  |
+| int | **[old_width](/engine/Classes/structtec_1_1_window_resized_event/#variable-old_width)**  |
+| int | **[old_height](/engine/Classes/structtec_1_1_window_resized_event/#variable-old_height)**  |
+| int | **[new_width](/engine/Classes/structtec_1_1_window_resized_event/#variable-new_width)**  |
+| int | **[new_height](/engine/Classes/structtec_1_1_window_resized_event/#variable-new_height)**  |
 
 ## Public Attributes Documentation
 
@@ -48,4 +48,4 @@ int new_height {0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

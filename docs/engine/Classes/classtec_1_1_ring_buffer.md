@@ -13,16 +13,16 @@ title: tec::RingBuffer
 
 |                | Name           |
 | -------------- | -------------- |
-| const T & | **[operator[]](Classes/classtec_1_1_ring_buffer.md#function-operator[])**(std::size_t pos) const |
-| T & | **[back](Classes/classtec_1_1_ring_buffer.md#function-back)**() |
-| const T & | **[back](Classes/classtec_1_1_ring_buffer.md#function-back)**() const |
-| void | **[pop_back](Classes/classtec_1_1_ring_buffer.md#function-pop_back)**() |
-| void | **[push_front](Classes/classtec_1_1_ring_buffer.md#function-push_front)**(const T & value) |
-| bool | **[empty](Classes/classtec_1_1_ring_buffer.md#function-empty)**() const |
-| bool | **[full](Classes/classtec_1_1_ring_buffer.md#function-full)**() const |
-| std::size_t | **[size](Classes/classtec_1_1_ring_buffer.md#function-size)**() const |
-| std::size_t | **[max_size](Classes/classtec_1_1_ring_buffer.md#function-max_size)**() const |
-| void | **[clear](Classes/classtec_1_1_ring_buffer.md#function-clear)**() |
+| const T & | **[operator[]](/engine/Classes/classtec_1_1_ring_buffer/#function-operator[])**(std::size_t pos) const |
+| T & | **[back](/engine/Classes/classtec_1_1_ring_buffer/#function-back)**() |
+| const T & | **[back](/engine/Classes/classtec_1_1_ring_buffer/#function-back)**() const |
+| void | **[pop_back](/engine/Classes/classtec_1_1_ring_buffer/#function-pop_back)**() |
+| void | **[push_front](/engine/Classes/classtec_1_1_ring_buffer/#function-push_front)**(const T & value) |
+| bool | **[empty](/engine/Classes/classtec_1_1_ring_buffer/#function-empty)**() const |
+| bool | **[full](/engine/Classes/classtec_1_1_ring_buffer/#function-full)**() const |
+| std::size_t | **[size](/engine/Classes/classtec_1_1_ring_buffer/#function-size)**() const |
+| std::size_t | **[max_size](/engine/Classes/classtec_1_1_ring_buffer/#function-max_size)**() const |
+| void | **[clear](/engine/Classes/classtec_1_1_ring_buffer/#function-clear)**() |
 
 ## Detailed Description
 
@@ -140,4 +140,4 @@ Removes all elements of the buffer
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

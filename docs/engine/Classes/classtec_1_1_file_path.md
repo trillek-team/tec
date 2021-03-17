@@ -8,66 +8,66 @@ summary: OS File system path separator.
 
 
 
-[OS](Classes/classtec_1_1_o_s.md) File system path separator. 
+[OS](/engine/Classes/classtec_1_1_o_s/) File system path separator. 
 `#include <filesystem.hpp>`
 
 ## Public Types
 
 |                | Name           |
 | -------------- | -------------- |
-| typedef std::string | **[NFilePath](Classes/classtec_1_1_file_path.md#typedef-nfilepath)** <br>[OS](Classes/classtec_1_1_o_s.md) File system path separator.  |
+| typedef std::string | **[NFilePath](/engine/Classes/classtec_1_1_file_path/#typedef-nfilepath)** <br>[OS](/engine/Classes/classtec_1_1_o_s/) File system path separator.  |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[FilePath](Classes/classtec_1_1_file_path.md#function-filepath)**()<br>Builds a empty path.  |
-| | **[FilePath](Classes/classtec_1_1_file_path.md#function-filepath)**(const std::string & other, std::size_t pos =0, std::size_t count =std::string::npos)<br>Builds a path from a string or substring.  |
-| | **[FilePath](Classes/classtec_1_1_file_path.md#function-filepath)**(const std::wstring & other, std::size_t pos =0, std::size_t count =std::wstring::npos)<br>Builds a path from a wstring or substring.  |
-| bool | **[DirExists](Classes/classtec_1_1_file_path.md#function-direxists)**() const<br>Check if a directory exists.  |
-| bool | **[FileExists](Classes/classtec_1_1_file_path.md#function-fileexists)**() const<br>Check if a file exists.  |
-| std::string | **[FileName](Classes/classtec_1_1_file_path.md#function-filename)**() const<br>Extract a filename from a path.  |
-| std::string | **[FileExtension](Classes/classtec_1_1_file_path.md#function-fileextension)**() const<br>Extract a extension from a path to a file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[BasePath](Classes/classtec_1_1_file_path.md#function-basepath)**() const<br>Return base path of a full path.  |
-| bool | **[isAbsolutePath](Classes/classtec_1_1_file_path.md#function-isabsolutepath)**() const<br>Is an absolute or relative path ?  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[Subpath](Classes/classtec_1_1_file_path.md#function-subpath)**(std::size_t begin, std::size_t end =[FilePath::npos](Classes/classtec_1_1_file_path.md#variable-npos)) const<br>Return a subpath.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[SubpathFrom](Classes/classtec_1_1_file_path.md#function-subpathfrom)**(const std::string & needle, bool include =false) const<br>Return a subpath.  |
-| void | **[NormalizePath](Classes/classtec_1_1_file_path.md#function-normalizepath)**()<br>Normalize path to the [OS](Classes/classtec_1_1_o_s.md) format.  |
-| bool | **[isValidPath](Classes/classtec_1_1_file_path.md#function-isvalidpath)**() const<br>Check if the path is a valid absolute o relative path.  |
-| [FilePath::NFilePath](Classes/classtec_1_1_file_path.md#typedef-nfilepath) | **[GetNativePath](Classes/classtec_1_1_file_path.md#function-getnativepath)**() const<br>Returns a path on the native [OS](Classes/classtec_1_1_o_s.md) encoding.  |
-| std::string | **[toString](Classes/classtec_1_1_file_path.md#function-tostring)**() const<br>Returns the string representation of a path.  |
-| std::string | **[toGenericString](Classes/classtec_1_1_file_path.md#function-togenericstring)**() const<br>Returns a generic string representation of a path (uses \ as path separator ALWAYS)  |
-| bool | **[empty](Classes/classtec_1_1_file_path.md#function-empty)**() const<br>Return if this [FilePath](Classes/classtec_1_1_file_path.md) is empty.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator=](Classes/classtec_1_1_file_path.md#function-operator=)**(const [FilePath](Classes/classtec_1_1_file_path.md) & rhs) |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator=](Classes/classtec_1_1_file_path.md#function-operator=)**(const std::string & str) |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator=](Classes/classtec_1_1_file_path.md#function-operator=)**(const std::wstring & wstr) |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator=](Classes/classtec_1_1_file_path.md#function-operator=)**(const char * str) |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator+=](Classes/classtec_1_1_file_path.md#function-operator+=)**(const [FilePath](Classes/classtec_1_1_file_path.md) & rhs)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator+=](Classes/classtec_1_1_file_path.md#function-operator+=)**(const char * lhs)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator+=](Classes/classtec_1_1_file_path.md#function-operator+=)**(const std::string & lhs)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator+=](Classes/classtec_1_1_file_path.md#function-operator+=)**(const std::wstring & lhs)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator/=](Classes/classtec_1_1_file_path.md#function-operator/=)**(const [FilePath](Classes/classtec_1_1_file_path.md) & rhs)<br>Append a subdirectory or file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator/=](Classes/classtec_1_1_file_path.md#function-operator/=)**(const char * rhs)<br>Append a subdirectory or file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator/=](Classes/classtec_1_1_file_path.md#function-operator/=)**(const std::string & rhs)<br>Append a subdirectory or file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) & | **[operator/=](Classes/classtec_1_1_file_path.md#function-operator/=)**(const std::wstring & rhs)<br>Append a subdirectory or file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetUserSettingsPath](Classes/classtec_1_1_file_path.md#function-getusersettingspath)**()<br>Returns the path to the User settings folder.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetUserDataPath](Classes/classtec_1_1_file_path.md#function-getuserdatapath)**()<br>Returns the path to the User persistent data folder (for save files, for example)  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetUserCachePath](Classes/classtec_1_1_file_path.md#function-getusercachepath)**()<br>Returns the path to the User cache folder.  |
-| bool | **[MkDir](Classes/classtec_1_1_file_path.md#function-mkdir)**(const [FilePath](Classes/classtec_1_1_file_path.md) & path)<br>Try to create a directory route.  |
-| bool | **[MkPath](Classes/classtec_1_1_file_path.md#function-mkpath)**(const [FilePath](Classes/classtec_1_1_file_path.md) & path)<br>Try to create a full path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetProgramPath](Classes/classtec_1_1_file_path.md#function-getprogrampath)**()<br>Try to obtain the full path to the program binary file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetAssetsBasePath](Classes/classtec_1_1_file_path.md#function-getassetsbasepath)**()<br>Return the base directory where search the assets.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetAssetPath](Classes/classtec_1_1_file_path.md#function-getassetpath)**(const [FilePath](Classes/classtec_1_1_file_path.md) & asset)<br>returns the full path to an asset  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetAssetPath](Classes/classtec_1_1_file_path.md#function-getassetpath)**(const std::string & asset)<br>returns the full path to an asset  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[GetAssetPath](Classes/classtec_1_1_file_path.md#function-getassetpath)**(const char * asset)<br>returns the full path to an asset  |
-| void | **[SetAssetsBasePath](Classes/classtec_1_1_file_path.md#function-setassetsbasepath)**([FilePath](Classes/classtec_1_1_file_path.md) new_base)<br>Sets the base directory where search the assets.  |
+| | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**()<br>Builds a empty path.  |
+| | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**(const std::string & other, std::size_t pos =0, std::size_t count =std::string::npos)<br>Builds a path from a string or substring.  |
+| | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**(const std::wstring & other, std::size_t pos =0, std::size_t count =std::wstring::npos)<br>Builds a path from a wstring or substring.  |
+| bool | **[DirExists](/engine/Classes/classtec_1_1_file_path/#function-direxists)**() const<br>Check if a directory exists.  |
+| bool | **[FileExists](/engine/Classes/classtec_1_1_file_path/#function-fileexists)**() const<br>Check if a file exists.  |
+| std::string | **[FileName](/engine/Classes/classtec_1_1_file_path/#function-filename)**() const<br>Extract a filename from a path.  |
+| std::string | **[FileExtension](/engine/Classes/classtec_1_1_file_path/#function-fileextension)**() const<br>Extract a extension from a path to a file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[BasePath](/engine/Classes/classtec_1_1_file_path/#function-basepath)**() const<br>Return base path of a full path.  |
+| bool | **[isAbsolutePath](/engine/Classes/classtec_1_1_file_path/#function-isabsolutepath)**() const<br>Is an absolute or relative path ?  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[Subpath](/engine/Classes/classtec_1_1_file_path/#function-subpath)**(std::size_t begin, std::size_t end =[FilePath::npos](/engine/Classes/classtec_1_1_file_path/#variable-npos)) const<br>Return a subpath.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[SubpathFrom](/engine/Classes/classtec_1_1_file_path/#function-subpathfrom)**(const std::string & needle, bool include =false) const<br>Return a subpath.  |
+| void | **[NormalizePath](/engine/Classes/classtec_1_1_file_path/#function-normalizepath)**()<br>Normalize path to the [OS](/engine/Classes/classtec_1_1_o_s/) format.  |
+| bool | **[isValidPath](/engine/Classes/classtec_1_1_file_path/#function-isvalidpath)**() const<br>Check if the path is a valid absolute o relative path.  |
+| [FilePath::NFilePath](/engine/Classes/classtec_1_1_file_path/#typedef-nfilepath) | **[GetNativePath](/engine/Classes/classtec_1_1_file_path/#function-getnativepath)**() const<br>Returns a path on the native [OS](/engine/Classes/classtec_1_1_o_s/) encoding.  |
+| std::string | **[toString](/engine/Classes/classtec_1_1_file_path/#function-tostring)**() const<br>Returns the string representation of a path.  |
+| std::string | **[toGenericString](/engine/Classes/classtec_1_1_file_path/#function-togenericstring)**() const<br>Returns a generic string representation of a path (uses \ as path separator ALWAYS)  |
+| bool | **[empty](/engine/Classes/classtec_1_1_file_path/#function-empty)**() const<br>Return if this [FilePath](/engine/Classes/classtec_1_1_file_path/) is empty.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs) |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const std::string & str) |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const std::wstring & wstr) |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const char * str) |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const char * lhs)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const std::string & lhs)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const std::wstring & lhs)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator/=](/engine/Classes/classtec_1_1_file_path/#function-operator/=)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Append a subdirectory or file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator/=](/engine/Classes/classtec_1_1_file_path/#function-operator/=)**(const char * rhs)<br>Append a subdirectory or file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator/=](/engine/Classes/classtec_1_1_file_path/#function-operator/=)**(const std::string & rhs)<br>Append a subdirectory or file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator/=](/engine/Classes/classtec_1_1_file_path/#function-operator/=)**(const std::wstring & rhs)<br>Append a subdirectory or file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetUserSettingsPath](/engine/Classes/classtec_1_1_file_path/#function-getusersettingspath)**()<br>Returns the path to the User settings folder.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetUserDataPath](/engine/Classes/classtec_1_1_file_path/#function-getuserdatapath)**()<br>Returns the path to the User persistent data folder (for save files, for example)  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetUserCachePath](/engine/Classes/classtec_1_1_file_path/#function-getusercachepath)**()<br>Returns the path to the User cache folder.  |
+| bool | **[MkDir](/engine/Classes/classtec_1_1_file_path/#function-mkdir)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Try to create a directory route.  |
+| bool | **[MkPath](/engine/Classes/classtec_1_1_file_path/#function-mkpath)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Try to create a full path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetProgramPath](/engine/Classes/classtec_1_1_file_path/#function-getprogrampath)**()<br>Try to obtain the full path to the program binary file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetAssetsBasePath](/engine/Classes/classtec_1_1_file_path/#function-getassetsbasepath)**()<br>Return the base directory where search the assets.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetAssetPath](/engine/Classes/classtec_1_1_file_path/#function-getassetpath)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & asset)<br>returns the full path to an asset  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetAssetPath](/engine/Classes/classtec_1_1_file_path/#function-getassetpath)**(const std::string & asset)<br>returns the full path to an asset  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetAssetPath](/engine/Classes/classtec_1_1_file_path/#function-getassetpath)**(const char * asset)<br>returns the full path to an asset  |
+| void | **[SetAssetsBasePath](/engine/Classes/classtec_1_1_file_path/#function-setassetsbasepath)**([FilePath](/engine/Classes/classtec_1_1_file_path/) new_base)<br>Sets the base directory where search the assets.  |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| const char | **[PATH_SEPARATOR_C](Classes/classtec_1_1_file_path.md#variable-path_separator_c)**  |
-| const std::size_t | **[npos](Classes/classtec_1_1_file_path.md#variable-npos)** <br>Native string format for paths.  |
+| const char | **[PATH_SEPARATOR_C](/engine/Classes/classtec_1_1_file_path/#variable-path_separator_c)**  |
+| const std::size_t | **[npos](/engine/Classes/classtec_1_1_file_path/#variable-npos)** <br>Native string format for paths.  |
 
 ## Public Types Documentation
 
@@ -77,7 +77,7 @@ summary: OS File system path separator.
 typedef std::string tec::FilePath::NFilePath;
 ```
 
-[OS](Classes/classtec_1_1_o_s.md) File system path separator. 
+[OS](/engine/Classes/classtec_1_1_o_s/) File system path separator. 
 
 ## Public Functions Documentation
 
@@ -202,7 +202,7 @@ Return a subpath.
 **Parameters**: 
 
   * **begin** First element (each element is separated by a path separator) 
-  * **end** Last element (default [FilePath::npos](Classes/classtec_1_1_file_path.md#variable-npos))
+  * **end** Last element (default [FilePath::npos](/engine/Classes/classtec_1_1_file_path/#variable-npos))
 
 
 
@@ -246,12 +246,12 @@ f.SubpathFrom(assets, true); // ==> "/assets/foo/bar/mesh.obj"
 void NormalizePath()
 ```
 
-Normalize path to the [OS](Classes/classtec_1_1_o_s.md) format. 
+Normalize path to the [OS](/engine/Classes/classtec_1_1_o_s/) format. 
 
 
 
-* Convert slashes to the correct [OS](Classes/classtec_1_1_o_s.md) slash
-* Remove drive unit if is a *NIX [OS](Classes/classtec_1_1_o_s.md)normalized path 
+* Convert slashes to the correct [OS](/engine/Classes/classtec_1_1_o_s/) slash
+* Remove drive unit if is a *NIX [OS](/engine/Classes/classtec_1_1_o_s/)normalized path 
 
 
 ### function isValidPath
@@ -268,7 +268,7 @@ Check if the path is a valid absolute o relative path.
 FilePath::NFilePath GetNativePath() const
 ```
 
-Returns a path on the native [OS](Classes/classtec_1_1_o_s.md) encoding. 
+Returns a path on the native [OS](/engine/Classes/classtec_1_1_o_s/) encoding. 
 
 
 
@@ -299,7 +299,7 @@ Returns a generic string representation of a path (uses \ as path separator ALWA
 inline bool empty() const
 ```
 
-Return if this [FilePath](Classes/classtec_1_1_file_path.md) is empty. 
+Return if this [FilePath](/engine/Classes/classtec_1_1_file_path/) is empty. 
 
 ### function operator=
 
@@ -508,7 +508,7 @@ If isn't set, then would try to search a valid directory path, probing with this
 * ./assets/
 * EXE_PATH/assets/
 * EXE_PATH/../assets/
-* EXE_PATH/../share/assets/ Were EXE_PATH is the value returned by [GetProgramPath()](Classes/classtec_1_1_file_path.md#function-getprogrampath) If find a valid path, then stores it for the future 
+* EXE_PATH/../share/assets/ Were EXE_PATH is the value returned by [GetProgramPath()](/engine/Classes/classtec_1_1_file_path/#function-getprogrampath) If find a valid path, then stores it for the future 
 
 
 ### function GetAssetPath
@@ -585,4 +585,4 @@ Native string format for paths.
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

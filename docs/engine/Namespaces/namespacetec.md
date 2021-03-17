@@ -11,221 +11,221 @@ title: tec
 
 | Name           |
 | -------------- |
-| **[tec::networking](Namespaces/namespacetec_1_1networking.md)**  |
+| **[tec::networking](/engine/Namespaces/namespacetec_1_1networking/)**  |
 
 ## Classes
 
 |                | Name           |
 | -------------- | -------------- |
-| class | **[tec::ClientGameStateQueue](Classes/classtec_1_1_client_game_state_queue.md)**  |
-| class | **[tec::Game](Classes/classtec_1_1_game.md)**  |
-| class | **[tec::Animation](Classes/classtec_1_1_animation.md)**  |
-| class | **[tec::GBuffer](Classes/classtec_1_1_g_buffer.md)**  |
-| struct | **[tec::BaseLight](Classes/structtec_1_1_base_light.md)**  |
-| struct | **[tec::DirectionalLight](Classes/structtec_1_1_directional_light.md)**  |
-| struct | **[tec::PointLight](Classes/structtec_1_1_point_light.md)**  |
-| struct | **[tec::SpotLight](Classes/structtec_1_1_spot_light.md)**  |
-| class | **[tec::Material](Classes/classtec_1_1_material.md)**  |
-| struct | **[tec::Renderable](Classes/structtec_1_1_renderable.md)**  |
-| class | **[tec::Shader](Classes/classtec_1_1_shader.md)**  |
-| class | **[tec::TextureObject](Classes/classtec_1_1_texture_object.md)**  |
-| struct | **[tec::VertexGroup](Classes/structtec_1_1_vertex_group.md)**  |
-| class | **[tec::VertexBufferObject](Classes/classtec_1_1_vertex_buffer_object.md)**  |
-| struct | **[tec::View](Classes/structtec_1_1_view.md)**  |
-| class | **[tec::AbstractWindow](Classes/classtec_1_1_abstract_window.md)**  |
-| class | **[tec::ActiveEntityTooltip](Classes/classtec_1_1_active_entity_tooltip.md)**  |
-| class | **[tec::Console](Classes/classtec_1_1_console.md)**  |
-| class | **[tec::ConsoleSink](Classes/classtec_1_1_console_sink.md)**  |
-| class | **[tec::DebugInfo](Classes/classtec_1_1_debug_info.md)**  |
-| class | **[tec::ServerConnectWindow](Classes/classtec_1_1_server_connect_window.md)**  |
-| class | **[tec::PingTimesWindow](Classes/classtec_1_1_ping_times_window.md)**  |
-| class | **[tec::IMGUISystem](Classes/classtec_1_1_i_m_g_u_i_system.md)**  |
-| class | **[tec::OS](Classes/classtec_1_1_o_s.md)**  |
-| class | **[tec::PhysicsDebugDrawer](Classes/classtec_1_1_physics_debug_drawer.md)**  |
-| class | **[tec::RenderSystem](Classes/classtec_1_1_render_system.md)**  |
-| class | **[tec::MD5Anim](Classes/classtec_1_1_m_d5_anim.md)**  |
-| class | **[tec::MD5Mesh](Classes/classtec_1_1_m_d5_mesh.md)**  |
-| class | **[tec::OBJ](Classes/classtec_1_1_o_b_j.md)**  |
-| class | **[tec::PixelBuffer](Classes/classtec_1_1_pixel_buffer.md)**  |
-| class | **[tec::VorbisStream](Classes/classtec_1_1_vorbis_stream.md)**  |
-| struct | **[tec::AudioSource](Classes/structtec_1_1_audio_source.md)**  |
-| class | **[tec::SoundSystem](Classes/classtec_1_1_sound_system.md)**  |
-| struct | **[tec::TimeFrameMetrics](Classes/structtec_1_1_time_frame_metrics.md)**  |
-| struct | **[tec::Voxel](Classes/structtec_1_1_voxel.md)**  |
-| class | **[tec::VoxelVolume](Classes/classtec_1_1_voxel_volume.md)**  |
-| class | **[tec::VoxelSystem](Classes/classtec_1_1_voxel_system.md)**  |
-| class | **[tec::ServerGameStateQueue](Classes/classtec_1_1_server_game_state_queue.md)**  |
-| struct | **[tec::Command](Classes/structtec_1_1_command.md)**  |
-| class | **[tec::CommandQueue](Classes/classtec_1_1_command_queue.md)**  |
-| struct | **[tec::LuaScript](Classes/structtec_1_1_lua_script.md)**  |
-| struct | **[tec::Shape](Classes/structtec_1_1_shape.md)**  |
-| struct | **[tec::Position](Classes/structtec_1_1_position.md)**  |
-| struct | **[tec::Orientation](Classes/structtec_1_1_orientation.md)**  |
-| struct | **[tec::Scale](Classes/structtec_1_1_scale.md)**  |
-| struct | **[tec::Velocity](Classes/structtec_1_1_velocity.md)**  |
-| struct | **[tec::Controller](Classes/structtec_1_1_controller.md)**  |
-| struct | **[tec::FPSController](Classes/structtec_1_1_f_p_s_controller.md)**  |
-| class | **[tec::Entity](Classes/classtec_1_1_entity.md)**  |
-| struct | **[tec::Event](Classes/structtec_1_1_event.md)**  |
-| struct | **[tec::Queue](Classes/structtec_1_1_queue.md)**  |
-| class | **[tec::EventSystem](Classes/classtec_1_1_event_system.md)**  |
-| class | **[tec::EventQueue](Classes/classtec_1_1_event_queue.md)**  |
-| struct | **[tec::MouseHover](Classes/structtec_1_1_mouse_hover.md)**  |
-| struct | **[tec::KeyboardEvent](Classes/structtec_1_1_keyboard_event.md)**  |
-| struct | **[tec::MouseBtnEvent](Classes/structtec_1_1_mouse_btn_event.md)**  |
-| struct | **[tec::MouseMoveEvent](Classes/structtec_1_1_mouse_move_event.md)**  |
-| struct | **[tec::MouseScrollEvent](Classes/structtec_1_1_mouse_scroll_event.md)**  |
-| struct | **[tec::MouseClickEvent](Classes/structtec_1_1_mouse_click_event.md)**  |
-| struct | **[tec::WindowResizedEvent](Classes/structtec_1_1_window_resized_event.md)**  |
-| struct | **[tec::FileDropEvent](Classes/structtec_1_1_file_drop_event.md)**  |
-| struct | **[tec::EntityCreated](Classes/structtec_1_1_entity_created.md)**  |
-| struct | **[tec::EntityDestroyed](Classes/structtec_1_1_entity_destroyed.md)**  |
-| struct | **[tec::ClientCommandsEvent](Classes/structtec_1_1_client_commands_event.md)**  |
-| struct | **[tec::ControllerAddedEvent](Classes/structtec_1_1_controller_added_event.md)**  |
-| struct | **[tec::ControllerRemovedEvent](Classes/structtec_1_1_controller_removed_event.md)**  |
-| struct | **[tec::FocusCapturedEvent](Classes/structtec_1_1_focus_captured_event.md)**  |
-| struct | **[tec::FocusBlurEvent](Classes/structtec_1_1_focus_blur_event.md)**  |
-| struct | **[tec::ChatCommandEvent](Classes/structtec_1_1_chat_command_event.md)**  |
-| class | **[tec::FilePath](Classes/classtec_1_1_file_path.md)** <br>[OS](Classes/classtec_1_1_o_s.md) File system path separator.  |
-| struct | **[tec::GameState](Classes/structtec_1_1_game_state.md)**  |
-| struct | **[tec::NewGameStateEvent](Classes/structtec_1_1_new_game_state_event.md)**  |
-| struct | **[tec::EventList](Classes/structtec_1_1_event_list.md)**  |
-| class | **[tec::LuaSystem](Classes/classtec_1_1_lua_system.md)**  |
-| class | **[tec::Multiton](Classes/classtec_1_1_multiton.md)**  |
-| class | **[tec::PhysicsSystem](Classes/classtec_1_1_physics_system.md)**  |
-| struct | **[tec::VertexData](Classes/structtec_1_1_vertex_data.md)**  |
-| struct | **[tec::MaterialGroup](Classes/structtec_1_1_material_group.md)**  |
-| struct | **[tec::ObjectGroup](Classes/structtec_1_1_object_group.md)**  |
-| struct | **[tec::Mesh](Classes/structtec_1_1_mesh.md)**  |
-| class | **[tec::MeshFile](Classes/classtec_1_1_mesh_file.md)**  |
-| class | **[tec::ScriptFile](Classes/classtec_1_1_script_file.md)**  |
-| class | **[tec::RingBuffer](Classes/classtec_1_1_ring_buffer.md)**  |
-| class | **[tec::UserList](Classes/classtec_1_1_user_list.md)**  |
-| class | **[tec::SaveGame](Classes/classtec_1_1_save_game.md)**  |
-| class | **[tec::ServerStats](Classes/classtec_1_1_server_stats.md)**  |
-| struct | **[tec::PredictedClientState](Classes/structtec_1_1_predicted_client_state.md)**  |
-| class | **[tec::Simulation](Classes/classtec_1_1_simulation.md)**  |
-| struct | **[tec::DeviceBase](Classes/structtec_1_1_device_base.md)**  |
-| struct | **[tec::Computer](Classes/structtec_1_1_computer.md)**  |
-| struct | **[tec::ComputerScreen](Classes/structtec_1_1_computer_screen.md)**  |
-| struct | **[tec::ComputerKeyboard](Classes/structtec_1_1_computer_keyboard.md)**  |
-| class | **[tec::VComputerSystem](Classes/classtec_1_1_v_computer_system.md)**  |
+| class | **[tec::ClientGameStateQueue](/engine/Classes/classtec_1_1_client_game_state_queue/)**  |
+| class | **[tec::Game](/engine/Classes/classtec_1_1_game/)**  |
+| class | **[tec::Animation](/engine/Classes/classtec_1_1_animation/)**  |
+| class | **[tec::GBuffer](/engine/Classes/classtec_1_1_g_buffer/)**  |
+| struct | **[tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)**  |
+| struct | **[tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_light/)**  |
+| struct | **[tec::PointLight](/engine/Classes/structtec_1_1_point_light/)**  |
+| struct | **[tec::SpotLight](/engine/Classes/structtec_1_1_spot_light/)**  |
+| class | **[tec::Material](/engine/Classes/classtec_1_1_material/)**  |
+| struct | **[tec::Renderable](/engine/Classes/structtec_1_1_renderable/)**  |
+| class | **[tec::Shader](/engine/Classes/classtec_1_1_shader/)**  |
+| class | **[tec::TextureObject](/engine/Classes/classtec_1_1_texture_object/)**  |
+| struct | **[tec::VertexGroup](/engine/Classes/structtec_1_1_vertex_group/)**  |
+| class | **[tec::VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/)**  |
+| struct | **[tec::View](/engine/Classes/structtec_1_1_view/)**  |
+| class | **[tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)**  |
+| class | **[tec::ActiveEntityTooltip](/engine/Classes/classtec_1_1_active_entity_tooltip/)**  |
+| class | **[tec::Console](/engine/Classes/classtec_1_1_console/)**  |
+| class | **[tec::ConsoleSink](/engine/Classes/classtec_1_1_console_sink/)**  |
+| class | **[tec::DebugInfo](/engine/Classes/classtec_1_1_debug_info/)**  |
+| class | **[tec::ServerConnectWindow](/engine/Classes/classtec_1_1_server_connect_window/)**  |
+| class | **[tec::PingTimesWindow](/engine/Classes/classtec_1_1_ping_times_window/)**  |
+| class | **[tec::IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/)**  |
+| class | **[tec::OS](/engine/Classes/classtec_1_1_o_s/)**  |
+| class | **[tec::PhysicsDebugDrawer](/engine/Classes/classtec_1_1_physics_debug_drawer/)**  |
+| class | **[tec::RenderSystem](/engine/Classes/classtec_1_1_render_system/)**  |
+| class | **[tec::MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/)**  |
+| class | **[tec::MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/)**  |
+| class | **[tec::OBJ](/engine/Classes/classtec_1_1_o_b_j/)**  |
+| class | **[tec::PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/)**  |
+| class | **[tec::VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/)**  |
+| struct | **[tec::AudioSource](/engine/Classes/structtec_1_1_audio_source/)**  |
+| class | **[tec::SoundSystem](/engine/Classes/classtec_1_1_sound_system/)**  |
+| struct | **[tec::TimeFrameMetrics](/engine/Classes/structtec_1_1_time_frame_metrics/)**  |
+| struct | **[tec::Voxel](/engine/Classes/structtec_1_1_voxel/)**  |
+| class | **[tec::VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/)**  |
+| class | **[tec::VoxelSystem](/engine/Classes/classtec_1_1_voxel_system/)**  |
+| class | **[tec::ServerGameStateQueue](/engine/Classes/classtec_1_1_server_game_state_queue/)**  |
+| struct | **[tec::Command](/engine/Classes/structtec_1_1_command/)**  |
+| class | **[tec::CommandQueue](/engine/Classes/classtec_1_1_command_queue/)**  |
+| struct | **[tec::LuaScript](/engine/Classes/structtec_1_1_lua_script/)**  |
+| struct | **[tec::Shape](/engine/Classes/structtec_1_1_shape/)**  |
+| struct | **[tec::Position](/engine/Classes/structtec_1_1_position/)**  |
+| struct | **[tec::Orientation](/engine/Classes/structtec_1_1_orientation/)**  |
+| struct | **[tec::Scale](/engine/Classes/structtec_1_1_scale/)**  |
+| struct | **[tec::Velocity](/engine/Classes/structtec_1_1_velocity/)**  |
+| struct | **[tec::Controller](/engine/Classes/structtec_1_1_controller/)**  |
+| struct | **[tec::FPSController](/engine/Classes/structtec_1_1_f_p_s_controller/)**  |
+| class | **[tec::Entity](/engine/Classes/classtec_1_1_entity/)**  |
+| struct | **[tec::Event](/engine/Classes/structtec_1_1_event/)**  |
+| struct | **[tec::Queue](/engine/Classes/structtec_1_1_queue/)**  |
+| class | **[tec::EventSystem](/engine/Classes/classtec_1_1_event_system/)**  |
+| class | **[tec::EventQueue](/engine/Classes/classtec_1_1_event_queue/)**  |
+| struct | **[tec::MouseHover](/engine/Classes/structtec_1_1_mouse_hover/)**  |
+| struct | **[tec::KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/)**  |
+| struct | **[tec::MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/)**  |
+| struct | **[tec::MouseMoveEvent](/engine/Classes/structtec_1_1_mouse_move_event/)**  |
+| struct | **[tec::MouseScrollEvent](/engine/Classes/structtec_1_1_mouse_scroll_event/)**  |
+| struct | **[tec::MouseClickEvent](/engine/Classes/structtec_1_1_mouse_click_event/)**  |
+| struct | **[tec::WindowResizedEvent](/engine/Classes/structtec_1_1_window_resized_event/)**  |
+| struct | **[tec::FileDropEvent](/engine/Classes/structtec_1_1_file_drop_event/)**  |
+| struct | **[tec::EntityCreated](/engine/Classes/structtec_1_1_entity_created/)**  |
+| struct | **[tec::EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/)**  |
+| struct | **[tec::ClientCommandsEvent](/engine/Classes/structtec_1_1_client_commands_event/)**  |
+| struct | **[tec::ControllerAddedEvent](/engine/Classes/structtec_1_1_controller_added_event/)**  |
+| struct | **[tec::ControllerRemovedEvent](/engine/Classes/structtec_1_1_controller_removed_event/)**  |
+| struct | **[tec::FocusCapturedEvent](/engine/Classes/structtec_1_1_focus_captured_event/)**  |
+| struct | **[tec::FocusBlurEvent](/engine/Classes/structtec_1_1_focus_blur_event/)**  |
+| struct | **[tec::ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/)**  |
+| class | **[tec::FilePath](/engine/Classes/classtec_1_1_file_path/)** <br>[OS](/engine/Classes/classtec_1_1_o_s/) File system path separator.  |
+| struct | **[tec::GameState](/engine/Classes/structtec_1_1_game_state/)**  |
+| struct | **[tec::NewGameStateEvent](/engine/Classes/structtec_1_1_new_game_state_event/)**  |
+| struct | **[tec::EventList](/engine/Classes/structtec_1_1_event_list/)**  |
+| class | **[tec::LuaSystem](/engine/Classes/classtec_1_1_lua_system/)**  |
+| class | **[tec::Multiton](/engine/Classes/classtec_1_1_multiton/)**  |
+| class | **[tec::PhysicsSystem](/engine/Classes/classtec_1_1_physics_system/)**  |
+| struct | **[tec::VertexData](/engine/Classes/structtec_1_1_vertex_data/)**  |
+| struct | **[tec::MaterialGroup](/engine/Classes/structtec_1_1_material_group/)**  |
+| struct | **[tec::ObjectGroup](/engine/Classes/structtec_1_1_object_group/)**  |
+| struct | **[tec::Mesh](/engine/Classes/structtec_1_1_mesh/)**  |
+| class | **[tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)**  |
+| class | **[tec::ScriptFile](/engine/Classes/classtec_1_1_script_file/)**  |
+| class | **[tec::RingBuffer](/engine/Classes/classtec_1_1_ring_buffer/)**  |
+| class | **[tec::UserList](/engine/Classes/classtec_1_1_user_list/)**  |
+| class | **[tec::SaveGame](/engine/Classes/classtec_1_1_save_game/)**  |
+| class | **[tec::ServerStats](/engine/Classes/classtec_1_1_server_stats/)**  |
+| struct | **[tec::PredictedClientState](/engine/Classes/structtec_1_1_predicted_client_state/)**  |
+| class | **[tec::Simulation](/engine/Classes/classtec_1_1_simulation/)**  |
+| struct | **[tec::DeviceBase](/engine/Classes/structtec_1_1_device_base/)**  |
+| struct | **[tec::Computer](/engine/Classes/structtec_1_1_computer/)**  |
+| struct | **[tec::ComputerScreen](/engine/Classes/structtec_1_1_computer_screen/)**  |
+| struct | **[tec::ComputerKeyboard](/engine/Classes/structtec_1_1_computer_keyboard/)**  |
+| class | **[tec::VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/)**  |
 
 ## Types
 
 |                | Name           |
 | -------------- | -------------- |
-| enum std::uint32_t | **[ImageColorMode](Namespaces/namespacetec.md#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MONOCHROME = 0, MONOCHROME_A = 4, COLOR_RGB = 2, COLOR_RGBA = 6} |
-| enum| **[AUDIOSOURCE_STATE](Namespaces/namespacetec.md#enum-audiosource_state)** { PLAYING, PAUSED, STOPPED} |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< std::string, std::shared_ptr< [Material](Classes/classtec_1_1_material.md) > > | **[MaterialMap](Namespaces/namespacetec.md#typedef-materialmap)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< std::string, std::shared_ptr< [Shader](Classes/classtec_1_1_shader.md) > > | **[ShaderMap](Namespaces/namespacetec.md#typedef-shadermap)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< std::string, std::shared_ptr< [TextureObject](Classes/classtec_1_1_texture_object.md) > > | **[TextureMap](Namespaces/namespacetec.md#typedef-texturemap)**  |
-| using [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), [PointLight](Classes/structtec_1_1_point_light.md) * > | **[PointLightMap](Namespaces/namespacetec.md#using-pointlightmap)**  |
-| using [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), [DirectionalLight](Classes/structtec_1_1_directional_light.md) * > | **[DirectionalLightMap](Namespaces/namespacetec.md#using-directionallightmap)**  |
-| using [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), [Renderable](Classes/structtec_1_1_renderable.md) * > | **[RenderableMap](Namespaces/namespacetec.md#using-renderablemap)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), [Animation](Classes/classtec_1_1_animation.md) * > | **[AnimationMap](Namespaces/namespacetec.md#typedef-animationmap)**  |
-| using [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), [Scale](Classes/structtec_1_1_scale.md) * > | **[ScaleMap](Namespaces/namespacetec.md#using-scalemap)**  |
-| typedef [Command](Classes/structtec_1_1_command.md)< [RenderSystem](Classes/classtec_1_1_render_system.md) > | **[RenderCommand](Namespaces/namespacetec.md#typedef-rendercommand)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< std::string, std::shared_ptr< [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) > > | **[PixelBufferMap](Namespaces/namespacetec.md#typedef-pixelbuffermap)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< std::string, std::shared_ptr< [VorbisStream](Classes/classtec_1_1_vorbis_stream.md) > > | **[SoundMap](Namespaces/namespacetec.md#typedef-soundmap)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), std::shared_ptr< [VoxelVolume](Classes/classtec_1_1_voxel_volume.md) > > | **[VoxelVolumeMap](Namespaces/namespacetec.md#typedef-voxelvolumemap)**  |
-| typedef [Command](Classes/structtec_1_1_command.md)< [VoxelVolume](Classes/classtec_1_1_voxel_volume.md) > | **[VoxelCommand](Namespaces/namespacetec.md#typedef-voxelcommand)**  |
-| using [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), [LuaScript](Classes/structtec_1_1_lua_script.md) * > | **[LuaScriptMap](Namespaces/namespacetec.md#using-luascriptmap)**  |
-| typedef [Command](Classes/structtec_1_1_command.md)< [LuaSystem](Classes/classtec_1_1_lua_system.md) > | **[LuaCommand](Namespaces/namespacetec.md#typedef-luacommand)**  |
-| using [Multiton](Classes/classtec_1_1_multiton.md)< [eid](Namespaces/namespacetec.md#typedef-eid), CollisionBody * > | **[CollisionBodyMap](Namespaces/namespacetec.md#using-collisionbodymap)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< std::string, std::shared_ptr< [MeshFile](Classes/classtec_1_1_mesh_file.md) > > | **[MeshMap](Namespaces/namespacetec.md#typedef-meshmap)**  |
-| typedef [Multiton](Classes/classtec_1_1_multiton.md)< std::string, std::shared_ptr< [ScriptFile](Classes/classtec_1_1_script_file.md) > > | **[ScriptMap](Namespaces/namespacetec.md#typedef-scriptmap)**  |
-| using decltype(proto::User().id()) | **[uid](Namespaces/namespacetec.md#using-uid)**  |
-| using std::codecvt_utf8< wchar_t > | **[convert_utf8](Namespaces/namespacetec.md#using-convert_utf8)**  |
-| typedef std::uint64_t | **[state_id_t](Namespaces/namespacetec.md#typedef-state_id_t)**  |
-| typedef std::int64_t | **[GUID](Namespaces/namespacetec.md#typedef-guid)**  |
-| typedef std::int64_t | **[eid](Namespaces/namespacetec.md#typedef-eid)** <br>Global Unique ID.  |
-| typedef std::uint32_t | **[tid](Namespaces/namespacetec.md#typedef-tid)**  |
-| typedef [Command](Classes/structtec_1_1_command.md)< [VComputerSystem](Classes/classtec_1_1_v_computer_system.md) > | **[VComputerCommand](Namespaces/namespacetec.md#typedef-vcomputercommand)**  |
+| enum std::uint32_t | **[ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MONOCHROME = 0, MONOCHROME_A = 4, COLOR_RGB = 2, COLOR_RGBA = 6} |
+| enum| **[AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource_state)** { PLAYING, PAUSED, STOPPED} |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > > | **[MaterialMap](/engine/Namespaces/namespacetec/#typedef-materialmap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > > | **[ShaderMap](/engine/Namespaces/namespacetec/#typedef-shadermap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > > | **[TextureMap](/engine/Namespaces/namespacetec/#typedef-texturemap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [PointLight](/engine/Classes/structtec_1_1_point_light/) * > | **[PointLightMap](/engine/Namespaces/namespacetec/#using-pointlightmap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [DirectionalLight](/engine/Classes/structtec_1_1_directional_light/) * > | **[DirectionalLightMap](/engine/Namespaces/namespacetec/#using-directionallightmap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Renderable](/engine/Classes/structtec_1_1_renderable/) * > | **[RenderableMap](/engine/Namespaces/namespacetec/#using-renderablemap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Animation](/engine/Classes/classtec_1_1_animation/) * > | **[AnimationMap](/engine/Namespaces/namespacetec/#typedef-animationmap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Scale](/engine/Classes/structtec_1_1_scale/) * > | **[ScaleMap](/engine/Namespaces/namespacetec/#using-scalemap)**  |
+| typedef [Command](/engine/Classes/structtec_1_1_command/)< [RenderSystem](/engine/Classes/classtec_1_1_render_system/) > | **[RenderCommand](/engine/Namespaces/namespacetec/#typedef-rendercommand)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > > | **[PixelBufferMap](/engine/Namespaces/namespacetec/#typedef-pixelbuffermap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > > | **[SoundMap](/engine/Namespaces/namespacetec/#typedef-soundmap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), std::shared_ptr< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > > | **[VoxelVolumeMap](/engine/Namespaces/namespacetec/#typedef-voxelvolumemap)**  |
+| typedef [Command](/engine/Classes/structtec_1_1_command/)< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > | **[VoxelCommand](/engine/Namespaces/namespacetec/#typedef-voxelcommand)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [LuaScript](/engine/Classes/structtec_1_1_lua_script/) * > | **[LuaScriptMap](/engine/Namespaces/namespacetec/#using-luascriptmap)**  |
+| typedef [Command](/engine/Classes/structtec_1_1_command/)< [LuaSystem](/engine/Classes/classtec_1_1_lua_system/) > | **[LuaCommand](/engine/Namespaces/namespacetec/#typedef-luacommand)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), CollisionBody * > | **[CollisionBodyMap](/engine/Namespaces/namespacetec/#using-collisionbodymap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > > | **[MeshMap](/engine/Namespaces/namespacetec/#typedef-meshmap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > > | **[ScriptMap](/engine/Namespaces/namespacetec/#typedef-scriptmap)**  |
+| using decltype(proto::User().id()) | **[uid](/engine/Namespaces/namespacetec/#using-uid)**  |
+| using std::codecvt_utf8< wchar_t > | **[convert_utf8](/engine/Namespaces/namespacetec/#using-convert_utf8)**  |
+| typedef std::uint64_t | **[state_id_t](/engine/Namespaces/namespacetec/#typedef-state_id_t)**  |
+| typedef std::int64_t | **[GUID](/engine/Namespaces/namespacetec/#typedef-guid)**  |
+| typedef std::int64_t | **[eid](/engine/Namespaces/namespacetec/#typedef-eid)** <br>Global Unique ID.  |
+| typedef std::uint32_t | **[tid](/engine/Namespaces/namespacetec/#typedef-tid)**  |
+| typedef [Command](/engine/Classes/structtec_1_1_command/)< [VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/) > | **[VComputerCommand](/engine/Namespaces/namespacetec/#typedef-vcomputercommand)**  |
 
 ## Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[RegisterFileFactories](Namespaces/namespacetec.md#function-registerfilefactories)**() |
-| void | **[BuildTestVoxelVolume](Namespaces/namespacetec.md#function-buildtestvoxelvolume)**() |
-| void | **[ErrorCallback](Namespaces/namespacetec.md#function-errorcallback)**(int error_no, const char * description) |
-| GLFWmonitor * | **[get_current_monitor](Namespaces/namespacetec.md#function-get_current_monitor)**(GLFWwindow * window) |
-| std::string | **[CleanString](Namespaces/namespacetec.md#function-cleanstring)**(std::string str)<br>Cleans an input string by removing certain grouping characters.  |
-| [MD5Mesh::Joint](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md) | **[ParseJoint](Namespaces/namespacetec.md#function-parsejoint)**(std::stringstream & ss)<br>Parses a joint line.  |
-| [MD5Mesh::Vertex](Classes/structtec_1_1_m_d5_mesh_1_1_vertex.md) | **[ParseVertex](Namespaces/namespacetec.md#function-parsevertex)**(std::stringstream & ss)<br>Parses a vertex line.  |
-| [MD5Mesh::Triangle](Classes/structtec_1_1_m_d5_mesh_1_1_triangle.md) | **[ParseTriangle](Namespaces/namespacetec.md#function-parsetriangle)**(std::stringstream & ss)<br>Parses a triangle line.  |
-| [MD5Mesh::Weight](Classes/structtec_1_1_m_d5_mesh_1_1_weight.md) | **[ParsesWeight](Namespaces/namespacetec.md#function-parsesweight)**(std::stringstream & ss)<br>Parses a weight line.  |
-| std::string | **[VorbisErrorToString](Namespaces/namespacetec.md#function-vorbiserrortostring)**(int error) |
-| void | **[alCheckError](Namespaces/namespacetec.md#function-alcheckerror)**() |
-| | **[ATTRIBUTE_ALIGNED16](Namespaces/namespacetec.md#function-attribute_aligned16)**(struct ) |
-| template <typename T \> <br>void | **[AddFileFactory](Namespaces/namespacetec.md#function-addfilefactory)**() |
-| const std::string | **[app_name](Namespaces/namespacetec.md#function-app_name)**("trillek" ) |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator+](Namespaces/namespacetec.md#function-operator+)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const [FilePath](Classes/classtec_1_1_file_path.md) & rhs)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator+](Namespaces/namespacetec.md#function-operator+)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const std::string & str)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator+](Namespaces/namespacetec.md#function-operator+)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const std::wstring & wstr)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator+](Namespaces/namespacetec.md#function-operator+)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const char * str)<br>Concatenate a path.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator/](Namespaces/namespacetec.md#function-operator/)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const [FilePath](Classes/classtec_1_1_file_path.md) & rhs)<br>Append a subdirectory or file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator/](Namespaces/namespacetec.md#function-operator/)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const std::string & str)<br>Append a subdirectory or file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator/](Namespaces/namespacetec.md#function-operator/)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const std::wstring & wstr)<br>Append a subdirectory or file.  |
-| [FilePath](Classes/classtec_1_1_file_path.md) | **[operator/](Namespaces/namespacetec.md#function-operator/)**(const [FilePath](Classes/classtec_1_1_file_path.md) & lhs, const char * str)<br>Append a subdirectory or file.  |
-| template <typename charT ,typename traits \> <br>std::basic_ostream< charT, traits > & | **[operator<<](Namespaces/namespacetec.md#function-operator<<)**(std::basic_ostream< charT, traits > & os, const [FilePath](Classes/classtec_1_1_file_path.md) & path)<br>Output to a stream.  |
-| template <typename charT ,typename traits \> <br>std::basic_istream< charT, traits > & | **[operator>>](Namespaces/namespacetec.md#function-operator>>)**(std::basic_istream< charT, traits > & is, [FilePath](Classes/classtec_1_1_file_path.md) & path)<br>Input from a stream.  |
-| glm::vec3 | **[GetRayDirection](Namespaces/namespacetec.md#function-getraydirection)**(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) |
-| std::string | **[LoadAsString](Namespaces/namespacetec.md#function-loadasstring)**(const [FilePath](Classes/classtec_1_1_file_path.md) & fname) |
-| bool | **[SaveFromString](Namespaces/namespacetec.md#function-savefromstring)**(const [FilePath](Classes/classtec_1_1_file_path.md) & fname, std::string contents) |
-| bool | **[LoadProtoPack](Namespaces/namespacetec.md#function-loadprotopack)**(const [FilePath](Classes/classtec_1_1_file_path.md) & fname, proto::Entity & entity) |
-| void | **[ProtoLoadEntity](Namespaces/namespacetec.md#function-protoloadentity)**(const [FilePath](Classes/classtec_1_1_file_path.md) & fname) |
-| void | **[ProtoLoad](Namespaces/namespacetec.md#function-protoload)**(std::string filename) |
-| std::string | **[utf8_encode](Namespaces/namespacetec.md#function-utf8_encode)**(const std::wstring & wstr)<br>Convert a wide Unicode string to an UTF8 string.  |
-| std::wstring | **[utf8_decode](Namespaces/namespacetec.md#function-utf8_decode)**(const std::string & str)<br>Convert an UTF8 string to a wide Unicode String.  |
-| template <class T \> <br>bool | **[IsBetween](Namespaces/namespacetec.md#function-isbetween)**(T value, T lower, T upper)<br>Type ID.  |
-| template <class TYPE \> <br>constexpr const char * | **[GetTypeName](Namespaces/namespacetec.md#function-gettypename)**(void )<br>Returns the name of an component on compile time.  |
-| template <class TYPE \> <br>constexpr tid | **[GetTypeID](Namespaces/namespacetec.md#function-gettypeid)**(void )<br>Returns the TypeID of a component on compile time.  |
-| template <class TYPE \> <br>constexpr const char * | **[GetTypeEXT](Namespaces/namespacetec.md#function-gettypeext)**(void )<br>Returns the name of a resource type on Compile time.  |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([Renderable](Classes/structtec_1_1_renderable.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([Position](Classes/structtec_1_1_position.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([Orientation](Classes/structtec_1_1_orientation.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([View](Classes/structtec_1_1_view.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([Animation](Classes/classtec_1_1_animation.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([Scale](Classes/structtec_1_1_scale.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**(CollisionBody ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([Velocity](Classes/structtec_1_1_velocity.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([AudioSource](Classes/structtec_1_1_audio_source.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([PointLight](Classes/structtec_1_1_point_light.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([DirectionalLight](Classes/structtec_1_1_directional_light.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([Computer](Classes/structtec_1_1_computer.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([VoxelVolume](Classes/classtec_1_1_voxel_volume.md) ) |
-| | **[MAKE_IDTYPE](Namespaces/namespacetec.md#function-make_idtype)**([LuaScript](Classes/structtec_1_1_lua_script.md) ) |
-| | **[MAKE_EXTTYPE](Namespaces/namespacetec.md#function-make_exttype)**([MD5Mesh](Classes/classtec_1_1_m_d5_mesh.md) , "md5mesh" ) |
-| | **[MAKE_EXTTYPE](Namespaces/namespacetec.md#function-make_exttype)**([MD5Anim](Classes/classtec_1_1_m_d5_anim.md) , "md5anim" ) |
-| | **[MAKE_EXTTYPE](Namespaces/namespacetec.md#function-make_exttype)**([OBJ](Classes/classtec_1_1_o_b_j.md) , "obj" ) |
-| | **[MAKE_EXTTYPE](Namespaces/namespacetec.md#function-make_exttype)**([VorbisStream](Classes/classtec_1_1_vorbis_stream.md) , "ogg" ) |
-| | **[MAKE_EXTTYPE](Namespaces/namespacetec.md#function-make_exttype)**([ScriptFile](Classes/classtec_1_1_script_file.md) , "lua" ) |
+| void | **[RegisterFileFactories](/engine/Namespaces/namespacetec/#function-registerfilefactories)**() |
+| void | **[BuildTestVoxelVolume](/engine/Namespaces/namespacetec/#function-buildtestvoxelvolume)**() |
+| void | **[ErrorCallback](/engine/Namespaces/namespacetec/#function-errorcallback)**(int error_no, const char * description) |
+| GLFWmonitor * | **[get_current_monitor](/engine/Namespaces/namespacetec/#function-get_current_monitor)**(GLFWwindow * window) |
+| std::string | **[CleanString](/engine/Namespaces/namespacetec/#function-cleanstring)**(std::string str)<br>Cleans an input string by removing certain grouping characters.  |
+| [MD5Mesh::Joint](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/) | **[ParseJoint](/engine/Namespaces/namespacetec/#function-parsejoint)**(std::stringstream & ss)<br>Parses a joint line.  |
+| [MD5Mesh::Vertex](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/) | **[ParseVertex](/engine/Namespaces/namespacetec/#function-parsevertex)**(std::stringstream & ss)<br>Parses a vertex line.  |
+| [MD5Mesh::Triangle](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_triangle/) | **[ParseTriangle](/engine/Namespaces/namespacetec/#function-parsetriangle)**(std::stringstream & ss)<br>Parses a triangle line.  |
+| [MD5Mesh::Weight](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_weight/) | **[ParsesWeight](/engine/Namespaces/namespacetec/#function-parsesweight)**(std::stringstream & ss)<br>Parses a weight line.  |
+| std::string | **[VorbisErrorToString](/engine/Namespaces/namespacetec/#function-vorbiserrortostring)**(int error) |
+| void | **[alCheckError](/engine/Namespaces/namespacetec/#function-alcheckerror)**() |
+| | **[ATTRIBUTE_ALIGNED16](/engine/Namespaces/namespacetec/#function-attribute_aligned16)**(struct ) |
+| template <typename T \> <br>void | **[AddFileFactory](/engine/Namespaces/namespacetec/#function-addfilefactory)**() |
+| const std::string | **[app_name](/engine/Namespaces/namespacetec/#function-app_name)**("trillek" ) |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::string & str)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::wstring & wstr)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const char * str)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Append a subdirectory or file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::string & str)<br>Append a subdirectory or file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::wstring & wstr)<br>Append a subdirectory or file.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const char * str)<br>Append a subdirectory or file.  |
+| template <typename charT ,typename traits \> <br>std::basic_ostream< charT, traits > & | **[operator<<](/engine/Namespaces/namespacetec/#function-operator<<)**(std::basic_ostream< charT, traits > & os, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Output to a stream.  |
+| template <typename charT ,typename traits \> <br>std::basic_istream< charT, traits > & | **[operator>>](/engine/Namespaces/namespacetec/#function-operator>>)**(std::basic_istream< charT, traits > & is, [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Input from a stream.  |
+| glm::vec3 | **[GetRayDirection](/engine/Namespaces/namespacetec/#function-getraydirection)**(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) |
+| std::string | **[LoadAsString](/engine/Namespaces/namespacetec/#function-loadasstring)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname) |
+| bool | **[SaveFromString](/engine/Namespaces/namespacetec/#function-savefromstring)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname, std::string contents) |
+| bool | **[LoadProtoPack](/engine/Namespaces/namespacetec/#function-loadprotopack)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname, proto::Entity & entity) |
+| void | **[ProtoLoadEntity](/engine/Namespaces/namespacetec/#function-protoloadentity)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname) |
+| void | **[ProtoLoad](/engine/Namespaces/namespacetec/#function-protoload)**(std::string filename) |
+| std::string | **[utf8_encode](/engine/Namespaces/namespacetec/#function-utf8_encode)**(const std::wstring & wstr)<br>Convert a wide Unicode string to an UTF8 string.  |
+| std::wstring | **[utf8_decode](/engine/Namespaces/namespacetec/#function-utf8_decode)**(const std::string & str)<br>Convert an UTF8 string to a wide Unicode String.  |
+| template <class T \> <br>bool | **[IsBetween](/engine/Namespaces/namespacetec/#function-isbetween)**(T value, T lower, T upper)<br>Type ID.  |
+| template <class TYPE \> <br>constexpr const char * | **[GetTypeName](/engine/Namespaces/namespacetec/#function-gettypename)**(void )<br>Returns the name of an component on compile time.  |
+| template <class TYPE \> <br>constexpr tid | **[GetTypeID](/engine/Namespaces/namespacetec/#function-gettypeid)**(void )<br>Returns the TypeID of a component on compile time.  |
+| template <class TYPE \> <br>constexpr const char * | **[GetTypeEXT](/engine/Namespaces/namespacetec/#function-gettypeext)**(void )<br>Returns the name of a resource type on Compile time.  |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Renderable](/engine/Classes/structtec_1_1_renderable/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Position](/engine/Classes/structtec_1_1_position/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Orientation](/engine/Classes/structtec_1_1_orientation/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([View](/engine/Classes/structtec_1_1_view/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Animation](/engine/Classes/classtec_1_1_animation/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Scale](/engine/Classes/structtec_1_1_scale/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**(CollisionBody ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Velocity](/engine/Classes/structtec_1_1_velocity/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([AudioSource](/engine/Classes/structtec_1_1_audio_source/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([PointLight](/engine/Classes/structtec_1_1_point_light/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([DirectionalLight](/engine/Classes/structtec_1_1_directional_light/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Computer](/engine/Classes/structtec_1_1_computer/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([LuaScript](/engine/Classes/structtec_1_1_lua_script/) ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) , "md5mesh" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) , "md5anim" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([OBJ](/engine/Classes/classtec_1_1_o_b_j/) , "obj" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) , "ogg" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([ScriptFile](/engine/Classes/classtec_1_1_script_file/) , "lua" ) |
 
 ## Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::unordered_map< std::string, std::function< void(std::string)> > | **[file_factories](Namespaces/namespacetec.md#variable-file_factories)**  |
-| std::string | **[inifilename](Namespaces/namespacetec.md#variable-inifilename)**  |
-| std::string | **[logfilename](Namespaces/namespacetec.md#variable-logfilename)**  |
-| glm::vec3 | **[FORWARD_VECTOR](Namespaces/namespacetec.md#variable-forward_vector)**  |
-| glm::vec3 | **[UP_VECTOR](Namespaces/namespacetec.md#variable-up_vector)**  |
-| glm::vec3 | **[RIGHT_VECTOR](Namespaces/namespacetec.md#variable-right_vector)**  |
-| const char | **[UNIX_PATH_SEPARATOR](Namespaces/namespacetec.md#variable-unix_path_separator)**  |
-| const char | **[WIN_PATH_SEPARATOR](Namespaces/namespacetec.md#variable-win_path_separator)** <br>*NIX file system path separator  |
-| const std::string | **[PATH_SEPARATOR](Namespaces/namespacetec.md#variable-path_separator)**  |
-| double | **[UPDATE_RATE](Namespaces/namespacetec.md#variable-update_rate)**  |
-| double | **[TICKS_PER_SECOND](Namespaces/namespacetec.md#variable-ticks_per_second)**  |
-| const std::unordered_map< tid, const char * > | **[TypeName](Namespaces/namespacetec.md#variable-typename)** <br>Maps on runtime the Type ID with the name.  |
+| std::unordered_map< std::string, std::function< void(std::string)> > | **[file_factories](/engine/Namespaces/namespacetec/#variable-file_factories)**  |
+| std::string | **[inifilename](/engine/Namespaces/namespacetec/#variable-inifilename)**  |
+| std::string | **[logfilename](/engine/Namespaces/namespacetec/#variable-logfilename)**  |
+| glm::vec3 | **[FORWARD_VECTOR](/engine/Namespaces/namespacetec/#variable-forward_vector)**  |
+| glm::vec3 | **[UP_VECTOR](/engine/Namespaces/namespacetec/#variable-up_vector)**  |
+| glm::vec3 | **[RIGHT_VECTOR](/engine/Namespaces/namespacetec/#variable-right_vector)**  |
+| const char | **[UNIX_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-unix_path_separator)**  |
+| const char | **[WIN_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-win_path_separator)** <br>*NIX file system path separator  |
+| const std::string | **[PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path_separator)**  |
+| double | **[UPDATE_RATE](/engine/Namespaces/namespacetec/#variable-update_rate)**  |
+| double | **[TICKS_PER_SECOND](/engine/Namespaces/namespacetec/#variable-ticks_per_second)**  |
+| const std::unordered_map< tid, const char * > | **[TypeName](/engine/Namespaces/namespacetec/#variable-typename)** <br>Maps on runtime the Type ID with the name.  |
 
 ## Detailed Description
 
 
 Abstract base class for GUI windows
 
-[OS](Classes/classtec_1_1_o_s.md) File system abstraction stuff
+[OS](/engine/Classes/classtec_1_1_o_s/) File system abstraction stuff
 
 Lua system
 
@@ -1130,21 +1130,21 @@ double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
 ```cpp
 const std::unordered_map< tid, const char * > TypeName = {
 		MAKE_MAPPAIR(void),
-		MAKE_MAPPAIR([Renderable](Classes/structtec_1_1_renderable.md)),
-		MAKE_MAPPAIR([Position](Classes/structtec_1_1_position.md)),
-		MAKE_MAPPAIR([Orientation](Classes/structtec_1_1_orientation.md)),
-		MAKE_MAPPAIR([View](Classes/structtec_1_1_view.md)),
-		MAKE_MAPPAIR([Animation](Classes/classtec_1_1_animation.md)),
-		MAKE_MAPPAIR([Scale](Classes/structtec_1_1_scale.md)),
+		MAKE_MAPPAIR([Renderable](/engine/Classes/structtec_1_1_renderable/)),
+		MAKE_MAPPAIR([Position](/engine/Classes/structtec_1_1_position/)),
+		MAKE_MAPPAIR([Orientation](/engine/Classes/structtec_1_1_orientation/)),
+		MAKE_MAPPAIR([View](/engine/Classes/structtec_1_1_view/)),
+		MAKE_MAPPAIR([Animation](/engine/Classes/classtec_1_1_animation/)),
+		MAKE_MAPPAIR([Scale](/engine/Classes/structtec_1_1_scale/)),
 		MAKE_MAPPAIR(CollisionBody),
-		MAKE_MAPPAIR([Velocity](Classes/structtec_1_1_velocity.md)),
-		MAKE_MAPPAIR([AudioSource](Classes/structtec_1_1_audio_source.md)),
-		MAKE_MAPPAIR([PointLight](Classes/structtec_1_1_point_light.md)),
-		MAKE_MAPPAIR([DirectionalLight](Classes/structtec_1_1_directional_light.md)),
+		MAKE_MAPPAIR([Velocity](/engine/Classes/structtec_1_1_velocity/)),
+		MAKE_MAPPAIR([AudioSource](/engine/Classes/structtec_1_1_audio_source/)),
+		MAKE_MAPPAIR([PointLight](/engine/Classes/structtec_1_1_point_light/)),
+		MAKE_MAPPAIR([DirectionalLight](/engine/Classes/structtec_1_1_directional_light/)),
 		
-		MAKE_MAPPAIR([VoxelVolume](Classes/classtec_1_1_voxel_volume.md)),
-		MAKE_MAPPAIR([Computer](Classes/structtec_1_1_computer.md)),
-		MAKE_MAPPAIR([LuaScript](Classes/structtec_1_1_lua_script.md))};
+		MAKE_MAPPAIR([VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/)),
+		MAKE_MAPPAIR([Computer](/engine/Classes/structtec_1_1_computer/)),
+		MAKE_MAPPAIR([LuaScript](/engine/Classes/structtec_1_1_lua_script/))};
 ```
 
 Maps on runtime the Type ID with the name. 
@@ -1154,4 +1154,4 @@ Maps on runtime the Type ID with the name.
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

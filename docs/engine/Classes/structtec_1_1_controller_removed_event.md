@@ -11,7 +11,7 @@ title: tec::ControllerRemovedEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [Controller](Classes/structtec_1_1_controller.md) > | **[controller](Classes/structtec_1_1_controller_removed_event.md#variable-controller)**  |
+| std::shared_ptr< [Controller](/engine/Classes/structtec_1_1_controller/) > | **[controller](/engine/Classes/structtec_1_1_controller_removed_event/#variable-controller)**  |
 
 ## Public Attributes Documentation
 
@@ -24,4 +24,4 @@ std::shared_ptr< Controller > controller {nullptr};
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

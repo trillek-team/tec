@@ -11,7 +11,7 @@ title: tec::ClientCommandsEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| proto::ClientCommands | **[client_commands](Classes/structtec_1_1_client_commands_event.md#variable-client_commands)**  |
+| proto::ClientCommands | **[client_commands](/engine/Classes/structtec_1_1_client_commands_event/#variable-client_commands)**  |
 
 ## Public Attributes Documentation
 
@@ -24,4 +24,4 @@ proto::ClientCommands client_commands;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

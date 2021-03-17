@@ -11,19 +11,19 @@ title: tec::Velocity
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Velocity](Classes/structtec_1_1_velocity.md#function-velocity)**() |
-| | **[Velocity](Classes/structtec_1_1_velocity.md#function-velocity)**(glm::vec3 linear, glm::vec3 angular) |
-| btVector3 | **[GetLinear](Classes/structtec_1_1_velocity.md#function-getlinear)**() const |
-| btVector3 | **[GetAngular](Classes/structtec_1_1_velocity.md#function-getangular)**() const |
-| void | **[Out](Classes/structtec_1_1_velocity.md#function-out)**(proto::Component * target) |
-| void | **[In](Classes/structtec_1_1_velocity.md#function-in)**(const proto::Component & source) |
+| | **[Velocity](/engine/Classes/structtec_1_1_velocity/#function-velocity)**() |
+| | **[Velocity](/engine/Classes/structtec_1_1_velocity/#function-velocity)**(glm::vec3 linear, glm::vec3 angular) |
+| btVector3 | **[GetLinear](/engine/Classes/structtec_1_1_velocity/#function-getlinear)**() const |
+| btVector3 | **[GetAngular](/engine/Classes/structtec_1_1_velocity/#function-getangular)**() const |
+| void | **[Out](/engine/Classes/structtec_1_1_velocity/#function-out)**(proto::Component * target) |
+| void | **[In](/engine/Classes/structtec_1_1_velocity/#function-in)**(const proto::Component & source) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec3 | **[linear](Classes/structtec_1_1_velocity.md#variable-linear)**  |
-| glm::vec3 | **[angular](Classes/structtec_1_1_velocity.md#variable-angular)**  |
+| glm::vec3 | **[linear](/engine/Classes/structtec_1_1_velocity/#variable-linear)**  |
+| glm::vec3 | **[angular](/engine/Classes/structtec_1_1_velocity/#variable-angular)**  |
 
 ## Public Functions Documentation
 
@@ -94,4 +94,4 @@ glm::vec3 angular;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

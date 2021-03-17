@@ -11,13 +11,13 @@ title: tec::VorbisStream
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[VorbisStream](Classes/classtec_1_1_vorbis_stream.md#function-vorbisstream)**(int buffer_size =32768) |
-| | **[~VorbisStream](Classes/classtec_1_1_vorbis_stream.md#function-~vorbisstream)**() |
-| std::size_t | **[BufferStream](Classes/classtec_1_1_vorbis_stream.md#function-bufferstream)**(ALint buffer) |
-| void | **[Reset](Classes/classtec_1_1_vorbis_stream.md#function-reset)**() |
-| const std::string | **[GetName](Classes/classtec_1_1_vorbis_stream.md#function-getname)**() const |
-| void | **[SetName](Classes/classtec_1_1_vorbis_stream.md#function-setname)**(const std::string & _name) |
-| std::shared_ptr< [VorbisStream](Classes/classtec_1_1_vorbis_stream.md) > | **[Create](Classes/classtec_1_1_vorbis_stream.md#function-create)**(const [FilePath](Classes/classtec_1_1_file_path.md) & filename)<br>Creates a [VorbisStream](Classes/classtec_1_1_vorbis_stream.md) resource from the given filename.  |
+| | **[VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/#function-vorbisstream)**(int buffer_size =32768) |
+| | **[~VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/#function-~vorbisstream)**() |
+| std::size_t | **[BufferStream](/engine/Classes/classtec_1_1_vorbis_stream/#function-bufferstream)**(ALint buffer) |
+| void | **[Reset](/engine/Classes/classtec_1_1_vorbis_stream/#function-reset)**() |
+| const std::string | **[GetName](/engine/Classes/classtec_1_1_vorbis_stream/#function-getname)**() const |
+| void | **[SetName](/engine/Classes/classtec_1_1_vorbis_stream/#function-setname)**(const std::string & _name) |
+| std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[Create](/engine/Classes/classtec_1_1_vorbis_stream/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename)<br>Creates a [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) resource from the given filename.  |
 
 ## Public Functions Documentation
 
@@ -77,18 +77,18 @@ static std::shared_ptr< VorbisStream > Create(
 )
 ```
 
-Creates a [VorbisStream](Classes/classtec_1_1_vorbis_stream.md) resource from the given filename. 
+Creates a [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) resource from the given filename. 
 
 **Parameters**: 
 
   * **const** std::vector<Property>& properties The creation properties for the resource. 
 
 
-**Return**: std::shared_ptr<VorbisStream> The created [VorbisStream](Classes/classtec_1_1_vorbis_stream.md) resource. 
+**Return**: std::shared_ptr<VorbisStream> The created [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) resource. 
 
 The only used initialization property is "filename". 
 
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

@@ -11,16 +11,16 @@ title: tec::KeyboardEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[KEY_ACTION](Classes/structtec_1_1_keyboard_event.md#enum-key_action)** { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR} |
+| enum| **[KEY_ACTION](/engine/Classes/structtec_1_1_keyboard_event/#enum-key_action)** { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR} |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| int | **[key](Classes/structtec_1_1_keyboard_event.md#variable-key)**  |
-| int | **[scancode](Classes/structtec_1_1_keyboard_event.md#variable-scancode)**  |
-| KEY_ACTION | **[action](Classes/structtec_1_1_keyboard_event.md#variable-action)**  |
-| int | **[mods](Classes/structtec_1_1_keyboard_event.md#variable-mods)**  |
+| int | **[key](/engine/Classes/structtec_1_1_keyboard_event/#variable-key)**  |
+| int | **[scancode](/engine/Classes/structtec_1_1_keyboard_event/#variable-scancode)**  |
+| KEY_ACTION | **[action](/engine/Classes/structtec_1_1_keyboard_event/#variable-action)**  |
+| int | **[mods](/engine/Classes/structtec_1_1_keyboard_event/#variable-mods)**  |
 
 ## Public Types Documentation
 
@@ -68,4 +68,4 @@ int mods {0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

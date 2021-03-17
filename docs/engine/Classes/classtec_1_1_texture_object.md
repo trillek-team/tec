@@ -11,36 +11,36 @@ title: tec::TextureObject
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[TextureObject](Classes/classtec_1_1_texture_object.md#function-textureobject)**() |
-| | **[~TextureObject](Classes/classtec_1_1_texture_object.md#function-~textureobject)**() |
-| | **[TextureObject](Classes/classtec_1_1_texture_object.md#function-textureobject)**(const [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & image)<br>new texture instance from image  |
-| | **[TextureObject](Classes/classtec_1_1_texture_object.md#function-textureobject)**(std::weak_ptr< [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) > pbp)<br>new texture instance from an image pointer  |
-| | **[TextureObject](Classes/classtec_1_1_texture_object.md#function-textureobject)**(const [TextureObject](Classes/classtec_1_1_texture_object.md) & ) |
-| [TextureObject](Classes/classtec_1_1_texture_object.md) & | **[operator=](Classes/classtec_1_1_texture_object.md#function-operator=)**(const [TextureObject](Classes/classtec_1_1_texture_object.md) & ) |
-| | **[TextureObject](Classes/classtec_1_1_texture_object.md#function-textureobject)**([TextureObject](Classes/classtec_1_1_texture_object.md) && other) |
-| [TextureObject](Classes/classtec_1_1_texture_object.md) & | **[operator=](Classes/classtec_1_1_texture_object.md#function-operator=)**([TextureObject](Classes/classtec_1_1_texture_object.md) && other) |
-| void | **[Destroy](Classes/classtec_1_1_texture_object.md#function-destroy)**()<br>delete the underlaying GL texture  |
-| GLuint | **[GetID](Classes/classtec_1_1_texture_object.md#function-getid)**()<br>get the ID of the texture note: this method is not const, since GL can modify the texture with the ID  |
-| bool | **[IsDynamic](Classes/classtec_1_1_texture_object.md#function-isdynamic)**() |
-| void | **[Update](Classes/classtec_1_1_texture_object.md#function-update)**() |
-| void | **[SetCompare](Classes/classtec_1_1_texture_object.md#function-setcompare)**(bool c) |
-| void | **[Load](Classes/classtec_1_1_texture_object.md#function-load)**(const [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & image)<br>create a texture from an image  |
-| void | **[Load](Classes/classtec_1_1_texture_object.md#function-load)**(const uint8_t * image, GLuint width, GLuint height)<br>create a texture from raw image data  |
-| void | **[Generate](Classes/classtec_1_1_texture_object.md#function-generate)**(GLuint width, GLuint height, bool usealpha)<br>create a blank texture RGB or RGBA format  |
-| void | **[GenerateDepth](Classes/classtec_1_1_texture_object.md#function-generatedepth)**(GLuint width, GLuint height, bool stencil)<br>create a blank depth texture with or without stencil  |
-| void | **[GenerateStencil](Classes/classtec_1_1_texture_object.md#function-generatestencil)**(GLuint width, GLuint height)<br>create a blank stencil texture  |
-| void | **[GenerateMultisample](Classes/classtec_1_1_texture_object.md#function-generatemultisample)**(GLuint width, GLuint height, GLuint samples)<br>create a blank multi-sample texture RGB or RGBA format  |
-| void | **[GenerateMultisampleDepth](Classes/classtec_1_1_texture_object.md#function-generatemultisampledepth)**(GLuint width, GLuint height, GLuint samples, bool stencil)<br>create a blank multi-sample depth texture with or without stencil  |
-| void | **[GenerateMultisampleStencil](Classes/classtec_1_1_texture_object.md#function-generatemultisamplestencil)**(GLuint width, GLuint height, GLuint samples)<br>create a blank multi-sample stencil texture  |
-| bool | **[operator==](Classes/classtec_1_1_texture_object.md#function-operator==)**(const [TextureObject](Classes/classtec_1_1_texture_object.md) & other) |
+| | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**() |
+| | **[~TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-~textureobject)**() |
+| | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & image)<br>new texture instance from image  |
+| | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**(std::weak_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > pbp)<br>new texture instance from an image pointer  |
+| | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & ) |
+| [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & | **[operator=](/engine/Classes/classtec_1_1_texture_object/#function-operator=)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & ) |
+| | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**([TextureObject](/engine/Classes/classtec_1_1_texture_object/) && other) |
+| [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & | **[operator=](/engine/Classes/classtec_1_1_texture_object/#function-operator=)**([TextureObject](/engine/Classes/classtec_1_1_texture_object/) && other) |
+| void | **[Destroy](/engine/Classes/classtec_1_1_texture_object/#function-destroy)**()<br>delete the underlaying GL texture  |
+| GLuint | **[GetID](/engine/Classes/classtec_1_1_texture_object/#function-getid)**()<br>get the ID of the texture note: this method is not const, since GL can modify the texture with the ID  |
+| bool | **[IsDynamic](/engine/Classes/classtec_1_1_texture_object/#function-isdynamic)**() |
+| void | **[Update](/engine/Classes/classtec_1_1_texture_object/#function-update)**() |
+| void | **[SetCompare](/engine/Classes/classtec_1_1_texture_object/#function-setcompare)**(bool c) |
+| void | **[Load](/engine/Classes/classtec_1_1_texture_object/#function-load)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & image)<br>create a texture from an image  |
+| void | **[Load](/engine/Classes/classtec_1_1_texture_object/#function-load)**(const uint8_t * image, GLuint width, GLuint height)<br>create a texture from raw image data  |
+| void | **[Generate](/engine/Classes/classtec_1_1_texture_object/#function-generate)**(GLuint width, GLuint height, bool usealpha)<br>create a blank texture RGB or RGBA format  |
+| void | **[GenerateDepth](/engine/Classes/classtec_1_1_texture_object/#function-generatedepth)**(GLuint width, GLuint height, bool stencil)<br>create a blank depth texture with or without stencil  |
+| void | **[GenerateStencil](/engine/Classes/classtec_1_1_texture_object/#function-generatestencil)**(GLuint width, GLuint height)<br>create a blank stencil texture  |
+| void | **[GenerateMultisample](/engine/Classes/classtec_1_1_texture_object/#function-generatemultisample)**(GLuint width, GLuint height, GLuint samples)<br>create a blank multi-sample texture RGB or RGBA format  |
+| void | **[GenerateMultisampleDepth](/engine/Classes/classtec_1_1_texture_object/#function-generatemultisampledepth)**(GLuint width, GLuint height, GLuint samples, bool stencil)<br>create a blank multi-sample depth texture with or without stencil  |
+| void | **[GenerateMultisampleStencil](/engine/Classes/classtec_1_1_texture_object/#function-generatemultisamplestencil)**(GLuint width, GLuint height, GLuint samples)<br>create a blank multi-sample stencil texture  |
+| bool | **[operator==](/engine/Classes/classtec_1_1_texture_object/#function-operator==)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & other) |
 
 ## Protected Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| GLuint | **[texture_id](Classes/classtec_1_1_texture_object.md#variable-texture_id)**  |
-| bool | **[compare](Classes/classtec_1_1_texture_object.md#variable-compare)**  |
-| std::weak_ptr< [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) > | **[source_ptr](Classes/classtec_1_1_texture_object.md#variable-source_ptr)**  |
+| GLuint | **[texture_id](/engine/Classes/classtec_1_1_texture_object/#variable-texture_id)**  |
+| bool | **[compare](/engine/Classes/classtec_1_1_texture_object/#variable-compare)**  |
+| std::weak_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[source_ptr](/engine/Classes/classtec_1_1_texture_object/#variable-source_ptr)**  |
 
 ## Public Functions Documentation
 
@@ -148,7 +148,7 @@ void Update()
 ```
 
 
-Called by the [RenderSystem](Classes/classtec_1_1_render_system.md) to update dynamic textures 
+Called by the [RenderSystem](/engine/Classes/classtec_1_1_render_system/) to update dynamic textures 
 
 
 ### function SetCompare
@@ -288,4 +288,4 @@ std::weak_ptr< PixelBuffer > source_ptr;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

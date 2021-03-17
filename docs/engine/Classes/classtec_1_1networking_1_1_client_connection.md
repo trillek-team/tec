@@ -13,24 +13,24 @@ Inherits from std::enable_shared_from_this< ClientConnection >
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[ClientConnection](Classes/classtec_1_1networking_1_1_client_connection.md#function-clientconnection)**(tcp::socket _socket, tcp::endpoint _endpoint, [Server](Classes/classtec_1_1networking_1_1_server.md) * server) |
-| | **[~ClientConnection](Classes/classtec_1_1networking_1_1_client_connection.md#function-~clientconnection)**() |
-| void | **[StartRead](Classes/classtec_1_1networking_1_1_client_connection.md#function-startread)**() |
-| void | **[QueueWrite](Classes/classtec_1_1networking_1_1_client_connection.md#function-queuewrite)**(MessagePool::ptr_type msg) |
-| void | **[QueueWrite](Classes/classtec_1_1networking_1_1_client_connection.md#function-queuewrite)**([MessageOut](Classes/classtec_1_1networking_1_1_message_out.md) & msg) |
-| void | **[QueueWrite](Classes/classtec_1_1networking_1_1_client_connection.md#function-queuewrite)**([MessageOut](Classes/classtec_1_1networking_1_1_message_out.md) && msg) |
-| [eid](Namespaces/namespacetec.md#typedef-eid) | **[GetID](Classes/classtec_1_1networking_1_1_client_connection.md#function-getid)**() |
-| tcp::endpoint | **[GetEndpoint](Classes/classtec_1_1networking_1_1_client_connection.md#function-getendpoint)**() |
-| void | **[SetID](Classes/classtec_1_1networking_1_1_client_connection.md#function-setid)**([eid](Namespaces/namespacetec.md#typedef-eid) id) |
-| proto::Entity & | **[GetEntity](Classes/classtec_1_1networking_1_1_client_connection.md#function-getentity)**() |
-| void | **[DoJoin](Classes/classtec_1_1networking_1_1_client_connection.md#function-dojoin)**() |
-| void | **[DoLeave](Classes/classtec_1_1networking_1_1_client_connection.md#function-doleave)**() |
-| void | **[OnClientLeave](Classes/classtec_1_1networking_1_1_client_connection.md#function-onclientleave)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
-| void | **[ConfirmStateID](Classes/classtec_1_1networking_1_1_client_connection.md#function-confirmstateid)**(state_id_t state_id) |
-| state_id_t | **[GetLastConfirmedStateID](Classes/classtec_1_1networking_1_1_client_connection.md#function-getlastconfirmedstateid)**() |
-| void | **[UpdateGameState](Classes/classtec_1_1networking_1_1_client_connection.md#function-updategamestate)**(const [GameState](Classes/structtec_1_1_game_state.md) & full_state) |
-| [MessageOut](Classes/classtec_1_1networking_1_1_message_out.md) | **[PrepareGameStateUpdateMessage](Classes/classtec_1_1networking_1_1_client_connection.md#function-preparegamestateupdatemessage)**(state_id_t current_state_id, uint64_t current_timestamp) |
-| size_t | **[GetPartialMessageCount](Classes/classtec_1_1networking_1_1_client_connection.md#function-getpartialmessagecount)**() const |
+| | **[ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-clientconnection)**(tcp::socket _socket, tcp::endpoint _endpoint, [Server](/engine/Classes/classtec_1_1networking_1_1_server/) * server) |
+| | **[~ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-~clientconnection)**() |
+| void | **[StartRead](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-startread)**() |
+| void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**(MessagePool::ptr_type msg) |
+| void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) & msg) |
+| void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && msg) |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getid)**() |
+| tcp::endpoint | **[GetEndpoint](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getendpoint)**() |
+| void | **[SetID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-setid)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) id) |
+| proto::Entity & | **[GetEntity](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getentity)**() |
+| void | **[DoJoin](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-dojoin)**() |
+| void | **[DoLeave](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-doleave)**() |
+| void | **[OnClientLeave](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onclientleave)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
+| void | **[ConfirmStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-confirmstateid)**(state_id_t state_id) |
+| state_id_t | **[GetLastConfirmedStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getlastconfirmedstateid)**() |
+| void | **[UpdateGameState](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-updategamestate)**(const [GameState](/engine/Classes/structtec_1_1_game_state/) & full_state) |
+| [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) | **[PrepareGameStateUpdateMessage](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-preparegamestateupdatemessage)**(state_id_t current_state_id, uint64_t current_timestamp) |
+| size_t | **[GetPartialMessageCount](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getpartialmessagecount)**() const |
 
 ## Public Functions Documentation
 
@@ -183,4 +183,4 @@ inline size_t GetPartialMessageCount() const
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

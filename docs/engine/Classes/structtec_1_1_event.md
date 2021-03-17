@@ -13,15 +13,15 @@ title: tec::Event
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Event](Classes/structtec_1_1_event.md#function-event)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id, std::shared_ptr< T > data) |
-| | **[Event](Classes/structtec_1_1_event.md#function-event)**([Event](Classes/structtec_1_1_event.md) && other) |
+| | **[Event](/engine/Classes/structtec_1_1_event/#function-event)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< T > data) |
+| | **[Event](/engine/Classes/structtec_1_1_event/#function-event)**([Event](/engine/Classes/structtec_1_1_event/) && other) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](Namespaces/namespacetec.md#typedef-eid) | **[entity_id](Classes/structtec_1_1_event.md#variable-entity_id)**  |
-| std::shared_ptr< T > | **[data](Classes/structtec_1_1_event.md#variable-data)**  |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_event/#variable-entity_id)**  |
+| std::shared_ptr< T > | **[data](/engine/Classes/structtec_1_1_event/#variable-data)**  |
 
 ## Detailed Description
 
@@ -69,4 +69,4 @@ std::shared_ptr< T > data;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

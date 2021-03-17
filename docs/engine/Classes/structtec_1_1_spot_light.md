@@ -7,49 +7,49 @@ title: tec::SpotLight
 
 
 
-Inherits from [tec::DirectionalLight](Classes/structtec_1_1_directional_light.md), [tec::BaseLight](Classes/structtec_1_1_base_light.md)
+Inherits from [tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_light/), [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[SpotLight](Classes/structtec_1_1_spot_light.md#function-spotlight)**() =default |
+| | **[SpotLight](/engine/Classes/structtec_1_1_spot_light/#function-spotlight)**() =default |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[cutoff](Classes/structtec_1_1_spot_light.md#variable-cutoff)**  |
+| float | **[cutoff](/engine/Classes/structtec_1_1_spot_light/#variable-cutoff)**  |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::DirectionalLight](Classes/structtec_1_1_directional_light.md)**
+**Public Functions inherited from [tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_light/)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[DirectionalLight](Classes/structtec_1_1_directional_light.md#function-directionallight)**() =default |
-| void | **[Out](Classes/structtec_1_1_directional_light.md#function-out)**(proto::Component * target) |
-| void | **[In](Classes/structtec_1_1_directional_light.md#function-in)**(const proto::Component & source) |
+| | **[DirectionalLight](/engine/Classes/structtec_1_1_directional_light/#function-directionallight)**() =default |
+| void | **[Out](/engine/Classes/structtec_1_1_directional_light/#function-out)**(proto::Component * target) |
+| void | **[In](/engine/Classes/structtec_1_1_directional_light/#function-in)**(const proto::Component & source) |
 
-**Public Attributes inherited from [tec::DirectionalLight](Classes/structtec_1_1_directional_light.md)**
-
-|                | Name           |
-| -------------- | -------------- |
-| glm::vec3 | **[direction](Classes/structtec_1_1_directional_light.md#variable-direction)**  |
-
-**Public Functions inherited from [tec::BaseLight](Classes/structtec_1_1_base_light.md)**
+**Public Attributes inherited from [tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_light/)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[BaseLight](Classes/structtec_1_1_base_light.md#function-baselight)**() =default |
+| glm::vec3 | **[direction](/engine/Classes/structtec_1_1_directional_light/#variable-direction)**  |
 
-**Public Attributes inherited from [tec::BaseLight](Classes/structtec_1_1_base_light.md)**
+**Public Functions inherited from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)**
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec3 | **[color](Classes/structtec_1_1_base_light.md#variable-color)**  |
-| float | **[ambient_intensity](Classes/structtec_1_1_base_light.md#variable-ambient_intensity)**  |
-| float | **[diffuse_intensity](Classes/structtec_1_1_base_light.md#variable-diffuse_intensity)**  |
+| | **[BaseLight](/engine/Classes/structtec_1_1_base_light/#function-baselight)**() =default |
+
+**Public Attributes inherited from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)**
+
+|                | Name           |
+| -------------- | -------------- |
+| glm::vec3 | **[color](/engine/Classes/structtec_1_1_base_light/#variable-color)**  |
+| float | **[ambient_intensity](/engine/Classes/structtec_1_1_base_light/#variable-ambient_intensity)**  |
+| float | **[diffuse_intensity](/engine/Classes/structtec_1_1_base_light/#variable-diffuse_intensity)**  |
 
 
 ## Public Functions Documentation
@@ -72,4 +72,4 @@ float cutoff {0.f};
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

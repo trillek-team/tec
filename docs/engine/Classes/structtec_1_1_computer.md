@@ -11,20 +11,20 @@ title: tec::Computer
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Computer](Classes/structtec_1_1_computer.md#function-computer)**() |
-| | **[~Computer](Classes/structtec_1_1_computer.md#function-~computer)**() |
-| void | **[In](Classes/structtec_1_1_computer.md#function-in)**(const proto::Component & source) |
-| void | **[Out](Classes/structtec_1_1_computer.md#function-out)**(proto::Component * target) |
+| | **[Computer](/engine/Classes/structtec_1_1_computer/#function-computer)**() |
+| | **[~Computer](/engine/Classes/structtec_1_1_computer/#function-~computer)**() |
+| void | **[In](/engine/Classes/structtec_1_1_computer/#function-in)**(const proto::Component & source) |
+| void | **[Out](/engine/Classes/structtec_1_1_computer/#function-out)**(proto::Component * target) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::uint8_t * | **[rom](Classes/structtec_1_1_computer.md#variable-rom)**  |
-| std::string | **[rom_name](Classes/structtec_1_1_computer.md#variable-rom_name)**  |
-| std::size_t | **[rom_size](Classes/structtec_1_1_computer.md#variable-rom_size)**  |
-| VComputer | **[vc](Classes/structtec_1_1_computer.md#variable-vc)**  |
-| std::map< int, std::shared_ptr< [DeviceBase](Classes/structtec_1_1_device_base.md) > > | **[devices](Classes/structtec_1_1_computer.md#variable-devices)**  |
+| std::uint8_t * | **[rom](/engine/Classes/structtec_1_1_computer/#variable-rom)**  |
+| std::string | **[rom_name](/engine/Classes/structtec_1_1_computer/#variable-rom_name)**  |
+| std::size_t | **[rom_size](/engine/Classes/structtec_1_1_computer/#variable-rom_size)**  |
+| VComputer | **[vc](/engine/Classes/structtec_1_1_computer/#variable-vc)**  |
+| std::map< int, std::shared_ptr< [DeviceBase](/engine/Classes/structtec_1_1_device_base/) > > | **[devices](/engine/Classes/structtec_1_1_computer/#variable-devices)**  |
 
 ## Public Functions Documentation
 
@@ -99,4 +99,4 @@ std::map< int, std::shared_ptr< DeviceBase > > devices;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

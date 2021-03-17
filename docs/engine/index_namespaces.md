@@ -8,18 +8,18 @@ title: Namespaces
 
 
 
-* **namespace [google](Namespaces/namespacegoogle.md)** 
-    * **namespace [protobuf](Namespaces/namespacegoogle_1_1protobuf.md)** 
-        * **namespace [io](Namespaces/namespacegoogle_1_1protobuf_1_1io.md)** 
-* **namespace [spdlog](Namespaces/namespacespdlog.md)** 
-    * **namespace [sinks](Namespaces/namespacespdlog_1_1sinks.md)** 
-* **namespace [std](Namespaces/namespacestd.md)** 
-* **namespace [tec](Namespaces/namespacetec.md)** 
-    * **namespace [networking](Namespaces/namespacetec_1_1networking.md)** 
-* **namespace [trillek::computer](Namespaces/namespacetrillek_1_1computer.md)** 
+* **namespace [google](/engine/Namespaces/namespacegoogle/)** 
+    * **namespace [protobuf](/engine/Namespaces/namespacegoogle_1_1protobuf/)** 
+        * **namespace [io](/engine/Namespaces/namespacegoogle_1_1protobuf_1_1io/)** 
+* **namespace [spdlog](/engine/Namespaces/namespacespdlog/)** 
+    * **namespace [sinks](/engine/Namespaces/namespacespdlog_1_1sinks/)** 
+* **namespace [std](/engine/Namespaces/namespacestd/)** 
+* **namespace [tec](/engine/Namespaces/namespacetec/)** 
+    * **namespace [networking](/engine/Namespaces/namespacetec_1_1networking/)** 
+* **namespace [trillek::computer](/engine/Namespaces/namespacetrillek_1_1computer/)** 
 
 
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

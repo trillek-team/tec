@@ -11,18 +11,18 @@ title: tec::Animation
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Animation](Classes/classtec_1_1_animation.md#function-animation)**() =default |
-| | **[Animation](Classes/classtec_1_1_animation.md#function-animation)**(std::shared_ptr< [MD5Anim](Classes/classtec_1_1_m_d5_anim.md) > animation) |
-| void | **[UpdateAnimation](Classes/classtec_1_1_animation.md#function-updateanimation)**(const double delta)<br>Updates the current animation based on a change in time.  |
-| void | **[SetAnimationFile](Classes/classtec_1_1_animation.md#function-setanimationfile)**(std::shared_ptr< [MD5Anim](Classes/classtec_1_1_m_d5_anim.md) > file)<br>Sets the animation file for this animation.  |
-| void | **[Out](Classes/classtec_1_1_animation.md#function-out)**(proto::Component * target) |
-| void | **[In](Classes/classtec_1_1_animation.md#function-in)**(const proto::Component & source) |
+| | **[Animation](/engine/Classes/classtec_1_1_animation/#function-animation)**() =default |
+| | **[Animation](/engine/Classes/classtec_1_1_animation/#function-animation)**(std::shared_ptr< [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) > animation) |
+| void | **[UpdateAnimation](/engine/Classes/classtec_1_1_animation/#function-updateanimation)**(const double delta)<br>Updates the current animation based on a change in time.  |
+| void | **[SetAnimationFile](/engine/Classes/classtec_1_1_animation/#function-setanimationfile)**(std::shared_ptr< [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) > file)<br>Sets the animation file for this animation.  |
+| void | **[Out](/engine/Classes/classtec_1_1_animation/#function-out)**(proto::Component * target) |
+| void | **[In](/engine/Classes/classtec_1_1_animation/#function-in)**(const proto::Component & source) |
 
 ## Friends
 
 |                | Name           |
 | -------------- | -------------- |
-| class | **[RenderSystem](Classes/classtec_1_1_animation.md#friend-rendersystem)**  |
+| class | **[RenderSystem](/engine/Classes/classtec_1_1_animation/#friend-rendersystem)**  |
 
 ## Public Functions Documentation
 
@@ -110,4 +110,4 @@ friend class RenderSystem(
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

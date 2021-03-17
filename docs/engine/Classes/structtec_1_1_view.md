@@ -11,16 +11,16 @@ title: tec::View
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[View](Classes/structtec_1_1_view.md#function-view)**(bool active =false) |
-| void | **[Out](Classes/structtec_1_1_view.md#function-out)**(proto::Component * target) |
-| void | **[In](Classes/structtec_1_1_view.md#function-in)**(const proto::Component & source) |
+| | **[View](/engine/Classes/structtec_1_1_view/#function-view)**(bool active =false) |
+| void | **[Out](/engine/Classes/structtec_1_1_view/#function-out)**(proto::Component * target) |
+| void | **[In](/engine/Classes/structtec_1_1_view/#function-in)**(const proto::Component & source) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::mat4 | **[view_matrix](Classes/structtec_1_1_view.md#variable-view_matrix)**  |
-| bool | **[active](Classes/structtec_1_1_view.md#variable-active)**  |
+| glm::mat4 | **[view_matrix](/engine/Classes/structtec_1_1_view/#variable-view_matrix)**  |
+| bool | **[active](/engine/Classes/structtec_1_1_view/#variable-active)**  |
 
 ## Public Functions Documentation
 
@@ -69,4 +69,4 @@ bool active = false;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

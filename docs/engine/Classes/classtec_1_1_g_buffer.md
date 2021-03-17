@@ -11,34 +11,34 @@ title: tec::GBuffer
 
 |                | Name           |
 | -------------- | -------------- |
-| enum int | **[GBUFFER_TEXTURE_TYPE](Classes/classtec_1_1_g_buffer.md#enum-gbuffer_texture_type)** { GBUFFER_TEXTURE_TYPE_POSITION = 0, GBUFFER_TEXTURE_TYPE_DIFFUSE, GBUFFER_TEXTURE_TYPE_NORMAL} |
-| enum| **[GBUFFER_DEPTH_TYPE](Classes/classtec_1_1_g_buffer.md#enum-gbuffer_depth_type)** { GBUFFER_DEPTH_TYPE_STENCIL} |
+| enum int | **[GBUFFER_TEXTURE_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-gbuffer_texture_type)** { GBUFFER_TEXTURE_TYPE_POSITION = 0, GBUFFER_TEXTURE_TYPE_DIFFUSE, GBUFFER_TEXTURE_TYPE_NORMAL} |
+| enum| **[GBUFFER_DEPTH_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-gbuffer_depth_type)** { GBUFFER_DEPTH_TYPE_STENCIL} |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[GBuffer](Classes/classtec_1_1_g_buffer.md#function-gbuffer)**() |
-| | **[~GBuffer](Classes/classtec_1_1_g_buffer.md#function-~gbuffer)**() |
-| void | **[AddColorAttachments](Classes/classtec_1_1_g_buffer.md#function-addcolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
-| void | **[ResizeColorAttachments](Classes/classtec_1_1_g_buffer.md#function-resizecolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
-| void | **[SetDepthAttachment](Classes/classtec_1_1_g_buffer.md#function-setdepthattachment)**(GBUFFER_DEPTH_TYPE type, const unsigned int width, const unsigned int height) |
-| void | **[ResizeDepthAttachment](Classes/classtec_1_1_g_buffer.md#function-resizedepthattachment)**(const unsigned int width, const unsigned int height) |
-| bool | **[CheckCompletion](Classes/classtec_1_1_g_buffer.md#function-checkcompletion)**() const |
-| void | **[StartFrame](Classes/classtec_1_1_g_buffer.md#function-startframe)**() const |
-| void | **[BeginGeometryPass](Classes/classtec_1_1_g_buffer.md#function-begingeometrypass)**() const |
-| void | **[BeginLightPass](Classes/classtec_1_1_g_buffer.md#function-beginlightpass)**() |
-| void | **[BeginDirLightPass](Classes/classtec_1_1_g_buffer.md#function-begindirlightpass)**() |
-| void | **[BeginPointLightPass](Classes/classtec_1_1_g_buffer.md#function-beginpointlightpass)**() |
-| void | **[EndPointLightPass](Classes/classtec_1_1_g_buffer.md#function-endpointlightpass)**() |
-| void | **[FinalPass](Classes/classtec_1_1_g_buffer.md#function-finalpass)**() const |
-| void | **[BindForWriting](Classes/classtec_1_1_g_buffer.md#function-bindforwriting)**() const |
-| void | **[BindForRendering](Classes/classtec_1_1_g_buffer.md#function-bindforrendering)**() const |
-| GLuint | **[GetDepthTexture](Classes/classtec_1_1_g_buffer.md#function-getdepthtexture)**() const |
-| GLuint | **[GetColorTexture](Classes/classtec_1_1_g_buffer.md#function-getcolortexture)**(unsigned short index) const |
-| void | **[EndGeometryPass](Classes/classtec_1_1_g_buffer.md#function-endgeometrypass)**() |
-| void | **[StencilPass](Classes/classtec_1_1_g_buffer.md#function-stencilpass)**() |
-| void | **[SetReadBuffer](Classes/classtec_1_1_g_buffer.md#function-setreadbuffer)**(GBUFFER_TEXTURE_TYPE TextureType) |
+| | **[GBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-gbuffer)**() |
+| | **[~GBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-~gbuffer)**() |
+| void | **[AddColorAttachments](/engine/Classes/classtec_1_1_g_buffer/#function-addcolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
+| void | **[ResizeColorAttachments](/engine/Classes/classtec_1_1_g_buffer/#function-resizecolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
+| void | **[SetDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-setdepthattachment)**(GBUFFER_DEPTH_TYPE type, const unsigned int width, const unsigned int height) |
+| void | **[ResizeDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-resizedepthattachment)**(const unsigned int width, const unsigned int height) |
+| bool | **[CheckCompletion](/engine/Classes/classtec_1_1_g_buffer/#function-checkcompletion)**() const |
+| void | **[StartFrame](/engine/Classes/classtec_1_1_g_buffer/#function-startframe)**() const |
+| void | **[BeginGeometryPass](/engine/Classes/classtec_1_1_g_buffer/#function-begingeometrypass)**() const |
+| void | **[BeginLightPass](/engine/Classes/classtec_1_1_g_buffer/#function-beginlightpass)**() |
+| void | **[BeginDirLightPass](/engine/Classes/classtec_1_1_g_buffer/#function-begindirlightpass)**() |
+| void | **[BeginPointLightPass](/engine/Classes/classtec_1_1_g_buffer/#function-beginpointlightpass)**() |
+| void | **[EndPointLightPass](/engine/Classes/classtec_1_1_g_buffer/#function-endpointlightpass)**() |
+| void | **[FinalPass](/engine/Classes/classtec_1_1_g_buffer/#function-finalpass)**() const |
+| void | **[BindForWriting](/engine/Classes/classtec_1_1_g_buffer/#function-bindforwriting)**() const |
+| void | **[BindForRendering](/engine/Classes/classtec_1_1_g_buffer/#function-bindforrendering)**() const |
+| GLuint | **[GetDepthTexture](/engine/Classes/classtec_1_1_g_buffer/#function-getdepthtexture)**() const |
+| GLuint | **[GetColorTexture](/engine/Classes/classtec_1_1_g_buffer/#function-getcolortexture)**(unsigned short index) const |
+| void | **[EndGeometryPass](/engine/Classes/classtec_1_1_g_buffer/#function-endgeometrypass)**() |
+| void | **[StencilPass](/engine/Classes/classtec_1_1_g_buffer/#function-stencilpass)**() |
+| void | **[SetReadBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-setreadbuffer)**(GBUFFER_TEXTURE_TYPE TextureType) |
 
 ## Public Types Documentation
 
@@ -230,4 +230,4 @@ static void SetReadBuffer(
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

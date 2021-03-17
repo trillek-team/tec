@@ -11,18 +11,18 @@ title: tec::ChatCommandEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[ChatCommandEvent](Classes/structtec_1_1_chat_command_event.md#function-chatcommandevent)**() =default |
-| | **[ChatCommandEvent](Classes/structtec_1_1_chat_command_event.md#function-chatcommandevent)**(proto::ChatCommand chat_command) |
-| void | **[In](Classes/structtec_1_1_chat_command_event.md#function-in)**(proto::ChatCommand chat_command) |
-| void | **[Out](Classes/structtec_1_1_chat_command_event.md#function-out)**(proto::ChatCommand chat_command) |
-| proto::ChatCommand | **[Out](Classes/structtec_1_1_chat_command_event.md#function-out)**() |
+| | **[ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/#function-chatcommandevent)**() =default |
+| | **[ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/#function-chatcommandevent)**(proto::ChatCommand chat_command) |
+| void | **[In](/engine/Classes/structtec_1_1_chat_command_event/#function-in)**(proto::ChatCommand chat_command) |
+| void | **[Out](/engine/Classes/structtec_1_1_chat_command_event/#function-out)**(proto::ChatCommand chat_command) |
+| proto::ChatCommand | **[Out](/engine/Classes/structtec_1_1_chat_command_event/#function-out)**() |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::string | **[command](Classes/structtec_1_1_chat_command_event.md#variable-command)**  |
-| std::vector< std::string > | **[args](Classes/structtec_1_1_chat_command_event.md#variable-args)**  |
+| std::string | **[command](/engine/Classes/structtec_1_1_chat_command_event/#variable-command)**  |
+| std::vector< std::string > | **[args](/engine/Classes/structtec_1_1_chat_command_event/#variable-args)**  |
 
 ## Public Functions Documentation
 
@@ -85,4 +85,4 @@ std::vector< std::string > args;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

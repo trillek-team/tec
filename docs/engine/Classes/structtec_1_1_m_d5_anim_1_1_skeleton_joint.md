@@ -11,15 +11,15 @@ title: tec::MD5Anim::SkeletonJoint
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[ComputeW](Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint.md#function-computew)**() |
+| void | **[ComputeW](/engine/Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint/#function-computew)**() |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| int | **[parent](Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint.md#variable-parent)**  |
-| glm::vec3 | **[position](Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint.md#variable-position)**  |
-| glm::quat | **[orientation](Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint.md#variable-orientation)**  |
+| int | **[parent](/engine/Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint/#variable-parent)**  |
+| glm::vec3 | **[position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint/#variable-position)**  |
+| glm::quat | **[orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint/#variable-orientation)**  |
 
 ## Public Functions Documentation
 
@@ -55,4 +55,4 @@ glm::quat orientation {0.f, 0.f, 0.f, 1.f};
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

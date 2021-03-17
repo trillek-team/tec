@@ -13,11 +13,11 @@ Inherits from spdlog::sinks::sink
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[ConsoleSink](Classes/classtec_1_1_console_sink.md#function-consolesink)**([Console](Classes/classtec_1_1_console.md) & c) |
-| void | **[log](Classes/classtec_1_1_console_sink.md#function-log)**(const spdlog::details::log_msg & msg) override |
-| void | **[flush](Classes/classtec_1_1_console_sink.md#function-flush)**() override |
-| void | **[set_pattern](Classes/classtec_1_1_console_sink.md#function-set_pattern)**(const std::string & pattern) |
-| void | **[set_formatter](Classes/classtec_1_1_console_sink.md#function-set_formatter)**(std::unique_ptr< spdlog::formatter > sink_formatter) |
+| | **[ConsoleSink](/engine/Classes/classtec_1_1_console_sink/#function-consolesink)**([Console](/engine/Classes/classtec_1_1_console/) & c) |
+| void | **[log](/engine/Classes/classtec_1_1_console_sink/#function-log)**(const spdlog::details::log_msg & msg) override |
+| void | **[flush](/engine/Classes/classtec_1_1_console_sink/#function-flush)**() override |
+| void | **[set_pattern](/engine/Classes/classtec_1_1_console_sink/#function-set_pattern)**(const std::string & pattern) |
+| void | **[set_formatter](/engine/Classes/classtec_1_1_console_sink/#function-set_formatter)**(std::unique_ptr< spdlog::formatter > sink_formatter) |
 
 ## Public Functions Documentation
 
@@ -66,4 +66,4 @@ inline void set_formatter(
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

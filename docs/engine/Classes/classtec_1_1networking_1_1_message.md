@@ -11,33 +11,33 @@ title: tec::networking::Message
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[@2](Classes/classtec_1_1networking_1_1_message.md#enum-@2)** { header_length = 16} |
-| enum| **[@3](Classes/classtec_1_1networking_1_1_message.md#enum-@3)** { max_body_length = 1024} |
-| typedef const [Message](Classes/classtec_1_1networking_1_1_message.md) * | **[cptr_type](Classes/classtec_1_1networking_1_1_message.md#typedef-cptr_type)**  |
+| enum| **[@2](/engine/Classes/classtec_1_1networking_1_1_message/#enum-@2)** { header_length = 16} |
+| enum| **[@3](/engine/Classes/classtec_1_1networking_1_1_message/#enum-@3)** { max_body_length = 1024} |
+| typedef const [Message](/engine/Classes/classtec_1_1networking_1_1_message/) * | **[cptr_type](/engine/Classes/classtec_1_1networking_1_1_message/#typedef-cptr_type)**  |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Message](Classes/classtec_1_1networking_1_1_message.md#function-message)**() |
-| const uint8_t * | **[GetDataPTR](Classes/classtec_1_1networking_1_1_message.md#function-getdataptr)**() const |
-| uint8_t * | **[GetDataPTR](Classes/classtec_1_1networking_1_1_message.md#function-getdataptr)**() |
-| std::size_t | **[length](Classes/classtec_1_1networking_1_1_message.md#function-length)**() const |
-| asio::mutable_buffer | **[buffer_header](Classes/classtec_1_1networking_1_1_message.md#function-buffer_header)**() |
-| asio::mutable_buffer | **[buffer_body](Classes/classtec_1_1networking_1_1_message.md#function-buffer_body)**() |
-| asio::const_buffer | **[buffer](Classes/classtec_1_1networking_1_1_message.md#function-buffer)**() const |
-| const char * | **[GetBodyPTR](Classes/classtec_1_1networking_1_1_message.md#function-getbodyptr)**() const |
-| char * | **[GetBodyPTR](Classes/classtec_1_1networking_1_1_message.md#function-getbodyptr)**() |
-| std::size_t | **[GetBodyLength](Classes/classtec_1_1networking_1_1_message.md#function-getbodylength)**() const |
-| void | **[SetSequence](Classes/classtec_1_1networking_1_1_message.md#function-setsequence)**(uint32_t value) |
-| uint32_t | **[GetSequence](Classes/classtec_1_1networking_1_1_message.md#function-getsequence)**() const |
-| void | **[SetMessageType](Classes/classtec_1_1networking_1_1_message.md#function-setmessagetype)**(MessageType value) |
-| MessageType | **[GetMessageType](Classes/classtec_1_1networking_1_1_message.md#function-getmessagetype)**() const |
-| void | **[SetMessageID](Classes/classtec_1_1networking_1_1_message.md#function-setmessageid)**(uint32_t value) |
-| uint32_t | **[GetMessageID](Classes/classtec_1_1networking_1_1_message.md#function-getmessageid)**() const |
-| void | **[SetBodyLength](Classes/classtec_1_1networking_1_1_message.md#function-setbodylength)**(std::size_t new_length) |
-| bool | **[decode_header](Classes/classtec_1_1networking_1_1_message.md#function-decode_header)**() |
-| void | **[encode_header](Classes/classtec_1_1networking_1_1_message.md#function-encode_header)**() |
+| | **[Message](/engine/Classes/classtec_1_1networking_1_1_message/#function-message)**() |
+| const uint8_t * | **[GetDataPTR](/engine/Classes/classtec_1_1networking_1_1_message/#function-getdataptr)**() const |
+| uint8_t * | **[GetDataPTR](/engine/Classes/classtec_1_1networking_1_1_message/#function-getdataptr)**() |
+| std::size_t | **[length](/engine/Classes/classtec_1_1networking_1_1_message/#function-length)**() const |
+| asio::mutable_buffer | **[buffer_header](/engine/Classes/classtec_1_1networking_1_1_message/#function-buffer_header)**() |
+| asio::mutable_buffer | **[buffer_body](/engine/Classes/classtec_1_1networking_1_1_message/#function-buffer_body)**() |
+| asio::const_buffer | **[buffer](/engine/Classes/classtec_1_1networking_1_1_message/#function-buffer)**() const |
+| const char * | **[GetBodyPTR](/engine/Classes/classtec_1_1networking_1_1_message/#function-getbodyptr)**() const |
+| char * | **[GetBodyPTR](/engine/Classes/classtec_1_1networking_1_1_message/#function-getbodyptr)**() |
+| std::size_t | **[GetBodyLength](/engine/Classes/classtec_1_1networking_1_1_message/#function-getbodylength)**() const |
+| void | **[SetSequence](/engine/Classes/classtec_1_1networking_1_1_message/#function-setsequence)**(uint32_t value) |
+| uint32_t | **[GetSequence](/engine/Classes/classtec_1_1networking_1_1_message/#function-getsequence)**() const |
+| void | **[SetMessageType](/engine/Classes/classtec_1_1networking_1_1_message/#function-setmessagetype)**(MessageType value) |
+| MessageType | **[GetMessageType](/engine/Classes/classtec_1_1networking_1_1_message/#function-getmessagetype)**() const |
+| void | **[SetMessageID](/engine/Classes/classtec_1_1networking_1_1_message/#function-setmessageid)**(uint32_t value) |
+| uint32_t | **[GetMessageID](/engine/Classes/classtec_1_1networking_1_1_message/#function-getmessageid)**() const |
+| void | **[SetBodyLength](/engine/Classes/classtec_1_1networking_1_1_message/#function-setbodylength)**(std::size_t new_length) |
+| bool | **[decode_header](/engine/Classes/classtec_1_1networking_1_1_message/#function-decode_header)**() |
+| void | **[encode_header](/engine/Classes/classtec_1_1networking_1_1_message/#function-encode_header)**() |
 
 ## Public Types Documentation
 
@@ -211,4 +211,4 @@ inline void encode_header()
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

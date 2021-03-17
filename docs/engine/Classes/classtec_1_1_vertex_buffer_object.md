@@ -11,18 +11,18 @@ title: tec::VertexBufferObject
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[VertexBufferObject](Classes/classtec_1_1_vertex_buffer_object.md#function-vertexbufferobject)**() |
-| | **[VertexBufferObject](Classes/classtec_1_1_vertex_buffer_object.md#function-vertexbufferobject)**(std::shared_ptr< [MeshFile](Classes/classtec_1_1_mesh_file.md) > mesh) |
-| | **[~VertexBufferObject](Classes/classtec_1_1_vertex_buffer_object.md#function-~vertexbufferobject)**() |
-| void | **[Destroy](Classes/classtec_1_1_vertex_buffer_object.md#function-destroy)**()<br>Delete the underlying GL buffers.  |
-| const GLuint | **[GetVAO](Classes/classtec_1_1_vertex_buffer_object.md#function-getvao)**()<br>Get the ID of the vertex array object. note: this method is not const, since GL can modify the ID.  |
-| const GLuint | **[GetIBO](Classes/classtec_1_1_vertex_buffer_object.md#function-getibo)**()<br>Get the ID of the index buffer object. note: this method is not const, since GL can modify the ID.  |
-| [VertexGroup](Classes/structtec_1_1_vertex_group.md) * | **[GetVertexGroup](Classes/classtec_1_1_vertex_buffer_object.md#function-getvertexgroup)**(const std::size_t vertex_group_number)<br>Gets the specified [VertexGroup](Classes/structtec_1_1_vertex_group.md).  |
-| std::size_t | **[GetVertexGroupCount](Classes/classtec_1_1_vertex_buffer_object.md#function-getvertexgroupcount)**() const<br>Gets the number of vertex groups store in the buffer.  |
-| bool | **[IsDynamic](Classes/classtec_1_1_vertex_buffer_object.md#function-isdynamic)**() const |
-| void | **[Update](Classes/classtec_1_1_vertex_buffer_object.md#function-update)**() |
-| void | **[Load](Classes/classtec_1_1_vertex_buffer_object.md#function-load)**(std::shared_ptr< [MeshFile](Classes/classtec_1_1_mesh_file.md) > mesh) |
-| void | **[Load](Classes/classtec_1_1_vertex_buffer_object.md#function-load)**(const std::vector< [VertexData](Classes/structtec_1_1_vertex_data.md) > & verts, const std::vector< GLuint > & indices) |
+| | **[VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-vertexbufferobject)**() |
+| | **[VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-vertexbufferobject)**(std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > mesh) |
+| | **[~VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-~vertexbufferobject)**() |
+| void | **[Destroy](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-destroy)**()<br>Delete the underlying GL buffers.  |
+| const GLuint | **[GetVAO](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvao)**()<br>Get the ID of the vertex array object. note: this method is not const, since GL can modify the ID.  |
+| const GLuint | **[GetIBO](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getibo)**()<br>Get the ID of the index buffer object. note: this method is not const, since GL can modify the ID.  |
+| [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/) * | **[GetVertexGroup](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvertexgroup)**(const std::size_t vertex_group_number)<br>Gets the specified [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/).  |
+| std::size_t | **[GetVertexGroupCount](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvertexgroupcount)**() const<br>Gets the number of vertex groups store in the buffer.  |
+| bool | **[IsDynamic](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-isdynamic)**() const |
+| void | **[Update](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-update)**() |
+| void | **[Load](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-load)**(std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > mesh) |
+| void | **[Load](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-load)**(const std::vector< [VertexData](/engine/Classes/structtec_1_1_vertex_data/) > & verts, const std::vector< GLuint > & indices) |
 
 ## Public Functions Documentation
 
@@ -85,14 +85,14 @@ VertexGroup * GetVertexGroup(
 )
 ```
 
-Gets the specified [VertexGroup](Classes/structtec_1_1_vertex_group.md). 
+Gets the specified [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/). 
 
 **Parameters**: 
 
   * **size_t** vertex_group_number Number of the vertex group to get. 
 
 
-**Return**: [VertexGroup](Classes/structtec_1_1_vertex_group.md)& The specified [VertexGroup](Classes/structtec_1_1_vertex_group.md). 
+**Return**: [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/)& The specified [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/). 
 
 ### function GetVertexGroupCount
 
@@ -134,12 +134,12 @@ void Load(
 
 **Parameters**: 
 
-  * **std::shared_ptr<MeshFile>** mesh The mesh to load into this [VertexBufferObject](Classes/classtec_1_1_vertex_buffer_object.md). 
+  * **std::shared_ptr<MeshFile>** mesh The mesh to load into this [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/). 
 
 
 **Return**: void 
 
-Loads a mesh into a vertex buffer object. note: calls [Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices)](Classes/classtec_1_1_vertex_buffer_object.md#function-load). 
+Loads a mesh into a vertex buffer object. note: calls [Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices)](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-load). 
 
 
 ### function Load
@@ -157,4 +157,4 @@ Loads a set of vertex and index data into a vertex buffer object.
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

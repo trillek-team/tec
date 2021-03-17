@@ -7,30 +7,30 @@ title: tec::MeshFile
 
 
 
-Inherited by [tec::MD5Mesh](Classes/classtec_1_1_m_d5_mesh.md), [tec::OBJ](Classes/classtec_1_1_o_b_j.md)
+Inherited by [tec::MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/), [tec::OBJ](/engine/Classes/classtec_1_1_o_b_j/)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| virtual | **[~MeshFile](Classes/classtec_1_1_mesh_file.md#function-~meshfile)**() |
-| [Mesh](Classes/structtec_1_1_mesh.md) * | **[CreateMesh](Classes/classtec_1_1_mesh_file.md#function-createmesh)**()<br>Creates a new mesh and adds it to this file.  |
-| void | **[AddMesh](Classes/classtec_1_1_mesh_file.md#function-addmesh)**([Mesh](Classes/structtec_1_1_mesh.md) * mesh)<br>Adds a mesh to this file. Ownership is transferred.  |
-| [Mesh](Classes/structtec_1_1_mesh.md) * | **[GetMesh](Classes/classtec_1_1_mesh_file.md#function-getmesh)**(const std::size_t index)<br>Returns a specific mesh.  |
-| std::size_t | **[GetMeshCount](Classes/classtec_1_1_mesh_file.md#function-getmeshcount)**() const<br>Returns the number of meshes in this file.  |
-| const std::string | **[GetName](Classes/classtec_1_1_mesh_file.md#function-getname)**() const |
-| void | **[SetName](Classes/classtec_1_1_mesh_file.md#function-setname)**(const std::string & _name) |
-| bool | **[IsDirty](Classes/classtec_1_1_mesh_file.md#function-isdirty)**() const |
-| void | **[Invalidate](Classes/classtec_1_1_mesh_file.md#function-invalidate)**()<br>Mark dirty.  |
-| void | **[Validate](Classes/classtec_1_1_mesh_file.md#function-validate)**()<br>Mark not dirty.  |
+| virtual | **[~MeshFile](/engine/Classes/classtec_1_1_mesh_file/#function-~meshfile)**() |
+| [Mesh](/engine/Classes/structtec_1_1_mesh/) * | **[CreateMesh](/engine/Classes/classtec_1_1_mesh_file/#function-createmesh)**()<br>Creates a new mesh and adds it to this file.  |
+| void | **[AddMesh](/engine/Classes/classtec_1_1_mesh_file/#function-addmesh)**([Mesh](/engine/Classes/structtec_1_1_mesh/) * mesh)<br>Adds a mesh to this file. Ownership is transferred.  |
+| [Mesh](/engine/Classes/structtec_1_1_mesh/) * | **[GetMesh](/engine/Classes/classtec_1_1_mesh_file/#function-getmesh)**(const std::size_t index)<br>Returns a specific mesh.  |
+| std::size_t | **[GetMeshCount](/engine/Classes/classtec_1_1_mesh_file/#function-getmeshcount)**() const<br>Returns the number of meshes in this file.  |
+| const std::string | **[GetName](/engine/Classes/classtec_1_1_mesh_file/#function-getname)**() const |
+| void | **[SetName](/engine/Classes/classtec_1_1_mesh_file/#function-setname)**(const std::string & _name) |
+| bool | **[IsDirty](/engine/Classes/classtec_1_1_mesh_file/#function-isdirty)**() const |
+| void | **[Invalidate](/engine/Classes/classtec_1_1_mesh_file/#function-invalidate)**()<br>Mark dirty.  |
+| void | **[Validate](/engine/Classes/classtec_1_1_mesh_file/#function-validate)**()<br>Mark not dirty.  |
 
 ## Protected Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::vector< [Mesh](Classes/structtec_1_1_mesh.md) * > | **[meshes](Classes/classtec_1_1_mesh_file.md#variable-meshes)**  |
-| std::string | **[name](Classes/classtec_1_1_mesh_file.md#variable-name)**  |
-| bool | **[dirty](Classes/classtec_1_1_mesh_file.md#variable-dirty)**  |
+| std::vector< [Mesh](/engine/Classes/structtec_1_1_mesh/) * > | **[meshes](/engine/Classes/classtec_1_1_mesh_file/#variable-meshes)**  |
+| std::string | **[name](/engine/Classes/classtec_1_1_mesh_file/#variable-name)**  |
+| bool | **[dirty](/engine/Classes/classtec_1_1_mesh_file/#variable-dirty)**  |
 
 ## Public Functions Documentation
 
@@ -159,4 +159,4 @@ bool dirty {false};
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

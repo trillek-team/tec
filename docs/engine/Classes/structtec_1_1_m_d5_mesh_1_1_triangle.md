@@ -11,7 +11,7 @@ title: tec::MD5Mesh::Triangle
 
 |                | Name           |
 | -------------- | -------------- |
-| int | **[verts](Classes/structtec_1_1_m_d5_mesh_1_1_triangle.md#variable-verts)**  |
+| int | **[verts](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_triangle/#variable-verts)**  |
 
 ## Public Attributes Documentation
 
@@ -24,4 +24,4 @@ int verts {0, 0, 0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:12 UTC

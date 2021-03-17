@@ -9,7 +9,7 @@ title: google
 
 | Name           |
 | -------------- |
-| **[google::protobuf](Namespaces/namespacegoogle_1_1protobuf.md)**  |
+| **[google::protobuf](/engine/Namespaces/namespacegoogle_1_1protobuf/)**  |
 
 
 
@@ -18,4 +18,4 @@ title: google
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

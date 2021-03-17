@@ -7,20 +7,20 @@ title: tec::DeviceBase
 
 
 
-Inherited by [tec::ComputerKeyboard](Classes/structtec_1_1_computer_keyboard.md), [tec::ComputerScreen](Classes/structtec_1_1_computer_screen.md)
+Inherited by [tec::ComputerKeyboard](/engine/Classes/structtec_1_1_computer_keyboard/), [tec::ComputerScreen](/engine/Classes/structtec_1_1_computer_screen/)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| virtual void | **[In](Classes/structtec_1_1_device_base.md#function-in)**(const proto::Computer::Device & source) =0 |
-| virtual void | **[Out](Classes/structtec_1_1_device_base.md#function-out)**(proto::Computer::Device * target) =0 |
+| virtual void | **[In](/engine/Classes/structtec_1_1_device_base/#function-in)**(const proto::Computer::Device & source) =0 |
+| virtual void | **[Out](/engine/Classes/structtec_1_1_device_base/#function-out)**(proto::Computer::Device * target) =0 |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< Device > | **[device](Classes/structtec_1_1_device_base.md#variable-device)**  |
+| std::shared_ptr< Device > | **[device](/engine/Classes/structtec_1_1_device_base/#variable-device)**  |
 
 ## Public Functions Documentation
 
@@ -33,7 +33,7 @@ virtual void In(
 ```
 
 
-**Reimplemented by**: [tec::ComputerScreen::In](Classes/structtec_1_1_computer_screen.md#function-in), [tec::ComputerKeyboard::In](Classes/structtec_1_1_computer_keyboard.md#function-in)
+**Reimplemented by**: [tec::ComputerScreen::In](/engine/Classes/structtec_1_1_computer_screen/#function-in), [tec::ComputerKeyboard::In](/engine/Classes/structtec_1_1_computer_keyboard/#function-in)
 
 
 ### function Out
@@ -45,7 +45,7 @@ virtual void Out(
 ```
 
 
-**Reimplemented by**: [tec::ComputerScreen::Out](Classes/structtec_1_1_computer_screen.md#function-out), [tec::ComputerKeyboard::Out](Classes/structtec_1_1_computer_keyboard.md#function-out)
+**Reimplemented by**: [tec::ComputerScreen::Out](/engine/Classes/structtec_1_1_computer_screen/#function-out), [tec::ComputerKeyboard::Out](/engine/Classes/structtec_1_1_computer_keyboard/#function-out)
 
 
 ## Public Attributes Documentation
@@ -59,4 +59,4 @@ std::shared_ptr< Device > device;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC

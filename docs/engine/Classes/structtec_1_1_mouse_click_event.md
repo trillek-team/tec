@@ -11,10 +11,10 @@ title: tec::MouseClickEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](Namespaces/namespacetec.md#typedef-eid) | **[entity_id](Classes/structtec_1_1_mouse_click_event.md#variable-entity_id)**  |
-| MouseBtnEvent::MOUSE_BTN | **[button](Classes/structtec_1_1_mouse_click_event.md#variable-button)**  |
-| glm::vec3 | **[ray_hit_point_world](Classes/structtec_1_1_mouse_click_event.md#variable-ray_hit_point_world)**  |
-| double | **[ray_distance](Classes/structtec_1_1_mouse_click_event.md#variable-ray_distance)**  |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_mouse_click_event/#variable-entity_id)**  |
+| MouseBtnEvent::MOUSE_BTN | **[button](/engine/Classes/structtec_1_1_mouse_click_event/#variable-button)**  |
+| glm::vec3 | **[ray_hit_point_world](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray_hit_point_world)**  |
+| double | **[ray_distance](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray_distance)**  |
 
 ## Public Attributes Documentation
 
@@ -48,4 +48,4 @@ double ray_distance;
 
 -------------------------------
 
-Updated on 17 March 2021 at 23:08:11 UTC
+Updated on 17 March 2021 at 23:25:13 UTC
