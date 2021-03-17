@@ -7,50 +7,50 @@ title: tec::OBJ
 
 
 
-Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
+Inherits from [tec::MeshFile](Classes/classtec_1_1_mesh_file.md)
 
 ## Public Classes
 
 |                | Name           |
 | -------------- | -------------- |
-| struct | **[Face](/engine/Classes/structtec_1_1_o_b_j_1_1_face/)**  |
-| struct | **[MTL](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/)**  |
-| struct | **[OBJGroup](/engine/Classes/structtec_1_1_o_b_j_1_1_o_b_j_group/)**  |
+| struct | **[Face](Classes/structtec_1_1_o_b_j_1_1_face.md)**  |
+| struct | **[MTL](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md)**  |
+| struct | **[OBJGroup](Classes/structtec_1_1_o_b_j_1_1_o_b_j_group.md)**  |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [OBJ](/engine/Classes/classtec_1_1_o_b_j/) > | **[Create](/engine/Classes/classtec_1_1_o_b_j/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Returns a resource with the specified name.  |
-| bool | **[Parse](/engine/Classes/classtec_1_1_o_b_j/#function-parse)**()<br>Loads the [OBJ](/engine/Classes/classtec_1_1_o_b_j/) file from disk and parses it.  |
-| bool | **[ParseMTL](/engine/Classes/classtec_1_1_o_b_j/#function-parsemtl)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Loads the [MTL]() file from disk and parses it.  |
-| void | **[PopulateMeshGroups](/engine/Classes/classtec_1_1_o_b_j/#function-populatemeshgroups)**()<br>Calculates the final vertex positions based on the bind-pose skeleton.  |
-| void | **[SetFileName](/engine/Classes/classtec_1_1_o_b_j/#function-setfilename)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Sets the mesh filename.  |
+| std::shared_ptr< [OBJ](Classes/classtec_1_1_o_b_j.md) > | **[Create](Classes/classtec_1_1_o_b_j.md#function-create)**(const [FilePath](Classes/classtec_1_1_file_path.md) & fname)<br>Returns a resource with the specified name.  |
+| bool | **[Parse](Classes/classtec_1_1_o_b_j.md#function-parse)**()<br>Loads the [OBJ](Classes/classtec_1_1_o_b_j.md) file from disk and parses it.  |
+| bool | **[ParseMTL](Classes/classtec_1_1_o_b_j.md#function-parsemtl)**(const [FilePath](Classes/classtec_1_1_file_path.md) & fname)<br>Loads the [MTL]() file from disk and parses it.  |
+| void | **[PopulateMeshGroups](Classes/classtec_1_1_o_b_j.md#function-populatemeshgroups)**()<br>Calculates the final vertex positions based on the bind-pose skeleton.  |
+| void | **[SetFileName](Classes/classtec_1_1_o_b_j.md#function-setfilename)**(const [FilePath](Classes/classtec_1_1_file_path.md) & fname)<br>Sets the mesh filename.  |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)**
+**Public Functions inherited from [tec::MeshFile](Classes/classtec_1_1_mesh_file.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| virtual | **[~MeshFile](/engine/Classes/classtec_1_1_mesh_file/#function-~meshfile)**() |
-| [Mesh](/engine/Classes/structtec_1_1_mesh/) * | **[CreateMesh](/engine/Classes/classtec_1_1_mesh_file/#function-createmesh)**()<br>Creates a new mesh and adds it to this file.  |
-| void | **[AddMesh](/engine/Classes/classtec_1_1_mesh_file/#function-addmesh)**([Mesh](/engine/Classes/structtec_1_1_mesh/) * mesh)<br>Adds a mesh to this file. Ownership is transferred.  |
-| [Mesh](/engine/Classes/structtec_1_1_mesh/) * | **[GetMesh](/engine/Classes/classtec_1_1_mesh_file/#function-getmesh)**(const std::size_t index)<br>Returns a specific mesh.  |
-| std::size_t | **[GetMeshCount](/engine/Classes/classtec_1_1_mesh_file/#function-getmeshcount)**() const<br>Returns the number of meshes in this file.  |
-| const std::string | **[GetName](/engine/Classes/classtec_1_1_mesh_file/#function-getname)**() const |
-| void | **[SetName](/engine/Classes/classtec_1_1_mesh_file/#function-setname)**(const std::string & _name) |
-| bool | **[IsDirty](/engine/Classes/classtec_1_1_mesh_file/#function-isdirty)**() const |
-| void | **[Invalidate](/engine/Classes/classtec_1_1_mesh_file/#function-invalidate)**()<br>Mark dirty.  |
-| void | **[Validate](/engine/Classes/classtec_1_1_mesh_file/#function-validate)**()<br>Mark not dirty.  |
+| virtual | **[~MeshFile](Classes/classtec_1_1_mesh_file.md#function-~meshfile)**() |
+| [Mesh](Classes/structtec_1_1_mesh.md) * | **[CreateMesh](Classes/classtec_1_1_mesh_file.md#function-createmesh)**()<br>Creates a new mesh and adds it to this file.  |
+| void | **[AddMesh](Classes/classtec_1_1_mesh_file.md#function-addmesh)**([Mesh](Classes/structtec_1_1_mesh.md) * mesh)<br>Adds a mesh to this file. Ownership is transferred.  |
+| [Mesh](Classes/structtec_1_1_mesh.md) * | **[GetMesh](Classes/classtec_1_1_mesh_file.md#function-getmesh)**(const std::size_t index)<br>Returns a specific mesh.  |
+| std::size_t | **[GetMeshCount](Classes/classtec_1_1_mesh_file.md#function-getmeshcount)**() const<br>Returns the number of meshes in this file.  |
+| const std::string | **[GetName](Classes/classtec_1_1_mesh_file.md#function-getname)**() const |
+| void | **[SetName](Classes/classtec_1_1_mesh_file.md#function-setname)**(const std::string & _name) |
+| bool | **[IsDirty](Classes/classtec_1_1_mesh_file.md#function-isdirty)**() const |
+| void | **[Invalidate](Classes/classtec_1_1_mesh_file.md#function-invalidate)**()<br>Mark dirty.  |
+| void | **[Validate](Classes/classtec_1_1_mesh_file.md#function-validate)**()<br>Mark not dirty.  |
 
-**Protected Attributes inherited from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)**
+**Protected Attributes inherited from [tec::MeshFile](Classes/classtec_1_1_mesh_file.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| std::vector< [Mesh](/engine/Classes/structtec_1_1_mesh/) * > | **[meshes](/engine/Classes/classtec_1_1_mesh_file/#variable-meshes)**  |
-| std::string | **[name](/engine/Classes/classtec_1_1_mesh_file/#variable-name)**  |
-| bool | **[dirty](/engine/Classes/classtec_1_1_mesh_file/#variable-dirty)**  |
+| std::vector< [Mesh](Classes/structtec_1_1_mesh.md) * > | **[meshes](Classes/classtec_1_1_mesh_file.md#variable-meshes)**  |
+| std::string | **[name](Classes/classtec_1_1_mesh_file.md#variable-name)**  |
+| bool | **[dirty](Classes/classtec_1_1_mesh_file.md#variable-dirty)**  |
 
 
 ## Public Functions Documentation
@@ -67,10 +67,10 @@ Returns a resource with the specified name.
 
 **Parameters**: 
 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/)& fname The filename of the [OBJ](/engine/Classes/classtec_1_1_o_b_j/) resource 
+  * **const** [FilePath](Classes/classtec_1_1_file_path.md)& fname The filename of the [OBJ](Classes/classtec_1_1_o_b_j.md) resource 
 
 
-**Return**: std::shared_ptr<OBJ> The created [OBJ](/engine/Classes/classtec_1_1_o_b_j/) resource. 
+**Return**: std::shared_ptr<OBJ> The created [OBJ](Classes/classtec_1_1_o_b_j.md) resource. 
 
 The only used initialization property is "filename". 
 
@@ -81,7 +81,7 @@ The only used initialization property is "filename".
 bool Parse()
 ```
 
-Loads the [OBJ](/engine/Classes/classtec_1_1_o_b_j/) file from disk and parses it. 
+Loads the [OBJ](Classes/classtec_1_1_o_b_j.md) file from disk and parses it. 
 
 **Return**: bool If the mesh was valid and loaded correctly. 
 
@@ -132,4 +132,4 @@ This is just a shorthand function that can be called directly via script API.
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

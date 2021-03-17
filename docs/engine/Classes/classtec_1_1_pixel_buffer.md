@@ -11,51 +11,51 @@ title: tec::PixelBuffer
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**() =default |
-| bool | **[Load](/engine/Classes/classtec_1_1_pixel_buffer/#function-load)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename)<br>Returns a resource with the specified name.  |
-| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) |
-| [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) |
-| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**([PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) && rv) |
-| [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**([PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) && rv) |
-| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(std::uint32_t width, std::uint32_t height, std::uint32_t bitspersample, ImageColorMode mode)<br>Construct a new pixel buffer.  |
-| bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf)<br>Create a copy of a pixel buffer.  |
-| bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf, std::uint32_t bitspersample, ImageColorMode mode)<br>Create a copy of a pixel buffer in a different format.  |
-| bool | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode)<br>Create a new pixel buffer, replacing the old buffer (if any).  |
-| bool | **[IsDirty](/engine/Classes/classtec_1_1_pixel_buffer/#function-isdirty)**() const |
-| void | **[Invalidate](/engine/Classes/classtec_1_1_pixel_buffer/#function-invalidate)**()<br>Mark dirty.  |
-| void | **[Validate](/engine/Classes/classtec_1_1_pixel_buffer/#function-validate)**()<br>Mark not dirty.  |
-| const std::uint8_t * | **[GetBlockBase](/engine/Classes/classtec_1_1_pixel_buffer/#function-getblockbase)**() const<br>Returns a pointer to the base address of image data for reading. This function is intended for loading pixel data from the buffer.  |
-| std::mutex & | **[GetWritelock](/engine/Classes/classtec_1_1_pixel_buffer/#function-getwritelock)**() |
-| std::uint8_t * | **[GetPtr](/engine/Classes/classtec_1_1_pixel_buffer/#function-getptr)**() |
-| std::uint32_t | **[Width](/engine/Classes/classtec_1_1_pixel_buffer/#function-width)**() const |
-| std::uint32_t | **[Height](/engine/Classes/classtec_1_1_pixel_buffer/#function-height)**() const |
-| std::uint32_t | **[Pitch](/engine/Classes/classtec_1_1_pixel_buffer/#function-pitch)**() const |
-| std::uint32_t | **[PixelSize](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelsize)**() const |
-| ImageColorMode | **[GetFormat](/engine/Classes/classtec_1_1_pixel_buffer/#function-getformat)**() const |
-| void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**() |
-| void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**(const char * ofile) |
-| std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(const std::string name, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename =[FilePath](/engine/Classes/classtec_1_1_file_path/)())<br>Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename.  |
+| | **[PixelBuffer](Classes/classtec_1_1_pixel_buffer.md#function-pixelbuffer)**() =default |
+| bool | **[Load](Classes/classtec_1_1_pixel_buffer.md#function-load)**(const [FilePath](Classes/classtec_1_1_file_path.md) & filename)<br>Returns a resource with the specified name.  |
+| | **[PixelBuffer](Classes/classtec_1_1_pixel_buffer.md#function-pixelbuffer)**(const [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & ) |
+| [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & | **[operator=](Classes/classtec_1_1_pixel_buffer.md#function-operator=)**(const [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & ) |
+| | **[PixelBuffer](Classes/classtec_1_1_pixel_buffer.md#function-pixelbuffer)**([PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) && rv) |
+| [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & | **[operator=](Classes/classtec_1_1_pixel_buffer.md#function-operator=)**([PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) && rv) |
+| | **[PixelBuffer](Classes/classtec_1_1_pixel_buffer.md#function-pixelbuffer)**(std::uint32_t width, std::uint32_t height, std::uint32_t bitspersample, ImageColorMode mode)<br>Construct a new pixel buffer.  |
+| bool | **[CreateCopy](Classes/classtec_1_1_pixel_buffer.md#function-createcopy)**(const [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & pbuf)<br>Create a copy of a pixel buffer.  |
+| bool | **[CreateCopy](Classes/classtec_1_1_pixel_buffer.md#function-createcopy)**(const [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) & pbuf, std::uint32_t bitspersample, ImageColorMode mode)<br>Create a copy of a pixel buffer in a different format.  |
+| bool | **[Create](Classes/classtec_1_1_pixel_buffer.md#function-create)**(uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode)<br>Create a new pixel buffer, replacing the old buffer (if any).  |
+| bool | **[IsDirty](Classes/classtec_1_1_pixel_buffer.md#function-isdirty)**() const |
+| void | **[Invalidate](Classes/classtec_1_1_pixel_buffer.md#function-invalidate)**()<br>Mark dirty.  |
+| void | **[Validate](Classes/classtec_1_1_pixel_buffer.md#function-validate)**()<br>Mark not dirty.  |
+| const std::uint8_t * | **[GetBlockBase](Classes/classtec_1_1_pixel_buffer.md#function-getblockbase)**() const<br>Returns a pointer to the base address of image data for reading. This function is intended for loading pixel data from the buffer.  |
+| std::mutex & | **[GetWritelock](Classes/classtec_1_1_pixel_buffer.md#function-getwritelock)**() |
+| std::uint8_t * | **[GetPtr](Classes/classtec_1_1_pixel_buffer.md#function-getptr)**() |
+| std::uint32_t | **[Width](Classes/classtec_1_1_pixel_buffer.md#function-width)**() const |
+| std::uint32_t | **[Height](Classes/classtec_1_1_pixel_buffer.md#function-height)**() const |
+| std::uint32_t | **[Pitch](Classes/classtec_1_1_pixel_buffer.md#function-pitch)**() const |
+| std::uint32_t | **[PixelSize](Classes/classtec_1_1_pixel_buffer.md#function-pixelsize)**() const |
+| ImageColorMode | **[GetFormat](Classes/classtec_1_1_pixel_buffer.md#function-getformat)**() const |
+| void | **[PPMDebug](Classes/classtec_1_1_pixel_buffer.md#function-ppmdebug)**() |
+| void | **[PPMDebug](Classes/classtec_1_1_pixel_buffer.md#function-ppmdebug)**(const char * ofile) |
+| std::shared_ptr< [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) > | **[Create](Classes/classtec_1_1_pixel_buffer.md#function-create)**(const std::string name, const [FilePath](Classes/classtec_1_1_file_path.md) & filename =[FilePath](Classes/classtec_1_1_file_path.md)())<br>Factory method that creates a [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename.  |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::uint32_t | **[image_x](/engine/Classes/classtec_1_1_pixel_buffer/#variable-image_x)**  |
-| std::uint32_t | **[image_y](/engine/Classes/classtec_1_1_pixel_buffer/#variable-image_y)**  |
+| std::uint32_t | **[image_x](Classes/classtec_1_1_pixel_buffer.md#variable-image_x)**  |
+| std::uint32_t | **[image_y](Classes/classtec_1_1_pixel_buffer.md#variable-image_y)**  |
 
 ## Protected Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::int32_t | **[imagewidth](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagewidth)**  |
-| std::int32_t | **[imageheight](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imageheight)**  |
-| std::uint32_t | **[bufferpitch](/engine/Classes/classtec_1_1_pixel_buffer/#variable-bufferpitch)** <br>number of bytes to move vertical 1 raster line  |
-| std::uint32_t | **[imagepixelsize](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagepixelsize)**  |
-| std::uint32_t | **[imagebitdepth](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagebitdepth)**  |
-| ImageColorMode | **[imagemode](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagemode)**  |
-| bool | **[dirty](/engine/Classes/classtec_1_1_pixel_buffer/#variable-dirty)**  |
-| std::unique_ptr< std::uint8_t[]> | **[blockptr](/engine/Classes/classtec_1_1_pixel_buffer/#variable-blockptr)**  |
-| std::mutex | **[writelock](/engine/Classes/classtec_1_1_pixel_buffer/#variable-writelock)**  |
+| std::int32_t | **[imagewidth](Classes/classtec_1_1_pixel_buffer.md#variable-imagewidth)**  |
+| std::int32_t | **[imageheight](Classes/classtec_1_1_pixel_buffer.md#variable-imageheight)**  |
+| std::uint32_t | **[bufferpitch](Classes/classtec_1_1_pixel_buffer.md#variable-bufferpitch)** <br>number of bytes to move vertical 1 raster line  |
+| std::uint32_t | **[imagepixelsize](Classes/classtec_1_1_pixel_buffer.md#variable-imagepixelsize)**  |
+| std::uint32_t | **[imagebitdepth](Classes/classtec_1_1_pixel_buffer.md#variable-imagebitdepth)**  |
+| ImageColorMode | **[imagemode](Classes/classtec_1_1_pixel_buffer.md#variable-imagemode)**  |
+| bool | **[dirty](Classes/classtec_1_1_pixel_buffer.md#variable-dirty)**  |
+| std::unique_ptr< std::uint8_t[]> | **[blockptr](Classes/classtec_1_1_pixel_buffer.md#variable-blockptr)**  |
+| std::mutex | **[writelock](Classes/classtec_1_1_pixel_buffer.md#variable-writelock)**  |
 
 ## Public Functions Documentation
 
@@ -78,7 +78,7 @@ Returns a resource with the specified name.
 
 **Parameters**: 
 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/) filename The filename of the image file to load. 
+  * **const** [FilePath](Classes/classtec_1_1_file_path.md) filename The filename of the image file to load. 
 
 
 **Return**: bool True if initialization finished with no errors. 
@@ -308,15 +308,15 @@ static std::shared_ptr< PixelBuffer > Create(
 )
 ```
 
-Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename. 
+Factory method that creates a [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename. 
 
 **Parameters**: 
 
-  * **const** std::string name The name to store the [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) under. 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/) filename The optional filename of the image to load. 
+  * **const** std::string name The name to store the [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) under. 
+  * **const** [FilePath](Classes/classtec_1_1_file_path.md) filename The optional filename of the image to load. 
 
 
-**Return**: std::shared_ptr<PixelBuffer> The created [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/). 
+**Return**: std::shared_ptr<PixelBuffer> The created [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md). 
 
 ## Public Attributes Documentation
 
@@ -402,4 +402,4 @@ std::mutex writelock;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

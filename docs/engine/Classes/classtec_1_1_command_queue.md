@@ -13,18 +13,18 @@ title: tec::CommandQueue
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-commandqueue)**() |
-| | **[~CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-~commandqueue)**() |
-| void | **[ProcessCommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-processcommandqueue)**() |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**([Command](/engine/Classes/structtec_1_1_command/)< T > && command) |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**(std::function< void(T *)> && command) |
+| | **[CommandQueue](Classes/classtec_1_1_command_queue.md#function-commandqueue)**() |
+| | **[~CommandQueue](Classes/classtec_1_1_command_queue.md#function-~commandqueue)**() |
+| void | **[ProcessCommandQueue](Classes/classtec_1_1_command_queue.md#function-processcommandqueue)**() |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**([Command](Classes/structtec_1_1_command.md)< T > && command) |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**(std::function< void(T *)> && command) |
 
 ## Protected Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::atomic< std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * > | **[global_command_queue](/engine/Classes/classtec_1_1_command_queue/#variable-global_command_queue)**  |
-| std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * | **[local_queue](/engine/Classes/classtec_1_1_command_queue/#variable-local_queue)**  |
+| std::atomic< std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * > | **[global_command_queue](Classes/classtec_1_1_command_queue.md#variable-global_command_queue)**  |
+| std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * | **[local_queue](Classes/classtec_1_1_command_queue.md#variable-local_queue)**  |
 
 ## Detailed Description
 
@@ -92,4 +92,4 @@ std::queue< Command< T > > * local_queue;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

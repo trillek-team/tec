@@ -7,37 +7,37 @@ title: tec::ActiveEntityTooltip
 
 
 
-Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)
+Inherits from [tec::AbstractWindow](Classes/classtec_1_1_abstract_window.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[ActiveEntityTooltip](/engine/Classes/classtec_1_1_active_entity_tooltip/#function-activeentitytooltip)**([Game](/engine/Classes/classtec_1_1_game/) & game) |
-| virtual void | **[Update](/engine/Classes/classtec_1_1_active_entity_tooltip/#function-update)**(double ) override |
-| virtual void | **[Draw](/engine/Classes/classtec_1_1_active_entity_tooltip/#function-draw)**() override |
+| | **[ActiveEntityTooltip](Classes/classtec_1_1_active_entity_tooltip.md#function-activeentitytooltip)**([Game](Classes/classtec_1_1_game.md) & game) |
+| virtual void | **[Update](Classes/classtec_1_1_active_entity_tooltip.md#function-update)**(double ) override |
+| virtual void | **[Draw](Classes/classtec_1_1_active_entity_tooltip.md#function-draw)**() override |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)**
+**Public Functions inherited from [tec::AbstractWindow](Classes/classtec_1_1_abstract_window.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| virtual | **[~AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/#function-~abstractwindow)**() =default |
-| void | **[SetAlpha](/engine/Classes/classtec_1_1_abstract_window/#function-setalpha)**(float a) |
-| float | **[GetAlpha](/engine/Classes/classtec_1_1_abstract_window/#function-getalpha)**() const |
-| virtual bool | **[isCollapsed](/engine/Classes/classtec_1_1_abstract_window/#function-iscollapsed)**() const |
-| bool | **[isVisible](/engine/Classes/classtec_1_1_abstract_window/#function-isvisible)**() const |
-| void | **[Hide](/engine/Classes/classtec_1_1_abstract_window/#function-hide)**() |
-| void | **[Show](/engine/Classes/classtec_1_1_abstract_window/#function-show)**() |
+| virtual | **[~AbstractWindow](Classes/classtec_1_1_abstract_window.md#function-~abstractwindow)**() =default |
+| void | **[SetAlpha](Classes/classtec_1_1_abstract_window.md#function-setalpha)**(float a) |
+| float | **[GetAlpha](Classes/classtec_1_1_abstract_window.md#function-getalpha)**() const |
+| virtual bool | **[isCollapsed](Classes/classtec_1_1_abstract_window.md#function-iscollapsed)**() const |
+| bool | **[isVisible](Classes/classtec_1_1_abstract_window.md#function-isvisible)**() const |
+| void | **[Hide](Classes/classtec_1_1_abstract_window.md#function-hide)**() |
+| void | **[Show](Classes/classtec_1_1_abstract_window.md#function-show)**() |
 
-**Protected Attributes inherited from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)**
+**Protected Attributes inherited from [tec::AbstractWindow](Classes/classtec_1_1_abstract_window.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[alpha](/engine/Classes/classtec_1_1_abstract_window/#variable-alpha)**  |
-| bool | **[collapsed](/engine/Classes/classtec_1_1_abstract_window/#variable-collapsed)**  |
-| bool | **[show](/engine/Classes/classtec_1_1_abstract_window/#variable-show)** <br>Collapsed ?  |
+| float | **[alpha](Classes/classtec_1_1_abstract_window.md#variable-alpha)**  |
+| bool | **[collapsed](Classes/classtec_1_1_abstract_window.md#variable-collapsed)**  |
+| bool | **[show](Classes/classtec_1_1_abstract_window.md#variable-show)** <br>Collapsed ?  |
 
 
 ## Public Functions Documentation
@@ -60,7 +60,7 @@ virtual void Update(
 ```
 
 
-**Reimplements**: [tec::AbstractWindow::Update](/engine/Classes/classtec_1_1_abstract_window/#function-update)
+**Reimplements**: [tec::AbstractWindow::Update](Classes/classtec_1_1_abstract_window.md#function-update)
 
 
 ### function Draw
@@ -70,9 +70,9 @@ virtual void Draw() override
 ```
 
 
-**Reimplements**: [tec::AbstractWindow::Draw](/engine/Classes/classtec_1_1_abstract_window/#function-draw)
+**Reimplements**: [tec::AbstractWindow::Draw](Classes/classtec_1_1_abstract_window.md#function-draw)
 
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

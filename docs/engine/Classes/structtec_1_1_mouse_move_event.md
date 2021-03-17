@@ -16,12 +16,12 @@ title: tec::MouseMoveEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| double | **[norm_x](/engine/Classes/structtec_1_1_mouse_move_event/#variable-norm_x)**  |
-| double | **[norm_y](/engine/Classes/structtec_1_1_mouse_move_event/#variable-norm_y)**  |
-| int | **[old_x](/engine/Classes/structtec_1_1_mouse_move_event/#variable-old_x)** <br>Resolution independent new x, y (0-1) from upper-left to lower-right.  |
-| int | **[old_y](/engine/Classes/structtec_1_1_mouse_move_event/#variable-old_y)**  |
-| int | **[new_x](/engine/Classes/structtec_1_1_mouse_move_event/#variable-new_x)** <br>Client space old x, y.  |
-| int | **[new_y](/engine/Classes/structtec_1_1_mouse_move_event/#variable-new_y)**  |
+| double | **[norm_x](Classes/structtec_1_1_mouse_move_event.md#variable-norm_x)**  |
+| double | **[norm_y](Classes/structtec_1_1_mouse_move_event.md#variable-norm_y)**  |
+| int | **[old_x](Classes/structtec_1_1_mouse_move_event.md#variable-old_x)** <br>Resolution independent new x, y (0-1) from upper-left to lower-right.  |
+| int | **[old_y](Classes/structtec_1_1_mouse_move_event.md#variable-old_y)**  |
+| int | **[new_x](Classes/structtec_1_1_mouse_move_event.md#variable-new_x)** <br>Client space old x, y.  |
+| int | **[new_y](Classes/structtec_1_1_mouse_move_event.md#variable-new_y)**  |
 
 ## Detailed Description
 
@@ -80,4 +80,4 @@ int new_y {0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

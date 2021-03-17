@@ -11,24 +11,24 @@ title: tec::GameState
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[GameState](/engine/Classes/structtec_1_1_game_state/#function-gamestate)**() =default |
-| | **[GameState](/engine/Classes/structtec_1_1_game_state/#function-gamestate)**(const [GameState](/engine/Classes/structtec_1_1_game_state/) & other) |
-| | **[GameState](/engine/Classes/structtec_1_1_game_state/#function-gamestate)**([GameState](/engine/Classes/structtec_1_1_game_state/) && other) |
-| [GameState](/engine/Classes/structtec_1_1_game_state/) & | **[operator=](/engine/Classes/structtec_1_1_game_state/#function-operator=)**(const [GameState](/engine/Classes/structtec_1_1_game_state/) & other) |
-| [GameState](/engine/Classes/structtec_1_1_game_state/) & | **[operator=](/engine/Classes/structtec_1_1_game_state/#function-operator=)**([GameState](/engine/Classes/structtec_1_1_game_state/) && other) |
-| void | **[In](/engine/Classes/structtec_1_1_game_state/#function-in)**(const proto::GameStateUpdate & gsu) |
-| void | **[Out](/engine/Classes/structtec_1_1_game_state/#function-out)**(proto::GameStateUpdate * gsu) const |
+| | **[GameState](Classes/structtec_1_1_game_state.md#function-gamestate)**() =default |
+| | **[GameState](Classes/structtec_1_1_game_state.md#function-gamestate)**(const [GameState](Classes/structtec_1_1_game_state.md) & other) |
+| | **[GameState](Classes/structtec_1_1_game_state.md#function-gamestate)**([GameState](Classes/structtec_1_1_game_state.md) && other) |
+| [GameState](Classes/structtec_1_1_game_state.md) & | **[operator=](Classes/structtec_1_1_game_state.md#function-operator=)**(const [GameState](Classes/structtec_1_1_game_state.md) & other) |
+| [GameState](Classes/structtec_1_1_game_state.md) & | **[operator=](Classes/structtec_1_1_game_state.md#function-operator=)**([GameState](Classes/structtec_1_1_game_state.md) && other) |
+| void | **[In](Classes/structtec_1_1_game_state.md#function-in)**(const proto::GameStateUpdate & gsu) |
+| void | **[Out](Classes/structtec_1_1_game_state.md#function-out)**(proto::GameStateUpdate * gsu) const |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Position](/engine/Classes/structtec_1_1_position/) > | **[positions](/engine/Classes/structtec_1_1_game_state/#variable-positions)**  |
-| std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Orientation](/engine/Classes/structtec_1_1_orientation/) > | **[orientations](/engine/Classes/structtec_1_1_game_state/#variable-orientations)**  |
-| std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Velocity](/engine/Classes/structtec_1_1_velocity/) > | **[velocities](/engine/Classes/structtec_1_1_game_state/#variable-velocities)**  |
-| state_id_t | **[state_id](/engine/Classes/structtec_1_1_game_state/#variable-state_id)**  |
-| state_id_t | **[command_id](/engine/Classes/structtec_1_1_game_state/#variable-command_id)**  |
-| uint64_t | **[timestamp](/engine/Classes/structtec_1_1_game_state/#variable-timestamp)**  |
+| std::unordered_map< [eid](Namespaces/namespacetec.md#typedef-eid), [Position](Classes/structtec_1_1_position.md) > | **[positions](Classes/structtec_1_1_game_state.md#variable-positions)**  |
+| std::unordered_map< [eid](Namespaces/namespacetec.md#typedef-eid), [Orientation](Classes/structtec_1_1_orientation.md) > | **[orientations](Classes/structtec_1_1_game_state.md#variable-orientations)**  |
+| std::unordered_map< [eid](Namespaces/namespacetec.md#typedef-eid), [Velocity](Classes/structtec_1_1_velocity.md) > | **[velocities](Classes/structtec_1_1_game_state.md#variable-velocities)**  |
+| state_id_t | **[state_id](Classes/structtec_1_1_game_state.md#variable-state_id)**  |
+| state_id_t | **[command_id](Classes/structtec_1_1_game_state.md#variable-command_id)**  |
+| uint64_t | **[timestamp](Classes/structtec_1_1_game_state.md#variable-timestamp)**  |
 
 ## Public Functions Documentation
 
@@ -139,4 +139,4 @@ uint64_t timestamp = 0;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

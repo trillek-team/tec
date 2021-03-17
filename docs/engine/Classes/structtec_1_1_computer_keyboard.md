@@ -7,32 +7,32 @@ title: tec::ComputerKeyboard
 
 
 
-Inherits from [tec::DeviceBase](/engine/Classes/structtec_1_1_device_base/)
+Inherits from [tec::DeviceBase](Classes/structtec_1_1_device_base.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[ComputerKeyboard](/engine/Classes/structtec_1_1_computer_keyboard/#function-computerkeyboard)**() |
-| virtual | **[~ComputerKeyboard](/engine/Classes/structtec_1_1_computer_keyboard/#function-~computerkeyboard)**() =default |
-| virtual void | **[In](/engine/Classes/structtec_1_1_computer_keyboard/#function-in)**(const proto::Computer::Device & source) |
-| virtual void | **[Out](/engine/Classes/structtec_1_1_computer_keyboard/#function-out)**(proto::Computer::Device * target) |
+| | **[ComputerKeyboard](Classes/structtec_1_1_computer_keyboard.md#function-computerkeyboard)**() |
+| virtual | **[~ComputerKeyboard](Classes/structtec_1_1_computer_keyboard.md#function-~computerkeyboard)**() =default |
+| virtual void | **[In](Classes/structtec_1_1_computer_keyboard.md#function-in)**(const proto::Computer::Device & source) |
+| virtual void | **[Out](Classes/structtec_1_1_computer_keyboard.md#function-out)**(proto::Computer::Device * target) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[has_focus](/engine/Classes/structtec_1_1_computer_keyboard/#variable-has_focus)**  |
-| int | **[last_keycode](/engine/Classes/structtec_1_1_computer_keyboard/#variable-last_keycode)**  |
-| int | **[modifiers_state](/engine/Classes/structtec_1_1_computer_keyboard/#variable-modifiers_state)**  |
+| bool | **[has_focus](Classes/structtec_1_1_computer_keyboard.md#variable-has_focus)**  |
+| int | **[last_keycode](Classes/structtec_1_1_computer_keyboard.md#variable-last_keycode)**  |
+| int | **[modifiers_state](Classes/structtec_1_1_computer_keyboard.md#variable-modifiers_state)**  |
 
 ## Additional inherited members
 
-**Public Attributes inherited from [tec::DeviceBase](/engine/Classes/structtec_1_1_device_base/)**
+**Public Attributes inherited from [tec::DeviceBase](Classes/structtec_1_1_device_base.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< Device > | **[device](/engine/Classes/structtec_1_1_device_base/#variable-device)**  |
+| std::shared_ptr< Device > | **[device](Classes/structtec_1_1_device_base.md#variable-device)**  |
 
 
 ## Public Functions Documentation
@@ -60,7 +60,7 @@ virtual void In(
 ```
 
 
-**Reimplements**: [tec::DeviceBase::In](/engine/Classes/structtec_1_1_device_base/#function-in)
+**Reimplements**: [tec::DeviceBase::In](Classes/structtec_1_1_device_base.md#function-in)
 
 
 ### function Out
@@ -72,7 +72,7 @@ virtual void Out(
 ```
 
 
-**Reimplements**: [tec::DeviceBase::Out](/engine/Classes/structtec_1_1_device_base/#function-out)
+**Reimplements**: [tec::DeviceBase::Out](Classes/structtec_1_1_device_base.md#function-out)
 
 
 ## Public Attributes Documentation
@@ -100,4 +100,4 @@ int modifiers_state {0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

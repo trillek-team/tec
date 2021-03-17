@@ -11,14 +11,14 @@ title: tec::Voxel
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[NEIGHBORS](/engine/Classes/structtec_1_1_voxel/#enum-neighbors)** { UP = 0, DOWN, LEFT, RIGHT, FRONT, BACK} |
+| enum| **[NEIGHBORS](Classes/structtec_1_1_voxel.md#enum-neighbors)** { UP = 0, DOWN, LEFT, RIGHT, FRONT, BACK} |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[color](/engine/Classes/structtec_1_1_voxel/#variable-color)**  |
-| std::weak_ptr< [Voxel](/engine/Classes/structtec_1_1_voxel/) > | **[neighbors](/engine/Classes/structtec_1_1_voxel/#variable-neighbors)**  |
+| float | **[color](Classes/structtec_1_1_voxel.md#variable-color)**  |
+| std::weak_ptr< [Voxel](Classes/structtec_1_1_voxel.md) > | **[neighbors](Classes/structtec_1_1_voxel.md#variable-neighbors)**  |
 
 ## Public Types Documentation
 
@@ -54,4 +54,4 @@ std::weak_ptr< Voxel > neighbors;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

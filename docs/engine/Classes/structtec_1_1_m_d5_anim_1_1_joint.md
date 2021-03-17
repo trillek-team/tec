@@ -11,19 +11,19 @@ title: tec::MD5Anim::Joint
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[ComputeW](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#function-computew)**() |
+| void | **[ComputeW](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#function-computew)**() |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::string | **[name](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-name)**  |
-| int | **[parent](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-parent)**  |
-| int | **[flags](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-flags)**  |
-| int | **[start_index](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-start_index)**  |
-| glm::vec3 | **[base_position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base_position)**  |
-| glm::quat | **[base_orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base_orientation)**  |
-| glm::mat4 | **[bind_pose_inverse](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind_pose_inverse)**  |
+| std::string | **[name](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#variable-name)**  |
+| int | **[parent](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#variable-parent)**  |
+| int | **[flags](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#variable-flags)**  |
+| int | **[start_index](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#variable-start_index)**  |
+| glm::vec3 | **[base_position](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#variable-base_position)**  |
+| glm::quat | **[base_orientation](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#variable-base_orientation)**  |
+| glm::mat4 | **[bind_pose_inverse](Classes/structtec_1_1_m_d5_anim_1_1_joint.md#variable-bind_pose_inverse)**  |
 
 ## Public Functions Documentation
 
@@ -87,4 +87,4 @@ glm::mat4 bind_pose_inverse {0.f};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

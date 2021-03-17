@@ -11,9 +11,9 @@ title: tec::FocusBlurEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_focus_blur_event/#variable-entity_id)**  |
-| bool | **[keyboard](/engine/Classes/structtec_1_1_focus_blur_event/#variable-keyboard)**  |
-| bool | **[mouse](/engine/Classes/structtec_1_1_focus_blur_event/#variable-mouse)**  |
+| [eid](Namespaces/namespacetec.md#typedef-eid) | **[entity_id](Classes/structtec_1_1_focus_blur_event.md#variable-entity_id)**  |
+| bool | **[keyboard](Classes/structtec_1_1_focus_blur_event.md#variable-keyboard)**  |
+| bool | **[mouse](Classes/structtec_1_1_focus_blur_event.md#variable-mouse)**  |
 
 ## Public Attributes Documentation
 
@@ -40,4 +40,4 @@ bool mouse;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

@@ -7,29 +7,29 @@ title: tec::AbstractWindow
 
 
 
-Inherited by [tec::ActiveEntityTooltip](/engine/Classes/classtec_1_1_active_entity_tooltip/), [tec::Console](/engine/Classes/classtec_1_1_console/), [tec::DebugInfo](/engine/Classes/classtec_1_1_debug_info/), [tec::PingTimesWindow](/engine/Classes/classtec_1_1_ping_times_window/), [tec::ServerConnectWindow](/engine/Classes/classtec_1_1_server_connect_window/)
+Inherited by [tec::ActiveEntityTooltip](Classes/classtec_1_1_active_entity_tooltip.md), [tec::Console](Classes/classtec_1_1_console.md), [tec::DebugInfo](Classes/classtec_1_1_debug_info.md), [tec::PingTimesWindow](Classes/classtec_1_1_ping_times_window.md), [tec::ServerConnectWindow](Classes/classtec_1_1_server_connect_window.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| virtual | **[~AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/#function-~abstractwindow)**() =default |
-| virtual void | **[Update](/engine/Classes/classtec_1_1_abstract_window/#function-update)**(double ) |
-| virtual void | **[Draw](/engine/Classes/classtec_1_1_abstract_window/#function-draw)**() =0 |
-| void | **[SetAlpha](/engine/Classes/classtec_1_1_abstract_window/#function-setalpha)**(float a) |
-| float | **[GetAlpha](/engine/Classes/classtec_1_1_abstract_window/#function-getalpha)**() const |
-| virtual bool | **[isCollapsed](/engine/Classes/classtec_1_1_abstract_window/#function-iscollapsed)**() const |
-| bool | **[isVisible](/engine/Classes/classtec_1_1_abstract_window/#function-isvisible)**() const |
-| void | **[Hide](/engine/Classes/classtec_1_1_abstract_window/#function-hide)**() |
-| void | **[Show](/engine/Classes/classtec_1_1_abstract_window/#function-show)**() |
+| virtual | **[~AbstractWindow](Classes/classtec_1_1_abstract_window.md#function-~abstractwindow)**() =default |
+| virtual void | **[Update](Classes/classtec_1_1_abstract_window.md#function-update)**(double ) |
+| virtual void | **[Draw](Classes/classtec_1_1_abstract_window.md#function-draw)**() =0 |
+| void | **[SetAlpha](Classes/classtec_1_1_abstract_window.md#function-setalpha)**(float a) |
+| float | **[GetAlpha](Classes/classtec_1_1_abstract_window.md#function-getalpha)**() const |
+| virtual bool | **[isCollapsed](Classes/classtec_1_1_abstract_window.md#function-iscollapsed)**() const |
+| bool | **[isVisible](Classes/classtec_1_1_abstract_window.md#function-isvisible)**() const |
+| void | **[Hide](Classes/classtec_1_1_abstract_window.md#function-hide)**() |
+| void | **[Show](Classes/classtec_1_1_abstract_window.md#function-show)**() |
 
 ## Protected Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[alpha](/engine/Classes/classtec_1_1_abstract_window/#variable-alpha)**  |
-| bool | **[collapsed](/engine/Classes/classtec_1_1_abstract_window/#variable-collapsed)**  |
-| bool | **[show](/engine/Classes/classtec_1_1_abstract_window/#variable-show)** <br>Collapsed ?  |
+| float | **[alpha](Classes/classtec_1_1_abstract_window.md#variable-alpha)**  |
+| bool | **[collapsed](Classes/classtec_1_1_abstract_window.md#variable-collapsed)**  |
+| bool | **[show](Classes/classtec_1_1_abstract_window.md#variable-show)** <br>Collapsed ?  |
 
 ## Public Functions Documentation
 
@@ -49,7 +49,7 @@ inline virtual void Update(
 ```
 
 
-**Reimplemented by**: [tec::Console::Update](/engine/Classes/classtec_1_1_console/#function-update), [tec::ActiveEntityTooltip::Update](/engine/Classes/classtec_1_1_active_entity_tooltip/#function-update), [tec::DebugInfo::Update](/engine/Classes/classtec_1_1_debug_info/#function-update), [tec::ServerConnectWindow::Update](/engine/Classes/classtec_1_1_server_connect_window/#function-update), [tec::PingTimesWindow::Update](/engine/Classes/classtec_1_1_ping_times_window/#function-update)
+**Reimplemented by**: [tec::Console::Update](Classes/classtec_1_1_console.md#function-update), [tec::ActiveEntityTooltip::Update](Classes/classtec_1_1_active_entity_tooltip.md#function-update), [tec::DebugInfo::Update](Classes/classtec_1_1_debug_info.md#function-update), [tec::ServerConnectWindow::Update](Classes/classtec_1_1_server_connect_window.md#function-update), [tec::PingTimesWindow::Update](Classes/classtec_1_1_ping_times_window.md#function-update)
 
 
 ### function Draw
@@ -59,7 +59,7 @@ virtual void Draw() =0
 ```
 
 
-**Reimplemented by**: [tec::ActiveEntityTooltip::Draw](/engine/Classes/classtec_1_1_active_entity_tooltip/#function-draw), [tec::Console::Draw](/engine/Classes/classtec_1_1_console/#function-draw), [tec::DebugInfo::Draw](/engine/Classes/classtec_1_1_debug_info/#function-draw), [tec::ServerConnectWindow::Draw](/engine/Classes/classtec_1_1_server_connect_window/#function-draw), [tec::PingTimesWindow::Draw](/engine/Classes/classtec_1_1_ping_times_window/#function-draw)
+**Reimplemented by**: [tec::ActiveEntityTooltip::Draw](Classes/classtec_1_1_active_entity_tooltip.md#function-draw), [tec::Console::Draw](Classes/classtec_1_1_console.md#function-draw), [tec::DebugInfo::Draw](Classes/classtec_1_1_debug_info.md#function-draw), [tec::ServerConnectWindow::Draw](Classes/classtec_1_1_server_connect_window.md#function-draw), [tec::PingTimesWindow::Draw](Classes/classtec_1_1_ping_times_window.md#function-draw)
 
 
 ### function SetAlpha
@@ -85,7 +85,7 @@ inline virtual bool isCollapsed() const
 ```
 
 
-**Reimplemented by**: [tec::Console::isCollapsed](/engine/Classes/classtec_1_1_console/#function-iscollapsed)
+**Reimplemented by**: [tec::Console::isCollapsed](Classes/classtec_1_1_console.md#function-iscollapsed)
 
 
 ### function isVisible
@@ -135,4 +135,4 @@ Collapsed ?
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

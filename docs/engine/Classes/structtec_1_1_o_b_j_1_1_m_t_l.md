@@ -11,16 +11,16 @@ title: tec::OBJ::MTL
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec3 | **[ka](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-ka)**  |
-| glm::vec3 | **[kd](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-kd)**  |
-| glm::vec3 | **[ks](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-ks)**  |
-| float | **[tr](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-tr)**  |
-| float | **[hardness](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-hardness)**  |
-| int | **[illum](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-illum)**  |
-| std::string | **[ambientMap](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-ambientmap)**  |
-| std::string | **[diffuseMap](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-diffusemap)**  |
-| std::string | **[specularMap](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-specularmap)**  |
-| std::string | **[normalMap](/engine/Classes/structtec_1_1_o_b_j_1_1_m_t_l/#variable-normalmap)**  |
+| glm::vec3 | **[ka](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-ka)**  |
+| glm::vec3 | **[kd](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-kd)**  |
+| glm::vec3 | **[ks](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-ks)**  |
+| float | **[tr](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-tr)**  |
+| float | **[hardness](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-hardness)**  |
+| int | **[illum](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-illum)**  |
+| std::string | **[ambientMap](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-ambientmap)**  |
+| std::string | **[diffuseMap](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-diffusemap)**  |
+| std::string | **[specularMap](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-specularmap)**  |
+| std::string | **[normalMap](Classes/structtec_1_1_o_b_j_1_1_m_t_l.md#variable-normalmap)**  |
 
 ## Public Attributes Documentation
 
@@ -96,4 +96,4 @@ std::string normalMap;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

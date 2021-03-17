@@ -11,15 +11,15 @@ title: tec::MouseBtnEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[MOUSE_BTN_ACTION](/engine/Classes/structtec_1_1_mouse_btn_event/#enum-mouse_btn_action)** { DOWN, UP} |
-| enum| **[MOUSE_BTN](/engine/Classes/structtec_1_1_mouse_btn_event/#enum-mouse_btn)** { LEFT, RIGHT, MIDDLE} |
+| enum| **[MOUSE_BTN_ACTION](Classes/structtec_1_1_mouse_btn_event.md#enum-mouse_btn_action)** { DOWN, UP} |
+| enum| **[MOUSE_BTN](Classes/structtec_1_1_mouse_btn_event.md#enum-mouse_btn)** { LEFT, RIGHT, MIDDLE} |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| MOUSE_BTN_ACTION | **[action](/engine/Classes/structtec_1_1_mouse_btn_event/#variable-action)**  |
-| MOUSE_BTN | **[button](/engine/Classes/structtec_1_1_mouse_btn_event/#variable-button)**  |
+| MOUSE_BTN_ACTION | **[action](Classes/structtec_1_1_mouse_btn_event.md#variable-action)**  |
+| MOUSE_BTN | **[button](Classes/structtec_1_1_mouse_btn_event.md#variable-button)**  |
 
 ## Public Types Documentation
 
@@ -62,4 +62,4 @@ MOUSE_BTN button;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

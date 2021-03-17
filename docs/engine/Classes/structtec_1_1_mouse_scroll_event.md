@@ -16,8 +16,8 @@ title: tec::MouseScrollEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| double | **[x_offset](/engine/Classes/structtec_1_1_mouse_scroll_event/#variable-x_offset)**  |
-| double | **[y_offset](/engine/Classes/structtec_1_1_mouse_scroll_event/#variable-y_offset)**  |
+| double | **[x_offset](Classes/structtec_1_1_mouse_scroll_event.md#variable-x_offset)**  |
+| double | **[y_offset](Classes/structtec_1_1_mouse_scroll_event.md#variable-y_offset)**  |
 
 ## Detailed Description
 
@@ -46,4 +46,4 @@ double y_offset {0.0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

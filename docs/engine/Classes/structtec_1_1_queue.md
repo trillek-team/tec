@@ -13,15 +13,15 @@ title: tec::Queue
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Queue](/engine/Classes/structtec_1_1_queue/#function-queue)**() |
-| void | **[emplace](/engine/Classes/structtec_1_1_queue/#function-emplace)**(T && e) |
+| | **[Queue](Classes/structtec_1_1_queue.md#function-queue)**() |
+| void | **[emplace](Classes/structtec_1_1_queue.md#function-emplace)**(T && e) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::queue< T > | **[queue](/engine/Classes/structtec_1_1_queue/#variable-queue)**  |
-| std::mutex | **[queue_write](/engine/Classes/structtec_1_1_queue/#variable-queue_write)**  |
+| std::queue< T > | **[queue](Classes/structtec_1_1_queue.md#variable-queue)**  |
+| std::mutex | **[queue_write](Classes/structtec_1_1_queue.md#variable-queue_write)**  |
 
 ## Detailed Description
 
@@ -66,4 +66,4 @@ std::mutex queue_write;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

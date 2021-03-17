@@ -11,9 +11,9 @@ title: tec::OBJ::Face
 
 |                | Name           |
 | -------------- | -------------- |
-| unsigned int | **[pos](/engine/Classes/structtec_1_1_o_b_j_1_1_face/#variable-pos)**  |
-| unsigned int | **[uv](/engine/Classes/structtec_1_1_o_b_j_1_1_face/#variable-uv)**  |
-| unsigned int | **[norm](/engine/Classes/structtec_1_1_o_b_j_1_1_face/#variable-norm)**  |
+| unsigned int | **[pos](Classes/structtec_1_1_o_b_j_1_1_face.md#variable-pos)**  |
+| unsigned int | **[uv](Classes/structtec_1_1_o_b_j_1_1_face.md#variable-uv)**  |
+| unsigned int | **[norm](Classes/structtec_1_1_o_b_j_1_1_face.md#variable-norm)**  |
 
 ## Public Attributes Documentation
 
@@ -40,4 +40,4 @@ unsigned int norm {0, 0, 0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

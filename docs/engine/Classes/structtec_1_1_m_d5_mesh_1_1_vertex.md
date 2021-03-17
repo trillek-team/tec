@@ -11,11 +11,11 @@ title: tec::MD5Mesh::Vertex
 
 |                | Name           |
 | -------------- | -------------- |
-| int | **[startWeight](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/#variable-startweight)**  |
-| unsigned int | **[weight_count](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/#variable-weight_count)**  |
-| glm::vec2 | **[uv](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/#variable-uv)**  |
-| glm::vec3 | **[position](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/#variable-position)**  |
-| glm::vec3 | **[normal](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/#variable-normal)**  |
+| int | **[startWeight](Classes/structtec_1_1_m_d5_mesh_1_1_vertex.md#variable-startweight)**  |
+| unsigned int | **[weight_count](Classes/structtec_1_1_m_d5_mesh_1_1_vertex.md#variable-weight_count)**  |
+| glm::vec2 | **[uv](Classes/structtec_1_1_m_d5_mesh_1_1_vertex.md#variable-uv)**  |
+| glm::vec3 | **[position](Classes/structtec_1_1_m_d5_mesh_1_1_vertex.md#variable-position)**  |
+| glm::vec3 | **[normal](Classes/structtec_1_1_m_d5_mesh_1_1_vertex.md#variable-normal)**  |
 
 ## Public Attributes Documentation
 
@@ -56,4 +56,4 @@ glm::vec3 normal {0.f, 0.f, 0.f};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

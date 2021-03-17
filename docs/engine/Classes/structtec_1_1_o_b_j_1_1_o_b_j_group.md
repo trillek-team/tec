@@ -11,20 +11,20 @@ title: tec::OBJ::OBJGroup
 
 |                | Name           |
 | -------------- | -------------- |
-| struct | **[FaceGroup](/engine/Classes/structtec_1_1_o_b_j_1_1_o_b_j_group_1_1_face_group/)**  |
+| struct | **[FaceGroup](Classes/structtec_1_1_o_b_j_1_1_o_b_j_group_1_1_face_group.md)**  |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[~OBJGroup](/engine/Classes/structtec_1_1_o_b_j_1_1_o_b_j_group/#function-~objgroup)**() |
+| | **[~OBJGroup](Classes/structtec_1_1_o_b_j_1_1_o_b_j_group.md#function-~objgroup)**() |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::string | **[name](/engine/Classes/structtec_1_1_o_b_j_1_1_o_b_j_group/#variable-name)**  |
-| std::vector< [FaceGroup](/engine/Classes/structtec_1_1_o_b_j_1_1_o_b_j_group_1_1_face_group/) * > | **[face_groups](/engine/Classes/structtec_1_1_o_b_j_1_1_o_b_j_group/#variable-face_groups)**  |
+| std::string | **[name](Classes/structtec_1_1_o_b_j_1_1_o_b_j_group.md#variable-name)**  |
+| std::vector< [FaceGroup](Classes/structtec_1_1_o_b_j_1_1_o_b_j_group_1_1_face_group.md) * > | **[face_groups](Classes/structtec_1_1_o_b_j_1_1_o_b_j_group.md#variable-face_groups)**  |
 
 ## Public Functions Documentation
 
@@ -53,4 +53,4 @@ std::vector< FaceGroup * > face_groups;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

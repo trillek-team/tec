@@ -11,19 +11,19 @@ title: tec::VertexData
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[VertexData](/engine/Classes/structtec_1_1_vertex_data/#function-vertexdata)**() =default |
-| | **[VertexData](/engine/Classes/structtec_1_1_vertex_data/#function-vertexdata)**(double x, double y, double z, double r, double g, double b, double u =0.0, double v =0.0) |
+| | **[VertexData](Classes/structtec_1_1_vertex_data.md#function-vertexdata)**() =default |
+| | **[VertexData](Classes/structtec_1_1_vertex_data.md#function-vertexdata)**(double x, double y, double z, double r, double g, double b, double u =0.0, double v =0.0) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec3 | **[position](/engine/Classes/structtec_1_1_vertex_data/#variable-position)**  |
-| glm::vec4 | **[color](/engine/Classes/structtec_1_1_vertex_data/#variable-color)**  |
-| glm::vec3 | **[normal](/engine/Classes/structtec_1_1_vertex_data/#variable-normal)**  |
-| glm::vec2 | **[uv](/engine/Classes/structtec_1_1_vertex_data/#variable-uv)**  |
-| glm::vec4 | **[bone_weights](/engine/Classes/structtec_1_1_vertex_data/#variable-bone_weights)**  |
-| glm::uvec4 | **[bone_indices](/engine/Classes/structtec_1_1_vertex_data/#variable-bone_indices)**  |
+| glm::vec3 | **[position](Classes/structtec_1_1_vertex_data.md#variable-position)**  |
+| glm::vec4 | **[color](Classes/structtec_1_1_vertex_data.md#variable-color)**  |
+| glm::vec3 | **[normal](Classes/structtec_1_1_vertex_data.md#variable-normal)**  |
+| glm::vec2 | **[uv](Classes/structtec_1_1_vertex_data.md#variable-uv)**  |
+| glm::vec4 | **[bone_weights](Classes/structtec_1_1_vertex_data.md#variable-bone_weights)**  |
+| glm::uvec4 | **[bone_indices](Classes/structtec_1_1_vertex_data.md#variable-bone_indices)**  |
 
 ## Public Functions Documentation
 
@@ -96,4 +96,4 @@ glm::uvec4 bone_indices {0, 0, 0, 0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

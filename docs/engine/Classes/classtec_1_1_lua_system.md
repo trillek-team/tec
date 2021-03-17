@@ -7,92 +7,92 @@ title: tec::LuaSystem
 
 
 
-Inherits from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< ChatCommandEvent >](/engine/Classes/classtec_1_1_event_queue/)
+Inherits from [tec::CommandQueue< LuaSystem >](Classes/classtec_1_1_command_queue.md), [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md), [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md), [tec::EventQueue< ChatCommandEvent >](Classes/classtec_1_1_event_queue.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[LuaSystem](/engine/Classes/classtec_1_1_lua_system/#function-luasystem)**() |
-| void | **[Update](/engine/Classes/classtec_1_1_lua_system/#function-update)**(const double delta) |
-| void | **[ProcessEvents](/engine/Classes/classtec_1_1_lua_system/#function-processevents)**() |
-| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**(std::shared_ptr< [ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/) > data) |
-| void | **[ExecuteString](/engine/Classes/classtec_1_1_lua_system/#function-executestring)**(std::string script_string) |
-| std::shared_ptr< [LuaScript](/engine/Classes/structtec_1_1_lua_script/) > | **[LoadFile](/engine/Classes/classtec_1_1_lua_system/#function-loadfile)**([FilePath](/engine/Classes/classtec_1_1_file_path/) filepath) |
-| sol::state & | **[GetGlobalState](/engine/Classes/classtec_1_1_lua_system/#function-getglobalstate)**() |
-| template <typename... Args\> <br>void | **[CallFunctions](/engine/Classes/classtec_1_1_lua_system/#function-callfunctions)**(std::string function_name, Args &&... args) |
+| | **[LuaSystem](Classes/classtec_1_1_lua_system.md#function-luasystem)**() |
+| void | **[Update](Classes/classtec_1_1_lua_system.md#function-update)**(const double delta) |
+| void | **[ProcessEvents](Classes/classtec_1_1_lua_system.md#function-processevents)**() |
+| virtual void | **[On](Classes/classtec_1_1_lua_system.md#function-on)**(std::shared_ptr< [EntityCreated](Classes/structtec_1_1_entity_created.md) > data) |
+| virtual void | **[On](Classes/classtec_1_1_lua_system.md#function-on)**(std::shared_ptr< [EntityDestroyed](Classes/structtec_1_1_entity_destroyed.md) > data) |
+| virtual void | **[On](Classes/classtec_1_1_lua_system.md#function-on)**(std::shared_ptr< [ChatCommandEvent](Classes/structtec_1_1_chat_command_event.md) > data) |
+| void | **[ExecuteString](Classes/classtec_1_1_lua_system.md#function-executestring)**(std::string script_string) |
+| std::shared_ptr< [LuaScript](Classes/structtec_1_1_lua_script.md) > | **[LoadFile](Classes/classtec_1_1_lua_system.md#function-loadfile)**([FilePath](Classes/classtec_1_1_file_path.md) filepath) |
+| sol::state & | **[GetGlobalState](Classes/classtec_1_1_lua_system.md#function-getglobalstate)**() |
+| template <typename... Args\> <br>void | **[CallFunctions](Classes/classtec_1_1_lua_system.md#function-callfunctions)**(std::string function_name, Args &&... args) |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_command_queue/)**
+**Public Functions inherited from [tec::CommandQueue< LuaSystem >](Classes/classtec_1_1_command_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-commandqueue)**() |
-| | **[~CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-~commandqueue)**() |
-| void | **[ProcessCommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-processcommandqueue)**() |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**([Command](/engine/Classes/structtec_1_1_command/)< T > && command) |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**(std::function< void(T *)> && command) |
+| | **[CommandQueue](Classes/classtec_1_1_command_queue.md#function-commandqueue)**() |
+| | **[~CommandQueue](Classes/classtec_1_1_command_queue.md#function-~commandqueue)**() |
+| void | **[ProcessCommandQueue](Classes/classtec_1_1_command_queue.md#function-processcommandqueue)**() |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**([Command](Classes/structtec_1_1_command.md)< T > && command) |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**(std::function< void(T *)> && command) |
 
-**Protected Attributes inherited from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_command_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| std::atomic< std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * > | **[global_command_queue](/engine/Classes/classtec_1_1_command_queue/#variable-global_command_queue)**  |
-| std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * | **[local_queue](/engine/Classes/classtec_1_1_command_queue/#variable-local_queue)**  |
-
-**Public Functions inherited from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)**
+**Protected Attributes inherited from [tec::CommandQueue< LuaSystem >](Classes/classtec_1_1_command_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
+| std::atomic< std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * > | **[global_command_queue](Classes/classtec_1_1_command_queue.md#variable-global_command_queue)**  |
+| std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * | **[local_queue](Classes/classtec_1_1_command_queue.md#variable-local_queue)**  |
 
-**Protected Attributes inherited from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)**
+**Public Functions inherited from [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
 
-**Public Functions inherited from [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
-
-**Protected Attributes inherited from [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)**
+**Protected Attributes inherited from [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
 
-**Public Functions inherited from [tec::EventQueue< ChatCommandEvent >](/engine/Classes/classtec_1_1_event_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
-
-**Protected Attributes inherited from [tec::EventQueue< ChatCommandEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+**Public Functions inherited from [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
+
+**Protected Attributes inherited from [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
+
+**Public Functions inherited from [tec::EventQueue< ChatCommandEvent >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
+
+**Protected Attributes inherited from [tec::EventQueue< ChatCommandEvent >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
 
 
 ## Public Functions Documentation
@@ -129,7 +129,7 @@ virtual void On(
 ```
 
 
-**Reimplements**: [tec::EventQueue::On](/engine/Classes/classtec_1_1_event_queue/#function-on)
+**Reimplements**: [tec::EventQueue::On](Classes/classtec_1_1_event_queue.md#function-on)
 
 
 ### function On
@@ -141,7 +141,7 @@ virtual void On(
 ```
 
 
-**Reimplements**: [tec::EventQueue::On](/engine/Classes/classtec_1_1_event_queue/#function-on)
+**Reimplements**: [tec::EventQueue::On](Classes/classtec_1_1_event_queue.md#function-on)
 
 
 ### function On
@@ -153,7 +153,7 @@ virtual void On(
 ```
 
 
-**Reimplements**: [tec::EventQueue::On](/engine/Classes/classtec_1_1_event_queue/#function-on)
+**Reimplements**: [tec::EventQueue::On](Classes/classtec_1_1_event_queue.md#function-on)
 
 
 ### function ExecuteString
@@ -194,4 +194,4 @@ inline void CallFunctions(
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

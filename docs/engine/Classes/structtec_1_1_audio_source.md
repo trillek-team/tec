@@ -11,22 +11,22 @@ title: tec::AudioSource
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[AudioSource](/engine/Classes/structtec_1_1_audio_source/#function-audiosource)**(std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > stream, bool auto_play) |
-| | **[AudioSource](/engine/Classes/structtec_1_1_audio_source/#function-audiosource)**() =default |
-| void | **[Out](/engine/Classes/structtec_1_1_audio_source/#function-out)**(proto::Component * target) const |
-| void | **[In](/engine/Classes/structtec_1_1_audio_source/#function-in)**(const proto::Component & _source) |
+| | **[AudioSource](Classes/structtec_1_1_audio_source.md#function-audiosource)**(std::shared_ptr< [VorbisStream](Classes/classtec_1_1_vorbis_stream.md) > stream, bool auto_play) |
+| | **[AudioSource](Classes/structtec_1_1_audio_source.md#function-audiosource)**() =default |
+| void | **[Out](Classes/structtec_1_1_audio_source.md#function-out)**(proto::Component * target) const |
+| void | **[In](Classes/structtec_1_1_audio_source.md#function-in)**(const proto::Component & _source) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| ALuint | **[source](/engine/Classes/structtec_1_1_audio_source/#variable-source)**  |
-| ALuint | **[buffer](/engine/Classes/structtec_1_1_audio_source/#variable-buffer)**  |
-| bool | **[looping](/engine/Classes/structtec_1_1_audio_source/#variable-looping)**  |
-| std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[vorbis_stream](/engine/Classes/structtec_1_1_audio_source/#variable-vorbis_stream)**  |
-| AUDIOSOURCE_STATE | **[source_state](/engine/Classes/structtec_1_1_audio_source/#variable-source_state)**  |
-| int | **[gain](/engine/Classes/structtec_1_1_audio_source/#variable-gain)**  |
-| std::string | **[audio_name](/engine/Classes/structtec_1_1_audio_source/#variable-audio_name)**  |
+| ALuint | **[source](Classes/structtec_1_1_audio_source.md#variable-source)**  |
+| ALuint | **[buffer](Classes/structtec_1_1_audio_source.md#variable-buffer)**  |
+| bool | **[looping](Classes/structtec_1_1_audio_source.md#variable-looping)**  |
+| std::shared_ptr< [VorbisStream](Classes/classtec_1_1_vorbis_stream.md) > | **[vorbis_stream](Classes/structtec_1_1_audio_source.md#variable-vorbis_stream)**  |
+| AUDIOSOURCE_STATE | **[source_state](Classes/structtec_1_1_audio_source.md#variable-source_state)**  |
+| int | **[gain](Classes/structtec_1_1_audio_source.md#variable-gain)**  |
+| std::string | **[audio_name](Classes/structtec_1_1_audio_source.md#variable-audio_name)**  |
 
 ## Public Functions Documentation
 
@@ -118,4 +118,4 @@ std::string audio_name;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

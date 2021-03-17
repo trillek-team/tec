@@ -11,7 +11,7 @@ title: tec::EntityDestroyed
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_entity_destroyed/#variable-entity_id)**  |
+| [eid](Namespaces/namespacetec.md#typedef-eid) | **[entity_id](Classes/structtec_1_1_entity_destroyed.md#variable-entity_id)**  |
 
 ## Public Attributes Documentation
 
@@ -24,4 +24,4 @@ eid entity_id {0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

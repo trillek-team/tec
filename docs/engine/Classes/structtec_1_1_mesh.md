@@ -11,14 +11,14 @@ title: tec::Mesh
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[~Mesh](/engine/Classes/structtec_1_1_mesh/#function-~mesh)**() |
+| | **[~Mesh](Classes/structtec_1_1_mesh.md#function-~mesh)**() |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::vector< [VertexData](/engine/Classes/structtec_1_1_vertex_data/) > | **[verts](/engine/Classes/structtec_1_1_mesh/#variable-verts)**  |
-| std::vector< [ObjectGroup](/engine/Classes/structtec_1_1_object_group/) * > | **[object_groups](/engine/Classes/structtec_1_1_mesh/#variable-object_groups)**  |
+| std::vector< [VertexData](Classes/structtec_1_1_vertex_data.md) > | **[verts](Classes/structtec_1_1_mesh.md#variable-verts)**  |
+| std::vector< [ObjectGroup](Classes/structtec_1_1_object_group.md) * > | **[object_groups](Classes/structtec_1_1_mesh.md#variable-object_groups)**  |
 
 ## Public Functions Documentation
 
@@ -47,4 +47,4 @@ std::vector< ObjectGroup * > object_groups;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

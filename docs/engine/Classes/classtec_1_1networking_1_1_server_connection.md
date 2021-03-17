@@ -11,36 +11,36 @@ title: tec::networking::ServerConnection
 
 |                | Name           |
 | -------------- | -------------- |
-| typedef std::function< void([MessageIn](/engine/Classes/classtec_1_1networking_1_1_message_in/) &)> | **[messageHandlerFunc](/engine/Classes/classtec_1_1networking_1_1_server_connection/#typedef-messagehandlerfunc)**  |
+| typedef std::function< void([MessageIn](Classes/classtec_1_1networking_1_1_message_in.md) &)> | **[messageHandlerFunc](Classes/classtec_1_1networking_1_1_server_connection.md#typedef-messagehandlerfunc)**  |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[ServerConnection](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-serverconnection)**([ServerStats](/engine/Classes/classtec_1_1_server_stats/) & s) |
-| bool | **[Connect](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-connect)**(std::string_view ip =LOCAL_HOST) |
-| void | **[Disconnect](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-disconnect)**() |
-| void | **[Stop](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-stop)**() |
-| void | **[StartDispatch](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-startdispatch)**() |
-| void | **[StartSync](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-startsync)**() |
-| void | **[SendChatMessage](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-sendchatmessage)**(std::string message) |
-| void | **[Send](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-send)**(MessagePool::ptr_type msg) |
-| void | **[Send](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-send)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) & msg) |
-| void | **[Send](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-send)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && msg) |
-| state_id_t | **[GetLastRecvStateID](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getlastrecvstateid)**() |
-| std::list< ping_time_t > | **[GetRecentPings](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getrecentpings)**() |
-| ping_time_t | **[GetAveragePing](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getaverageping)**() |
-| ping_time_t | **[GetEstimatedDelay](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getestimateddelay)**() |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetClientID](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getclientid)**() |
-| void | **[RegisterMessageHandler](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-registermessagehandler)**(MessageType type, messageHandlerFunc handler) |
-| void | **[RegisterConnectFunc](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-registerconnectfunc)**(std::function< void()> func) |
-| size_t | **[GetPartialMessageCount](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getpartialmessagecount)**() const |
+| | **[ServerConnection](Classes/classtec_1_1networking_1_1_server_connection.md#function-serverconnection)**([ServerStats](Classes/classtec_1_1_server_stats.md) & s) |
+| bool | **[Connect](Classes/classtec_1_1networking_1_1_server_connection.md#function-connect)**(std::string_view ip =LOCAL_HOST) |
+| void | **[Disconnect](Classes/classtec_1_1networking_1_1_server_connection.md#function-disconnect)**() |
+| void | **[Stop](Classes/classtec_1_1networking_1_1_server_connection.md#function-stop)**() |
+| void | **[StartDispatch](Classes/classtec_1_1networking_1_1_server_connection.md#function-startdispatch)**() |
+| void | **[StartSync](Classes/classtec_1_1networking_1_1_server_connection.md#function-startsync)**() |
+| void | **[SendChatMessage](Classes/classtec_1_1networking_1_1_server_connection.md#function-sendchatmessage)**(std::string message) |
+| void | **[Send](Classes/classtec_1_1networking_1_1_server_connection.md#function-send)**(MessagePool::ptr_type msg) |
+| void | **[Send](Classes/classtec_1_1networking_1_1_server_connection.md#function-send)**([MessageOut](Classes/classtec_1_1networking_1_1_message_out.md) & msg) |
+| void | **[Send](Classes/classtec_1_1networking_1_1_server_connection.md#function-send)**([MessageOut](Classes/classtec_1_1networking_1_1_message_out.md) && msg) |
+| state_id_t | **[GetLastRecvStateID](Classes/classtec_1_1networking_1_1_server_connection.md#function-getlastrecvstateid)**() |
+| std::list< ping_time_t > | **[GetRecentPings](Classes/classtec_1_1networking_1_1_server_connection.md#function-getrecentpings)**() |
+| ping_time_t | **[GetAveragePing](Classes/classtec_1_1networking_1_1_server_connection.md#function-getaverageping)**() |
+| ping_time_t | **[GetEstimatedDelay](Classes/classtec_1_1networking_1_1_server_connection.md#function-getestimateddelay)**() |
+| [eid](Namespaces/namespacetec.md#typedef-eid) | **[GetClientID](Classes/classtec_1_1networking_1_1_server_connection.md#function-getclientid)**() |
+| void | **[RegisterMessageHandler](Classes/classtec_1_1networking_1_1_server_connection.md#function-registermessagehandler)**(MessageType type, messageHandlerFunc handler) |
+| void | **[RegisterConnectFunc](Classes/classtec_1_1networking_1_1_server_connection.md#function-registerconnectfunc)**(std::function< void()> func) |
+| size_t | **[GetPartialMessageCount](Classes/classtec_1_1networking_1_1_server_connection.md#function-getpartialmessagecount)**() const |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| [ServerStats](/engine/Classes/classtec_1_1_server_stats/) & | **[stats](/engine/Classes/classtec_1_1networking_1_1_server_connection/#variable-stats)**  |
+| [ServerStats](Classes/classtec_1_1_server_stats.md) & | **[stats](Classes/classtec_1_1networking_1_1_server_connection.md#variable-stats)**  |
 
 ## Public Types Documentation
 
@@ -207,4 +207,4 @@ ServerStats & stats;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

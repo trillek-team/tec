@@ -11,8 +11,8 @@ title: tec::EntityCreated
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_entity_created/#variable-entity_id)**  |
-| proto::Entity | **[entity](/engine/Classes/structtec_1_1_entity_created/#variable-entity)**  |
+| [eid](Namespaces/namespacetec.md#typedef-eid) | **[entity_id](Classes/structtec_1_1_entity_created.md#variable-entity_id)**  |
+| proto::Entity | **[entity](Classes/structtec_1_1_entity_created.md#variable-entity)**  |
 
 ## Public Attributes Documentation
 
@@ -32,4 +32,4 @@ proto::Entity entity;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

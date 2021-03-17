@@ -9,7 +9,7 @@ title: spdlog
 
 | Name           |
 | -------------- |
-| **[spdlog::sinks](/engine/Namespaces/namespacespdlog_1_1sinks/)**  |
+| **[spdlog::sinks](Namespaces/namespacespdlog_1_1sinks.md)**  |
 
 
 
@@ -18,4 +18,4 @@ title: spdlog
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

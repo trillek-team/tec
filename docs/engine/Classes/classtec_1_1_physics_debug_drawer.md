@@ -13,15 +13,15 @@ Inherits from btIDebugDraw
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[PhysicsDebugDrawer](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-physicsdebugdrawer)**() |
-| virtual void | **[drawLine](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-drawline)**(const btVector3 & from, const btVector3 & to, const btVector3 & color) |
-| virtual void | **[drawAABB](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-drawaabb)**(const btVector3 & from, const btVector3 & to, const btVector3 & color) |
-| virtual void | **[drawContactPoint](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-drawcontactpoint)**(const btVector3 & PointOnB, const btVector3 & normalOnB, btScalar distance, int lifeTime, const btVector3 & color) |
-| virtual void | **[reportErrorWarning](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-reporterrorwarning)**(const char * warningString) |
-| virtual void | **[draw3dText](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-draw3dtext)**(const btVector3 & location, const char * textString) |
-| virtual void | **[setDebugMode](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-setdebugmode)**(int debugMode) |
-| virtual int | **[getDebugMode](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-getdebugmode)**() const |
-| void | **[UpdateVertexBuffer](/engine/Classes/classtec_1_1_physics_debug_drawer/#function-updatevertexbuffer)**() |
+| | **[PhysicsDebugDrawer](Classes/classtec_1_1_physics_debug_drawer.md#function-physicsdebugdrawer)**() |
+| virtual void | **[drawLine](Classes/classtec_1_1_physics_debug_drawer.md#function-drawline)**(const btVector3 & from, const btVector3 & to, const btVector3 & color) |
+| virtual void | **[drawAABB](Classes/classtec_1_1_physics_debug_drawer.md#function-drawaabb)**(const btVector3 & from, const btVector3 & to, const btVector3 & color) |
+| virtual void | **[drawContactPoint](Classes/classtec_1_1_physics_debug_drawer.md#function-drawcontactpoint)**(const btVector3 & PointOnB, const btVector3 & normalOnB, btScalar distance, int lifeTime, const btVector3 & color) |
+| virtual void | **[reportErrorWarning](Classes/classtec_1_1_physics_debug_drawer.md#function-reporterrorwarning)**(const char * warningString) |
+| virtual void | **[draw3dText](Classes/classtec_1_1_physics_debug_drawer.md#function-draw3dtext)**(const btVector3 & location, const char * textString) |
+| virtual void | **[setDebugMode](Classes/classtec_1_1_physics_debug_drawer.md#function-setdebugmode)**(int debugMode) |
+| virtual int | **[getDebugMode](Classes/classtec_1_1_physics_debug_drawer.md#function-getdebugmode)**() const |
+| void | **[UpdateVertexBuffer](Classes/classtec_1_1_physics_debug_drawer.md#function-updatevertexbuffer)**() |
 
 ## Public Functions Documentation
 
@@ -111,4 +111,4 @@ void UpdateVertexBuffer()
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

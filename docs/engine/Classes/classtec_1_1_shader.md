@@ -11,20 +11,20 @@ title: tec::Shader
 
 |                | Name           |
 | -------------- | -------------- |
-| enum GLenum | **[ShaderType](/engine/Classes/classtec_1_1_shader/#enum-shadertype)** { VERTEX = GL_VERTEX_SHADER, FRAGMENT = GL_FRAGMENT_SHADER, GEOMETRY = GL_GEOMETRY_SHADER} |
+| enum GLenum | **[ShaderType](Classes/classtec_1_1_shader.md#enum-shadertype)** { VERTEX = GL_VERTEX_SHADER, FRAGMENT = GL_FRAGMENT_SHADER, GEOMETRY = GL_GEOMETRY_SHADER} |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Shader](/engine/Classes/classtec_1_1_shader/#function-shader)**() =default |
-| | **[~Shader](/engine/Classes/classtec_1_1_shader/#function-~shader)**() |
-| void | **[Use](/engine/Classes/classtec_1_1_shader/#function-use)**()<br>Uses the shader program.  |
-| void | **[UnUse](/engine/Classes/classtec_1_1_shader/#function-unuse)**()<br>Unuses the shader program.  |
-| GLint | **[GetUniformLocation](/engine/Classes/classtec_1_1_shader/#function-getuniformlocation)**(const std::string name)<br>Returns the location of the specified uniform.  |
-| GLint | **[GetAttributeLocation](/engine/Classes/classtec_1_1_shader/#function-getattributelocation)**(const std::string name)<br>Returns the location of the specified attribute.  |
-| void | **[ActivateTextureUnit](/engine/Classes/classtec_1_1_shader/#function-activatetextureunit)**(const GLuint unit, const GLuint texture_name)<br>Activates the specified texture unit and bind the specified texture to it.  |
-| void | **[DeactivateTextureUnit](/engine/Classes/classtec_1_1_shader/#function-deactivatetextureunit)**(const GLuint unit)<br>Deactivates the specified texture unit by binding texture 0 to it.  |
+| | **[Shader](Classes/classtec_1_1_shader.md#function-shader)**() =default |
+| | **[~Shader](Classes/classtec_1_1_shader.md#function-~shader)**() |
+| void | **[Use](Classes/classtec_1_1_shader.md#function-use)**()<br>Uses the shader program.  |
+| void | **[UnUse](Classes/classtec_1_1_shader.md#function-unuse)**()<br>Unuses the shader program.  |
+| GLint | **[GetUniformLocation](Classes/classtec_1_1_shader.md#function-getuniformlocation)**(const std::string name)<br>Returns the location of the specified uniform.  |
+| GLint | **[GetAttributeLocation](Classes/classtec_1_1_shader.md#function-getattributelocation)**(const std::string name)<br>Returns the location of the specified attribute.  |
+| void | **[ActivateTextureUnit](Classes/classtec_1_1_shader.md#function-activatetextureunit)**(const GLuint unit, const GLuint texture_name)<br>Activates the specified texture unit and bind the specified texture to it.  |
+| void | **[DeactivateTextureUnit](Classes/classtec_1_1_shader.md#function-deactivatetextureunit)**(const GLuint unit)<br>Deactivates the specified texture unit by binding texture 0 to it.  |
 
 ## Public Types Documentation
 
@@ -147,4 +147,4 @@ Deactivates the specified texture unit by binding texture 0 to it.
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

@@ -11,14 +11,14 @@ title: tec::TimeFrameMetrics
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[outside_game_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-outside_game_time)**  |
-| float | **[state_queue_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-state_queue_time)**  |
-| float | **[vcomputer_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-vcomputer_time)**  |
-| float | **[sound_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-sound_system_time)**  |
-| float | **[render_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-render_system_time)**  |
-| float | **[lua_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-lua_system_time)**  |
-| float | **[other_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-other_time)**  |
-| float | **[total_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-total_time)**  |
+| float | **[outside_game_time](Classes/structtec_1_1_time_frame_metrics.md#variable-outside_game_time)**  |
+| float | **[state_queue_time](Classes/structtec_1_1_time_frame_metrics.md#variable-state_queue_time)**  |
+| float | **[vcomputer_time](Classes/structtec_1_1_time_frame_metrics.md#variable-vcomputer_time)**  |
+| float | **[sound_system_time](Classes/structtec_1_1_time_frame_metrics.md#variable-sound_system_time)**  |
+| float | **[render_system_time](Classes/structtec_1_1_time_frame_metrics.md#variable-render_system_time)**  |
+| float | **[lua_system_time](Classes/structtec_1_1_time_frame_metrics.md#variable-lua_system_time)**  |
+| float | **[other_time](Classes/structtec_1_1_time_frame_metrics.md#variable-other_time)**  |
+| float | **[total_time](Classes/structtec_1_1_time_frame_metrics.md#variable-total_time)**  |
 
 ## Public Attributes Documentation
 
@@ -80,4 +80,4 @@ float total_time;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

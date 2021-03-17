@@ -7,85 +7,85 @@ title: tec::RenderSystem
 
 
 
-Inherits from [tec::CommandQueue< RenderSystem >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)
+Inherits from [tec::CommandQueue< RenderSystem >](Classes/classtec_1_1_command_queue.md), [tec::EventQueue< WindowResizedEvent >](Classes/classtec_1_1_event_queue.md), [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md), [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[Startup](/engine/Classes/classtec_1_1_render_system/#function-startup)**() |
-| void | **[SetViewportSize](/engine/Classes/classtec_1_1_render_system/#function-setviewportsize)**(const unsigned int width, const unsigned int height) |
-| void | **[Update](/engine/Classes/classtec_1_1_render_system/#function-update)**(const double delta, const [GameState](/engine/Classes/structtec_1_1_game_state/) & state) |
+| void | **[Startup](Classes/classtec_1_1_render_system.md#function-startup)**() |
+| void | **[SetViewportSize](Classes/classtec_1_1_render_system.md#function-setviewportsize)**(const unsigned int width, const unsigned int height) |
+| void | **[Update](Classes/classtec_1_1_render_system.md#function-update)**(const double delta, const [GameState](Classes/structtec_1_1_game_state.md) & state) |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::CommandQueue< RenderSystem >](/engine/Classes/classtec_1_1_command_queue/)**
+**Public Functions inherited from [tec::CommandQueue< RenderSystem >](Classes/classtec_1_1_command_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-commandqueue)**() |
-| | **[~CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-~commandqueue)**() |
-| void | **[ProcessCommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-processcommandqueue)**() |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**([Command](/engine/Classes/structtec_1_1_command/)< T > && command) |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**(std::function< void(T *)> && command) |
+| | **[CommandQueue](Classes/classtec_1_1_command_queue.md#function-commandqueue)**() |
+| | **[~CommandQueue](Classes/classtec_1_1_command_queue.md#function-~commandqueue)**() |
+| void | **[ProcessCommandQueue](Classes/classtec_1_1_command_queue.md#function-processcommandqueue)**() |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**([Command](Classes/structtec_1_1_command.md)< T > && command) |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**(std::function< void(T *)> && command) |
 
-**Protected Attributes inherited from [tec::CommandQueue< RenderSystem >](/engine/Classes/classtec_1_1_command_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| std::atomic< std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * > | **[global_command_queue](/engine/Classes/classtec_1_1_command_queue/#variable-global_command_queue)**  |
-| std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * | **[local_queue](/engine/Classes/classtec_1_1_command_queue/#variable-local_queue)**  |
-
-**Public Functions inherited from [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+**Protected Attributes inherited from [tec::CommandQueue< RenderSystem >](Classes/classtec_1_1_command_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
+| std::atomic< std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * > | **[global_command_queue](Classes/classtec_1_1_command_queue.md#variable-global_command_queue)**  |
+| std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * | **[local_queue](Classes/classtec_1_1_command_queue.md#variable-local_queue)**  |
 
-**Protected Attributes inherited from [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+**Public Functions inherited from [tec::EventQueue< WindowResizedEvent >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
 
-**Public Functions inherited from [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
-
-**Protected Attributes inherited from [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)**
+**Protected Attributes inherited from [tec::EventQueue< WindowResizedEvent >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
 
-**Public Functions inherited from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
-
-**Protected Attributes inherited from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)**
+**Public Functions inherited from [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
+
+**Protected Attributes inherited from [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
+
+**Public Functions inherited from [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
+
+**Protected Attributes inherited from [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
 
 
 ## Public Functions Documentation
@@ -119,4 +119,4 @@ void Update(
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

@@ -11,10 +11,10 @@ title: tec::SaveGame
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[Load](/engine/Classes/classtec_1_1_save_game/#function-load)**(const FilePath) |
-| bool | **[Save](/engine/Classes/classtec_1_1_save_game/#function-save)**() |
-| bool | **[Save](/engine/Classes/classtec_1_1_save_game/#function-save)**(const FilePath) |
-| [UserList](/engine/Classes/classtec_1_1_user_list/) * | **[GetUserList](/engine/Classes/classtec_1_1_save_game/#function-getuserlist)**() |
+| bool | **[Load](Classes/classtec_1_1_save_game.md#function-load)**(const FilePath) |
+| bool | **[Save](Classes/classtec_1_1_save_game.md#function-save)**() |
+| bool | **[Save](Classes/classtec_1_1_save_game.md#function-save)**(const FilePath) |
+| [UserList](Classes/classtec_1_1_user_list.md) * | **[GetUserList](Classes/classtec_1_1_save_game.md#function-getuserlist)**() |
 
 ## Public Functions Documentation
 
@@ -52,4 +52,4 @@ UserList * GetUserList()
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

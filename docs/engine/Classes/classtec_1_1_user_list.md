@@ -11,12 +11,12 @@ title: tec::UserList
 
 |                | Name           |
 | -------------- | -------------- |
-| template <typename T \> <br>void | **[SetUsers](/engine/Classes/classtec_1_1_user_list/#function-setusers)**(T begin, T end) |
-| void | **[AddUser](/engine/Classes/classtec_1_1_user_list/#function-adduser)**(proto::User user) |
-| const std::list< proto::User > * | **[GetUsers](/engine/Classes/classtec_1_1_user_list/#function-getusers)**() |
-| proto::User * | **[GetUser](/engine/Classes/classtec_1_1_user_list/#function-getuser)**(uid id) |
-| bool | **[RemoveUser](/engine/Classes/classtec_1_1_user_list/#function-removeuser)**(uid id) |
-| bool | **[UserExists](/engine/Classes/classtec_1_1_user_list/#function-userexists)**(uid id) |
+| template <typename T \> <br>void | **[SetUsers](Classes/classtec_1_1_user_list.md#function-setusers)**(T begin, T end) |
+| void | **[AddUser](Classes/classtec_1_1_user_list.md#function-adduser)**(proto::User user) |
+| const std::list< proto::User > * | **[GetUsers](Classes/classtec_1_1_user_list.md#function-getusers)**() |
+| proto::User * | **[GetUser](Classes/classtec_1_1_user_list.md#function-getuser)**(uid id) |
+| bool | **[RemoveUser](Classes/classtec_1_1_user_list.md#function-removeuser)**(uid id) |
+| bool | **[UserExists](Classes/classtec_1_1_user_list.md#function-userexists)**(uid id) |
 
 ## Public Functions Documentation
 
@@ -76,4 +76,4 @@ bool UserExists(
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

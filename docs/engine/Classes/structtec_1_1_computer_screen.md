@@ -7,30 +7,30 @@ title: tec::ComputerScreen
 
 
 
-Inherits from [tec::DeviceBase](/engine/Classes/structtec_1_1_device_base/)
+Inherits from [tec::DeviceBase](Classes/structtec_1_1_device_base.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[ComputerScreen](/engine/Classes/structtec_1_1_computer_screen/#function-computerscreen)**() |
-| virtual | **[~ComputerScreen](/engine/Classes/structtec_1_1_computer_screen/#function-~computerscreen)**() =default |
-| virtual void | **[In](/engine/Classes/structtec_1_1_computer_screen/#function-in)**(const proto::Computer::Device & source) |
-| virtual void | **[Out](/engine/Classes/structtec_1_1_computer_screen/#function-out)**(proto::Computer::Device * target) |
+| | **[ComputerScreen](Classes/structtec_1_1_computer_screen.md#function-computerscreen)**() |
+| virtual | **[~ComputerScreen](Classes/structtec_1_1_computer_screen.md#function-~computerscreen)**() =default |
+| virtual void | **[In](Classes/structtec_1_1_computer_screen.md#function-in)**(const proto::Computer::Device & source) |
+| virtual void | **[Out](Classes/structtec_1_1_computer_screen.md#function-out)**(proto::Computer::Device * target) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > | **[texture](/engine/Classes/structtec_1_1_computer_screen/#variable-texture)**  |
+| std::shared_ptr< [TextureObject](Classes/classtec_1_1_texture_object.md) > | **[texture](Classes/structtec_1_1_computer_screen.md#variable-texture)**  |
 
 ## Additional inherited members
 
-**Public Attributes inherited from [tec::DeviceBase](/engine/Classes/structtec_1_1_device_base/)**
+**Public Attributes inherited from [tec::DeviceBase](Classes/structtec_1_1_device_base.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< Device > | **[device](/engine/Classes/structtec_1_1_device_base/#variable-device)**  |
+| std::shared_ptr< Device > | **[device](Classes/structtec_1_1_device_base.md#variable-device)**  |
 
 
 ## Public Functions Documentation
@@ -58,7 +58,7 @@ virtual void In(
 ```
 
 
-**Reimplements**: [tec::DeviceBase::In](/engine/Classes/structtec_1_1_device_base/#function-in)
+**Reimplements**: [tec::DeviceBase::In](Classes/structtec_1_1_device_base.md#function-in)
 
 
 ### function Out
@@ -70,7 +70,7 @@ virtual void Out(
 ```
 
 
-**Reimplements**: [tec::DeviceBase::Out](/engine/Classes/structtec_1_1_device_base/#function-out)
+**Reimplements**: [tec::DeviceBase::Out](Classes/structtec_1_1_device_base.md#function-out)
 
 
 ## Public Attributes Documentation
@@ -84,4 +84,4 @@ std::shared_ptr< TextureObject > texture;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

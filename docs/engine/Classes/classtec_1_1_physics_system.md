@@ -7,104 +7,104 @@ title: tec::PhysicsSystem
 
 
 
-Inherits from [tec::CommandQueue< PhysicsSystem >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< MouseBtnEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)
+Inherits from [tec::CommandQueue< PhysicsSystem >](Classes/classtec_1_1_command_queue.md), [tec::EventQueue< MouseBtnEvent >](Classes/classtec_1_1_event_queue.md), [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md), [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[PhysicsSystem](/engine/Classes/classtec_1_1_physics_system/#function-physicssystem)**() |
-| | **[~PhysicsSystem](/engine/Classes/classtec_1_1_physics_system/#function-~physicssystem)**() |
-| void | **[SetSubstepping](/engine/Classes/classtec_1_1_physics_system/#function-setsubstepping)**(int substep) |
-| std::set< [eid](/engine/Namespaces/namespacetec/#typedef-eid) > | **[Update](/engine/Classes/classtec_1_1_physics_system/#function-update)**(const double delta, const [GameState](/engine/Classes/structtec_1_1_game_state/) & state) |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[RayCastMousePick](/engine/Classes/classtec_1_1_physics_system/#function-raycastmousepick)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) source_entity, double mouse_x =0.0f, double mouse_y =0.0f, float screen_width =1.0f, float screen_height =1.0f) |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[RayCastIgnore](/engine/Classes/classtec_1_1_physics_system/#function-raycastignore)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) source_entity, [eid](/engine/Namespaces/namespacetec/#typedef-eid) ignore_entity) |
-| glm::vec3 | **[GetLastRayPos](/engine/Classes/classtec_1_1_physics_system/#function-getlastraypos)**() const |
-| double | **[GetLastRayDistance](/engine/Classes/classtec_1_1_physics_system/#function-getlastraydistance)**() const |
-| void | **[RaySetInvalid](/engine/Classes/classtec_1_1_physics_system/#function-raysetinvalid)**() |
-| void | **[DebugDraw](/engine/Classes/classtec_1_1_physics_system/#function-debugdraw)**() |
-| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**(std::shared_ptr< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
-| [Position](/engine/Classes/structtec_1_1_position/) | **[GetPosition](/engine/Classes/classtec_1_1_physics_system/#function-getposition)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| [Orientation](/engine/Classes/structtec_1_1_orientation/) | **[GetOrientation](/engine/Classes/classtec_1_1_physics_system/#function-getorientation)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
+| | **[PhysicsSystem](Classes/classtec_1_1_physics_system.md#function-physicssystem)**() |
+| | **[~PhysicsSystem](Classes/classtec_1_1_physics_system.md#function-~physicssystem)**() |
+| void | **[SetSubstepping](Classes/classtec_1_1_physics_system.md#function-setsubstepping)**(int substep) |
+| std::set< [eid](Namespaces/namespacetec.md#typedef-eid) > | **[Update](Classes/classtec_1_1_physics_system.md#function-update)**(const double delta, const [GameState](Classes/structtec_1_1_game_state.md) & state) |
+| [eid](Namespaces/namespacetec.md#typedef-eid) | **[RayCastMousePick](Classes/classtec_1_1_physics_system.md#function-raycastmousepick)**([eid](Namespaces/namespacetec.md#typedef-eid) source_entity, double mouse_x =0.0f, double mouse_y =0.0f, float screen_width =1.0f, float screen_height =1.0f) |
+| [eid](Namespaces/namespacetec.md#typedef-eid) | **[RayCastIgnore](Classes/classtec_1_1_physics_system.md#function-raycastignore)**([eid](Namespaces/namespacetec.md#typedef-eid) source_entity, [eid](Namespaces/namespacetec.md#typedef-eid) ignore_entity) |
+| glm::vec3 | **[GetLastRayPos](Classes/classtec_1_1_physics_system.md#function-getlastraypos)**() const |
+| double | **[GetLastRayDistance](Classes/classtec_1_1_physics_system.md#function-getlastraydistance)**() const |
+| void | **[RaySetInvalid](Classes/classtec_1_1_physics_system.md#function-raysetinvalid)**() |
+| void | **[DebugDraw](Classes/classtec_1_1_physics_system.md#function-debugdraw)**() |
+| virtual void | **[On](Classes/classtec_1_1_physics_system.md#function-on)**(std::shared_ptr< [MouseBtnEvent](Classes/structtec_1_1_mouse_btn_event.md) > data) |
+| virtual void | **[On](Classes/classtec_1_1_physics_system.md#function-on)**(std::shared_ptr< [EntityCreated](Classes/structtec_1_1_entity_created.md) > data) |
+| virtual void | **[On](Classes/classtec_1_1_physics_system.md#function-on)**(std::shared_ptr< [EntityDestroyed](Classes/structtec_1_1_entity_destroyed.md) > data) |
+| [Position](Classes/structtec_1_1_position.md) | **[GetPosition](Classes/classtec_1_1_physics_system.md#function-getposition)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| [Orientation](Classes/structtec_1_1_orientation.md) | **[GetOrientation](Classes/classtec_1_1_physics_system.md#function-getorientation)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
 
 ## Protected Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[SetGravity](/engine/Classes/classtec_1_1_physics_system/#function-setgravity)**(const unsigned int entity_id, const btVector3 & f)<br>Set a rigid body's gravity.  |
-| void | **[SetNormalGravity](/engine/Classes/classtec_1_1_physics_system/#function-setnormalgravity)**(const unsigned int entity_id)<br>Set a rigid body's gravity to the world's gravity.  |
+| void | **[SetGravity](Classes/classtec_1_1_physics_system.md#function-setgravity)**(const unsigned int entity_id, const btVector3 & f)<br>Set a rigid body's gravity.  |
+| void | **[SetNormalGravity](Classes/classtec_1_1_physics_system.md#function-setnormalgravity)**(const unsigned int entity_id)<br>Set a rigid body's gravity to the world's gravity.  |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::CommandQueue< PhysicsSystem >](/engine/Classes/classtec_1_1_command_queue/)**
+**Public Functions inherited from [tec::CommandQueue< PhysicsSystem >](Classes/classtec_1_1_command_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-commandqueue)**() |
-| | **[~CommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-~commandqueue)**() |
-| void | **[ProcessCommandQueue](/engine/Classes/classtec_1_1_command_queue/#function-processcommandqueue)**() |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**([Command](/engine/Classes/structtec_1_1_command/)< T > && command) |
-| void | **[QueueCommand](/engine/Classes/classtec_1_1_command_queue/#function-queuecommand)**(std::function< void(T *)> && command) |
+| | **[CommandQueue](Classes/classtec_1_1_command_queue.md#function-commandqueue)**() |
+| | **[~CommandQueue](Classes/classtec_1_1_command_queue.md#function-~commandqueue)**() |
+| void | **[ProcessCommandQueue](Classes/classtec_1_1_command_queue.md#function-processcommandqueue)**() |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**([Command](Classes/structtec_1_1_command.md)< T > && command) |
+| void | **[QueueCommand](Classes/classtec_1_1_command_queue.md#function-queuecommand)**(std::function< void(T *)> && command) |
 
-**Protected Attributes inherited from [tec::CommandQueue< PhysicsSystem >](/engine/Classes/classtec_1_1_command_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| std::atomic< std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * > | **[global_command_queue](/engine/Classes/classtec_1_1_command_queue/#variable-global_command_queue)**  |
-| std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * | **[local_queue](/engine/Classes/classtec_1_1_command_queue/#variable-local_queue)**  |
-
-**Public Functions inherited from [tec::EventQueue< MouseBtnEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+**Protected Attributes inherited from [tec::CommandQueue< PhysicsSystem >](Classes/classtec_1_1_command_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
+| std::atomic< std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * > | **[global_command_queue](Classes/classtec_1_1_command_queue.md#variable-global_command_queue)**  |
+| std::queue< [Command](Classes/structtec_1_1_command.md)< T > > * | **[local_queue](Classes/classtec_1_1_command_queue.md#variable-local_queue)**  |
 
-**Protected Attributes inherited from [tec::EventQueue< MouseBtnEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+**Public Functions inherited from [tec::EventQueue< MouseBtnEvent >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
 
-**Public Functions inherited from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
-
-**Protected Attributes inherited from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)**
+**Protected Attributes inherited from [tec::EventQueue< MouseBtnEvent >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
 
-**Public Functions inherited from [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)**
-
-|                | Name           |
-| -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
-
-**Protected Attributes inherited from [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)**
+**Public Functions inherited from [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
+
+**Protected Attributes inherited from [tec::EventQueue< EntityCreated >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
+
+**Public Functions inherited from [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
+
+**Protected Attributes inherited from [tec::EventQueue< EntityDestroyed >](Classes/classtec_1_1_event_queue.md)**
+
+|                | Name           |
+| -------------- | -------------- |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
 
 
 ## Public Functions Documentation
@@ -202,7 +202,7 @@ virtual void On(
 ```
 
 
-**Reimplements**: [tec::EventQueue::On](/engine/Classes/classtec_1_1_event_queue/#function-on)
+**Reimplements**: [tec::EventQueue::On](Classes/classtec_1_1_event_queue.md#function-on)
 
 
 ### function On
@@ -214,7 +214,7 @@ virtual void On(
 ```
 
 
-**Reimplements**: [tec::EventQueue::On](/engine/Classes/classtec_1_1_event_queue/#function-on)
+**Reimplements**: [tec::EventQueue::On](Classes/classtec_1_1_event_queue.md#function-on)
 
 
 ### function On
@@ -226,7 +226,7 @@ virtual void On(
 ```
 
 
-**Reimplements**: [tec::EventQueue::On](/engine/Classes/classtec_1_1_event_queue/#function-on)
+**Reimplements**: [tec::EventQueue::On](Classes/classtec_1_1_event_queue.md#function-on)
 
 
 ### function GetPosition
@@ -283,4 +283,4 @@ Set a rigid body's gravity to the world's gravity.
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

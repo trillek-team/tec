@@ -11,22 +11,22 @@ title: tec::Orientation
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Orientation](/engine/Classes/structtec_1_1_orientation/#function-orientation)**(glm::vec3 rot) |
-| | **[Orientation](/engine/Classes/structtec_1_1_orientation/#function-orientation)**(glm::quat q) |
-| | **[Orientation](/engine/Classes/structtec_1_1_orientation/#function-orientation)**() =default |
-| void | **[Rotate](/engine/Classes/structtec_1_1_orientation/#function-rotate)**(const glm::vec3 amount =glm::vec3(0.0f)) |
-| void | **[OrientedRotate](/engine/Classes/structtec_1_1_orientation/#function-orientedrotate)**(const glm::vec3 amount) |
-| void | **[Out](/engine/Classes/structtec_1_1_orientation/#function-out)**(proto::Component * target) |
-| void | **[Out](/engine/Classes/structtec_1_1_orientation/#function-out)**(proto::Orientation * comp) |
-| void | **[In](/engine/Classes/structtec_1_1_orientation/#function-in)**(const proto::Component & source) |
-| void | **[In](/engine/Classes/structtec_1_1_orientation/#function-in)**(const proto::Orientation & comp) |
+| | **[Orientation](Classes/structtec_1_1_orientation.md#function-orientation)**(glm::vec3 rot) |
+| | **[Orientation](Classes/structtec_1_1_orientation.md#function-orientation)**(glm::quat q) |
+| | **[Orientation](Classes/structtec_1_1_orientation.md#function-orientation)**() =default |
+| void | **[Rotate](Classes/structtec_1_1_orientation.md#function-rotate)**(const glm::vec3 amount =glm::vec3(0.0f)) |
+| void | **[OrientedRotate](Classes/structtec_1_1_orientation.md#function-orientedrotate)**(const glm::vec3 amount) |
+| void | **[Out](Classes/structtec_1_1_orientation.md#function-out)**(proto::Component * target) |
+| void | **[Out](Classes/structtec_1_1_orientation.md#function-out)**(proto::Orientation * comp) |
+| void | **[In](Classes/structtec_1_1_orientation.md#function-in)**(const proto::Component & source) |
+| void | **[In](Classes/structtec_1_1_orientation.md#function-in)**(const proto::Orientation & comp) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::quat | **[value](/engine/Classes/structtec_1_1_orientation/#variable-value)**  |
-| glm::vec3 | **[rotation](/engine/Classes/structtec_1_1_orientation/#variable-rotation)**  |
+| glm::quat | **[value](Classes/structtec_1_1_orientation.md#variable-value)**  |
+| glm::vec3 | **[rotation](Classes/structtec_1_1_orientation.md#variable-rotation)**  |
 
 ## Public Functions Documentation
 
@@ -127,4 +127,4 @@ glm::vec3 rotation {0.f, 0.f, 0.f};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

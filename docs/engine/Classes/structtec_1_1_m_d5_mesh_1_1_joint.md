@@ -11,18 +11,18 @@ title: tec::MD5Mesh::Joint
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[ComputeW](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/#function-computew)**()<br>Compute the joint's quaternion W component.  |
+| void | **[ComputeW](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md#function-computew)**()<br>Compute the joint's quaternion W component.  |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::string | **[name](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/#variable-name)**  |
-| int | **[parent](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/#variable-parent)**  |
-| glm::vec3 | **[position](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/#variable-position)**  |
-| glm::quat | **[orientation](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/#variable-orientation)**  |
-| glm::mat4 | **[bind_pose](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/#variable-bind_pose)**  |
-| glm::mat4 | **[bind_pose_inverse](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/#variable-bind_pose_inverse)**  |
+| std::string | **[name](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md#variable-name)**  |
+| int | **[parent](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md#variable-parent)**  |
+| glm::vec3 | **[position](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md#variable-position)**  |
+| glm::quat | **[orientation](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md#variable-orientation)**  |
+| glm::mat4 | **[bind_pose](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md#variable-bind_pose)**  |
+| glm::mat4 | **[bind_pose_inverse](Classes/structtec_1_1_m_d5_mesh_1_1_joint.md#variable-bind_pose_inverse)**  |
 
 ## Public Functions Documentation
 
@@ -82,4 +82,4 @@ glm::mat4 bind_pose_inverse {0.f};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

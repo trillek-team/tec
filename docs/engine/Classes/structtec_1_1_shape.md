@@ -11,17 +11,17 @@ title: tec::Shape
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[Out](/engine/Classes/structtec_1_1_shape/#function-out)**(proto::Component * target) |
-| void | **[In](/engine/Classes/structtec_1_1_shape/#function-in)**(const proto::Component & source) |
+| void | **[Out](Classes/structtec_1_1_shape.md#function-out)**(proto::Component * target) |
+| void | **[In](Classes/structtec_1_1_shape.md#function-in)**(const proto::Component & source) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[half_extents](/engine/Classes/structtec_1_1_shape/#variable-half_extents)**  |
-| float | **[radius](/engine/Classes/structtec_1_1_shape/#variable-radius)**  |
-| float | **[height](/engine/Classes/structtec_1_1_shape/#variable-height)**  |
-| proto::Shape::ShapeCase | **[shape_case](/engine/Classes/structtec_1_1_shape/#variable-shape_case)**  |
+| float | **[half_extents](Classes/structtec_1_1_shape.md#variable-half_extents)**  |
+| float | **[radius](Classes/structtec_1_1_shape.md#variable-radius)**  |
+| float | **[height](Classes/structtec_1_1_shape.md#variable-height)**  |
+| proto::Shape::ShapeCase | **[shape_case](Classes/structtec_1_1_shape.md#variable-shape_case)**  |
 
 ## Public Functions Documentation
 
@@ -75,4 +75,4 @@ proto::Shape::ShapeCase shape_case;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

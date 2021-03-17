@@ -11,16 +11,16 @@ title: tec::Material
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > | **[Create](/engine/Classes/classtec_1_1_material/#function-create)**(const std::string name)<br>Factory method that creates a [Material](/engine/Classes/classtec_1_1_material/) and stores it in the MaterialMap under name.  |
-| void | **[AddTexture](/engine/Classes/classtec_1_1_material/#function-addtexture)**(std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > tex)<br>Adds a [TextureObject]() to this material.  |
-| std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > | **[GetTexture](/engine/Classes/classtec_1_1_material/#function-gettexture)**(std::size_t index)<br>Gets a [TextureObject]() from this material.  |
-| void | **[RemoveTexture](/engine/Classes/classtec_1_1_material/#function-removetexture)**(std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > tex)<br>Removes a [TextureObject]() from this material.  |
-| void | **[SetPolygonMode](/engine/Classes/classtec_1_1_material/#function-setpolygonmode)**(const GLenum mode)<br>Sets the PolygonMode used when this material is in use.  |
-| const GLenum | **[GetPolygonMode](/engine/Classes/classtec_1_1_material/#function-getpolygonmode)**()<br>Gets the PolygonMode of this material.  |
-| void | **[SetDrawElementsMode](/engine/Classes/classtec_1_1_material/#function-setdrawelementsmode)**(const GLenum mode)<br>Sets the DrawElements type used when this material is in use.  |
-| const GLenum | **[GetDrawElementsMode](/engine/Classes/classtec_1_1_material/#function-getdrawelementsmode)**() const<br>Gets the DrawElements mode of this material.  |
-| void | **[Activate](/engine/Classes/classtec_1_1_material/#function-activate)**()<br>Activates all the textures used by this material.  |
-| void | **[Deactivate](/engine/Classes/classtec_1_1_material/#function-deactivate)**()<br>Deactivates all the textures used by this material.  |
+| std::shared_ptr< [Material](Classes/classtec_1_1_material.md) > | **[Create](Classes/classtec_1_1_material.md#function-create)**(const std::string name)<br>Factory method that creates a [Material](Classes/classtec_1_1_material.md) and stores it in the MaterialMap under name.  |
+| void | **[AddTexture](Classes/classtec_1_1_material.md#function-addtexture)**(std::shared_ptr< [TextureObject](Classes/classtec_1_1_texture_object.md) > tex)<br>Adds a [TextureObject]() to this material.  |
+| std::shared_ptr< [TextureObject](Classes/classtec_1_1_texture_object.md) > | **[GetTexture](Classes/classtec_1_1_material.md#function-gettexture)**(std::size_t index)<br>Gets a [TextureObject]() from this material.  |
+| void | **[RemoveTexture](Classes/classtec_1_1_material.md#function-removetexture)**(std::shared_ptr< [TextureObject](Classes/classtec_1_1_texture_object.md) > tex)<br>Removes a [TextureObject]() from this material.  |
+| void | **[SetPolygonMode](Classes/classtec_1_1_material.md#function-setpolygonmode)**(const GLenum mode)<br>Sets the PolygonMode used when this material is in use.  |
+| const GLenum | **[GetPolygonMode](Classes/classtec_1_1_material.md#function-getpolygonmode)**()<br>Gets the PolygonMode of this material.  |
+| void | **[SetDrawElementsMode](Classes/classtec_1_1_material.md#function-setdrawelementsmode)**(const GLenum mode)<br>Sets the DrawElements type used when this material is in use.  |
+| const GLenum | **[GetDrawElementsMode](Classes/classtec_1_1_material.md#function-getdrawelementsmode)**() const<br>Gets the DrawElements mode of this material.  |
+| void | **[Activate](Classes/classtec_1_1_material.md#function-activate)**()<br>Activates all the textures used by this material.  |
+| void | **[Deactivate](Classes/classtec_1_1_material.md#function-deactivate)**()<br>Deactivates all the textures used by this material.  |
 
 ## Public Functions Documentation
 
@@ -32,15 +32,15 @@ static std::shared_ptr< Material > Create(
 )
 ```
 
-Factory method that creates a [Material](/engine/Classes/classtec_1_1_material/) and stores it in the MaterialMap under name. 
+Factory method that creates a [Material](Classes/classtec_1_1_material.md) and stores it in the MaterialMap under name. 
 
 **Parameters**: 
 
-  * **const** std::string name The name to store the [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) under. 
+  * **const** std::string name The name to store the [PixelBuffer](Classes/classtec_1_1_pixel_buffer.md) under. 
   * **std::shared_ptr<Shader>** shader The shader this material uses. 
 
 
-**Return**: std::shared_ptr<Material> The created [Material](/engine/Classes/classtec_1_1_material/). 
+**Return**: std::shared_ptr<Material> The created [Material](Classes/classtec_1_1_material.md). 
 
 ### function AddTexture
 
@@ -177,4 +177,4 @@ Deactivates all the textures used by this material.
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

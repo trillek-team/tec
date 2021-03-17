@@ -11,9 +11,9 @@ title: tec::MD5Anim::Frame
 
 |                | Name           |
 | -------------- | -------------- |
-| int | **[index](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame/#variable-index)**  |
-| std::vector< float > | **[parameters](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame/#variable-parameters)**  |
-| [FrameSkeleton](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame_skeleton/) | **[skeleton](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame/#variable-skeleton)**  |
+| int | **[index](Classes/structtec_1_1_m_d5_anim_1_1_frame.md#variable-index)**  |
+| std::vector< float > | **[parameters](Classes/structtec_1_1_m_d5_anim_1_1_frame.md#variable-parameters)**  |
+| [FrameSkeleton](Classes/structtec_1_1_m_d5_anim_1_1_frame_skeleton.md) | **[skeleton](Classes/structtec_1_1_m_d5_anim_1_1_frame.md#variable-skeleton)**  |
 
 ## Public Attributes Documentation
 
@@ -40,4 +40,4 @@ FrameSkeleton skeleton;
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

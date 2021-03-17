@@ -7,57 +7,57 @@ title: tec::FPSController
 
 
 
-Inherits from [tec::Controller](/engine/Classes/structtec_1_1_controller/)
+Inherits from [tec::Controller](Classes/structtec_1_1_controller.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[FPSController](/engine/Classes/structtec_1_1_f_p_s_controller/#function-fpscontroller)**(const [eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~FPSController](/engine/Classes/structtec_1_1_f_p_s_controller/#function-~fpscontroller)**() =default |
-| void | **[Handle](/engine/Classes/structtec_1_1_f_p_s_controller/#function-handle)**(const [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/) & data, const [GameState](/engine/Classes/structtec_1_1_game_state/) & state) |
-| void | **[Handle](/engine/Classes/structtec_1_1_f_p_s_controller/#function-handle)**(const [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) & data, const [GameState](/engine/Classes/structtec_1_1_game_state/) & state) |
-| void | **[Handle](/engine/Classes/structtec_1_1_f_p_s_controller/#function-handle)**(const [MouseMoveEvent](/engine/Classes/structtec_1_1_mouse_move_event/) & data, const [GameState](/engine/Classes/structtec_1_1_game_state/) & state) |
-| virtual void | **[Update](/engine/Classes/structtec_1_1_f_p_s_controller/#function-update)**(double delta, [GameState](/engine/Classes/structtec_1_1_game_state/) & state, [EventList](/engine/Classes/structtec_1_1_event_list/) & commands) override |
-| virtual proto::ClientCommands | **[GetClientCommands](/engine/Classes/structtec_1_1_f_p_s_controller/#function-getclientcommands)**() override |
-| virtual void | **[ApplyClientCommands](/engine/Classes/structtec_1_1_f_p_s_controller/#function-applyclientcommands)**(proto::ClientCommands proto_client_commands) override |
+| | **[FPSController](Classes/structtec_1_1_f_p_s_controller.md#function-fpscontroller)**(const [eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~FPSController](Classes/structtec_1_1_f_p_s_controller.md#function-~fpscontroller)**() =default |
+| void | **[Handle](Classes/structtec_1_1_f_p_s_controller.md#function-handle)**(const [KeyboardEvent](Classes/structtec_1_1_keyboard_event.md) & data, const [GameState](Classes/structtec_1_1_game_state.md) & state) |
+| void | **[Handle](Classes/structtec_1_1_f_p_s_controller.md#function-handle)**(const [MouseBtnEvent](Classes/structtec_1_1_mouse_btn_event.md) & data, const [GameState](Classes/structtec_1_1_game_state.md) & state) |
+| void | **[Handle](Classes/structtec_1_1_f_p_s_controller.md#function-handle)**(const [MouseMoveEvent](Classes/structtec_1_1_mouse_move_event.md) & data, const [GameState](Classes/structtec_1_1_game_state.md) & state) |
+| virtual void | **[Update](Classes/structtec_1_1_f_p_s_controller.md#function-update)**(double delta, [GameState](Classes/structtec_1_1_game_state.md) & state, [EventList](Classes/structtec_1_1_event_list.md) & commands) override |
+| virtual proto::ClientCommands | **[GetClientCommands](Classes/structtec_1_1_f_p_s_controller.md#function-getclientcommands)**() override |
+| virtual void | **[ApplyClientCommands](Classes/structtec_1_1_f_p_s_controller.md#function-applyclientcommands)**(proto::ClientCommands proto_client_commands) override |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[forward](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-forward)**  |
-| bool | **[backward](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-backward)**  |
-| bool | **[right_strafe](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-right_strafe)**  |
-| bool | **[left_strafe](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-left_strafe)**  |
-| double | **[current_delta](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-current_delta)**  |
-| bool | **[mouse_look](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-mouse_look)**  |
-| std::unique_ptr< [Orientation](/engine/Classes/structtec_1_1_orientation/) > | **[orientation](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-orientation)**  |
-| bool | **[KEY_A_FIRST](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_a_first)**  |
-| bool | **[KEY_W_FIRST](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_w_first)**  |
-| bool | **[KEY_W_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_w_down)**  |
-| bool | **[KEY_A_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_a_down)**  |
-| bool | **[KEY_S_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_s_down)**  |
-| bool | **[KEY_D_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_d_down)**  |
+| bool | **[forward](Classes/structtec_1_1_f_p_s_controller.md#variable-forward)**  |
+| bool | **[backward](Classes/structtec_1_1_f_p_s_controller.md#variable-backward)**  |
+| bool | **[right_strafe](Classes/structtec_1_1_f_p_s_controller.md#variable-right_strafe)**  |
+| bool | **[left_strafe](Classes/structtec_1_1_f_p_s_controller.md#variable-left_strafe)**  |
+| double | **[current_delta](Classes/structtec_1_1_f_p_s_controller.md#variable-current_delta)**  |
+| bool | **[mouse_look](Classes/structtec_1_1_f_p_s_controller.md#variable-mouse_look)**  |
+| std::unique_ptr< [Orientation](Classes/structtec_1_1_orientation.md) > | **[orientation](Classes/structtec_1_1_f_p_s_controller.md#variable-orientation)**  |
+| bool | **[KEY_A_FIRST](Classes/structtec_1_1_f_p_s_controller.md#variable-key_a_first)**  |
+| bool | **[KEY_W_FIRST](Classes/structtec_1_1_f_p_s_controller.md#variable-key_w_first)**  |
+| bool | **[KEY_W_DOWN](Classes/structtec_1_1_f_p_s_controller.md#variable-key_w_down)**  |
+| bool | **[KEY_A_DOWN](Classes/structtec_1_1_f_p_s_controller.md#variable-key_a_down)**  |
+| bool | **[KEY_S_DOWN](Classes/structtec_1_1_f_p_s_controller.md#variable-key_s_down)**  |
+| bool | **[KEY_D_DOWN](Classes/structtec_1_1_f_p_s_controller.md#variable-key_d_down)**  |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::Controller](/engine/Classes/structtec_1_1_controller/)**
+**Public Functions inherited from [tec::Controller](Classes/structtec_1_1_controller.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Controller](/engine/Classes/structtec_1_1_controller/#function-controller)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~Controller](/engine/Classes/structtec_1_1_controller/#function-~controller)**() =default |
-| virtual void | **[SetFocus](/engine/Classes/structtec_1_1_controller/#function-setfocus)**(bool keyboard, bool mouse)<br>called to indicate focus has been restored to controller  |
-| virtual void | **[ClearFocus](/engine/Classes/structtec_1_1_controller/#function-clearfocus)**(bool keyboard, bool mouse)<br>called to indicate focus has been captured from controller  |
+| | **[Controller](Classes/structtec_1_1_controller.md#function-controller)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~Controller](Classes/structtec_1_1_controller.md#function-~controller)**() =default |
+| virtual void | **[SetFocus](Classes/structtec_1_1_controller.md#function-setfocus)**(bool keyboard, bool mouse)<br>called to indicate focus has been restored to controller  |
+| virtual void | **[ClearFocus](Classes/structtec_1_1_controller.md#function-clearfocus)**(bool keyboard, bool mouse)<br>called to indicate focus has been captured from controller  |
 
-**Public Attributes inherited from [tec::Controller](/engine/Classes/structtec_1_1_controller/)**
+**Public Attributes inherited from [tec::Controller](Classes/structtec_1_1_controller.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_controller/#variable-entity_id)**  |
-| bool | **[keyboard_focus](/engine/Classes/structtec_1_1_controller/#variable-keyboard_focus)**  |
-| bool | **[mouse_focus](/engine/Classes/structtec_1_1_controller/#variable-mouse_focus)**  |
+| [eid](Namespaces/namespacetec.md#typedef-eid) | **[entity_id](Classes/structtec_1_1_controller.md#variable-entity_id)**  |
+| bool | **[keyboard_focus](Classes/structtec_1_1_controller.md#variable-keyboard_focus)**  |
+| bool | **[mouse_focus](Classes/structtec_1_1_controller.md#variable-mouse_focus)**  |
 
 
 ## Public Functions Documentation
@@ -119,7 +119,7 @@ virtual void Update(
 ```
 
 
-**Reimplements**: [tec::Controller::Update](/engine/Classes/structtec_1_1_controller/#function-update)
+**Reimplements**: [tec::Controller::Update](Classes/structtec_1_1_controller.md#function-update)
 
 
 ### function GetClientCommands
@@ -129,7 +129,7 @@ virtual proto::ClientCommands GetClientCommands() override
 ```
 
 
-**Reimplements**: [tec::Controller::GetClientCommands](/engine/Classes/structtec_1_1_controller/#function-getclientcommands)
+**Reimplements**: [tec::Controller::GetClientCommands](Classes/structtec_1_1_controller.md#function-getclientcommands)
 
 
 ### function ApplyClientCommands
@@ -141,7 +141,7 @@ virtual void ApplyClientCommands(
 ```
 
 
-**Reimplements**: [tec::Controller::ApplyClientCommands](/engine/Classes/structtec_1_1_controller/#function-applyclientcommands)
+**Reimplements**: [tec::Controller::ApplyClientCommands](Classes/structtec_1_1_controller.md#function-applyclientcommands)
 
 
 ## Public Attributes Documentation
@@ -239,4 +239,4 @@ bool KEY_D_DOWN {false};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

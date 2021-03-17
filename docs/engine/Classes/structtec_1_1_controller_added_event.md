@@ -11,7 +11,7 @@ title: tec::ControllerAddedEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [Controller](/engine/Classes/structtec_1_1_controller/) > | **[controller](/engine/Classes/structtec_1_1_controller_added_event/#variable-controller)**  |
+| std::shared_ptr< [Controller](Classes/structtec_1_1_controller.md) > | **[controller](Classes/structtec_1_1_controller_added_event.md#variable-controller)**  |
 
 ## Public Attributes Documentation
 
@@ -24,4 +24,4 @@ std::shared_ptr< Controller > controller {nullptr};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

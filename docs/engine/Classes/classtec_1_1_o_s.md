@@ -7,60 +7,60 @@ title: tec::OS
 
 
 
-Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)
+Inherits from [tec::EventQueue< KeyboardEvent >](Classes/classtec_1_1_event_queue.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[InitializeWindow](/engine/Classes/classtec_1_1_o_s/#function-initializewindow)**(const int width, const int height, const std::string title, const int glMajor =3, const int glMinor =3, bool fullscreen =false)<br>Initialize the rendering window and makes the window's context the current one.  |
-| void | **[MakeCurrent](/engine/Classes/classtec_1_1_o_s/#function-makecurrent)**()<br>Make the context of the window current for the calling thread.  |
-| void | **[SetWindowAspectRatio](/engine/Classes/classtec_1_1_o_s/#function-setwindowaspectratio)**(const unsigned int numerator =16, const unsigned int denominator =9)<br>Sets the desired window aspect ratio numerator:denominator e.g. 16:9, 4:3.  |
-| void | **[ToggleFullScreen](/engine/Classes/classtec_1_1_o_s/#function-togglefullscreen)**()<br>Toggles between fullscreen and windowed mode based.  |
-| void | **[DetachContext](/engine/Classes/classtec_1_1_o_s/#function-detachcontext)**()<br>Detach the context of the window from the calling thread.  |
-| void | **[Quit](/engine/Classes/classtec_1_1_o_s/#function-quit)**()<br>Tells the [OS](/engine/Classes/classtec_1_1_o_s/) that the active window should close.  |
-| bool | **[Closing](/engine/Classes/classtec_1_1_o_s/#function-closing)**()<br>Checks if the window is closing.  |
-| void | **[SwapBuffers](/engine/Classes/classtec_1_1_o_s/#function-swapbuffers)**()<br>Swap the front and back buffers. Call after rendering.  |
-| void | **[OSMessageLoop](/engine/Classes/classtec_1_1_o_s/#function-osmessageloop)**()<br>Processes events in the [OS](/engine/Classes/classtec_1_1_o_s/) message event loop.  |
-| int | **[GetWindowWidth](/engine/Classes/classtec_1_1_o_s/#function-getwindowwidth)**() const<br>Gets the cached window width.  |
-| int | **[GetWindowHeight](/engine/Classes/classtec_1_1_o_s/#function-getwindowheight)**() const<br>Gets the cached window height.  |
-| double | **[GetDeltaTime](/engine/Classes/classtec_1_1_o_s/#function-getdeltatime)**()<br>Returns the time since the start of the program.  |
-| double | **[GetTime](/engine/Classes/classtec_1_1_o_s/#function-gettime)**()<br>Returns the time since initialization from glfw.  |
-| GLFWwindow * | **[GetWindow](/engine/Classes/classtec_1_1_o_s/#function-getwindow)**()<br>Returns the current active window.  |
-| void | **[EnableMouseLock](/engine/Classes/classtec_1_1_o_s/#function-enablemouselock)**() |
-| void | **[DisableMouseLock](/engine/Classes/classtec_1_1_o_s/#function-disablemouselock)**() |
-| void | **[LuaStateRegistration](/engine/Classes/classtec_1_1_o_s/#function-luastateregistration)**(sol::state & state) |
-| void | **[Terminate](/engine/Classes/classtec_1_1_o_s/#function-terminate)**()<br>Calls GLFWTerminate to close the window.  |
-| void | **[WindowResized](/engine/Classes/classtec_1_1_o_s/#function-windowresized)**(GLFWwindow * window, int width, int height)<br>Callback for when the window is resized.  |
-| void | **[KeyboardEventCallback](/engine/Classes/classtec_1_1_o_s/#function-keyboardeventcallback)**(GLFWwindow * window, int key, int scancode, int action, int mods)<br>Callback for keyboard events.  |
-| void | **[CharacterEventCallback](/engine/Classes/classtec_1_1_o_s/#function-charactereventcallback)**(GLFWwindow * window, unsigned int uchar)<br>Callback for Unicode character event.  |
-| void | **[MouseMoveEventCallback](/engine/Classes/classtec_1_1_o_s/#function-mousemoveeventcallback)**(GLFWwindow * window, double x, double y)<br>Callback for mouse move events.  |
-| void | **[MouseScrollEventCallback](/engine/Classes/classtec_1_1_o_s/#function-mousescrolleventcallback)**(GLFWwindow * window, double x, double y)<br>Callback for mouse scroll events.  |
-| void | **[MouseButtonEventCallback](/engine/Classes/classtec_1_1_o_s/#function-mousebuttoneventcallback)**(GLFWwindow * window, int button, int action, int mods)<br>Callback for mouse button events.  |
-| void | **[WindowFocusChangeCallback](/engine/Classes/classtec_1_1_o_s/#function-windowfocuschangecallback)**(GLFWwindow * window, int focused)<br>Callback for window focus change events.  |
-| void | **[FileDropCallback](/engine/Classes/classtec_1_1_o_s/#function-filedropcallback)**(GLFWwindow * window, int count, const char ** paths)<br>Callback for window focus change events.  |
-| void | **[SetMousePosition](/engine/Classes/classtec_1_1_o_s/#function-setmouseposition)**(const double x, const double y)<br>Sets the mouse cursor position relative to the upper-left corner of the window.  |
-| void | **[GetMousePosition](/engine/Classes/classtec_1_1_o_s/#function-getmouseposition)**(double * x, double * y)<br>Gets the mouse cursor position relative to the upper-left corner of the window.  |
-| const GLFWwindow * | **[GetFocusedWindow](/engine/Classes/classtec_1_1_o_s/#function-getfocusedwindow)**() |
+| bool | **[InitializeWindow](Classes/classtec_1_1_o_s.md#function-initializewindow)**(const int width, const int height, const std::string title, const int glMajor =3, const int glMinor =3, bool fullscreen =false)<br>Initialize the rendering window and makes the window's context the current one.  |
+| void | **[MakeCurrent](Classes/classtec_1_1_o_s.md#function-makecurrent)**()<br>Make the context of the window current for the calling thread.  |
+| void | **[SetWindowAspectRatio](Classes/classtec_1_1_o_s.md#function-setwindowaspectratio)**(const unsigned int numerator =16, const unsigned int denominator =9)<br>Sets the desired window aspect ratio numerator:denominator e.g. 16:9, 4:3.  |
+| void | **[ToggleFullScreen](Classes/classtec_1_1_o_s.md#function-togglefullscreen)**()<br>Toggles between fullscreen and windowed mode based.  |
+| void | **[DetachContext](Classes/classtec_1_1_o_s.md#function-detachcontext)**()<br>Detach the context of the window from the calling thread.  |
+| void | **[Quit](Classes/classtec_1_1_o_s.md#function-quit)**()<br>Tells the [OS](Classes/classtec_1_1_o_s.md) that the active window should close.  |
+| bool | **[Closing](Classes/classtec_1_1_o_s.md#function-closing)**()<br>Checks if the window is closing.  |
+| void | **[SwapBuffers](Classes/classtec_1_1_o_s.md#function-swapbuffers)**()<br>Swap the front and back buffers. Call after rendering.  |
+| void | **[OSMessageLoop](Classes/classtec_1_1_o_s.md#function-osmessageloop)**()<br>Processes events in the [OS](Classes/classtec_1_1_o_s.md) message event loop.  |
+| int | **[GetWindowWidth](Classes/classtec_1_1_o_s.md#function-getwindowwidth)**() const<br>Gets the cached window width.  |
+| int | **[GetWindowHeight](Classes/classtec_1_1_o_s.md#function-getwindowheight)**() const<br>Gets the cached window height.  |
+| double | **[GetDeltaTime](Classes/classtec_1_1_o_s.md#function-getdeltatime)**()<br>Returns the time since the start of the program.  |
+| double | **[GetTime](Classes/classtec_1_1_o_s.md#function-gettime)**()<br>Returns the time since initialization from glfw.  |
+| GLFWwindow * | **[GetWindow](Classes/classtec_1_1_o_s.md#function-getwindow)**()<br>Returns the current active window.  |
+| void | **[EnableMouseLock](Classes/classtec_1_1_o_s.md#function-enablemouselock)**() |
+| void | **[DisableMouseLock](Classes/classtec_1_1_o_s.md#function-disablemouselock)**() |
+| void | **[LuaStateRegistration](Classes/classtec_1_1_o_s.md#function-luastateregistration)**(sol::state & state) |
+| void | **[Terminate](Classes/classtec_1_1_o_s.md#function-terminate)**()<br>Calls GLFWTerminate to close the window.  |
+| void | **[WindowResized](Classes/classtec_1_1_o_s.md#function-windowresized)**(GLFWwindow * window, int width, int height)<br>Callback for when the window is resized.  |
+| void | **[KeyboardEventCallback](Classes/classtec_1_1_o_s.md#function-keyboardeventcallback)**(GLFWwindow * window, int key, int scancode, int action, int mods)<br>Callback for keyboard events.  |
+| void | **[CharacterEventCallback](Classes/classtec_1_1_o_s.md#function-charactereventcallback)**(GLFWwindow * window, unsigned int uchar)<br>Callback for Unicode character event.  |
+| void | **[MouseMoveEventCallback](Classes/classtec_1_1_o_s.md#function-mousemoveeventcallback)**(GLFWwindow * window, double x, double y)<br>Callback for mouse move events.  |
+| void | **[MouseScrollEventCallback](Classes/classtec_1_1_o_s.md#function-mousescrolleventcallback)**(GLFWwindow * window, double x, double y)<br>Callback for mouse scroll events.  |
+| void | **[MouseButtonEventCallback](Classes/classtec_1_1_o_s.md#function-mousebuttoneventcallback)**(GLFWwindow * window, int button, int action, int mods)<br>Callback for mouse button events.  |
+| void | **[WindowFocusChangeCallback](Classes/classtec_1_1_o_s.md#function-windowfocuschangecallback)**(GLFWwindow * window, int focused)<br>Callback for window focus change events.  |
+| void | **[FileDropCallback](Classes/classtec_1_1_o_s.md#function-filedropcallback)**(GLFWwindow * window, int count, const char ** paths)<br>Callback for window focus change events.  |
+| void | **[SetMousePosition](Classes/classtec_1_1_o_s.md#function-setmouseposition)**(const double x, const double y)<br>Sets the mouse cursor position relative to the upper-left corner of the window.  |
+| void | **[GetMousePosition](Classes/classtec_1_1_o_s.md#function-getmouseposition)**(double * x, double * y)<br>Gets the mouse cursor position relative to the upper-left corner of the window.  |
+| const GLFWwindow * | **[GetFocusedWindow](Classes/classtec_1_1_o_s.md#function-getfocusedwindow)**() |
 
 ## Additional inherited members
 
-**Public Functions inherited from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+**Public Functions inherited from [tec::EventQueue< KeyboardEvent >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**() |
-| | **[EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-eventqueue)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| virtual | **[~EventQueue](/engine/Classes/classtec_1_1_event_queue/#function-~eventqueue)**() |
-| void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_event_queue/#function-processeventqueue)**() |
-| void | **[QueueEvent](/engine/Classes/classtec_1_1_event_queue/#function-queueevent)**([Event](/engine/Classes/structtec_1_1_event/)< T > && e) |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**() |
+| | **[EventQueue](Classes/classtec_1_1_event_queue.md#function-eventqueue)**([eid](Namespaces/namespacetec.md#typedef-eid) entity_id) |
+| virtual | **[~EventQueue](Classes/classtec_1_1_event_queue.md#function-~eventqueue)**() |
+| void | **[ProcessEventQueue](Classes/classtec_1_1_event_queue.md#function-processeventqueue)**() |
+| void | **[QueueEvent](Classes/classtec_1_1_event_queue.md#function-queueevent)**([Event](Classes/structtec_1_1_event.md)< T > && e) |
 
-**Protected Attributes inherited from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)**
+**Protected Attributes inherited from [tec::EventQueue< KeyboardEvent >](Classes/classtec_1_1_event_queue.md)**
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * | **[read_event_queue](Classes/classtec_1_1_event_queue.md#variable-read_event_queue)**  |
+| std::atomic< [Queue](Classes/structtec_1_1_queue.md)< [Event](Classes/structtec_1_1_event.md)< T > > * > | **[write_event_queue](Classes/classtec_1_1_event_queue.md#variable-write_event_queue)**  |
 
 
 ## Public Functions Documentation
@@ -132,11 +132,11 @@ Detach the context of the window from the calling thread.
 void Quit()
 ```
 
-Tells the [OS](/engine/Classes/classtec_1_1_o_s/) that the active window should close. 
+Tells the [OS](Classes/classtec_1_1_o_s.md) that the active window should close. 
 
 **Return**: void 
 
-Since the main loop is based on that close status of that active window this effectively causes [Closing()](/engine/Classes/classtec_1_1_o_s/#function-closing) to return true during an upcoming message loop. 
+Since the main loop is based on that close status of that active window this effectively causes [Closing()](Classes/classtec_1_1_o_s.md#function-closing) to return true during an upcoming message loop. 
 
 
 ### function Closing
@@ -165,7 +165,7 @@ Swap the front and back buffers. Call after rendering.
 void OSMessageLoop()
 ```
 
-Processes events in the [OS](/engine/Classes/classtec_1_1_o_s/) message event loop. 
+Processes events in the [OS](Classes/classtec_1_1_o_s.md) message event loop. 
 
 ### function GetWindowWidth
 
@@ -317,7 +317,7 @@ Callback for Unicode character event.
 
 **Return**: void 
 
-This is different from just a normal keyboard event as it has been translated and modified by the [OS](/engine/Classes/classtec_1_1_o_s/) and is just like typing into a text editor. 
+This is different from just a normal keyboard event as it has been translated and modified by the [OS](Classes/classtec_1_1_o_s.md) and is just like typing into a text editor. 
 
 
 ### function MouseMoveEventCallback
@@ -468,4 +468,4 @@ static inline const GLFWwindow * GetFocusedWindow()
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

@@ -11,16 +11,16 @@ title: tec::Scale
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Scale](/engine/Classes/structtec_1_1_scale/#function-scale)**(glm::vec3 scale) |
-| | **[Scale](/engine/Classes/structtec_1_1_scale/#function-scale)**() =default |
-| void | **[Out](/engine/Classes/structtec_1_1_scale/#function-out)**(proto::Component * target) |
-| void | **[In](/engine/Classes/structtec_1_1_scale/#function-in)**(const proto::Component & source) |
+| | **[Scale](Classes/structtec_1_1_scale.md#function-scale)**(glm::vec3 scale) |
+| | **[Scale](Classes/structtec_1_1_scale.md#function-scale)**() =default |
+| void | **[Out](Classes/structtec_1_1_scale.md#function-out)**(proto::Component * target) |
+| void | **[In](Classes/structtec_1_1_scale.md#function-in)**(const proto::Component & source) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec3 | **[value](/engine/Classes/structtec_1_1_scale/#variable-value)**  |
+| glm::vec3 | **[value](Classes/structtec_1_1_scale.md#variable-value)**  |
 
 ## Public Functions Documentation
 
@@ -69,4 +69,4 @@ glm::vec3 value {0, 0, 0};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

@@ -11,24 +11,24 @@ title: tec::Renderable
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Renderable](/engine/Classes/structtec_1_1_renderable/#function-renderable)**(std::shared_ptr< [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/) > buf, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > shader =nullptr) |
-| | **[Renderable](/engine/Classes/structtec_1_1_renderable/#function-renderable)**() |
-| void | **[Out](/engine/Classes/structtec_1_1_renderable/#function-out)**(proto::Component * target) |
-| void | **[In](/engine/Classes/structtec_1_1_renderable/#function-in)**(const proto::Component & source) |
+| | **[Renderable](Classes/structtec_1_1_renderable.md#function-renderable)**(std::shared_ptr< [VertexBufferObject](Classes/classtec_1_1_vertex_buffer_object.md) > buf, std::shared_ptr< [Shader](Classes/classtec_1_1_shader.md) > shader =nullptr) |
+| | **[Renderable](Classes/structtec_1_1_renderable.md#function-renderable)**() |
+| void | **[Out](Classes/structtec_1_1_renderable.md#function-out)**(proto::Component * target) |
+| void | **[In](Classes/structtec_1_1_renderable.md#function-in)**(const proto::Component & source) |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::set< [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/) * > | **[vertex_groups](/engine/Classes/structtec_1_1_renderable/#variable-vertex_groups)**  |
-| std::shared_ptr< [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/) > | **[buffer](/engine/Classes/structtec_1_1_renderable/#variable-buffer)**  |
-| std::string | **[mesh_name](/engine/Classes/structtec_1_1_renderable/#variable-mesh_name)**  |
-| std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > | **[mesh](/engine/Classes/structtec_1_1_renderable/#variable-mesh)**  |
-| std::string | **[shader_name](/engine/Classes/structtec_1_1_renderable/#variable-shader_name)**  |
-| std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > | **[shader](/engine/Classes/structtec_1_1_renderable/#variable-shader)**  |
-| [Position](/engine/Classes/structtec_1_1_position/) | **[local_translation](/engine/Classes/structtec_1_1_renderable/#variable-local_translation)**  |
-| [Orientation](/engine/Classes/structtec_1_1_orientation/) | **[local_orientation](/engine/Classes/structtec_1_1_renderable/#variable-local_orientation)**  |
-| bool | **[hidden](/engine/Classes/structtec_1_1_renderable/#variable-hidden)**  |
+| std::set< [VertexGroup](Classes/structtec_1_1_vertex_group.md) * > | **[vertex_groups](Classes/structtec_1_1_renderable.md#variable-vertex_groups)**  |
+| std::shared_ptr< [VertexBufferObject](Classes/classtec_1_1_vertex_buffer_object.md) > | **[buffer](Classes/structtec_1_1_renderable.md#variable-buffer)**  |
+| std::string | **[mesh_name](Classes/structtec_1_1_renderable.md#variable-mesh_name)**  |
+| std::shared_ptr< [MeshFile](Classes/classtec_1_1_mesh_file.md) > | **[mesh](Classes/structtec_1_1_renderable.md#variable-mesh)**  |
+| std::string | **[shader_name](Classes/structtec_1_1_renderable.md#variable-shader_name)**  |
+| std::shared_ptr< [Shader](Classes/classtec_1_1_shader.md) > | **[shader](Classes/structtec_1_1_renderable.md#variable-shader)**  |
+| [Position](Classes/structtec_1_1_position.md) | **[local_translation](Classes/structtec_1_1_renderable.md#variable-local_translation)**  |
+| [Orientation](Classes/structtec_1_1_orientation.md) | **[local_orientation](Classes/structtec_1_1_renderable.md#variable-local_orientation)**  |
+| bool | **[hidden](Classes/structtec_1_1_renderable.md#variable-hidden)**  |
 
 ## Public Functions Documentation
 
@@ -134,4 +134,4 @@ bool hidden {false};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

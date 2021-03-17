@@ -7,21 +7,21 @@ title: tec::BaseLight
 
 
 
-Inherited by [tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_light/), [tec::PointLight](/engine/Classes/structtec_1_1_point_light/)
+Inherited by [tec::DirectionalLight](Classes/structtec_1_1_directional_light.md), [tec::PointLight](Classes/structtec_1_1_point_light.md)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[BaseLight](/engine/Classes/structtec_1_1_base_light/#function-baselight)**() =default |
+| | **[BaseLight](Classes/structtec_1_1_base_light.md#function-baselight)**() =default |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec3 | **[color](/engine/Classes/structtec_1_1_base_light/#variable-color)**  |
-| float | **[ambient_intensity](/engine/Classes/structtec_1_1_base_light/#variable-ambient_intensity)**  |
-| float | **[diffuse_intensity](/engine/Classes/structtec_1_1_base_light/#variable-diffuse_intensity)**  |
+| glm::vec3 | **[color](Classes/structtec_1_1_base_light.md#variable-color)**  |
+| float | **[ambient_intensity](Classes/structtec_1_1_base_light.md#variable-ambient_intensity)**  |
+| float | **[diffuse_intensity](Classes/structtec_1_1_base_light.md#variable-diffuse_intensity)**  |
 
 ## Public Functions Documentation
 
@@ -57,4 +57,4 @@ float diffuse_intensity {0.2f};
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:28 UTC
+Updated on 17 March 2021 at 23:08:11 UTC

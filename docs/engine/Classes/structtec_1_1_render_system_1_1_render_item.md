@@ -11,18 +11,18 @@ title: tec::RenderSystem::RenderItem
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::mat4 * | **[model_matrix](/engine/Classes/structtec_1_1_render_system_1_1_render_item/#variable-model_matrix)**  |
-| std::set< [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/) * > * | **[vertex_groups](/engine/Classes/structtec_1_1_render_system_1_1_render_item/#variable-vertex_groups)**  |
-| GLuint | **[vao](/engine/Classes/structtec_1_1_render_system_1_1_render_item/#variable-vao)**  |
-| GLuint | **[ibo](/engine/Classes/structtec_1_1_render_system_1_1_render_item/#variable-ibo)**  |
-| bool | **[animated](/engine/Classes/structtec_1_1_render_system_1_1_render_item/#variable-animated)**  |
-| [Animation](/engine/Classes/classtec_1_1_animation/) * | **[animation](/engine/Classes/structtec_1_1_render_system_1_1_render_item/#variable-animation)**  |
+| glm::mat4 * | **[model_matrix](Classes/structtec_1_1_render_system_1_1_render_item.md#variable-model_matrix)**  |
+| std::set< [VertexGroup](Classes/structtec_1_1_vertex_group.md) * > * | **[vertex_groups](Classes/structtec_1_1_render_system_1_1_render_item.md#variable-vertex_groups)**  |
+| GLuint | **[vao](Classes/structtec_1_1_render_system_1_1_render_item.md#variable-vao)**  |
+| GLuint | **[ibo](Classes/structtec_1_1_render_system_1_1_render_item.md#variable-ibo)**  |
+| bool | **[animated](Classes/structtec_1_1_render_system_1_1_render_item.md#variable-animated)**  |
+| [Animation](Classes/classtec_1_1_animation.md) * | **[animation](Classes/structtec_1_1_render_system_1_1_render_item.md#variable-animation)**  |
 
 ## Friends
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[operator<](/engine/Classes/structtec_1_1_render_system_1_1_render_item/#friend-operator<)**(const RenderItem & a, const RenderItem & b)  |
+| bool | **[operator<](Classes/structtec_1_1_render_system_1_1_render_item.md#friend-operator<)**(const RenderItem & a, const RenderItem & b)  |
 
 ## Public Attributes Documentation
 
@@ -83,4 +83,4 @@ friend bool operator<(
 
 -------------------------------
 
-Updated on 17 March 2021 at 22:09:29 UTC
+Updated on 17 March 2021 at 23:08:11 UTC
