@@ -1,7 +1,9 @@
 name: Clang Format
 
 on:
-  push: docs
+  push:
+    branches:
+      - docs
 
 jobs:
   format:
