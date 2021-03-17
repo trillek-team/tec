@@ -617,4 +617,3 @@ void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 	}
 }
 } // namespace tec
-

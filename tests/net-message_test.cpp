@@ -123,7 +123,9 @@ TEST(Message, initial) {
 	// sanity check
 	int leaked_objects = 0;
 	for (int i = 0; i < 1000; i++) {
-		ASSERT_NE(*make_test_unique<init_test_class>(&leaked_objects), *make_test_unique<init_test_class>(&leaked_objects));
+		ASSERT_NE(
+				*make_test_unique<init_test_class>(&leaked_objects),
+				*make_test_unique<init_test_class>(&leaked_objects));
 		ASSERT_EQ(leaked_objects, 0);
 	}
 	// do the actual test on Message
