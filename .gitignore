@@ -52,3 +52,6 @@ temp/
 build-idea/
 .idea/
 doxygen/
+# Created in the build pipeline don't commit them from the pipeline
+doxybook2/
+vcpkg/
