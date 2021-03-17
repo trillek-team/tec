@@ -32,7 +32,7 @@ jobs:
       uses: lukka/run-vcpkg@v4
       id: runvcpkg
       with:
-        vcpkgArguments: '--triplet x64-linx @doxybook2/vcpkg.txt'
+        vcpkgArguments: '--triplet x64-linx @${{ github.workspace }}/doxybook2/vcpkg.txt'
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         vcpkgGitCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
     - name: Configure doxybook2 cmake and build
@@ -40,13 +40,13 @@ jobs:
       id: runcmake_cmd
       with:
         cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
-        cmakeListsTxtPath: 'doxybook2/CMakeLists.txt'
+        cmakeListsTxtPath: '${{ github.workspace }}/doxybook2/CMakeLists.txt'
         cmakeAppendedArgs: '-G"Unix Makefiles"'
         useVcpkgToolchainFile: true
         buildWithCMake: true
-        buildDirectory: '${{ github.workspace }}/build'
+        buildDirectory: '${{ github.workspace }}/doxybook2/build'
     - name: Build doxybook2 docs
-      run: ./build/MinSizeRel/doxybook2 --input doxygen/xml --output docs/engine --config .\.doxybook\config.json
+      run: ${{ github.workspace }}/doxybook2/build/MinSizeRel/doxybook2 --input ${{ github.workspace }}/doxygen/xml --output ${{ github.workspace }}/docs/engine --config ${{ github.workspace }}/.doxybook/config.json
     - name: Display changed files
       run: git status
     #- name: Commit any clang format changes
