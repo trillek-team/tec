@@ -152,6 +152,7 @@ void ClientConnection::read_body() {
 				MessagePool::ptr_type last_read_msg = current_read_msg;
 				current_read_msg = MessagePool::get();
 				uint32_t current_msg_id = last_read_msg->GetMessageID();
+				uint32_t current_msg_seq = last_read_msg->GetSequence();
 				auto message_iter = read_messages.find(current_msg_id);
 
 				if (last_read_msg->GetMessageType() == MessageType::MULTI_PART) {
@@ -168,7 +169,6 @@ void ClientConnection::read_body() {
 					// a single use MessageIn object for single fragment messages
 					MessageIn short_message_in;
 					MessageIn* message_in; // pointer to the message we use
-					uint32_t current_msg_seq = last_read_msg->GetSequence();
 					if (message_iter == read_messages.cend()) {
 						message_in = &short_message_in;
 					}
@@ -247,7 +247,8 @@ void ClientConnection::process_message(MessageIn& msg) {
 	case MessageType::CLIENT_JOIN:
 	case MessageType::CLIENT_ID:
 	case MessageType::CLIENT_LEAVE:
-	case MessageType::GAME_STATE_UPDATE: break;
+	case MessageType::GAME_STATE_UPDATE:
+	default: break;
 	}
 }
 
@@ -308,7 +309,7 @@ MessageOut ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_st
 	}
 	MessageOut update_message(MessageType::GAME_STATE_UPDATE);
 	gsu_msg.SerializeToZeroCopyStream(&update_message);
-	return std::move(update_message);
+	return update_message;
 }
 } // namespace networking
 } // namespace tec

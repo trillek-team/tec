@@ -8,11 +8,9 @@
 namespace tec {
 namespace networking {
 
-// clang-format off
-// Warning: these are picky about whitespace, the s has to go right on the end to make a literal
 #define _STRINGIFY(a) #a
-#define CASE_LABEL(t) case t: return _STRINGIFY(t)s
-// clang-format on
+#define CASE_LABEL(t) case t: return _STRINGIFY(t)
+
 std::string GetNamedMessageType(MessageType mt) {
 	using namespace std::string_literals;
 	switch (mt) {
@@ -372,7 +370,8 @@ TEST(MessageIn, ToOut) {
 	EXPECT_TRUE(msgin.DecodeMessages());
 	MessageOut msgclone = msgin.ToOut();
 	EXPECT_EQ(msgout.ByteCount(), msgclone.ByteCount());
-	MessageListContentEqual(msgs, msgclone.GetMessages());
+	auto msgs_clone = msgclone.GetMessages();
+	MessageListContentEqual(msgs, msgs_clone);
 }
 
 } // namespace networking

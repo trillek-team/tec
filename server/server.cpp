@@ -233,6 +233,7 @@ void Server::AcceptHandler() {
 		}
 		client->StartRead();
 
+		_log->debug("Server::AcceptHandler complete");
 		AcceptHandler();
 	});
 }

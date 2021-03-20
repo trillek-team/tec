@@ -64,6 +64,7 @@ private:
 
 	ServerStats stats;
 	Simulation simulation;
+	OS& os;
 	ClientGameStateQueue game_state_queue;
 	ServerConnection server_connection;
 	RenderSystem rs;
@@ -71,7 +72,6 @@ private:
 	VComputerSystem& vcs;
 	SoundSystem ss;
 	LuaSystem lua_sys;
-	OS& os;
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	state_id_t command_id = 0;
