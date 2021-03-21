@@ -1,0 +1,8 @@
+{
+  "baseUrl": "/engine/",
+  "indexInFolders": false,
+  "linkSuffix": "/",
+  "mainPageInRoot": true,
+  "mainPageName": "index",
+  "foldersToGenerate": ["classes", "pages", "namespaces"]
+}

@@ -1,24 +1,72 @@
 name: Clang Format
 
-on: push
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   format:
-    if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.head_ref }}
+        persist-credentials: false
     - name: Clang format
       uses: DoozyX/clang-format-lint-action@v0.11
       with:
         source: '.'
         clangFormatVersion: 11
         inplace: True
+    - uses: mattnotmitt/doxygen-action@v1
+      name: Build docs
+      with:
+        working-directory: .
+        doxyfile-path: './Doxyfile'
+    - name: Checkout doxybook2
+      uses: actions/checkout@v2
+      with:
+        repository: matusnovak/doxybook2
+        path: doxybook2
+    - name: Set doxybook2 vcpkg packages from file
+      run: |
+        echo "DOXYBOOK_PACKAGES=$(cat ${{ github.workspace }}/doxybook2/vcpkg.txt)" >> $GITHUB_ENV
+    - name: Install Doxybook2 deps
+      uses: lukka/run-vcpkg@v4
+      with:
+        vcpkgArguments: '--triplet x64-linux $DOXYBOOK_PACKAGES'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        vcpkgGitCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+    - name: Remove inja from vcpkg so it can be updated to head version
+      run: |
+        ${{ github.workspace }}/vcpkg/vcpkg remove --recurse inja
+    - name: Install Doxybook2 inja head per bug issue
+      uses: lukka/run-vcpkg@v4
+      with:
+        vcpkgArguments: '--triplet x64-linux inja --head'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        vcpkgGitCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+    - name: Configure doxybook2 cmake and build
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeListsOrSettingsJson: 'CMakeListsTxtBasic'
+        cmakeListsTxtPath: '${{ github.workspace }}/doxybook2/CMakeLists.txt'
+        cmakeGenerator: UnixMakefiles
+        cmakeBuildType: MinSizeRel
+        useVcpkgToolchainFile: true
+        buildWithCMakeArgs: '--config MinSizeRel'
+        buildWithCMake: true
+        buildDirectory: '${{ github.workspace }}/doxybook2/build'
+    - name: Make engine docs directory if it does not exist
+      run: mkdir -p ${{ github.workspace }}/docs/engine
+    - name: Build doxybook2 docs
+      run: ${{ github.workspace }}/doxybook2/build/src/DoxybookCli/doxybook2 --input ${{ github.workspace }}/doxygen/xml --output ${{ github.workspace }}/docs/engine --config ${{ github.workspace }}/.doxybook/config.json
+    - name: Display changed files
+      run: git status
     - name: Commit any clang format changes
       uses: EndBug/add-and-commit@v4
       with:
-        message: 'Committing clang-format changes'
+        message: 'Committing clang-format and engine doc changes'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}

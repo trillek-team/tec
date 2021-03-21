@@ -112,10 +112,10 @@ void IMGUISystem::CreateGUI() {
 				}
 				ImGui::EndMenu();
 			}
-			if(ImGui::BeginMenu(("Debug"))) {
+			if (ImGui::BeginMenu(("Debug"))) {
 				bool visible = this->IsWindowVisible("debug_info");
-				if(ImGui::MenuItem("Debug info")) {
-					if(visible)
+				if (ImGui::MenuItem("Debug info")) {
+					if (visible)
 						this->HideWindow("debug_info");
 					else
 						this->ShowWindow("debug_info");
