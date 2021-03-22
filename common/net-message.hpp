@@ -214,7 +214,7 @@ public:
 		std::string body;
 		body.reserve(GetSize());
 		ReadString(body);
-		return std::move(body);
+		return body;
 	}
 
 	void SetMessageType(MessageType value) { this->message_type = value; }
