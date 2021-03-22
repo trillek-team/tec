@@ -101,14 +101,14 @@ struct ChatCommandEvent {
 	void Out(proto::ChatCommand& chat_command) {
 		chat_command.set_command(this->command);
 		auto arguments = chat_command.mutable_arguments();
-		for (const std::string argument : this->args) {
+		for (const std::string& argument : this->args) {
 			arguments->Add(std::string(argument));
 		}
 	}
 	proto::ChatCommand Out() {
 		proto::ChatCommand chat_command;
 		this->Out(chat_command);
-		return std::move(chat_command);
+		return chat_command;
 	}
 };
 

@@ -211,7 +211,7 @@ void Server::On(std::shared_ptr<EntityCreated> data) {
 }
 
 void Server::On(std::shared_ptr<EntityDestroyed> data) {
-	this->entities.erase(data->entity_id); 
+	this->entities.erase(data->entity_id);
 	MessageOut entity_destroy_msg(MessageType::ENTITY_DESTROY);
 	entity_destroy_msg.FromString(std::to_string(data->entity_id));
 	Deliver(entity_destroy_msg, false);
@@ -237,6 +237,7 @@ void Server::AcceptHandler() {
 			client->StartRead();
 		}
 
+		_log->debug("Server::AcceptHandler complete");
 		AcceptHandler(); // Continue accepting
 	});
 }

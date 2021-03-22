@@ -98,7 +98,9 @@ private:
 	static std::shared_ptr<spdlog::logger> _log;
 
 	// ASIO variables
-	asio::io_context io_context;
+	// we are only ever going to have one io_context
+	static asio::io_context io_context;
+	static asio::any_io_executor io_work;
 	asio::ip::tcp::socket socket;
 
 	// Async dispatch and sync loop variables
@@ -108,7 +110,7 @@ private:
 	std::atomic<bool> run_dispatch;
 	std::atomic<bool> run_sync;
 	std::deque<MessagePool::ptr_type> write_msg_queue;
-	std::mutex write_msg_mutex;
+	static std::mutex write_msg_mutex;
 
 	// Ping variables
 	std::chrono::high_resolution_clock::time_point sync_start, recv_time;

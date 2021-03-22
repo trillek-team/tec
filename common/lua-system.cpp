@@ -3,17 +3,86 @@
 #include "entity.hpp"
 #include "events.hpp"
 #include "multiton.hpp"
+#include "proto-load.hpp"
 #include "resources/script-file.hpp"
 
 namespace tec {
 using LuaScriptMap = Multiton<eid, LuaScript*>;
 
+static int LuaSystemPanicHandler(sol::optional<std::string> maybe_msg) {
+	if (maybe_msg) {
+		spdlog::get("console_log")->warn("A Lua script panic occured {}", maybe_msg.value());
+		throw std::runtime_error(maybe_msg.value());
+	}
+	throw std::runtime_error(std::string("An unexpected Lua script panic occurred"));
+}
+
 LuaSystem::LuaSystem() {
-	this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::string);
-	this->lua["print"] = [](sol::variadic_args va) {
+	this->lua.open_libraries( // load the essentials
+			sol::lib::base,
+			sol::lib::bit32,
+			sol::lib::math,
+			sol::lib::package,
+			sol::lib::string,
+			sol::lib::table);
+	// log exceptions that occur in the middle of scripts (assuming they aren't script errors)
+	this->lua.set_exception_handler(
+			[](lua_State* L, sol::optional<const std::exception&> maybe_exception, sol::string_view description) {
+				std::string extra;
+				if (maybe_exception.has_value()) {
+					const std::type_info& exception_type = typeid(maybe_exception.value());
+					if (exception_type == typeid(sol::error)) {
+						return sol::stack::push(L, description);
+					}
+					extra = exception_type.name();
+				}
+				spdlog::get("console_log")->warn("Exception in script:{} {}", extra, description);
+				return sol::stack::push(L, description);
+			});
+
+	// probably not going to be called, but might be helpful
+	this->lua.set_panic(sol::c_call<decltype(&LuaSystemPanicHandler), &LuaSystemPanicHandler>);
+
+	// a "simple" loader for require() to find scripts in the assets path
+	this->lua.add_package_loader(
+			[this](sol::string_view package_name) -> sol::protected_function {
+				spdlog::get("console_log")->debug("request to load Lua package \"{}\"", package_name);
+				static FilePath scripts_base = FilePath::GetAssetsBasePath() / "scripts";
+				std::string package_path(package_name.data(), package_name.size());
+				if (package_path.find_first_of('.') == std::string::npos) {
+					package_path.append(".lua");
+				}
+				// for now, we are going to look for a single lua file with by the same name as the package
+				FilePath package_script_path = scripts_base / package_path;
+				std::string source;
+				if (!package_script_path.FileExists()) {
+					return sol::nil;
+				}
+				try {
+					source = LoadAsString(package_script_path);
+				}
+				catch (std::exception&) {
+					return sol::nil;
+				}
+				sol::load_result r = this->lua.load(source, package_script_path.toString());
+				if (!r.valid()) {
+					return sol::nil;
+				}
+				sol::protected_function f = r;
+				return f;
+			},
+			false);
+
+	this->lua["print"] = [this](sol::variadic_args print_args) {
 		std::string message;
-		for (auto v : va) {
-			std::string str = v;
+		for (auto value : print_args) {
+			std::string str;
+			if (value.is<std::string>()) {
+				str = value.get<std::string>();
+			}
+			else { // explicitly convert arguments to strings if they are not
+				str = this->lua["tostring"](value);
+			}
 			if (!message.empty()) {
 				message.push_back(' ');
 			}

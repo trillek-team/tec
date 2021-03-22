@@ -12,7 +12,7 @@
 
 namespace tec {
 
-double UPDATE_RATE = 1.0 / 10.0; // 10 per second
+double UPDATE_RATE = 1.0 / 8.0; // 10 per second
 double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
 GameState Simulation::Simulate(const double delta_time, GameState& interpolated_state) {
 	ProcessCommandQueue();

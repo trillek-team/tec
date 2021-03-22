@@ -13,6 +13,10 @@ const std::string_view LOCAL_HOST = "127.0.0.1";
 std::shared_ptr<spdlog::logger> ServerConnection::_log;
 std::mutex ServerConnection::recent_ping_mutex;
 
+asio::io_context ServerConnection::io_context;
+asio::any_io_executor ServerConnection::io_work;
+std::mutex ServerConnection::write_msg_mutex;
+
 ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s) {
 	_log = spdlog::get("console_log");
 	this->current_read_msg = MessagePool::get();
@@ -34,7 +38,7 @@ ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s
 		data->entity_id = entity_id;
 		EventSystem<EntityDestroyed>::Get()->Emit(data);
 	});
-	RegisterMessageHandler(MessageType::ENTITY_CREATE, [this](MessageIn& message) {
+	RegisterMessageHandler(MessageType::ENTITY_CREATE, [](MessageIn& message) {
 		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 		data->entity.ParseFromZeroCopyStream(&message);
 		data->entity_id = data->entity.id();
@@ -57,33 +61,42 @@ bool ServerConnection::Connect(std::string_view ip) {
 	Disconnect();
 	tcp::resolver resolver(this->io_context);
 	tcp::resolver::query query(std::string(ip).data(), std::string(SERVER_PORT).data());
-	asio::error_code error = asio::error::host_not_found;
-	tcp::resolver::results_type endpoints = resolver.resolve(query);
+	tcp::resolver::results_type query_results;
 	try {
-		for (auto& point : endpoints) {
-			this->socket.close();
-			this->socket.connect(point, error);
-			if (!error) {
-				break;
-			}
-		}
-		if (error) {
-			this->socket.close();
-			throw asio::system_error(error);
-		}
+		query_results = resolver.resolve(query);
 	}
 	catch (std::exception& e) {
-		_log->error("Connect: {}", e.what());
+		_log->error("Resolver failed: {}", e.what());
 		return false;
 	}
-
-	asio::ip::tcp::no_delay option(true);
-	this->socket.set_option(option);
-
-	if (this->onConnect) {
-		this->onConnect();
+	tcp::endpoint server_endpoint;
+	for (auto& query_result : query_results) {
+		auto query_point = query_result.endpoint(); // convert it to an endpoint
+		auto query_address = query_point.address();
+		if (query_address.is_v4()) { // only accept v4 for now, TODO: make sure IPv6 works too
+			server_endpoint = query_point;
+		}
+		_log->info("Resolved [{} {}]", query_address.to_string(), query_point.port());
 	}
-	read_header();
+	if (server_endpoint.address().is_unspecified()) {
+		_log->error("No valid endpoints or unsupported protocol");
+		return false;
+	}
+	this->socket.close();
+	this->socket.async_connect(server_endpoint, [this](const asio::error_code& error) {
+		if (error) {
+			this->socket.close();
+			_log->error("Connection error: {}", error.message());
+			return;
+		}
+		asio::ip::tcp::no_delay option(true);
+		this->socket.set_option(option);
+
+		if (this->onConnect) {
+			this->onConnect();
+		}
+		read_header();
+	});
 
 	return true;
 }
@@ -95,6 +108,8 @@ void ServerConnection::Disconnect() {
 }
 
 void ServerConnection::Stop() {
+	io_work = asio::any_io_executor();
+	this->socket.close();
 	this->run_dispatch = false;
 	this->run_sync = false;
 }
@@ -249,9 +264,13 @@ void ServerConnection::do_write() {
 
 void ServerConnection::StartDispatch() {
 	this->run_dispatch = true;
+	// tell the context it has stuff to do, fixes an issue on OSX
+	io_work = asio::require(io_context.get_executor(), asio::execution::outstanding_work.tracked);
+	_log->info("StartDispatch() is starting");
 	while (this->run_dispatch) {
 		try {
-			this->io_context.run();
+			// apparently run() causes trouble here for some reason
+			this->io_context.poll();
 		}
 		catch (std::exception e) {
 			_log->error("ServerConnection asio exception: {}", e.what());
