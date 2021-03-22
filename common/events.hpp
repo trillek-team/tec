@@ -98,7 +98,7 @@ struct ChatCommandEvent {
 			this->args.push_back(argument);
 		}
 	}
-	void Out(proto::ChatCommand chat_command) {
+	void Out(proto::ChatCommand& chat_command) {
 		chat_command.set_command(this->command);
 		auto arguments = chat_command.mutable_arguments();
 		for (const std::string argument : this->args) {
@@ -107,12 +107,29 @@ struct ChatCommandEvent {
 	}
 	proto::ChatCommand Out() {
 		proto::ChatCommand chat_command;
-		chat_command.set_command(this->command);
-		auto arguments = chat_command.mutable_arguments();
-		for (const std::string argument : this->args) {
-			arguments->Add(std::string(argument));
-		}
+		this->Out(chat_command);
 		return std::move(chat_command);
+	}
+};
+
+struct UserLoginEvent {
+	std::string username;
+	std::string password;
+	eid entity_id;
+	UserLoginEvent() = default;
+	UserLoginEvent(proto::UserLogin user_login) { this->In(user_login); }
+	void In(proto::UserLogin user_login) {
+		this->username = user_login.username();
+		this->password = user_login.password();
+	}
+	void Out(proto::UserLogin& user_login) {
+		user_login.set_username(this->username);
+		user_login.set_password(this->password);
+	}
+	proto::UserLogin Out() {
+		proto::UserLogin user_login;
+		this->Out(user_login);
+		return std::move(user_login);
 	}
 };
 } // namespace tec

@@ -29,3 +29,8 @@ message ChatCommand {
 	required string command = 1;
 	repeated string arguments = 2;
 }
+
+message UserLogin {
+	required string username = 1;
+	required string password = 2;
+}

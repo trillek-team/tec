@@ -32,6 +32,7 @@ set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/simulation.cpp
 	${trillek-common_SOURCE_DIR}/string.cpp
 	${trillek-common_SOURCE_DIR}/tec-types.cpp
+	${trillek-common_SOURCE_DIR}/user.cpp
 	${trillek-common_SOURCE_DIR}/vcomputer-system.cpp
 	${trillek-common_SOURCE_DIR}/components/collision-body.cpp
 	${trillek-common_SOURCE_DIR}/components/lua-script.cpp

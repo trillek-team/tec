@@ -21,7 +21,6 @@ namespace tec {
 namespace networking {
 
 extern unsigned short PORT;
-static eid BASE_ENTITY_ID = 10000;
 
 class ClientConnection;
 
@@ -38,6 +37,13 @@ public:
 	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg);
 	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg);
 
+
+	// Calls when a client connects. This provides a chance to reject the client before joining the world.
+	bool OnConnect();
+
+	// Calls when a client joins. Used to being sending the world and inform other clients.
+	void OnJoin(std::shared_ptr<ClientConnection> client);
+	
 	// Calls when a client leaves, usually when the connection is no longer valid.
 	void Leave(std::shared_ptr<ClientConnection> client);
 
@@ -50,6 +56,8 @@ public:
 
 	// For calling ProcessEvents() in main.cpp
 	LuaSystem* GetLuaSystem() { return &this->lua_sys; }
+
+	void ProcessEvents();
 
 	using EventQueue<EntityCreated>::On;
 	using EventQueue<EntityDestroyed>::On;
@@ -77,7 +85,6 @@ private:
 	std::map<eid, proto::Entity> entities;
 
 	std::set<std::shared_ptr<ClientConnection>> clients; // All connected clients.
-	std::uint64_t base_id = BASE_ENTITY_ID; // Starting client_id
 
 	// Recent message list all clients get on connecting,
 	enum { max_recent_msgs = 100 };

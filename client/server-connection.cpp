@@ -40,6 +40,17 @@ ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s
 		data->entity_id = data->entity.id();
 		EventSystem<EntityCreated>::Get()->Emit(data);
 	});
+	RegisterMessageHandler(MessageType::ENTITY_DESTROY, [this](MessageIn& message) {
+		std::string entity_id_message = message.ToString();
+		std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
+		data->entity_id = std::atoi(entity_id_message.c_str());
+		EventSystem<EntityDestroyed>::Get()->Emit(data);
+	});
+	RegisterMessageHandler(MessageType::WORLD_SENT, [this](MessageIn&) {
+		MessageOut ready_to_recv_msg(MessageType::CLIENT_READY_TO_RECEIVE);
+		ready_to_recv_msg.FromString("ok");
+		this->Send(ready_to_recv_msg);
+	});
 }
 
 bool ServerConnection::Connect(std::string_view ip) {

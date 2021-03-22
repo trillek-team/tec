@@ -20,7 +20,7 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 	}
 	// this should be the rate at which we receive updates from the server
 	// used to estimate how far we are before the next update gets received
-	const double INTERPOLATION_RATE = UPDATE_RATE;
+	const double INTERPOLATION_RATE = UPDATE_RATE / 2;
 	interpolation_accumulator += delta_time;
 	const GameState& to_state = this->server_states.front();
 	stats.last_state_time = to_state.timestamp;

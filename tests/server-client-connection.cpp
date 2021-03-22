@@ -14,7 +14,13 @@
 #include <spdlog/sinks/stdout_sinks.h>
 #include <spdlog/spdlog.h>
 
+const tec::eid BASE_ENTITY_ID = 10000;
+
 namespace tec {
+eid GetNextEntityId() {
+	static eid entity_id = BASE_ENTITY_ID;
+	return entity_id++;
+}
 namespace networking {
 
 class ClientCommandReceptor : public EventQueue<ClientCommandsEvent> {
@@ -101,7 +107,7 @@ TEST(ServerClientCommunications, TCPConnection) {
 	start_thread.join();
 	asio_thread.join();
 
-	EXPECT_EQ(client_id.get(), 10001);
+	EXPECT_EQ(client_id.get(), BASE_ENTITY_ID);
 	std::shared_ptr<ClientCommandsEvent> result_event = client_reply.last_event.get();
 	ASSERT_TRUE(result_event);
 	EXPECT_EQ(last_confirmed_state, 42);

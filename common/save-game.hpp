@@ -2,39 +2,47 @@
 
 #include <list>
 
+#include <sol/sol.hpp>
+
 #include <save_game.pb.h>
 
 #include "filesystem.hpp"
-
 #include "tec-types.hpp"
+#include "user.hpp"
 
 namespace tec {
-// The follow is used to align the type used used for UserList operations
-// with the type defined in the proto file definition. E.g if id is if type
-// string in the .proto file, UserList::AddUser expects a string id parameter.
-using uid = decltype(proto::User().id());
 
 class UserList {
 public:
 	template <typename T> void SetUsers(T begin, T end);
-	void AddUser(proto::User);
-	const std::list<proto::User>* GetUsers();
-	proto::User* GetUser(uid);
+	void AddUser(User);
+	User* CreateUser(uid, std::string);
+	User* GetUser(uid);
+	User* FindUser(std::string);
 	bool RemoveUser(uid);
-	bool UserExists(uid);
+	bool HasUser(uid);
+
+	const std::list<User>* GetUsers();
+
+	static void RegisterLuaType(sol::state&);
 
 private:
-	std::list<proto::User> users;
-	std::list<proto::User>::iterator GetUserItr(uid);
+	std::list<User> users;
+	std::list<User>::iterator GetUserItr(uid);
 };
 
 class SaveGame {
 public:
 	bool Load(const FilePath);
+	bool Load(std::string);
+	bool Reload();
+	bool Reload(const FilePath);
 	bool Save();
 	bool Save(const FilePath);
 
 	UserList* GetUserList();
+
+	static void RegisterLuaType(sol::state&);
 
 private:
 	void LoadUsers();

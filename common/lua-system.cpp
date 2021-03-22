@@ -9,7 +9,7 @@ namespace tec {
 using LuaScriptMap = Multiton<eid, LuaScript*>;
 
 LuaSystem::LuaSystem() {
-	this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table);
+	this->lua.open_libraries(sol::lib::base, sol::lib::package, sol::lib::table, sol::lib::string);
 	this->lua["print"] = [](sol::variadic_args va) {
 		std::string message;
 		for (auto v : va) {

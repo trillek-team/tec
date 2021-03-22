@@ -64,12 +64,6 @@ Server::Server(tcp::endpoint& endpoint) : acceptor(io_context, endpoint), peer_s
 			"protocol",
 			sol::readonly(&client_connection_info::protocol));
 
-	// Load test script
-	FilePath fp = FilePath::GetAssetPath("scripts/server-test.lua");
-	if (fp.FileExists()) {
-		this->lua_sys.LoadFile(fp);
-	}
-
 	AcceptHandler();
 
 	tcp::endpoint my_endpoint = acceptor.local_endpoint();
@@ -103,6 +97,69 @@ void Server::Deliver(MessageOut&& msg, bool save_to_recent) { Deliver(msg, save_
 void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg) { client->QueueWrite(msg); }
 void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg) { client->QueueWrite(std::move(msg)); }
 
+bool Server::OnConnect() {
+	// setup a lua object for this event
+	client_connection_info info_event;
+	info_event.from_endpoint(peer_endpoint);
+	info_event.cancel = false;
+	info_event.reason = "Server policy rejected the connection"; // default reason
+
+	// call lua scripts that want to know about connections
+	this->lua_sys.CallFunctions("onClientConnected", &info_event);
+
+	// a lua method doesn't want this client, tell them to go away
+	if (info_event.cancel) {
+		// let the server log know
+		_log->warn(
+				"Connection from [{}]:{} rejected by script: {}",
+				info_event.address,
+				info_event.port,
+				info_event.reason);
+
+		std::string reject_reason = info_event.reason;
+		reject_reason.push_back('\n');
+
+		auto reject_msg = MessagePool::get(); // default type is CHAT_MESSAGE
+		reject_msg->SetBodyLength(reject_reason.size());
+		memcpy(reject_msg->GetBodyPTR(), reject_reason.data(), reject_msg->GetBodyLength());
+		reject_msg->encode_header();
+
+		asio::write(this->peer_socket, reject_msg->buffer());
+		// hopefully the client side survives long enough to get our message
+		this->peer_socket.wait(asio::ip::tcp::socket::wait_write);
+		this->peer_socket.close();
+		return false;
+	}
+
+	return true;
+}
+
+void Server::OnJoin(std::shared_ptr<ClientConnection> client) {
+	this->lua_sys.CallFunctions("onClientJoin", client);
+	client->DoJoin();
+
+	// write the standard greeting. Send this first so they can see a message while loading
+	client->QueueWrite(greeting_msg);
+
+	// Begin sending world
+	for (auto [_entity_id, entity] : entities) {
+		MessageOut entity_message(MessageType::ENTITY_CREATE);
+		entity.SerializeToZeroCopyStream(&entity_message);
+		client->QueueWrite(entity_message);
+	}
+	// Last message to indicate the world has been sent
+	MessageOut world_sent_msg(MessageType::WORLD_SENT);
+	world_sent_msg.FromString("ok");
+	client->QueueWrite(world_sent_msg);
+	// Send recent chat messages
+	{
+		std::lock_guard<std::mutex> lg(recent_msgs_mutex);
+		for (auto& msg : this->recent_msgs) {
+			client->QueueWrite(*msg);
+		}
+	}
+}
+
 void Server::Leave(std::shared_ptr<ClientConnection> client) {
 	{
 		std::lock_guard lg(this->client_list_mutex);
@@ -114,15 +171,16 @@ void Server::Leave(std::shared_ptr<ClientConnection> client) {
 		this->clients.erase(which_client);
 	}
 
+	eid leaving_client_id = client->GetID();
+	this->lua_sys.CallFunctions("onClientLeave", leaving_client_id);
+	client->DoLeave(); // Send out entity destroyed events and client leave messages.
+
 	// setup a lua object for this event
 	client_connection_info info_event;
 	info_event.from_endpoint(client->GetEndpoint());
 
 	// call lua scripts that want to know about connection going away
 	this->lua_sys.CallFunctions("onClientDisconnected", &info_event);
-
-	eid leaving_client_id = client->GetID();
-	client->DoLeave(); // Send out entity destroyed events and client leave messages.
 
 	// Notify other clients that a client left.
 	for (auto _client : this->clients) {
@@ -140,100 +198,46 @@ void Server::Stop() {
 	this->io_context.stop();
 }
 
-void Server::On(std::shared_ptr<EntityCreated> data) { this->entities[data->entity_id] = data->entity; }
+void Server::ProcessEvents() {
+	EventQueue<EntityCreated>::ProcessEventQueue();
+	EventQueue<EntityDestroyed>::ProcessEventQueue();
+}
 
-void Server::On(std::shared_ptr<EntityDestroyed> data) { this->entities.erase(data->entity_id); }
+void Server::On(std::shared_ptr<EntityCreated> data) {
+	this->entities[data->entity_id] = data->entity;
+	MessageOut entity_create_msg(MessageType::ENTITY_CREATE);
+	data->entity.SerializeToZeroCopyStream(&entity_create_msg);
+	Deliver(entity_create_msg, false);
+}
+
+void Server::On(std::shared_ptr<EntityDestroyed> data) {
+	this->entities.erase(data->entity_id); 
+	MessageOut entity_destroy_msg(MessageType::ENTITY_DESTROY);
+	entity_destroy_msg.FromString(std::to_string(data->entity_id));
+	Deliver(entity_destroy_msg, false);
+}
 
 void Server::AcceptHandler() {
 	acceptor.async_accept(peer_socket, peer_endpoint, [this](std::error_code error) {
-		EventQueue<EntityCreated>::ProcessEventQueue();
-		EventQueue<EntityDestroyed>::ProcessEventQueue();
 		if (error) {
 			_log->error("Server::AcceptHandler async_accept[]: socket error: {}: {}", error.value(), error.message());
 			this->AcceptHandler();
 			return;
 		}
-		// setup a lua object for this event
-		client_connection_info info_event;
-		info_event.from_endpoint(peer_endpoint);
-		info_event.cancel = false;
-		info_event.reason = "Server policy rejected the connection"; // default reason
+		if (this->OnConnect()) {
+			// promote the client to a full object
+			std::shared_ptr<ClientConnection> client = std::make_shared<ClientConnection>(
+					std::move(this->peer_socket), std::move(this->peer_endpoint), this);
 
-		// call lua scripts that want to know about connections
-		this->lua_sys.CallFunctions("onClientConnected", &info_event);
-
-		// a lua method doesn't want this client, tell them to go away
-		if (info_event.cancel) {
-			// let the server log know
-			_log->warn(
-					"Connection from [{}]:{} rejected by script: {}",
-					info_event.address,
-					info_event.port,
-					info_event.reason);
-
-			std::string reject_reason = info_event.reason;
-			reject_reason.push_back('\n');
-
-			auto reject_msg = MessagePool::get(); // default type is CHAT_MESSAGE
-			reject_msg->SetBodyLength(reject_reason.size());
-			memcpy(reject_msg->GetBodyPTR(), reject_reason.data(), reject_msg->GetBodyLength());
-			reject_msg->encode_header();
-
-			asio::write(this->peer_socket, reject_msg->buffer());
-			// hopefully the client side survives long enough to get our message
-			this->peer_socket.wait(asio::ip::tcp::socket::wait_write);
-			this->peer_socket.close();
-			this->AcceptHandler();
-			return;
-		}
-
-		// promote the client to a full object
-		std::shared_ptr<ClientConnection> client =
-				std::make_shared<ClientConnection>(std::move(this->peer_socket), std::move(this->peer_endpoint), this);
-
-		// write the standard greeting
-		client->QueueWrite(greeting_msg);
-
-		// this protopack contains a renderable component for others to see
-		static FilePath others_protopack = FilePath::GetAssetPath("protopacks/others.json");
-		proto::Entity other_entity;
-		LoadProtoPack(others_protopack, other_entity);
-
-		client->SetID(++base_id);
-		client->DoJoin();
-
-		MessageOut connecting_client_entity_msg(MessageType::ENTITY_CREATE);
-		other_entity.set_id(client->GetID());
-		other_entity.SerializeToZeroCopyStream(&connecting_client_entity_msg);
-
-		for (auto other_client : clients) {
-			MessageOut other_client_entity_msg(MessageType::ENTITY_CREATE);
-			other_entity.set_id(other_client->GetID());
-			other_entity.SerializeToZeroCopyStream(&other_client_entity_msg);
-
-			client->QueueWrite(other_client_entity_msg);
-			other_client->QueueWrite(connecting_client_entity_msg);
-		}
-		for (auto entity : entities) {
-			MessageOut other_client_entity_msg(MessageType::ENTITY_CREATE);
-			entity.second.SerializeToZeroCopyStream(&other_client_entity_msg);
-
-			client->QueueWrite(other_client_entity_msg);
-		}
-
-		{
-			std::lock_guard lg(this->client_list_mutex);
-			clients.insert(client);
-		}
-		{
-			std::lock_guard<std::mutex> lg(recent_msgs_mutex);
-			for (auto& msg : this->recent_msgs) {
-				client->QueueWrite(*msg);
+			{
+				std::lock_guard lg(this->client_list_mutex);
+				clients.insert(client);
 			}
+			this->OnJoin(client);
+			client->StartRead();
 		}
-		client->StartRead();
 
-		AcceptHandler();
+		AcceptHandler(); // Continue accepting
 	});
 }
 } // namespace networking

@@ -45,26 +45,30 @@ void CollisionBody::Out(proto::Component* target) {
 		}
 	}
 }
+void CollisionBody::SetSphereShape(float radius) { this->shape.reset(new btSphereShape(radius)); }
+void CollisionBody::SetCapsuleShape(float radius, float height) {
+	this->shape.reset(new btCapsuleShape(radius, height));
+}
+void CollisionBody::SetBoxShape(float x, float y, float z) { this->shape.reset(new btBoxShape(btVector3(x, y, z))); }
 
 void CollisionBody::In(const proto::Component& source) {
 	const proto::CollisionBody& comp = source.collision_body();
 	switch (comp.shape_case()) {
 	case proto::CollisionBody::ShapeCase::kBox:
 	{
-		btVector3 half_extents = btVector3(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
-		this->shape.reset(new btBoxShape(half_extents));
-	} break;
+		this->SetBoxShape(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
+		break;
+	}
 	case proto::CollisionBody::ShapeCase::kSphere:
 	{
-		float radius = comp.sphere().radius();
-		this->shape.reset(new btSphereShape(radius));
-	} break;
+		this->SetSphereShape(comp.sphere().radius());
+		break;
+	}
 	case proto::CollisionBody::ShapeCase::kCapsule:
 	{
-		float radius = comp.capsule().radius();
-		float height = comp.capsule().height();
-		this->shape.reset(new btCapsuleShape(radius, height));
-	} break;
+		this->SetCapsuleShape(comp.capsule().radius(), comp.capsule().height());
+		break;
+	}
 	case proto::CollisionBody::ShapeCase::SHAPE_NOT_SET: break;
 	}
 

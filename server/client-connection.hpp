@@ -9,11 +9,11 @@
 #include "game-state.hpp"
 #include "net-message.hpp"
 #include "tec-types.hpp"
+#include "user.hpp"
 
 using asio::ip::tcp;
 
 namespace tec {
-struct FPSController;
 
 namespace networking {
 class Server;
@@ -23,26 +23,19 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
 	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server);
 
-	~ClientConnection();
-
 	void StartRead();
 
 	void QueueWrite(MessagePool::ptr_type msg);
 	void QueueWrite(MessageOut& msg);
 	void QueueWrite(MessageOut&& msg);
 
-	eid GetID() { return this->id; }
+	eid GetID() { return this->user.GetEntityId(); }
 
 	tcp::endpoint GetEndpoint() { return this->endpoint; }
 
-	// Sets the client id and sends it to this client.
-	void SetID(eid id);
+	void DoJoin(); // Sends CLIENT_JOIN message
 
-	proto::Entity& GetEntity() { return this->entity; }
-
-	void DoJoin(); // Emits an EntityCreated event and ENTITY_CREATE message to this client.
-
-	void DoLeave(); // Emits an EntityDestroyed event.
+	void DoLeave(); // Sends CLIENT_LEAVE message
 
 	// Called when another client leaves.
 	void OnClientLeave(eid entity_id);
@@ -56,6 +49,8 @@ public:
 	MessageOut PrepareGameStateUpdateMessage(state_id_t current_state_id, uint64_t current_timestamp);
 
 	size_t GetPartialMessageCount() const { return read_messages.size(); }
+
+	bool ReadyToReceive() const { return this->ready_to_recv_states; }
 
 private:
 	void read_header();
@@ -80,14 +75,14 @@ private:
 	std::map<uint32_t, std::unique_ptr<MessageIn>> read_messages;
 
 	Server* server;
-	eid id{0};
-	proto::Entity entity;
 
-	std::shared_ptr<FPSController> controller;
+	User user;
 
 	state_id_t last_confirmed_state_id{0}; // That last state_id the client confirmed it received.
 	state_id_t last_recv_command_id{0};
 	GameState state_changes_since_confirmed; // That state changes that happened since last_confirmed_state_id.
+
+	bool ready_to_recv_states{false};
 };
 } // end namespace networking
 } // end namespace tec

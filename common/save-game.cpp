@@ -12,16 +12,39 @@
 #include "proto-load.hpp"
 
 namespace tec {
-template <typename T> void UserList::SetUsers(T begin, T end) { this->users.assign(begin, end); }
+template <typename T> void UserList::SetUsers(T begin, T end) {
+	for (auto itr = begin; itr != end; itr++) {
+		User user;
+		user.In(*itr);
+		this->users.emplace_back(user);
+	}
+}
 
-void UserList::AddUser(proto::User user) { return this->users.push_back(user); }
+void UserList::AddUser(User user) { this->users.emplace_back(user); }
 
-const std::list<proto::User>* UserList::GetUsers() { return &this->users; }
+User* UserList::CreateUser(uid user_id, std::string username) {
+	User user;
+	user.SetUserId(user_id);
+	user.SetUsername(username);
+	this->users.emplace_back(user);
+	return GetUser(user_id);
+}
 
-proto::User* UserList::GetUser(uid id) {
+const std::list<User>* UserList::GetUsers() { return &this->users; }
+
+User* UserList::GetUser(uid id) {
 	auto existing_user = this->GetUserItr(id);
 	if (existing_user != this->users.end()) {
 		return &*existing_user;
+	}
+	return nullptr;
+}
+
+User* UserList::FindUser(std::string username) {
+	for (auto& user : this->users) {
+		if (user.GetUsername() == username) {
+			return &user;
+		}
 	}
 	return nullptr;
 }
@@ -35,11 +58,33 @@ bool UserList::RemoveUser(uid id) {
 	return false;
 }
 
-bool UserList::UserExists(uid id) { return this->GetUserItr(id) != this->users.end(); }
+bool UserList::HasUser(uid id) { return this->GetUserItr(id) != this->users.end(); }
 
-std::list<proto::User>::iterator UserList::GetUserItr(uid id) {
-	return std::find_if(this->users.begin(), this->users.end(), [id](proto::User user) { return user.id() == id; });
+void UserList::RegisterLuaType(sol::state& state) {
+	// clang-format off
+	state.new_usertype<UserList>(
+			"UserList", sol::no_constructor,
+			"AddUser", &UserList::AddUser,
+			"CreateUser", &UserList::CreateUser,
+			"GetUser", &UserList::GetUser,
+			"FindUser", &UserList::FindUser,
+			"RemoveUser", &UserList::RemoveUser,
+			"HasUser", &UserList::HasUser
+		);
+	state.new_usertype<proto::Position>(
+			"Position", sol::no_constructor,
+			"x", sol::property(&proto::Position::x, &proto::Position::set_x),
+			"y", sol::property(&proto::Position::y, &proto::Position::set_y),
+			"z", sol::property(&proto::Position::z, &proto::Position::set_z)
+		);
+	// clang-format on
 }
+
+std::list<User>::iterator UserList::GetUserItr(uid id) {
+	return std::find_if(this->users.begin(), this->users.end(), [id](User user) { return user.GetUserId() == id; });
+}
+
+bool SaveGame::Load(std::string _filename) { return this->Load(FilePath(_filename)); }
 
 bool SaveGame::Load(const FilePath _filepath) {
 	auto _log = spdlog::get("console_log");
@@ -59,6 +104,10 @@ bool SaveGame::Load(const FilePath _filepath) {
 	this->LoadWorld();
 	return true;
 }
+
+bool SaveGame::Reload() { return this->Load(this->filepath); }
+
+bool SaveGame::Reload(const FilePath _filepath) { return this->Load(_filepath); }
 
 bool SaveGame::Save() { return this->Save(this->filepath); }
 
@@ -92,6 +141,27 @@ bool SaveGame::Save(const FilePath _filepath) {
 
 UserList* SaveGame::GetUserList() { return &this->user_list; }
 
+void SaveGame::RegisterLuaType(sol::state& state) {
+	// clang-format off
+	state.new_usertype<SaveGame>(
+			"SaveGame", sol::no_constructor,
+			/*"load", sol::overload(
+				sol::resolve<bool(std::string)>(&SaveGame::Load),
+				sol::resolve<bool(FilePath)>(&SaveGame::Load)
+			), */
+			"save", sol::overload(
+				sol::resolve<bool()>(&SaveGame::Save)/*,
+				sol::resolve<bool(FilePath)>(&SaveGame::Save)*/
+			),
+			"reload", sol::overload(
+				sol::resolve<bool()>(&SaveGame::Reload)/*,
+				sol::resolve<bool(FilePath)>(&SaveGame::Reload)*/
+			),
+			"user_list", sol::readonly(&SaveGame::user_list)
+		);
+	// clang-format on
+}
+
 void SaveGame::LoadUsers() {
 	auto users = this->save.mutable_users();
 	user_list.SetUsers(users->begin(), users->end());
@@ -100,9 +170,9 @@ void SaveGame::LoadUsers() {
 void SaveGame::SaveUsers() {
 	auto users = this->save.mutable_users();
 	users->Clear();
-	for (const auto& user : *user_list.GetUsers()) {
+	for (auto user : *user_list.GetUsers()) {
 		auto save_user = users->Add();
-		save_user->CopyFrom(user);
+		user.Out(save_user);
 	}
 }
 

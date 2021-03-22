@@ -31,6 +31,10 @@ tec::state_id_t current_state_id = 0;
 
 namespace tec {
 void RegisterFileFactories() { AddFileFactory<ScriptFile>(); }
+eid GetNextEntityId() {
+	static eid entity_id = 10000;
+	return entity_id++;
+}
 } // namespace tec
 
 void InitializeLogger() {
@@ -70,8 +74,21 @@ int main() {
 		tcp::endpoint endpoint(asio::ip::tcp::v4(), tec::networking::PORT);
 		tec::networking::Server server(endpoint);
 
+		const auto lua_sys = server.GetLuaSystem();
+
+		tec::SaveGame::RegisterLuaType(lua_sys->GetGlobalState());
+		tec::UserList::RegisterLuaType(lua_sys->GetGlobalState());
+		tec::User::RegisterLuaType(lua_sys->GetGlobalState());
+
 		tec::SaveGame save;
 		save.Load(tec::FilePath::GetAssetPath("save/save1.json"));
+		lua_sys->GetGlobalState()["save"] = save;
+
+		// Load test script
+		tec::FilePath fp = tec::FilePath::GetAssetPath("scripts/server-test.lua");
+		if (fp.FileExists()) {
+			lua_sys->LoadFile(fp);
+		}
 
 		last_time = std::chrono::high_resolution_clock::now();
 		std::thread simulation_thread([&]() {
@@ -86,6 +103,7 @@ int main() {
 				step_accumulator += delta;
 
 				if (step_accumulator >= SERVER_SIMULATE_RATE) {
+					server.ProcessEvents();
 					step_accumulator -= SERVER_SIMULATE_RATE;
 					game_state_queue.ProcessEventQueue();
 					tec::GameState full_state =
@@ -105,6 +123,10 @@ int main() {
 							std::lock_guard lg(server.client_list_mutex);
 							for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
 								client->UpdateGameState(full_state);
+								if (!client->ReadyToReceive()) {
+									client->ConfirmStateID(current_state_id);
+									continue; // Don't send them state updates yet, the client is still loading
+								}
 								if (current_state_id - client->GetLastConfirmedStateID()
 									> tec::TICKS_PER_SECOND * 2.0) {
 									server.Deliver(client, full_state_update_message);

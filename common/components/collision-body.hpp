@@ -38,6 +38,10 @@ ATTRIBUTE_ALIGNED16(struct) CollisionBody {
 
 	CollisionBody& operator=(CollisionBody&& other) noexcept;
 
+	void SetSphereShape(float);
+	void SetCapsuleShape(float radius, float height);
+	void SetBoxShape(float, float, float);
+
 	void Out(proto::Component * target);
 	void In(const proto::Component& source);
 

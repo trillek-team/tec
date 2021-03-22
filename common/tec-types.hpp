@@ -22,6 +22,8 @@ typedef std::int64_t eid; /// Entity ID
 
 typedef std::uint32_t tid; /// Type ID
 
+typedef std::string uid; /// User ID
+
 template <class T> bool IsBetween(T value, T lower, T upper) { return (value > lower) && (value < upper); }
 
 /// Returns the name of an component on compile time

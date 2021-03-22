@@ -22,7 +22,10 @@ enum MessageType : int {
 	CLIENT_LEAVE,
 	GAME_STATE_UPDATE,
 	CHAT_MESSAGE,
-	CHAT_COMMAND
+	CHAT_COMMAND,
+	LOGIN,
+	WORLD_SENT,
+	CLIENT_READY_TO_RECEIVE
 };
 
 class ServerConnection;

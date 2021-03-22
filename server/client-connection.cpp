@@ -6,28 +6,19 @@
 #include <commands.pb.h>
 #include <game_state.pb.h>
 
-#include "client/graphics/view.hpp"
-#include "components/collision-body.hpp"
-#include "components/transforms.hpp"
-#include "controllers/fps-controller.hpp"
-#include "entity.hpp"
 #include "event-system.hpp"
 #include "events.hpp"
 #include "server.hpp"
 
 namespace tec {
-namespace networking {
+extern eid GetNextEntityId();
 
+namespace networking {
 ClientConnection::ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server) :
 		socket(std::move(_socket)), endpoint(std::move(_endpoint)), server(server) {
 	current_read_msg = MessagePool::get();
 }
 
-ClientConnection::~ClientConnection() {
-	std::shared_ptr<ControllerRemovedEvent> data = std::make_shared<ControllerRemovedEvent>();
-	data->controller = this->controller;
-	EventSystem<ControllerRemovedEvent>::Get()->Emit(data);
-}
 void ClientConnection::StartRead() { read_header(); }
 
 void ClientConnection::QueueWrite(MessagePool::ptr_type msg) {
@@ -58,53 +49,26 @@ void ClientConnection::QueueWrite(MessageOut& msg) {
 
 void ClientConnection::QueueWrite(MessageOut&& msg) { QueueWrite(msg); }
 
-void ClientConnection::SetID(eid _id) {
-	this->id = _id;
-	this->entity.set_id(this->id);
-	MessageOut id_message(MessageType::CLIENT_ID);
-	id_message.FromString(std::to_string(this->id));
-	QueueWrite(std::move(id_message));
-}
-
 void ClientConnection::DoJoin() {
-	// Build an entity
-	Entity self(this->id);
-	self.Add<Position, Orientation, Velocity, View>(glm::vec3(5, 1.0, 5), glm::vec3(.5f, 0.f, 0.f), Velocity(), true);
-	CollisionBody* body = new CollisionBody();
-	proto::Component* component = this->entity.add_components();
-	proto::CollisionBody* body_component = component->mutable_collision_body();
-	body_component->set_mass(10.0f);
-	body_component->set_disable_deactivation(true);
-	body_component->set_disable_rotation(true);
-	proto::CollisionBody_Capsule* capsule_component = body_component->mutable_capsule();
-	capsule_component->set_height(1.6f);
-	capsule_component->set_radius(0.5f);
-	body->entity_id = this->id;
-	body->In(*component);
-	Multiton<eid, CollisionBody*>::Set(this->id, body);
-	self.Out<Position, Orientation, Velocity, View, CollisionBody>(this->entity);
+	eid entity_id = GetNextEntityId();
+	this->user.Build(entity_id);
+	// Send this clients entity id
+	MessageOut id_message(MessageType::CLIENT_ID);
+	id_message.FromString(std::to_string(entity_id));
+	QueueWrite(std::move(id_message));
 
-	MessageOut entity_create_msg(MessageType::ENTITY_CREATE);
-	this->entity.SerializeToZeroCopyStream(&entity_create_msg);
-	QueueWrite(entity_create_msg);
-	std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
-	data->entity = this->entity;
-	data->entity_id = this->entity.id();
-	EventSystem<EntityCreated>::Get()->Emit(data);
-
-	this->controller = std::make_shared<FPSController>(data->entity_id);
-	std::shared_ptr<ControllerAddedEvent> dataX = std::make_shared<ControllerAddedEvent>();
-	dataX->controller = controller;
-	EventSystem<ControllerAddedEvent>::Get()->Emit(dataX);
+	// Inform other clients
+	MessageOut join_msg(MessageType::CLIENT_JOIN);
+	join_msg.FromString(std::to_string(entity_id));
+	this->server->Deliver(join_msg, false);
 }
 
 void ClientConnection::DoLeave() {
+	// Inform other clients
+	eid entity_id = this->user.GetEntityId();
 	MessageOut leave_msg(MessageType::CLIENT_LEAVE);
-	leave_msg.FromString(std::to_string(this->id));
+	leave_msg.FromString(std::to_string(entity_id));
 	this->server->Deliver(leave_msg, false);
-	std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
-	data->entity_id = this->id;
-	EventSystem<EntityDestroyed>::Get()->Emit(data);
 }
 
 void ClientConnection::OnClientLeave(eid entity_id) {
@@ -227,7 +191,10 @@ void ClientConnection::process_message(MessageIn& msg) {
 		proto::ClientCommands proto_client_commands;
 		proto_client_commands.ParseFromZeroCopyStream(&msg);
 		if (proto_client_commands.has_laststateid()) {
-			this->last_confirmed_state_id = proto_client_commands.laststateid();
+			auto last_state_id = proto_client_commands.laststateid();
+			if (last_state_id != 0) {
+				this->last_confirmed_state_id = proto_client_commands.laststateid();
+			}
 		}
 		this->last_recv_command_id = proto_client_commands.commandid();
 		std::shared_ptr<ClientCommandsEvent> data = std::make_shared<ClientCommandsEvent>();
@@ -240,6 +207,23 @@ void ClientConnection::process_message(MessageIn& msg) {
 		proto::ChatCommand chat_command;
 		chat_command.ParseFromZeroCopyStream(&msg);
 		EventSystem<ChatCommandEvent>::Get()->Emit(std::make_shared<ChatCommandEvent>(chat_command));
+		break;
+	}
+	case MessageType::LOGIN:
+	{
+		proto::UserLogin user_login;
+		user_login.ParseFromZeroCopyStream(&msg);
+		this->user.SetUsername(user_login.username());
+		auto data = std::make_shared<UserLoginEvent>(user_login);
+		data->entity_id = this->user.GetEntityId();
+		EventSystem<UserLoginEvent>::Get()->Emit(data);
+
+		this->server->GetLuaSystem()->CallFunctions("onUserLogin", this->user);
+		break;
+	}
+	case MessageType::CLIENT_READY_TO_RECEIVE:
+	{
+		this->ready_to_recv_states = true;
 		break;
 	}
 	case MessageType::ENTITY_CREATE:
@@ -273,7 +257,7 @@ void ClientConnection::do_write() {
 }
 
 void ClientConnection::UpdateGameState(const GameState& full_state) {
-	for (auto pair : full_state.positions) {
+	for (const auto& pair : full_state.positions) {
 		if (full_state.positions.find(pair.first) != full_state.positions.end()) {
 			this->state_changes_since_confirmed.positions[pair.first] = full_state.positions.at(pair.first);
 		}
