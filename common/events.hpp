@@ -129,7 +129,7 @@ struct UserLoginEvent {
 	proto::UserLogin Out() {
 		proto::UserLogin user_login;
 		this->Out(user_login);
-		return std::move(user_login);
+		return user_login;
 	}
 };
 } // namespace tec

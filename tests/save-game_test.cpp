@@ -42,7 +42,7 @@ TEST_F(SaveGameTest, DiskIO) {
 		EXPECT_NO_THROW(save_game.Load(save_file_path));
 		User user2;
 		user2.SetUserId(user2_id);
-		user2.SetUserId(user2_id);
+		user2.SetUsername(user2_id);
 		save_game.GetUserList()->AddUser(user2);
 		EXPECT_NO_THROW(save_game.Save());
 	}

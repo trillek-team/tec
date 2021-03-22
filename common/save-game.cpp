@@ -71,12 +71,6 @@ void UserList::RegisterLuaType(sol::state& state) {
 			"RemoveUser", &UserList::RemoveUser,
 			"HasUser", &UserList::HasUser
 		);
-	state.new_usertype<proto::Position>(
-			"Position", sol::no_constructor,
-			"x", sol::property(&proto::Position::x, &proto::Position::set_x),
-			"y", sol::property(&proto::Position::y, &proto::Position::set_y),
-			"z", sol::property(&proto::Position::z, &proto::Position::set_z)
-		);
 	// clang-format on
 }
 

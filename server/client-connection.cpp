@@ -11,7 +11,7 @@
 #include "server.hpp"
 
 namespace tec {
-extern eid GetNextEntityId();
+eid GetNextEntityId();
 
 namespace networking {
 ClientConnection::ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server) :

@@ -18,7 +18,7 @@ Entity CreateUserEntity(eid entity_id) {
 	body->SetCapsuleShape(0.5f, 1.6f);
 	body->entity_id = entity_id;
 	entity.Add(body);
-	return std::move(entity);
+	return entity;
 }
 
 void User::Build(eid entity_id) {

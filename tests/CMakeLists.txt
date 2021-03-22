@@ -29,6 +29,8 @@ set(trillek-test_SOURCES
 	server-client-connection.cpp
 )
 
+source_group(Tests FILES ${trillek-test_SOURCES})
+
 add_executable(${trillek-test_PROGRAM}
 	${trillek-test_SOURCES}
 	${trillek-server_SOURCES}
