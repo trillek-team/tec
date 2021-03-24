@@ -144,7 +144,10 @@ void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
 
 std::list<sol::protected_function> LuaSystem::GetAllFunctions(std::string function_name) {
 	std::list<sol::protected_function> functions;
-
+	// global state functions
+	if (this->lua[function_name].valid()) {
+		functions.push_back(this->lua[function_name]);
+	}
 	// multiton <eid, LuaScript*>
 	for (auto itr = LuaScriptMap::Begin(); itr != LuaScriptMap::End(); itr++) {
 		if (!itr->second->script_name.empty() && itr->second->environment[function_name].valid()) {
