@@ -12,38 +12,38 @@
 #include "proto-load.hpp"
 
 namespace tec {
+eid GetNextEntityId();
+
 template <typename T> void UserList::SetUsers(T begin, T end) {
 	for (auto itr = begin; itr != end; itr++) {
-		User user;
-		user.In(*itr);
+		auto user = std::make_shared<User>(GetNextEntityId());
+		user->In(*itr);
 		this->users.emplace_back(user);
 	}
 }
 
-void UserList::AddUser(User user) { this->users.emplace_back(user); }
+void UserList::AddUser(std::shared_ptr<User> user) { this->users.emplace_back(user); }
 
-User* UserList::CreateUser(uid user_id, std::string username) {
-	User user;
-	user.SetUserId(user_id);
-	user.SetUsername(username);
+std::shared_ptr<User> UserList::CreateUser(uid user_id, std::string username) {
+	auto user = std::make_shared<User>(GetNextEntityId());
+	user->SetUserId(user_id);
+	user->SetUsername(username);
 	this->users.emplace_back(user);
 	return GetUser(user_id);
 }
 
-const std::list<User>* UserList::GetUsers() { return &this->users; }
-
-User* UserList::GetUser(uid id) {
+std::shared_ptr<User> UserList::GetUser(uid id) {
 	auto existing_user = this->GetUserItr(id);
 	if (existing_user != this->users.end()) {
-		return &*existing_user;
+		return *existing_user;
 	}
 	return nullptr;
 }
 
-User* UserList::FindUser(std::string username) {
+std::shared_ptr<User> UserList::FindUser(std::string username) {
 	for (auto& user : this->users) {
-		if (user.GetUsername() == username) {
-			return &user;
+		if (user->GetUsername() == username) {
+			return user;
 		}
 	}
 	return nullptr;
@@ -72,10 +72,6 @@ void UserList::RegisterLuaType(sol::state& state) {
 			"HasUser", &UserList::HasUser
 		);
 	// clang-format on
-}
-
-std::list<User>::iterator UserList::GetUserItr(uid id) {
-	return std::find_if(this->users.begin(), this->users.end(), [id](User user) { return user.GetUserId() == id; });
 }
 
 bool SaveGame::Load(std::string _filename) { return this->Load(FilePath(_filename)); }
@@ -164,9 +160,9 @@ void SaveGame::LoadUsers() {
 void SaveGame::SaveUsers() {
 	auto users = this->save.mutable_users();
 	users->Clear();
-	for (auto user : *user_list.GetUsers()) {
+	for (const auto& user : *user_list.GetUsers()) {
 		auto save_user = users->Add();
-		user.Out(save_user);
+		user->Out(save_user);
 	}
 }
 

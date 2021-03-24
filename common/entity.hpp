@@ -49,7 +49,7 @@ public:
 	template <typename T> void Remove() { Multiton<eid, T*>::Remove(this->id); }
 
 	// Checks if this entity has a specific component.
-	template <typename T> bool Has() { return Multiton<eid, T*>::Has(this->id); }
+	template <typename T> bool Has() const { return Multiton<eid, T*>::Has(this->id); }
 
 	// Get a specific component.
 	template <typename T> const T* Get() const { return Multiton<eid, T*>::Get(this->id); }

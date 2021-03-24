@@ -79,6 +79,7 @@ int main() {
 		tec::SaveGame::RegisterLuaType(lua_sys->GetGlobalState());
 		tec::UserList::RegisterLuaType(lua_sys->GetGlobalState());
 		tec::User::RegisterLuaType(lua_sys->GetGlobalState());
+		tec::networking::ClientConnection::RegisterLuaType(lua_sys->GetGlobalState());
 
 		tec::SaveGame save;
 		save.Load(tec::FilePath::GetAssetPath("save/save1.json"));
@@ -122,11 +123,11 @@ int main() {
 						{
 							std::lock_guard lg(server.client_list_mutex);
 							for (std::shared_ptr<tec::networking::ClientConnection> client : server.GetClients()) {
-								client->UpdateGameState(full_state);
 								if (!client->ReadyToReceive()) {
 									client->ConfirmStateID(current_state_id);
 									continue; // Don't send them state updates yet, the client is still loading
 								}
+								client->UpdateGameState(full_state);
 								if (current_state_id - client->GetLastConfirmedStateID()
 									> tec::TICKS_PER_SECOND * 2.0) {
 									server.Deliver(client, full_state_update_message);

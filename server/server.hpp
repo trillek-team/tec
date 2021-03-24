@@ -37,15 +37,11 @@ public:
 	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg);
 	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg);
 
-
 	// Calls when a client connects. This provides a chance to reject the client before joining the world.
 	bool OnConnect();
 
-	// Calls when a client joins. Used to being sending the world and inform other clients.
-	void OnJoin(std::shared_ptr<ClientConnection> client);
-	
 	// Calls when a client leaves, usually when the connection is no longer valid.
-	void Leave(std::shared_ptr<ClientConnection> client);
+	void OnDisconnect(std::shared_ptr<ClientConnection> client);
 
 	void Start();
 
@@ -83,6 +79,11 @@ private:
 	MessageOut greeting_msg; // Greeting chat message.
 
 	std::map<eid, proto::Entity> entities;
+
+	// Sends the "world" to a given client including all entities and recent chats.
+	void SendWorld(std::shared_ptr<ClientConnection> client);
+
+	friend class ClientConnection;
 
 	std::set<std::shared_ptr<ClientConnection>> clients; // All connected clients.
 

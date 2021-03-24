@@ -49,9 +49,9 @@ void ClientConnection::QueueWrite(MessageOut& msg) {
 
 void ClientConnection::QueueWrite(MessageOut&& msg) { QueueWrite(msg); }
 
-void ClientConnection::DoJoin() {
-	eid entity_id = GetNextEntityId();
-	this->user.Build(entity_id);
+void ClientConnection::OnJoinWorld() {
+	this->server->GetLuaSystem()->CallFunctions("onClientJoin", this);
+	eid entity_id = this->user->GetEntityId();
 	// Send this clients entity id
 	MessageOut id_message(MessageType::CLIENT_ID);
 	id_message.FromString(std::to_string(entity_id));
@@ -63,15 +63,16 @@ void ClientConnection::DoJoin() {
 	this->server->Deliver(join_msg, false);
 }
 
-void ClientConnection::DoLeave() {
+void ClientConnection::OnLeaveWorld() {
+	this->server->GetLuaSystem()->CallFunctions("onClientLeave", this);
 	// Inform other clients
-	eid entity_id = this->user.GetEntityId();
+	eid entity_id = this->user->GetEntityId();
 	MessageOut leave_msg(MessageType::CLIENT_LEAVE);
 	leave_msg.FromString(std::to_string(entity_id));
 	this->server->Deliver(leave_msg, false);
 }
 
-void ClientConnection::OnClientLeave(eid entity_id) {
+void ClientConnection::OnOtherLeaveWorld(eid entity_id) {
 	if (this->state_changes_since_confirmed.positions.find(entity_id)
 		!= this->state_changes_since_confirmed.positions.end()) {
 		this->state_changes_since_confirmed.positions.erase(entity_id);
@@ -96,7 +97,7 @@ void ClientConnection::read_header() {
 					read_body();
 				}
 				else {
-					server->Leave(shared_from_this());
+					server->OnDisconnect(shared_from_this());
 				}
 			});
 }
@@ -108,7 +109,7 @@ void ClientConnection::read_body() {
 			this->current_read_msg->buffer_body(),
 			[this, self](std::error_code error, std::size_t /*length*/) {
 				if (error) {
-					server->Leave(shared_from_this());
+					server->OnDisconnect(shared_from_this());
 					return;
 				}
 				auto _log = spdlog::get("console_log");
@@ -213,12 +214,13 @@ void ClientConnection::process_message(MessageIn& msg) {
 	{
 		proto::UserLogin user_login;
 		user_login.ParseFromZeroCopyStream(&msg);
-		this->user.SetUsername(user_login.username());
-		auto data = std::make_shared<UserLoginEvent>(user_login);
-		data->entity_id = this->user.GetEntityId();
-		EventSystem<UserLoginEvent>::Get()->Emit(data);
+		this->server->GetLuaSystem()->CallFunctions("onUserLogin", this, user_login.username());
 
-		this->server->GetLuaSystem()->CallFunctions("onUserLogin", this->user);
+		this->server->SendWorld(shared_from_this());
+
+		this->OnJoinWorld();
+		this->user->AddEntityToWorld();
+
 		break;
 	}
 	case MessageType::CLIENT_READY_TO_RECEIVE:
@@ -242,7 +244,7 @@ void ClientConnection::do_write() {
 	auto msg_ptr = write_msg_queue.front().get();
 	asio::async_write(this->socket, msg_ptr->buffer(), [this, self](std::error_code error, std::size_t /*length*/) {
 		if (error) {
-			server->Leave(shared_from_this());
+			server->OnDisconnect(shared_from_this());
 			return;
 		}
 		bool more_to_write = false;
@@ -294,6 +296,14 @@ MessageOut ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_st
 	MessageOut update_message(MessageType::GAME_STATE_UPDATE);
 	gsu_msg.SerializeToZeroCopyStream(&update_message);
 	return update_message;
+}
+void ClientConnection::RegisterLuaType(sol::state& state) {
+	// clang-format off
+	state.new_usertype<ClientConnection>(
+			"ClientConnection", sol::no_constructor,
+			"user", &ClientConnection::user
+		);
+	// clang-format on
 }
 } // namespace networking
 } // namespace tec

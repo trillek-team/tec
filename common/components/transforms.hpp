@@ -20,8 +20,8 @@ struct Position {
 
 	glm::vec3 value = {0.0f, 0.0f, 0.0f};
 
-	void Out(proto::Component* target);
-	void Out(proto::Position* comp); // Can be used to save into a specific component
+	void Out(proto::Component* target) const;
+	void Out(proto::Position* comp) const; // Can be used to save into a specific component
 	void In(const proto::Component& source);
 	void In(const proto::Position& comp); // Can be used to load in a specific component
 };

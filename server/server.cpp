@@ -97,6 +97,29 @@ void Server::Deliver(MessageOut&& msg, bool save_to_recent) { Deliver(msg, save_
 void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg) { client->QueueWrite(msg); }
 void Server::Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg) { client->QueueWrite(std::move(msg)); }
 
+void Server::SendWorld(std::shared_ptr<ClientConnection> client) {
+	// write the standard greeting. Send this first so they can see a message while loading
+	client->QueueWrite(greeting_msg);
+
+	// Begin sending world
+	for (auto [_entity_id, entity] : entities) {
+		MessageOut entity_message(MessageType::ENTITY_CREATE);
+		entity.SerializeToZeroCopyStream(&entity_message);
+		client->QueueWrite(entity_message);
+	}
+	// Last message to indicate the world has been sent
+	MessageOut world_sent_msg(MessageType::WORLD_SENT);
+	world_sent_msg.FromString("ok");
+	client->QueueWrite(world_sent_msg);
+	// Send recent chat messages
+	{
+		std::lock_guard<std::mutex> lg(recent_msgs_mutex);
+		for (auto& msg : this->recent_msgs) {
+			client->QueueWrite(*msg);
+		}
+	}
+}
+
 bool Server::OnConnect() {
 	// setup a lua object for this event
 	client_connection_info info_event;
@@ -134,46 +157,19 @@ bool Server::OnConnect() {
 	return true;
 }
 
-void Server::OnJoin(std::shared_ptr<ClientConnection> client) {
-	this->lua_sys.CallFunctions("onClientJoin", client);
-	client->DoJoin();
-
-	// write the standard greeting. Send this first so they can see a message while loading
-	client->QueueWrite(greeting_msg);
-
-	// Begin sending world
-	for (auto [_entity_id, entity] : entities) {
-		MessageOut entity_message(MessageType::ENTITY_CREATE);
-		entity.SerializeToZeroCopyStream(&entity_message);
-		client->QueueWrite(entity_message);
-	}
-	// Last message to indicate the world has been sent
-	MessageOut world_sent_msg(MessageType::WORLD_SENT);
-	world_sent_msg.FromString("ok");
-	client->QueueWrite(world_sent_msg);
-	// Send recent chat messages
-	{
-		std::lock_guard<std::mutex> lg(recent_msgs_mutex);
-		for (auto& msg : this->recent_msgs) {
-			client->QueueWrite(*msg);
-		}
-	}
-}
-
-void Server::Leave(std::shared_ptr<ClientConnection> client) {
+void Server::OnDisconnect(std::shared_ptr<ClientConnection> client) {
 	{
 		std::lock_guard lg(this->client_list_mutex);
 		auto which_client = this->clients.find(client);
 		if (which_client == this->clients.end()) {
-			// invalid client or already called Leave()
+			// invalid client or already called OnDisconnect()
 			return;
 		}
 		this->clients.erase(which_client);
 	}
 
 	eid leaving_client_id = client->GetID();
-	this->lua_sys.CallFunctions("onClientLeave", leaving_client_id);
-	client->DoLeave(); // Send out entity destroyed events and client leave messages.
+	client->OnLeaveWorld(); // Send out entity destroyed events and client leave messages.
 
 	// setup a lua object for this event
 	client_connection_info info_event;
@@ -184,7 +180,7 @@ void Server::Leave(std::shared_ptr<ClientConnection> client) {
 
 	// Notify other clients that a client left.
 	for (auto _client : this->clients) {
-		_client->OnClientLeave(leaving_client_id);
+		_client->OnOtherLeaveWorld(leaving_client_id);
 	}
 }
 
@@ -233,7 +229,6 @@ void Server::AcceptHandler() {
 				std::lock_guard lg(this->client_list_mutex);
 				clients.insert(client);
 			}
-			this->OnJoin(client);
 			client->StartRead();
 		}
 

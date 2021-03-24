@@ -115,7 +115,6 @@ struct ChatCommandEvent {
 struct UserLoginEvent {
 	std::string username;
 	std::string password;
-	eid entity_id;
 	UserLoginEvent() = default;
 	UserLoginEvent(proto::UserLogin user_login) { this->In(user_login); }
 	void In(proto::UserLogin user_login) {

@@ -10,6 +10,7 @@ const FilePath save_directory = FilePath::GetAssetPath("save_test_123456");
 const FilePath save_file_path = save_directory + "/save.json";
 const std::string
 		contents("{\"users\":[{\"id\":\"user-1\",\"username\":\"John\"}], \"world\":{\"entityFileList\":[]}}");
+const eid entity_id = 1234;
 
 class SaveGameTest : public ::testing::Test {
 protected:
@@ -40,9 +41,9 @@ TEST_F(SaveGameTest, DiskIO) {
 	{
 		SaveGame save_game;
 		EXPECT_NO_THROW(save_game.Load(save_file_path));
-		User user2;
-		user2.SetUserId(user2_id);
-		user2.SetUsername(user2_id);
+		std::shared_ptr<User> user2 = std::make_shared<User>(entity_id);
+		user2->SetUserId(user2_id);
+		user2->SetUsername(user2_id);
 		save_game.GetUserList()->AddUser(user2);
 		EXPECT_NO_THROW(save_game.Save());
 	}
@@ -69,8 +70,8 @@ TEST(UserList_class_test, Constructor) {
 TEST(UserList_class_test, AddUser) {
 	UserList user_list;
 	auto users = user_list.GetUsers();
-	User user;
-	user.SetUserId("user-1");
+	std::shared_ptr<User> user = std::make_shared<User>(entity_id);
+	user->SetUserId("user-1");
 
 	user_list.AddUser(user);
 	EXPECT_EQ(users->size(), 1);
@@ -80,8 +81,8 @@ TEST(UserList_class_test, UserExists) {
 	UserList user_list;
 	auto users = user_list.GetUsers();
 	uid user_id = "user-1";
-	User user;
-	user.SetUserId(user_id);
+	std::shared_ptr<User> user = std::make_shared<User>(entity_id);
+	user->SetUserId(user_id);
 
 	user_list.AddUser(user);
 	EXPECT_TRUE(user_list.HasUser(user_id));
@@ -93,9 +94,9 @@ TEST(UserList_class_test, UserExists) {
 TEST(UserList_class_test, RemoveUser) {
 	UserList user_list;
 	auto users = user_list.GetUsers();
-	User user;
 	uid user_id = "user-1";
-	user.SetUserId(user_id);
+	std::shared_ptr<User> user = std::make_shared<User>(entity_id);
+	user->SetUserId(user_id);
 
 	user_list.AddUser(user);
 	EXPECT_EQ(users->size(), 1);
@@ -113,8 +114,8 @@ TEST(UserList_class_test, UpdateUser) {
 	uid user_id = "user-1";
 	auto users = user_list.GetUsers();
 	{
-		User user;
-		user.SetUserId(user_id);
+		std::shared_ptr<User> user = std::make_shared<User>(entity_id);
+		user->SetUserId(user_id);
 		user_list.AddUser(user);
 	}
 

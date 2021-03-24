@@ -27,6 +27,7 @@ set(trillek-test_SOURCES
 	net-message_test.cpp
 	save-game_test.cpp
 	server-client-connection.cpp
+	user_test.cpp
 )
 
 source_group(Tests FILES ${trillek-test_SOURCES})

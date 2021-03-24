@@ -13,22 +13,28 @@
 namespace tec {
 
 class UserList {
+	using user_list_t = std::list<std::shared_ptr<User>>;
+
 public:
 	template <typename T> void SetUsers(T begin, T end);
-	void AddUser(User);
-	User* CreateUser(uid, std::string);
-	User* GetUser(uid);
-	User* FindUser(std::string);
+	void AddUser(std::shared_ptr<User>);
+	std::shared_ptr<User> CreateUser(uid, std::string);
+	std::shared_ptr<User> GetUser(uid);
+	std::shared_ptr<User> FindUser(std::string);
 	bool RemoveUser(uid);
 	bool HasUser(uid);
 
-	const std::list<User>* GetUsers();
+	const user_list_t* GetUsers() { return &this->users; }
 
 	static void RegisterLuaType(sol::state&);
 
 private:
-	std::list<User> users;
-	std::list<User>::iterator GetUserItr(uid);
+	user_list_t users;
+	user_list_t::iterator GetUserItr(uid user_id) {
+		return std::find_if(this->users.begin(), this->users.end(), [user_id](std::shared_ptr<User> user) {
+			return user->GetUserId() == user_id;
+		});
+	}
 };
 
 class SaveGame {

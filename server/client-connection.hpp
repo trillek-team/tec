@@ -29,16 +29,18 @@ public:
 	void QueueWrite(MessageOut& msg);
 	void QueueWrite(MessageOut&& msg);
 
-	eid GetID() { return this->user.GetEntityId(); }
+	eid GetID() { return this->user->GetEntityId(); }
 
 	tcp::endpoint GetEndpoint() { return this->endpoint; }
 
-	void DoJoin(); // Sends CLIENT_JOIN message
+	// Called when a client is entering the world. Such as after the have logged in.
+	void OnJoinWorld();
 
-	void DoLeave(); // Sends CLIENT_LEAVE message
+	// Called when a client is leaving the world. Such as after the have logged out.
+	void OnLeaveWorld();
 
 	// Called when another client leaves.
-	void OnClientLeave(eid entity_id);
+	void OnOtherLeaveWorld(eid entity_id);
 
 	void ConfirmStateID(state_id_t state_id) { this->last_confirmed_state_id = state_id; }
 
@@ -51,6 +53,8 @@ public:
 	size_t GetPartialMessageCount() const { return read_messages.size(); }
 
 	bool ReadyToReceive() const { return this->ready_to_recv_states; }
+
+	static void RegisterLuaType(sol::state&);
 
 private:
 	void read_header();
@@ -76,7 +80,7 @@ private:
 
 	Server* server;
 
-	User user;
+	User* user;
 
 	state_id_t last_confirmed_state_id{0}; // That last state_id the client confirmed it received.
 	state_id_t last_recv_command_id{0};
