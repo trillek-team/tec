@@ -1,6 +1,6 @@
 # Callbacks
 * `update(delta)` - Called every game loop with the amount of time passed (delta) since the last call
-	* delta:numebr - The time since the last call
+	* delta:number - The time since the last call
 * `onClientConnected(event)` - Called when a client connects to the server, but before we send anything
 	* event:[client_connection_info](classes/client_connection_info.md)
  
@@ -18,15 +18,12 @@ end
 	* client:[ClientConnection](classes/ClientConnection.md)
 * `onClientLeave(client)` - Called when a client (user) is leaving the world such as after logout
 	* client:[ClientConnection](classes/ClientConnection.md)
-* `onUserLogin(client, user)` - Called when a user is logged in. **ASSIGN A USER BEFORE RETURNING**
-	* client:[ClientConnection](classes/ClientConnection.md)
-	* user:[User](classes/User.md)
+* `onUserLogin(client, user_login_info)` - Called when a user is logged in.
+	* user_login_info:[user_login_info](classes/user_login_info.md)
 
 ```lua
-function onUserLogin(client, user)
-	user_list = save.user_list
-	user = user_list:FindUser(username)
-	client.user = user
+function onUserLogin(user_login_info)
+	print("Login by (" .. user_login_info.user_id .. ") " .. user_login_info.username)
 end
 ```
 

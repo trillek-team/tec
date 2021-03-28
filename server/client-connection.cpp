@@ -50,26 +50,37 @@ void ClientConnection::QueueWrite(MessageOut& msg) {
 void ClientConnection::QueueWrite(MessageOut&& msg) { QueueWrite(msg); }
 
 void ClientConnection::OnJoinWorld() {
-	this->server->GetLuaSystem()->CallFunctions("onClientJoin", this);
-	eid entity_id = this->user->GetEntityId();
-	// Send this clients entity id
-	MessageOut id_message(MessageType::CLIENT_ID);
-	id_message.FromString(std::to_string(entity_id));
-	QueueWrite(std::move(id_message));
+	if (this->user) {
+		this->user->AddEntityToWorld(); // Sets up entity id
+		eid entity_id = this->user->GetEntityId();
+		// Send this clients entity id
+		MessageOut id_message(MessageType::CLIENT_ID);
+		id_message.FromString(std::to_string(entity_id));
+		QueueWrite(id_message);
 
-	// Inform other clients
-	MessageOut join_msg(MessageType::CLIENT_JOIN);
-	join_msg.FromString(std::to_string(entity_id));
-	this->server->Deliver(join_msg, false);
+		// Inform other clients
+		MessageOut join_msg(MessageType::CLIENT_JOIN);
+		join_msg.FromString(std::to_string(entity_id));
+		this->server->Deliver(join_msg, false);
+	}
+	else {
+		spdlog::get("console_log")->error("No user assigned to ClientConnection");
+	}
+	// Called after the client has joined the world.
+	this->server->GetLuaSystem()->CallFunctions("onClientJoin", this);
 }
 
 void ClientConnection::OnLeaveWorld() {
+	// Called before the client leaves the world.
 	this->server->GetLuaSystem()->CallFunctions("onClientLeave", this);
-	// Inform other clients
-	eid entity_id = this->user->GetEntityId();
-	MessageOut leave_msg(MessageType::CLIENT_LEAVE);
-	leave_msg.FromString(std::to_string(entity_id));
-	this->server->Deliver(leave_msg, false);
+	if (this->user) {
+		this->user->RemoveEntityFromWorld();
+		// Inform other clients
+		eid entity_id = this->user->GetEntityId();
+		MessageOut leave_msg(MessageType::CLIENT_LEAVE);
+		leave_msg.FromString(std::to_string(entity_id));
+		this->server->Deliver(leave_msg, false);
+	}
 }
 
 void ClientConnection::OnOtherLeaveWorld(eid entity_id) {
@@ -161,6 +172,28 @@ void ClientConnection::read_body() {
 			});
 }
 
+struct UserLoginInfo {
+	std::string username;
+	std::string user_id;
+	std::string reason;
+	bool authenticated{false};
+	bool reject{false};
+
+	// Called from ClientConnection::RegisterLuaType
+	static void RegisterLuaType(sol::state& state) {
+		// clang-format off
+		state.new_usertype<UserLoginInfo>(
+			"user_login_event", sol::no_constructor,
+			"username", &UserLoginInfo::username,
+			"user_id", &UserLoginInfo::user_id,
+			"reason", &UserLoginInfo::reason,
+			"authenticated", &UserLoginInfo::authenticated,
+			"reject", &UserLoginInfo::reject
+		);
+		// clang-format on
+	}
+};
+
 void ClientConnection::process_message(MessageIn& msg) {
 	auto _log = spdlog::get("console_log");
 	auto now_time = std::chrono::high_resolution_clock::now();
@@ -214,13 +247,25 @@ void ClientConnection::process_message(MessageIn& msg) {
 	{
 		proto::UserLogin user_login;
 		user_login.ParseFromZeroCopyStream(&msg);
-		this->server->GetLuaSystem()->CallFunctions("onUserLogin", this, user_login.username());
+		UserLoginInfo user_login_event{user_login.username()};
 
-		this->server->SendWorld(shared_from_this());
+		auto _user = this->server->GetAuthenticator().Authenticate(user_login.username());
+		user_login_event.authenticated = _user != nullptr;
+		user_login_event.user_id = _user ? _user->GetUserId() : "";
 
-		this->OnJoinWorld();
-		this->user->AddEntityToWorld();
+		this->server->GetLuaSystem()->CallFunctions("onUserLogin", &user_login_event);
 
+		if (!user_login_event.reject && user_login_event.authenticated) {
+			this->user = _user; // Could be null, if authenticated was overriden in script.
+
+			auto authd_message = MessagePool::get();
+			authd_message->SetBodyLength(1);
+			authd_message->SetMessageType(MessageType::AUTHENTICATED);
+			authd_message->encode_header();
+			QueueWrite(authd_message);
+
+			this->server->SendWorld(shared_from_this());
+		}
 		break;
 	}
 	case MessageType::CLIENT_READY_TO_RECEIVE:
@@ -228,9 +273,13 @@ void ClientConnection::process_message(MessageIn& msg) {
 		this->ready_to_recv_states = true;
 		break;
 	}
+	case MessageType::CLIENT_JOIN:
+	{
+		this->OnJoinWorld();
+		break;
+	}
 	case MessageType::ENTITY_CREATE:
 	case MessageType::ENTITY_DESTROY:
-	case MessageType::CLIENT_JOIN:
 	case MessageType::CLIENT_ID:
 	case MessageType::CLIENT_LEAVE:
 	case MessageType::GAME_STATE_UPDATE:
@@ -304,6 +353,7 @@ void ClientConnection::RegisterLuaType(sol::state& state) {
 			"user", &ClientConnection::user
 		);
 	// clang-format on
+	UserLoginInfo::RegisterLuaType(state);
 }
 } // namespace networking
 } // namespace tec

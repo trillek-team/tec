@@ -5,12 +5,15 @@
 
 #include <save_game.pb.h>
 
+#include "credentials.hpp"
+#include "entity-data.hpp"
 #include "entity.hpp"
 #include "tec-types.hpp"
 
 namespace tec {
 struct FPSController;
 
+namespace user {
 /**
 * \brief Container used to store information about a logged in user.
 *
@@ -21,30 +24,7 @@ struct FPSController;
 */
 class User {
 public:
-	User(eid entity_id);
 	User() = default;
-
-	// No copy as destructor removes by entity from world by id
-	User(const User& other) = delete;
-
-	User(User&& other) noexcept {
-		user_id = std::move(other.user_id);
-		username = std::move(other.username);
-		controller = std::move(other.controller);
-		entity = std::move(other.entity);
-		other.entity = Entity(-1);
-	}
-
-	// No copy as destructor removes by entity from world by id
-	User& operator=(const User& other) = delete;
-
-	User& operator=(User&& other) noexcept {
-		user_id = std::move(other.user_id);
-		username = std::move(other.username);
-		controller = std::move(other.controller);
-		entity = std::move(other.entity);
-		other.entity = Entity(-1);
-	}
 
 	~User();
 
@@ -56,6 +36,13 @@ public:
 	void AddEntityToWorld();
 
 	/**
+	* \brief Add the user's entity to the world by emitting EntityDestroy and ControllerRemovedEvent events.
+	*
+	* Call this when the user is no longer in the world e.g. disconnect.
+	*/
+	void RemoveEntityFromWorld();
+
+	/**
 	* \brief Get the user's ID.
 	*
 	* This ID is different than an entity ID in that it is assign during registration
@@ -63,24 +50,25 @@ public:
 	* entity is added to the world.
 	* \return uid Users' ID.
 	*/
-	uid GetUserId() const { return this->user_id; }
-	void SetUserId(uid _user_id) { this->user_id = _user_id; }
+	uid GetUserId() const { return this->credentials.user_id; }
+	void SetUserId(uid user_id) { this->credentials.user_id = user_id; }
 
 	/**
 	* \brief Get the underlying entity's ID.
 	*
 	* \return eid The underlying entity's ID.
 	*/
-	eid GetEntityId() const { return this->entity.GetID(); }
+	eid GetEntityId() const { return this->entity_id; }
 
 	/**
 	* \brief Get the username associated with this user.
 	*
 	* \return string User's username.
 	*/
-	std::string GetUsername() const { return this->username; }
-	void SetUsername(std::string _username) { this->username = _username; }
+	std::string GetUsername() const { return this->credentials.username; }
+	void SetUsername(std::string username) { this->credentials.username = username; }
 
+	// Called from UserList::RegisterLuaType
 	static void RegisterLuaType(sol::state&);
 
 	/**
@@ -98,10 +86,11 @@ public:
 	void In(const proto::User& source);
 
 private:
-	std::string username;
-	Entity entity{0};
-	uid user_id;
+	eid entity_id{0};
+	EntityData entity_data;
+	Credentials credentials;
 
 	std::shared_ptr<FPSController> controller; /**< Used to handle (client) or replay (server) input. */
 };
+} // namespace user
 } // namespace tec

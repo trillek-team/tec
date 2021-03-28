@@ -55,6 +55,13 @@ ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s
 		ready_to_recv_msg.FromString("ok");
 		this->Send(ready_to_recv_msg);
 	});
+	RegisterMessageHandler(MessageType::AUTHENTICATED, [this](MessageIn&) {
+		auto join_message = MessagePool::get();
+		join_message->SetBodyLength(1);
+		join_message->SetMessageType(MessageType::CLIENT_JOIN);
+		join_message->encode_header();
+		this->Send(join_message);
+	});
 }
 
 bool ServerConnection::Connect(std::string_view ip) {

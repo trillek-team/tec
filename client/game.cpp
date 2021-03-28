@@ -42,12 +42,6 @@ Game::Game(OS& _os, std::string config_file_name) :
 			delete this->sync_thread;
 		}
 		sync_thread = new std::thread([this]() { server_connection.StartSync(); });
-		proto::UserLogin user_login;
-		user_login.set_username("john3");
-		user_login.set_password("smith");
-		networking::MessageOut msg(tec::networking::LOGIN);
-		user_login.SerializeToZeroCopyStream(&msg);
-		this->server_connection.Send(msg);
 	});
 }
 

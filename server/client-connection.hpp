@@ -9,11 +9,12 @@
 #include "game-state.hpp"
 #include "net-message.hpp"
 #include "tec-types.hpp"
-#include "user.hpp"
+#include "user/user.hpp"
 
 using asio::ip::tcp;
 
 namespace tec {
+using namespace user;
 
 namespace networking {
 class Server;
@@ -29,7 +30,7 @@ public:
 	void QueueWrite(MessageOut& msg);
 	void QueueWrite(MessageOut&& msg);
 
-	eid GetID() { return this->user->GetEntityId(); }
+	eid GetID() { return this->user ? this->user->GetEntityId() : 0; }
 
 	tcp::endpoint GetEndpoint() { return this->endpoint; }
 
@@ -80,7 +81,7 @@ private:
 
 	Server* server;
 
-	User* user;
+	User* user{nullptr};
 
 	state_id_t last_confirmed_state_id{0}; // That last state_id the client confirmed it received.
 	state_id_t last_recv_command_id{0};

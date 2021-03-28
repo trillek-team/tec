@@ -85,6 +85,10 @@ int main() {
 		save.Load(tec::FilePath::GetAssetPath("save/save1.json"));
 		lua_sys->GetGlobalState()["save"] = save;
 
+		auto& authenticator = server.GetAuthenticator();
+		auto user_list_data_source = tec::UserListDataSource(*save.GetUserList());
+		authenticator.SetDataSource(&user_list_data_source);
+
 		// Load test script
 		tec::FilePath fp = tec::FilePath::GetAssetPath("scripts/server-test.lua");
 		if (fp.FileExists()) {

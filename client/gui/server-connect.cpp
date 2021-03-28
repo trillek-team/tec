@@ -1,11 +1,15 @@
 #include "server-connect.hpp"
+#include "imgui-system.hpp"
+#include <commands.pb.h>
 
 namespace tec {
-ServerConnectWindow::ServerConnectWindow(ServerConnection& server_connection) : server_connection(server_connection) {}
+ServerConnectWindow::ServerConnectWindow(ServerConnection& server_connection) : server_connection(server_connection) {
+	this->window_name = "connect_window";
+}
 
 void ServerConnectWindow::Update(double) {}
 
-void ServerConnectWindow::Draw() {
+void ServerConnectWindow::Draw(IMGUISystem* gui) {
 	if (this->show) {
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f), 0, ImVec2(0.5f, 0.5f));
@@ -51,17 +55,48 @@ void ServerConnectWindow::Draw() {
 			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
 			spdlog::get("console_log")->info("Connecting to {}", ip.str());
 			this->server_connection.Connect(ip.str());
+			gui->HideWindow(this->window_name);
+			gui->ShowWindow("login_window");
 		}
 		ImGui::End();
 		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
 	}
 }
 
-PingTimesWindow::PingTimesWindow(ServerConnection& server_connection) : server_connection(server_connection) {}
+void LoginWindow::Draw(IMGUISystem* gui) {
+	if (this->show) {
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f), 0, ImVec2(0.5f, 0.5f));
+		ImGui::Begin(
+				"Login", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+		ImGui::TextUnformatted("Username");
+		ImGui::SameLine();
+		ImGui::InputText("", this->username, IM_ARRAYSIZE(this->username), ImGuiInputTextFlags_CharsNoBlank);
+		ImGui::SameLine();
+		if (ImGui::Button("Login")) {
+			auto hide_login_window = std::bind(&IMGUISystem::HideWindow, gui, window_name);
+			this->server_connection.RegisterMessageHandler(
+					tec::networking::MessageType::AUTHENTICATED,
+					[hide_login_window](tec::networking::MessageIn&) { hide_login_window(); });
+			proto::UserLogin user_login;
+			user_login.set_username(this->username);
+			user_login.set_password("");
+			networking::MessageOut msg(tec::networking::LOGIN);
+			user_login.SerializeToZeroCopyStream(&msg);
+			this->server_connection.Send(msg);
+		}
+		ImGui::End();
+		ImGui::SetWindowSize("Login", ImVec2(0, 0));
+	}
+}
+
+PingTimesWindow::PingTimesWindow(ServerConnection& server_connection) : server_connection(server_connection) {
+	this->window_name = "ping_times";
+}
 
 void PingTimesWindow::Update(double) {}
 
-void PingTimesWindow::Draw() {
+void PingTimesWindow::Draw(IMGUISystem*) {
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
 	ImGui::Begin(
 			"ping_times",

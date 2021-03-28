@@ -9,6 +9,7 @@
 
 #include "components/lua-script.hpp"
 #include "lua-system.hpp"
+#include "system/user-authenticator.hpp"
 
 #include "event-queue.hpp"
 #include "event-system.hpp"
@@ -60,6 +61,8 @@ public:
 	void On(std::shared_ptr<EntityCreated> data);
 	void On(std::shared_ptr<EntityDestroyed> data);
 
+	system::UserAuthenticator& GetAuthenticator() { return this->authenticator; }
+
 private:
 	// Method that handles and accepts incoming connections.
 	void AcceptHandler();
@@ -91,6 +94,8 @@ private:
 	enum { max_recent_msgs = 100 };
 	std::deque<std::unique_ptr<MessageOut>> recent_msgs;
 	static std::mutex recent_msgs_mutex;
+
+	system::UserAuthenticator authenticator;
 
 public:
 	std::mutex client_list_mutex;

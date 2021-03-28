@@ -12,41 +12,20 @@
 #include "proto-load.hpp"
 
 namespace tec {
-eid GetNextEntityId();
 
-template <typename T> void UserList::SetUsers(T begin, T end) {
-	for (auto itr = begin; itr != end; itr++) {
-		auto user = std::make_shared<User>(GetNextEntityId());
-		user->In(*itr);
-		this->users.emplace_back(user);
-	}
-}
+void UserList::AddUser(User user) { this->users.emplace_back(user); }
 
-void UserList::AddUser(std::shared_ptr<User> user) { this->users.emplace_back(user); }
-
-std::shared_ptr<User> UserList::CreateUser(uid user_id, std::string username) {
-	auto user = std::make_shared<User>(GetNextEntityId());
-	user->SetUserId(user_id);
-	user->SetUsername(username);
-	this->users.emplace_back(user);
+User* UserList::CreateUser(uid user_id) {
+	User user;
+	user.SetUserId(user_id);
+	this->AddUser(user);
 	return GetUser(user_id);
 }
 
-std::shared_ptr<User> UserList::GetUser(uid id) {
+User* UserList::GetUser(uid id) {
 	auto existing_user = this->GetUserItr(id);
-	if (existing_user != this->users.end()) {
-		return *existing_user;
-	}
-	return nullptr;
-}
 
-std::shared_ptr<User> UserList::FindUser(std::string username) {
-	for (auto& user : this->users) {
-		if (user->GetUsername() == username) {
-			return user;
-		}
-	}
-	return nullptr;
+	return existing_user != this->users.end() ? &*existing_user : nullptr;
 }
 
 bool UserList::RemoveUser(uid id) {
@@ -67,11 +46,11 @@ void UserList::RegisterLuaType(sol::state& state) {
 			"AddUser", &UserList::AddUser,
 			"CreateUser", &UserList::CreateUser,
 			"GetUser", &UserList::GetUser,
-			"FindUser", &UserList::FindUser,
 			"RemoveUser", &UserList::RemoveUser,
 			"HasUser", &UserList::HasUser
 		);
 	// clang-format on
+	User::RegisterLuaType(state);
 }
 
 bool SaveGame::Load(std::string _filename) { return this->Load(FilePath(_filename)); }
@@ -87,7 +66,7 @@ bool SaveGame::Load(const FilePath _filepath) {
 	auto json_string = LoadAsString(this->filepath);
 	auto status = google::protobuf::util::JsonStringToMessage(json_string, &this->save);
 	if (!status.ok()) {
-		_log->error("Failed to parse save data");
+		_log->error("Failed to parse save data {}", status.ToString());
 		return false;
 	}
 	this->LoadUsers();
@@ -116,7 +95,7 @@ bool SaveGame::Save(const FilePath _filepath) {
 	auto status = google::protobuf::util::MessageToJsonString(this->save, &json_string);
 
 	if (!status.ok()) {
-		_log->error("Failed to serialize save data");
+		_log->error("Failed to serialize save data {}", status.ToString());
 		return false;
 	}
 
@@ -153,16 +132,20 @@ void SaveGame::RegisterLuaType(sol::state& state) {
 }
 
 void SaveGame::LoadUsers() {
-	auto users = this->save.mutable_users();
-	user_list.SetUsers(users->begin(), users->end());
+	auto users = this->save.users();
+
+	for (const auto& _user : users) {
+		User user;
+		user.In(_user);
+		this->user_list.AddUser(user);
+	}
 }
 
 void SaveGame::SaveUsers() {
 	auto users = this->save.mutable_users();
 	users->Clear();
 	for (const auto& user : *user_list.GetUsers()) {
-		auto save_user = users->Add();
-		user->Out(save_user);
+		user.Out(users->Add());
 	}
 }
 

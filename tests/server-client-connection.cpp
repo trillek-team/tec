@@ -60,7 +60,10 @@ TEST(ServerClientCommunications, TCPConnection) {
 	lua_sys->GetGlobalState()["save"] = &save; // provide a pointer
 
 	// add a fake user to test login
-	auto test_user = save.GetUserList()->CreateUser("login-test-user", "bob");
+	auto test_user = save.GetUserList()->CreateUser("login-test-user");
+	test_user->SetUsername("bob");
+	auto user_list_data_source = tec::UserListDataSource(*save.GetUserList());
+	server.GetAuthenticator().SetDataSource(&user_list_data_source);
 
 	// setup scripting environment for tests
 	lua_sys->ExecuteString("lua_test={}");
@@ -68,12 +71,8 @@ TEST(ServerClientCommunications, TCPConnection) {
 	lua_was_called["error"] = [](std::string message) { FAIL() << message; };
 	// scripts to test if the events trigger calls
 	lua_sys->ExecuteString("function onClientConnected(info) lua_test[\"onClientConnected\"] = true end");
-	lua_sys->ExecuteString( // simple script to handle logins
-			"function onUserLogin(client, name)\n"
-			"lua_test[\"onUserLogin\"] = true\n"
-			"client.user = save.user_list:FindUser(name)\n"
-			"if client.user==nil then lua_test.error(\"login test failed\") end\n"
-			"end");
+	lua_sys->ExecuteString("function onUserLogin(client, user_login_info) lua_test[\"onUserLogin\"] = true end");
+	lua_sys->ExecuteString("function onClientJoin(client, user_login_info) lua_test[\"onClientJoin\"] = true end");
 	std::thread server_thread([&server]() { server.Start(); });
 
 	std::promise<tec::eid> promise_client_id;
@@ -97,10 +96,10 @@ TEST(ServerClientCommunications, TCPConnection) {
 	});
 	std::timed_mutex connect_function_called;
 	connect_function_called.lock();
-	connection.RegisterConnectFunc([&]() {
+	connection.RegisterConnectFunc([&, test_user]() {
 		// when we connect, send a test login
 		proto::UserLogin user_login;
-		user_login.set_username("bob");
+		user_login.set_username(test_user->GetUsername());
 		user_login.set_password("test");
 		networking::MessageOut msg(tec::networking::LOGIN);
 		user_login.SerializeToZeroCopyStream(&msg);
@@ -135,6 +134,7 @@ TEST(ServerClientCommunications, TCPConnection) {
 	// the server side Lua events should have been called
 	ASSERT_TRUE(lua_was_called["onClientConnected"].get_or(false));
 	ASSERT_TRUE(lua_was_called["onUserLogin"].get_or(false));
+	ASSERT_TRUE(lua_was_called["onClientJoin"].get_or(false));
 	auto test_client = *clients.cbegin();
 	auto last_confirmed_state = test_client->GetLastConfirmedStateID();
 	// the inbound message queues should not have any partially transmitted messages
