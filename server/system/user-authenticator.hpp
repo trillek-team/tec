@@ -23,9 +23,7 @@ public:
 	}
 	User* Authenticate(std::string username, std::string password = "") {
 		return this->user_data_source ? this->user_data_source->FindWhere(
-					   [username](const User& user) { 
-				return user.GetUsername() == username; 
-			})
+					   [username](const User& user) { return user.GetUsername() == username; })
 									  : nullptr;
 	}
 

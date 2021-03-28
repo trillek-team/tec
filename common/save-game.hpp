@@ -48,6 +48,7 @@ public:
 		auto itr = std::find_if(users->begin(), users->end(), predicate);
 		return itr != users->end() ? &*itr : nullptr;
 	}
+
 private:
 	UserList& user_list;
 };

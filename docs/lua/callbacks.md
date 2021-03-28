@@ -18,7 +18,7 @@ end
 	* client:[ClientConnection](classes/ClientConnection.md)
 * `onClientLeave(client)` - Called when a client (user) is leaving the world such as after logout
 	* client:[ClientConnection](classes/ClientConnection.md)
-* `onUserLogin(client, user_login_info)` - Called when a user is logged in.
+* `onUserLogin(user_login_info)` - Called when a user is logged in.
 	* user_login_info:[user_login_info](classes/user_login_info.md)
 
 ```lua
