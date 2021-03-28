@@ -266,6 +266,9 @@ void ClientConnection::process_message(MessageIn& msg) {
 
 			this->server->SendWorld(shared_from_this());
 		}
+		else {
+			this->server->OnDisconnect(shared_from_this());
+		}
 		break;
 	}
 	case MessageType::CLIENT_READY_TO_RECEIVE:

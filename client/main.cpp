@@ -119,7 +119,6 @@ int main(int argc, char* argv[]) {
 	tec::ActiveEntityTooltip active_entity_tooltip(game);
 	tec::networking::ServerConnection& connection = game.GetServerConnection();
 	tec::ServerConnectWindow server_connect_window(connection);
-	tec::LoginWindow login_window(connection);
 	tec::PingTimesWindow ping_times_window(connection);
 	tec::DebugInfo debug_info_window(game);
 
@@ -139,7 +138,6 @@ int main(int argc, char* argv[]) {
 	gui.AddWindowDrawFunction(server_connect_window.GetWindowName(), [&server_connect_window, &gui]() {
 		server_connect_window.Draw(&gui);
 	});
-	gui.AddWindowDrawFunction(login_window.GetWindowName(), [&login_window, &gui]() { login_window.Draw(&gui); });
 	gui.AddWindowDrawFunction(
 			ping_times_window.GetWindowName(), [&ping_times_window, &gui]() { ping_times_window.Draw(&gui); });
 	gui.AddWindowDrawFunction(console.GetWindowName(), [&console, &gui]() { console.Draw(&gui); });
@@ -153,7 +151,7 @@ int main(int argc, char* argv[]) {
 
 	connection.RegisterMessageHandler(
 			tec::networking::MessageType::CLIENT_ID,
-			[&gui, &ping_times_window, &login_window, &log](tec::networking::MessageIn& message) {
+			[&gui, &ping_times_window, &log](tec::networking::MessageIn& message) {
 				std::string client_id = message.ToString();
 				log->info("You are connected as client ID {}", client_id);
 				gui.ShowWindow(ping_times_window.GetWindowName());

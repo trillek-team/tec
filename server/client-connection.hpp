@@ -24,6 +24,8 @@ class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
 	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server);
 
+	~ClientConnection() { this->socket.close(); }
+
 	void StartRead();
 
 	void QueueWrite(MessagePool::ptr_type msg);
