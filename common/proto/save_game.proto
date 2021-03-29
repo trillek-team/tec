@@ -6,8 +6,12 @@ import "components.proto";
 
 message User {
 	required string id = 1;
-	required string username = 2;	
-	optional Position position = 3;
+	required string username = 2;
+
+	message EntityData {
+		repeated Component component_states = 1;
+	}
+	optional EntityData entity_data = 3;
 }
 
 message World {

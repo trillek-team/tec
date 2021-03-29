@@ -1,9 +1,13 @@
 #pragma once
+
+#include <string>
+
 /**
  * Abstract base class for GUI windows
  */
 
 namespace tec {
+class IMGUISystem;
 
 class AbstractWindow {
 public:
@@ -11,7 +15,7 @@ public:
 
 	virtual void Update(double){};
 
-	virtual void Draw() = 0;
+	virtual void Draw(IMGUISystem*) = 0;
 
 	void SetAlpha(float a) {
 		a = (a < 0) ? 0 : a; // Clamp [0, 1.0]
@@ -29,9 +33,12 @@ public:
 
 	void Show() { show = true; }
 
+	std::string GetWindowName() { return this->window_name; }
+
 protected:
 	float alpha = 1.0f;
 	bool collapsed = true; /// Collapsed ?
 	bool show = true; /// Visible ?
+	std::string window_name;
 };
 } // namespace tec

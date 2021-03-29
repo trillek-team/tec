@@ -8,6 +8,7 @@
 
 namespace tec {
 class Game;
+class IMGUISystem;
 
 class ActiveEntityTooltip : public AbstractWindow {
 public:
@@ -15,7 +16,7 @@ public:
 
 	void Update(double) override;
 
-	void Draw() override;
+	void Draw(IMGUISystem*) override;
 
 private:
 	Game& game;

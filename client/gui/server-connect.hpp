@@ -9,6 +9,7 @@
 
 namespace tec {
 using networking::ServerConnection;
+class IMGUISystem;
 
 class ServerConnectWindow : public AbstractWindow {
 public:
@@ -16,7 +17,7 @@ public:
 
 	void Update(double) override;
 
-	void Draw() override;
+	void Draw(IMGUISystem*) override;
 
 private:
 	ServerConnection& server_connection;
@@ -28,7 +29,7 @@ public:
 
 	void Update(double) override;
 
-	void Draw() override;
+	void Draw(IMGUISystem*) override;
 
 private:
 	ServerConnection& server_connection;

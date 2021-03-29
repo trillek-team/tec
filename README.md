@@ -11,6 +11,8 @@ Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on b
 TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua, Bullet, Dear ImGui, sol3, Spdlog and OpenAL which can be installed most easily via [vcpkg](#vcpkg)
 
 ## Documentation
+Read the docs on RTFD
+[![Documentation Status](https://readthedocs.org/projects/project-trillek/badge/?version=latest)](https://project-trillek.readthedocs.io/?badge=latest) 
 Documentation is done via Doxygen for C++ code and supplementary docs must be maintained for the Lua API in the `docs/` folder.
 
 Whenever there is a Lua API change please update the corresponding `docs/`.
@@ -72,3 +74,13 @@ Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/Comma
 
 ### Part 3 (Unit Tests)
 To generate the unit tests, follow the same instructions from before, but set to true the flag BUILD_TESTS_TEC
+
+## Clang Format
+The follow docker script will setup a docker container that will run clang format.
+`docker build -t clang-format-lint github.com/DoozyX/clang-format-lint-action`
+### Windows
+Run the following on windows to format all source files in the src dir
+`docker run -it --rm --workdir /src -v ${pwd}:/src clang-format-lint --clang-format-executable /clang-format/clang-format11 -r -i true .`
+### Linux
+Run the following on windows to format all source files in the src dir
+`docker run -it --rm --workdir /src -v $(pwd):/src clang-format-lint --clang-format-executable /clang-format/clang-format11 -r -i true .`

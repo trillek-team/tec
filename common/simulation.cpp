@@ -46,8 +46,12 @@ GameState Simulation::Simulate(const double delta_time, GameState& interpolated_
 
 	if (phys_results.size() > 0) {
 		for (eid entity_id : phys_results) {
-			client_state.positions[entity_id] = this->phys_sys.GetPosition(entity_id);
-			client_state.orientations[entity_id] = this->phys_sys.GetOrientation(entity_id);
+			if (interpolated_state.positions.find(entity_id) != interpolated_state.positions.end()) {
+				client_state.positions[entity_id] = this->phys_sys.GetPosition(entity_id);
+			}
+			if (interpolated_state.orientations.find(entity_id) != interpolated_state.orientations.end()) {
+				client_state.orientations[entity_id] = this->phys_sys.GetOrientation(entity_id);
+			}
 			if (interpolated_state.velocities.find(entity_id) != interpolated_state.velocities.end()) {
 				client_state.velocities[entity_id] = interpolated_state.velocities.at(entity_id);
 			}

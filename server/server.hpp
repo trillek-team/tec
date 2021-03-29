@@ -9,6 +9,7 @@
 
 #include "components/lua-script.hpp"
 #include "lua-system.hpp"
+#include "system/user-authenticator.hpp"
 
 #include "event-queue.hpp"
 #include "event-system.hpp"
@@ -21,7 +22,6 @@ namespace tec {
 namespace networking {
 
 extern unsigned short PORT;
-static eid BASE_ENTITY_ID = 10000;
 
 class ClientConnection;
 
@@ -38,8 +38,11 @@ public:
 	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut& msg);
 	void Deliver(std::shared_ptr<ClientConnection> client, MessageOut&& msg);
 
+	// Calls when a client connects. This provides a chance to reject the client before joining the world.
+	bool OnConnect();
+
 	// Calls when a client leaves, usually when the connection is no longer valid.
-	void Leave(std::shared_ptr<ClientConnection> client);
+	void OnDisconnect(std::shared_ptr<ClientConnection> client);
 
 	void Start();
 
@@ -51,10 +54,14 @@ public:
 	// For calling ProcessEvents() in main.cpp
 	LuaSystem* GetLuaSystem() { return &this->lua_sys; }
 
+	void ProcessEvents();
+
 	using EventQueue<EntityCreated>::On;
 	using EventQueue<EntityDestroyed>::On;
 	void On(std::shared_ptr<EntityCreated> data);
 	void On(std::shared_ptr<EntityDestroyed> data);
+
+	system::UserAuthenticator& GetAuthenticator() { return this->authenticator; }
 
 private:
 	// Method that handles and accepts incoming connections.
@@ -76,13 +83,19 @@ private:
 
 	std::map<eid, proto::Entity> entities;
 
+	// Sends the "world" to a given client including all entities and recent chats.
+	void SendWorld(std::shared_ptr<ClientConnection> client);
+
+	friend class ClientConnection;
+
 	std::set<std::shared_ptr<ClientConnection>> clients; // All connected clients.
-	std::uint64_t base_id = BASE_ENTITY_ID; // Starting client_id
 
 	// Recent message list all clients get on connecting,
 	enum { max_recent_msgs = 100 };
 	std::deque<std::unique_ptr<MessageOut>> recent_msgs;
 	static std::mutex recent_msgs_mutex;
+
+	system::UserAuthenticator authenticator;
 
 public:
 	std::mutex client_list_mutex;

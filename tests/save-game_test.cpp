@@ -10,6 +10,7 @@ const FilePath save_directory = FilePath::GetAssetPath("save_test_123456");
 const FilePath save_file_path = save_directory + "/save.json";
 const std::string
 		contents("{\"users\":[{\"id\":\"user-1\",\"username\":\"John\"}], \"world\":{\"entityFileList\":[]}}");
+const eid entity_id = 1234;
 
 class SaveGameTest : public ::testing::Test {
 protected:
@@ -40,16 +41,16 @@ TEST_F(SaveGameTest, DiskIO) {
 	{
 		SaveGame save_game;
 		EXPECT_NO_THROW(save_game.Load(save_file_path));
-		auto user2 = proto::User();
-		user2.set_id(user2_id);
-		user2.set_username(user2_id);
+		User user2;
+		user2.SetUserId(user2_id);
+		user2.SetUsername(user2_id);
 		save_game.GetUserList()->AddUser(user2);
 		EXPECT_NO_THROW(save_game.Save());
 	}
 	{
 		SaveGame save_game;
 		save_game.Load(save_file_path);
-		EXPECT_TRUE(save_game.GetUserList()->UserExists(user2_id));
+		EXPECT_TRUE(save_game.GetUserList()->HasUser(user2_id));
 	}
 }
 
@@ -69,8 +70,8 @@ TEST(UserList_class_test, Constructor) {
 TEST(UserList_class_test, AddUser) {
 	UserList user_list;
 	auto users = user_list.GetUsers();
-	auto user = proto::User();
-	user.set_id("user-1");
+	User user;
+	user.SetUserId("user-1");
 
 	user_list.AddUser(user);
 	EXPECT_EQ(users->size(), 1);
@@ -80,22 +81,22 @@ TEST(UserList_class_test, UserExists) {
 	UserList user_list;
 	auto users = user_list.GetUsers();
 	uid user_id = "user-1";
-	auto user = proto::User();
-	user.set_id(user_id);
+	User user;
+	user.SetUserId(user_id);
 
 	user_list.AddUser(user);
-	EXPECT_TRUE(user_list.UserExists(user_id));
+	EXPECT_TRUE(user_list.HasUser(user_id));
 
 	uid invalid_user_id = "user-2";
-	EXPECT_FALSE(user_list.UserExists(invalid_user_id));
+	EXPECT_FALSE(user_list.HasUser(invalid_user_id));
 }
 
 TEST(UserList_class_test, RemoveUser) {
 	UserList user_list;
 	auto users = user_list.GetUsers();
-	auto user = proto::User();
 	uid user_id = "user-1";
-	user.set_id(user_id);
+	User user;
+	user.SetUserId(user_id);
 
 	user_list.AddUser(user);
 	EXPECT_EQ(users->size(), 1);
@@ -113,15 +114,15 @@ TEST(UserList_class_test, UpdateUser) {
 	uid user_id = "user-1";
 	auto users = user_list.GetUsers();
 	{
-		auto user = proto::User();
-		user.set_id(user_id);
+		User user;
+		user.SetUserId(user_id);
 		user_list.AddUser(user);
 	}
 
 	auto user = user_list.GetUser(user_id);
 	uid user_id2 = "user-2";
-	user->set_id(user_id2);
+	user->SetUserId(user_id2);
 
-	EXPECT_FALSE(user_list.UserExists(user_id));
-	EXPECT_TRUE(user_list.UserExists(user_id2));
+	EXPECT_FALSE(user_list.HasUser(user_id));
+	EXPECT_TRUE(user_list.HasUser(user_id2));
 }

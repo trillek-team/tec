@@ -49,10 +49,10 @@ public:
 	template <typename T> void Remove() { Multiton<eid, T*>::Remove(this->id); }
 
 	// Checks if this entity has a specific component.
-	template <typename T> bool Has() { return Multiton<eid, T*>::Has(this->id); }
+	template <typename T> bool Has() const { return Multiton<eid, T*>::Has(this->id); }
 
 	// Get a specific component.
-	template <typename T> const T* Get() { return Multiton<eid, T*>::Get(this->id); }
+	template <typename T> const T* Get() const { return Multiton<eid, T*>::Get(this->id); }
 
 	// Get multiple components.
 	template <typename... T> std::tuple<const T*...> GetList() {
@@ -66,7 +66,7 @@ public:
 	}
 
 	// Get the entity id.
-	eid GetID() { return this->id; }
+	eid GetID() const { return this->id; }
 
 private:
 	eid id;

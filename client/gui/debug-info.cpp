@@ -1,11 +1,11 @@
 #include "debug-info.hpp"
 
 namespace tec {
-DebugInfo::DebugInfo(Game& game) : game(game) {}
+DebugInfo::DebugInfo(Game& game) : game(game) { this->window_name = "debug_info"; }
 
 void DebugInfo::Update(double) {}
 
-void DebugInfo::Draw() {
+void DebugInfo::Draw(IMGUISystem*) {
 	ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
 	ImGui::Begin(
 			"debug_info",

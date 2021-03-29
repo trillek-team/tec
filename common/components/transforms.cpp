@@ -5,9 +5,9 @@ void Position::Translate(const glm::vec3 amount) { this->value += amount; }
 
 void Position::Translate(const glm::vec3 amount, const glm::quat orientation) { this->value += orientation * amount; }
 
-void Position::Out(proto::Component* target) { this->Out(target->mutable_position()); }
+void Position::Out(proto::Component* target) const { this->Out(target->mutable_position()); }
 
-void Position::Out(proto::Position* comp) {
+void Position::Out(proto::Position* comp) const {
 	comp->set_x(this->value.x);
 	comp->set_y(this->value.y);
 	comp->set_z(this->value.z);
@@ -44,9 +44,9 @@ void Orientation::OrientedRotate(const glm::vec3 amount) {
 	this->value = glm::normalize(change * this->value);
 }
 
-void Orientation::Out(proto::Component* target) { this->Out(target->mutable_orientation()); }
+void Orientation::Out(proto::Component* target) const { this->Out(target->mutable_orientation()); }
 
-void Orientation::Out(proto::Orientation* comp) {
+void Orientation::Out(proto::Orientation* comp) const {
 	comp->set_x(this->value.x);
 	comp->set_y(this->value.y);
 	comp->set_z(this->value.z);

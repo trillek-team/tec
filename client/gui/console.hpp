@@ -18,6 +18,7 @@
 #include "ring-buffer.hpp"
 
 namespace tec {
+class IMGUISystem;
 class Console : public AbstractWindow, public EventQueue<KeyboardEvent>, public EventQueue<WindowResizedEvent> {
 public:
 	Console();
@@ -34,7 +35,7 @@ public:
 
 	void Printfln(const char* cstr, ...) IM_FMTARGS(2);
 
-	void Draw() override;
+	void Draw(IMGUISystem*) override;
 
 	bool isCollapsed() const override { return false; }
 

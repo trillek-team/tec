@@ -6,6 +6,7 @@
 
 namespace tec {
 Console::Console() : buf{new tec::RingBuffer<std::tuple<ImVec4, std::string>, 4096>()} {
+	this->window_name = "console";
 	inputBuf[0] = '\0';
 
 	// Default embed commands
@@ -84,7 +85,7 @@ void Console::Printfln(const char* fmt, ...) {
 	scrollToBottom = true;
 }
 
-void Console::Draw() {
+void Console::Draw(IMGUISystem*) {
 	if (show) {
 		const auto root = ImGui::GetIO().DisplaySize;
 		float height = root.y * 0.25f;

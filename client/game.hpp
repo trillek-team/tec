@@ -76,7 +76,7 @@ private:
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	state_id_t command_id = 0;
 	eid active_entity{-1};
-	std::shared_ptr<tec::FPSController> player_camera;
+	std::shared_ptr<tec::FPSController> player_camera{nullptr};
 
 	std::thread sound_thread;
 	std::thread* asio_thread = nullptr;
