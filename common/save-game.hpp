@@ -41,7 +41,7 @@ public:
 	void Add(User user) override { this->user_list.AddUser(user); }
 	void RemoveWhere(std::function<bool(const User&)> predicate) override {
 		std::list<User>* users = this->user_list.GetUsers();
-		std::remove_if(users->begin(), users->end(), predicate);
+		users->erase(std::remove_if(users->begin(), users->end(), predicate));
 	}
 	User* FindWhere(std::function<bool(const User&)> predicate) override {
 		std::list<User>* users = this->user_list.GetUsers();

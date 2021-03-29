@@ -46,7 +46,7 @@ MessagePool::list_type MessageOut::GetMessages() {
 		list.back()->SetMessageType(this->message_type);
 		list.back()->encode_header();
 	}
-	return std::move(list);
+	return list;
 }
 
 bool MessageOut::Next(void** data, int* size) {
@@ -141,7 +141,7 @@ MessageOut MessageIn::ToOut() const {
 	out.message_id = this->message_id;
 	out.message_list = this->message_list; // copy the list
 	out.payload_written = GetSize();
-	return std::move(out);
+	return out;
 }
 
 bool MessageIn::DecodeMessages() {

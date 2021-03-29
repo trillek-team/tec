@@ -18,7 +18,6 @@ set(trillek-server_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-server_SOURCE_DIR}/client-connection.cpp
 	${trillek-server_SOURCE_DIR}/server.cpp
 	${trillek-server_SOURCE_DIR}/server-game-state-queue.cpp
-	${trillek-server_SOURCE_DIR}/system/user-authenticator.cpp
 )
 
 set(trillek-server_SOURCES ${trillek-server_SOURCES} PARENT_SCOPE) # so tests can use them

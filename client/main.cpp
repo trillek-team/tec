@@ -26,6 +26,11 @@
 #include "resources/vorbis-stream.hpp"
 #include "server-connection.hpp"
 
+std::vector<std::string> SplitString(std::string args, std::string deliminator = " ") {
+	auto regexz = std::regex(deliminator);
+	return {std::sregex_token_iterator(args.begin(), args.end(), regexz, -1), std::sregex_token_iterator()};
+}
+
 namespace tec {
 void RegisterFileFactories() {
 	AddFileFactory<MD5Mesh>();
@@ -172,16 +177,27 @@ int main(int argc, char* argv[]) {
 		std::string message(args, end_arg - args);
 		lua_sys->ExecuteString(message);
 	});
-	console.AddConsoleCommand("connect", "connect [ip] : Connect to a server [ip]", [&connection](const char* args) {
-		const char* end_arg = args;
-		while (*end_arg != '\0') {
-			end_arg++;
-		}
-		// Args now points were the arguments begins
-		std::string ip(args, end_arg - args);
-		connection.Connect(ip);
-	});
-	console.AddSlashHandler([&lua_sys, &connection](const char* args) {
+	console.AddConsoleCommand(
+			"connect",
+			"connect [username][ip] : Connect to a server [ip] with the provided [username]",
+			[&connection](const char* args) {
+				const char* end_arg = args;
+				while (*end_arg != '\0') {
+					end_arg++;
+				}
+
+				std::vector<std::string> splitArgs = SplitString(std::string(args, end_arg - args));
+				if (splitArgs.size() >= 2) {
+					connection.Connect(splitArgs[1]);
+					tec::proto::UserLogin user_login;
+					user_login.set_username(splitArgs[0]);
+					user_login.set_password("");
+					tec::networking::MessageOut msg(tec::networking::LOGIN);
+					user_login.SerializeToZeroCopyStream(&msg);
+					connection.Send(msg);
+				}
+			});
+	console.AddSlashHandler([&connection](const char* args) {
 		const char* end_arg = args;
 		while (*end_arg != '\0') {
 			end_arg++;
@@ -192,13 +208,9 @@ int main(int argc, char* argv[]) {
 		std::shared_ptr<tec::ChatCommandEvent> data = std::make_shared<tec::ChatCommandEvent>();
 		data->command = chat_command_message.substr(0, argument_break_offset);
 
-		// Split args at space
 		if (argument_break_offset < chat_command_message.size()) {
 			std::string command_args = chat_command_message.substr(argument_break_offset + 1);
-			auto regexz = std::regex(" ");
-			data->args = {
-					std::sregex_token_iterator(command_args.begin(), command_args.end(), regexz, -1),
-					std::sregex_token_iterator()};
+			data->args = SplitString(command_args);
 		}
 		tec::EventSystem<tec::ChatCommandEvent>::Get()->Emit(data); // Handle command locally
 
