@@ -141,7 +141,7 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	ss.SetDelta(delta);
 	tfm.sound_system_time = GetElapsedTime();
 
-	rs.Update(delta, client_state);
+	rs.Update(delta);
 	tfm.render_system_time = GetElapsedTime();
 
 	lua_sys.Update(delta);

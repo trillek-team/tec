@@ -13,7 +13,6 @@
 
 #include "command-queue.hpp"
 #include "event-system.hpp"
-#include "game-state.hpp"
 #include "graphics/gbuffer.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "tec-types.hpp"
@@ -33,6 +32,7 @@ typedef Command<RenderSystem> RenderCommand;
 
 struct WindowResizedEvent;
 struct EntityDestroyed;
+struct EntityCreated;
 
 class RenderSystem :
 		public CommandQueue<RenderSystem>,
@@ -44,7 +44,7 @@ public:
 
 	void SetViewportSize(const unsigned int width, const unsigned int height);
 
-	void Update(const double delta, const GameState& state);
+	void Update(const double delta);
 
 private:
 	std::shared_ptr<spdlog::logger> _log;
@@ -63,7 +63,7 @@ private:
 	void On(std::shared_ptr<WindowResizedEvent> data);
 	void On(std::shared_ptr<EntityDestroyed> data);
 	void On(std::shared_ptr<EntityCreated> data);
-	void UpdateRenderList(double delta, const GameState& state);
+	void UpdateRenderList(double delta);
 
 	glm::mat4 projection{0};
 	View* current_view{nullptr};

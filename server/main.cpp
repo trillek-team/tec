@@ -83,7 +83,7 @@ int main() {
 
 		tec::SaveGame save;
 		save.Load(tec::FilePath::GetAssetPath("save/save1.json"));
-		lua_sys->GetGlobalState()["save"] = save;
+		lua_sys->GetGlobalState()["save"] = &save;
 
 		auto& authenticator = server.GetAuthenticator();
 		auto user_list_data_source = tec::UserListDataSource(*save.GetUserList());

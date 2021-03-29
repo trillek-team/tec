@@ -59,9 +59,21 @@ void User::RemoveEntityFromWorld() {
 	}
 }
 
-void User::Out(proto::User* target) const {
+void User::UpdateEntityData() {
+	Entity entity(this->entity_id);
+	auto [position, orientation] = entity.GetList<Position, Orientation>();
+	if (position) {
+		this->entity_data.position = *position;
+	}
+	if (orientation) {
+		this->entity_data.orientation = *orientation;
+	}
+}
+
+void User::Out(proto::User* target) {
 	target->set_id(this->credentials.user_id);
 	target->set_username(this->credentials.username);
+	this->UpdateEntityData();
 	auto components = target->mutable_entity_data()->mutable_component_states();
 	this->entity_data.position.Out(components->Add());
 	this->entity_data.orientation.Out(components->Add());

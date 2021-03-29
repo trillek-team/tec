@@ -396,8 +396,19 @@ void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
 			AddRigidBody(collision_body);
 			break;
 		}
-		case proto::Component::kPosition:
-		case proto::Component::kOrientation: break;
+		case proto::Component::kPosition: {
+			Position* position = new Position();
+			position->In(comp);
+			Multiton<eid, Position*>::Set(entity_id, position);
+			break;
+		}
+		case proto::Component::kOrientation:
+		{
+			Orientation* orientation = new Orientation();
+			orientation->In(comp);
+			Multiton<eid, Orientation*>::Set(entity_id, orientation);
+			break;
+		};
 		default: break;
 		}
 	}
@@ -407,6 +418,8 @@ void PhysicsSystem::On(std::shared_ptr<EntityDestroyed> data) {
 	CollisionBodyMap::Remove(data->entity_id);
 	RemoveRigidBody(data->entity_id);
 	this->bodies.erase(data->entity_id); // There isn't a chance it will be re-added.
+	PositionMap::Remove(data->entity_id);
+	OrientationMap::Remove(data->entity_id);
 }
 
 Position PhysicsSystem::GetPosition(eid entity_id) {
