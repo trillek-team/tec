@@ -144,7 +144,7 @@ void SaveGame::LoadUsers() {
 void SaveGame::SaveUsers() {
 	auto users = this->save.mutable_users();
 	users->Clear();
-	for (const auto& user : *user_list.GetUsers()) {
+	for (auto user : *user_list.GetUsers()) {
 		user.Out(users->Add());
 	}
 }
@@ -173,7 +173,7 @@ void SaveGame::LoadWorld() {
 }
 
 void SaveGame::SaveWorld() {
-	auto world = this->save.mutable_world();
+	//auto world = this->save.mutable_world();
 	// world->Clear();
 	// TODO: Find way to get active entities in the world and iterate over them
 }

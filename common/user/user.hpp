@@ -76,7 +76,7 @@ public:
 	*
 	* \param proto::User* target The proto::User to serialize to.
 	*/
-	void Out(proto::User* target) const;
+	void Out(proto::User* target);
 
 	/**
 	* \brief Deserialize from a proto::User.
@@ -89,6 +89,11 @@ private:
 	eid entity_id{0};
 	EntityData entity_data;
 	Credentials credentials;
+
+	/**
+	* \brief Update entity data state.
+	*/
+	void UpdateEntityData();
 
 	std::shared_ptr<FPSController> controller; /**< Used to handle (client) or replay (server) input. */
 };

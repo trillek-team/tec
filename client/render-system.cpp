@@ -100,7 +100,7 @@ void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int 
 	glViewport(0, 0, width, height);
 }
 
-void RenderSystem::Update(const double delta, const GameState& state) {
+void RenderSystem::Update(const double delta) {
 	ProcessCommandQueue();
 	EventQueue<WindowResizedEvent>::ProcessEventQueue();
 	EventQueue<EntityCreated>::ProcessEventQueue();
@@ -111,7 +111,7 @@ void RenderSystem::Update(const double delta, const GameState& state) {
 	if (err) {
 		_log->debug("[GL] Preframe error {}", err);
 	}
-	UpdateRenderList(delta, state);
+	UpdateRenderList(delta);
 	this->light_gbuffer.StartFrame();
 
 	GeometryPass();
@@ -514,22 +514,12 @@ void RenderSystem::On(std::shared_ptr<EntityCreated> data) {
 
 			ScaleMap::Set(entity_id, scale);
 		} break;
-		case proto::Component::kPosition:
-		case proto::Component::kOrientation:
-		case proto::Component::kView:
-		case proto::Component::kCollisionBody:
-		case proto::Component::kVelocity:
-		case proto::Component::kAudioSource:
-		case proto::Component::kSpotLight:
-		case proto::Component::kVoxelVolume:
-		case proto::Component::kComputer:
-		case proto::Component::kLuaScript:
-		case proto::Component::COMPONENT_NOT_SET: break;
+		default: break;
 		}
 	}
 }
 
-void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
+void RenderSystem::UpdateRenderList(double delta) {
 	this->render_item_list.clear();
 	this->model_matricies.clear();
 
@@ -544,18 +534,19 @@ void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		if (renderable->hidden) {
 			continue;
 		}
+		Entity entity(entity_id);
+		auto [_position, _orientation, _scale, _animation] = entity.GetList<Position, Orientation, Scale, Animation>();
 		glm::vec3 position = renderable->local_translation.value;
-		if (state.positions.find(entity_id) != state.positions.end()) {
-			position += state.positions.at(entity_id).value;
+		if (_position) {
+			position += _position->value;
 		}
 		glm::quat orientation = renderable->local_orientation.value;
-		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			orientation = state.orientations.at(entity_id).value * orientation;
+		if (_orientation) {
+			orientation *= _orientation->value;
 		}
 		glm::vec3 scale(1.0);
-		Entity e(entity_id);
-		if (ScaleMap::Has(entity_id)) {
-			scale = ScaleMap::Get(entity_id)->value;
+		if (_scale) {
+			scale = _scale->value;
 		}
 
 		this->model_matricies[entity_id] =
@@ -583,12 +574,11 @@ void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 			ri.ibo = renderable->buffer->GetIBO();
 			ri.vertex_groups = &renderable->vertex_groups;
 
-			if (Multiton<eid, Animation*>::Has(e.GetID())) {
-				Animation* anim = AnimationMap::Get(e.GetID());
-				anim->UpdateAnimation(delta);
-				if (anim->bone_matrices.size() > 0) {
+			if (_animation) {
+				const_cast<Animation*>(_animation)->UpdateAnimation(delta);
+				if (_animation->bone_matrices.size() > 0) {
 					ri.animated = true;
-					ri.animation = anim;
+					ri.animation = const_cast<Animation*>(_animation);
 				}
 			}
 			this->render_item_list[renderable->shader].insert(std::move(ri));
@@ -599,18 +589,18 @@ void RenderSystem::UpdateRenderList(double delta, const GameState& state) {
 		eid entity_id = itr->first;
 		View* view = itr->second;
 
+		Entity entity(entity_id);
+		auto [_position, _orientation] = entity.GetList<Position, Orientation>();
 		glm::vec3 position;
-		if (state.positions.find(entity_id) != state.positions.end()) {
-			position = state.positions.at(entity_id).value;
+		if (_position) {
+			position = _position->value;
 		}
 		glm::quat orientation;
-		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			orientation = state.orientations.at(entity_id).value;
+		if (_orientation) {
+			orientation = _orientation->value;
 		}
 
-		this->model_matricies[entity_id] = glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation);
-
-		view->view_matrix = glm::inverse(this->model_matricies[entity_id]);
+		view->view_matrix = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
 		if (view->active) {
 			this->current_view = view;
 		}
