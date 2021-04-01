@@ -1,7 +1,7 @@
 # Trillek Engine C
-| Windows (VStudio 2019)  | Semaphore (GCC) |
-|-------------------------|-----------------|
-| [![Build status](https://ci.appveyor.com/api/projects/status/809xi9ukwo7sgsip?svg=true)](https://ci.appveyor.com/project/adam4813/tec-hem9u) | [![Build Status](https://semaphoreci.com/api/v1/trillek-team/tec/branches/master/shields_badge.svg)](https://semaphoreci.com/trillek-team/tec) |
+| Github actions | RTFD docs |
+|-------|-----------|
+|[![Trillek Engine CI](https://github.com/trillek-team/tec/actions/workflows/tec.yml/badge.svg)](https://github.com/trillek-team/tec/actions/workflows/tec.yml)|[![Documentation Status](https://readthedocs.org/projects/project-trillek/badge/?version=latest)](https://project-trillek.readthedocs.io/?badge=latest)|
 
 ## Support
 Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on building and usage.  
@@ -11,8 +11,6 @@ Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on b
 TEC requires cmake 3.9 and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua, Bullet, Dear ImGui, sol3, Spdlog and OpenAL which can be installed most easily via [vcpkg](#vcpkg)
 
 ## Documentation
-Read the docs on RTFD
-[![Documentation Status](https://readthedocs.org/projects/project-trillek/badge/?version=latest)](https://project-trillek.readthedocs.io/?badge=latest) 
 Documentation is done via Doxygen for C++ code and supplementary docs must be maintained for the Lua API in the `docs/` folder.
 
 Whenever there is a Lua API change please update the corresponding `docs/`.
