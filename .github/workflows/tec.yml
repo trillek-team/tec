@@ -44,6 +44,12 @@ jobs:
     - name: Install os deps (Linux)
       if: runner.os == 'Linux'
       run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
+    - name: Set gcc-9 on Ubuntu16.04
+      uses: lukka/set-shell-env@v1
+      if: contains( matrix.os, 'ubuntu-16.04')
+      with:
+        CC: gcc-9
+        CXX: g++-9
     - name: Set vcpkg's response file path used as part of cache's key.
       uses: lukka/set-shell-env@v1
       with:
