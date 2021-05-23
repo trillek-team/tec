@@ -37,6 +37,11 @@ Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/Comma
 	apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev
 	./bootstrap-vcpkg.sh
 	[OPTIONAL] ./vcpkg integrate install
+	
+#### Install packges
+The VCPKG toolchain file will install the packages found in `vcpkg.json`, see [VCPKG CMake Integration](https://vcpkg.readthedocs.io/en/latest/users/integration/#cmake) and about [Manifest Mode](https://vcpkg.readthedocs.io/en/latest/users/manifests/).
+If manual installation of packages is wanted/desired the following will install all packages.
+	`./vcpkg install asio bullet3 glew glfw3 glm lua openal-soft protobuf zlib spdlog imgui sol2`
 
 ### Part 2 (Building)
 1. `git submodule update --init` in the root directory.
@@ -68,7 +73,7 @@ Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/Comma
    1. `make` in the build directory
 
 ### Part 3 (Unit Tests)
-To generate the unit tests, follow the same instructions from before, but set to true the flag BUILD_TESTS_TEC
+To generate the unit tests, follow the same instructions from before, but set to true the flag `BUILD_TESTS_TEC`
 
 ## Clang Format
 The follow docker script will setup a docker container that will run clang format.

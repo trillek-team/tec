@@ -56,7 +56,7 @@ jobs:
       uses: lukka/run-vcpkg@v6
       id: runvcpkg
       with:
-        # Cmake will do the setup with the using of vcpkg.json
+        # Cmake will do the setup using vcpkg.json
         setupOnly: true
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
