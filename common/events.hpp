@@ -56,7 +56,6 @@ struct FileDropEvent {
 };
 
 struct EntityCreated {
-	eid entity_id{0};
 	proto::Entity entity;
 };
 

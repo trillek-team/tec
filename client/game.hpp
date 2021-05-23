@@ -20,12 +20,17 @@
 #include "time-frame-metrics.hpp"
 #include "vcomputer-system.hpp"
 
+#include "manipulators/placement.hpp"
+
 namespace tec {
 struct FPSController;
+struct KeyboardEvent;
 
 using networking::ServerConnection;
 
-class Game {
+enum ENGINE_ENTITIES { MANIPULATOR = 1 };
+
+class Game : public EventQueue<KeyboardEvent> {
 public:
 	Game(OS& _os, std::string config_file_name = "scripts/config.lua");
 
@@ -41,6 +46,8 @@ public:
 
 	LuaSystem* GetLuaSystem() { return &this->lua_sys; }
 
+	void CreateEngineEntities();
+
 	std::shared_ptr<LuaScript> config_script;
 
 	// Frames per second
@@ -53,6 +60,9 @@ private:
 	static void UpdateVComputerScreenTextures();
 
 	typedef Multiton<eid, Computer*> ComputerComponentMap;
+
+	using EventQueue<KeyboardEvent>::On;
+	void On(std::shared_ptr<KeyboardEvent> data);
 
 	// Frames per second
 	unsigned int frames = 0;
@@ -76,10 +86,15 @@ private:
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	state_id_t command_id = 0;
 	eid active_entity{-1};
+	eid player_entity_id{-1};
 	std::shared_ptr<tec::FPSController> player_camera{nullptr};
 
 	std::thread sound_thread;
 	std::thread* asio_thread = nullptr;
 	std::thread* sync_thread = nullptr;
+
+	manipulator::Placement placement;
+
+	std::string placeable_meshes[10]{"bob/bob.md5mesh", "vidstand/VidStand_Full.obj", "rooms/hanger/hanger.md5mesh"};
 };
 } // end namespace tec

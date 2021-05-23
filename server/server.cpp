@@ -200,7 +200,7 @@ void Server::ProcessEvents() {
 }
 
 void Server::On(std::shared_ptr<EntityCreated> data) {
-	this->entities[data->entity_id] = data->entity;
+	this->entities[data->entity.id()] = data->entity;
 	MessageOut entity_create_msg(MessageType::ENTITY_CREATE);
 	data->entity.SerializeToZeroCopyStream(&entity_create_msg);
 	Deliver(entity_create_msg, false);

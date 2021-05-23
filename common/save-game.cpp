@@ -159,8 +159,7 @@ void SaveGame::LoadWorld() {
 			proto::Entity entity;
 			auto status = google::protobuf::util::JsonStringToMessage(json_string, &entity);
 			if (status.ok()) {
-				EventSystem<EntityCreated>::Get()->Emit(
-						std::make_shared<EntityCreated>(EntityCreated{static_cast<eid>(entity.id()), entity}));
+				EventSystem<EntityCreated>::Get()->Emit(std::make_shared<EntityCreated>(EntityCreated{entity}));
 			}
 			else {
 				_log->error("Failed to parse entity data from file: {}", entity_filename.toString());

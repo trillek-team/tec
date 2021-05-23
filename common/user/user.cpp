@@ -29,7 +29,6 @@ void User::AddEntityToWorld() {
 		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 		entity.Out<Position, Orientation, Velocity, CollisionBody>(data->entity);
 		data->entity.set_id(this->entity_id);
-		data->entity_id = this->entity_id;
 		EventSystem<EntityCreated>::Get()->Emit(data);
 	}
 	{

@@ -130,6 +130,8 @@ void RenderSystem::Update(const double delta) {
 	}
 }
 
+Renderable* RenderSystem::GetRenderable(eid entity_id) { return RenderableMap::Get(entity_id); }
+
 void RenderSystem::GeometryPass() {
 	this->light_gbuffer.BeginGeometryPass();
 

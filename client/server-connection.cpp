@@ -41,7 +41,6 @@ ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s
 	RegisterMessageHandler(MessageType::ENTITY_CREATE, [](MessageIn& message) {
 		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 		data->entity.ParseFromZeroCopyStream(&message);
-		data->entity_id = data->entity.id();
 		EventSystem<EntityCreated>::Get()->Emit(data);
 	});
 	RegisterMessageHandler(MessageType::ENTITY_DESTROY, [this](MessageIn& message) {
