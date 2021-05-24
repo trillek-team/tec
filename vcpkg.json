@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "trillek",
+  "version": "0.13",
+  "dependencies": [
+	"asio",
+	"bullet3",
+	"glew",
+	"glfw3",
+	"glm",
+	"lua",
+	"openal-soft",
+	"protobuf",
+	"zlib",
+	"imgui",
+	"spdlog",
+	"sol2",
+	"gtest"
+  ],
+  "supports": "(windows & x86) | (windows & x64) | (linux & x64) | (osx & x64)"
+}
