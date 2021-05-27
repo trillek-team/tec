@@ -2,10 +2,12 @@
 
 #include <algorithm>
 
+#include "engine-entities.hpp"
 #include "graphics/renderable.hpp"
 #include "resources/mesh.hpp"
 
 namespace tec {
+using RenderableMap = Multiton<eid, Renderable*>;
 namespace manipulator {
 
 const float MAX_DISTANCE = 25.0f; // Maximum distance at which to place.
@@ -16,19 +18,17 @@ const float MAX_DISTANCE = 25.0f; // Maximum distance at which to place.
 */
 class Placement {
 public:
-	void SetRenderable(Renderable* _renderable) {
-		this->renderable = _renderable;
-	} // TODO: Change to retrieving renderable when setting the mesh
-
 	/**
 	* \brief Set the mesh used to represent the placement in the world.
 	* 
 	* \param[in] const std::shared_ptr<MeshFile> mesh MeshFile to render in the world.
 	*/
-	void SetMesh(const std::shared_ptr<MeshFile> mesh) {
-		if (this->renderable) {
+	void SetMesh(const std::shared_ptr<MeshFile> _mesh) {
+		auto renderable = GetRenderable();
+		if (renderable) {
 			this->ClearMesh();
-			this->renderable->mesh = mesh;
+			renderable->mesh = _mesh;
+			this->mesh = _mesh;
 		}
 	}
 
@@ -37,14 +37,17 @@ public:
 	* 
 	*/
 	void ClearMesh() {
-		if (this->renderable->buffer) {
-			this->renderable->buffer->Destroy();
-			this->renderable->buffer.reset();
+		auto renderable = GetRenderable();
+		if (renderable) {
+			if (renderable->buffer) {
+				renderable->buffer->Destroy();
+				renderable->buffer.reset();
+			}
+			renderable->mesh.reset();
+			this->mesh.reset();
 		}
-		this->renderable->mesh.reset();
 	}
 
-	
 	/**
 	* \brief Sets the ray used to render the placement.
 	* 
@@ -55,13 +58,35 @@ public:
 	* \param[in] const glm::vec3 intersection Intersection point of the ray with the physics world.
 	*/
 	void SetRayIntersectionPoint(const glm::vec3 start, const glm::vec3 intersection) {
-		auto distance = glm::distance(start, intersection);
-		auto direction = glm::normalize(intersection - start);
-		this->renderable->local_translation.value = start + direction * std::min<float>(distance, MAX_DISTANCE);
+		auto renderable = GetRenderable();
+		float distance = glm::distance(start, intersection);
+		glm::vec3 direction = glm::normalize(intersection - start);
+		renderable->local_translation.value = start + direction * std::min<float>(distance, MAX_DISTANCE);
+	}
+
+	void PlaceEntityInWorld(glm::vec3 _position) {
+		if (this->mesh) {
+
+			static eid starting_entity_id = 20000;
+			proto::Entity entity;
+			entity.set_id(starting_entity_id++);
+
+			Renderable renderable;
+			renderable.mesh_name = this->mesh->GetName();
+			renderable.Out(entity.add_components());
+
+			Position position(_position);
+			position.Out(entity.add_components()->mutable_position());
+
+			EventSystem<EntityCreated>::Get()->Emit(std::make_shared<EntityCreated>(EntityCreated{entity}));
+
+			this->ClearMesh();
+		}
 	}
 
 private:
-	Renderable* renderable{nullptr};
+	Renderable* GetRenderable() { return RenderableMap::Get(ENGINE_ENTITIES::MANIPULATOR); }
+	std::shared_ptr<MeshFile> mesh;
 };
 } // namespace manipulator
 } // namespace tec

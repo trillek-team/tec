@@ -5,6 +5,7 @@
 
 #include "components/lua-script.hpp"
 #include "controllers/fps-controller.hpp"
+#include "engine-entities.hpp"
 #include "event-system.hpp"
 #include "events.hpp"
 #include "graphics/material.hpp"
@@ -33,9 +34,6 @@ Game::Game(OS& _os, std::string config_file_name) :
 		auto cae_event = std::make_shared<ControllerAddedEvent>();
 		cae_event->controller = this->player_camera;
 		EventSystem<ControllerAddedEvent>::Get()->Emit(cae_event);
-
-		// Safe to set at this point
-		this->placement.SetRenderable(this->rs.GetRenderable(ENGINE_ENTITIES::MANIPULATOR));
 	});
 
 	asio_thread = new std::thread([this]() { server_connection.StartDispatch(); });
@@ -114,7 +112,7 @@ float Game::GetElapsedTime() {
 }
 
 void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
-	EventQueue<KeyboardEvent>::ProcessEventQueue();
+	this->ProcessEvents();
 	// Elapsed time spend outside game loop
 	tfm.outside_game_time = GetElapsedTime();
 
@@ -201,50 +199,32 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	// clang-format on
 }
 
-void CreateManipulatorEntity() {
-	proto::Entity entity;
-	entity.set_id(ENGINE_ENTITIES::MANIPULATOR);
-	entity.add_components()->mutable_renderable();
-	EventSystem<EntityCreated>::Get()->Emit(std::make_shared<EntityCreated>(EntityCreated{entity}));
+void Game::ProcessEvents() {
+	EventQueue<KeyboardEvent>::ProcessEventQueue();
+	EventQueue<MouseClickEvent>::ProcessEventQueue();
 }
-
-void Game::CreateEngineEntities() { CreateManipulatorEntity(); }
 
 void Game::On(std::shared_ptr<KeyboardEvent> data) {
 	if (data->action == KeyboardEvent::KEY_UP) {
 		switch (data->key) {
-		case GLFW_KEY_1:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[0]));
-			break;
-		case GLFW_KEY_2:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[1]));
-			break;
-		case GLFW_KEY_3:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[2]));
-			break;
-		case GLFW_KEY_4:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[3]));
-			break;
-		case GLFW_KEY_5:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[4]));
-			break;
-		case GLFW_KEY_6:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[5]));
-			break;
-		case GLFW_KEY_7:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[6]));
-			break;
-		case GLFW_KEY_8:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[7]));
-			break;
-		case GLFW_KEY_9:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[8]));
-			break;
-		case GLFW_KEY_0:
-			this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[9]));
-			break;
+		case GLFW_KEY_1: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[0])); break;
+		case GLFW_KEY_2: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[1])); break;
+		case GLFW_KEY_3: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[2])); break;
+		case GLFW_KEY_4: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[3])); break;
+		case GLFW_KEY_5: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[4])); break;
+		case GLFW_KEY_6: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[5])); break;
+		case GLFW_KEY_7: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[6])); break;
+		case GLFW_KEY_8: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[7])); break;
+		case GLFW_KEY_9: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[8])); break;
+		case GLFW_KEY_0: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[9])); break;
 		default: break;
 		}
+	}
+}
+
+void Game::On(std::shared_ptr<MouseClickEvent> data) {
+	if (data->button == MouseBtnEvent::LEFT) {
+		this->placement.PlaceEntityInWorld(data->ray_hit_point_world);
 	}
 }
 } // namespace tec

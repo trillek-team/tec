@@ -46,8 +46,6 @@ public:
 
 	void Update(const double delta);
 
-	Renderable* GetRenderable(eid entity_id);
-
 private:
 	std::shared_ptr<spdlog::logger> _log;
 

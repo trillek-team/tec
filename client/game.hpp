@@ -28,9 +28,7 @@ struct KeyboardEvent;
 
 using networking::ServerConnection;
 
-enum ENGINE_ENTITIES { MANIPULATOR = 1 };
-
-class Game : public EventQueue<KeyboardEvent> {
+class Game : public EventQueue<KeyboardEvent>, public EventQueue<MouseClickEvent> {
 public:
 	Game(OS& _os, std::string config_file_name = "scripts/config.lua");
 
@@ -46,8 +44,6 @@ public:
 
 	LuaSystem* GetLuaSystem() { return &this->lua_sys; }
 
-	void CreateEngineEntities();
-
 	std::shared_ptr<LuaScript> config_script;
 
 	// Frames per second
@@ -61,8 +57,12 @@ private:
 
 	typedef Multiton<eid, Computer*> ComputerComponentMap;
 
+	void ProcessEvents();
+
 	using EventQueue<KeyboardEvent>::On;
 	void On(std::shared_ptr<KeyboardEvent> data);
+	using EventQueue<MouseClickEvent>::On;
+	void On(std::shared_ptr<MouseClickEvent> data);
 
 	// Frames per second
 	unsigned int frames = 0;
