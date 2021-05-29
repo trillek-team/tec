@@ -17,19 +17,19 @@ jobs:
         arch: [ x86, x64 ]
         include:
           - os: windows-latest
-            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: windows
           - os: windows-2016
-            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: windows
           - os: ubuntu-18.04
-            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: linux
           - os: ubuntu-16.04
-            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: linux
           - os: macOS-latest
-            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: osx
         exclude:
           - os: ubuntu-18.04
@@ -45,7 +45,9 @@ jobs:
     - uses: lukka/get-cmake@latest
     - name: Install os deps (Linux)
       if: runner.os == 'Linux'
-      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
+      run: |
+        sudo apt-get update
+        sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Set gcc-9 on Ubuntu16.04
       uses: lukka/set-shell-env@v1
       if: contains( matrix.os, 'ubuntu-16.04')
