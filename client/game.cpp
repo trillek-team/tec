@@ -13,10 +13,20 @@
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/view.hpp"
 #include "net-message.hpp"
+#include "resources/mesh.hpp"
 #include "resources/pixel-buffer.hpp"
 
 namespace tec {
 using networking::MessageType;
+
+void CreateManipulatorEntity() {
+	proto::Entity entity;
+	entity.set_id(ENGINE_ENTITIES::MANIPULATOR);
+	entity.add_components()->mutable_renderable();
+	EventSystem<EntityCreated>::Get()->Emit(std::make_shared<EntityCreated>(EntityCreated{entity}));
+}
+
+void CreateEngineEntities() { CreateManipulatorEntity(); }
 
 Game::Game(OS& _os, std::string config_file_name) :
 		stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
@@ -29,6 +39,7 @@ Game::Game(OS& _os, std::string config_file_name) :
 
 		this->player_camera = std::make_shared<FPSController>(client_id);
 		Entity(client_id).Add<View>(true);
+		this->player_entity_id = client_id;
 		auto cae_event = std::make_shared<ControllerAddedEvent>();
 		cae_event->controller = this->player_camera;
 		EventSystem<ControllerAddedEvent>::Get()->Emit(cae_event);
@@ -43,6 +54,8 @@ Game::Game(OS& _os, std::string config_file_name) :
 		}
 		sync_thread = new std::thread([this]() { server_connection.StartSync(); });
 	});
+
+	CreateEngineEntities();
 }
 
 Game::~Game() {
@@ -67,6 +80,8 @@ void Game::Startup() {
 	const unsigned int window_width = this->config_script->environment.get_or("window_width", WINDOW_WIDTH);
 	const unsigned int window_height = this->config_script->environment.get_or("window_height", WINDOW_HEIGHT);
 	this->rs.SetViewportSize(window_width, window_height);
+	this->placement.SetMaxDistance(this->config_script->environment.get_or(
+			"max_placement_distance", manipulator::DEFAULT_MAX_PLACEMENT_DISTANCE));
 }
 
 void Game::UpdateVComputerScreenTextures() {
@@ -108,6 +123,7 @@ float Game::GetElapsedTime() {
 }
 
 void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
+	this->ProcessEvents();
 	// Elapsed time spend outside game loop
 	tfm.outside_game_time = GetElapsedTime();
 
@@ -168,6 +184,9 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 					static_cast<float>(window_height) / 2.0f,
 					static_cast<float>(window_width),
 					static_cast<float>(window_height));
+			auto intersection = ps.GetLastRayPos();
+			auto player_position = ps.GetPosition(player_entity_id);
+			placement.SetRayIntersectionPoint(player_position.value, intersection);
 		}
 		else {
 			os.DisableMouseLock(); // TODO: create event to change from mouse look
@@ -189,5 +208,34 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 				+ tfm.lua_system_time
 				+ tfm.other_time;
 	// clang-format on
+}
+
+void Game::ProcessEvents() {
+	EventQueue<KeyboardEvent>::ProcessEventQueue();
+	EventQueue<MouseClickEvent>::ProcessEventQueue();
+}
+
+void Game::On(std::shared_ptr<KeyboardEvent> data) {
+	if (data->action == KeyboardEvent::KEY_UP) {
+		switch (data->key) {
+		case GLFW_KEY_1: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[0])); break;
+		case GLFW_KEY_2: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[1])); break;
+		case GLFW_KEY_3: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[2])); break;
+		case GLFW_KEY_4: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[3])); break;
+		case GLFW_KEY_5: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[4])); break;
+		case GLFW_KEY_6: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[5])); break;
+		case GLFW_KEY_7: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[6])); break;
+		case GLFW_KEY_8: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[7])); break;
+		case GLFW_KEY_9: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[8])); break;
+		case GLFW_KEY_0: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[9])); break;
+		default: break;
+		}
+	}
+}
+
+void Game::On(std::shared_ptr<MouseClickEvent> data) {
+	if (data->button == MouseBtnEvent::LEFT) {
+		this->placement.PlaceEntityInWorld(data->ray_hit_point_world);
+	}
 }
 } // namespace tec

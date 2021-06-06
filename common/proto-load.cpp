@@ -54,7 +54,6 @@ bool LoadProtoPack(const FilePath& fname, proto::Entity& entity) {
 void ProtoLoadEntity(const FilePath& fname) {
 	std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 	if (LoadProtoPack(fname, data->entity)) {
-		data->entity_id = data->entity.id();
 		EventSystem<EntityCreated>::Get()->Emit(data);
 	}
 }
