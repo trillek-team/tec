@@ -1,7 +1,9 @@
 #pragma once
 
 #include <memory>
+
 #include <glm/glm.hpp>
+#include <sol/sol.hpp>
 
 namespace tec {
 class MeshFile;
@@ -24,6 +26,16 @@ public:
 	void SetMesh(const std::shared_ptr<MeshFile> _mesh);
 
 	/**
+	* \brief Set the mesh used to represent the placement in the world.
+	* 
+	* This version takes the mesh_name and locators the corresponding mesh_file and then
+	* calls the appropriate SetMesh;
+	* 
+	* \param[in] const std::string mesh_name Name of the mesh file to load.
+	*/
+	void SetMesh(const std::string mesh_name);
+
+	/**
 	* \brief Clear the mesh, effectively not longer rendering the placement.
 	* 
 	*/
@@ -41,6 +53,8 @@ public:
 	void SetRayIntersectionPoint(const glm::vec3 start, const glm::vec3 intersection);
 
 	void PlaceEntityInWorld(glm::vec3 _position);
+
+	static void RegisterLuaType(sol::state& state);
 
 private:
 	std::shared_ptr<MeshFile> mesh;

@@ -96,7 +96,5 @@ private:
 	std::thread* sync_thread = nullptr;
 
 	manipulator::Placement placement;
-
-	std::string placeable_meshes[10]{"bob/bob.md5mesh", "vidstand/VidStand_Full.obj", "rooms/hanger/hanger.md5mesh"};
 };
 } // end namespace tec
