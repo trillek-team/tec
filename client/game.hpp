@@ -28,6 +28,8 @@ struct KeyboardEvent;
 
 using networking::ServerConnection;
 
+enum ENGINE_ENTITIES { MANIPULATOR = 1 };
+
 class Game : public EventQueue<KeyboardEvent>, public EventQueue<MouseClickEvent> {
 public:
 	Game(OS& _os, std::string config_file_name = "scripts/config.lua");

@@ -5,7 +5,6 @@
 
 #include "components/lua-script.hpp"
 #include "controllers/fps-controller.hpp"
-#include "engine-entities.hpp"
 #include "event-system.hpp"
 #include "events.hpp"
 #include "graphics/material.hpp"
@@ -14,10 +13,20 @@
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/view.hpp"
 #include "net-message.hpp"
+#include "resources/mesh.hpp"
 #include "resources/pixel-buffer.hpp"
 
 namespace tec {
 using networking::MessageType;
+
+void CreateManipulatorEntity() {
+	proto::Entity entity;
+	entity.set_id(ENGINE_ENTITIES::MANIPULATOR);
+	entity.add_components()->mutable_renderable();
+	EventSystem<EntityCreated>::Get()->Emit(std::make_shared<EntityCreated>(EntityCreated{entity}));
+}
+
+void CreateEngineEntities() { CreateManipulatorEntity(); }
 
 Game::Game(OS& _os, std::string config_file_name) :
 		stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
@@ -71,6 +80,8 @@ void Game::Startup() {
 	const unsigned int window_width = this->config_script->environment.get_or("window_width", WINDOW_WIDTH);
 	const unsigned int window_height = this->config_script->environment.get_or("window_height", WINDOW_HEIGHT);
 	this->rs.SetViewportSize(window_width, window_height);
+	this->placement.SetMaxDistance(this->config_script->environment.get_or(
+			"max_placement_distance", manipulator::DEFAULT_MAX_PLACEMENT_DISTANCE));
 }
 
 void Game::UpdateVComputerScreenTextures() {
