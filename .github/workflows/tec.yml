@@ -7,6 +7,8 @@ on:
 
 jobs:
   build:
+    env:
+      buildDir: '${{ github.workspace }}/build'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -15,19 +17,19 @@ jobs:
         arch: [ x86, x64 ]
         include:
           - os: windows-latest
-            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: windows
           - os: windows-2016
-            vcpkgCommitId: '5eea585548058540c3b73d087eb101c033b5fa85'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: windows
           - os: ubuntu-18.04
-            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: linux
           - os: ubuntu-16.04
-            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: linux
           - os: macOS-latest
-            vcpkgCommitId: 'ec6fe06e8da05a8157dc8581fa96b36b571c1bd5'
+            vcpkgCommitId: '5568f110b509a9fd90711978a7cb76bae75bb092'
             vcpkgTripletOs: osx
         exclude:
           - os: ubuntu-18.04
@@ -43,25 +45,26 @@ jobs:
     - uses: lukka/get-cmake@latest
     - name: Install os deps (Linux)
       if: runner.os == 'Linux'
-      run: sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
+      run: |
+        sudo apt-get update
+        sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
     - name: Set gcc-9 on Ubuntu16.04
       uses: lukka/set-shell-env@v1
       if: contains( matrix.os, 'ubuntu-16.04')
       with:
         CC: gcc-9
         CXX: g++-9
-    - name: Set vcpkg's response file path used as part of cache's key.
-      uses: lukka/set-shell-env@v1
-      with:
-        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}.txt
-        VCPKGCOMMONRESPONSEFILE: ${{ github.workspace }}/vcpkg_response_files/vcpkg_common.txt
     - name: Restore artifacts, or run vcpkg, build and cache artifacts
-      uses: lukka/run-vcpkg@v4
+      uses: lukka/run-vcpkg@v6
       id: runvcpkg
       with:
-        vcpkgArguments: '@${{ env.VCPKGCOMMONRESPONSEFILE }} @${{ env.VCPKGRESPONSEFILE }}'
+        # Cmake will do the setup using vcpkg.json
+        setupOnly: true
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-        appendedCacheKey: '${{ hashFiles(env.VCPKGCOMMONRESPONSEFILE) }}${{ hashFiles(env.VCPKGRESPONSEFILE) }}'
+        appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+        vcpkgTriplet: ${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}
+        # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed' directory.
+        additionalCachedPaths: ${{ env.buildDir }}/vcpkg_installed
         vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
     - name: Configure cmake and build
       uses: lukka/run-cmake@v3
@@ -72,18 +75,18 @@ jobs:
         cmakeBuildType: 'Release'
         useVcpkgToolchainFile: true
         buildWithCMake: true
-        buildDirectory: '${{ github.workspace }}/build'
+        buildDirectory: ${{ env.buildDir }}
     - name: Upload the build artifact
       uses: actions/upload-artifact@v2
       with:
         name: 'trillek-${{ matrix.os }}'
         path: |
           assets/
-          ${{ github.workspace }}/build/client/trillek-client
-          ${{ github.workspace }}/build/client/trillek-client.exe
-          ${{ github.workspace }}/build/client/*.dll
-          ${{ github.workspace }}/build/server/trillek-serverd
-          ${{ github.workspace }}/build/server/trillek-server.exe
+          ${{ env.buildDir }}/client/trillek-client
+          ${{ env.buildDir }}/client/trillek-client.exe
+          ${{ env.buildDir }}/client/*.dll
+          ${{ env.buildDir }}/server/trillek-serverd
+          ${{ env.buildDir }}/server/trillek-server.exe
         if-no-files-found: ignore
   prepublish:
     runs-on: ubuntu-latest
