@@ -115,7 +115,7 @@ bool OS::InitializeWindow(
 	std::string glsl_minor = glcx_glslver.substr(glcx_glslver.find('.', 0) + 1, 1);
 	if (glsl_major.at(0) < '3') {
 		l->critical(
-				"[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version : "
+				"[OS] Initializing OpenGL failed, Shader version must be >= 3.30 : GL version : "
 				"{} GLSL version : {} \n Press \"Enter\" to exit\n",
 				glcx_version,
 				glcx_glslver);
@@ -125,7 +125,7 @@ bool OS::InitializeWindow(
 	else if (glsl_major.at(0) == '3') {
 		if (glsl_minor.at(0) < '3') {
 			l->critical(
-					"[OS] Initializing OpenGL failder, Shader version must be >= 3.30 : GL version "
+					"[OS] Initializing OpenGL failed, Shader version must be >= 3.30 : GL version "
 					": {} GLSL version : {} \n Press \"Enter\" to exit\n",
 					glcx_version,
 					glcx_glslver);

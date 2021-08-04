@@ -40,6 +40,9 @@
 .kdev4/
 # VStudio IDE stuff
 *.sln
+# clangd IDE stuff
+compile_commands.json
+.cache/
 # YouCompleteMe
 .ycm_extra_conf.py
 
@@ -55,3 +58,4 @@ doxygen/
 # Created in the build pipeline don't commit them from the pipeline
 doxybook2/
 vcpkg/
+vcpkg_installed/

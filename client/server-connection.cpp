@@ -88,7 +88,7 @@ bool ServerConnection::Connect(std::string_view ip) {
 		_log->error("No valid endpoints or unsupported protocol");
 		return false;
 	}
-	this->socket.close();
+	// the call to Disconnect should ensure socket is ready to reconnect
 	this->socket.async_connect(server_endpoint, [this](const asio::error_code& error) {
 		if (error) {
 			this->socket.close();
@@ -109,6 +109,10 @@ bool ServerConnection::Connect(std::string_view ip) {
 
 void ServerConnection::Disconnect() {
 	this->run_sync = false;
+	if (this->socket.is_open()) {
+		_log->info("Disconnecting");
+		this->socket.cancel();
+	}
 	this->socket.close();
 	this->client_id = 0;
 }
@@ -278,7 +282,7 @@ void ServerConnection::StartDispatch() {
 			// apparently run() causes trouble here for some reason
 			this->io_context.poll();
 		}
-		catch (std::exception e) {
+		catch (std::exception& e) {
 			_log->error("ServerConnection asio exception: {}", e.what());
 			Disconnect();
 		}
