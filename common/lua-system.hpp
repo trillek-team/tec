@@ -3,6 +3,7 @@
  * Lua system
  */
 
+#include <limits>
 #include <sol/sol.hpp>
 #include <spdlog/spdlog.h>
 

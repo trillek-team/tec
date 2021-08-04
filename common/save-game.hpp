@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <list>
+#include <limits>
 
 #include <sol/sol.hpp>
 
