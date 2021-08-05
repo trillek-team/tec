@@ -51,7 +51,6 @@ Game::Game(OS& _os, std::string config_file_name) :
 
 	{
 		auto& lua_state = this->lua_sys.GetGlobalState();
-		manipulator::Placement::RegisterLuaType(lua_state);
 		lua_state["placement_manipulator"] = &this->placement;
 	}
 }

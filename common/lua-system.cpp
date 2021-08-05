@@ -90,6 +90,12 @@ LuaSystem::LuaSystem() {
 		}
 		spdlog::get("console_log")->info(message);
 	};
+	// load all the registered types into this lua state
+	LuaClassList* registered_type = lua_userclasses;
+	while (registered_type) {
+		registered_type->load(this->lua);
+		registered_type = registered_type->next;
+	}
 }
 
 void LuaSystem::Update(const double delta) {
@@ -180,4 +186,7 @@ void LuaSystem::On(std::shared_ptr<ChatCommandEvent> data) {
 }
 
 void LuaSystem::ExecuteString(std::string script_string) { this->lua.script(script_string); }
+
+LuaClassList* LuaSystem::lua_userclasses = nullptr;
+
 } // namespace tec

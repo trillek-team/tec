@@ -163,7 +163,7 @@ int main(int argc, char* argv[]) {
 			});
 
 	tec::LuaSystem* lua_sys = game.GetLuaSystem();
-	os.LuaStateRegistration(lua_sys->GetGlobalState());
+	lua_sys->GetGlobalState().set("OS", &os); // register instance
 
 	tec::RegisterFileFactories();
 	tec::BuildTestVoxelVolume();

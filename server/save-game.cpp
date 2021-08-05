@@ -39,20 +39,6 @@ bool UserList::RemoveUser(uid id) {
 
 bool UserList::HasUser(uid id) { return this->GetUserItr(id) != this->users.end(); }
 
-void UserList::RegisterLuaType(sol::state& state) {
-	// clang-format off
-	state.new_usertype<UserList>(
-			"UserList", sol::no_constructor,
-			"AddUser", &UserList::AddUser,
-			"CreateUser", &UserList::CreateUser,
-			"GetUser", &UserList::GetUser,
-			"RemoveUser", &UserList::RemoveUser,
-			"HasUser", &UserList::HasUser
-		);
-	// clang-format on
-	User::RegisterLuaType(state);
-}
-
 bool SaveGame::Load(std::string _filename) { return this->Load(FilePath(_filename)); }
 
 bool SaveGame::Load(const FilePath _filepath) {
@@ -109,27 +95,6 @@ bool SaveGame::Save(const FilePath _filepath) {
 }
 
 UserList* SaveGame::GetUserList() { return &this->user_list; }
-
-void SaveGame::RegisterLuaType(sol::state& state) {
-	// clang-format off
-	state.new_usertype<SaveGame>(
-			"SaveGame", sol::no_constructor,
-			/*"load", sol::overload(
-				sol::resolve<bool(std::string)>(&SaveGame::Load),
-				sol::resolve<bool(FilePath)>(&SaveGame::Load)
-			), */
-			"save", sol::overload(
-				sol::resolve<bool()>(&SaveGame::Save)/*,
-				sol::resolve<bool(FilePath)>(&SaveGame::Save)*/
-			),
-			"reload", sol::overload(
-				sol::resolve<bool()>(&SaveGame::Reload)/*,
-				sol::resolve<bool(FilePath)>(&SaveGame::Reload)*/
-			),
-			"user_list", sol::readonly(&SaveGame::user_list)
-		);
-	// clang-format on
-}
 
 void SaveGame::LoadUsers() {
 	auto users = this->save.users();

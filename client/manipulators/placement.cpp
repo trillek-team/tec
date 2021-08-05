@@ -75,14 +75,5 @@ void Placement::PlaceEntityInWorld(glm::vec3 _position) {
 	}
 }
 
-void Placement::RegisterLuaType(sol::state& state) {
-	// clang-format off
-	state.new_usertype<Placement>(
-		"Placement", sol::no_constructor,
-		"set_mesh", sol::resolve<void(std::string)>(&Placement::SetMesh),
-		"clear_mesh", &Placement::ClearMesh
-	);
-	// clang-format on
-}
 } // namespace manipulator
 } // namespace tec

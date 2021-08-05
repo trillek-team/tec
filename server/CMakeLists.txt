@@ -16,8 +16,11 @@ endif ()
 
 set(trillek-server_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-server_SOURCE_DIR}/client-connection.cpp
+	${trillek-server_SOURCE_DIR}/lua-types.cpp
+	${trillek-server_SOURCE_DIR}/save-game.cpp
 	${trillek-server_SOURCE_DIR}/server.cpp
 	${trillek-server_SOURCE_DIR}/server-game-state-queue.cpp
+	${trillek-server_SOURCE_DIR}/user/user.cpp
 )
 
 set(trillek-server_SOURCES ${trillek-server_SOURCES} PARENT_SCOPE) # so tests can use them

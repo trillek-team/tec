@@ -100,5 +100,28 @@ private:
 public:
 	std::mutex client_list_mutex;
 };
+
+/**
+* this structure passed to lua functions: onClientConnected onClientDisconnected
+* containing information about the event.
+* for connect events: setting cancel to true will reject the connection,
+* rejected connections will get the "reason" string sent to the client.
+*/
+struct ClientConnectionEvent {
+	static void RegisterLuaType(sol::state&);
+
+	bool cancel;
+	std::string reason;
+	int port;
+	std::string address;
+	std::string family;
+	std::string protocol;
+
+	/// load info from a TCP endpoint
+	void from_endpoint(const asio::ip::tcp::endpoint& endpoint);
+	/// load info from a UDP endpoint
+	void from_endpoint(const asio::ip::udp::endpoint& endpoint);
+};
+
 } // namespace networking
 } // namespace tec

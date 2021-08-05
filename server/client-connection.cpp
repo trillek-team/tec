@@ -180,28 +180,6 @@ void ClientConnection::read_body() {
 			});
 }
 
-struct UserLoginInfo {
-	std::string username;
-	std::string user_id;
-	std::string reason;
-	bool authenticated{false};
-	bool reject{false};
-
-	// Called from ClientConnection::RegisterLuaType
-	static void RegisterLuaType(sol::state& state) {
-		// clang-format off
-		state.new_usertype<UserLoginInfo>(
-			"user_login_event", sol::no_constructor,
-			"username", &UserLoginInfo::username,
-			"user_id", &UserLoginInfo::user_id,
-			"reason", &UserLoginInfo::reason,
-			"authenticated", &UserLoginInfo::authenticated,
-			"reject", &UserLoginInfo::reject
-		);
-		// clang-format on
-	}
-};
-
 void ClientConnection::process_message(MessageIn& msg) {
 	auto _log = spdlog::get("console_log");
 	auto now_time = std::chrono::high_resolution_clock::now();
@@ -255,7 +233,7 @@ void ClientConnection::process_message(MessageIn& msg) {
 	{
 		proto::UserLogin user_login;
 		user_login.ParseFromZeroCopyStream(&msg);
-		UserLoginInfo user_login_event{user_login.username()};
+		UserLoginEvent user_login_event{user_login.username()};
 
 		auto _user = this->server->GetAuthenticator().Authenticate(user_login.username());
 		user_login_event.authenticated = _user != nullptr;
@@ -357,14 +335,6 @@ MessageOut ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_st
 	gsu_msg.SerializeToZeroCopyStream(&update_message);
 	return update_message;
 }
-void ClientConnection::RegisterLuaType(sol::state& state) {
-	// clang-format off
-	state.new_usertype<ClientConnection>(
-			"ClientConnection", sol::no_constructor,
-			"user", &ClientConnection::user
-		);
-	// clang-format on
-	UserLoginInfo::RegisterLuaType(state);
-}
+
 } // namespace networking
 } // namespace tec

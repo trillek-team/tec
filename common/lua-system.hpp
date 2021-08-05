@@ -20,6 +20,8 @@ struct EntityCreated;
 struct EntityDestroyed;
 struct ChatCommandEvent;
 
+struct LuaClassList;
+
 class LuaSystem :
 		public CommandQueue<LuaSystem>,
 		public EventQueue<EntityCreated>,
@@ -55,6 +57,29 @@ private:
 	std::list<LuaScript> scripts;
 
 	std::list<sol::protected_function> GetAllFunctions(std::string);
+
+	friend LuaClassList;
+	static LuaClassList* lua_userclasses;
 };
+
+// a linked list of functions which get called when lua system is initialized
+struct LuaClassList {
+	std::function<void(sol::state&)> load;
+	LuaClassList* next;
+	LuaClassList(std::function<void(sol::state&)> load_fn) : load(load_fn), next(nullptr) {
+		this->next = LuaSystem::lua_userclasses;
+		LuaSystem::lua_userclasses = this;
+	}
+};
+
+// this helper macro does the setup to add types to the linked list
+// it is also the start of the function definition for RegisterLuaType
+// this should be ideally be used one of the following places:
+// common/lua-system.cpp client/lua-types.cpp server/lua-types.cpp
+// this could be used anywhere, but it's not recommended
+// types registered this way will need a forward declaration (preferably in a header)
+#define TEC_RegisterLuaType(ns, a) \
+	static tec::LuaClassList LUA_USERCLASS_##a(ns::a::RegisterLuaType); \
+	void ns::a::RegisterLuaType(sol::state& state)
 
 } // namespace tec
