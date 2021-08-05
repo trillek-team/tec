@@ -1,15 +1,11 @@
 #pragma once
 
-#include <limits>
-#include <sol/sol.hpp>
-#include <string>
-
+#include "tec-types.hpp"
 #include <save_game.pb.h>
 
 #include "credentials.hpp"
 #include "entity-data.hpp"
 #include "entity.hpp"
-#include "tec-types.hpp"
 
 namespace tec {
 struct FPSController;
@@ -19,7 +15,7 @@ namespace user {
 * \brief Container used to store information about a logged in user.
 *
 * Information such as the user's id, username, inventory, etc will be connect here.
-* 
+*
 * Additionally users contain an Entity that can be used to access the user's state
 * in the world for purposes of retrieving position, health, etc components.
 */
@@ -69,7 +65,6 @@ public:
 	std::string GetUsername() const { return this->credentials.username; }
 	void SetUsername(std::string username) { this->credentials.username = username; }
 
-	// Called from UserList::RegisterLuaType
 	static void RegisterLuaType(sol::state&);
 
 	/**

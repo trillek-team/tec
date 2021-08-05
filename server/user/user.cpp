@@ -99,18 +99,5 @@ void User::In(const proto::User& source) {
 	}
 }
 
-void User::RegisterLuaType(sol::state& state) {
-	// clang-format off
-	state.new_usertype<User>(
-			"User", sol::no_constructor,
-			"user_id", sol::property(&User::GetUserId, &User::SetUserId),
-			"entity_id", sol::readonly(&User::entity_id),
-			"entity_data", sol::readonly(&User::entity_data),
-			"credentials", sol::readonly(&User::credentials)
-		);
-	// clang-format on
-	EntityData::RegisterLuaType(state);
-	Credentials::RegisterLuaType(state);
-}
 } // namespace user
 } // namespace tec

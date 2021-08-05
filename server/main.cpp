@@ -76,11 +76,6 @@ int main() {
 
 		const auto lua_sys = server.GetLuaSystem();
 
-		tec::SaveGame::RegisterLuaType(lua_sys->GetGlobalState());
-		tec::UserList::RegisterLuaType(lua_sys->GetGlobalState());
-		tec::User::RegisterLuaType(lua_sys->GetGlobalState());
-		tec::networking::ClientConnection::RegisterLuaType(lua_sys->GetGlobalState());
-
 		tec::SaveGame save;
 		save.Load(tec::FilePath::GetAssetPath("save/save1.json"));
 		lua_sys->GetGlobalState()["save"] = &save;

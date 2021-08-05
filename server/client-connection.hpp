@@ -22,8 +22,9 @@ class Server;
 // Used to represent a client connection to the server.
 class ClientConnection : public std::enable_shared_from_this<ClientConnection> {
 public:
-	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server);
+	static void RegisterLuaType(sol::state&);
 
+	ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint, Server* server);
 	~ClientConnection();
 
 	void StartRead();
@@ -58,8 +59,6 @@ public:
 
 	bool ReadyToReceive() const { return this->ready_to_recv_states; }
 
-	static void RegisterLuaType(sol::state&);
-
 private:
 	void read_header();
 
@@ -92,5 +91,16 @@ private:
 
 	bool ready_to_recv_states{false};
 };
+
+struct UserLoginEvent {
+	static void RegisterLuaType(sol::state&);
+
+	std::string username;
+	std::string user_id;
+	std::string reason;
+	bool authenticated{false};
+	bool reject{false};
+};
+
 } // end namespace networking
 } // end namespace tec

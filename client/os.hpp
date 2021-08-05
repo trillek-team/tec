@@ -14,9 +14,9 @@
 #include <GLFW/glfw3.h>
 
 #include <chrono>
-#include <sol/sol.hpp>
-#include <string>
 #include <vector>
+
+#include "tec-types.hpp"
 
 #include "event-system.hpp"
 
@@ -238,7 +238,7 @@ public:
 
 	static const GLFWwindow* GetFocusedWindow() { return OS::focused_window; }
 
-	void LuaStateRegistration(sol::state& state);
+	static void RegisterLuaType(sol::state&);
 
 private:
 	/**

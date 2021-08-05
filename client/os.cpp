@@ -503,25 +503,4 @@ void OS::GetMousePosition(double* x, double* y) {
 	}
 }
 
-void OS::LuaStateRegistration(sol::state& state) {
-	// clang-format off
-	state.new_usertype<OS>(
-			"OS", sol::no_constructor, // single instance
-			"quit", &OS::Quit,
-			"exit", &OS::Quit,
-			"get_window_width", &OS::GetWindowWidth,
-			"get_window_height", &OS::GetWindowHeight,
-			"get_mouse_x", [this]() {
-				double x = 0;
-				this->GetMousePosition(&x, nullptr);
-				return x;
-			},
-			"get_mouse_y", [this]() {
-				double y = 0;
-				this->GetMousePosition(nullptr, &y);
-				return y;
-			});
-	// clang-format on
-	state.set("OS", this); // register instance
-}
 } // namespace tec

@@ -12,33 +12,23 @@ using asio::ip::tcp;
 
 namespace tec {
 namespace networking {
+
 unsigned short PORT = 0xa10c;
 std::mutex Server::recent_msgs_mutex;
 
-// proxy structure passed to lua functions: onClientConnected onClientDisconnected
-// for connect, setting cancel to true will reject the connection with the "reason" string sent to the client
-struct client_connection_info {
-	bool cancel;
-	std::string reason;
-	int port;
-	std::string address;
-	std::string family;
-	std::string protocol;
+void ClientConnectionEvent::from_endpoint(const asio::ip::tcp::endpoint& endpoint) {
+	this->port = endpoint.port();
+	this->address = endpoint.address().to_string();
+	this->family = endpoint.address().is_v6() ? "ipv6" : "ipv4";
+	this->protocol = "tcp";
+}
 
-	void from_endpoint(const asio::ip::tcp::endpoint& endpoint) {
-		this->port = endpoint.port();
-		this->address = endpoint.address().to_string();
-		this->family = endpoint.address().is_v6() ? "ipv6" : "ipv4";
-		this->protocol = "tcp";
-	}
-
-	void from_endpoint(const asio::ip::udp::endpoint& endpoint) {
-		this->port = endpoint.port();
-		this->address = endpoint.address().to_string();
-		this->family = endpoint.address().is_v6() ? "ipv6" : "ipv4";
-		this->protocol = "udp";
-	}
-};
+void ClientConnectionEvent::from_endpoint(const asio::ip::udp::endpoint& endpoint) {
+	this->port = endpoint.port();
+	this->address = endpoint.address().to_string();
+	this->family = endpoint.address().is_v6() ? "ipv6" : "ipv4";
+	this->protocol = "udp";
+}
 
 Server::Server(tcp::endpoint& endpoint) : acceptor(io_context, endpoint), peer_socket(io_context) {
 	_log = spdlog::get("console_log");
@@ -48,21 +38,6 @@ Server::Server(tcp::endpoint& endpoint) : acceptor(io_context, endpoint), peer_s
 
 	asio::ip::tcp::no_delay option(true);
 	acceptor.set_option(option);
-
-	this->lua_sys.GetGlobalState().new_usertype<client_connection_info>(
-			"client_connection_info",
-			"cancel",
-			&client_connection_info::cancel,
-			"reason",
-			&client_connection_info::reason,
-			"port",
-			sol::readonly(&client_connection_info::port),
-			"address",
-			sol::readonly(&client_connection_info::address),
-			"family",
-			sol::readonly(&client_connection_info::family),
-			"protocol",
-			sol::readonly(&client_connection_info::protocol));
 
 	AcceptHandler();
 
@@ -122,24 +97,20 @@ void Server::SendWorld(std::shared_ptr<ClientConnection> client) {
 
 bool Server::OnConnect() {
 	// setup a lua object for this event
-	client_connection_info info_event;
-	info_event.from_endpoint(peer_endpoint);
-	info_event.cancel = false;
-	info_event.reason = "Server policy rejected the connection"; // default reason
+	ClientConnectionEvent event;
+	event.from_endpoint(peer_endpoint);
+	event.cancel = false;
+	event.reason = "Server policy rejected the connection"; // default reason
 
 	// call lua scripts that want to know about connections
-	this->lua_sys.CallFunctions("onClientConnected", &info_event);
+	this->lua_sys.CallFunctions("onClientConnected", &event);
 
 	// a lua method doesn't want this client, tell them to go away
-	if (info_event.cancel) {
+	if (event.cancel) {
 		// let the server log know
-		_log->warn(
-				"Connection from [{}]:{} rejected by script: {}",
-				info_event.address,
-				info_event.port,
-				info_event.reason);
+		_log->warn("Connection from [{}]:{} rejected by script: {}", event.address, event.port, event.reason);
 
-		std::string reject_reason = info_event.reason;
+		std::string reject_reason = event.reason;
 		reject_reason.push_back('\n');
 
 		auto reject_msg = MessagePool::get(); // default type is CHAT_MESSAGE
@@ -172,11 +143,11 @@ void Server::OnDisconnect(std::shared_ptr<ClientConnection> client) {
 	client->OnLeaveWorld(); // Send out entity destroyed events and client leave messages.
 
 	// setup a lua object for this event
-	client_connection_info info_event;
-	info_event.from_endpoint(client->GetEndpoint());
+	ClientConnectionEvent event;
+	event.from_endpoint(client->GetEndpoint());
 
 	// call lua scripts that want to know about connection going away
-	this->lua_sys.CallFunctions("onClientDisconnected", &info_event);
+	this->lua_sys.CallFunctions("onClientDisconnected", &event);
 
 	// Notify other clients that a client left.
 	for (auto _client : this->clients) {

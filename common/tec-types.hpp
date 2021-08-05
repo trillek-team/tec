@@ -11,6 +11,12 @@
 
 #include <components.pb.h>
 
+// forward declare sol::state for RegisterLuaType
+// this avoids including sol/sol.hpp everywhere (heavy!)
+namespace sol {
+class state;
+}
+
 namespace tec {
 typedef std::uint64_t state_id_t;
 #define PRI_STATE_ID_T PRId64

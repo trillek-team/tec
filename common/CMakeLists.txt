@@ -28,11 +28,9 @@ set(trillek-common_SOURCES
 	${trillek-common_SOURCE_DIR}/net-message.cpp
 	${trillek-common_SOURCE_DIR}/physics-system.cpp
 	${trillek-common_SOURCE_DIR}/proto-load.cpp
-	${trillek-common_SOURCE_DIR}/save-game.cpp
 	${trillek-common_SOURCE_DIR}/simulation.cpp
 	${trillek-common_SOURCE_DIR}/string.cpp
 	${trillek-common_SOURCE_DIR}/tec-types.cpp
-	${trillek-common_SOURCE_DIR}/user/user.cpp
 	${trillek-common_SOURCE_DIR}/vcomputer-system.cpp
 	${trillek-common_SOURCE_DIR}/components/collision-body.cpp
 	${trillek-common_SOURCE_DIR}/components/lua-script.cpp

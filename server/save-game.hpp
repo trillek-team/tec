@@ -1,10 +1,8 @@
 #pragma once
 
 #include <algorithm>
-#include <list>
 #include <limits>
-
-#include <sol/sol.hpp>
+#include <list>
 
 #include <save_game.pb.h>
 

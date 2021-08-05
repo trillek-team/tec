@@ -25,6 +25,7 @@ set(trillek-client_SOURCES # don't include main.cpp to keep it out of tests
 	${trillek-client_SOURCE_DIR}/imgui-system.cpp
 	${trillek-client_SOURCE_DIR}/client-game-state-queue.cpp
 	${trillek-client_SOURCE_DIR}/os.cpp
+	${trillek-client_SOURCE_DIR}/lua-types.cpp
 	${trillek-client_SOURCE_DIR}/render-system.cpp
 	${trillek-client_SOURCE_DIR}/server-connection.cpp
 	${trillek-client_SOURCE_DIR}/sound-system.cpp
