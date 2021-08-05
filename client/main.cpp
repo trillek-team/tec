@@ -189,12 +189,15 @@ int main(int argc, char* argv[]) {
 				std::vector<std::string> splitArgs = SplitString(std::string(args, end_arg - args));
 				if (splitArgs.size() >= 2) {
 					connection.Connect(splitArgs[1]);
-					tec::proto::UserLogin user_login;
-					user_login.set_username(splitArgs[0]);
-					user_login.set_password("");
-					tec::networking::MessageOut msg(tec::networking::LOGIN);
-					user_login.SerializeToZeroCopyStream(&msg);
-					connection.Send(msg);
+					std::string username = splitArgs[0];
+					connection.RegisterConnectFunc([&connection, username]() {
+						tec::proto::UserLogin user_login;
+						user_login.set_username(username);
+						user_login.set_password("");
+						tec::networking::MessageOut msg(tec::networking::LOGIN);
+						user_login.SerializeToZeroCopyStream(&msg);
+						connection.Send(msg);
+					});
 				}
 			});
 	console.AddSlashHandler([&connection](const char* args) {

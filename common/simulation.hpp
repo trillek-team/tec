@@ -1,7 +1,9 @@
 #pragma once
 
+#include <condition_variable>
 #include <memory>
 #include <queue>
+#include <thread>
 
 #include "event-queue.hpp"
 #include "physics-system.hpp"
@@ -32,6 +34,9 @@ class Simulation final :
 		public EventQueue<FocusCapturedEvent>,
 		public EventQueue<FocusBlurEvent> {
 public:
+	Simulation();
+	~Simulation();
+
 	GameState Simulate(const double delta_time, GameState& interpolated_state);
 
 	PhysicsSystem& GetPhysicsSystem() { return this->phys_sys; }
@@ -61,6 +66,11 @@ public:
 	void On(std::shared_ptr<FocusBlurEvent> data);
 
 private:
+	std::thread* worker_thread;
+	std::mutex worker_m;
+	std::condition_variable worker_cv;
+	std::function<void()> worker_call = nullptr;
+
 	PhysicsSystem phys_sys;
 	VComputerSystem vcomp_sys;
 

@@ -182,6 +182,8 @@ void Server::OnDisconnect(std::shared_ptr<ClientConnection> client) {
 	for (auto _client : this->clients) {
 		_client->OnOtherLeaveWorld(leaving_client_id);
 	}
+	// Shutdown I/O to stop reads from keeping a reference alive
+	client->Shutdown();
 }
 
 void Server::Start() { this->io_context.run(); }

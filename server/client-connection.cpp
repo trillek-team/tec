@@ -19,7 +19,15 @@ ClientConnection::ClientConnection(tcp::socket _socket, tcp::endpoint _endpoint,
 	current_read_msg = MessagePool::get();
 }
 
+ClientConnection::~ClientConnection() {
+	auto _log = spdlog::get("console_log");
+	_log->info("socket closing");
+	this->socket.close();
+}
+
 void ClientConnection::StartRead() { read_header(); }
+
+void ClientConnection::Shutdown() { this->socket.shutdown(asio::socket_base::shutdown_both); }
 
 void ClientConnection::QueueWrite(MessagePool::ptr_type msg) {
 	bool write_in_progress;

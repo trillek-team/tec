@@ -59,17 +59,19 @@ void ServerConnectWindow::Draw(IMGUISystem* gui) {
 			std::stringstream ip;
 			ip << octets[0] << "." << octets[1] << "." << octets[2] << "." << octets[3];
 			spdlog::get("console_log")->info("Connecting to {}", ip.str());
+			this->server_connection.RegisterConnectFunc([this]() {
+				proto::UserLogin user_login;
+				user_login.set_username(username);
+				user_login.set_password("");
+				networking::MessageOut msg(tec::networking::LOGIN);
+				user_login.SerializeToZeroCopyStream(&msg);
+				this->server_connection.Send(msg);
+			});
 			this->server_connection.Connect(ip.str());
 			auto hide_login_window = std::bind(&IMGUISystem::HideWindow, gui, window_name);
 			this->server_connection.RegisterMessageHandler(
 					tec::networking::MessageType::AUTHENTICATED,
 					[hide_login_window](tec::networking::MessageIn&) { hide_login_window(); });
-			proto::UserLogin user_login;
-			user_login.set_username(username);
-			user_login.set_password("");
-			networking::MessageOut msg(tec::networking::LOGIN);
-			user_login.SerializeToZeroCopyStream(&msg);
-			this->server_connection.Send(msg);
 		}
 		ImGui::End();
 		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));

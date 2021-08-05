@@ -14,6 +14,30 @@ namespace tec {
 
 double UPDATE_RATE = 1.0 / 8.0; // 8 per second
 double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
+
+Simulation::Simulation() {
+	worker_thread = new std::thread([this]() {
+		std::unique_lock lock(worker_m);
+		while (this->worker_thread) {
+			worker_cv.wait_for(lock, std::chrono::milliseconds(1));
+			if(!lock.owns_lock()) {
+				throw std::exception();
+			}
+			if (this->worker_call) {
+				this->worker_call();
+				this->worker_call = nullptr;
+			}
+		}
+	});
+}
+
+Simulation::~Simulation() {
+	std::thread* old_worker_thread = this->worker_thread;
+	this->worker_thread = nullptr;
+	old_worker_thread->join();
+	delete old_worker_thread;
+}
+
 GameState Simulation::Simulate(const double delta_time, GameState& interpolated_state) {
 	ProcessCommandQueue();
 	EventQueue<KeyboardEvent>::ProcessEventQueue();
@@ -26,7 +50,16 @@ GameState Simulation::Simulate(const double delta_time, GameState& interpolated_
 	EventQueue<FocusCapturedEvent>::ProcessEventQueue();
 	EventQueue<FocusBlurEvent>::ProcessEventQueue();
 
-	auto vcomp_future = std::async(std::launch::async, [&]() { vcomp_sys.Update(delta_time); });
+	std::promise<void> worker_promise;
+	auto vcomp_future = worker_promise.get_future();
+	{
+		std::unique_lock lock(worker_m);
+		worker_call = [&]() {
+			vcomp_sys.Update(delta_time);
+			worker_promise.set_value();
+		};
+	}
+	worker_cv.notify_one();
 
 	for (Controller* controller : this->controllers) {
 		controller->Update(delta_time, interpolated_state, this->event_list);
@@ -38,11 +71,7 @@ GameState Simulation::Simulate(const double delta_time, GameState& interpolated_
 	this->event_list.mouse_click_events.clear();
 
 	GameState client_state = interpolated_state;
-	std::future<std::set<eid>> phys_future =
-			std::async(std::launch::async, [=, &interpolated_state]() -> std::set<eid> {
-				return phys_sys.Update(delta_time, interpolated_state);
-			});
-	std::set<eid> phys_results = phys_future.get();
+	std::set<eid> phys_results = phys_sys.Update(delta_time, interpolated_state);
 
 	if (phys_results.size() > 0) {
 		for (eid entity_id : phys_results) {
