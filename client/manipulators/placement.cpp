@@ -26,6 +26,16 @@ void Placement::SetMesh(const std::shared_ptr<MeshFile> _mesh) {
 	}
 }
 
+void Placement::SetMesh(const std::string mesh_name) {
+	if (!MeshMap::Has(mesh_name)) {
+		std::string ext = mesh_name.substr(mesh_name.find_last_of(".") + 1);
+		if (file_factories.find(ext) != file_factories.end()) {
+			file_factories[ext](mesh_name);
+		}
+	}
+	SetMesh(MeshMap::Get(mesh_name));
+}
+
 void Placement::ClearMesh() {
 	auto renderable = GetRenderable();
 	if (renderable) {
@@ -63,6 +73,16 @@ void Placement::PlaceEntityInWorld(glm::vec3 _position) {
 
 		this->ClearMesh();
 	}
+}
+
+void Placement::RegisterLuaType(sol::state& state) {
+	// clang-format off
+	state.new_usertype<Placement>(
+		"Placement", sol::no_constructor,
+		"set_mesh", sol::resolve<void(std::string)>(&Placement::SetMesh),
+		"clear_mesh", &Placement::ClearMesh
+	);
+	// clang-format on
 }
 } // namespace manipulator
 } // namespace tec

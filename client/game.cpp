@@ -56,6 +56,12 @@ Game::Game(OS& _os, std::string config_file_name) :
 	});
 
 	CreateEngineEntities();
+
+	{
+		auto& lua_state = this->lua_sys.GetGlobalState();
+		manipulator::Placement::RegisterLuaType(lua_state);
+		lua_state["placement_manipulator"] = &this->placement;
+	}
 }
 
 Game::~Game() {
@@ -217,19 +223,7 @@ void Game::ProcessEvents() {
 
 void Game::On(std::shared_ptr<KeyboardEvent> data) {
 	if (data->action == KeyboardEvent::KEY_UP) {
-		switch (data->key) {
-		case GLFW_KEY_1: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[0])); break;
-		case GLFW_KEY_2: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[1])); break;
-		case GLFW_KEY_3: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[2])); break;
-		case GLFW_KEY_4: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[3])); break;
-		case GLFW_KEY_5: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[4])); break;
-		case GLFW_KEY_6: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[5])); break;
-		case GLFW_KEY_7: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[6])); break;
-		case GLFW_KEY_8: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[7])); break;
-		case GLFW_KEY_9: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[8])); break;
-		case GLFW_KEY_0: this->placement.SetMesh(MeshMap::Get(this->placeable_meshes[9])); break;
-		default: break;
-		}
+		this->lua_sys.CallFunctions("onKeyUp", data->key);
 	}
 }
 
