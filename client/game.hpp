@@ -93,7 +93,6 @@ private:
 
 	std::thread sound_thread;
 	std::thread* asio_thread = nullptr;
-	std::thread* sync_thread = nullptr;
 
 	manipulator::Placement placement;
 };

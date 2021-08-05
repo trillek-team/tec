@@ -98,10 +98,18 @@ bool ServerConnection::Connect(std::string_view ip) {
 		asio::ip::tcp::no_delay option(true);
 		this->socket.set_option(option);
 
+		_log->info("Connected");
+
 		if (this->onConnect) {
 			this->onConnect();
 		}
 		read_header();
+
+		if (this->sync_thread) {
+			this->sync_thread->join();
+			delete this->sync_thread;
+		}
+		sync_thread = new std::thread([this]() { this->StartSync(); });
 	});
 
 	return true;
@@ -122,6 +130,10 @@ void ServerConnection::Stop() {
 	this->socket.close();
 	this->run_dispatch = false;
 	this->run_sync = false;
+	if (this->sync_thread) {
+		this->sync_thread->join();
+		delete this->sync_thread;
+	}
 }
 
 void ServerConnection::SendChatMessage(std::string message) {

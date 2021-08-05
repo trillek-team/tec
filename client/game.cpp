@@ -47,14 +47,6 @@ Game::Game(OS& _os, std::string config_file_name) :
 
 	asio_thread = new std::thread([this]() { server_connection.StartDispatch(); });
 
-	this->server_connection.RegisterConnectFunc([this]() {
-		if (this->sync_thread) {
-			this->sync_thread->join();
-			delete this->sync_thread;
-		}
-		sync_thread = new std::thread([this]() { server_connection.StartSync(); });
-	});
-
 	CreateEngineEntities();
 
 	{
@@ -74,10 +66,6 @@ Game::~Game() {
 	if (this->asio_thread) {
 		this->asio_thread->join();
 		delete this->asio_thread;
-	}
-	if (this->sync_thread) {
-		this->sync_thread->join();
-		delete this->sync_thread;
 	}
 }
 

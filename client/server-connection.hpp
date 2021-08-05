@@ -107,6 +107,7 @@ private:
 	MessagePool::ptr_type current_read_msg;
 	std::map<uint32_t, std::unique_ptr<MessageIn>> read_messages;
 
+	std::thread* sync_thread = nullptr;
 	std::atomic<bool> run_dispatch;
 	std::atomic<bool> run_sync;
 	std::deque<MessagePool::ptr_type> write_msg_queue;
