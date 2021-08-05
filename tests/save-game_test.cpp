@@ -15,7 +15,7 @@ const eid entity_id = 1234;
 class SaveGameTest : public ::testing::Test {
 protected:
 	void SetUp() override {
-		ASSERT_TRUE(FilePath::MkDir(save_directory));
+		ASSERT_TRUE(FilePath::MkDir(save_directory)) << "save_directory: " << save_directory.toString();
 		std::fstream output(save_file_path.GetNativePath(), std::ios::out);
 		ASSERT_TRUE(output.good());
 		output.write(contents.c_str(), contents.length());
@@ -35,7 +35,7 @@ TEST_F(SaveGameTest, Constructor) { SaveGame save_game; }
 
 TEST_F(SaveGameTest, DiskIO) {
 	// Sanity check
-	ASSERT_TRUE(save_directory.DirExists());
+	ASSERT_TRUE(save_directory.DirExists()) << "save_directory: " << save_directory.toString();
 
 	uid user2_id = "user-2";
 	{
