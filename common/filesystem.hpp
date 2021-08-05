@@ -8,12 +8,13 @@
 #include <algorithm>
 #include <ostream>
 #include <string>
+#include <string_view>
 
 namespace tec {
 #if defined(WIN32)
-const std::string PATH_SEPARATOR = std::string("\\"); /// OS File system path separator
+constexpr std::string_view PATH_SEPARATOR = "\\"; /// OS File system path separator
 #else
-const std::string PATH_SEPARATOR = std::string("/"); /// OS File system path separator
+constexpr std::string_view PATH_SEPARATOR = "/"; /// OS File system path separator
 #endif
 class FilePath final {
 public:
@@ -39,7 +40,16 @@ public:
 	* \param pos Begin of the range to get a slice (default = 0)
 	* \param count How many bytes to grab from other (default = size of other)
 	*/
-	FilePath(const std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
+	FilePath(std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
+
+	/**
+	* \brief Builds a path from a string_view or substring there of
+	*
+	* \param other A string_view with a path
+	* \param pos Begin of the range to get a slice (default = 0)
+	* \param count How many bytes to grab from other (default = size of other)
+	*/
+	FilePath(const std::string_view& other, std::size_t pos = 0, std::size_t count = std::string_view::npos);
 
 	/**
 	* \brief Builds a path from a wstring or substring
@@ -273,6 +283,12 @@ public:
 		return *this;
 	}
 
+	FilePath& operator=(const std::string_view& str) {
+		this->path = str;
+		this->NormalizePath();
+		return *this;
+	}
+
 	FilePath& operator=(const char* str) {
 		this->path = std::string(str);
 		this->NormalizePath();
@@ -280,8 +296,8 @@ public:
 	}
 
 	/**
-		* \brief Concatenate a path
-		*/
+	* \brief Concatenate a path
+	*/
 	FilePath& operator+=(const FilePath& rhs) {
 		this->path += rhs.path;
 		this->NormalizePath();
@@ -289,16 +305,16 @@ public:
 	}
 
 	/**
-		* \brief Concatenate a path
-		*/
+	* \brief Concatenate a path
+	*/
 	FilePath& operator+=(const char* lhs) {
-		this->operator+=(FilePath(lhs));
+		this->operator+=(FilePath(std::string(lhs)));
 		return *this;
 	}
 
 	/**
-		* \brief Concatenate a path
-		*/
+	* \brief Concatenate a path
+	*/
 	FilePath& operator+=(const std::string& lhs) {
 		this->operator+=(FilePath(lhs));
 		return *this;
@@ -313,12 +329,20 @@ public:
 	}
 
 	/**
+	* \brief Concatenate a path
+	*/
+	FilePath& operator+=(const std::string_view& lhs) {
+		this->operator+=(FilePath(lhs));
+		return *this;
+	}
+
+	/**
 	* \brief Append a subdirectory or file
 	*/
 	FilePath& operator/=(const FilePath& rhs) {
 		if (path.empty()) {
 			if (rhs.empty() || rhs.path.front() != PATH_SEPARATOR_C) {
-				this->path += PATH_SEPARATOR + rhs.path;
+				this->path.append(PATH_SEPARATOR).append(rhs.path);
 			}
 			else {
 				this->path += rhs.path;
@@ -326,7 +350,7 @@ public:
 		}
 		else {
 			if (path.back() != PATH_SEPARATOR_C && (rhs.empty() || rhs.path.front() != PATH_SEPARATOR_C)) {
-				this->path += PATH_SEPARATOR + rhs.path;
+				this->path.append(PATH_SEPARATOR).append(rhs.path);
 			}
 			else {
 				this->path += rhs.path;
@@ -337,16 +361,16 @@ public:
 	}
 
 	/**
-		* \brief Append a subdirectory or file
-		*/
+	* \brief Append a subdirectory or file
+	*/
 	FilePath& operator/=(const char* rhs) {
-		this->operator/=(FilePath(rhs));
+		this->operator/=(FilePath(std::string(rhs)));
 		return *this;
 	}
 
 	/**
-		* \brief Append a subdirectory or file
-		*/
+	* \brief Append a subdirectory or file
+	*/
 	FilePath& operator/=(const std::string& rhs) {
 		this->operator/=(FilePath(rhs));
 		return *this;
@@ -390,7 +414,7 @@ inline FilePath operator+(const FilePath& lhs, const std::wstring& wstr) { retur
 /**
 * \brief Concatenate a path
 */
-inline FilePath operator+(const FilePath& lhs, const char* str) { return FilePath(lhs) += FilePath(str); }
+inline FilePath operator+(const FilePath& lhs, const char* str) { return FilePath(lhs) += FilePath(std::string(str)); }
 
 /**
 * \brief Append a subdirectory or file
@@ -410,7 +434,7 @@ inline FilePath operator/(const FilePath& lhs, const std::wstring& wstr) { retur
 /**
 * \brief Append a subdirectory or file
 */
-inline FilePath operator/(const FilePath& lhs, const char* str) { return FilePath(lhs) /= FilePath(str); }
+inline FilePath operator/(const FilePath& lhs, const char* str) { return FilePath(lhs) /= FilePath(std::string(str)); }
 
 /**
 * \brief Output to a stream

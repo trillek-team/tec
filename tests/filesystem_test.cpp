@@ -17,15 +17,15 @@ TEST(FilePath_class_test, Constructor) {
 	std::string bad_path = "c:\\usr/share\\MyApp\\foo/bar.png";
 	FilePath fp1(bad_path);
 #if defined(WIN32)
-	ASSERT_STREQ("c:\\usr\\share\\MyApp\\foo\\bar.png", fp1.toString().c_str());
+	ASSERT_EQ(fp1.toString(), "c:\\usr\\share\\MyApp\\foo\\bar.png");
 #else
-	ASSERT_STREQ("/usr/share/MyApp/foo/bar.png", fp1.toString().c_str());
+	ASSERT_EQ(fp1.toString(), "/usr/share/MyApp/foo/bar.png");
 #endif
 	FilePath fp2("c:/usr/local/share/");
 #if defined(WIN32)
-	ASSERT_STREQ("c:\\usr\\local\\share\\", fp2.toString().c_str());
+	ASSERT_EQ(fp2.toString(), "c:\\usr\\local\\share\\");
 #else
-	ASSERT_STREQ("/usr/local/share/", fp2.toString().c_str());
+	ASSERT_EQ(fp2.toString(), "/usr/local/share/");
 #endif
 }
 
@@ -34,38 +34,38 @@ TEST(FilePath_class_test, Operators) {
 	FilePath fp1("/usr/");
 	fp1 = "c:\\windows\\";
 #if defined(WIN32)
-	ASSERT_EQ(0, fp1.toString().compare("c:\\windows\\"));
+	ASSERT_EQ(fp1.toString(), "c:\\windows\\");
 #else
-	ASSERT_EQ(0, fp1.toString().compare("/windows/"));
+	ASSERT_EQ(fp1.toString(), "/windows/");
 #endif
 
 	fp1 = FilePath("/usr/") + "local/";
 #if defined(WIN32)
-	ASSERT_EQ(0, fp1.toString().compare("\\usr\\local\\"));
+	ASSERT_EQ(fp1.toString(), "\\usr\\local\\");
 #else
-	ASSERT_EQ(0, fp1.toString().compare("/usr/local/"));
+	ASSERT_EQ(fp1.toString(), "/usr/local/");
 #endif
 
 	fp1 += "share";
 #if defined(WIN32)
-	ASSERT_EQ(0, fp1.toString().compare("\\usr\\local\\share"));
+	ASSERT_EQ(fp1.toString(), "\\usr\\local\\share");
 #else
-	ASSERT_EQ(0, fp1.toString().compare("/usr/local/share"));
+	ASSERT_EQ(fp1.toString(), "/usr/local/share");
 #endif
 
 	fp1 /= "trillek";
 #if defined(WIN32)
-	ASSERT_EQ(0, fp1.toString().compare("\\usr\\local\\share\\trillek"));
+	ASSERT_EQ(fp1.toString(), "\\usr\\local\\share\\trillek");
 #else
-	ASSERT_EQ(0, fp1.toString().compare("/usr/local/share/trillek"));
+	ASSERT_EQ(fp1.toString(), "/usr/local/share/trillek");
 #endif
 
 	fp1 += "/";
 	fp1 /= "assets";
 #if defined(WIN32)
-	ASSERT_EQ(0, fp1.toString().compare("\\usr\\local\\share\\trillek\\assets"));
+	ASSERT_EQ(fp1.toString(), "\\usr\\local\\share\\trillek\\assets");
 #else
-	ASSERT_EQ(0, fp1.toString().compare("/usr/local/share/trillek/assets"));
+	ASSERT_EQ(fp1.toString(), "/usr/local/share/trillek/assets");
 #endif
 }
 
@@ -125,12 +125,12 @@ TEST(FilePath_class_test, BasePath) {
 	using namespace tec;
 #if defined(WIN32)
 	FilePath fp1("c:\\windows\\notepad.exe");
-	ASSERT_EQ(0, fp1.BasePath().toString().compare("c:\\windows\\"));
-	ASSERT_EQ(0, fp1.BasePath().BasePath().toString().compare("c:\\"));
+	ASSERT_EQ(fp1.BasePath().toString(), "c:\\windows\\");
+	ASSERT_EQ(fp1.BasePath().BasePath().toString(), "c:\\");
 #else
 	FilePath fp1("/usr/local/share/MyApp/foo.ini");
-	ASSERT_EQ(0, fp1.BasePath().toString().compare("/usr/local/share/MyApp/"));
-	ASSERT_EQ(0, fp1.BasePath().BasePath().toString().compare("/usr/local/share/"));
+	ASSERT_EQ(fp1.BasePath().toString(), "/usr/local/share/MyApp/");
+	ASSERT_EQ(fp1.BasePath().BasePath().toString(), "/usr/local/share/");
 #endif
 }
 
@@ -138,8 +138,8 @@ TEST(FilePath_class_test, FileNameAndExtension) {
 	using namespace tec;
 
 	FilePath fp1("c:\\windows\\notepad.exe");
-	ASSERT_EQ(0, fp1.FileName().compare("notepad.exe"));
-	ASSERT_EQ(0, fp1.FileExtension().compare("exe"));
+	ASSERT_EQ(fp1.FileName(), "notepad.exe");
+	ASSERT_EQ(fp1.FileExtension(), "exe");
 }
 
 TEST(FilePath_class_test, Subpath) {
@@ -151,30 +151,30 @@ TEST(FilePath_class_test, Subpath) {
 	auto sub2 = fp.Subpath(0, 2);
 	auto sub3 = fp.Subpath(3, 4);
 	auto sub4 = fp.Subpath(3);
-	ASSERT_EQ(0, sub1.toString().compare("c:"));
-	ASSERT_EQ(0, sub2.toString().compare("c:\\usr"));
-	ASSERT_EQ(0, sub3.toString().compare("\\share"));
-	ASSERT_EQ(0, sub4.toString().compare("\\share\\MyApp\\foo.ini"));
+	ASSERT_EQ(sub1.toString(), "c:");
+	ASSERT_EQ(sub2.toString(), "c:\\usr");
+	ASSERT_EQ(sub3.toString(), "\\share");
+	ASSERT_EQ(sub4.toString(), "\\share\\MyApp\\foo.ini");
 
 	auto sub5 = fp.SubpathFrom("share", true);
-	ASSERT_STREQ("share\\MyApp\\foo.ini", sub5.toString().c_str());
+	ASSERT_EQ(sub5.toString(), "share\\MyApp\\foo.ini");
 	auto sub6 = fp.SubpathFrom("share");
-	ASSERT_STREQ("MyApp\\foo.ini", sub6.toString().c_str());
+	ASSERT_EQ(sub6.toString(), "MyApp\\foo.ini");
 #else
 	FilePath fp("/usr/local/share/MyApp/foo.ini");
 	auto sub1 = fp.Subpath(0, 1);
 	auto sub2 = fp.Subpath(0, 2);
 	auto sub3 = fp.Subpath(3, 4);
 	auto sub4 = fp.Subpath(3);
-	ASSERT_EQ(0, sub1.toString().compare("/"));
-	ASSERT_EQ(0, sub2.toString().compare("/usr"));
-	ASSERT_EQ(0, sub3.toString().compare("/share"));
-	ASSERT_EQ(0, sub4.toString().compare("/share/MyApp/foo.ini"));
+	ASSERT_EQ(sub1.toString(), "/");
+	ASSERT_EQ(sub2.toString(), "/usr");
+	ASSERT_EQ(sub3.toString(), "/share");
+	ASSERT_EQ(sub4.toString(), "/share/MyApp/foo.ini");
 
 	auto sub5 = fp.SubpathFrom("share", true);
-	ASSERT_STREQ("share/MyApp/foo.ini", sub5.toString().c_str());
+	ASSERT_EQ(sub5.toString(), "share/MyApp/foo.ini");
 	auto sub6 = fp.SubpathFrom("share");
-	ASSERT_STREQ("MyApp/foo.ini", sub6.toString().c_str());
+	ASSERT_EQ(sub6.toString(), "MyApp/foo.ini");
 #endif
 }
 

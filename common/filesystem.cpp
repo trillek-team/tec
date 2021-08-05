@@ -47,7 +47,11 @@ std::string FilePath::assets_base = "";
 
 FilePath::FilePath() : path("") {}
 
-FilePath::FilePath(const std::string& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
+FilePath::FilePath(std::string& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
+	this->NormalizePath();
+}
+
+FilePath::FilePath(const std::string_view& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
 	this->NormalizePath();
 }
 
