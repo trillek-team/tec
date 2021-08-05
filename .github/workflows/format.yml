@@ -12,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.head_ref }}
-        persist-credentials: false
     - name: Clang format
       uses: DoozyX/clang-format-lint-action@v0.11
       with:
@@ -67,8 +64,6 @@ jobs:
     - name: Display changed files
       run: git status
     - name: Commit any clang format changes
-      uses: EndBug/add-and-commit@v4
+      uses: EndBug/add-and-commit@v7
       with:
         message: 'Committing clang-format and engine doc changes'
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
