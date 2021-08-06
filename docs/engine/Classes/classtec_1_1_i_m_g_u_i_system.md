@@ -7,6 +7,8 @@ title: tec::IMGUISystem
 
 
 
+
+
 Inherits from [tec::CommandQueue< IMGUISystem >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseMoveEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseScrollEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseBtnEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -239,4 +241,4 @@ static void RenderDrawLists(
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

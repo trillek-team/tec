@@ -5,6 +5,8 @@ title: spdlog
 
 # spdlog
 
+
+
 ## Namespaces
 
 | Name           |
@@ -18,4 +20,4 @@ title: spdlog
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:10 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

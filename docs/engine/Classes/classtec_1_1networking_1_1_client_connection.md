@@ -7,32 +7,44 @@ title: tec::networking::ClientConnection
 
 
 
+
+
 Inherits from std::enable_shared_from_this< ClientConnection >
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
+| void | **[RegisterLuaType](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-registerluatype)**(sol::state & ) |
 | | **[ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-clientconnection)**(tcp::socket _socket, tcp::endpoint _endpoint, [Server](/engine/Classes/classtec_1_1networking_1_1_server/) * server) |
 | | **[~ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-~clientconnection)**() |
 | void | **[StartRead](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-startread)**() |
+| void | **[Shutdown](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-shutdown)**() |
 | void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**(MessagePool::ptr_type msg) |
 | void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) & msg) |
 | void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && msg) |
 | [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getid)**() |
 | tcp::endpoint | **[GetEndpoint](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getendpoint)**() |
-| void | **[SetID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-setid)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) id) |
-| proto::Entity & | **[GetEntity](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getentity)**() |
-| void | **[DoJoin](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-dojoin)**() |
-| void | **[DoLeave](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-doleave)**() |
-| void | **[OnClientLeave](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onclientleave)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
+| void | **[OnJoinWorld](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onjoinworld)**() |
+| void | **[OnLeaveWorld](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onleaveworld)**() |
+| void | **[OnOtherLeaveWorld](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onotherleaveworld)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
 | void | **[ConfirmStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-confirmstateid)**(state_id_t state_id) |
 | state_id_t | **[GetLastConfirmedStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getlastconfirmedstateid)**() |
 | void | **[UpdateGameState](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-updategamestate)**(const [GameState](/engine/Classes/structtec_1_1_game_state/) & full_state) |
 | [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) | **[PrepareGameStateUpdateMessage](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-preparegamestateupdatemessage)**(state_id_t current_state_id, uint64_t current_timestamp) |
 | size_t | **[GetPartialMessageCount](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getpartialmessagecount)**() const |
+| bool | **[ReadyToReceive](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-readytoreceive)**() const |
 
 ## Public Functions Documentation
+
+### function RegisterLuaType
+
+```cpp
+static void RegisterLuaType(
+    sol::state & 
+)
+```
+
 
 ### function ClientConnection
 
@@ -56,6 +68,13 @@ ClientConnection(
 
 ```cpp
 void StartRead()
+```
+
+
+### function Shutdown
+
+```cpp
+void Shutdown()
 ```
 
 
@@ -100,40 +119,24 @@ inline tcp::endpoint GetEndpoint()
 ```
 
 
-### function SetID
+### function OnJoinWorld
 
 ```cpp
-void SetID(
-    eid id
-)
+void OnJoinWorld()
 ```
 
 
-### function GetEntity
+### function OnLeaveWorld
 
 ```cpp
-inline proto::Entity & GetEntity()
+void OnLeaveWorld()
 ```
 
 
-### function DoJoin
+### function OnOtherLeaveWorld
 
 ```cpp
-void DoJoin()
-```
-
-
-### function DoLeave
-
-```cpp
-void DoLeave()
-```
-
-
-### function OnClientLeave
-
-```cpp
-void OnClientLeave(
+void OnOtherLeaveWorld(
     eid entity_id
 )
 ```
@@ -181,6 +184,13 @@ inline size_t GetPartialMessageCount() const
 ```
 
 
+### function ReadyToReceive
+
+```cpp
+inline bool ReadyToReceive() const
+```
+
+
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:10 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

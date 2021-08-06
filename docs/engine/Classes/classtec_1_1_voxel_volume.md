@@ -7,6 +7,8 @@ title: tec::VoxelVolume
 
 
 
+
+
 Inherits from [tec::CommandQueue< VoxelVolume >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< MouseClickEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -169,4 +171,4 @@ static std::weak_ptr< VoxelVolume > Create(
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

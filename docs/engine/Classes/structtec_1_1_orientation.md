@@ -7,6 +7,8 @@ title: tec::Orientation
 
 
 
+
+
 ## Public Functions
 
 |                | Name           |
@@ -16,8 +18,8 @@ title: tec::Orientation
 | | **[Orientation](/engine/Classes/structtec_1_1_orientation/#function-orientation)**() =default |
 | void | **[Rotate](/engine/Classes/structtec_1_1_orientation/#function-rotate)**(const glm::vec3 amount =glm::vec3(0.0f)) |
 | void | **[OrientedRotate](/engine/Classes/structtec_1_1_orientation/#function-orientedrotate)**(const glm::vec3 amount) |
-| void | **[Out](/engine/Classes/structtec_1_1_orientation/#function-out)**(proto::Component * target) |
-| void | **[Out](/engine/Classes/structtec_1_1_orientation/#function-out)**(proto::Orientation * comp) |
+| void | **[Out](/engine/Classes/structtec_1_1_orientation/#function-out)**(proto::Component * target) const |
+| void | **[Out](/engine/Classes/structtec_1_1_orientation/#function-out)**(proto::Orientation * comp) const |
 | void | **[In](/engine/Classes/structtec_1_1_orientation/#function-in)**(const proto::Component & source) |
 | void | **[In](/engine/Classes/structtec_1_1_orientation/#function-in)**(const proto::Orientation & comp) |
 
@@ -78,7 +80,7 @@ void OrientedRotate(
 ```cpp
 void Out(
     proto::Component * target
-)
+) const
 ```
 
 
@@ -87,7 +89,7 @@ void Out(
 ```cpp
 void Out(
     proto::Orientation * comp
-)
+) const
 ```
 
 
@@ -127,4 +129,4 @@ glm::vec3 rotation {0.f, 0.f, 0.f};
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

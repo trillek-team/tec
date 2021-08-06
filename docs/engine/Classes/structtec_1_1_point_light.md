@@ -7,6 +7,8 @@ title: tec::PointLight
 
 
 
+
+
 Inherits from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 
 ## Public Functions
@@ -118,4 +120,4 @@ float bounding_radius {0.f};
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

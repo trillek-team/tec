@@ -7,6 +7,8 @@ title: tec::DirectionalLight
 
 
 
+
+
 Inherits from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 
 Inherited by [tec::SpotLight](/engine/Classes/structtec_1_1_spot_light/)
@@ -80,4 +82,4 @@ glm::vec3 direction {0.f, 0.f, -1.f};
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

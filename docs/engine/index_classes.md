@@ -11,6 +11,7 @@ title: Classes
 * **namespace [google](/engine/Namespaces/namespacegoogle/)** 
     * **namespace [protobuf](/engine/Namespaces/namespacegoogle_1_1protobuf/)** 
         * **namespace [io](/engine/Namespaces/namespacegoogle_1_1protobuf_1_1io/)** 
+* **namespace [sol](/engine/Namespaces/namespacesol/)** 
 * **namespace [spdlog](/engine/Namespaces/namespacespdlog/)** 
     * **namespace [sinks](/engine/Namespaces/namespacespdlog_1_1sinks/)** 
 * **namespace [std](/engine/Namespaces/namespacestd/)** 
@@ -53,6 +54,7 @@ title: Classes
     * **struct [GameState](/engine/Classes/structtec_1_1_game_state/)** 
     * **class [IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/)** 
     * **struct [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/)** 
+    * **struct [LuaClassList](/engine/Classes/structtec_1_1_lua_class_list/)** 
     * **struct [LuaScript](/engine/Classes/structtec_1_1_lua_script/)** 
     * **class [LuaSystem](/engine/Classes/classtec_1_1_lua_system/)** 
     * **class [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/)** 
@@ -112,6 +114,8 @@ title: Classes
     * **class [TextureObject](/engine/Classes/classtec_1_1_texture_object/)** 
     * **struct [TimeFrameMetrics](/engine/Classes/structtec_1_1_time_frame_metrics/)** 
     * **class [UserList](/engine/Classes/classtec_1_1_user_list/)** 
+    * **class [UserListDataSource](/engine/Classes/classtec_1_1_user_list_data_source/)** 
+    * **struct [UserLoginEvent](/engine/Classes/structtec_1_1_user_login_event/)** 
     * **class [VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/)** 
     * **struct [Velocity](/engine/Classes/structtec_1_1_velocity/)** 
     * **class [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/)** 
@@ -123,19 +127,30 @@ title: Classes
     * **class [VoxelSystem](/engine/Classes/classtec_1_1_voxel_system/)** 
     * **class [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/)** 
     * **struct [WindowResizedEvent](/engine/Classes/structtec_1_1_window_resized_event/)** 
+    * **namespace [manipulator](/engine/Namespaces/namespacetec_1_1manipulator/)** 
+        * **class [Placement](/engine/Classes/classtec_1_1manipulator_1_1_placement/)** <br>Manipulator used to place objects in the world. Can have a mesh assigned to provide visual feedback. 
     * **namespace [networking](/engine/Namespaces/namespacetec_1_1networking/)** 
         * **class [ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/)** 
+        * **struct [ClientConnectionEvent](/engine/Classes/structtec_1_1networking_1_1_client_connection_event/)** 
         * **class [Message](/engine/Classes/classtec_1_1networking_1_1_message/)** 
         * **class [MessageIn](/engine/Classes/classtec_1_1networking_1_1_message_in/)** 
         * **class [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/)** 
         * **class [MessagePool](/engine/Classes/classtec_1_1networking_1_1_message_pool/)** 
         * **class [Server](/engine/Classes/classtec_1_1networking_1_1_server/)** 
         * **class [ServerConnection](/engine/Classes/classtec_1_1networking_1_1_server_connection/)** 
-        * **struct [client_connection_info](/engine/Classes/structtec_1_1networking_1_1client__connection__info/)** 
+        * **struct [UserLoginEvent](/engine/Classes/structtec_1_1networking_1_1_user_login_event/)** 
+    * **namespace [system](/engine/Namespaces/namespacetec_1_1system/)** 
+        * **class [UserAuthenticator](/engine/Classes/classtec_1_1system_1_1_user_authenticator/)** 
+    * **namespace [user](/engine/Namespaces/namespacetec_1_1user/)** 
+        * **struct [Credentials](/engine/Classes/structtec_1_1user_1_1_credentials/)** 
+        * **struct [EntityData](/engine/Classes/structtec_1_1user_1_1_entity_data/)** 
+        * **class [User](/engine/Classes/classtec_1_1user_1_1_user/)** <br>Container used to store information about a logged in user. 
+    * **namespace [util](/engine/Namespaces/namespacetec_1_1util/)** 
+        * **class [DataSource](/engine/Classes/classtec_1_1util_1_1_data_source/)** 
 * **namespace [trillek::computer](/engine/Namespaces/namespacetrillek_1_1computer/)** 
 
 
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:10 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

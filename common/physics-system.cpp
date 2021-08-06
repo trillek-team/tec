@@ -396,7 +396,8 @@ void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
 			AddRigidBody(collision_body);
 			break;
 		}
-		case proto::Component::kPosition: {
+		case proto::Component::kPosition:
+		{
 			Position* position = new Position();
 			position->In(comp);
 			Multiton<eid, Position*>::Set(entity_id, position);

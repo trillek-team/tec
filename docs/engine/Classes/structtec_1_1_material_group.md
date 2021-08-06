@@ -7,6 +7,8 @@ title: tec::MaterialGroup
 
 
 
+
+
 ## Public Attributes
 
 |                | Name           |
@@ -48,4 +50,4 @@ std::list< std::string > textures;
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

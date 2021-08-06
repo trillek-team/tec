@@ -7,6 +7,8 @@ title: tec::FPSController
 
 
 
+
+
 Inherits from [tec::Controller](/engine/Classes/structtec_1_1_controller/)
 
 ## Public Functions
@@ -239,4 +241,4 @@ bool KEY_D_DOWN {false};
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

@@ -7,6 +7,8 @@ title: tec::DeviceBase
 
 
 
+
+
 Inherited by [tec::ComputerKeyboard](/engine/Classes/structtec_1_1_computer_keyboard/), [tec::ComputerScreen](/engine/Classes/structtec_1_1_computer_screen/)
 
 ## Public Functions
@@ -59,4 +61,4 @@ std::shared_ptr< Device > device;
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

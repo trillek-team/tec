@@ -7,6 +7,8 @@ title: tec::ChatCommandEvent
 
 
 
+
+
 ## Public Functions
 
 |                | Name           |
@@ -14,7 +16,7 @@ title: tec::ChatCommandEvent
 | | **[ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/#function-chatcommandevent)**() =default |
 | | **[ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/#function-chatcommandevent)**(proto::ChatCommand chat_command) |
 | void | **[In](/engine/Classes/structtec_1_1_chat_command_event/#function-in)**(proto::ChatCommand chat_command) |
-| void | **[Out](/engine/Classes/structtec_1_1_chat_command_event/#function-out)**(proto::ChatCommand chat_command) |
+| void | **[Out](/engine/Classes/structtec_1_1_chat_command_event/#function-out)**(proto::ChatCommand & chat_command) |
 | proto::ChatCommand | **[Out](/engine/Classes/structtec_1_1_chat_command_event/#function-out)**() |
 
 ## Public Attributes
@@ -55,7 +57,7 @@ inline void In(
 
 ```cpp
 inline void Out(
-    proto::ChatCommand chat_command
+    proto::ChatCommand & chat_command
 )
 ```
 
@@ -85,4 +87,4 @@ std::vector< std::string > args;
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

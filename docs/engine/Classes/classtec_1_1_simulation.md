@@ -7,12 +7,16 @@ title: tec::Simulation
 
 
 
+
+
 Inherits from [tec::CommandQueue< Simulation >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseBtnEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseMoveEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseClickEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< ClientCommandsEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< ControllerAddedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< ControllerRemovedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< FocusCapturedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< FocusBlurEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
+| | **[Simulation](/engine/Classes/classtec_1_1_simulation/#function-simulation)**() |
+| | **[~Simulation](/engine/Classes/classtec_1_1_simulation/#function-~simulation)**() |
 | [GameState](/engine/Classes/structtec_1_1_game_state/) | **[Simulate](/engine/Classes/classtec_1_1_simulation/#function-simulate)**(const double delta_time, [GameState](/engine/Classes/structtec_1_1_game_state/) & interpolated_state) |
 | [PhysicsSystem](/engine/Classes/classtec_1_1_physics_system/) & | **[GetPhysicsSystem](/engine/Classes/classtec_1_1_simulation/#function-getphysicssystem)**() |
 | [VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/) & | **[GetVComputerSystem](/engine/Classes/classtec_1_1_simulation/#function-getvcomputersystem)**() |
@@ -203,6 +207,20 @@ Inherits from [tec::CommandQueue< Simulation >](/engine/Classes/classtec_1_1_com
 
 ## Public Functions Documentation
 
+### function Simulation
+
+```cpp
+Simulation()
+```
+
+
+### function ~Simulation
+
+```cpp
+~Simulation()
+```
+
+
 ### function Simulate
 
 ```cpp
@@ -357,4 +375,4 @@ This event is sent to indicate that focus had been released (blur) from an ownin
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

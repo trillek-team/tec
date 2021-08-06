@@ -7,50 +7,44 @@ title: tec::UserList
 
 
 
+
+
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| template <typename T \> <br>void | **[SetUsers](/engine/Classes/classtec_1_1_user_list/#function-setusers)**(T begin, T end) |
-| void | **[AddUser](/engine/Classes/classtec_1_1_user_list/#function-adduser)**(proto::User user) |
-| const std::list< proto::User > * | **[GetUsers](/engine/Classes/classtec_1_1_user_list/#function-getusers)**() |
-| proto::User * | **[GetUser](/engine/Classes/classtec_1_1_user_list/#function-getuser)**(uid id) |
-| bool | **[RemoveUser](/engine/Classes/classtec_1_1_user_list/#function-removeuser)**(uid id) |
-| bool | **[UserExists](/engine/Classes/classtec_1_1_user_list/#function-userexists)**(uid id) |
+| void | **[AddUser](/engine/Classes/classtec_1_1_user_list/#function-adduser)**([User](/engine/Classes/classtec_1_1user_1_1_user/) user) |
+| [User](/engine/Classes/classtec_1_1user_1_1_user/) * | **[CreateUser](/engine/Classes/classtec_1_1_user_list/#function-createuser)**([uid](/engine/Namespaces/namespacetec/#typedef-uid) user_id) |
+| [User](/engine/Classes/classtec_1_1user_1_1_user/) * | **[GetUser](/engine/Classes/classtec_1_1_user_list/#function-getuser)**([uid](/engine/Namespaces/namespacetec/#typedef-uid) id) |
+| bool | **[RemoveUser](/engine/Classes/classtec_1_1_user_list/#function-removeuser)**([uid](/engine/Namespaces/namespacetec/#typedef-uid) id) |
+| bool | **[HasUser](/engine/Classes/classtec_1_1_user_list/#function-hasuser)**([uid](/engine/Namespaces/namespacetec/#typedef-uid) id) |
+| std::list< [User](/engine/Classes/classtec_1_1user_1_1_user/) > * | **[GetUsers](/engine/Classes/classtec_1_1_user_list/#function-getusers)**() |
+| void | **[RegisterLuaType](/engine/Classes/classtec_1_1_user_list/#function-registerluatype)**(sol::state & ) |
 
 ## Public Functions Documentation
-
-### function SetUsers
-
-```cpp
-template <typename T >
-void SetUsers(
-    T begin,
-    T end
-)
-```
-
 
 ### function AddUser
 
 ```cpp
 void AddUser(
-    proto::User user
+    User user
 )
 ```
 
 
-### function GetUsers
+### function CreateUser
 
 ```cpp
-const std::list< proto::User > * GetUsers()
+User * CreateUser(
+    uid user_id
+)
 ```
 
 
 ### function GetUser
 
 ```cpp
-proto::User * GetUser(
+User * GetUser(
     uid id
 )
 ```
@@ -65,15 +59,31 @@ bool RemoveUser(
 ```
 
 
-### function UserExists
+### function HasUser
 
 ```cpp
-bool UserExists(
+bool HasUser(
     uid id
+)
+```
+
+
+### function GetUsers
+
+```cpp
+inline std::list< User > * GetUsers()
+```
+
+
+### function RegisterLuaType
+
+```cpp
+static void RegisterLuaType(
+    sol::state & 
 )
 ```
 
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

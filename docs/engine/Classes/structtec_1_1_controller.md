@@ -7,6 +7,8 @@ title: tec::Controller
 
 
 
+
+
 Inherited by [tec::FPSController](/engine/Classes/structtec_1_1_f_p_s_controller/)
 
 ## Public Functions
@@ -130,4 +132,4 @@ bool mouse_focus = true;
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

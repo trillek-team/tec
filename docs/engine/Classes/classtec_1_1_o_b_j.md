@@ -7,6 +7,8 @@ title: tec::OBJ
 
 
 
+
+
 Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
 
 ## Public Classes
@@ -132,4 +134,4 @@ This is just a shorthand function that can be called directly via script API.
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

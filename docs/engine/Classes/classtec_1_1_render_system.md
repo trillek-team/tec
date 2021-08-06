@@ -7,6 +7,8 @@ title: tec::RenderSystem
 
 
 
+
+
 Inherits from [tec::CommandQueue< RenderSystem >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -15,7 +17,7 @@ Inherits from [tec::CommandQueue< RenderSystem >](/engine/Classes/classtec_1_1_c
 | -------------- | -------------- |
 | void | **[Startup](/engine/Classes/classtec_1_1_render_system/#function-startup)**() |
 | void | **[SetViewportSize](/engine/Classes/classtec_1_1_render_system/#function-setviewportsize)**(const unsigned int width, const unsigned int height) |
-| void | **[Update](/engine/Classes/classtec_1_1_render_system/#function-update)**(const double delta, const [GameState](/engine/Classes/structtec_1_1_game_state/) & state) |
+| void | **[Update](/engine/Classes/classtec_1_1_render_system/#function-update)**(const double delta) |
 
 ## Additional inherited members
 
@@ -111,12 +113,11 @@ void SetViewportSize(
 
 ```cpp
 void Update(
-    const double delta,
-    const GameState & state
+    const double delta
 )
 ```
 
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

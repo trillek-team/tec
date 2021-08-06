@@ -7,6 +7,8 @@ title: tec::MeshFile
 
 
 
+
+
 Inherited by [tec::MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/), [tec::OBJ](/engine/Classes/classtec_1_1_o_b_j/)
 
 ## Public Functions
@@ -159,4 +161,4 @@ bool dirty {false};
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

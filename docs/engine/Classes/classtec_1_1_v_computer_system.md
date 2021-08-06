@@ -7,6 +7,8 @@ title: tec::VComputerSystem
 
 
 
+
+
 Inherits from [tec::CommandQueue< VComputerSystem >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseBtnEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseClickEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -302,4 +304,4 @@ virtual void On(
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:10 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

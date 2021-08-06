@@ -7,6 +7,8 @@ title: tec::Entity
 
 
 
+
+
 ## Public Functions
 
 |                | Name           |
@@ -18,11 +20,11 @@ title: tec::Entity
 | template <typename... T\> <br>void | **[Out](/engine/Classes/classtec_1_1_entity/#function-out)**(proto::Entity & entity) |
 | template <typename T \> <br>void | **[Add](/engine/Classes/classtec_1_1_entity/#function-add)**(T * comp) |
 | template <typename T \> <br>void | **[Remove](/engine/Classes/classtec_1_1_entity/#function-remove)**() |
-| template <typename T \> <br>bool | **[Has](/engine/Classes/classtec_1_1_entity/#function-has)**() |
-| template <typename T \> <br>const T * | **[Get](/engine/Classes/classtec_1_1_entity/#function-get)**() |
+| template <typename T \> <br>bool | **[Has](/engine/Classes/classtec_1_1_entity/#function-has)**() const |
+| template <typename T \> <br>const T * | **[Get](/engine/Classes/classtec_1_1_entity/#function-get)**() const |
 | template <typename... T\> <br>std::tuple< const T *... > | **[GetList](/engine/Classes/classtec_1_1_entity/#function-getlist)**() |
 | template <typename T \> <br>void | **[Update](/engine/Classes/classtec_1_1_entity/#function-update)**(T * val) |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetID](/engine/Classes/classtec_1_1_entity/#function-getid)**() |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetID](/engine/Classes/classtec_1_1_entity/#function-getid)**() const |
 
 ## Public Functions Documentation
 
@@ -96,7 +98,7 @@ inline void Remove()
 
 ```cpp
 template <typename T >
-inline bool Has()
+inline bool Has() const
 ```
 
 
@@ -104,7 +106,7 @@ inline bool Has()
 
 ```cpp
 template <typename T >
-inline const T * Get()
+inline const T * Get() const
 ```
 
 
@@ -129,10 +131,10 @@ inline void Update(
 ### function GetID
 
 ```cpp
-inline eid GetID()
+inline eid GetID() const
 ```
 
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

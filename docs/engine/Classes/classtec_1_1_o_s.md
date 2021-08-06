@@ -7,6 +7,8 @@ title: tec::OS
 
 
 
+
+
 Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -29,7 +31,6 @@ Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_ev
 | GLFWwindow * | **[GetWindow](/engine/Classes/classtec_1_1_o_s/#function-getwindow)**()<br>Returns the current active window.  |
 | void | **[EnableMouseLock](/engine/Classes/classtec_1_1_o_s/#function-enablemouselock)**() |
 | void | **[DisableMouseLock](/engine/Classes/classtec_1_1_o_s/#function-disablemouselock)**() |
-| void | **[LuaStateRegistration](/engine/Classes/classtec_1_1_o_s/#function-luastateregistration)**(sol::state & state) |
 | void | **[Terminate](/engine/Classes/classtec_1_1_o_s/#function-terminate)**()<br>Calls GLFWTerminate to close the window.  |
 | void | **[WindowResized](/engine/Classes/classtec_1_1_o_s/#function-windowresized)**(GLFWwindow * window, int width, int height)<br>Callback for when the window is resized.  |
 | void | **[KeyboardEventCallback](/engine/Classes/classtec_1_1_o_s/#function-keyboardeventcallback)**(GLFWwindow * window, int key, int scancode, int action, int mods)<br>Callback for keyboard events.  |
@@ -42,6 +43,7 @@ Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_ev
 | void | **[SetMousePosition](/engine/Classes/classtec_1_1_o_s/#function-setmouseposition)**(const double x, const double y)<br>Sets the mouse cursor position relative to the upper-left corner of the window.  |
 | void | **[GetMousePosition](/engine/Classes/classtec_1_1_o_s/#function-getmouseposition)**(double * x, double * y)<br>Gets the mouse cursor position relative to the upper-left corner of the window.  |
 | const GLFWwindow * | **[GetFocusedWindow](/engine/Classes/classtec_1_1_o_s/#function-getfocusedwindow)**() |
+| void | **[RegisterLuaType](/engine/Classes/classtec_1_1_o_s/#function-registerluatype)**(sol::state & ) |
 
 ## Additional inherited members
 
@@ -228,15 +230,6 @@ void EnableMouseLock()
 
 ```cpp
 void DisableMouseLock()
-```
-
-
-### function LuaStateRegistration
-
-```cpp
-void LuaStateRegistration(
-    sol::state & state
-)
 ```
 
 
@@ -466,6 +459,15 @@ static inline const GLFWwindow * GetFocusedWindow()
 ```
 
 
+### function RegisterLuaType
+
+```cpp
+static void RegisterLuaType(
+    sol::state & 
+)
+```
+
+
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

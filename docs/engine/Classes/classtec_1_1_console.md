@@ -7,6 +7,8 @@ title: tec::Console
 
 
 
+
+
 Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/), [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -19,7 +21,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | void | **[Println](/engine/Classes/classtec_1_1_console/#function-println)**(const std::string & str, ImVec4 color =ImVec4(255, 255, 255, 255)) |
 | void | **[Println](/engine/Classes/classtec_1_1_console/#function-println)**(const char * cstr, ImVec4 color =ImVec4(255, 255, 255, 255)) |
 | void | **[Printfln](/engine/Classes/classtec_1_1_console/#function-printfln)**(const char * cstr, ... ) |
-| virtual void | **[Draw](/engine/Classes/classtec_1_1_console/#function-draw)**() override |
+| virtual void | **[Draw](/engine/Classes/classtec_1_1_console/#function-draw)**([IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/) * ) override |
 | virtual bool | **[isCollapsed](/engine/Classes/classtec_1_1_console/#function-iscollapsed)**() const override |
 | void | **[AddConsoleCommand](/engine/Classes/classtec_1_1_console/#function-addconsolecommand)**(std::string name, std::string help, std::function< void(const char *)> && func) |
 | void | **[AddSlashHandler](/engine/Classes/classtec_1_1_console/#function-addslashhandler)**(std::function< void(const char *)> && func) |
@@ -36,6 +38,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | bool | **[isVisible](/engine/Classes/classtec_1_1_abstract_window/#function-isvisible)**() const |
 | void | **[Hide](/engine/Classes/classtec_1_1_abstract_window/#function-hide)**() |
 | void | **[Show](/engine/Classes/classtec_1_1_abstract_window/#function-show)**() |
+| std::string | **[GetWindowName](/engine/Classes/classtec_1_1_abstract_window/#function-getwindowname)**() |
 
 **Protected Attributes inherited from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)**
 
@@ -44,6 +47,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | float | **[alpha](/engine/Classes/classtec_1_1_abstract_window/#variable-alpha)**  |
 | bool | **[collapsed](/engine/Classes/classtec_1_1_abstract_window/#variable-collapsed)**  |
 | bool | **[show](/engine/Classes/classtec_1_1_abstract_window/#variable-show)** <br>Collapsed ?  |
+| std::string | **[window_name](/engine/Classes/classtec_1_1_abstract_window/#variable-window_name)** <br>Visible ?  |
 
 **Public Functions inherited from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)**
 
@@ -144,7 +148,9 @@ void Printfln(
 ### function Draw
 
 ```cpp
-virtual void Draw() override
+virtual void Draw(
+    IMGUISystem * 
+) override
 ```
 
 
@@ -201,4 +207,4 @@ Register a slash handler that handles all '/' commands
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

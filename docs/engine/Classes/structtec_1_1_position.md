@@ -7,6 +7,8 @@ title: tec::Position
 
 
 
+
+
 ## Public Functions
 
 |                | Name           |
@@ -15,8 +17,8 @@ title: tec::Position
 | | **[Position](/engine/Classes/structtec_1_1_position/#function-position)**() =default |
 | void | **[Translate](/engine/Classes/structtec_1_1_position/#function-translate)**(const glm::vec3 amount) |
 | void | **[Translate](/engine/Classes/structtec_1_1_position/#function-translate)**(const glm::vec3 amount, const glm::quat orientation) |
-| void | **[Out](/engine/Classes/structtec_1_1_position/#function-out)**(proto::Component * target) |
-| void | **[Out](/engine/Classes/structtec_1_1_position/#function-out)**(proto::Position * comp) |
+| void | **[Out](/engine/Classes/structtec_1_1_position/#function-out)**(proto::Component * target) const |
+| void | **[Out](/engine/Classes/structtec_1_1_position/#function-out)**(proto::Position * comp) const |
 | void | **[In](/engine/Classes/structtec_1_1_position/#function-in)**(const proto::Component & source) |
 | void | **[In](/engine/Classes/structtec_1_1_position/#function-in)**(const proto::Position & comp) |
 
@@ -68,7 +70,7 @@ void Translate(
 ```cpp
 void Out(
     proto::Component * target
-)
+) const
 ```
 
 
@@ -77,7 +79,7 @@ void Out(
 ```cpp
 void Out(
     proto::Position * comp
-)
+) const
 ```
 
 
@@ -110,4 +112,4 @@ glm::vec3 value = {0.0f, 0.0f, 0.0f};
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

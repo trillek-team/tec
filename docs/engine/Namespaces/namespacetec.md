@@ -11,7 +11,11 @@ title: tec
 
 | Name           |
 | -------------- |
+| **[tec::manipulator](/engine/Namespaces/namespacetec_1_1manipulator/)**  |
 | **[tec::networking](/engine/Namespaces/namespacetec_1_1networking/)**  |
+| **[tec::system](/engine/Namespaces/namespacetec_1_1system/)**  |
+| **[tec::user](/engine/Namespaces/namespacetec_1_1user/)**  |
+| **[tec::util](/engine/Namespaces/namespacetec_1_1util/)**  |
 
 ## Classes
 
@@ -54,6 +58,9 @@ title: tec
 | struct | **[tec::Voxel](/engine/Classes/structtec_1_1_voxel/)**  |
 | class | **[tec::VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/)**  |
 | class | **[tec::VoxelSystem](/engine/Classes/classtec_1_1_voxel_system/)**  |
+| class | **[tec::UserList](/engine/Classes/classtec_1_1_user_list/)**  |
+| class | **[tec::UserListDataSource](/engine/Classes/classtec_1_1_user_list_data_source/)**  |
+| class | **[tec::SaveGame](/engine/Classes/classtec_1_1_save_game/)**  |
 | class | **[tec::ServerGameStateQueue](/engine/Classes/classtec_1_1_server_game_state_queue/)**  |
 | struct | **[tec::Command](/engine/Classes/structtec_1_1_command/)**  |
 | class | **[tec::CommandQueue](/engine/Classes/classtec_1_1_command_queue/)**  |
@@ -86,11 +93,13 @@ title: tec
 | struct | **[tec::FocusCapturedEvent](/engine/Classes/structtec_1_1_focus_captured_event/)**  |
 | struct | **[tec::FocusBlurEvent](/engine/Classes/structtec_1_1_focus_blur_event/)**  |
 | struct | **[tec::ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/)**  |
+| struct | **[tec::UserLoginEvent](/engine/Classes/structtec_1_1_user_login_event/)**  |
 | class | **[tec::FilePath](/engine/Classes/classtec_1_1_file_path/)** <br>[OS](/engine/Classes/classtec_1_1_o_s/) File system path separator.  |
 | struct | **[tec::GameState](/engine/Classes/structtec_1_1_game_state/)**  |
 | struct | **[tec::NewGameStateEvent](/engine/Classes/structtec_1_1_new_game_state_event/)**  |
 | struct | **[tec::EventList](/engine/Classes/structtec_1_1_event_list/)**  |
 | class | **[tec::LuaSystem](/engine/Classes/classtec_1_1_lua_system/)**  |
+| struct | **[tec::LuaClassList](/engine/Classes/structtec_1_1_lua_class_list/)**  |
 | class | **[tec::Multiton](/engine/Classes/classtec_1_1_multiton/)**  |
 | class | **[tec::PhysicsSystem](/engine/Classes/classtec_1_1_physics_system/)**  |
 | struct | **[tec::VertexData](/engine/Classes/structtec_1_1_vertex_data/)**  |
@@ -100,8 +109,6 @@ title: tec
 | class | **[tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)**  |
 | class | **[tec::ScriptFile](/engine/Classes/classtec_1_1_script_file/)**  |
 | class | **[tec::RingBuffer](/engine/Classes/classtec_1_1_ring_buffer/)**  |
-| class | **[tec::UserList](/engine/Classes/classtec_1_1_user_list/)**  |
-| class | **[tec::SaveGame](/engine/Classes/classtec_1_1_save_game/)**  |
 | class | **[tec::ServerStats](/engine/Classes/classtec_1_1_server_stats/)**  |
 | struct | **[tec::PredictedClientState](/engine/Classes/structtec_1_1_predicted_client_state/)**  |
 | class | **[tec::Simulation](/engine/Classes/classtec_1_1_simulation/)**  |
@@ -115,14 +122,15 @@ title: tec
 
 |                | Name           |
 | -------------- | -------------- |
-| enum std::uint32_t | **[ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MONOCHROME = 0, MONOCHROME_A = 4, COLOR_RGB = 2, COLOR_RGBA = 6} |
-| enum| **[AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource_state)** { PLAYING, PAUSED, STOPPED} |
+| enum| **[ENGINE_ENTITIES](/engine/Namespaces/namespacetec/#enum-engine_entities)** { MANIPULATOR = 1} |
+| enum class std::uint32_t | **[ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MONOCHROME = 0, MONOCHROME_A = 4, COLOR_RGB = 2, COLOR_RGBA = 6} |
+| enum class| **[AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource_state)** { PLAYING, PAUSED, STOPPED} |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > > | **[MaterialMap](/engine/Namespaces/namespacetec/#typedef-materialmap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > > | **[ShaderMap](/engine/Namespaces/namespacetec/#typedef-shadermap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > > | **[TextureMap](/engine/Namespaces/namespacetec/#typedef-texturemap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Renderable](/engine/Classes/structtec_1_1_renderable/) * > | **[RenderableMap](/engine/Namespaces/namespacetec/#typedef-renderablemap)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [PointLight](/engine/Classes/structtec_1_1_point_light/) * > | **[PointLightMap](/engine/Namespaces/namespacetec/#using-pointlightmap)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [DirectionalLight](/engine/Classes/structtec_1_1_directional_light/) * > | **[DirectionalLightMap](/engine/Namespaces/namespacetec/#using-directionallightmap)**  |
-| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Renderable](/engine/Classes/structtec_1_1_renderable/) * > | **[RenderableMap](/engine/Namespaces/namespacetec/#using-renderablemap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Animation](/engine/Classes/classtec_1_1_animation/) * > | **[AnimationMap](/engine/Namespaces/namespacetec/#typedef-animationmap)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Scale](/engine/Classes/structtec_1_1_scale/) * > | **[ScaleMap](/engine/Namespaces/namespacetec/#using-scalemap)**  |
 | typedef [Command](/engine/Classes/structtec_1_1_command/)< [RenderSystem](/engine/Classes/classtec_1_1_render_system/) > | **[RenderCommand](/engine/Namespaces/namespacetec/#typedef-rendercommand)**  |
@@ -130,25 +138,30 @@ title: tec
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > > | **[SoundMap](/engine/Namespaces/namespacetec/#typedef-soundmap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), std::shared_ptr< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > > | **[VoxelVolumeMap](/engine/Namespaces/namespacetec/#typedef-voxelvolumemap)**  |
 | typedef [Command](/engine/Classes/structtec_1_1_command/)< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > | **[VoxelCommand](/engine/Namespaces/namespacetec/#typedef-voxelcommand)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Position](/engine/Classes/structtec_1_1_position/) * > | **[PositionMap](/engine/Namespaces/namespacetec/#using-positionmap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Orientation](/engine/Classes/structtec_1_1_orientation/) * > | **[OrientationMap](/engine/Namespaces/namespacetec/#using-orientationmap)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [LuaScript](/engine/Classes/structtec_1_1_lua_script/) * > | **[LuaScriptMap](/engine/Namespaces/namespacetec/#using-luascriptmap)**  |
 | typedef [Command](/engine/Classes/structtec_1_1_command/)< [LuaSystem](/engine/Classes/classtec_1_1_lua_system/) > | **[LuaCommand](/engine/Namespaces/namespacetec/#typedef-luacommand)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), CollisionBody * > | **[CollisionBodyMap](/engine/Namespaces/namespacetec/#using-collisionbodymap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > > | **[MeshMap](/engine/Namespaces/namespacetec/#typedef-meshmap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > > | **[ScriptMap](/engine/Namespaces/namespacetec/#typedef-scriptmap)**  |
-| using decltype(proto::User().id()) | **[uid](/engine/Namespaces/namespacetec/#using-uid)**  |
 | using std::codecvt_utf8< wchar_t > | **[convert_utf8](/engine/Namespaces/namespacetec/#using-convert_utf8)**  |
 | typedef std::uint64_t | **[state_id_t](/engine/Namespaces/namespacetec/#typedef-state_id_t)**  |
 | typedef std::int64_t | **[GUID](/engine/Namespaces/namespacetec/#typedef-guid)**  |
 | typedef std::int64_t | **[eid](/engine/Namespaces/namespacetec/#typedef-eid)** <br>Global Unique ID.  |
 | typedef std::uint32_t | **[tid](/engine/Namespaces/namespacetec/#typedef-tid)**  |
+| typedef std::string | **[uid](/engine/Namespaces/namespacetec/#typedef-uid)** <br>Type ID.  |
 | typedef [Command](/engine/Classes/structtec_1_1_command/)< [VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/) > | **[VComputerCommand](/engine/Namespaces/namespacetec/#typedef-vcomputercommand)**  |
 
 ## Functions
 
 |                | Name           |
 | -------------- | -------------- |
+| void | **[CreateManipulatorEntity](/engine/Namespaces/namespacetec/#function-createmanipulatorentity)**() |
+| void | **[CreateEngineEntities](/engine/Namespaces/namespacetec/#function-createengineentities)**() |
 | void | **[RegisterFileFactories](/engine/Namespaces/namespacetec/#function-registerfilefactories)**() |
 | void | **[BuildTestVoxelVolume](/engine/Namespaces/namespacetec/#function-buildtestvoxelvolume)**() |
+| [Renderable](/engine/Classes/structtec_1_1_renderable/) * | **[GetRenderable](/engine/Namespaces/namespacetec/#function-getrenderable)**() |
 | void | **[ErrorCallback](/engine/Namespaces/namespacetec/#function-errorcallback)**(int error_no, const char * description) |
 | GLFWmonitor * | **[get_current_monitor](/engine/Namespaces/namespacetec/#function-get_current_monitor)**(GLFWwindow * window) |
 | std::string | **[CleanString](/engine/Namespaces/namespacetec/#function-cleanstring)**(std::string str)<br>Cleans an input string by removing certain grouping characters.  |
@@ -158,6 +171,7 @@ title: tec
 | [MD5Mesh::Weight](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_weight/) | **[ParsesWeight](/engine/Namespaces/namespacetec/#function-parsesweight)**(std::stringstream & ss)<br>Parses a weight line.  |
 | std::string | **[VorbisErrorToString](/engine/Namespaces/namespacetec/#function-vorbiserrortostring)**(int error) |
 | void | **[alCheckError](/engine/Namespaces/namespacetec/#function-alcheckerror)**() |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetNextEntityId](/engine/Namespaces/namespacetec/#function-getnextentityid)**() |
 | | **[ATTRIBUTE_ALIGNED16](/engine/Namespaces/namespacetec/#function-attribute_aligned16)**(struct ) |
 | template <typename T \> <br>void | **[AddFileFactory](/engine/Namespaces/namespacetec/#function-addfilefactory)**() |
 | const std::string | **[app_name](/engine/Namespaces/namespacetec/#function-app_name)**("trillek" ) |
@@ -171,6 +185,7 @@ title: tec
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const char * str)<br>Append a subdirectory or file.  |
 | template <typename charT ,typename traits \> <br>std::basic_ostream< charT, traits > & | **[operator<<](/engine/Namespaces/namespacetec/#function-operator<<)**(std::basic_ostream< charT, traits > & os, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Output to a stream.  |
 | template <typename charT ,typename traits \> <br>std::basic_istream< charT, traits > & | **[operator>>](/engine/Namespaces/namespacetec/#function-operator>>)**(std::basic_istream< charT, traits > & is, [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Input from a stream.  |
+| int | **[LuaSystemPanicHandler](/engine/Namespaces/namespacetec/#function-luasystempanichandler)**(sol::optional< std::string > maybe_msg) |
 | glm::vec3 | **[GetRayDirection](/engine/Namespaces/namespacetec/#function-getraydirection)**(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) |
 | std::string | **[LoadAsString](/engine/Namespaces/namespacetec/#function-loadasstring)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname) |
 | bool | **[SaveFromString](/engine/Namespaces/namespacetec/#function-savefromstring)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname, std::string contents) |
@@ -179,7 +194,7 @@ title: tec
 | void | **[ProtoLoad](/engine/Namespaces/namespacetec/#function-protoload)**(std::string filename) |
 | std::string | **[utf8_encode](/engine/Namespaces/namespacetec/#function-utf8_encode)**(const std::wstring & wstr)<br>Convert a wide Unicode string to an UTF8 string.  |
 | std::wstring | **[utf8_decode](/engine/Namespaces/namespacetec/#function-utf8_decode)**(const std::string & str)<br>Convert an UTF8 string to a wide Unicode String.  |
-| template <class T \> <br>bool | **[IsBetween](/engine/Namespaces/namespacetec/#function-isbetween)**(T value, T lower, T upper)<br>Type ID.  |
+| template <class T \> <br>bool | **[IsBetween](/engine/Namespaces/namespacetec/#function-isbetween)**(T value, T lower, T upper)<br>User ID.  |
 | template <class TYPE \> <br>constexpr const char * | **[GetTypeName](/engine/Namespaces/namespacetec/#function-gettypename)**(void )<br>Returns the name of an component on compile time.  |
 | template <class TYPE \> <br>constexpr tid | **[GetTypeID](/engine/Namespaces/namespacetec/#function-gettypeid)**(void )<br>Returns the TypeID of a component on compile time.  |
 | template <class TYPE \> <br>constexpr const char * | **[GetTypeEXT](/engine/Namespaces/namespacetec/#function-gettypeext)**(void )<br>Returns the name of a resource type on Compile time.  |
@@ -215,7 +230,7 @@ title: tec
 | glm::vec3 | **[RIGHT_VECTOR](/engine/Namespaces/namespacetec/#variable-right_vector)**  |
 | const char | **[UNIX_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-unix_path_separator)**  |
 | const char | **[WIN_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-win_path_separator)** <br>*NIX file system path separator  |
-| const std::string | **[PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path_separator)**  |
+| constexpr std::string_view | **[PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path_separator)**  |
 | double | **[UPDATE_RATE](/engine/Namespaces/namespacetec/#variable-update_rate)**  |
 | double | **[TICKS_PER_SECOND](/engine/Namespaces/namespacetec/#variable-ticks_per_second)**  |
 | const std::unordered_map< tid, const char * > | **[TypeName](/engine/Namespaces/namespacetec/#variable-typename)** <br>Maps on runtime the Type ID with the name.  |
@@ -234,6 +249,15 @@ Ring buffer implementation
 String handling stuff 
 
 ## Types Documentation
+
+### enum ENGINE_ENTITIES
+
+| Enumerator | Value | Description |
+| ---------- | ----- | ----------- |
+| MANIPULATOR | 1|   |
+
+
+
 
 ### enum ImageColorMode
 
@@ -280,6 +304,13 @@ typedef Multiton<std::string, std::shared_ptr<TextureObject> > tec::TextureMap;
 ```
 
 
+### typedef RenderableMap
+
+```cpp
+typedef Multiton< eid, Renderable * > tec::RenderableMap;
+```
+
+
 ### using PointLightMap
 
 ```cpp
@@ -291,13 +322,6 @@ using tec::PointLightMap = typedef Multiton<eid, PointLight*>;
 
 ```cpp
 using tec::DirectionalLightMap = typedef Multiton<eid, DirectionalLight*>;
-```
-
-
-### using RenderableMap
-
-```cpp
-using tec::RenderableMap = typedef Multiton<eid, Renderable*>;
 ```
 
 
@@ -350,6 +374,20 @@ typedef Command<VoxelVolume> tec::VoxelCommand;
 ```
 
 
+### using PositionMap
+
+```cpp
+using tec::PositionMap = typedef Multiton<eid, Position*>;
+```
+
+
+### using OrientationMap
+
+```cpp
+using tec::OrientationMap = typedef Multiton<eid, Orientation*>;
+```
+
+
 ### using LuaScriptMap
 
 ```cpp
@@ -382,13 +420,6 @@ typedef Multiton<std::string, std::shared_ptr<MeshFile> > tec::MeshMap;
 
 ```cpp
 typedef Multiton<std::string, std::shared_ptr<ScriptFile> > tec::ScriptMap;
-```
-
-
-### using uid
-
-```cpp
-using tec::uid = typedef decltype(proto::User().id());
 ```
 
 
@@ -428,6 +459,14 @@ typedef std::uint32_t tec::tid;
 ```
 
 
+### typedef uid
+
+```cpp
+typedef std::string tec::uid;
+```
+
+Type ID. 
+
 ### typedef VComputerCommand
 
 ```cpp
@@ -437,6 +476,20 @@ typedef Command<VComputerSystem> tec::VComputerCommand;
 
 
 ## Functions Documentation
+
+### function CreateManipulatorEntity
+
+```cpp
+void CreateManipulatorEntity()
+```
+
+
+### function CreateEngineEntities
+
+```cpp
+void CreateEngineEntities()
+```
+
 
 ### function RegisterFileFactories
 
@@ -449,6 +502,13 @@ void RegisterFileFactories()
 
 ```cpp
 void BuildTestVoxelVolume()
+```
+
+
+### function GetRenderable
+
+```cpp
+Renderable * GetRenderable()
 ```
 
 
@@ -584,6 +644,13 @@ inline std::string VorbisErrorToString(
 
 ```cpp
 inline void alCheckError()
+```
+
+
+### function GetNextEntityId
+
+```cpp
+eid GetNextEntityId()
 ```
 
 
@@ -727,6 +794,15 @@ std::basic_istream< charT, traits > & operator>>(
 
 Input from a stream. 
 
+### function LuaSystemPanicHandler
+
+```cpp
+static int LuaSystemPanicHandler(
+    sol::optional< std::string > maybe_msg
+)
+```
+
+
 ### function GetRayDirection
 
 ```cpp
@@ -820,7 +896,7 @@ Convert an UTF8 string to a wide Unicode String.
   * **str** UTF8 string 
 
 
-**Return**: std::wstring on unicdoe system encoding. Empty string if fails 
+**Return**: std::wstring on unicode system encoding. Empty string if fails 
 
 ### function IsBetween
 
@@ -833,7 +909,7 @@ bool IsBetween(
 )
 ```
 
-Type ID. 
+User ID. 
 
 ### function GetTypeName
 
@@ -1107,7 +1183,7 @@ const char WIN_PATH_SEPARATOR = '\\';
 ### variable PATH_SEPARATOR
 
 ```cpp
-const std::string PATH_SEPARATOR = std::string("/");
+constexpr std::string_view PATH_SEPARATOR = "/";
 ```
 
 
@@ -1154,4 +1230,4 @@ Maps on runtime the Type ID with the name.
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

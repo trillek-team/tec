@@ -20,7 +20,7 @@ Simulation::Simulation() {
 		std::unique_lock lock(worker_m);
 		while (this->worker_thread) {
 			worker_cv.wait_for(lock, std::chrono::milliseconds(1));
-			if(!lock.owns_lock()) {
+			if (!lock.owns_lock()) {
 				throw std::exception();
 			}
 			if (this->worker_call) {

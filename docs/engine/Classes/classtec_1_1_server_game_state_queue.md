@@ -7,6 +7,8 @@ title: tec::ServerGameStateQueue
 
 
 
+
+
 Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -130,4 +132,4 @@ ServerStats & stats;
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

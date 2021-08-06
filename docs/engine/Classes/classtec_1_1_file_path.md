@@ -9,6 +9,8 @@ summary: OS File system path separator.
 
 
 [OS](/engine/Classes/classtec_1_1_o_s/) File system path separator. 
+
+
 `#include <filesystem.hpp>`
 
 ## Public Types
@@ -22,7 +24,8 @@ summary: OS File system path separator.
 |                | Name           |
 | -------------- | -------------- |
 | | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**()<br>Builds a empty path.  |
-| | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**(const std::string & other, std::size_t pos =0, std::size_t count =std::string::npos)<br>Builds a path from a string or substring.  |
+| | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**(std::string & other, std::size_t pos =0, std::size_t count =std::string::npos)<br>Builds a path from a string or substring.  |
+| | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**(const std::string_view & other, std::size_t pos =0, std::size_t count =std::string_view::npos)<br>Builds a path from a string_view or substring there of.  |
 | | **[FilePath](/engine/Classes/classtec_1_1_file_path/#function-filepath)**(const std::wstring & other, std::size_t pos =0, std::size_t count =std::wstring::npos)<br>Builds a path from a wstring or substring.  |
 | bool | **[DirExists](/engine/Classes/classtec_1_1_file_path/#function-direxists)**() const<br>Check if a directory exists.  |
 | bool | **[FileExists](/engine/Classes/classtec_1_1_file_path/#function-fileexists)**() const<br>Check if a file exists.  |
@@ -41,11 +44,13 @@ summary: OS File system path separator.
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs) |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const std::string & str) |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const std::wstring & wstr) |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const std::string_view & str) |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator=](/engine/Classes/classtec_1_1_file_path/#function-operator=)**(const char * str) |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Concatenate a path.  |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const char * lhs)<br>Concatenate a path.  |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const std::string & lhs)<br>Concatenate a path.  |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const std::wstring & lhs)<br>Concatenate a path.  |
+| [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator+=](/engine/Classes/classtec_1_1_file_path/#function-operator+=)**(const std::string_view & lhs)<br>Concatenate a path.  |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator/=](/engine/Classes/classtec_1_1_file_path/#function-operator/=)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Append a subdirectory or file.  |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator/=](/engine/Classes/classtec_1_1_file_path/#function-operator/=)**(const char * rhs)<br>Append a subdirectory or file.  |
 | [FilePath](/engine/Classes/classtec_1_1_file_path/) & | **[operator/=](/engine/Classes/classtec_1_1_file_path/#function-operator/=)**(const std::string & rhs)<br>Append a subdirectory or file.  |
@@ -93,7 +98,7 @@ Builds a empty path.
 
 ```cpp
 FilePath(
-    const std::string & other,
+    std::string & other,
     std::size_t pos =0,
     std::size_t count =std::string::npos
 )
@@ -104,6 +109,25 @@ Builds a path from a string or substring.
 **Parameters**: 
 
   * **other** A string with a path 
+  * **pos** Begin of the range to get a slice (default = 0) 
+  * **count** How many bytes to grab from other (default = size of other) 
+
+
+### function FilePath
+
+```cpp
+FilePath(
+    const std::string_view & other,
+    std::size_t pos =0,
+    std::size_t count =std::string_view::npos
+)
+```
+
+Builds a path from a string_view or substring there of. 
+
+**Parameters**: 
+
+  * **other** A string_view with a path 
   * **pos** Begin of the range to get a slice (default = 0) 
   * **count** How many bytes to grab from other (default = size of other) 
 
@@ -332,6 +356,15 @@ inline FilePath & operator=(
 
 ```cpp
 inline FilePath & operator=(
+    const std::string_view & str
+)
+```
+
+
+### function operator=
+
+```cpp
+inline FilePath & operator=(
     const char * str
 )
 ```
@@ -372,6 +405,16 @@ Concatenate a path.
 ```cpp
 inline FilePath & operator+=(
     const std::wstring & lhs
+)
+```
+
+Concatenate a path. 
+
+### function operator+=
+
+```cpp
+inline FilePath & operator+=(
+    const std::string_view & lhs
 )
 ```
 
@@ -585,4 +628,4 @@ Native string format for paths.
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

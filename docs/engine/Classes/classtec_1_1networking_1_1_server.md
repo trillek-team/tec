@@ -7,6 +7,8 @@ title: tec::networking::Server
 
 
 
+
+
 Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -18,19 +20,28 @@ Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_ev
 | void | **[Deliver](/engine/Classes/classtec_1_1networking_1_1_server/#function-deliver)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && msg, bool save_to_recent =true) |
 | void | **[Deliver](/engine/Classes/classtec_1_1networking_1_1_server/#function-deliver)**(std::shared_ptr< [ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/) > client, [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) & msg) |
 | void | **[Deliver](/engine/Classes/classtec_1_1networking_1_1_server/#function-deliver)**(std::shared_ptr< [ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/) > client, [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && msg) |
-| void | **[Leave](/engine/Classes/classtec_1_1networking_1_1_server/#function-leave)**(std::shared_ptr< [ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/) > client) |
+| bool | **[OnConnect](/engine/Classes/classtec_1_1networking_1_1_server/#function-onconnect)**() |
+| void | **[OnDisconnect](/engine/Classes/classtec_1_1networking_1_1_server/#function-ondisconnect)**(std::shared_ptr< [ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/) > client) |
 | void | **[Start](/engine/Classes/classtec_1_1networking_1_1_server/#function-start)**() |
 | void | **[Stop](/engine/Classes/classtec_1_1networking_1_1_server/#function-stop)**() |
 | const std::set< std::shared_ptr< [ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/) > > & | **[GetClients](/engine/Classes/classtec_1_1networking_1_1_server/#function-getclients)**() |
 | [LuaSystem](/engine/Classes/classtec_1_1_lua_system/) * | **[GetLuaSystem](/engine/Classes/classtec_1_1networking_1_1_server/#function-getluasystem)**() |
+| void | **[ProcessEvents](/engine/Classes/classtec_1_1networking_1_1_server/#function-processevents)**() |
 | virtual void | **[On](/engine/Classes/classtec_1_1networking_1_1_server/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
 | virtual void | **[On](/engine/Classes/classtec_1_1networking_1_1_server/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
+| [system::UserAuthenticator](/engine/Classes/classtec_1_1system_1_1_user_authenticator/) & | **[GetAuthenticator](/engine/Classes/classtec_1_1networking_1_1_server/#function-getauthenticator)**() |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
 | std::mutex | **[client_list_mutex](/engine/Classes/classtec_1_1networking_1_1_server/#variable-client_list_mutex)**  |
+
+## Friends
+
+|                | Name           |
+| -------------- | -------------- |
+| class | **[ClientConnection](/engine/Classes/classtec_1_1networking_1_1_server/#friend-clientconnection)**  |
 
 ## Additional inherited members
 
@@ -120,10 +131,17 @@ void Deliver(
 ```
 
 
-### function Leave
+### function OnConnect
 
 ```cpp
-void Leave(
+bool OnConnect()
+```
+
+
+### function OnDisconnect
+
+```cpp
+void OnDisconnect(
     std::shared_ptr< ClientConnection > client
 )
 ```
@@ -157,6 +175,13 @@ inline LuaSystem * GetLuaSystem()
 ```
 
 
+### function ProcessEvents
+
+```cpp
+void ProcessEvents()
+```
+
+
 ### function On
 
 ```cpp
@@ -181,6 +206,13 @@ virtual void On(
 **Reimplements**: [tec::EventQueue::On](/engine/Classes/classtec_1_1_event_queue/#function-on)
 
 
+### function GetAuthenticator
+
+```cpp
+inline system::UserAuthenticator & GetAuthenticator()
+```
+
+
 ## Public Attributes Documentation
 
 ### variable client_list_mutex
@@ -190,6 +222,17 @@ std::mutex client_list_mutex;
 ```
 
 
+## Friends
+
+### friend ClientConnection
+
+```cpp
+friend class ClientConnection(
+    ClientConnection 
+);
+```
+
+
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:10 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

@@ -7,6 +7,8 @@ title: tec::ComputerScreen
 
 
 
+
+
 Inherits from [tec::DeviceBase](/engine/Classes/structtec_1_1_device_base/)
 
 ## Public Functions
@@ -84,4 +86,4 @@ std::shared_ptr< TextureObject > texture;
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:10 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

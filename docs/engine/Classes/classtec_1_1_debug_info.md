@@ -7,6 +7,8 @@ title: tec::DebugInfo
 
 
 
+
+
 Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)
 
 ## Public Functions
@@ -15,7 +17,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | -------------- | -------------- |
 | | **[DebugInfo](/engine/Classes/classtec_1_1_debug_info/#function-debuginfo)**([Game](/engine/Classes/classtec_1_1_game/) & game) |
 | virtual void | **[Update](/engine/Classes/classtec_1_1_debug_info/#function-update)**(double ) override |
-| virtual void | **[Draw](/engine/Classes/classtec_1_1_debug_info/#function-draw)**() override |
+| virtual void | **[Draw](/engine/Classes/classtec_1_1_debug_info/#function-draw)**([IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/) * ) override |
 
 ## Additional inherited members
 
@@ -30,6 +32,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | bool | **[isVisible](/engine/Classes/classtec_1_1_abstract_window/#function-isvisible)**() const |
 | void | **[Hide](/engine/Classes/classtec_1_1_abstract_window/#function-hide)**() |
 | void | **[Show](/engine/Classes/classtec_1_1_abstract_window/#function-show)**() |
+| std::string | **[GetWindowName](/engine/Classes/classtec_1_1_abstract_window/#function-getwindowname)**() |
 
 **Protected Attributes inherited from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)**
 
@@ -38,6 +41,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | float | **[alpha](/engine/Classes/classtec_1_1_abstract_window/#variable-alpha)**  |
 | bool | **[collapsed](/engine/Classes/classtec_1_1_abstract_window/#variable-collapsed)**  |
 | bool | **[show](/engine/Classes/classtec_1_1_abstract_window/#variable-show)** <br>Collapsed ?  |
+| std::string | **[window_name](/engine/Classes/classtec_1_1_abstract_window/#variable-window_name)** <br>Visible ?  |
 
 
 ## Public Functions Documentation
@@ -66,7 +70,9 @@ virtual void Update(
 ### function Draw
 
 ```cpp
-virtual void Draw() override
+virtual void Draw(
+    IMGUISystem * 
+) override
 ```
 
 
@@ -75,4 +81,4 @@ virtual void Draw() override
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC

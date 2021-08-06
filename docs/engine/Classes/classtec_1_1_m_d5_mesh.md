@@ -7,6 +7,8 @@ title: tec::MD5Mesh
 
 
 
+
+
 Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
 
 ## Public Classes
@@ -166,4 +168,4 @@ friend class MD5Anim(
 
 -------------------------------
 
-Updated on 21 March 2021 at 16:58:09 UTC
+Updated on  6 August 2021 at 01:15:52 UTC
