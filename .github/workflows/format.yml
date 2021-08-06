@@ -1,7 +1,7 @@
 name: Clang Format
 
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
     branches:
       - master
@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        token: '${{ secrets.ACTIONS_TOKEN }}'
     - name: Clang format
       uses: DoozyX/clang-format-lint-action@v0.11
       with:
