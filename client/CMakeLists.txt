@@ -78,7 +78,11 @@ if (UNIX AND NOT APPLE)
 	find_package(X11 REQUIRED)
 endif (UNIX AND NOT APPLE)
 
-add_executable(${trillek-client_PROGRAM} ${trillek-client_SOURCE_DIR}/main.cpp ${trillek-client_SOURCES} ${trillek-client_HEADERS})
+add_executable(${trillek-client_PROGRAM}
+	${trillek-client_SOURCE_DIR}/main.cpp
+	${trillek-client_SOURCES}
+	${trillek-client_HEADERS}
+)
 
 if (MSVC)
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
@@ -87,4 +91,13 @@ else ()
 endif ()
 
 target_link_libraries(${trillek-client_PROGRAM} ${trillek-common_LIBRARY}
-	${OPENGL_gl_LIBRARY} ${X11_LIBRARIES} ${OSX_LIBRARIES} GLEW::GLEW OpenAL::OpenAL glfw imgui::imgui VCOMPUTER_STATIC)
+	${OPENGL_gl_LIBRARY}
+	${X11_LIBRARIES}
+	${OSX_LIBRARIES}
+	GLEW::GLEW
+	OpenAL::OpenAL
+	glfw
+	imgui::imgui
+	VCOMPUTER_STATIC
+)
+

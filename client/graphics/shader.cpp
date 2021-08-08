@@ -18,7 +18,7 @@ void Shader::DeleteProgram() {
 	this->shaders.clear();
 }
 
-void Shader::LoadFromFile(const Shader::ShaderType type, const tec::FilePath& fname) {
+void Shader::LoadFromFile(const gfx::ShaderType type, const tec::FilePath& fname) {
 	auto _log = spdlog::get("console_log");
 	if (!fname.isValidPath()) {
 		_log->error("[Shader] Error loading shader: {} Invalid path: {}", fname.FileName(), fname.toString());
@@ -37,7 +37,7 @@ void Shader::LoadFromFile(const Shader::ShaderType type, const tec::FilePath& fn
 	LoadFromString(type, buffer, fname.FileName());
 }
 
-void Shader::LoadFromString(const Shader::ShaderType type, const std::string& source, const std::string& filename) {
+void Shader::LoadFromString(const gfx::ShaderType type, const std::string& source, const std::string& filename) {
 	auto _log = spdlog::get("console_log");
 	glGetError();
 	GLuint shader = glCreateShader(type);
@@ -78,7 +78,7 @@ void Shader::LoadFromString(const Shader::ShaderType type, const std::string& so
 	this->shaders.push_back(shader);
 }
 
-void Shader::Build() {
+bool Shader::Build() {
 	this->program = glCreateProgram();
 
 	for (auto shader : this->shaders) {
@@ -97,18 +97,18 @@ void Shader::Build() {
 			std::vector<GLchar> info_log(max_length);
 			glGetProgramInfoLog(this->program, max_length, &max_length, &info_log[0]);
 			std::string str(info_log.data());
-			str += '\0';
 			spdlog::get("console_log")->error("[Shader] Error linking : {}", str);
 		}
 
 		DeleteProgram();
 
-		return;
+		return false;
 	}
 
 	for (auto shader : this->shaders) {
 		glDetachShader(this->program, shader);
 	}
+	return true;
 }
 
 void Shader::Use() { glUseProgram(this->program); }
@@ -126,8 +126,9 @@ void Shader::DeactivateTextureUnit(const GLuint unit) {
 }
 
 GLint Shader::GetUniformLocation(const std::string name) {
-	if (this->uniforms.find(name) != this->uniforms.end()) {
-		return this->uniforms.at(name);
+	auto uniform_itr = this->uniforms.find(name);
+	if (uniform_itr != this->uniforms.end()) {
+		return uniform_itr->second;
 	}
 	else {
 		GLint uniform_id = glGetUniformLocation(this->program, name.c_str());
@@ -152,24 +153,75 @@ GLint Shader::GetAttributeLocation(const std::string name) {
 }
 
 std::shared_ptr<Shader>
-Shader::CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, FilePath>> filenames) {
+Shader::CreateFromFile(const std::string name, std::list<std::pair<gfx::ShaderType, FilePath>> filenames) {
 	auto s = std::make_shared<Shader>();
 	for (auto pair : filenames) {
 		s->LoadFromFile(pair.first, pair.second);
 	}
-	s->Build();
-	ShaderMap::Set(name, s);
-	return s;
+	if (s->Build()) {
+		ShaderMap::Set(name, s);
+		return s;
+	}
+	return nullptr;
 }
 
 std::shared_ptr<Shader>
-Shader::CreateFromString(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code) {
+Shader::CreateFromString(const std::string name, std::list<std::pair<gfx::ShaderType, std::string>> source_code) {
 	auto s = std::make_shared<Shader>();
 	for (auto pair : source_code) {
 		s->LoadFromString(pair.first, pair.second);
 	}
-	s->Build();
-	ShaderMap::Set(name, s);
-	return s;
+	if (s->Build()) {
+		ShaderMap::Set(name, s);
+		return s;
+	}
+	return nullptr;
 }
+
+void Shader::LoadFromProto(const gfx::ShaderSource& source, gfx::ShaderType type) {
+	if (source.has_type()) {
+		type = source.type();
+	}
+	switch (source.source_case()) {
+	case gfx::ShaderSource::kFile: LoadFromFile(type, FilePath::GetAssetPath("shaders") / source.file()); break;
+	case gfx::ShaderSource::kAbsFile: LoadFromFile(type, FilePath(source.abs_file())); break;
+	case gfx::ShaderSource::kRaw: LoadFromString(type, source.raw(), "proto-" + std::to_string(type)); break;
+	case gfx::ShaderSource::kByName:
+		spdlog::get("console_log")->error("[Shader] LoadFromProto by_name not implemented");
+		break;
+	case gfx::ShaderSource::SOURCE_NOT_SET:
+	default: break;
+	}
+}
+
+std::shared_ptr<Shader> Shader::CreateFromDef(const gfx::ShaderDef& shader_def) {
+	auto s = std::make_shared<Shader>();
+	for (auto& source : shader_def.files()) {
+		s->LoadFromProto(source);
+	}
+	if (shader_def.has_vertex()) {
+		s->LoadFromProto(shader_def.vertex(), gfx::VERTEX);
+	}
+	if (shader_def.has_fragment()) {
+		s->LoadFromProto(shader_def.fragment(), gfx::FRAGMENT);
+	}
+	if (shader_def.has_geometry()) {
+		s->LoadFromProto(shader_def.geometry(), gfx::GEOMETRY);
+	}
+	if (shader_def.has_tess_control()) {
+		s->LoadFromProto(shader_def.tess_control(), gfx::TESS_CONTROL);
+	}
+	if (shader_def.has_tess_eval()) {
+		s->LoadFromProto(shader_def.tess_eval(), gfx::TESS_EVAL);
+	}
+	if (shader_def.has_compute()) {
+		s->LoadFromProto(shader_def.compute(), gfx::COMPUTE);
+	}
+	if (s->Build()) {
+		ShaderMap::Set(shader_def.name(), s);
+		return s;
+	}
+	return nullptr;
+}
+
 } // namespace tec

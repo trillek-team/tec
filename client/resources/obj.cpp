@@ -164,7 +164,8 @@ bool OBJ::Parse() {
 
 	std::shared_ptr<OBJGroup> currentVGroup = std::make_shared<OBJGroup>();
 	currentVGroup->name = "default";
-	OBJGroup::FaceGroup* current_face_group = nullptr;
+	OBJGroup::FaceGroup* current_face_group = new OBJGroup::FaceGroup();
+	current_face_group->mtl = "(default)";
 
 	// Pre-pass to get counts to avoid constant reallocation
 	unsigned int object_count = 0;
@@ -222,26 +223,21 @@ bool OBJ::Parse() {
 		ss >> identifier;
 		if (identifier == "v") {
 			glm::vec3 vert;
-			ss >> vert.x;
-			ss >> vert.y;
-			ss >> vert.z;
+			ss >> vert.x >> vert.y >> vert.z;
 			this->positions.push_back(vert);
 		}
 		else if (identifier == "vt") {
 			glm::vec2 uv;
-			ss >> uv.x;
-			ss >> uv.y;
+			ss >> uv.x >> uv.y;
 			uv.y = 1 - uv.y;
 			this->uvs.push_back(uv);
 		}
 		else if (identifier == "vn") {
 			glm::vec3 norm;
-			ss >> norm.x;
-			ss >> norm.y;
-			ss >> norm.z;
+			ss >> norm.x >> norm.y >> norm.z;
 			this->normals.push_back(norm);
 		}
-		else if (identifier == "o") {
+		else if (identifier == "o") { // this is OPTIONAL!!
 			if (currentVGroup) {
 				if (currentVGroup->face_groups.size() > 0) { // Empty groups are worth saving
 					this->vertexGroups.push_back(currentVGroup);
@@ -250,7 +246,15 @@ bool OBJ::Parse() {
 			currentVGroup = std::make_shared<OBJGroup>();
 			ss >> currentVGroup->name;
 		}
-		else if (identifier == "usemtl") {
+		else if (identifier == "usemtl") { // this is OPTIONAL!!
+			if (current_face_group) {
+				if (current_face_group->faces.size()) {
+					currentVGroup->face_groups.push_back(current_face_group);
+				}
+				else {
+					delete current_face_group;
+				}
+			}
 			current_face_group = nullptr;
 			std::string mtlname;
 			ss >> mtlname;
@@ -264,7 +268,6 @@ bool OBJ::Parse() {
 				current_face_group->faces.reserve(
 						static_cast<std::size_t>(object_face_count[this->vertexGroups.size()]) * 2);
 				current_face_group->mtl = mtlname;
-				currentVGroup->face_groups.push_back(current_face_group);
 			}
 		}
 		else if (identifier == "f") {
@@ -281,23 +284,15 @@ bool OBJ::Parse() {
 				std::replace(faceLine.begin(), faceLine.end(), '/', ' ');
 				face_ss.clear();
 				face_ss.str(faceLine);
-				face_ss >> face.pos[0];
-				face_ss >> face.uv[0];
-				face_ss >> face.norm[0];
-				face_ss >> face.pos[1];
-				face_ss >> face.uv[1];
-				face_ss >> face.norm[1];
-				face_ss >> face.pos[2];
-				face_ss >> face.uv[2];
-				face_ss >> face.norm[2];
+				face_ss >> face.pos[0] >> face.uv[0] >> face.norm[0];
+				face_ss >> face.pos[1] >> face.uv[1] >> face.norm[1];
+				face_ss >> face.pos[2] >> face.uv[2] >> face.norm[2];
 				if (!face_ss.eof()) {
 					quad = true;
 					face2.pos[0] = face.pos[2];
 					face2.uv[0] = face.uv[2];
 					face2.norm[0] = face.norm[2];
-					face_ss >> face2.pos[1];
-					face_ss >> face2.uv[1];
-					face_ss >> face2.norm[1];
+					face_ss >> face2.pos[1] >> face2.uv[1] >> face2.norm[1];
 					face2.pos[2] = face.pos[0];
 					face2.uv[2] = face.uv[0];
 					face2.norm[2] = face.norm[0];
@@ -327,6 +322,14 @@ bool OBJ::Parse() {
 	}
 
 	if (currentVGroup) {
+		if (current_face_group) {
+			if (current_face_group->faces.size()) {
+				currentVGroup->face_groups.push_back(current_face_group);
+			}
+			else {
+				delete current_face_group;
+			}
+		}
 		this->vertexGroups.push_back(currentVGroup);
 	}
 
@@ -375,47 +378,26 @@ void OBJ::PopulateMeshGroups() {
 				diffuse_color = glm::vec4(material->kd, 1.0);
 			}
 
-			auto j{static_cast<unsigned int>(mesh->verts.size())};
+			auto j = static_cast<unsigned int>(mesh->verts.size());
 
 			if (mesh->verts.size() < (face_group->faces.size() * 3 + mesh->verts.size())) {
 				mesh->verts.resize(face_group->faces.size() * 3 + mesh->verts.size());
 			}
 
-			for (std::size_t k = 0; k < face_group->faces.size(); ++k) {
-				const Face& face = face_group->faces[k];
-				if (face.pos[0] > 0 && face.pos[0] <= this->positions.size()) {
-					mesh->verts[j].position = this->positions[face.pos[0] - 1];
+			for (const Face& face : face_group->faces) {
+				for (size_t index = 0; index < 3; index++) {
+					if (face.pos[index] != 0 && face.pos[index] <= this->positions.size()) {
+						mesh->verts[j].position = this->positions[face.pos[index] - 1];
+					}
+					if (face.uv[index] != 0 && face.uv[index] <= this->uvs.size()) {
+						mesh->verts[j].uv = this->uvs[face.uv[index] - 1];
+					}
+					if (face.norm[index] != 0 && face.norm[index] <= this->normals.size()) {
+						mesh->verts[j].normal = this->normals[face.norm[index] - 1];
+					}
+					mesh->verts[j].color = diffuse_color;
+					objgroup->indices.push_back(j++);
 				}
-				if (face.uv[0] > 0 && face.uv[0] <= this->uvs.size()) {
-					mesh->verts[j].uv = this->uvs[face.uv[0] - 1];
-				}
-				if (face.norm[0] > 0 && face.norm[0] <= this->normals.size()) {
-					mesh->verts[j].normal = this->normals[face.norm[0] - 1];
-				}
-				mesh->verts[j].color = diffuse_color;
-				objgroup->indices.push_back(j++);
-				if (face.pos[1] > 0 && face.pos[1] <= this->positions.size()) {
-					mesh->verts[j].position = this->positions[face.pos[1] - 1];
-				}
-				if (face.uv[1] > 0 && face.uv[1] <= this->uvs.size()) {
-					mesh->verts[j].uv = this->uvs[face.uv[1] - 1];
-				}
-				if (face.norm[1] > 0 && face.norm[1] <= this->normals.size()) {
-					mesh->verts[j].normal = this->normals[face.norm[1] - 1];
-				}
-				mesh->verts[j].color = diffuse_color;
-				objgroup->indices.push_back(j++);
-				if (face.pos[2] > 0 && face.pos[2] <= this->positions.size()) {
-					mesh->verts[j].position = this->positions[face.pos[2] - 1];
-				}
-				if (face.uv[2] > 0 && face.uv[2] <= this->uvs.size()) {
-					mesh->verts[j].uv = this->uvs[face.uv[2] - 1];
-				}
-				if (face.norm[2] > 0 && face.norm[2] <= this->normals.size()) {
-					mesh->verts[j].normal = this->normals[face.norm[2] - 1];
-				}
-				mesh->verts[j].color = diffuse_color;
-				objgroup->indices.push_back(j++);
 			}
 			mat_group.count = objgroup->indices.size() - mat_group.start;
 			objgroup->material_groups.push_back(std::move(mat_group));

@@ -16,12 +16,12 @@ typedef Multiton<std::string, std::shared_ptr<MeshFile>> MeshMap;
 // Vertex data used for rendering or other purposes.
 struct VertexData {
 	VertexData() = default;
-	VertexData(double x, double y, double z, double r, double g, double b, double u = 0.0, double v = 0.0) :
-			position(x, y, z), color(r, g, b, 1.0f), uv(u, v) {}
+	VertexData(float x, float y, float z, float r, float g, float b, float u = 0.0, float v = 0.0) :
+			position(x, y, z), uv(u, v), color(r, g, b, 1.0f) {}
 	glm::vec3 position{0.f, 0.f, 0.f};
-	glm::vec4 color{1.f, 1.f, 1.f, 1.f};
 	glm::vec3 normal{0.f, 0.f, 0.f};
 	glm::vec2 uv{0.f, 0.f};
+	glm::vec4 color{1.f, 1.f, 1.f, 1.f};
 	glm::vec4 bone_weights{0.f, 0.f, 0.f, 0.f}; // Used for animation.
 	glm::uvec4 bone_indices{0, 0, 0, 0}; // Used for animation.
 };

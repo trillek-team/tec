@@ -9,13 +9,14 @@
 #include <fstream>
 #include <iostream>
 #include <list>
-#include <map>
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "filesystem.hpp"
 #include "multiton.hpp"
+#include <graphics.pb.h>
 
 namespace tec {
 class Shader;
@@ -23,12 +24,6 @@ typedef Multiton<std::string, std::shared_ptr<Shader>> ShaderMap;
 
 class Shader final {
 public:
-	enum ShaderType : GLenum {
-		VERTEX = GL_VERTEX_SHADER,
-		FRAGMENT = GL_FRAGMENT_SHADER,
-		GEOMETRY = GL_GEOMETRY_SHADER,
-	};
-
 	Shader() = default;
 
 	~Shader();
@@ -83,10 +78,10 @@ public:
 	*	std::make_pair(Shader::VERTEX, FilePath("basic.vert")), std::make_pair(Shader::FRAGMENT,
 	*FilePath("./basic.frag")),
 	* };
-	* \return is a weak_ptr to the created Shader.
+	* \return is a shared_ptr to the created Shader.
 	*/
 	static std::shared_ptr<Shader>
-	CreateFromFile(const std::string name, std::list<std::pair<Shader::ShaderType, tec::FilePath>> filenames);
+	CreateFromFile(const std::string name, std::list<std::pair<gfx::ShaderType, tec::FilePath>> filenames);
 
 	/**
 	* \brief Creates a Shader the provide source code stores it in ShaderMap under name.
@@ -97,36 +92,51 @@ public:
 	*   std::make_pair(Shader::VERTEX, "shader source code\nversion 330\n{}"),
 	* std::make_pair(Shader::FRAGMENT, "shader source code\nversion 330\n{}"),
 	* };
-	* \return is a weak_ptr to the created Shader.
+	* \return is a shared_ptr to the created Shader.
 	*/
 	static std::shared_ptr<Shader>
-	CreateFromString(const std::string name, std::list<std::pair<Shader::ShaderType, std::string>> source_code);
+	CreateFromString(const std::string name, std::list<std::pair<gfx::ShaderType, std::string>> source_code);
+
+	/**
+	* \brief Creates a Shader using parameters from a tec::gfx::ShaderDef protocol object.
+	*
+	* a ShaderDef should contain a name and assets relative filenames.
+	* \return is a shared_ptr to the created Shader.
+	*/
+	static std::shared_ptr<Shader>
+	CreateFromDef(const gfx::ShaderDef &shader_def);
 
 	/**
 	* \brief Loads the specified ShaderType from file filename.
-	* \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT,
-	* GEOMETRY).
+	* \param const ShaderType type The type of shader that is being loaded i.e. VERTEX, FRAGMENT, etc.
 	* \param const FilePath filename The filename of the source file to load
 	* (relative to assets folder)
 	* \return void
 	*/
-	void LoadFromFile(const Shader::ShaderType type, const tec::FilePath& filename);
+	void LoadFromFile(const gfx::ShaderType type, const tec::FilePath& filename);
 
 	/**
 	* \brief Loads the specified ShaderType from the source string provided..
-	* \param const ShaderType type The type of shader that is being loaded (VERTEX, FRAGMENT,
-	* GEOMETRY).
+	* \param const ShaderType type The type of shader that is being loaded i.e. VERTEX, FRAGMENT, etc.
 	* \param const std::string source The source string to load from.
 	* \return void
 	*/
-	void LoadFromString(const Shader::ShaderType type, const std::string& source) { LoadFromString(type, source, ""); }
+	void LoadFromString(const gfx::ShaderType type, const std::string& source) { LoadFromString(type, source, ""); }
+
+	/**
+	* \brief Loads the specified ShaderType from the source string provided..
+	* \param source The ShaderSource object to load from.
+	* \param ShaderType optional type of the shader being loaded if object does not specify it, i.e. VERTEX, FRAGMENT, etc.
+	* \return void
+	*/
+	void LoadFromProto(const gfx::ShaderSource& source, gfx::ShaderType type = gfx::ShaderType::VERTEX);
 
 	/**
 	* \brief Builds the shader program after all shaders have been loaded.
 	* This is called automatically from the factory methods.
-	* \return void
+	* \return true if the shader built successfully
 	*/
-	void Build();
+	bool Build();
 
 	/**
 	* \brief Deletes the shader program.
@@ -144,11 +154,11 @@ private:
 	* debug purposes)
 	* \return void
 	*/
-	void LoadFromString(const Shader::ShaderType type, const std::string& source, const std::string& filename);
+	void LoadFromString(const gfx::ShaderType type, const std::string& source, const std::string& filename);
 
 	GLuint program{0};
 	std::vector<GLuint> shaders;
-	std::map<std::string, GLint> attributes;
-	std::map<std::string, GLint> uniforms;
+	std::unordered_map<std::string, GLint> attributes;
+	std::unordered_map<std::string, GLint> uniforms;
 };
 } // namespace tec

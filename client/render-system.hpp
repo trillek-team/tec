@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <unordered_set>
 
 #ifndef __APPLE__
 #include <GL/glew.h>
@@ -46,6 +47,7 @@ public:
 
 	void Update(const double delta);
 
+	bool HasExtension(const std::string &x) const { return extensions.find(x) != extensions.cend(); }
 private:
 	std::shared_ptr<spdlog::logger> _log;
 
@@ -67,7 +69,8 @@ private:
 
 	glm::mat4 projection{0};
 	View* current_view{nullptr};
-	unsigned int window_width{1024}, window_height{768};
+	glm::uvec2 view_size{1024, 768};
+	glm::vec2 inv_view_size;
 	std::map<eid, glm::mat4> model_matricies;
 	std::shared_ptr<Shader> default_shader;
 
@@ -84,6 +87,7 @@ private:
 
 		friend bool operator<(const RenderItem& a, const RenderItem& b) { return a.vao < b.vao; }
 	};
+	std::unordered_set<std::string> extensions;
 	std::map<std::shared_ptr<Shader>, std::set<RenderItem>> render_item_list;
 };
 } // namespace tec

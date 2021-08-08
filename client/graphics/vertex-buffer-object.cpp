@@ -1,4 +1,5 @@
 #include "vertex-buffer-object.hpp"
+#include <spdlog/spdlog.h>
 
 #include "material.hpp"
 #include "resources/mesh.hpp"
@@ -8,19 +9,17 @@
 namespace tec {
 VertexBufferObject::VertexBufferObject() {}
 
-VertexBufferObject::VertexBufferObject(std::shared_ptr<MeshFile> mesh) : source_mesh(mesh) { Load(mesh); }
-
 VertexBufferObject::~VertexBufferObject() { Destroy(); }
 
 void VertexBufferObject::Destroy() {
+	glDeleteVertexArrays(1, &this->vao);
 	glDeleteBuffers(1, &this->vbo);
 	glDeleteBuffers(1, &this->ibo);
-	glDeleteVertexArrays(1, &this->vao);
 }
 
-const GLuint VertexBufferObject::GetVAO() { return this->vao; }
+GLuint VertexBufferObject::GetVAO() { return this->vao; }
 
-const GLuint VertexBufferObject::GetIBO() { return this->ibo; }
+GLuint VertexBufferObject::GetIBO() { return this->ibo; }
 
 VertexGroup* VertexBufferObject::GetVertexGroup(const std::size_t vertex_group_number) {
 	if (vertex_group_number < this->vertex_groups.size()) {
@@ -44,47 +43,53 @@ void VertexBufferObject::Update() {
 }
 
 void VertexBufferObject::Load(std::shared_ptr<MeshFile> mesh) {
-	if (mesh) {
-		this->source_mesh = mesh;
-		std::vector<GLuint> all_indices;
-		std::vector<VertexData> all_verts;
-		GLuint vert_offset;
-		this->vertex_groups.clear();
-		for (std::size_t i = 0; i < mesh->GetMeshCount(); ++i) {
-			Mesh* mfmesh = mesh->GetMesh(i);
-			vert_offset = static_cast<GLuint>(all_verts.size());
-			all_verts.insert(all_verts.end(), mfmesh->verts.begin(), mfmesh->verts.end());
-			for (ObjectGroup* objgroup : mfmesh->object_groups) {
-				for (auto mat_group : objgroup->material_groups) {
-					VertexGroup group;
-					group.index_count = mat_group.count;
-					group.starting_offset = mat_group.start + all_indices.size();
-					group.mesh_group_number = i;
-					if (MaterialMap::Has(mat_group.material_name)) {
-						group.material = MaterialMap::Get(mat_group.material_name);
-					}
-					else {
-						group.material = Material::Create(mat_group.material_name);
-						group.material->SetDrawElementsMode(GL_TRIANGLES);
-						group.material->SetPolygonMode(GL_FILL);
-						for (auto texture : mat_group.textures) {
-							if (TextureMap::Has(texture)) {
-								group.material->AddTexture(TextureMap::Get(texture));
-							}
+	if (!mesh) {
+		return;
+	}
+	this->source_mesh = mesh;
+	std::vector<GLuint> all_indices;
+	std::vector<VertexData> all_verts;
+	GLuint vert_offset;
+	this->vertex_groups.clear();
+	for (std::size_t i = 0; i < mesh->GetMeshCount(); ++i) {
+		Mesh* mfmesh = mesh->GetMesh(i);
+		vert_offset = static_cast<GLuint>(all_verts.size());
+		all_verts.insert(all_verts.end(), mfmesh->verts.begin(), mfmesh->verts.end());
+		for (ObjectGroup* objgroup : mfmesh->object_groups) {
+			for (auto mat_group : objgroup->material_groups) {
+				VertexGroup group;
+				group.index_count = mat_group.count;
+				group.starting_offset = mat_group.start + all_indices.size();
+				group.mesh_group_number = i;
+				if (MaterialMap::Has(mat_group.material_name)) {
+					group.material = MaterialMap::Get(mat_group.material_name);
+				}
+				else {
+					group.material = Material::Create(mat_group.material_name);
+					group.material->SetDrawElementsMode(GL_TRIANGLES);
+					group.material->SetPolygonMode(GL_FILL);
+					for (auto texture : mat_group.textures) {
+						if (TextureMap::Has(texture)) {
+							group.material->AddTexture(TextureMap::Get(texture));
 						}
 					}
-					this->vertex_groups.push_back(std::move(group));
 				}
-				for (GLuint index : objgroup->indices) {
-					all_indices.push_back(index + vert_offset);
-				}
+				this->vertex_groups.push_back(std::move(group));
+			}
+			for (GLuint index : objgroup->indices) {
+				all_indices.push_back(index + vert_offset);
 			}
 		}
-		Load(all_verts, all_indices);
 	}
+	Load(all_verts, all_indices);
 }
 
 void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices) {
+	auto _log = spdlog::get("console_log");
+	if (verts.empty() || indices.empty()) {
+		_log->error("VertexBufferObject::Load error: empty data: v:{}, i:{}", verts.size(), indices.size());
+		return;
+	}
 	if (!this->vao) {
 		glGenVertexArrays(1, &this->vao);
 	}
@@ -111,7 +116,7 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 			glUnmapBuffer(GL_ARRAY_BUFFER);
 		}
 		else {
-			// std::err << "glMapBufferRange() failed" << __LINE__ << __FILE__ << std::endl;
+			_log->error("glMapBufferRange() failed {}:{}", __FILE__, __LINE__);
 		}
 	}
 	else {
@@ -121,19 +126,20 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 
 	glVertexAttribPointer(
 			(GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, position));
-	glEnableVertexAttribArray(0);
 	glVertexAttribPointer((GLuint)1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, color));
-	glEnableVertexAttribArray(1);
 	glVertexAttribPointer((GLuint)2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, normal));
-	glEnableVertexAttribArray(2);
 	glVertexAttribPointer((GLuint)3, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, uv));
-	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(
 			(GLuint)4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*)offsetof(VertexData, bone_weights));
-	glEnableVertexAttribArray(4);
 	glVertexAttribIPointer(
 			(GLuint)5, 4, GL_UNSIGNED_INT, sizeof(VertexData), (GLvoid*)offsetof(VertexData, bone_indices));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 	glEnableVertexAttribArray(5);
+	glBindBuffer(GL_ARRAY_BUFFER, 0); // all bindings are finished
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ibo);
 	if (this->index_count >= indices.size()) {
@@ -149,15 +155,14 @@ void VertexBufferObject::Load(const std::vector<VertexData>& verts, const std::v
 			glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 		}
 		else {
-			// std::err << "glMapBufferRange() failed" << __LINE__ << __FILE__ << std::endl;
+			_log->error("glMapBufferRange() failed {}:{}", __FILE__, __LINE__);
 		}
 	}
 	else {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 		this->index_count = indices.size();
 	}
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0); // vertex array finished
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	if (this->vertex_groups.size() == 0) {

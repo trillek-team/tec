@@ -80,6 +80,7 @@ class SoundSystem :
 		public EventQueue<EntityDestroyed> {
 public:
 	SoundSystem();
+	~SoundSystem();
 
 	void Update();
 

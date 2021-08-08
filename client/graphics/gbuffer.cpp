@@ -1,5 +1,7 @@
 #include "gbuffer.hpp"
 
+#include <spdlog/spdlog.h>
+
 namespace tec {
 void GBuffer::AddColorAttachments(const unsigned int window_width, const unsigned int window_height) {
 	if (this->frame_buffer_object == 0) {
@@ -39,10 +41,16 @@ void GBuffer::ResizeDepthAttachment(const unsigned int width, const unsigned int
 	this->depth_width = width;
 	this->depth_height = height;
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object);
-	glGenRenderbuffers(1, &this->depth_texture);
-	glBindRenderbuffer(GL_RENDERBUFFER, this->depth_texture);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, width, height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->depth_texture);
+	// FIXME: minor thing: this used to create a depth+stencil format
+	// however it was doing so using *Renderbuffers* not textures
+	// GL_DEPTH32F_STENCIL8 isn't supported on textures (or rarely)
+	// so maybe a separate STENCIL8 texture or renderbuffer could be added
+	// also note: the stencil pass isn't entirely required, it's just a possible optimization.
+	glBindTexture(GL_TEXTURE_2D, this->depth_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0,  GL_DEPTH_COMPONENT, GL_BYTE, nullptr);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depth_texture, 0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
@@ -100,7 +108,7 @@ void GBuffer::BeginLightPass() {
 	}
 }
 
-void GBuffer::BeginDirLightPass() {}
+void GBuffer::BeginDirLightPass() { glStencilFunc(GL_ALWAYS, 0, 0); }
 
 void GBuffer::BeginPointLightPass() {}
 

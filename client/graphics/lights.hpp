@@ -6,7 +6,10 @@
 #include <OpenGL/gl3.h>
 #endif
 
+#include <cmath>
 #include <glm/vec3.hpp>
+
+#include "components/transforms.hpp"
 
 namespace tec {
 struct BaseLight {
@@ -117,12 +120,13 @@ struct PointLight : public BaseLight {
 	float UpdateBoundingRadius() {
 		float MaxChannel = fmax(fmax(this->color.x, this->color.y), this->color.z);
 
+		float linear_atten = this->Attenuation.linear;
+		float linear_atten_sq = linear_atten * linear_atten;
+		float exp_atten = this->Attenuation.exponential;
 		// I think this is fall off
-		auto fall_off = 4 * this->Attenuation.exponential
-						* (this->Attenuation.exponential - 256 * MaxChannel * this->diffuse_intensity);
+		auto exp_fall_off = 4 * exp_atten * (exp_atten - 256 * MaxChannel * this->diffuse_intensity);
 
-		this->bounding_radius = (-this->Attenuation.linear + sqrtf(pow(this->Attenuation.linear, 2) - fall_off)) / 2
-								* this->Attenuation.exponential;
+		this->bounding_radius = 0.5f * exp_atten * (sqrtf(linear_atten_sq - exp_fall_off) - linear_atten);
 		return this->bounding_radius;
 	}
 

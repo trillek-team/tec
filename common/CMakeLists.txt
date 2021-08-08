@@ -15,10 +15,18 @@ include_directories(SYSTEM ${BULLET_INCLUDE_DIR})
 include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
 include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 
-protobuf_generate_cpp(COMPONENTS_SOURCES COMPONENTS_HEADERS ${trillek-common_SOURCE_DIR}/proto/components.proto)
-protobuf_generate_cpp(GAME_STATE_SOURCES GAME_STATE_HEADERS ${trillek-common_SOURCE_DIR}/proto/game_state.proto)
-protobuf_generate_cpp(SAVE_GAME_SOURCES SAVE_GAME_HEADERS ${trillek-common_SOURCE_DIR}/proto/save_game.proto)
-protobuf_generate_cpp(COMMANDS_SOURCES COMMANDS_HEADERS ${trillek-common_SOURCE_DIR}/proto/commands.proto)
+set(trillek-common_PROTOCOLS
+	${trillek-common_SOURCE_DIR}/proto/commands.proto
+	${trillek-common_SOURCE_DIR}/proto/components.proto
+	${trillek-common_SOURCE_DIR}/proto/game_state.proto
+	${trillek-common_SOURCE_DIR}/proto/graphics.proto
+	${trillek-common_SOURCE_DIR}/proto/save_game.proto
+)
+
+foreach(PROTO_FILE ${trillek-common_PROTOCOLS})
+	protobuf_generate_cpp(PROTOGENCPP trillek-common_GENHEADERS ${PROTO_FILE})
+	list(APPEND trillek-common_GENSOURCES ${PROTOGENCPP})
+endforeach()
 
 set(trillek-common_LIBRARY "tec" CACHE STRING "Name of the library with code common to both the client and the server")
 
@@ -44,15 +52,11 @@ set(trillek-common_SOURCES
 file(GLOB_RECURSE trillek-common_HEADERS LIST_DIRECTORIES false ${trillek-common_SOURCE_DIR}/*.hpp)
 source_group(Headers FILES ${trillek-common_HEADERS})
 set_property(SOURCE ${trillek-common_HEADERS} PROPERTY HEADER_FILE_ONLY true)
-file(GLOB trillek-common_PROTOCOLS LIST_DIRECTORIES false ${trillek-common_SOURCE_DIR}/proto/*.proto)
 source_group(Proto FILES ${trillek-common_PROTOCOLS})
 set_property(SOURCE ${trillek-common_PROTOCOLS} PROPERTY HEADER_FILE_ONLY true)
 
 add_library(${trillek-common_LIBRARY} STATIC
-	${COMPONENTS_SOURCES}
-	${GAME_STATE_SOURCES}
-	${COMMANDS_SOURCES}
-	${SAVE_GAME_SOURCES}
+	${trillek-common_GENSOURCES}
 	${trillek-common_SOURCES}
 	${trillek-common_HEADERS}
 	${trillek-common_PROTOCOLS}
