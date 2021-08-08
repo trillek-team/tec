@@ -34,6 +34,16 @@ SoundSystem::SoundSystem() {
 	//alListener3f(AL_DIRECTION, 0, 0,-1); alCheckError();
 }
 
+SoundSystem::~SoundSystem() {
+	for (auto source : this->queued_sources) {
+		alSourceStop(source->source);
+		alCheckError();
+	}
+	alcDestroyContext(this->context);
+	alCheckError();
+	alcCloseDevice(this->device);
+}
+
 void SoundSystem::Update() {
 	while (this->running) {
 		if (this->delta < 0.0) {

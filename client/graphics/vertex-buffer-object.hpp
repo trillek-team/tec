@@ -28,8 +28,6 @@ class VertexBufferObject {
 public:
 	VertexBufferObject();
 
-	VertexBufferObject(std::shared_ptr<MeshFile> mesh);
-
 	~VertexBufferObject();
 
 	/**
@@ -42,14 +40,14 @@ public:
 	* note: this method is not const, since GL can modify the ID
 	* \return GLuint the GL texture ID.
 	*/
-	const GLuint GetVAO();
+	GLuint GetVAO();
 
 	/**
 	* \brief Get the ID of the index buffer object.
 	* note: this method is not const, since GL can modify the ID
 	* \return GLuint the GL texture ID.
 	*/
-	const GLuint GetIBO();
+	GLuint GetIBO();
 
 	/**
 	* \brief Gets the specified VertexGroup.

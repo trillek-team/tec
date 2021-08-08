@@ -1,0 +1,39 @@
+syntax = "proto2";
+
+package tec.gfx;
+
+enum ShaderType {
+	VERTEX = 0x8B31;
+	FRAGMENT = 0x8B30;
+	GEOMETRY = 0x8DD9;
+	TESS_CONTROL = 0x8E88;
+	TESS_EVAL = 0x8E87;
+	COMPUTE = 0x91B9;
+}
+
+// "advanced" file interface for more flexibility
+message ShaderSource {
+	optional ShaderType type = 1;
+	oneof source {
+		string file = 2; // relative to assets/shaders/
+		string abs_file = 3; // full path
+		string by_name = 4; // a map of internal identifiers
+		string raw = 5; // shader source inline
+	}
+}
+
+message ShaderDef {
+	required string name = 1;
+	// shader type = source object { filename }
+	repeated ShaderSource files = 4;
+	optional ShaderSource vertex = 5;
+	optional ShaderSource fragment = 6;
+	optional ShaderSource geometry = 7;
+	optional ShaderSource tess_control = 8;
+	optional ShaderSource tess_eval = 9;
+	optional ShaderSource compute = 10;
+}
+
+message ShaderList {
+	repeated ShaderDef shaders = 1;
+}

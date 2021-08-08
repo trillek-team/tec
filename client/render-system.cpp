@@ -9,6 +9,9 @@
 #include <glm/gtc/quaternion.hpp>
 #include <spdlog/spdlog.h>
 
+#include <google/protobuf/util/json_util.h>
+#include <graphics.pb.h>
+
 #include "components/transforms.hpp"
 #include "entity.hpp"
 #include "events.hpp"
@@ -20,6 +23,7 @@
 #include "graphics/texture-object.hpp"
 #include "graphics/view.hpp"
 #include "multiton.hpp"
+#include "proto-load.hpp"
 #include "resources/mesh.hpp"
 #include "resources/obj.hpp"
 #include "resources/pixel-buffer.hpp"
@@ -41,8 +45,23 @@ void RenderSystem::Startup() {
 		return;
 	}
 
+	// load the list of extensions
+	GLint num_exts = 0;
+	glGetIntegerv(GL_NUM_EXTENSIONS, &num_exts);
+	std::string ext("");
+	for (GLint e = 0; e < num_exts; e++) {
+		extensions.emplace(std::string((const char*)glGetStringi(GL_EXTENSIONS, e)));
+	}
+
+	if (HasExtension("GL_ARB_clip_control")) {
+		_log->debug("[RenderSystem] Using glClipControl.");
+		glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
+	}
 	// Black is the safest clear color since this is a space game.
 	glClearColor(0.0, 0.0, 0.0, 0.0);
+	// Reversed Z buffering for improved precision (maybe)
+	glClearDepth(0.0f);
+	glDepthFunc(GL_GREATER);
 	std::shared_ptr<OBJ> sphere = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
 	if (!sphere) {
 		_log->debug("[RenderSystem] Error loading sphere.obj.");
@@ -60,21 +79,26 @@ void RenderSystem::Startup() {
 		this->quad_vbo.Load(quad);
 	}
 
-	this->light_gbuffer.AddColorAttachments(this->window_width, this->window_height);
+	this->inv_view_size.x = 1.0f / static_cast<float>(this->view_size.x);
+	this->inv_view_size.y = 1.0f / static_cast<float>(this->view_size.y);
+	this->light_gbuffer.AddColorAttachments(this->view_size.x, this->view_size.y);
 	this->light_gbuffer.SetDepthAttachment(
-			GBuffer::GBUFFER_DEPTH_TYPE::GBUFFER_DEPTH_TYPE_STENCIL, this->window_width, this->window_height);
+			GBuffer::GBUFFER_DEPTH_TYPE::GBUFFER_DEPTH_TYPE_STENCIL, this->view_size.x, this->view_size.y);
 	if (!this->light_gbuffer.CheckCompletion()) {
 		_log->error("[RenderSystem] Failed to create Light GBuffer.");
 	}
 
-	const char* tmp_buf = {
-#include "resources/checker.c" // Carmack's trick . Contains a 128x128x1 bytes of monochrome texture data
-	};
-
-	auto default_pbuffer = std::make_shared<PixelBuffer>(64, 64, 8, ImageColorMode::COLOR_RGBA);
+	const size_t checker_size = 64;
+	auto default_pbuffer = std::make_shared<PixelBuffer>(checker_size, checker_size, 8, ImageColorMode::COLOR_RGBA);
 	{
 		std::lock_guard lg(default_pbuffer->GetWritelock());
-		std::copy_n(tmp_buf, sizeof(tmp_buf), default_pbuffer->GetPtr());
+		auto pixels = reinterpret_cast<uint32_t*>(default_pbuffer->GetPtr());
+		for (size_t y = 0; y < checker_size; y++) {
+			for (size_t x = 0; x < checker_size; x++) {
+				uint32_t c = ((x / 8) ^ (y / 8)) & 1; // c is 1 or 0 in an 8x8 checker pattern
+				*(pixels++) = 0xff000000 | (c * 0xffffff); // set pixel with full alpha
+			}
+		}
 	}
 
 	PixelBufferMap::Set("default", default_pbuffer);
@@ -83,20 +107,30 @@ void RenderSystem::Startup() {
 	TextureMap::Set("default", default_texture);
 
 	this->SetupDefaultShaders();
+	_log->info("[RenderSystem] Startup complete.");
 }
 
-void RenderSystem::SetViewportSize(const unsigned int width, const unsigned int height) {
-	this->window_height = height;
-	this->window_width = width;
+void RenderSystem::SetViewportSize(unsigned int width, unsigned int height) {
+	if (width < 1)
+		width = 1;
+	if (height < 1)
+		height = 1;
+	this->view_size.x = width;
+	this->view_size.y = height;
 
-	float aspect_ratio = static_cast<float>(this->window_width) / static_cast<float>(this->window_height);
+	this->inv_view_size.x = 1.0f / static_cast<float>(width);
+	this->inv_view_size.y = 1.0f / static_cast<float>(height);
+	float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
 	if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 		aspect_ratio = 4.0f / 3.0f;
 	}
 
 	this->projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10000.0f);
-	this->light_gbuffer.ResizeColorAttachments(this->window_width, this->window_height);
-	this->light_gbuffer.ResizeDepthAttachment(this->window_width, this->window_height);
+	// convert the projection to reverse depth with infinite far plane
+	this->projection[2][2] = 0.0f;
+	this->projection[3][2] = 0.1f;
+	this->light_gbuffer.ResizeColorAttachments(width, height);
+	this->light_gbuffer.ResizeDepthAttachment(width, height);
 	glViewport(0, 0, width, height);
 }
 
@@ -165,7 +199,6 @@ void RenderSystem::GeometryPass() {
 		}
 		for (auto render_item : shader_list.second) {
 			glBindVertexArray(render_item.vao);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, render_item.ibo);
 			glUniform1i(animated_loc, 0);
 			if (render_item.animated) {
 				glUniform1i(animated_loc, 1);
@@ -199,7 +232,6 @@ void RenderSystem::GeometryPass() {
 	}
 	def_shader->UnUse();
 	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	this->light_gbuffer.EndGeometryPass();
 }
 
@@ -225,10 +257,7 @@ void RenderSystem::BeginPointLightPass() {
 	glUniform1i(
 			def_pl_shader->GetUniformLocation("gColorMap"),
 			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
-	glUniform2f(
-			def_pl_shader->GetUniformLocation("gScreenSize"),
-			(GLfloat)this->window_width,
-			(GLfloat)this->window_height);
+	glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
 	GLint model_index = def_pl_shader->GetUniformLocation("model");
 	GLint Color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
 	GLint AmbientIntensity_index = def_pl_shader->GetUniformLocation("gPointLight.Base.AmbientIntensity");
@@ -245,14 +274,18 @@ void RenderSystem::BeginPointLightPass() {
 			def_stencil_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
 
 	glBindVertexArray(this->sphere_vbo.GetVAO());
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->sphere_vbo.GetIBO());
+
 	auto index_count{static_cast<GLsizei>(this->sphere_vbo.GetVertexGroup(0)->index_count)};
+
+	this->light_gbuffer.BeginLightPass();
+	this->light_gbuffer.BeginPointLightPass();
+	def_pl_shader->Use();
 
 	for (auto itr = PointLightMap::Begin(); itr != PointLightMap::End(); ++itr) {
 		eid entity_id = itr->first;
 		PointLight* light = itr->second;
 
-		glm::vec3 position, scale(1.0);
+		glm::vec3 position;
 		glm::quat orientation;
 		if (Multiton<eid, Position*>::Has(entity_id)) {
 			position = Multiton<eid, Position*>::Get(entity_id)->value;
@@ -260,27 +293,23 @@ void RenderSystem::BeginPointLightPass() {
 		if (Multiton<eid, Orientation*>::Has(entity_id)) {
 			orientation = Multiton<eid, Orientation*>::Get(entity_id)->value;
 		}
-		if (ScaleMap::Has(entity_id)) {
-			scale = ScaleMap::Get(entity_id)->value;
-		}
-
-		glm::mat4 transform_matrix =
-				glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
 
 		light->UpdateBoundingRadius();
-		glm::mat4 scale_matrix = glm::scale(transform_matrix, glm::vec3(light->bounding_radius));
+		glm::mat4 transform_matrix =
+				glm::scale(glm::translate(glm::mat4(1.0), position), glm::vec3(light->bounding_radius));
 
-		this->light_gbuffer.StencilPass();
-		def_stencil_shader->Use();
-		glUniformMatrix4fv(stencil_model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
-		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-		def_stencil_shader->UnUse();
+		// FIXME: Stencil the lighting pass, it wasn't implemented correctly though
+		//this->light_gbuffer.StencilPass();
+		//def_stencil_shader->Use();
+		//glUniformMatrix4fv(stencil_model_index, 1, GL_FALSE, glm::value_ptr(transform_matrix));
+		//glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
+		//def_stencil_shader->UnUse();
 
 		// Change state for light pass after the stencil pass. Stencil pass must happen for each light.
-		this->light_gbuffer.BeginLightPass();
-		this->light_gbuffer.BeginPointLightPass();
-		def_pl_shader->Use();
-		glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(scale_matrix));
+		//this->light_gbuffer.BeginLightPass();
+		//this->light_gbuffer.BeginPointLightPass();
+		//def_pl_shader->Use();
+		glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(transform_matrix));
 		glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
 		glUniform1f(AmbientIntensity_index, light->ambient_intensity);
 		glUniform1f(DiffuseIntensity_index, light->diffuse_intensity);
@@ -288,12 +317,12 @@ void RenderSystem::BeginPointLightPass() {
 		glUniform1f(Atten_Linear_index, light->Attenuation.linear);
 		glUniform1f(Atten_Exp_index, light->Attenuation.exponential);
 		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-		this->light_gbuffer.EndPointLightPass();
-		def_pl_shader->UnUse();
 	}
+	// these would go in the loop for stencil lights
+	this->light_gbuffer.EndPointLightPass();
+	def_pl_shader->UnUse();
 
 	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void RenderSystem::DirectionalLightPass() {
@@ -317,10 +346,7 @@ void RenderSystem::DirectionalLightPass() {
 	glUniform1i(
 			def_dl_shader->GetUniformLocation("gColorMap"),
 			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
-	glUniform2f(
-			def_dl_shader->GetUniformLocation("gScreenSize"),
-			(GLfloat)this->window_width,
-			(GLfloat)this->window_height);
+	glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
 	glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), 0, 0, 0);
 	GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 	GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
@@ -328,7 +354,6 @@ void RenderSystem::DirectionalLightPass() {
 	GLint direction_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Direction");
 
 	glBindVertexArray(this->quad_vbo.GetVAO());
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->quad_vbo.GetIBO());
 
 	auto index_count{static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count)};
 
@@ -344,7 +369,6 @@ void RenderSystem::DirectionalLightPass() {
 	}
 	def_dl_shader->UnUse();
 	glBindVertexArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void RenderSystem::FinalPass() {
@@ -353,12 +377,12 @@ void RenderSystem::FinalPass() {
 	glBlitFramebuffer(
 			0,
 			0,
-			this->window_width,
-			this->window_height,
+			this->view_size.x,
+			this->view_size.y,
 			0,
 			0,
-			this->window_width,
-			this->window_height,
+			this->view_size.x,
+			this->view_size.y,
 			GL_COLOR_BUFFER_BIT,
 			GL_LINEAR);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -366,106 +390,52 @@ void RenderSystem::FinalPass() {
 
 void RenderSystem::RenderGbuffer() {
 	this->light_gbuffer.BindForRendering();
+	glDisable(GL_BLEND);
+	glActiveTexture(GL_TEXTURE0 + 3);
+	glBindSampler(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, this->light_gbuffer.GetDepthTexture());
+	glDrawBuffer(GL_BACK);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-	GLsizei HalfHeight = (GLsizei)(this->window_height / 2.0f);
-	GLsizei QuarterWidth = (GLsizei)(this->window_width / 4.0f);
-	GLsizei QuarterHeight = (GLsizei)(this->window_height / 4.0f);
+	glBindVertexArray(this->quad_vbo.GetVAO());
 
-	this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION);
-	glBlitFramebuffer(
-			0,
-			0,
-			this->window_width,
-			this->window_height,
-			this->window_width - QuarterWidth,
-			0,
-			this->window_width,
-			QuarterHeight,
-			GL_COLOR_BUFFER_BIT,
-			GL_LINEAR);
+	std::shared_ptr<Shader> def_db_shader = ShaderMap::Get("deferred_debug");
+	def_db_shader->Use();
 
-	this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE);
-	glBlitFramebuffer(
-			0,
-			0,
-			this->window_width,
-			this->window_height,
-			this->window_width - QuarterWidth,
-			QuarterHeight,
-			this->window_width,
-			HalfHeight,
-			GL_COLOR_BUFFER_BIT,
-			GL_LINEAR);
+	glUniform1i(
+			def_db_shader->GetUniformLocation("gPositionMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
+	glUniform1i(
+			def_db_shader->GetUniformLocation("gNormalMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
+	glUniform1i(
+			def_db_shader->GetUniformLocation("gColorMap"),
+			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
+	glUniform1i(def_db_shader->GetUniformLocation("gDepthMap"), static_cast<GLint>(3));
+	glUniform2f(def_db_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
 
-	this->light_gbuffer.SetReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL);
-	glBlitFramebuffer(
-			0,
-			0,
-			this->window_width,
-			this->window_height,
-			this->window_width - QuarterWidth,
-			HalfHeight,
-			this->window_width,
-			HalfHeight + QuarterHeight,
-			GL_COLOR_BUFFER_BIT,
-			GL_LINEAR);
+	auto index_count{static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count)};
+	glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 
-	glReadBuffer(GL_DEPTH_ATTACHMENT);
-	glBlitFramebuffer(
-			0,
-			0,
-			this->window_width,
-			this->window_height,
-			this->window_width - QuarterWidth,
-			HalfHeight + QuarterHeight,
-			this->window_width,
-			this->window_height,
-			GL_DEPTH_BUFFER_BIT,
-			GL_LINEAR);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	def_db_shader->UnUse();
+	glBindVertexArray(0);
 }
 
 void RenderSystem::SetupDefaultShaders() {
-	auto debug_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/debug.vert")),
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/debug.frag")),
-	};
-	auto debug_shader = Shader::CreateFromFile("debug", debug_shader_files);
-
+	tec::gfx::ShaderList shader_list;
+	auto core_fname = FilePath::GetAssetPath("shaders/core.json");
+	auto core_json = LoadAsString(core_fname);
+	auto status = google::protobuf::util::JsonStringToMessage(core_json, &shader_list);
+	if (!status.ok()) {
+		_log->error("[RenderSystem] loading shader list: {} failed: {}", core_fname.toString(), status.ToString());
+		return;
+	}
+	for (auto& shader_def : shader_list.shaders()) {
+		Shader::CreateFromDef(shader_def);
+	}
 	auto debug_fill = Material::Create("material_debug");
 	debug_fill->SetPolygonMode(GL_LINE);
 	debug_fill->SetDrawElementsMode(GL_LINES);
-
-	auto deferred_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_geometry.vert")),
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_geometry.frag")),
-	};
-	auto deferred_shader = Shader::CreateFromFile("deferred", deferred_shader_files);
-
-	auto deferred_pl_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_pointlight.frag")),
-	};
-	auto deferred_pl_shader = Shader::CreateFromFile("deferred_pointlight", deferred_pl_shader_files);
-
-	auto deferred_dl_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_dirlight.frag")),
-	};
-	auto deferred_dl_shader = Shader::CreateFromFile("deferred_dirlight", deferred_dl_shader_files);
-
-	auto deferred_stencil_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_light.vert")),
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_stencil.frag")),
-	};
-	auto deferred_stencil_shader = Shader::CreateFromFile("deferred_stencil", deferred_stencil_shader_files);
-
-	auto deferred_shadow_shader_files = std::list<std::pair<Shader::ShaderType, FilePath>>{
-			std::make_pair(Shader::VERTEX, FilePath::GetAssetPath("shaders/deferred_shadow.vert")),
-			std::make_pair(Shader::FRAGMENT, FilePath::GetAssetPath("shaders/deferred_shadow.frag")),
-	};
-	auto deferred_shadow_shader = Shader::CreateFromFile("deferred_shadow", deferred_shadow_shader_files);
 }
 
 void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
@@ -485,35 +455,37 @@ void RenderSystem::On(std::shared_ptr<EntityCreated> data) {
 		{
 			Renderable* renderable = new Renderable();
 			renderable->In(comp);
-
 			RenderableMap::Set(entity_id, renderable);
-		} break;
+			break;
+		}
 		case proto::Component::kPointLight:
 		{
 			PointLight* point_light = new PointLight();
 			point_light->In(comp);
 			PointLightMap::Set(entity_id, point_light);
-		} break;
+			break;
+		}
 		case proto::Component::kDirectionalLight:
 		{
 			DirectionalLight* dir_light = new DirectionalLight();
 			dir_light->In(comp);
 			DirectionalLightMap::Set(entity_id, dir_light);
-		} break;
+			break;
+		}
 		case proto::Component::kAnimation:
 		{
 			Animation* animation = new Animation();
 			animation->In(comp);
-
 			AnimationMap::Set(entity_id, animation);
-		} break;
+			break;
+		}
 		case proto::Component::kScale:
 		{
 			Scale* scale = new Scale();
 			scale->In(comp);
-
 			ScaleMap::Set(entity_id, scale);
-		} break;
+			break;
+		}
 		default: break;
 		}
 	}
