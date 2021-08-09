@@ -354,6 +354,7 @@ void OBJ::PopulateMeshGroups() {
 	for (std::size_t i = 0; i < this->vertexGroups.size(); ++i) {
 		const OBJ::OBJGroup* vert_group = this->vertexGroups[i].get();
 		Mesh* mesh = this->MeshFile::meshes[i];
+		mesh->has_color = true;
 		if (this->MeshFile::meshes[i]->object_groups.size() == 0) {
 			this->MeshFile::meshes[i]->object_groups.push_back(new ObjectGroup());
 		}
@@ -366,36 +367,37 @@ void OBJ::PopulateMeshGroups() {
 			MaterialGroup mat_group;
 			mat_group.start = objgroup->indices.size();
 			glm::vec4 diffuse_color{1.0};
-			if (this->materials.find(face_group->mtl) != this->materials.end()) {
-				std::shared_ptr<MTL> material = this->materials[face_group->mtl];
+			auto mat_itr = this->materials.find(face_group->mtl);
+			if (mat_itr != this->materials.end()) {
+				std::shared_ptr<MTL> material = mat_itr->second;
 				std::string material_name = material->diffuseMap;
-				material_name = material_name.substr(
-										material_name.find_last_of("/") + 1,
-										material_name.find_last_of(".") - material_name.find_last_of("/") - 1)
-								+ "_material";
+				size_t slash = material_name.find_last_of("/");
+				slash = (slash == std::string::npos) ? 0 : (slash + 1); // skip past any slash
+				size_t dot = material_name.find_last_of(".");
+				material_name = material_name.substr(slash, dot - slash) + "_material";
 				mat_group.material_name = material_name;
-				mat_group.textures.push_back(this->materials[face_group->mtl]->diffuseMap);
+				mat_group.textures.push_back(material->diffuseMap);
 				diffuse_color = glm::vec4(material->kd, 1.0);
 			}
 
-			auto j = static_cast<unsigned int>(mesh->verts.size());
+			auto j = static_cast<unsigned int>(mesh->base_verts.size());
 
-			if (mesh->verts.size() < (face_group->faces.size() * 3 + mesh->verts.size())) {
-				mesh->verts.resize(face_group->faces.size() * 3 + mesh->verts.size());
+			if (mesh->vert_count() < (face_group->faces.size() * 3 + mesh->vert_count())) {
+				mesh->resize(face_group->faces.size() * 3 + mesh->vert_count());
 			}
 
 			for (const Face& face : face_group->faces) {
 				for (size_t index = 0; index < 3; index++) {
 					if (face.pos[index] != 0 && face.pos[index] <= this->positions.size()) {
-						mesh->verts[j].position = this->positions[face.pos[index] - 1];
+						mesh->base_verts[j].position = this->positions[face.pos[index] - 1];
 					}
 					if (face.uv[index] != 0 && face.uv[index] <= this->uvs.size()) {
-						mesh->verts[j].uv = this->uvs[face.uv[index] - 1];
+						mesh->base_verts[j].uv = this->uvs[face.uv[index] - 1];
 					}
 					if (face.norm[index] != 0 && face.norm[index] <= this->normals.size()) {
-						mesh->verts[j].normal = this->normals[face.norm[index] - 1];
+						mesh->base_verts[j].normal = this->normals[face.norm[index] - 1];
 					}
-					mesh->verts[j].color = diffuse_color;
+					mesh->vert_color[j] = diffuse_color;
 					objgroup->indices.push_back(j++);
 				}
 			}

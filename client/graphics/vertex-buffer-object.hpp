@@ -10,12 +10,11 @@
 #include <OpenGL/gl3.h>
 #endif
 
+#include <resources/mesh.hpp>
+
 namespace tec {
 class Material;
 class Shader;
-
-class MeshFile;
-struct VertexData;
 
 struct VertexGroup {
 	std::size_t mesh_group_number{0};
@@ -26,7 +25,7 @@ struct VertexGroup {
 
 class VertexBufferObject {
 public:
-	VertexBufferObject();
+	VertexBufferObject(vertex::FormatCode _load_format);
 
 	~VertexBufferObject();
 
@@ -40,14 +39,7 @@ public:
 	* note: this method is not const, since GL can modify the ID
 	* \return GLuint the GL texture ID.
 	*/
-	GLuint GetVAO();
-
-	/**
-	* \brief Get the ID of the index buffer object.
-	* note: this method is not const, since GL can modify the ID
-	* \return GLuint the GL texture ID.
-	*/
-	GLuint GetIBO();
+	GLuint GetVAO() { return this->vao; }
 
 	/**
 	* \brief Gets the specified VertexGroup.
@@ -80,13 +72,9 @@ public:
 	*/
 	void Load(std::shared_ptr<MeshFile> mesh);
 
-	/**
-	* Loads a set of vertex and index data into a vertex buffer object.
-	*/
-	void Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices);
-
 private:
-	GLuint vao{0}, vbo{0}, ibo{0};
+	vertex::FormatCode load_format;
+	GLuint vao{0}, bufferobj[2]{0, 0};
 	std::size_t vertex_count{0}; // Total vertex count.
 	std::size_t index_count{0}; // Total index count.
 	std::vector<VertexGroup> vertex_groups;

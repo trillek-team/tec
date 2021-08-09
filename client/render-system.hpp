@@ -47,7 +47,8 @@ public:
 
 	void Update(const double delta);
 
-	bool HasExtension(const std::string &x) const { return extensions.find(x) != extensions.cend(); }
+	bool HasExtension(const std::string& x) const { return extensions.find(x) != extensions.cend(); }
+
 private:
 	std::shared_ptr<spdlog::logger> _log;
 
@@ -75,13 +76,13 @@ private:
 	std::shared_ptr<Shader> default_shader;
 
 	GBuffer light_gbuffer;
-	VertexBufferObject sphere_vbo; // Used for rendering point lights.
-	VertexBufferObject quad_vbo; // Used for rendering directional lights.
+	VertexBufferObject sphere_vbo{vertex::VF_BASE}; // Used for rendering point lights.
+	VertexBufferObject quad_vbo{vertex::VF_BASE}; // Used for rendering directional lights.
 
 	struct RenderItem {
 		glm::mat4* model_matrix{nullptr};
 		std::set<VertexGroup*>* vertex_groups{nullptr};
-		GLuint vao{0}, ibo{0};
+		GLuint vao{0};
 		bool animated{false};
 		Animation* animation{nullptr};
 
