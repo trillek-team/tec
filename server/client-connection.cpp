@@ -27,7 +27,7 @@ ClientConnection::~ClientConnection() {
 
 void ClientConnection::StartRead() { read_header(); }
 
-void ClientConnection::Shutdown() { this->socket.shutdown(asio::socket_base::shutdown_both); }
+void ClientConnection::Shutdown() { this->socket.close(); }
 
 void ClientConnection::QueueWrite(MessagePool::ptr_type msg) {
 	bool write_in_progress;

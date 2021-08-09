@@ -16,6 +16,7 @@ double UPDATE_RATE = 1.0 / 8.0; // 8 per second
 double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
 
 Simulation::Simulation() {
+	worker_thread = (std::thread*)~0; // force the pointer non-zero
 	worker_thread = new std::thread([this]() {
 		std::unique_lock lock(worker_m);
 		while (this->worker_thread) {
