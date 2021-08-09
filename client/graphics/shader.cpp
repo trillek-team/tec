@@ -179,8 +179,12 @@ Shader::CreateFromString(const std::string name, std::list<std::pair<gfx::Shader
 }
 
 void Shader::LoadFromProto(const gfx::ShaderSource& source, gfx::ShaderType type) {
-	if (source.has_type()) {
+	if (source.type() != gfx::ShaderType::UNSPECIFIED) {
 		type = source.type();
+	}
+	if (type == gfx::ShaderType::UNSPECIFIED) {
+		spdlog::get("console_log")->error("[Shader] LoadFromProto no ShaderType specified");
+		return;
 	}
 	switch (source.source_case()) {
 	case gfx::ShaderSource::kFile: LoadFromFile(type, FilePath::GetAssetPath("shaders") / source.file()); break;

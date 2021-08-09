@@ -262,18 +262,19 @@ void MD5Mesh::CalculateVertexPositions() {
 	if (this->meshes.size() < this->meshes_internal.size()) {
 		this->meshes.reserve(this->meshes_internal.size());
 		for (std::size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
-			CreateMesh();
+			CreateMesh()->has_weight = true;
 		}
 	}
 
 	for (std::size_t i = 0; i < this->meshes_internal.size(); ++i) {
 		Mesh* mesh = this->meshes[i];
 		InternalMesh& int_mesh = this->meshes_internal[i];
-		if (mesh->verts.size() < int_mesh.verts.size()) {
-			mesh->verts.resize(int_mesh.verts.size());
+		if (mesh->vert_count() < int_mesh.verts.size()) {
+			mesh->resize(int_mesh.verts.size());
 		}
 		for (std::size_t j = 0; j < int_mesh.verts.size(); ++j) {
-			VertexData vdata;
+			vertex::Vertex& vdata = mesh->base_verts[j];
+			vertex::WeightData& vweight = mesh->vert_weight[j];
 			Vertex& vert = int_mesh.verts[j];
 
 			// Compute vertex position based on joint position.
@@ -286,8 +287,8 @@ void MD5Mesh::CalculateVertexPositions() {
 
 				/* the sum of all weight->bias should be 1.0 */
 				vdata.position += (this->joints[weight.joint].position + wv) * weight.bias;
-				vdata.bone_indices[k] = static_cast<glm::u32>(weight.joint);
-				vdata.bone_weights[k] = weight.bias;
+				vweight.bone_indices[k] = static_cast<glm::u32>(weight.joint);
+				vweight.bone_weights[k] = weight.bias;
 			}
 
 			// Cache the calculated position for later
@@ -295,8 +296,6 @@ void MD5Mesh::CalculateVertexPositions() {
 
 			// Copy the texture coordinates
 			vdata.uv = vert.uv;
-
-			mesh->verts[j] = vdata;
 		}
 	}
 }
@@ -305,15 +304,15 @@ void MD5Mesh::CalculateVertexNormals() {
 	if (this->meshes.size() < this->meshes_internal.size()) {
 		this->meshes.reserve(this->meshes_internal.size());
 		for (std::size_t i = this->meshes.size(); i < this->meshes_internal.size(); ++i) {
-			CreateMesh();
+			CreateMesh()->has_weight = true;
 		}
 	}
 
 	for (std::size_t i = 0; i < this->meshes_internal.size(); ++i) {
 		Mesh* mesh = this->meshes[i];
 		InternalMesh& int_mesh = this->meshes_internal[i];
-		if (mesh->verts.size() < int_mesh.verts.size()) {
-			mesh->verts.resize(int_mesh.verts.size());
+		if (mesh->vert_count() < int_mesh.verts.size()) {
+			mesh->resize(int_mesh.verts.size());
 			// If we need to resize here then we will need to calculate the vertex positions
 			// again.
 			CalculateVertexPositions();
@@ -336,7 +335,7 @@ void MD5Mesh::CalculateVertexNormals() {
 			Vertex& vert = int_mesh.verts[j];
 
 			glm::vec3 normal = glm::normalize(vert.normal);
-			mesh->verts[j].normal = normal;
+			mesh->base_verts[j].normal = normal;
 
 			// Reset the normal to calculate the bind-pose normal in joint space
 			vert.normal = glm::vec3(0);
@@ -366,10 +365,10 @@ void MD5Mesh::UpdateIndexList() {
 		}
 		ObjectGroup* objgroup = this->meshes[i]->object_groups[0];
 		std::string material_name = int_mesh.shader;
-		material_name = material_name.substr(
-								material_name.find_last_of("/") + 1,
-								material_name.find_last_of(".") - material_name.find_last_of("/") - 1)
-						+ "_material";
+		size_t slash = material_name.find_last_of("/");
+		slash = (slash == std::string::npos) ? 0 : (slash + 1); // skip past any slash
+		size_t dot = material_name.find_last_of(".");
+		material_name = material_name.substr(slash, dot - slash) + "_material";
 		if (objgroup->indices.size() < int_mesh.tris.size()) {
 			objgroup->indices.reserve(int_mesh.tris.size() * 3);
 		}

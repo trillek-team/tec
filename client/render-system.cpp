@@ -65,7 +65,6 @@ void RenderSystem::Startup() {
 	std::shared_ptr<OBJ> sphere = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
 	if (!sphere) {
 		_log->debug("[RenderSystem] Error loading sphere.obj.");
-		this->sphere_vbo.Load(std::vector<VertexData>(), std::vector<GLuint>());
 	}
 	else {
 		this->sphere_vbo.Load(sphere);
@@ -73,7 +72,6 @@ void RenderSystem::Startup() {
 	std::shared_ptr<OBJ> quad = OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj"));
 	if (!quad) {
 		_log->debug("[RenderSystem] Error loading quad.obj.");
-		this->quad_vbo.Load(std::vector<VertexData>(), std::vector<GLuint>());
 	}
 	else {
 		this->quad_vbo.Load(quad);
@@ -523,8 +521,8 @@ void RenderSystem::UpdateRenderList(double delta) {
 
 		this->model_matricies[entity_id] =
 				glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
-		if (!renderable->buffer) {
-			renderable->buffer = std::make_shared<VertexBufferObject>();
+		if (renderable->mesh && !renderable->buffer) {
+			renderable->buffer = std::make_shared<VertexBufferObject>(vertex::VF_FULL);
 			renderable->buffer->Load(renderable->mesh);
 			std::size_t group_count = renderable->buffer->GetVertexGroupCount();
 			renderable->vertex_groups.clear();
@@ -543,7 +541,6 @@ void RenderSystem::UpdateRenderList(double delta) {
 			RenderItem ri;
 			ri.model_matrix = &this->model_matricies[entity_id];
 			ri.vao = renderable->buffer->GetVAO();
-			ri.ibo = renderable->buffer->GetIBO();
 			ri.vertex_groups = &renderable->vertex_groups;
 
 			if (_animation) {

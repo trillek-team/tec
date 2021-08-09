@@ -89,37 +89,41 @@ void VoxelVolume::Update(double) {
 }
 
 void VoxelVolume::UpdateMesh() {
-	static std::vector<VertexData> IdentityVerts({
+	using glm::vec2;
+	using glm::vec3;
+	using glm::vec4;
+	using tec::vertex::Vertex;
+	static std::vector<Vertex> IdentityVerts({
 			// Front
-			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			Vertex{vec3(0.f, 0.f, 1.f), vec3(0.f, 0.f, 1.f), vec2(0.f, 1.f)}, // Bottom left
+			Vertex{vec3(1.f, 0.f, 1.f), vec3(0.f, 0.f, 1.f), vec2(1.f, 1.f)}, // Bottom right
+			Vertex{vec3(1.f, 1.f, 1.f), vec3(0.f, 0.f, 1.f), vec2(1.f, 0.f)}, // Top right
+			Vertex{vec3(0.f, 1.f, 1.f), vec3(0.f, 0.f, 1.f), vec2(0.f, 0.f)}, // Top Left
 			// Back
-			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top left
+			Vertex{vec3(1.f, 0.f, 0.f), vec3(0.f, 0.f, -1.f), vec2(0.f, 1.f)}, // Bottom left
+			Vertex{vec3(0.f, 0.f, 0.f), vec3(0.f, 0.f, -1.f), vec2(1.f, 1.f)}, // Bottom right
+			Vertex{vec3(0.f, 1.f, 0.f), vec3(0.f, 0.f, -1.f), vec2(1.f, 0.f)}, // Top right
+			Vertex{vec3(1.f, 1.f, 0.f), vec3(0.f, 0.f, -1.f), vec2(0.f, 0.f)}, // Top left
 			// Left
-			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			Vertex{vec3(0.f, 0.f, 0.f), vec3(-1.f, 0.f, 0.f), vec2(0.f, 1.f)}, // Bottom left
+			Vertex{vec3(0.f, 0.f, 1.f), vec3(-1.f, 0.f, 0.f), vec2(1.f, 1.f)}, // Bottom right
+			Vertex{vec3(0.f, 1.f, 1.f), vec3(-1.f, 0.f, 0.f), vec2(1.f, 0.f)}, // Top right
+			Vertex{vec3(0.f, 1.f, 0.f), vec3(-1.f, 0.f, 0.f), vec2(0.f, 0.f)}, // Top Left
 			// Right
-			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			Vertex{vec3(1.f, 0.f, 1.f), vec3(1.f, 0.f, 0.f), vec2(0.f, 1.f)}, // Bottom left
+			Vertex{vec3(1.f, 0.f, 0.f), vec3(1.f, 0.f, 0.f), vec2(1.f, 1.f)}, // Bottom right
+			Vertex{vec3(1.f, 1.f, 0.f), vec3(1.f, 0.f, 0.f), vec2(1.f, 0.f)}, // Top right
+			Vertex{vec3(1.f, 1.f, 1.f), vec3(1.f, 0.f, 0.f), vec2(0.f, 0.f)}, // Top Left
 			// Top
-			VertexData(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-			VertexData(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-			VertexData(1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-			VertexData(0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f), // Top Left
+			Vertex{vec3(0.f, 1.f, 1.f), vec3(0.f, 1.f, 0.f), vec2(0.f, 1.f)}, // Bottom left
+			Vertex{vec3(1.f, 1.f, 1.f), vec3(0.f, 1.f, 0.f), vec2(1.f, 1.f)}, // Bottom right
+			Vertex{vec3(1.f, 1.f, 0.f), vec3(0.f, 1.f, 0.f), vec2(1.f, 0.f)}, // Top right
+			Vertex{vec3(0.f, 1.f, 0.f), vec3(0.f, 1.f, 0.f), vec2(0.f, 0.f)}, // Top Left
 			// Bottom
-			VertexData(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f), // Bottom left
-			VertexData(1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f), // Bottom right
-			VertexData(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f), // Top right
-			VertexData(0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f) // Top Left
+			Vertex{vec3(0.f, 0.f, 0.f), vec3(0.f, -1.f, 0.f), vec2(0.f, 1.f)}, // Bottom left
+			Vertex{vec3(1.f, 0.f, 0.f), vec3(0.f, -1.f, 0.f), vec2(1.f, 1.f)}, // Bottom right
+			Vertex{vec3(1.f, 0.f, 1.f), vec3(0.f, -1.f, 0.f), vec2(1.f, 0.f)}, // Top right
+			Vertex{vec3(0.f, 0.f, 1.f), vec3(0.f, -1.f, 0.f), vec2(0.f, 0.f)} // Top Left
 	});
 
 	// TODO: Sort voxels by material and update object group material groups.
@@ -147,17 +151,11 @@ void VoxelVolume::UpdateMesh() {
 				std::int16_t y = static_cast<std::int16_t>((index & 0xFFFF00000000) >> 32);
 				std::int16_t x = static_cast<std::int16_t>((index & 0xFFFF0000) >> 16);
 				std::int16_t z = static_cast<std::int16_t>(index & 0xFFFF);
-				std::size_t vertex_offset = _mesh->verts.size();
+				std::size_t vertex_offset = _mesh->base_verts.size();
+				auto voxel_pos = vec3(x, y, z);
 				for (std::size_t i = 0; i < 24; ++i) {
-					_mesh->verts.push_back(VertexData(
-							IdentityVerts[i].position[0] + x,
-							IdentityVerts[i].position[1] + y,
-							IdentityVerts[i].position[2] + z,
-							IdentityVerts[i].color[0],
-							IdentityVerts[i].color[1],
-							IdentityVerts[i].color[2],
-							IdentityVerts[i].uv[0],
-							IdentityVerts[i].uv[1]));
+					_mesh->base_verts.push_back(Vertex{
+							IdentityVerts[i].position + voxel_pos, IdentityVerts[i].normal, IdentityVerts[i].uv});
 				}
 				this->vertex_index[index] = vertex_offset;
 				for (std::size_t i = 0; i < 6; ++i) {
@@ -178,24 +176,22 @@ void VoxelVolume::UpdateMesh() {
 							}
 						}
 					}
-					if (this->vertex_index[index] == _mesh->verts.size() - 24) {
+					if (this->vertex_index[index] == _mesh->base_verts.size() - 24) {
 						for (std::size_t i = 0; i < 24; i++) {
-							_mesh->verts.pop_back();
+							_mesh->base_verts.pop_back();
 						}
 					}
 					else {
 						for (std::size_t i = 0; i < 24; i++) {
-							std::swap(_mesh->verts[this->vertex_index[index] + i], _mesh->verts.back());
-							_mesh->verts.pop_back();
+							std::swap(_mesh->base_verts[this->vertex_index[index] + i], _mesh->base_verts.back());
+							_mesh->base_verts.pop_back();
 						}
-						VertexData& vert = _mesh->verts[this->vertex_index[index]];
+						Vertex& vert = _mesh->base_verts[this->vertex_index[index]];
+						auto vert_pos = glm::floor(vert.position - IdentityVerts[0].position);
 
-						std::int16_t x =
-								static_cast<std::int16_t>(floor(vert.position.x - IdentityVerts[0].position[0]));
-						std::int16_t y =
-								static_cast<std::int16_t>(floor(vert.position.y - IdentityVerts[0].position[1]));
-						std::int16_t z =
-								static_cast<std::int16_t>(floor(vert.position.z - IdentityVerts[0].position[2]));
+						std::int16_t x = static_cast<std::int16_t>(vert_pos.x);
+						std::int16_t y = static_cast<std::int16_t>(vert_pos.y);
+						std::int16_t z = static_cast<std::int16_t>(vert_pos.z);
 
 						std::int64_t changed_index =
 								(static_cast<std::uint64_t>(y & 0xFFFF) << static_cast<std::uint64_t>(32))
