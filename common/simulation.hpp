@@ -1,5 +1,6 @@
 #pragma once
 
+#include <asio/thread_pool.hpp>
 #include <condition_variable>
 #include <memory>
 #include <queue>
@@ -66,10 +67,7 @@ public:
 	void On(std::shared_ptr<FocusBlurEvent> data);
 
 private:
-	std::thread* worker_thread;
-	std::mutex worker_m;
-	std::condition_variable worker_cv;
-	std::function<void()> worker_call = nullptr;
+	asio::thread_pool worker_pool;
 
 	PhysicsSystem phys_sys;
 	VComputerSystem vcomp_sys;

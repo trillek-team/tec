@@ -193,6 +193,7 @@ void VertexBufferObject::Load(std::shared_ptr<MeshFile> meshes) {
 		_log->error("VertexBufferObject::Load error: empty data: v:{}, i:{}", all_vertices_size, all_indices_size);
 		return;
 	}
+	_log->debug("[VBO]::Load mesh data: v:{}, i:{}", all_vertices_size, all_indices_size);
 
 	if (this->vao) {
 		glBindVertexArray(this->vao);

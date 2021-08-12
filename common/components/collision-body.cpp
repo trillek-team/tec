@@ -24,11 +24,11 @@ void CollisionBody::Out(proto::Component* target) {
 		switch (this->shape->getShapeType()) {
 		case BOX_SHAPE_PROXYTYPE:
 		{
-			proto::CollisionBody::Box* box = comp->mutable_box();
+			proto::SizeVector* box = comp->mutable_box();
 			btVector3 half_extents = std::static_pointer_cast<btBoxShape>(this->shape)->getHalfExtentsWithMargin();
-			box->set_x_extent(static_cast<float>(half_extents.getX()));
-			box->set_y_extent(static_cast<float>(half_extents.getY()));
-			box->set_z_extent(static_cast<float>(half_extents.getZ()));
+			box->set_x(static_cast<float>(half_extents.getX()));
+			box->set_y(static_cast<float>(half_extents.getY()));
+			box->set_z(static_cast<float>(half_extents.getZ()));
 		} break;
 		case SPHERE_SHAPE_PROXYTYPE:
 		{
@@ -56,7 +56,7 @@ void CollisionBody::In(const proto::Component& source) {
 	switch (comp.shape_case()) {
 	case proto::CollisionBody::ShapeCase::kBox:
 	{
-		this->SetBoxShape(comp.box().x_extent(), comp.box().y_extent(), comp.box().z_extent());
+		this->SetBoxShape(comp.box().x(), comp.box().y(), comp.box().z());
 		break;
 	}
 	case proto::CollisionBody::ShapeCase::kSphere:

@@ -32,7 +32,7 @@ struct DirectionalLight : public BaseLight {
 		comp->set_color_z(this->color.z);
 		comp->set_ambient_intensity(this->ambient_intensity);
 		comp->set_diffuse_intensity(this->diffuse_intensity);
-		proto::Light::Direction* dir = comp->mutable_direction();
+		proto::NormalVector* dir = comp->mutable_direction();
 		dir->set_x(this->direction.x);
 		dir->set_y(this->direction.y);
 		dir->set_z(this->direction.z);
@@ -56,7 +56,7 @@ struct DirectionalLight : public BaseLight {
 			this->diffuse_intensity = comp.diffuse_intensity();
 		}
 		if (comp.has_direction()) {
-			const proto::Light::Direction& _direction = comp.direction();
+			const proto::NormalVector& _direction = comp.direction();
 			this->direction.x = _direction.x();
 			this->direction.y = _direction.y();
 			this->direction.z = _direction.z();

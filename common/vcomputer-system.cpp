@@ -96,7 +96,7 @@ void Computer::In(const proto::Component& source) {
 	int size = LoadROM(FilePath::GetAssetPath(fname).toString(), this->rom);
 	if (size < 0) {
 		std::shared_ptr<spdlog::logger> _log = spdlog::get("console_log");
-		_log->error("An error hapen when was reading the file {}", fname);
+		_log->error("An error occoured while reading file {}", fname);
 	}
 	else {
 		this->rom_size = size;
@@ -229,7 +229,7 @@ bool VComputerSystem::LoadROMFile(const eid entity_id, std::string fname) {
 		auto computer = this->computers[entity_id];
 		int size = LoadROM(fname, computer->rom);
 		if (size < 0) {
-			_log->error("An error hapen when was reading the file {}", fname);
+			_log->error("An error occoured while reading file {}", fname);
 			return false;
 		}
 		computer->rom_size = size;

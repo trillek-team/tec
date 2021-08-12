@@ -35,6 +35,15 @@ struct WindowResizedEvent;
 struct EntityDestroyed;
 struct EntityCreated;
 
+struct RenderItem {
+	glm::mat4 model_matrix;
+	std::vector<VertexGroup> vertex_groups;
+	std::shared_ptr<VertexBufferObject> vbo;
+	MeshFile* mesh_at_set{nullptr}; // used only for equality testing, does not own an object
+	bool animated{false};
+	Animation* animation{nullptr};
+};
+
 class RenderSystem :
 		public CommandQueue<RenderSystem>,
 		public EventQueue<WindowResizedEvent>,
@@ -72,23 +81,15 @@ private:
 	View* current_view{nullptr};
 	glm::uvec2 view_size{1024, 768};
 	glm::vec2 inv_view_size;
-	std::map<eid, glm::mat4> model_matricies;
 	std::shared_ptr<Shader> default_shader;
 
 	GBuffer light_gbuffer;
 	VertexBufferObject sphere_vbo{vertex::VF_BASE}; // Used for rendering point lights.
 	VertexBufferObject quad_vbo{vertex::VF_BASE}; // Used for rendering directional lights.
 
-	struct RenderItem {
-		glm::mat4* model_matrix{nullptr};
-		std::set<VertexGroup*>* vertex_groups{nullptr};
-		GLuint vao{0};
-		bool animated{false};
-		Animation* animation{nullptr};
-
-		friend bool operator<(const RenderItem& a, const RenderItem& b) { return a.vao < b.vao; }
-	};
+	// all the functional extensions this GL supports
 	std::unordered_set<std::string> extensions;
-	std::map<std::shared_ptr<Shader>, std::set<RenderItem>> render_item_list;
+	std::map<std::shared_ptr<MeshFile>, std::shared_ptr<VertexBufferObject>> mesh_buffers;
+	std::map<std::shared_ptr<Shader>, std::set<RenderItem*>> render_item_list;
 };
 } // namespace tec

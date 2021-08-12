@@ -20,7 +20,6 @@ void Placement::SetMaxDistance(float _max_distance) { this->max_distance = _max_
 void Placement::SetMesh(const std::shared_ptr<MeshFile> _mesh) {
 	auto renderable = GetRenderable();
 	if (renderable) {
-		this->ClearMesh();
 		renderable->mesh = _mesh;
 		this->mesh = _mesh;
 	}
@@ -39,10 +38,6 @@ void Placement::SetMesh(const std::string mesh_name) {
 void Placement::ClearMesh() {
 	auto renderable = GetRenderable();
 	if (renderable) {
-		if (renderable->buffer) {
-			renderable->buffer->Destroy();
-			renderable->buffer.reset();
-		}
 		renderable->mesh.reset();
 		this->mesh.reset();
 	}
@@ -52,7 +47,7 @@ void Placement::SetRayIntersectionPoint(const glm::vec3 start, const glm::vec3 i
 	auto renderable = GetRenderable();
 	float distance = glm::distance(start, intersection);
 	glm::vec3 direction = glm::normalize(intersection - start);
-	renderable->local_translation.value = start + direction * std::min<float>(distance, this->max_distance);
+	renderable->local_translation = start + direction * std::min<float>(distance, this->max_distance);
 }
 
 void Placement::PlaceEntityInWorld(glm::vec3 _position) {

@@ -158,6 +158,8 @@ bool OBJ::Parse() {
 		_log->error("[OBJ] Error opening file {}", path.toString());
 		return false;
 	}
+	_log->debug("[OBJ] Parsing file {}", path.toString());
+
 	std::ostringstream oss;
 	oss << f.rdbuf();
 	std::string buffer = oss.str();
