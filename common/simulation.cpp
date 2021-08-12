@@ -1,5 +1,6 @@
 #include "simulation.hpp"
 
+#include <asio/post.hpp>
 #include <future>
 #include <iostream>
 #include <set>
@@ -15,28 +16,11 @@ namespace tec {
 double UPDATE_RATE = 1.0 / 8.0; // 8 per second
 double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
 
-Simulation::Simulation() {
-	worker_thread = (std::thread*)~0; // force the pointer non-zero
-	worker_thread = new std::thread([this]() {
-		std::unique_lock lock(worker_m);
-		while (this->worker_thread) {
-			worker_cv.wait_for(lock, std::chrono::milliseconds(1));
-			if (!lock.owns_lock()) {
-				throw std::exception();
-			}
-			if (this->worker_call) {
-				this->worker_call();
-				this->worker_call = nullptr;
-			}
-		}
-	});
-}
+Simulation::Simulation() : worker_pool(1) {}
 
 Simulation::~Simulation() {
-	std::thread* old_worker_thread = this->worker_thread;
-	this->worker_thread = nullptr;
-	old_worker_thread->join();
-	delete old_worker_thread;
+	worker_pool.stop();
+	worker_pool.join();
 }
 
 GameState Simulation::Simulate(const double delta_time, GameState& interpolated_state) {
@@ -51,16 +35,12 @@ GameState Simulation::Simulate(const double delta_time, GameState& interpolated_
 	EventQueue<FocusCapturedEvent>::ProcessEventQueue();
 	EventQueue<FocusBlurEvent>::ProcessEventQueue();
 
-	std::promise<void> worker_promise;
-	auto vcomp_future = worker_promise.get_future();
-	{
-		std::unique_lock lock(worker_m);
-		worker_call = [&]() {
-			vcomp_sys.Update(delta_time);
-			worker_promise.set_value();
-		};
-	}
-	worker_cv.notify_one();
+	std::promise<void> vcomp_promise;
+	auto vcomp_future = vcomp_promise.get_future();
+	asio::post(worker_pool, [&]() {
+		vcomp_sys.Update(delta_time);
+		vcomp_promise.set_value();
+	});
 
 	for (Controller* controller : this->controllers) {
 		controller->Update(delta_time, interpolated_state, this->event_list);

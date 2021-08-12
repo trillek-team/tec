@@ -163,6 +163,7 @@ bool MD5Mesh::Parse() {
 		_log->error("[MD5Mesh] Error opening file {}", path.toString());
 		return false;
 	}
+	_log->debug("[MD5Mesh] Parsing file {}", path.toString());
 
 	std::string line;
 	while (std::getline(f, line)) {

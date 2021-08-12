@@ -5,24 +5,16 @@
 #include "vertex-buffer-object.hpp"
 
 namespace tec {
-Renderable::Renderable(std::shared_ptr<VertexBufferObject> buf, std::shared_ptr<Shader> shader) :
-		buffer(buf), shader(shader) {
-	if (this->buffer) {
-		if (this->vertex_groups.size() == 0) {
-			std::size_t group_count = this->buffer->GetVertexGroupCount();
-			for (std::size_t i = 0; i < group_count; ++i) {
-				this->vertex_groups.insert(this->buffer->GetVertexGroup(i));
-			}
-		}
-	}
-}
 
 void Renderable::Out(proto::Component* target) {
 	proto::Renderable* comp = target->mutable_renderable();
 	comp->set_mesh_name(this->mesh_name);
 	comp->set_shader_name(this->shader_name);
 	comp->set_hidden(this->hidden);
-	this->local_translation.Out(comp->mutable_position());
+	auto pos = comp->mutable_position();
+	pos->set_x(this->local_translation.x);
+	pos->set_y(this->local_translation.y);
+	pos->set_z(this->local_translation.z);
 	this->local_orientation.Out(comp->mutable_orientation());
 }
 
@@ -48,7 +40,8 @@ void Renderable::In(const proto::Component& source) {
 		this->hidden = comp.hidden();
 	}
 	if (comp.has_position()) {
-		this->local_translation.In(comp.position());
+		auto position = comp.position();
+		this->local_translation = glm::vec3(position.x(), position.y(), position.z());
 	}
 	if (comp.has_orientation()) {
 		this->local_orientation.In(comp.orientation());

@@ -17,10 +17,10 @@ class Material;
 class Shader;
 
 struct VertexGroup {
-	std::size_t mesh_group_number{0};
-	std::size_t index_count{0};
-	std::size_t starting_offset{0};
 	std::shared_ptr<Material> material;
+	GLuint mesh_group_number{0};
+	GLuint index_count{0};
+	GLuint starting_offset{0};
 };
 
 class VertexBufferObject {

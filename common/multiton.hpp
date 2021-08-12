@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace tec {
-/* Based class to be used for instance or state storage.
+/* Base class to be used for instance or state storage.
 *
 * This is useful in place of static instances or globals. Derived classes
 * can operate on the static instance member using instances of the derived

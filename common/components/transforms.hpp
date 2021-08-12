@@ -5,9 +5,9 @@
 #include <glm/gtx/quaternion.hpp>
 
 namespace tec {
-static glm::vec3 FORWARD_VECTOR = {0.0f, 0.0f, -1.0f};
-static glm::vec3 UP_VECTOR = {0.0f, 1.0f, 0.0f};
-static glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
+static const glm::vec3 FORWARD_VECTOR = {0.0f, 0.0f, -1.0f};
+static const glm::vec3 UP_VECTOR = {0.0f, 1.0f, 0.0f};
+static const glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
 
 struct Position {
 	Position(glm::vec3 pos) : value(pos) {}
@@ -39,9 +39,9 @@ struct Orientation {
 	glm::vec3 rotation{0.f, 0.f, 0.f};
 
 	void Out(proto::Component* target) const;
-	void Out(proto::Orientation* comp) const; // Can be used to save into a specific component
+	void Out(proto::Quaternion* comp) const; // Can be used to save into a specific component
 	void In(const proto::Component& source);
-	void In(const proto::Orientation& comp); // Can be used to load in a specific component
+	void In(const proto::Quaternion& comp); // Can be used to load in a specific component
 };
 
 struct Scale {

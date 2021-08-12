@@ -2,17 +2,35 @@ syntax = "proto2";
 
 package tec.proto;
 
-message Position {
+message LocalPosition { // a position for rendering or offsets
 	optional float x = 1;
 	optional float y = 2;
 	optional float z = 3;
 }
 
-message Orientation {
-	required float x = 1;
-	required float y = 2;
-	required float z = 3;
-	optional float w = 4;
+message Position { // a position within the simulation world
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+}
+
+message Quaternion {
+	optional float i = 1;
+	optional float j = 2;
+	optional float k = 3;
+	optional float r = 4 [default = 1.0];
+}
+
+message SizeVector {
+	optional float x = 1 [default = 1.0];
+	optional float y = 2 [default = 1.0];
+	optional float z = 3 [default = 1.0];
+}
+
+message NormalVector {
+	optional float x = 1 [default = 0.0];
+	optional float y = 2 [default = -1.0];
+	optional float z = 3 [default = 0.0];
 }
 
 message Renderable {
@@ -20,7 +38,7 @@ message Renderable {
 	optional string mesh_name = 2;
 	optional bool hidden = 3;
 	optional Position position = 4;
-	optional Orientation orientation = 5;
+	optional Quaternion orientation = 5;
 }
 
 message View {
@@ -32,18 +50,7 @@ message Animation {
 	optional string mesh_name = 2;
 }
 
-message Scale {
-	optional float x = 1;
-	optional float y = 2;
-	optional float z = 3;
-}
-
 message CollisionBody {
-	message Box {
-		required float x_extent = 1;
-		required float y_extent = 2;
-		required float z_extent = 3;
-	};
 	message Sphere {
 		required float radius = 1;
 	};
@@ -54,7 +61,7 @@ message CollisionBody {
 	optional bool disable_deactivation = 1;
 	optional bool disable_rotation = 2;
 	oneof shape {
-		Box box = 3;
+		SizeVector box = 3;
 		Sphere sphere = 4;
 		Capsule capsule = 5;
 	}
@@ -90,19 +97,14 @@ message Light {
 	}
 	optional Attenuation attenuation = 6;
 	optional float cutoff = 7;
-	message Direction {
-		optional float x = 1;
-		optional float y = 2;
-		optional float z = 3;
-	}
-	optional Direction direction = 8;
+	optional NormalVector direction = 8;
 }
 
 message LuaScript {
 	optional string script_name = 1;
 }
 
-message VoxelVolumen {
+message VoxelVolume {
 	optional float dummy = 1; // WIP
 }
 
@@ -129,7 +131,10 @@ message Computer {
 		}
 	}
 	repeated Device devices = 1;
-	required bytes ram = 2;
+	oneof memory {
+		bytes ram = 2; // uncompressed
+		bytes zram = 5; // zlib compression
+	}
 	message CPU {
 		message TR3200 {
 			repeated uint32 registers = 1;
@@ -165,17 +170,17 @@ message Component {
 		// keep name the same that the struct/class of the component!
 		Renderable renderable = 1;
 		Position position = 2;
-		Orientation orientation = 3;
+		Quaternion orientation = 3;
 		View view = 4;
 		Animation animation = 5;
-		Scale Scale = 6;
+		SizeVector Scale = 6;
 		CollisionBody collision_body = 7;
 		Velocity velocity = 8;
 		AudioSource audio_source = 9;
 		Light pointLight = 10;
 		Light directionalLight = 11;
 		Light spotLight = 12;
-		VoxelVolumen voxelVolume = 13;
+		VoxelVolume voxelVolume = 13;
 		Computer computer = 14;
 		LuaScript luaScript = 100;
 	}

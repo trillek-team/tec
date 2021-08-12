@@ -94,12 +94,12 @@ void Game::UpdateVComputerScreenTextures() {
 			Entity screen_entity(comp.first);
 			if (screen_entity.Has<Renderable>()) {
 				const auto* ren = screen_entity.Get<Renderable>();
-				if (ren->buffer) {
-					if (ren->buffer->GetVertexGroupCount() > 0) {
+				if (ren->render_item) {
+					if (ren->render_item->vertex_groups.size() > 0) {
 						auto texture_instance = std::make_shared<TextureObject>(local_pbuffer);
 						auto material = Material::Create(std::to_string(comp.first) + "_screen");
 						material->AddTexture(texture_instance);
-						ren->buffer->GetVertexGroup(0)->material = material;
+						ren->render_item->vertex_groups[0].material = material;
 						comp_screen->texture = texture_instance;
 					}
 				}

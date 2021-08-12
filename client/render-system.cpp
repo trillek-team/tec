@@ -109,16 +109,10 @@ void RenderSystem::Startup() {
 }
 
 void RenderSystem::SetViewportSize(unsigned int width, unsigned int height) {
-	if (width < 1)
-		width = 1;
-	if (height < 1)
-		height = 1;
-	this->view_size.x = width;
-	this->view_size.y = height;
-
-	this->inv_view_size.x = 1.0f / static_cast<float>(width);
-	this->inv_view_size.y = 1.0f / static_cast<float>(height);
-	float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+	auto viewport = glm::max(glm::uvec2(1), glm::uvec2(width, height));
+	this->view_size = viewport;
+	this->inv_view_size = 1.0f / glm::vec2(viewport);
+	float aspect_ratio = static_cast<float>(viewport.x) / static_cast<float>(viewport.y);
 	if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 		aspect_ratio = 4.0f / 3.0f;
 	}
@@ -127,9 +121,9 @@ void RenderSystem::SetViewportSize(unsigned int width, unsigned int height) {
 	// convert the projection to reverse depth with infinite far plane
 	this->projection[2][2] = 0.0f;
 	this->projection[3][2] = 0.1f;
-	this->light_gbuffer.ResizeColorAttachments(width, height);
-	this->light_gbuffer.ResizeDepthAttachment(width, height);
-	glViewport(0, 0, width, height);
+	this->light_gbuffer.ResizeColorAttachments(viewport.x, viewport.y);
+	this->light_gbuffer.ResizeDepthAttachment(viewport.x, viewport.y);
+	glViewport(0, 0, viewport.x, viewport.y);
 }
 
 void RenderSystem::Update(const double delta) {
@@ -177,7 +171,6 @@ void RenderSystem::GeometryPass() {
 	def_shader->Use();
 	glUniformMatrix4fv(def_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 	glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-	//glUniform1i(def_shader->GetUniformLocation("gColorMap"), 0);
 	GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
 	GLint animated_loc = def_shader->GetUniformLocation("animated");
 	GLint model_index = def_shader->GetUniformLocation("model");
@@ -190,33 +183,32 @@ void RenderSystem::GeometryPass() {
 					shader_list.first->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
 			glUniformMatrix4fv(
 					shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-			//glUniform1i(shader_list.first->GetUniformLocation("gColorMap"), 0);
 			animatrix_loc = shader_list.first->GetUniformLocation("animation_matrix");
 			animated_loc = shader_list.first->GetUniformLocation("animated");
 			model_index = shader_list.first->GetUniformLocation("model");
 		}
 		for (auto render_item : shader_list.second) {
-			glBindVertexArray(render_item.vao);
+			glBindVertexArray(render_item->vbo->GetVAO());
 			glUniform1i(animated_loc, 0);
-			if (render_item.animated) {
+			if (render_item->animated) {
 				glUniform1i(animated_loc, 1);
-				auto& animmatricies = render_item.animation->bone_matrices;
+				auto& animmatricies = render_item->animation->bone_matrices;
 				glUniformMatrix4fv(
 						animatrix_loc,
 						static_cast<GLsizei>(animmatricies.size()),
 						GL_FALSE,
 						glm::value_ptr(animmatricies[0]));
 			}
-			for (VertexGroup* vertex_group : *render_item.vertex_groups) {
-				glPolygonMode(GL_FRONT_AND_BACK, vertex_group->material->GetPolygonMode());
-				vertex_group->material->Activate();
-				glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(*render_item.model_matrix));
+			for (VertexGroup& vertex_group : render_item->vertex_groups) {
+				glPolygonMode(GL_FRONT_AND_BACK, vertex_group.material->GetPolygonMode());
+				vertex_group.material->Activate();
+				glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(render_item->model_matrix));
 				glDrawElements(
-						vertex_group->material->GetDrawElementsMode(),
-						static_cast<GLsizei>(vertex_group->index_count),
+						vertex_group.material->GetDrawElementsMode(),
+						static_cast<GLsizei>(vertex_group.index_count),
 						GL_UNSIGNED_INT,
-						(GLvoid*)(vertex_group->starting_offset * sizeof(GLuint)));
-				vertex_group->material->Deactivate();
+						(GLvoid*)(vertex_group.starting_offset * sizeof(GLuint)));
+				vertex_group.material->Deactivate();
 			}
 		}
 		// If we used a special shader set things back to the deferred shader.
@@ -264,13 +256,6 @@ void RenderSystem::BeginPointLightPass() {
 	GLint Atten_Linear_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Linear");
 	GLint Atten_Exp_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Exp");
 
-	std::shared_ptr<Shader> def_stencil_shader = ShaderMap::Get("deferred_stencil");
-	def_stencil_shader->Use();
-	GLint stencil_model_index = def_stencil_shader->GetUniformLocation("model");
-	glUniformMatrix4fv(def_stencil_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
-	glUniformMatrix4fv(
-			def_stencil_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-
 	glBindVertexArray(this->sphere_vbo.GetVAO());
 
 	auto index_count{static_cast<GLsizei>(this->sphere_vbo.GetVertexGroup(0)->index_count)};
@@ -296,17 +281,6 @@ void RenderSystem::BeginPointLightPass() {
 		glm::mat4 transform_matrix =
 				glm::scale(glm::translate(glm::mat4(1.0), position), glm::vec3(light->bounding_radius));
 
-		// FIXME: Stencil the lighting pass, it wasn't implemented correctly though
-		//this->light_gbuffer.StencilPass();
-		//def_stencil_shader->Use();
-		//glUniformMatrix4fv(stencil_model_index, 1, GL_FALSE, glm::value_ptr(transform_matrix));
-		//glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-		//def_stencil_shader->UnUse();
-
-		// Change state for light pass after the stencil pass. Stencil pass must happen for each light.
-		//this->light_gbuffer.BeginLightPass();
-		//this->light_gbuffer.BeginPointLightPass();
-		//def_pl_shader->Use();
 		glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(transform_matrix));
 		glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
 		glUniform1f(AmbientIntensity_index, light->ambient_intensity);
@@ -491,7 +465,6 @@ void RenderSystem::On(std::shared_ptr<EntityCreated> data) {
 
 void RenderSystem::UpdateRenderList(double delta) {
 	this->render_item_list.clear();
-	this->model_matricies.clear();
 
 	if (!this->default_shader) {
 		this->default_shader = ShaderMap::Get("debug");
@@ -506,7 +479,7 @@ void RenderSystem::UpdateRenderList(double delta) {
 		}
 		Entity entity(entity_id);
 		auto [_position, _orientation, _scale, _animation] = entity.GetList<Position, Orientation, Scale, Animation>();
-		glm::vec3 position = renderable->local_translation.value;
+		glm::vec3 position = renderable->local_translation;
 		if (_position) {
 			position += _position->value;
 		}
@@ -519,38 +492,59 @@ void RenderSystem::UpdateRenderList(double delta) {
 			scale = _scale->value;
 		}
 
-		this->model_matricies[entity_id] =
-				glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
-		if (renderable->mesh && !renderable->buffer) {
-			renderable->buffer = std::make_shared<VertexBufferObject>(vertex::VF_FULL);
-			renderable->buffer->Load(renderable->mesh);
-			std::size_t group_count = renderable->buffer->GetVertexGroupCount();
-			renderable->vertex_groups.clear();
-			if (group_count > 0) {
-				for (std::size_t i = 0; i < group_count; ++i) {
-					renderable->vertex_groups.insert(renderable->buffer->GetVertexGroup(i));
-				}
+		auto mesh = renderable->mesh;
+		auto ri = renderable->render_item;
+		if (!mesh && ri) {
+			renderable->render_item.reset();
+			ri.reset();
+		}
+		if (mesh && (!ri || ri->mesh_at_set != mesh.get())) {
+			auto buffer_itr = mesh_buffers.find(mesh);
+			std::shared_ptr<VertexBufferObject> buffer;
+			if (buffer_itr == mesh_buffers.cend()) {
+				buffer = std::make_shared<VertexBufferObject>(vertex::VF_FULL);
+				buffer->Load(mesh);
+				mesh_buffers[mesh] = buffer;
 			}
 			else {
-				renderable->buffer.reset();
+				buffer = buffer_itr->second;
+			}
+			std::size_t group_count = buffer->GetVertexGroupCount();
+			if (group_count > 0) {
+				if (!ri) {
+					ri = std::make_shared<RenderItem>();
+				}
+				else {
+					ri->vertex_groups.clear();
+				}
+				ri->vbo = buffer;
+				ri->vertex_groups.reserve(group_count);
+				ri->mesh_at_set = mesh.get();
+				for (std::size_t i = 0; i < group_count; ++i) {
+					ri->vertex_groups.push_back(*buffer->GetVertexGroup(i));
+				}
+				renderable->render_item = ri;
+			}
+			else {
+				_log->warn("[RenderSystem] empty mesh on Renderable [{}]", entity_id);
+				renderable->render_item.reset();
+				ri.reset();
 			}
 		}
 
-		if (renderable->buffer) {
-			renderable->buffer->Update();
-			RenderItem ri;
-			ri.model_matrix = &this->model_matricies[entity_id];
-			ri.vao = renderable->buffer->GetVAO();
-			ri.vertex_groups = &renderable->vertex_groups;
+		if (ri) {
+			ri->vbo->Update();
+			ri->model_matrix =
+					glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
 
 			if (_animation) {
 				const_cast<Animation*>(_animation)->UpdateAnimation(delta);
 				if (_animation->bone_matrices.size() > 0) {
-					ri.animated = true;
-					ri.animation = const_cast<Animation*>(_animation);
+					ri->animated = true;
+					ri->animation = const_cast<Animation*>(_animation);
 				}
 			}
-			this->render_item_list[renderable->shader].insert(std::move(ri));
+			this->render_item_list[renderable->shader].insert(ri.get());
 		}
 	}
 

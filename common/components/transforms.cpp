@@ -46,36 +46,40 @@ void Orientation::OrientedRotate(const glm::vec3 amount) {
 
 void Orientation::Out(proto::Component* target) const { this->Out(target->mutable_orientation()); }
 
-void Orientation::Out(proto::Orientation* comp) const {
-	comp->set_x(this->value.x);
-	comp->set_y(this->value.y);
-	comp->set_z(this->value.z);
-	comp->set_w(this->value.w);
+void Orientation::Out(proto::Quaternion* comp) const {
+	comp->set_i(this->value.x);
+	comp->set_j(this->value.y);
+	comp->set_k(this->value.z);
+	comp->set_r(this->value.w);
 }
 
 void Orientation::In(const proto::Component& source) { this->In(source.orientation()); }
 
-void Orientation::In(const proto::Orientation& comp) {
-	if (comp.has_w()) {
-		this->value.w = comp.w();
-		this->value.x = comp.x();
-		this->value.y = comp.y();
-		this->value.z = comp.z();
+void Orientation::In(const proto::Quaternion& comp) {
+	if (comp.has_r()) {
+		this->value.w = comp.r();
+		this->value.x = comp.i();
+		this->value.y = comp.j();
+		this->value.z = comp.k();
 	}
 	else {
-		Rotate(glm::vec3(comp.x(), comp.y(), comp.z()));
+		// given 3 elements, compute the real part from them
+		glm::vec3 imagine(comp.i(), comp.j(), comp.k());
+		imagine *= imagine;
+		float real = sqrtf(1.f - (imagine.x + imagine.y + imagine.z));
+		this->value = glm::normalize(glm::quat(real, comp.i(), comp.j(), comp.k()));
 	}
 }
 
 void Scale::Out(proto::Component* target) {
-	proto::Scale* comp = target->mutable_scale();
+	proto::SizeVector* comp = target->mutable_scale();
 	comp->set_x(this->value.x);
 	comp->set_y(this->value.y);
 	comp->set_z(this->value.z);
 }
 
 void Scale::In(const proto::Component& source) {
-	const proto::Scale& comp = source.scale();
+	const proto::SizeVector& comp = source.scale();
 	if (comp.has_x()) {
 		this->value.x = comp.x();
 	}
