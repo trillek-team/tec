@@ -45,13 +45,13 @@ public:
 	* @param help String with help text
 	* @param func Function to be executed when the command is called
 	*/
-	void AddConsoleCommand(std::string name, std::string help, std::function<void(const char*)>&& func);
+	void AddConsoleCommand(std::string name, std::string help, std::function<void(const std::string&)>&& func);
 
 	/**
 	* Register a slash handler that handles all '/' commands
 	* @param func Function to be executed when the command is called
 	*/
-	void AddSlashHandler(std::function<void(const char*)>&& func);
+	void AddSlashHandler(std::function<void(const std::string&)>&& func);
 
 private:
 	std::shared_ptr<tec::RingBuffer<std::tuple<ImVec4, std::string>, 4096>> buf;
@@ -64,7 +64,7 @@ private:
 												 | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings
 												 | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse;
 
-	std::map<std::string, std::tuple<std::function<void(const char*)>, std::string>>
+	std::map<std::string, std::tuple<std::function<void(const std::string&)>, std::string>>
 			commands; /// Storage of commands and help info
 
 	using EventQueue<WindowResizedEvent>::On;
@@ -72,7 +72,7 @@ private:
 	void On(std::shared_ptr<WindowResizedEvent> data) override;
 	void On(std::shared_ptr<KeyboardEvent> data) override;
 
-	std::function<void(const char*)> slash_handler;
+	std::function<void(const std::string&)> slash_handler;
 };
 
 class ConsoleSink : public spdlog::sinks::sink {

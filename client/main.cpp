@@ -118,8 +118,8 @@ int main(int argc, char* argv[]) {
 	auto numer = stoi(aspect_ratio.substr(0, aspect_ratio.find(':')));
 	auto denom = stoi(aspect_ratio.substr(aspect_ratio.find(':') + 1));
 	os.SetWindowAspectRatio(numer, denom);
-	console.AddConsoleCommand("exit", "exit : Exit from TEC", [&os](const char*) { os.Quit(); });
-	game.Startup();
+	console.AddConsoleCommand("exit", "exit : Exit from TEC", [&os](const std::string&) { os.Quit(); });
+	game.Startup(console);
 
 	tec::ActiveEntityTooltip active_entity_tooltip(game);
 	tec::networking::ServerConnection& connection = game.GetServerConnection();
@@ -128,13 +128,7 @@ int main(int argc, char* argv[]) {
 	tec::DebugInfo debug_info_window(game);
 	tec::ServerConnectWindow::SetUsername(game.config_script->environment.get_or("default_username", std::string("")));
 
-	console.AddConsoleCommand("msg", "msg : Send a message to all clients.", [&connection](const char* args) {
-		const char* end_arg = args;
-		while (*end_arg != '\0') {
-			end_arg++;
-		}
-		// Args now points were the arguments begins
-		std::string message(args, end_arg - args);
+	console.AddConsoleCommand("msg", "msg : Send a message to all clients.", [&connection](const std::string& message) {
 		connection.SendChatMessage(message);
 	});
 
@@ -170,25 +164,14 @@ int main(int argc, char* argv[]) {
 	tec::RegisterFileFactories();
 	tec::BuildTestVoxelVolume();
 
-	console.AddConsoleCommand("lua", "lua : Execute a string in lua", [&lua_sys](const char* args) {
-		const char* end_arg = args;
-		while (*end_arg != '\0') {
-			end_arg++;
-		}
-		// Args now points were the arguments begins
-		std::string message(args, end_arg - args);
+	console.AddConsoleCommand("lua", "lua : Execute a string in lua", [&lua_sys](const std::string& message) {
 		lua_sys->ExecuteString(message);
 	});
 	console.AddConsoleCommand(
 			"connect",
 			"connect [username][ip] : Connect to a server [ip] with the provided [username]",
-			[&connection](const char* args) {
-				const char* end_arg = args;
-				while (*end_arg != '\0') {
-					end_arg++;
-				}
-
-				std::vector<std::string> splitArgs = SplitString(std::string(args, end_arg - args));
+			[&connection](const std::string& args) {
+				std::vector<std::string> splitArgs = SplitString(args);
 				if (splitArgs.size() >= 2) {
 					connection.Connect(splitArgs[1]);
 					std::string username = splitArgs[0];
@@ -202,13 +185,7 @@ int main(int argc, char* argv[]) {
 					});
 				}
 			});
-	console.AddSlashHandler([&connection](const char* args) {
-		const char* end_arg = args;
-		while (*end_arg != '\0') {
-			end_arg++;
-		}
-
-		std::string chat_command_message(args, end_arg - args);
+	console.AddSlashHandler([&connection](const std::string& chat_command_message) {
 		std::size_t argument_break_offset = chat_command_message.find_first_of(" ");
 		std::shared_ptr<tec::ChatCommandEvent> data = std::make_shared<tec::ChatCommandEvent>();
 		data->command = chat_command_message.substr(0, argument_break_offset);

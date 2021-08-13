@@ -25,6 +25,7 @@
 namespace tec {
 struct FPSController;
 struct KeyboardEvent;
+class Console;
 
 using networking::ServerConnection;
 
@@ -36,7 +37,7 @@ public:
 
 	~Game();
 
-	void Startup();
+	void Startup(Console&);
 
 	void Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height);
 

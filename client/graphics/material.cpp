@@ -4,6 +4,7 @@
 #include "texture-object.hpp"
 
 namespace tec {
+
 const GLenum Material::GetPolygonMode() { return this->polygon_mode; }
 
 void Material::SetPolygonMode(const GLenum mode) {
@@ -54,15 +55,4 @@ std::shared_ptr<Material> Material::Create(const std::string name) {
 	return m;
 }
 
-void Material::Activate() {
-	for (GLuint i = 0; i < this->textures.size(); ++i) {
-		Shader::ActivateTextureUnit(i, this->textures[i]->GetID());
-	}
-}
-
-void Material::Deactivate() {
-	for (GLuint i = 0; i < this->textures.size(); ++i) {
-		Shader::DeactivateTextureUnit(i);
-	}
-}
 } // namespace tec

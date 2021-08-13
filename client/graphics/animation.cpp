@@ -44,8 +44,8 @@ void Animation::SetAnimationFile(std::shared_ptr<MD5Anim> file) {
 	if (file) {
 		this->animation_file = file;
 		this->frame_count = this->animation_file->GetFrameCount();
-		this->frame_rate = static_cast<float>(this->animation_file->GetFrameRate());
-		this->frame_duration = 1.0f / this->frame_rate * this->frame_count;
+		this->frame_rate = static_cast<double>(this->animation_file->GetFrameRate());
+		this->frame_duration = static_cast<double>(this->frame_count + 1) / this->frame_rate;
 
 		auto frame_skeleton = this->animation_file->InterpolateSkeletons(0, 1, 0.0f);
 		this->bone_matrices.assign(frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());

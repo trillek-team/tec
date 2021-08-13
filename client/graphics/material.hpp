@@ -18,6 +18,8 @@ class Material;
 typedef Multiton<std::string, std::shared_ptr<Material>> MaterialMap;
 
 class Material {
+	friend class RenderSystem;
+
 public:
 	/**
 	* \brief Factory method that creates a Material and stores it in the
@@ -78,18 +80,6 @@ public:
 	* \return void
 	*/
 	const GLenum GetDrawElementsMode() const;
-
-	/**
-	* \brief Activates all the textures used by this material.
-	* \return void
-	*/
-	void Activate();
-
-	/**
-	* \brief Deactivates all the textures used by this material.
-	* \return void
-	*/
-	void Deactivate();
 
 private:
 	GLenum polygon_mode{GL_FILL};

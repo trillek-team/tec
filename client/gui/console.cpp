@@ -10,33 +10,31 @@ Console::Console() : buf{new tec::RingBuffer<std::tuple<ImVec4, std::string>, 40
 	inputBuf[0] = '\0';
 
 	// Default embed commands
-	this->AddConsoleCommand("cmdlist", "cmdlist : List all commands", [this](const char*) {
+	this->AddConsoleCommand("cmdlist", "cmdlist : List all commands", [this](const std::string&) {
 		for (auto command : this->commands) {
 			this->Println(command.first);
 		}
 	});
 
-	this->AddConsoleCommand("help", "help [command] : Prints a short help about an command", [this](const char* args) {
-		const char* end_arg = args;
-		while (*end_arg != '\0' && *end_arg != ' ') {
-			end_arg++;
-		}
-		// Args now points were the arguments begins
-		std::string command(args, end_arg - args);
-		auto search = commands.find(command);
-		if (search != commands.end()) {
-			this->Println(std::get<1>(search->second));
-		}
-		else {
-			this->Println("Unknown command. Please use cmdlist to list all commands.");
-		}
-	});
+	this->AddConsoleCommand(
+			"help", // very helpful
+			"help [command] : Prints a short help about an command",
+			[this](const std::string& command) {
+				auto search = commands.find(command);
+				if (search != commands.end()) {
+					this->Println(std::get<1>(search->second));
+				}
+				else {
+					this->Println("Unknown command. Please use cmdlist to list all commands.");
+				}
+			});
 
-	this->AddConsoleCommand("clear", "clear : Clear console output", [this](const char*) { this->Clear(); });
+	this->AddConsoleCommand("clear", "clear : Clear console output", [this](const std::string&) { this->Clear(); });
 
-	this->AddConsoleCommand("echo", "echo [message] : Prints a message to the console", [this](const char* args) {
-		this->Println(args);
-	});
+	this->AddConsoleCommand(
+			"echo", "echo [message] : Prints a message to the console", [this](const std::string& args) {
+				this->Println(args);
+			});
 }
 
 void Console::Update(double) {
@@ -193,12 +191,12 @@ void Console::On(std::shared_ptr<KeyboardEvent> data) {
 	}
 }
 
-void Console::AddConsoleCommand(std::string name, std::string help, std::function<void(const char*)>&& func) {
+void Console::AddConsoleCommand(std::string name, std::string help, std::function<void(const std::string&)>&& func) {
 	auto tmp = std::make_tuple(std::move(func), help);
 	this->commands[name] = tmp;
 }
 
-void Console::AddSlashHandler(std::function<void(const char*)>&& func) { this->slash_handler = std::move(func); }
+void Console::AddSlashHandler(std::function<void(const std::string&)>&& func) { this->slash_handler = std::move(func); }
 
 void ConsoleSink::log(const spdlog::details::log_msg& msg) {
 	std::string str(msg.payload.data(), msg.payload.size());

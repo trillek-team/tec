@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glm/mat4x4.hpp>
 #include <map>
 #include <memory>
 #include <set>
@@ -11,6 +10,10 @@
 #else
 #include <OpenGL/gl3.h>
 #endif
+
+#include <glm/gtc/quaternion.hpp>
+#include <glm/vec3.hpp>
+#include <graphics.pb.h>
 
 #include "command-queue.hpp"
 #include "event-system.hpp"
@@ -27,6 +30,7 @@ struct VertexGroup;
 struct View;
 class Shader;
 class Animation;
+class Console;
 
 class RenderSystem;
 typedef Command<RenderSystem> RenderCommand;
@@ -36,7 +40,9 @@ struct EntityDestroyed;
 struct EntityCreated;
 
 struct RenderItem {
-	glm::mat4 model_matrix;
+	glm::vec3 model_position;
+	glm::vec3 model_scale;
+	glm::quat model_quat;
 	std::vector<VertexGroup> vertex_groups;
 	std::shared_ptr<VertexBufferObject> vbo;
 	MeshFile* mesh_at_set{nullptr}; // used only for equality testing, does not own an object
@@ -52,7 +58,9 @@ class RenderSystem :
 public:
 	void Startup();
 
-	void SetViewportSize(const unsigned int width, const unsigned int height);
+	void RegisterConsole(Console& console);
+
+	void SetViewportSize(const glm::uvec2& view_size);
 
 	void Update(const double delta);
 
@@ -66,8 +74,11 @@ private:
 	void DirectionalLightPass();
 	void FinalPass();
 	void RenderGbuffer();
+	void ErrorCheck(size_t where);
 
-	void SetupDefaultShaders();
+	void ActivateMaterial(const Material&);
+	void DeactivateMaterial(const Material&, GLuint*);
+	void SetupDefaultShaders(const gfx::RenderConfig&);
 
 	using EventQueue<WindowResizedEvent>::On;
 	using EventQueue<EntityDestroyed>::On;
@@ -82,6 +93,8 @@ private:
 	glm::uvec2 view_size{1024, 768};
 	glm::vec2 inv_view_size;
 	std::shared_ptr<Shader> default_shader;
+	gfx::RenderOptions options;
+	gfx::ShaderSet active_shaders;
 
 	GBuffer light_gbuffer;
 	VertexBufferObject sphere_vbo{vertex::VF_BASE}; // Used for rendering point lights.

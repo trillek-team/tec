@@ -68,11 +68,12 @@ Game::~Game() {
 	}
 }
 
-void Game::Startup() {
+void Game::Startup(Console& console) {
 	this->rs.Startup();
+	this->rs.RegisterConsole(console);
 	const unsigned int window_width = this->config_script->environment.get_or("window_width", WINDOW_WIDTH);
 	const unsigned int window_height = this->config_script->environment.get_or("window_height", WINDOW_HEIGHT);
-	this->rs.SetViewportSize(window_width, window_height);
+	this->rs.SetViewportSize(glm::uvec2(window_width, window_height));
 	this->placement.SetMaxDistance(this->config_script->environment.get_or(
 			"max_placement_distance", manipulator::DEFAULT_MAX_PLACEMENT_DISTANCE));
 }
