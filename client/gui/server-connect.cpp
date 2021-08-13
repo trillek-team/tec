@@ -3,8 +3,15 @@
 #include <commands.pb.h>
 
 namespace tec {
+
+static char connect_username[64]{""};
 ServerConnectWindow::ServerConnectWindow(ServerConnection& server_connection) : server_connection(server_connection) {
 	this->window_name = "connect_window";
+}
+
+void ServerConnectWindow::SetUsername(const std::string& user) {
+	size_t copy_size = std::min(user.length() + 1, sizeof(connect_username));
+	std::copy_n(user.c_str(), copy_size, connect_username);
 }
 
 void ServerConnectWindow::Update(double) {}
@@ -18,10 +25,9 @@ void ServerConnectWindow::Draw(IMGUISystem* gui) {
 				nullptr,
 				ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
 
-		static char username[64]{""};
 		ImGui::TextUnformatted("Username");
 		ImGui::SameLine();
-		ImGui::InputText("", username, IM_ARRAYSIZE(username), ImGuiInputTextFlags_CharsNoBlank);
+		ImGui::InputText("", connect_username, IM_ARRAYSIZE(connect_username), ImGuiInputTextFlags_CharsNoBlank);
 
 		static int octets[4] = {127, 0, 0, 1};
 
@@ -61,7 +67,7 @@ void ServerConnectWindow::Draw(IMGUISystem* gui) {
 			spdlog::get("console_log")->info("Connecting to {}", ip.str());
 			this->server_connection.RegisterConnectFunc([this]() {
 				proto::UserLogin user_login;
-				user_login.set_username(username);
+				user_login.set_username(connect_username);
 				user_login.set_password("");
 				networking::MessageOut msg(tec::networking::LOGIN);
 				user_login.SerializeToZeroCopyStream(&msg);

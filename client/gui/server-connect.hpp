@@ -19,6 +19,8 @@ public:
 
 	void Draw(IMGUISystem*) override;
 
+	static void SetUsername(const std::string& user);
+
 private:
 	ServerConnection& server_connection;
 };
