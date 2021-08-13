@@ -126,6 +126,7 @@ int main(int argc, char* argv[]) {
 	tec::ServerConnectWindow server_connect_window(connection);
 	tec::PingTimesWindow ping_times_window(connection);
 	tec::DebugInfo debug_info_window(game);
+	tec::ServerConnectWindow::SetUsername(game.config_script->environment.get_or("default_username", std::string("")));
 
 	console.AddConsoleCommand("msg", "msg : Send a message to all clients.", [&connection](const char* args) {
 		const char* end_arg = args;
@@ -143,6 +144,7 @@ int main(int argc, char* argv[]) {
 	gui.AddWindowDrawFunction(server_connect_window.GetWindowName(), [&server_connect_window, &gui]() {
 		server_connect_window.Draw(&gui);
 	});
+	gui.ShowWindow(server_connect_window.GetWindowName());
 	gui.AddWindowDrawFunction(
 			ping_times_window.GetWindowName(), [&ping_times_window, &gui]() { ping_times_window.Draw(&gui); });
 	gui.AddWindowDrawFunction(console.GetWindowName(), [&console, &gui]() { console.Draw(&gui); });
