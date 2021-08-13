@@ -1,12 +1,14 @@
 #pragma once
 
 #include <components.pb.h>
-#include <glm/mat4x4.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/vec3.hpp>
 
 namespace tec {
 struct View {
 	View(bool active = false) : active(active) {}
-	glm::mat4 view_matrix{0};
+	glm::vec3 view_pos{0};
+	glm::quat view_quat;
 	bool active = false;
 
 	void Out(proto::Component* target) {

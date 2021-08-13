@@ -23,18 +23,43 @@ message ShaderSource {
 	}
 }
 
+message ShaderSet {
+	oneof condition {
+		bool default = 1;
+	}
+	string visual = 10;
+	string shadow = 11;
+	string pointlight = 12;
+	string dirlight = 13;
+	string postprocess = 14;
+	string gbufdebug = 15;
+}
+
+message RenderOptions {
+	bool debug_gbuffer = 1;
+	repeated ShaderSet shader_sets = 2;
+}
+
+message ShaderInclude {
+	string name = 1;
+	ShaderSource source = 2; // does not require a type
+}
+
 message ShaderDef {
 	string name = 1;
 	// shader type = source object { filename }
 	repeated ShaderSource files = 4;
-	ShaderSource vertex = 5;
-	ShaderSource fragment = 6;
-	ShaderSource geometry = 7;
-	ShaderSource tess_control = 8;
-	ShaderSource tess_eval = 9;
-	ShaderSource compute = 10;
+	// for these, the type is implicit:
+	repeated ShaderSource vertex = 5;
+	repeated ShaderSource fragment = 6;
+	repeated ShaderSource geometry = 7;
+	repeated ShaderSource tess_control = 8;
+	repeated ShaderSource tess_eval = 9;
+	repeated ShaderSource compute = 10;
 }
 
-message ShaderList {
-	repeated ShaderDef shaders = 1;
+message RenderConfig {
+	optional RenderOptions options = 1;
+	repeated ShaderInclude includes = 2;
+	repeated ShaderDef shaders = 3;
 }

@@ -118,15 +118,15 @@ struct PointLight : public BaseLight {
 	}
 
 	float UpdateBoundingRadius() {
-		float MaxChannel = fmax(fmax(this->color.x, this->color.y), this->color.z);
-
+		float MaxChannel = fmaxf(fmaxf(this->color.x, this->color.y), this->color.z);
+		const float CUTOFF_FACTOR = 255.0 / 10.0;
+		float const_atten = this->Attenuation.constant;
 		float linear_atten = this->Attenuation.linear;
 		float linear_atten_sq = linear_atten * linear_atten;
 		float exp_atten = this->Attenuation.exponential;
-		// I think this is fall off
-		auto exp_fall_off = 4 * exp_atten * (exp_atten - 256 * MaxChannel * this->diffuse_intensity);
-
-		this->bounding_radius = 0.5f * exp_atten * (sqrtf(linear_atten_sq - exp_fall_off) - linear_atten);
+		// this nastiness is the quadratic equation, with tons of lighting params plugged in
+		auto exp_con_term = 4 * exp_atten * (const_atten - CUTOFF_FACTOR * MaxChannel * this->diffuse_intensity);
+		this->bounding_radius = (sqrtf(linear_atten_sq - exp_con_term) - linear_atten) / (2.f * exp_atten);
 		return this->bounding_radius;
 	}
 

@@ -16,6 +16,9 @@ VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh) : me
 	auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"));
 	auto tex = std::make_shared<TextureObject>(pixbuf);
 	TextureMap::Set("metal_wall", tex);
+	pixbuf = PixelBuffer::Create("metal_wall_sp", FilePath::GetAssetPath("metal_wall_sp.png"));
+	tex = std::make_shared<TextureObject>(pixbuf);
+	TextureMap::Set("metal_wall_sp", tex);
 }
 
 VoxelVolume::~VoxelVolume() {}
@@ -207,6 +210,7 @@ void VoxelVolume::UpdateMesh() {
 		if (objgroup->material_groups.size() == 0) {
 			MaterialGroup mat_group = {0, static_cast<unsigned int>(objgroup->indices.size()), "voxel"};
 			mat_group.textures.push_back("metal_wall");
+			mat_group.textures.push_back("metal_wall_sp");
 			objgroup->material_groups.push_back(std::move(mat_group));
 		}
 		objgroup->material_groups[0].count = objgroup->indices.size();

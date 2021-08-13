@@ -10,7 +10,6 @@
 #include <spdlog/spdlog.h>
 
 #include <google/protobuf/util/json_util.h>
-#include <graphics.pb.h>
 
 #include "components/transforms.hpp"
 #include "entity.hpp"
@@ -22,6 +21,7 @@
 #include "graphics/shader.hpp"
 #include "graphics/texture-object.hpp"
 #include "graphics/view.hpp"
+#include "gui/console.hpp"
 #include "multiton.hpp"
 #include "proto-load.hpp"
 #include "resources/mesh.hpp"
@@ -35,15 +35,48 @@ using RenderableMap = Multiton<eid, Renderable*>;
 using AnimationMap = Multiton<eid, Animation*>;
 using ScaleMap = Multiton<eid, Scale*>;
 
+std::string SymbolLookup(GLenum which); // forward declare this
+
 void RenderSystem::Startup() {
 	_log = spdlog::get("console_log");
 
 	GLenum err = glGetError();
 	// If there is an error that means something went wrong when creating the context.
 	if (err) {
-		_log->debug("[RenderSystem] Something went wrong when creating the context.");
+		_log->debug("[RenderSystem] Something went wrong when creating the context. E={}", SymbolLookup(err));
 		return;
 	}
+
+	tec::gfx::RenderConfig render_config;
+	auto core_fname = FilePath::GetAssetPath("shaders/core.json");
+	auto core_json = LoadAsString(core_fname);
+	auto status = google::protobuf::util::JsonStringToMessage(core_json, &render_config);
+	if (!status.ok()) {
+		_log->error("[RenderSystem] loading config file: {} failed: {}", core_fname.toString(), status.ToString());
+		return;
+	}
+	options.MergeFrom(render_config.options());
+	active_shaders.set_visual("deferred");
+	active_shaders.set_shadow("deferred_shadow");
+	active_shaders.set_pointlight("deferred_pointlight");
+	active_shaders.set_dirlight("deferred_dirlight");
+	active_shaders.set_postprocess("post_process");
+	active_shaders.set_gbufdebug("deferred_debug");
+	for (auto& shader_set : options.shader_sets()) {
+		switch (shader_set.condition_case()) {
+		case gfx::ShaderSet::kDefault: active_shaders.MergeFrom(shader_set); break;
+		case gfx::ShaderSet::CONDITION_NOT_SET: break;
+		default:
+			_log->error("[RenderSystem] Config shader_set has unknown condition: {}", shader_set.condition_case());
+			break;
+		}
+	}
+	_log->info("[RenderSystem] set visual={}", active_shaders.visual());
+	_log->info("[RenderSystem] set shadow={}", active_shaders.shadow());
+	_log->info("[RenderSystem] set pointlight={}", active_shaders.pointlight());
+	_log->info("[RenderSystem] set dirlight={}", active_shaders.dirlight());
+	_log->info("[RenderSystem] set postprocess={}", active_shaders.postprocess());
+	_log->info("[RenderSystem] set gbufdebug={}", active_shaders.gbufdebug());
 
 	// load the list of extensions
 	GLint num_exts = 0;
@@ -80,8 +113,7 @@ void RenderSystem::Startup() {
 	this->inv_view_size.x = 1.0f / static_cast<float>(this->view_size.x);
 	this->inv_view_size.y = 1.0f / static_cast<float>(this->view_size.y);
 	this->light_gbuffer.AddColorAttachments(this->view_size.x, this->view_size.y);
-	this->light_gbuffer.SetDepthAttachment(
-			GBuffer::GBUFFER_DEPTH_TYPE::GBUFFER_DEPTH_TYPE_STENCIL, this->view_size.x, this->view_size.y);
+	this->light_gbuffer.SetDepthAttachment(GBuffer::DEPTH_TYPE::DEPTH, this->view_size.x, this->view_size.y);
 	if (!this->light_gbuffer.CheckCompletion()) {
 		_log->error("[RenderSystem] Failed to create Light GBuffer.");
 	}
@@ -98,18 +130,41 @@ void RenderSystem::Startup() {
 			}
 		}
 	}
-
 	PixelBufferMap::Set("default", default_pbuffer);
-
 	std::shared_ptr<TextureObject> default_texture = std::make_shared<TextureObject>(default_pbuffer);
 	TextureMap::Set("default", default_texture);
 
-	this->SetupDefaultShaders();
+	// SP controls metalic/roughness/etc
+	auto default_sp_pbuffer = std::make_shared<PixelBuffer>(checker_size, checker_size, 8, ImageColorMode::COLOR_RGBA);
+	{
+		std::lock_guard lg(default_sp_pbuffer->GetWritelock());
+		auto pixels = reinterpret_cast<uint32_t*>(default_sp_pbuffer->GetPtr());
+		for (size_t y = 0; y < checker_size; y++) {
+			for (size_t x = 0; x < checker_size; x++) {
+				*(pixels++) = 0x00008000; // non-metalic, 50% roughness
+			}
+		}
+	}
+	PixelBufferMap::Set("default_sp", default_sp_pbuffer);
+	std::shared_ptr<TextureObject> default_sp_texture = std::make_shared<TextureObject>(default_sp_pbuffer);
+	TextureMap::Set("default_sp", default_sp_texture);
+
+	auto debug_fill = Material::Create("material_debug");
+	debug_fill->SetPolygonMode(GL_LINE);
+	debug_fill->SetDrawElementsMode(GL_LINES);
+
+	this->SetupDefaultShaders(render_config);
 	_log->info("[RenderSystem] Startup complete.");
 }
 
-void RenderSystem::SetViewportSize(unsigned int width, unsigned int height) {
-	auto viewport = glm::max(glm::uvec2(1), glm::uvec2(width, height));
+void RenderSystem::RegisterConsole(Console& console) {
+	console.AddConsoleCommand("rs_debug", "Toggle GBuffer debug render", [this](const std::string&) {
+		this->options.set_debug_gbuffer(!this->options.debug_gbuffer());
+	});
+}
+
+void RenderSystem::SetViewportSize(const glm::uvec2& view_size) {
+	auto viewport = glm::max(glm::uvec2(1), view_size);
 	this->view_size = viewport;
 	this->inv_view_size = 1.0f / glm::vec2(viewport);
 	float aspect_ratio = static_cast<float>(viewport.x) / static_cast<float>(viewport.y);
@@ -126,6 +181,14 @@ void RenderSystem::SetViewportSize(unsigned int width, unsigned int height) {
 	glViewport(0, 0, viewport.x, viewport.y);
 }
 
+void RenderSystem::ErrorCheck(size_t where) {
+	GLenum err;
+	err = glGetError();
+	if (err) {
+		_log->debug("[RenderSystem] ErrorCheck:{} E={}", where, SymbolLookup(err));
+	}
+}
+
 void RenderSystem::Update(const double delta) {
 	ProcessCommandQueue();
 	EventQueue<WindowResizedEvent>::ProcessEventQueue();
@@ -135,89 +198,150 @@ void RenderSystem::Update(const double delta) {
 	GLenum err;
 	err = glGetError();
 	if (err) {
-		_log->debug("[GL] Preframe error {}", err);
+		_log->debug("[RenderSystem] Preframe error E={}", SymbolLookup(err));
 	}
 	UpdateRenderList(delta);
 	this->light_gbuffer.StartFrame();
-
-	GeometryPass();
-
-	this->light_gbuffer.BeginLightPass();
-	glEnable(GL_STENCIL_TEST);
-	BeginPointLightPass();
-	glDisable(GL_STENCIL_TEST);
-	DirectionalLightPass();
-
-	FinalPass();
-	// RenderGbuffer();
 	err = glGetError();
 	if (err) {
-		_log->debug("[GL] Postframe error {}", err);
+		_log->debug("[RenderSystem] StartFrame error E={}", SymbolLookup(err));
+	}
+
+	GeometryPass();
+	err = glGetError();
+	if (err) {
+		_log->debug("[RenderSystem] GeometryPass error E={}", SymbolLookup(err));
+	}
+	this->light_gbuffer.BeginLightPass();
+	BeginPointLightPass();
+	DirectionalLightPass();
+
+	err = glGetError();
+	if (err) {
+		_log->debug("[RenderSystem] *LightPass error E={}", SymbolLookup(err));
+	}
+
+	FinalPass();
+	if (options.debug_gbuffer()) {
+		RenderGbuffer();
+	}
+	err = glGetError();
+	if (err) {
+		_log->debug("[RenderSystem] Postframe error E={}", SymbolLookup(err));
+	}
+}
+
+void ActivateTextureUnit(const GLuint unit, const GLuint texture_name) {
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(GL_TEXTURE_2D, texture_name);
+}
+
+void RenderSystem::ActivateMaterial(const Material& material) {
+	for (GLuint unit = 0; unit < material.textures.size(); ++unit) {
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, material.textures[unit]->GetID());
+	}
+}
+
+void RenderSystem::DeactivateMaterial(const Material& material, GLuint* def_names) {
+	for (GLuint unit = 0; unit < material.textures.size(); ++unit) {
+		glActiveTexture(GL_TEXTURE0 + unit);
+		glBindTexture(GL_TEXTURE_2D, (unit == 1) ? def_names[1] : def_names[0]);
 	}
 }
 
 void RenderSystem::GeometryPass() {
 	this->light_gbuffer.BeginGeometryPass();
 
-	glm::mat4 camera_matrix(1.0f);
+	glm::vec3 camera_pos;
+	glm::quat camera_quat;
 	{
 		View* view = this->current_view;
 		if (view) {
-			camera_matrix = view->view_matrix;
+			camera_pos = view->view_pos;
+			camera_quat = view->view_quat;
 		}
 	}
 
-	std::shared_ptr<Shader> def_shader = ShaderMap::Get("deferred");
+	GLuint def_textures[]{TextureMap::Get("default")->GetID(), TextureMap::Get("default_sp")->GetID()};
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, def_textures[0]);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, def_textures[1]);
+	std::shared_ptr<Shader> def_shader = ShaderMap::Get(active_shaders.visual());
 	def_shader->Use();
-	glUniformMatrix4fv(def_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
+	glUniform3fv(def_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
+	glUniform4fv(def_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(camera_quat));
 	glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-	GLint animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
-	GLint animated_loc = def_shader->GetUniformLocation("animated");
-	GLint model_index = def_shader->GetUniformLocation("model");
+	struct uniform_locs {
+		GLint model_pos;
+		GLint model_scale;
+		GLint model_quat;
+		GLint animated;
+		GLint animatrix;
+		GLint vertex_group;
+	};
+	uniform_locs def_locs{
+			def_shader->GetUniformLocation("model_position"),
+			def_shader->GetUniformLocation("model_scale"),
+			def_shader->GetUniformLocation("model_quat"),
+			def_shader->GetUniformLocation("animated"),
+			def_shader->GetUniformLocation("animation_matrix"),
+			-1};
+	uniform_locs spec_locs{0, 0, 0, 0, 0};
+	uniform_locs* use_locs = &def_locs;
 	for (auto shader_list : this->render_item_list) {
 		// Check if we need to use a specific shader and set it up.
 		if (shader_list.first) {
 			def_shader->UnUse();
 			shader_list.first->Use();
-			glUniformMatrix4fv(
-					shader_list.first->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
+			glUniform3fv(shader_list.first->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
+			glUniform4fv(shader_list.first->GetUniformLocation("view_quat"), 1, glm::value_ptr(camera_quat));
 			glUniformMatrix4fv(
 					shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-			animatrix_loc = shader_list.first->GetUniformLocation("animation_matrix");
-			animated_loc = shader_list.first->GetUniformLocation("animated");
-			model_index = shader_list.first->GetUniformLocation("model");
+			spec_locs.animatrix = shader_list.first->GetUniformLocation("animation_matrix");
+			spec_locs.animated = shader_list.first->GetUniformLocation("animated");
+			spec_locs.model_pos = shader_list.first->GetUniformLocation("model_position");
+			spec_locs.model_scale = shader_list.first->GetUniformLocation("model_scale");
+			spec_locs.model_quat = shader_list.first->GetUniformLocation("model_quat");
+			spec_locs.vertex_group = shader_list.first->GetUniformLocation("vertex_group");
+			use_locs = &spec_locs;
 		}
 		for (auto render_item : shader_list.second) {
 			glBindVertexArray(render_item->vbo->GetVAO());
-			glUniform1i(animated_loc, 0);
+			glUniform1i(use_locs->animated, render_item->animated ? 1 : 0);
 			if (render_item->animated) {
-				glUniform1i(animated_loc, 1);
 				auto& animmatricies = render_item->animation->bone_matrices;
 				glUniformMatrix4fv(
-						animatrix_loc,
+						use_locs->animatrix,
 						static_cast<GLsizei>(animmatricies.size()),
 						GL_FALSE,
 						glm::value_ptr(animmatricies[0]));
 			}
+			GLint vertex_group_number = 0;
 			for (VertexGroup& vertex_group : render_item->vertex_groups) {
 				glPolygonMode(GL_FRONT_AND_BACK, vertex_group.material->GetPolygonMode());
-				vertex_group.material->Activate();
-				glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(render_item->model_matrix));
+				ActivateMaterial(*vertex_group.material);
+				if (use_locs->vertex_group != -1) {
+					glUniform1i(use_locs->vertex_group, vertex_group_number++);
+				}
+				//glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(render_item->model_matrix));
+				glUniform3fv(use_locs->model_pos, 1, glm::value_ptr(render_item->model_position));
+				glUniform3fv(use_locs->model_scale, 1, glm::value_ptr(render_item->model_scale));
+				glUniform4fv(use_locs->model_quat, 1, glm::value_ptr(render_item->model_quat));
 				glDrawElements(
 						vertex_group.material->GetDrawElementsMode(),
 						static_cast<GLsizei>(vertex_group.index_count),
 						GL_UNSIGNED_INT,
 						(GLvoid*)(vertex_group.starting_offset * sizeof(GLuint)));
-				vertex_group.material->Deactivate();
+				DeactivateMaterial(*vertex_group.material, def_textures);
 			}
 		}
 		// If we used a special shader set things back to the deferred shader.
 		if (shader_list.first) {
 			shader_list.first->UnUse();
 			def_shader->Use();
-			animatrix_loc = def_shader->GetUniformLocation("animation_matrix");
-			animated_loc = def_shader->GetUniformLocation("animated");
-			model_index = def_shader->GetUniformLocation("model");
+			use_locs = &def_locs;
 		}
 	}
 	def_shader->UnUse();
@@ -226,27 +350,21 @@ void RenderSystem::GeometryPass() {
 }
 
 void RenderSystem::BeginPointLightPass() {
-	glm::mat4 camera_matrix(1.0f);
+	glm::vec3 camera_pos;
+	glm::quat camera_quat;
 	{
 		View* view = this->current_view;
 		if (view) {
-			camera_matrix = view->view_matrix;
+			camera_pos = view->view_pos;
+			camera_quat = view->view_quat;
 		}
 	}
 
-	std::shared_ptr<Shader> def_pl_shader = ShaderMap::Get("deferred_pointlight");
+	std::shared_ptr<Shader> def_pl_shader = ShaderMap::Get(active_shaders.pointlight());
 	def_pl_shader->Use();
-	glUniformMatrix4fv(def_pl_shader->GetUniformLocation("view"), 1, GL_FALSE, glm::value_ptr(camera_matrix));
+	glUniform3fv(def_pl_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
+	glUniform4fv(def_pl_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(camera_quat));
 	glUniformMatrix4fv(def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-	glUniform1i(
-			def_pl_shader->GetUniformLocation("gPositionMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
-	glUniform1i(
-			def_pl_shader->GetUniformLocation("gNormalMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
-	glUniform1i(
-			def_pl_shader->GetUniformLocation("gColorMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
 	glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
 	GLint model_index = def_pl_shader->GetUniformLocation("model");
 	GLint Color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
@@ -299,27 +417,20 @@ void RenderSystem::BeginPointLightPass() {
 
 void RenderSystem::DirectionalLightPass() {
 	this->light_gbuffer.BeginDirLightPass();
-	std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get("deferred_dirlight");
+	std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get(active_shaders.dirlight());
 	def_dl_shader->Use();
 
-	glm::mat4 camera_matrix{1.f};
+	glm::vec3 camera_pos;
+	glm::quat camera_quat;
 	{
 		View* view = this->current_view;
 		if (view) {
-			camera_matrix = view->view_matrix;
+			camera_pos = view->view_pos;
+			camera_quat = view->view_quat;
 		}
 	}
-	glUniform1i(
-			def_dl_shader->GetUniformLocation("gPositionMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
-	glUniform1i(
-			def_dl_shader->GetUniformLocation("gNormalMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
-	glUniform1i(
-			def_dl_shader->GetUniformLocation("gColorMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
 	glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
-	glUniform3f(def_dl_shader->GetUniformLocation("gEyeWorldPos"), 0, 0, 0);
+	glUniform3fv(def_dl_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
 	GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 	GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
 	GLint DiffuseIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.DiffuseIntensity");
@@ -345,45 +456,32 @@ void RenderSystem::DirectionalLightPass() {
 
 void RenderSystem::FinalPass() {
 	this->light_gbuffer.FinalPass();
+	std::shared_ptr<Shader> post_shader = ShaderMap::Get(active_shaders.postprocess());
+	post_shader->Use();
+	glUniform2f(post_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
 
-	glBlitFramebuffer(
-			0,
-			0,
-			this->view_size.x,
-			this->view_size.y,
-			0,
-			0,
-			this->view_size.x,
-			this->view_size.y,
-			GL_COLOR_BUFFER_BIT,
-			GL_LINEAR);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindVertexArray(this->quad_vbo.GetVAO());
+	auto index_count{static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count)};
+	glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
+	glBindVertexArray(0);
+
+	post_shader->UnUse();
 }
 
 void RenderSystem::RenderGbuffer() {
 	this->light_gbuffer.BindForRendering();
 	glDisable(GL_BLEND);
-	glActiveTexture(GL_TEXTURE0 + 3);
-	glBindSampler(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE0 + (int)GBuffer::DEPTH_TYPE::DEPTH);
+	glBindSampler((int)GBuffer::DEPTH_TYPE::DEPTH, 0);
 	glBindTexture(GL_TEXTURE_2D, this->light_gbuffer.GetDepthTexture());
 	glDrawBuffer(GL_BACK);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	glBindVertexArray(this->quad_vbo.GetVAO());
 
-	std::shared_ptr<Shader> def_db_shader = ShaderMap::Get("deferred_debug");
+	std::shared_ptr<Shader> def_db_shader = ShaderMap::Get(active_shaders.gbufdebug());
 	def_db_shader->Use();
 
-	glUniform1i(
-			def_db_shader->GetUniformLocation("gPositionMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_POSITION));
-	glUniform1i(
-			def_db_shader->GetUniformLocation("gNormalMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_NORMAL));
-	glUniform1i(
-			def_db_shader->GetUniformLocation("gColorMap"),
-			static_cast<GLint>(GBuffer::GBUFFER_TEXTURE_TYPE::GBUFFER_TEXTURE_TYPE_DIFFUSE));
-	glUniform1i(def_db_shader->GetUniformLocation("gDepthMap"), static_cast<GLint>(3));
 	glUniform2f(def_db_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
 
 	auto index_count{static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count)};
@@ -393,27 +491,18 @@ void RenderSystem::RenderGbuffer() {
 	glBindVertexArray(0);
 }
 
-void RenderSystem::SetupDefaultShaders() {
-	tec::gfx::ShaderList shader_list;
-	auto core_fname = FilePath::GetAssetPath("shaders/core.json");
-	auto core_json = LoadAsString(core_fname);
-	auto status = google::protobuf::util::JsonStringToMessage(core_json, &shader_list);
-	if (!status.ok()) {
-		_log->error("[RenderSystem] loading shader list: {} failed: {}", core_fname.toString(), status.ToString());
-		return;
+void RenderSystem::SetupDefaultShaders(const gfx::RenderConfig& render_config) {
+	for (auto& shader_inc : render_config.includes()) {
+		Shader::IncludeFromDef(shader_inc);
 	}
-	for (auto& shader_def : shader_list.shaders()) {
+	for (auto& shader_def : render_config.shaders()) {
 		Shader::CreateFromDef(shader_def);
 	}
-	auto debug_fill = Material::Create("material_debug");
-	debug_fill->SetPolygonMode(GL_LINE);
-	debug_fill->SetDrawElementsMode(GL_LINES);
 }
 
 void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
-	SetViewportSize(
-			data->new_width > 0 ? static_cast<unsigned int>(data->new_width) : 0,
-			data->new_height > 0 ? static_cast<unsigned int>(data->new_height) : 0);
+	glm::ivec2 new_view(data->new_width, data->new_height);
+	SetViewportSize(glm::max(glm::ivec2(0), new_view));
 }
 
 void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { RenderableMap::Remove(data->entity_id); }
@@ -534,8 +623,9 @@ void RenderSystem::UpdateRenderList(double delta) {
 
 		if (ri) {
 			ri->vbo->Update();
-			ri->model_matrix =
-					glm::scale(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation), scale);
+			ri->model_position = position;
+			ri->model_scale = scale;
+			ri->model_quat = orientation;
 
 			if (_animation) {
 				const_cast<Animation*>(_animation)->UpdateAnimation(delta);
@@ -563,7 +653,8 @@ void RenderSystem::UpdateRenderList(double delta) {
 			orientation = _orientation->value;
 		}
 
-		view->view_matrix = glm::inverse(glm::translate(glm::mat4(1.0), position) * glm::mat4_cast(orientation));
+		view->view_pos = -position;
+		view->view_quat = glm::inverse(orientation);
 		if (view->active) {
 			this->current_view = view;
 		}

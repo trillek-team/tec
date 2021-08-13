@@ -21,6 +21,7 @@
 namespace tec {
 class Shader;
 typedef Multiton<std::string, std::shared_ptr<Shader>> ShaderMap;
+typedef Multiton<std::string, std::string> ShaderIncludes;
 
 class Shader final {
 public:
@@ -39,21 +40,6 @@ public:
 	* \return void
 	*/
 	void UnUse();
-
-	/**
-	* \brief Activates the specified texture unit and bind the specified texture to it.
-	* \param const GLuint unit The texture unit to activate.
-	* \param const GLuint texture_name The GL name of the texture to bind.
-	* \return void
-	*/
-	static void ActivateTextureUnit(const GLuint unit, const GLuint texture_name);
-
-	/**
-	* \brief Deactivates the specified texture unit by binding texture 0 to it.
-	* \param const GLuint unit The texture unit to deactivate.
-	* \return void
-	*/
-	static void DeactivateTextureUnit(const GLuint unit);
 
 	/**
 	* \brief Returns the location of the specified uniform.
@@ -103,8 +89,14 @@ public:
 	* a ShaderDef should contain a name and assets relative filenames.
 	* \return is a shared_ptr to the created Shader.
 	*/
-	static std::shared_ptr<Shader>
-	CreateFromDef(const gfx::ShaderDef &shader_def);
+	static std::shared_ptr<Shader> CreateFromDef(const gfx::ShaderDef& shader_def);
+
+	/**
+	* \brief Adds an item to the shader includes from the tec::gfx::ShaderInclude protocol.
+	*
+	* a ShaderDef which should contain a name and assets relative filenames.
+	*/
+	static void IncludeFromDef(const gfx::ShaderInclude& shader_inc);
 
 	/**
 	* \brief Loads the specified ShaderType from file filename.
@@ -134,9 +126,10 @@ public:
 	/**
 	* \brief Builds the shader program after all shaders have been loaded.
 	* This is called automatically from the factory methods.
+	* \param name The name of the shader, printed out during link errors
 	* \return true if the shader built successfully
 	*/
-	bool Build();
+	bool Build(const std::string& name);
 
 	/**
 	* \brief Deletes the shader program.
@@ -160,5 +153,7 @@ private:
 	std::vector<GLuint> shaders;
 	std::unordered_map<std::string, GLint> attributes;
 	std::unordered_map<std::string, GLint> uniforms;
+	bool run_initial{true};
+	std::vector<std::pair<GLint, GLint>> initial_1i;
 };
 } // namespace tec

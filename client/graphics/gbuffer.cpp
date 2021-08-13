@@ -25,13 +25,16 @@ void GBuffer::ResizeColorAttachments(const unsigned int window_width, const unsi
 	}
 
 	glBindTexture(GL_TEXTURE_2D, this->final_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window_width, window_height, 0, GL_RGB, GL_FLOAT, nullptr);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, this->final_texture, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, window_width, window_height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + this->num_color_textures, GL_TEXTURE_2D, this->final_texture, 0);
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void GBuffer::SetDepthAttachment(GBUFFER_DEPTH_TYPE type, const unsigned int width, const unsigned int height) {
+void GBuffer::SetDepthAttachment(DEPTH_TYPE type, const unsigned int width, const unsigned int height) {
 	this->depth_type = type;
 	glGenTextures(1, &this->depth_texture);
 	ResizeDepthAttachment(width, height);
@@ -47,7 +50,7 @@ void GBuffer::ResizeDepthAttachment(const unsigned int width, const unsigned int
 	// so maybe a separate STENCIL8 texture or renderbuffer could be added
 	// also note: the stencil pass isn't entirely required, it's just a possible optimization.
 	glBindTexture(GL_TEXTURE_2D, this->depth_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0,  GL_DEPTH_COMPONENT, GL_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_BYTE, nullptr);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, this->depth_texture, 0);
@@ -69,7 +72,7 @@ void GBuffer::StartFrame() const {
 
 void GBuffer::BeginGeometryPass() const {
 	this->BindForWriting();
-	GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+	GLenum DrawBuffers[] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
 	glDrawBuffers(this->num_color_textures, DrawBuffers);
 
 	glDepthMask(GL_TRUE);
@@ -120,13 +123,22 @@ void GBuffer::FinalPass() const {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	this->BindForRendering();
 	glReadBuffer(GL_COLOR_ATTACHMENT4);
+	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, this->final_texture);
+	for (unsigned int i = 1; i < this->num_color_textures; i++) {
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, this->color_textures[i]);
+	}
 }
 
 void GBuffer::BindForWriting() const { glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frame_buffer_object); }
 
 void GBuffer::BindForRendering() const { glBindFramebuffer(GL_READ_FRAMEBUFFER, this->frame_buffer_object); }
 
-void GBuffer::SetReadBuffer(GBUFFER_TEXTURE_TYPE TextureType) {
+void GBuffer::SetReadBuffer(TEXTURE_TYPE TextureType) {
 	glReadBuffer(GL_COLOR_ATTACHMENT0 + static_cast<int>(TextureType));
 }
 } // namespace tec
