@@ -11,6 +11,7 @@
 #include <OpenGL/gl3.h>
 #endif
 
+#include <fmt/core.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/vec3.hpp>
 #include <graphics.pb.h>
@@ -50,6 +51,12 @@ struct RenderItem {
 	Animation* animation{nullptr};
 };
 
+class GLSymbol {
+public:
+	static const GLSymbol& Get(GLenum which);
+	std::string name;
+};
+
 class RenderSystem :
 		public CommandQueue<RenderSystem>,
 		public EventQueue<WindowResizedEvent>,
@@ -66,15 +73,20 @@ public:
 
 	bool HasExtension(const std::string& x) const { return extensions.find(x) != extensions.cend(); }
 
+	static void ErrorCheck(
+			const std::string_view what,
+			size_t line,
+			const std::string_view where = "RenderSystem",
+			bool severe = false);
+
 private:
-	std::shared_ptr<spdlog::logger> _log;
+	static std::shared_ptr<spdlog::logger> _log;
 
 	void GeometryPass();
 	void BeginPointLightPass();
 	void DirectionalLightPass();
 	void FinalPass();
 	void RenderGbuffer();
-	void ErrorCheck(size_t where);
 
 	void ActivateMaterial(const Material&);
 	void DeactivateMaterial(const Material&, GLuint*);
@@ -106,3 +118,15 @@ private:
 	std::map<std::shared_ptr<Shader>, std::set<RenderItem*>> render_item_list;
 };
 } // namespace tec
+
+template <> struct fmt::formatter<tec::GLSymbol> {
+	constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+		auto it = ctx.begin(), end = ctx.end();
+		if (it != end && *it != '}')
+			static_assert("invalid format");
+		return it;
+	}
+	template <typename FormatContext> auto format(const tec::GLSymbol& p, FormatContext& ctx) -> decltype(ctx.out()) {
+		return format_to(ctx.out(), "{}", p.name);
+	}
+};

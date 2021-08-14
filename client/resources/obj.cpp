@@ -97,7 +97,7 @@ bool OBJ::ParseMTL(const FilePath& fname) {
 			ss >> filename;
 			currentMTL->diffuseMap = filename;
 			if (!TextureMap::Has(currentMTL->diffuseMap)) {
-				auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
+				auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename), true);
 				auto tex = std::make_shared<TextureObject>(pixbuf);
 				TextureMap::Set(currentMTL->diffuseMap, tex);
 			}
@@ -106,20 +106,20 @@ bool OBJ::ParseMTL(const FilePath& fname) {
 			std::string filename;
 			ss >> filename;
 			currentMTL->ambientMap = filename;
-			if (!TextureMap::Has(currentMTL->diffuseMap)) {
-				auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
+			if (!TextureMap::Has(currentMTL->ambientMap)) {
+				auto pixbuf = PixelBuffer::Create(currentMTL->ambientMap, (base_path / filename));
 				auto tex = std::make_shared<TextureObject>(pixbuf);
-				TextureMap::Set(currentMTL->diffuseMap, tex);
+				TextureMap::Set(currentMTL->ambientMap, tex);
 			}
 		}
 		else if (identifier == "map_Bump") {
 			std::string filename;
 			ss >> filename;
 			currentMTL->normalMap = filename;
-			if (!TextureMap::Has(currentMTL->diffuseMap)) {
-				auto pixbuf = PixelBuffer::Create(currentMTL->diffuseMap, (base_path / filename));
+			if (!TextureMap::Has(currentMTL->normalMap)) {
+				auto pixbuf = PixelBuffer::Create(currentMTL->normalMap, (base_path / filename));
 				auto tex = std::make_shared<TextureObject>(pixbuf);
-				TextureMap::Set(currentMTL->diffuseMap, tex);
+				TextureMap::Set(currentMTL->normalMap, tex);
 			}
 		}
 	}

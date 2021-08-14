@@ -8,42 +8,9 @@
 
 #include "gbuffer.hpp"
 #include "proto-load.hpp"
+#include "render-system.hpp"
 
 namespace tec {
-
-std::string SymbolLookup(GLenum which) {
-	static const std::map<GLenum, std::string_view> symbolic_gl_types{
-			{GL_NO_ERROR, "GL_NO_ERROR"},
-			{GL_INVALID_ENUM, "GL_INVALID_ENUM"},
-			{GL_INVALID_VALUE, "GL_INVALID_VALUE"},
-			{GL_INVALID_OPERATION, "GL_INVALID_OPERATION"},
-			{GL_INVALID_FRAMEBUFFER_OPERATION, "GL_INVALID_FRAMEBUFFER_OPERATION"},
-			{GL_OUT_OF_MEMORY, "GL_OUT_OF_MEMORY"},
-			{GL_STACK_UNDERFLOW, "GL_STACK_UNDERFLOW"},
-			{GL_STACK_OVERFLOW, "GL_STACK_OVERFLOW"},
-			{GL_FLOAT, "float"},
-			{GL_FLOAT_VEC2, "vec2"},
-			{GL_FLOAT_VEC3, "vec3"},
-			{GL_FLOAT_VEC4, "vec4"},
-			{GL_INT, "int"},
-			{GL_INT_VEC2, "ivec2"},
-			{GL_INT_VEC3, "ivec3"},
-			{GL_INT_VEC4, "ivec4"},
-			{GL_SAMPLER_1D, "sampler1D"},
-			{GL_SAMPLER_2D, "sampler2D"},
-			{GL_SAMPLER_3D, "sampler3D"},
-			{GL_SAMPLER_2D_SHADOW, "sampler2DShadow"},
-			{GL_SAMPLER_CUBE_SHADOW, "samplerCubeShadow"},
-			{GL_SAMPLER_2D_ARRAY, "sampler2DArray"},
-			{GL_UNSIGNED_INT, "uint"},
-			{GL_FLOAT_MAT4, "mat4x4"},
-	};
-	auto sym_itr = symbolic_gl_types.find(which);
-	if (sym_itr != symbolic_gl_types.cend()) {
-		return std::string(sym_itr->second);
-	}
-	return std::to_string(which);
-}
 
 static const std::map<std::string_view, GLint> engine_constants{
 		{"gCompositeMap", 0},
@@ -233,7 +200,7 @@ bool Shader::Build(const std::string& name) {
 		GLenum sym_type;
 		glGetActiveUniform(this->program, index, max_read.size(), &written, &uniform_size, &sym_type, max_read.data());
 		std::string uniform_name = max_read.substr(0, max_read.find_first_of('\0'));
-		std::string s_type = SymbolLookup(sym_type);
+		std::string s_type{GLSymbol::Get(sym_type).name};
 		GLint uniform_loc = this->GetUniformLocation(uniform_name);
 		_log->trace("[Shader] {}/uniform: {}: {} {}: {}", name, uniform_loc, uniform_size, s_type, uniform_name);
 		if (sym_type == GL_SAMPLER_2D) {
@@ -250,7 +217,7 @@ bool Shader::Build(const std::string& name) {
 		GLenum sym_type;
 		glGetActiveAttrib(this->program, index, max_read.size(), &written, &attrib_size, &sym_type, max_read.data());
 		std::string attrib_name = max_read.substr(0, max_read.find_first_of('\0'));
-		std::string s_type = SymbolLookup(sym_type);
+		std::string s_type{GLSymbol::Get(sym_type).name};
 		GLint attrib_loc = this->GetAttributeLocation(attrib_name);
 		_log->trace("[Shader] {}/attrib: {}: {} {}: {}", name, attrib_loc, attrib_size, s_type, attrib_name);
 	}
