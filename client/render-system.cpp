@@ -1,6 +1,7 @@
 #include "render-system.hpp"
 
 #include <cmath>
+#include <forward_list>
 #include <thread>
 
 #include <glm/ext.hpp>
@@ -35,17 +36,62 @@ using RenderableMap = Multiton<eid, Renderable*>;
 using AnimationMap = Multiton<eid, Animation*>;
 using ScaleMap = Multiton<eid, Scale*>;
 
-std::string SymbolLookup(GLenum which); // forward declare this
+typeof RenderSystem::_log RenderSystem::_log;
+
+const GLSymbol& GLSymbol::Get(GLenum which) {
+	static const std::map<GLenum, GLSymbol> symbolic_gl_types{
+			// error codes
+			{GL_NO_ERROR, {"GL_NO_ERROR"}},
+			{GL_INVALID_ENUM, {"GL_INVALID_ENUM"}},
+			{GL_INVALID_VALUE, {"GL_INVALID_VALUE"}},
+			{GL_INVALID_OPERATION, {"GL_INVALID_OPERATION"}},
+			{GL_INVALID_FRAMEBUFFER_OPERATION, {"GL_INVALID_FRAMEBUFFER_OPERATION"}},
+			{GL_OUT_OF_MEMORY, {"GL_OUT_OF_MEMORY"}},
+			{GL_STACK_UNDERFLOW, {"GL_STACK_UNDERFLOW"}},
+			{GL_STACK_OVERFLOW, {"GL_STACK_OVERFLOW"}},
+			// image formats
+			{GL_DEPTH_COMPONENT, {"GL_DEPTH_COMPONENT"}},
+			{GL_DEPTH_STENCIL, {"GL_DEPTH_STENCIL"}},
+			{GL_RED, {"GL_RED"}},
+			{GL_RG, {"GL_RG"}},
+			{GL_RGB, {"GL_RGB"}},
+			{GL_RGBA, {"GL_RGBA"}},
+			{GL_SRGB, {"GL_SRGB"}},
+			{GL_SRGB_ALPHA, {"GL_SRGB_ALPHA"}},
+			{GL_SRGB8_ALPHA8, {"GL_SRGB8_ALPHA8"}},
+			// shader types
+			{GL_FLOAT, {"float"}},
+			{GL_FLOAT_VEC2, {"vec2"}},
+			{GL_FLOAT_VEC3, {"vec3"}},
+			{GL_FLOAT_VEC4, {"vec4"}},
+			{GL_INT, {"int"}},
+			{GL_INT_VEC2, {"ivec2"}},
+			{GL_INT_VEC3, {"ivec3"}},
+			{GL_INT_VEC4, {"ivec4"}},
+			{GL_SAMPLER_1D, {"sampler1D"}},
+			{GL_SAMPLER_2D, {"sampler2D"}},
+			{GL_SAMPLER_3D, {"sampler3D"}},
+			{GL_SAMPLER_2D_SHADOW, {"sampler2DShadow"}},
+			{GL_SAMPLER_CUBE_SHADOW, {"samplerCubeShadow"}},
+			{GL_SAMPLER_2D_ARRAY, {"sampler2DArray"}},
+			{GL_UNSIGNED_INT, {"uint"}},
+			{GL_FLOAT_MAT4, {"mat4x4"}},
+	};
+	static std::forward_list<std::string> unknown_gl_strings;
+	static std::map<GLenum, GLSymbol> unknown_gl_types;
+	auto sym_itr = symbolic_gl_types.find(which);
+	if (sym_itr != symbolic_gl_types.cend()) {
+		return sym_itr->second;
+	}
+	unknown_gl_strings.push_front(std::to_string(which));
+	return unknown_gl_types.emplace(std::make_pair(which, GLSymbol{unknown_gl_strings.front()})).first->second;
+}
 
 void RenderSystem::Startup() {
 	_log = spdlog::get("console_log");
 
-	GLenum err = glGetError();
 	// If there is an error that means something went wrong when creating the context.
-	if (err) {
-		_log->debug("[RenderSystem] Something went wrong when creating the context. E={}", SymbolLookup(err));
-		return;
-	}
+	ErrorCheck("Something went wrong when creating the context", __LINE__);
 
 	tec::gfx::RenderConfig render_config;
 	auto core_fname = FilePath::GetAssetPath("shaders/core.json");
@@ -71,12 +117,12 @@ void RenderSystem::Startup() {
 			break;
 		}
 	}
-	_log->info("[RenderSystem] set visual={}", active_shaders.visual());
-	_log->info("[RenderSystem] set shadow={}", active_shaders.shadow());
-	_log->info("[RenderSystem] set pointlight={}", active_shaders.pointlight());
-	_log->info("[RenderSystem] set dirlight={}", active_shaders.dirlight());
-	_log->info("[RenderSystem] set postprocess={}", active_shaders.postprocess());
-	_log->info("[RenderSystem] set gbufdebug={}", active_shaders.gbufdebug());
+	_log->debug("[RenderSystem] set visual={}", active_shaders.visual());
+	_log->debug("[RenderSystem] set shadow={}", active_shaders.shadow());
+	_log->debug("[RenderSystem] set pointlight={}", active_shaders.pointlight());
+	_log->debug("[RenderSystem] set dirlight={}", active_shaders.dirlight());
+	_log->debug("[RenderSystem] set postprocess={}", active_shaders.postprocess());
+	_log->debug("[RenderSystem] set gbufdebug={}", active_shaders.gbufdebug());
 
 	// load the list of extensions
 	GLint num_exts = 0;
@@ -181,11 +227,12 @@ void RenderSystem::SetViewportSize(const glm::uvec2& view_size) {
 	glViewport(0, 0, viewport.x, viewport.y);
 }
 
-void RenderSystem::ErrorCheck(size_t where) {
+void RenderSystem::ErrorCheck(const std::string_view what, size_t line, const std::string_view where, bool severe) {
 	GLenum err;
 	err = glGetError();
 	if (err) {
-		_log->debug("[RenderSystem] ErrorCheck:{} E={}", where, SymbolLookup(err));
+		auto level = severe ? spdlog::level::err : spdlog::level::debug;
+		_log->log(level, "[{}:{}] {}. Error={}", where, line, what, GLSymbol::Get(err));
 	}
 }
 
@@ -195,40 +242,25 @@ void RenderSystem::Update(const double delta) {
 	EventQueue<EntityCreated>::ProcessEventQueue();
 	EventQueue<EntityDestroyed>::ProcessEventQueue();
 
-	GLenum err;
-	err = glGetError();
-	if (err) {
-		_log->debug("[RenderSystem] Preframe error E={}", SymbolLookup(err));
-	}
+	ErrorCheck("Preframe", __LINE__);
 	UpdateRenderList(delta);
 	this->light_gbuffer.StartFrame();
-	err = glGetError();
-	if (err) {
-		_log->debug("[RenderSystem] StartFrame error E={}", SymbolLookup(err));
-	}
+	ErrorCheck("StartFrame", __LINE__);
 
 	GeometryPass();
-	err = glGetError();
-	if (err) {
-		_log->debug("[RenderSystem] GeometryPass error E={}", SymbolLookup(err));
-	}
+	ErrorCheck("GeometryPass", __LINE__);
+
 	this->light_gbuffer.BeginLightPass();
 	BeginPointLightPass();
 	DirectionalLightPass();
 
-	err = glGetError();
-	if (err) {
-		_log->debug("[RenderSystem] *LightPass error E={}", SymbolLookup(err));
-	}
+	ErrorCheck("*LightPass", __LINE__);
 
 	FinalPass();
 	if (options.debug_gbuffer()) {
 		RenderGbuffer();
 	}
-	err = glGetError();
-	if (err) {
-		_log->debug("[RenderSystem] Postframe error E={}", SymbolLookup(err));
-	}
+	ErrorCheck("Postframe", __LINE__);
 }
 
 void ActivateTextureUnit(const GLuint unit, const GLuint texture_name) {

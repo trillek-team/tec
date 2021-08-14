@@ -69,11 +69,7 @@ public:
 	*/
 	void Load(const PixelBuffer&);
 
-	/**
-	* \brief create a texture from raw image data
-	*/
-	void Load(const uint8_t*, GLuint width, GLuint height);
-
+private:
 	/**
 	* \brief create a blank texture RGB or RGBA format
 	*/

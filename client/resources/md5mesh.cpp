@@ -217,7 +217,7 @@ bool MD5Mesh::Parse() {
 					ss >> mesh.shader;
 					auto filename = base_path / mesh.shader;
 					if (!TextureMap::Has(mesh.shader)) {
-						auto pixbuf = PixelBuffer::Create(mesh.shader, filename);
+						auto pixbuf = PixelBuffer::Create(mesh.shader, filename, true);
 						auto tex = std::make_shared<TextureObject>(pixbuf);
 						TextureMap::Set(mesh.shader, tex);
 					}

@@ -13,7 +13,7 @@
 
 namespace tec {
 VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh) : mesh(mesh), entity_id(entity_id) {
-	auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"));
+	auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"), true);
 	auto tex = std::make_shared<TextureObject>(pixbuf);
 	TextureMap::Set("metal_wall", tex);
 	pixbuf = PixelBuffer::Create("metal_wall_sp", FilePath::GetAssetPath("metal_wall_sp.png"));
