@@ -52,9 +52,9 @@ void Computer::In(const proto::Component& source) {
 		const proto::Computer::CPU::DCPU16N& dcpu16n = cpu.dcpu16n();
 		DCPU16NState state;
 		for (int i = 0; i < dcpu16n.registers_size(); ++i) {
-			state.r[i] = dcpu16n.registers(i);
+			state.r[i] = static_cast<trillek::Word>(dcpu16n.registers(i));
 		}
-		state.pc = dcpu16n.pc();
+		state.pc = static_cast<trillek::Word>(dcpu16n.pc());
 		state.wait_cycles = dcpu16n.wait_cycles();
 		std::unique_ptr<DCPU16N> dcpucpu = std::make_unique<DCPU16N>();
 		this->vc.SetCPU(std::move(dcpucpu));

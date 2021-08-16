@@ -123,7 +123,7 @@ public:
 	*
 	* \param[out] pose_out array of AnimationBone to store the interpolated pose in.
 	* \param[in] frame_index_start The starting frame index.
-	* \param[in] frame_index_start The ending frame index.
+	* \param[in] frame_index_end The ending frame index.
 	* \param[in] delta The change in time since the last call.
 	*/
 	void InterpolatePose(
