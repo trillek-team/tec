@@ -309,8 +309,8 @@ void RenderSystem::GeometryPass() {
 		GLint model_pos;
 		GLint model_scale;
 		GLint model_quat;
+		GLint animbones;
 		GLint animated;
-		GLint animatrix;
 		GLint vertex_group;
 	};
 	uniform_locs def_locs{
@@ -331,24 +331,22 @@ void RenderSystem::GeometryPass() {
 			glUniform4fv(shader_list.first->GetUniformLocation("view_quat"), 1, glm::value_ptr(camera_quat));
 			glUniformMatrix4fv(
 					shader_list.first->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-			spec_locs.animatrix = shader_list.first->GetUniformLocation("animation_matrix");
-			spec_locs.animated = shader_list.first->GetUniformLocation("animated");
 			spec_locs.model_pos = shader_list.first->GetUniformLocation("model_position");
 			spec_locs.model_scale = shader_list.first->GetUniformLocation("model_scale");
 			spec_locs.model_quat = shader_list.first->GetUniformLocation("model_quat");
+			spec_locs.animbones = shader_list.first->GetUniformLocation("animation_bones[0]");
+			spec_locs.animated = shader_list.first->GetUniformLocation("animated");
 			spec_locs.vertex_group = shader_list.first->GetUniformLocation("vertex_group");
 			use_locs = &spec_locs;
 		}
 		for (auto render_item : shader_list.second) {
 			glBindVertexArray(render_item->vbo->GetVAO());
 			glUniform1i(use_locs->animated, render_item->animated ? 1 : 0);
-			if (render_item->animated) {
-				auto& animmatricies = render_item->animation->bone_matrices;
-				glUniformMatrix4fv(
-						use_locs->animatrix,
-						static_cast<GLsizei>(animmatricies.size()),
-						GL_FALSE,
-						glm::value_ptr(animmatricies[0]));
+
+			if (render_item->animated && use_locs->animbones != -1) {
+				auto& animbones = render_item->animation->bone_transforms;
+				glUniformMatrix3x4fv(
+						use_locs->animbones, animbones.size(), GL_FALSE, glm::value_ptr(animbones[0].orientation));
 			}
 			GLint vertex_group_number = 0;
 			for (VertexGroup& vertex_group : render_item->vertex_groups) {
@@ -661,7 +659,7 @@ void RenderSystem::UpdateRenderList(double delta) {
 
 			if (_animation) {
 				const_cast<Animation*>(_animation)->UpdateAnimation(delta);
-				if (_animation->bone_matrices.size() > 0) {
+				if (_animation->bone_transforms.size() > 0) {
 					ri->animated = true;
 					ri->animation = const_cast<Animation*>(_animation);
 				}

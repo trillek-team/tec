@@ -19,24 +19,26 @@ void Animation::UpdateAnimation(const double delta) {
 
 	this->animation_time += delta;
 
-	while (this->animation_time > this->frame_duration) {
-		this->animation_time -= this->frame_duration;
+	while (this->animation_time > this->animation_duration) {
+		this->animation_time -= this->animation_duration;
 	}
 	while (this->animation_time < 0.0f) {
-		this->animation_time += this->frame_duration;
+		this->animation_time += this->animation_duration;
 	}
 
 	// Figure out which frame we're on
-	double frame_number = this->animation_time * frame_rate;
+	double frame_number = this->animation_time * this->frame_rate;
 	std::size_t frame_index0 = static_cast<std::size_t>(floor(frame_number)) % frame_count;
 	std::size_t frame_index1 = static_cast<std::size_t>(ceil(frame_number)) % frame_count;
 	this->current_frame_index = frame_index0;
 
-	float fInterpolate = static_cast<float>(fmod(this->animation_time, this->frame_duration));
+	float fInterpolate = glm::fract(frame_number);
 
 	if (this->animation_file) {
-		auto frame_skeleton = this->animation_file->InterpolateSkeletons(frame_index0, frame_index1, fInterpolate);
-		this->bone_matrices.assign(frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
+		this->animation_file->InterpolatePose(this->bone_transforms, frame_index0, frame_index1, fInterpolate);
+	}
+	else {
+		this->bone_transforms.clear();
 	}
 }
 
@@ -45,10 +47,10 @@ void Animation::SetAnimationFile(std::shared_ptr<MD5Anim> file) {
 		this->animation_file = file;
 		this->frame_count = this->animation_file->GetFrameCount();
 		this->frame_rate = static_cast<double>(this->animation_file->GetFrameRate());
-		this->frame_duration = static_cast<double>(this->frame_count + 1) / this->frame_rate;
+		this->frame_duration = 1.0 / this->frame_rate;
+		this->animation_duration = this->frame_duration * static_cast<double>(this->frame_count);
 
-		auto frame_skeleton = this->animation_file->InterpolateSkeletons(0, 1, 0.0f);
-		this->bone_matrices.assign(frame_skeleton.bone_matrices.begin(), frame_skeleton.bone_matrices.end());
+		this->animation_file->InterpolatePose(this->bone_transforms, 0, 1, 0.0f);
 	}
 }
 void Animation::Out(proto::Component* target) {

@@ -10,6 +10,12 @@
 namespace tec {
 class MD5Anim;
 
+struct AnimationBone {
+	glm::quat orientation;
+	glm::vec4 offset;
+	glm::vec4 rest;
+};
+
 class Animation final {
 public:
 	Animation() = default;
@@ -37,7 +43,7 @@ public:
 	friend class RenderSystem;
 
 private:
-	std::vector<glm::mat4x4> bone_matrices;
+	std::vector<AnimationBone> bone_transforms;
 
 	std::string animation_name;
 	std::shared_ptr<MD5Anim> animation_file;
@@ -46,6 +52,7 @@ private:
 	std::size_t frame_count = 0;
 
 	double animation_time = 0.0f;
+	double animation_duration = 0.0f;
 	double frame_duration = 0.0f;
 	double frame_rate = 0.0f;
 };
