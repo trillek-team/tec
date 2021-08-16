@@ -29,6 +29,13 @@
 #include "resources/obj.hpp"
 #include "resources/pixel-buffer.hpp"
 
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
+
 namespace tec {
 using PointLightMap = Multiton<eid, PointLight*>;
 using DirectionalLightMap = Multiton<eid, DirectionalLight*>;
@@ -36,7 +43,7 @@ using RenderableMap = Multiton<eid, Renderable*>;
 using AnimationMap = Multiton<eid, Animation*>;
 using ScaleMap = Multiton<eid, Scale*>;
 
-typeof RenderSystem::_log RenderSystem::_log;
+std::shared_ptr<spdlog::logger> RenderSystem::_log;
 
 const GLSymbol& GLSymbol::Get(GLenum which) {
 	static const std::map<GLenum, GLSymbol> symbolic_gl_types{
@@ -47,8 +54,6 @@ const GLSymbol& GLSymbol::Get(GLenum which) {
 			{GL_INVALID_OPERATION, {"GL_INVALID_OPERATION"}},
 			{GL_INVALID_FRAMEBUFFER_OPERATION, {"GL_INVALID_FRAMEBUFFER_OPERATION"}},
 			{GL_OUT_OF_MEMORY, {"GL_OUT_OF_MEMORY"}},
-			{GL_STACK_UNDERFLOW, {"GL_STACK_UNDERFLOW"}},
-			{GL_STACK_OVERFLOW, {"GL_STACK_OVERFLOW"}},
 			// image formats
 			{GL_DEPTH_COMPONENT, {"GL_DEPTH_COMPONENT"}},
 			{GL_DEPTH_STENCIL, {"GL_DEPTH_STENCIL"}},
@@ -132,10 +137,12 @@ void RenderSystem::Startup() {
 		extensions.emplace(std::string((const char*)glGetStringi(GL_EXTENSIONS, e)));
 	}
 
+#ifdef GL_ARB_clip_control
 	if (HasExtension("GL_ARB_clip_control")) {
 		_log->debug("[RenderSystem] Using glClipControl.");
 		glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
 	}
+#endif
 	// Black is the safest clear color since this is a space game.
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	// Reversed Z buffering for improved precision (maybe)
@@ -164,7 +171,7 @@ void RenderSystem::Startup() {
 		_log->error("[RenderSystem] Failed to create Light GBuffer.");
 	}
 
-	const size_t checker_size = 64;
+	const uint32_t checker_size = 64;
 	auto default_pbuffer = std::make_shared<PixelBuffer>(checker_size, checker_size, 8, ImageColorMode::COLOR_RGBA);
 	{
 		std::lock_guard lg(default_pbuffer->GetWritelock());
@@ -209,8 +216,8 @@ void RenderSystem::RegisterConsole(Console& console) {
 	});
 }
 
-void RenderSystem::SetViewportSize(const glm::uvec2& view_size) {
-	auto viewport = glm::max(glm::uvec2(1), view_size);
+void RenderSystem::SetViewportSize(const glm::uvec2& new_view_size) {
+	auto viewport = glm::max(glm::uvec2(1), new_view_size);
 	this->view_size = viewport;
 	this->inv_view_size = 1.0f / glm::vec2(viewport);
 	float aspect_ratio = static_cast<float>(viewport.x) / static_cast<float>(viewport.y);

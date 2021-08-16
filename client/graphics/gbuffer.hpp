@@ -59,10 +59,10 @@ public:
 
 private:
 	GLuint frame_buffer_object{0};
-	GLuint color_textures[(size_t)TEXTURE_TYPE::TEXTURE_TYPE_LAST]{0, 0, 0, 0};
+	GLuint color_textures[(unsigned)TEXTURE_TYPE::TEXTURE_TYPE_LAST]{0, 0, 0, 0};
 	GLuint depth_texture{0};
 	GLuint final_texture{0};
-	static const unsigned short num_color_textures{(size_t)TEXTURE_TYPE::TEXTURE_TYPE_LAST};
+	static const unsigned short num_color_textures{(unsigned)TEXTURE_TYPE::TEXTURE_TYPE_LAST};
 	unsigned int depth_width{0}, depth_height{0};
 	DEPTH_TYPE depth_type{DEPTH_TYPE::DEPTH};
 };

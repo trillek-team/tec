@@ -59,7 +59,7 @@ message ShaderDef {
 }
 
 message RenderConfig {
-	optional RenderOptions options = 1;
+	RenderOptions options = 1;
 	repeated ShaderInclude includes = 2;
 	repeated ShaderDef shaders = 3;
 }
