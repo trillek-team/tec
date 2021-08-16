@@ -10,25 +10,23 @@
 #include "resources/mesh.hpp"
 
 namespace tec {
+/**
+* \brief Compute the quaternion's W component on interval [-1, 0], MD5 style.
+*
+* \return void
+*/
+void ComputeWNeg(glm::quat&);
+
 class MD5Mesh final : public MeshFile {
 public:
 	/*****************************/
 	/* MD5Mesh helper structures */
 	/*****************************/
 	struct Joint {
-		/**
-		* \brief Compute the joint's quaternion W component.
-		*
-		* \return void
-		*/
-		void ComputeW();
-
 		std::string name{""}; // The name of the joint
 		int parent{-1}; // index
 		glm::vec3 position{0.f, 0.f, 0.f}; // Transformed position.
 		glm::quat orientation{0.f, 0.f, 0.f, 1.f}; // Quaternion
-		glm::mat4 bind_pose{0.f};
-		glm::mat4 bind_pose_inverse{0.f};
 	};
 
 	struct Vertex {

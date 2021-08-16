@@ -8,33 +8,10 @@
 #include <glm/gtx/compatibility.hpp>
 #include <spdlog/spdlog.h>
 
+#include "graphics/animation.hpp"
 #include "md5mesh.hpp"
 
 namespace tec {
-void MD5Anim::Joint::ComputeW() {
-	float t = 1.0f - (this->base_orientation[0] * this->base_orientation[0])
-			  - (this->base_orientation[1] * this->base_orientation[1])
-			  - (this->base_orientation[2] * this->base_orientation[2]);
-
-	if (t < 0.0f) {
-		this->base_orientation[3] = 0.0f;
-	}
-	else {
-		this->base_orientation[3] = -sqrt(t);
-	}
-}
-
-void MD5Anim::SkeletonJoint::ComputeW() {
-	float t = 1.0f - (this->orientation[0] * this->orientation[0]) - (this->orientation[1] * this->orientation[1])
-			  - (this->orientation[2] * this->orientation[2]);
-
-	if (t < 0.0f) {
-		this->orientation[3] = 0.0f;
-	}
-	else {
-		this->orientation[3] = -sqrt(t);
-	}
-}
 
 /**
 * \brief Cleans an input string by removing certain grouping characters.
@@ -112,10 +89,7 @@ bool MD5Anim::Parse() {
 				if (line.find("\"") != std::string::npos) {
 					ss.str(CleanString(line));
 					Joint bone;
-					ss >> bone.name;
-					ss >> bone.parent;
-					ss >> bone.flags;
-					ss >> bone.start_index;
+					ss >> bone.name >> bone.parent >> bone.flags >> bone.start_index;
 					this->joints.push_back(std::move(bone));
 				}
 				// Check if the line contained the closing brace. This is done after parsing
@@ -130,12 +104,8 @@ bool MD5Anim::Parse() {
 				if ((line.find("(") != std::string::npos) && (line.find(")") != std::string::npos)) {
 					ss.str(CleanString(line));
 					BoundingBox bbox;
-					ss >> bbox.min[0];
-					ss >> bbox.min[1];
-					ss >> bbox.min[2];
-					ss >> bbox.max[0];
-					ss >> bbox.max[1];
-					ss >> bbox.max[2];
+					ss >> bbox.min.x >> bbox.min.y >> bbox.min.z;
+					ss >> bbox.max.x >> bbox.max.y >> bbox.max.z;
 					this->bounds.push_back(std::move(bbox));
 				}
 				// Check if the line contained the closing brace. This is done after parsing
@@ -155,12 +125,8 @@ bool MD5Anim::Parse() {
 					if (index > this->joints.size()) {
 						return false;
 					}
-					ss >> joint.base_position[0];
-					ss >> joint.base_position[1];
-					ss >> joint.base_position[2];
-					ss >> joint.base_orientation[0];
-					ss >> joint.base_orientation[1];
-					ss >> joint.base_orientation[2];
+					ss >> joint.base_position.x >> joint.base_position.y >> joint.base_position.z;
+					ss >> joint.base_orientation.x >> joint.base_orientation.y >> joint.base_orientation.z;
 				}
 				// Check if the line contained the closing brace. This is done after parsing
 				// as the line might have the ending brace on it.
@@ -207,7 +173,7 @@ void MD5Anim::BuildFrameSkeleton(std::size_t frame_index) {
 		unsigned int j = 0;
 
 		// Start with the base frame position and orientation.
-		SkeletonJoint skeleton_joint = {joint.parent, joint.base_position, joint.base_orientation};
+		SkeletonJoint skeleton_joint = {joint.base_position, joint.base_orientation};
 
 		if (joint.flags & 1) { // Pos.x
 			skeleton_joint.position.x = frame.parameters[joint.start_index + j++];
@@ -228,10 +194,10 @@ void MD5Anim::BuildFrameSkeleton(std::size_t frame_index) {
 			skeleton_joint.orientation.z = frame.parameters[joint.start_index + j++];
 		}
 
-		skeleton_joint.ComputeW();
+		ComputeWNeg(skeleton_joint.orientation);
 
-		if (skeleton_joint.parent >= 0) {
-			const auto& parent_joint = frame.skeleton.skeleton_joints[skeleton_joint.parent];
+		if (joint.parent >= 0) {
+			const auto& parent_joint = frame.skeleton.skeleton_joints[joint.parent];
 			glm::vec3 rotPos = parent_joint.orientation * skeleton_joint.position;
 
 			skeleton_joint.position = parent_joint.position + rotPos;
@@ -241,12 +207,6 @@ void MD5Anim::BuildFrameSkeleton(std::size_t frame_index) {
 		}
 
 		frame.skeleton.skeleton_joints.push_back(std::move(skeleton_joint));
-
-		glm::mat4 bone_translate = glm::translate(glm::mat4(1.0f), skeleton_joint.position);
-		glm::mat4 bone_rotate = glm::toMat4(skeleton_joint.orientation);
-		glm::mat4 bone_matrix = bone_translate * bone_rotate;
-
-		frame.skeleton.bone_matrices.push_back(bone_matrix);
 	}
 }
 
@@ -262,41 +222,33 @@ bool MD5Anim::CheckMesh(std::shared_ptr<MD5Mesh> mesh) {
 			if ((this->joints[i].name != mesh->joints[i].name) || (this->joints[i].parent != mesh->joints[i].parent)) {
 				return false;
 			}
-			this->joints[i].bind_pose_inverse = mesh->joints[i].bind_pose_inverse;
+			this->joints[i].bind_orientation = glm::conjugate(mesh->joints[i].orientation);
+			this->joints[i].bind_position = -mesh->joints[i].position;
 		}
 		return true;
 	}
 	return false;
 }
 
-MD5Anim::FrameSkeleton
-MD5Anim::InterpolateSkeletons(std::size_t frame_index_start, std::size_t frame_index_end, float delta) {
+void MD5Anim::InterpolatePose(
+		std::vector<AnimationBone>& pose_out, std::size_t frame_index_start, std::size_t frame_index_end, float delta) {
 	const auto& skeleton0 = this->frames[frame_index_start].skeleton;
 	const auto& skeleton1 = this->frames[frame_index_end].skeleton;
-	FrameSkeleton final_skeleton;
 
 	std::size_t num_joints = this->joints.size();
 
-	final_skeleton.skeleton_joints.insert(final_skeleton.skeleton_joints.begin(), num_joints, SkeletonJoint());
-	final_skeleton.bone_matrices.insert(final_skeleton.bone_matrices.begin(), num_joints, glm::mat4(1.0f));
+	pose_out.resize(num_joints);
 
 	for (std::size_t i = 0; i < num_joints; ++i) {
-		SkeletonJoint& finalJoint = final_skeleton.skeleton_joints[i];
-		glm::mat4& finalMatrix = final_skeleton.bone_matrices[i];
+		AnimationBone& finalpose = pose_out[i];
 
 		const SkeletonJoint& joint0 = skeleton0.skeleton_joints[i];
 		const SkeletonJoint& joint1 = skeleton1.skeleton_joints[i];
 
-		finalJoint.parent = joint0.parent;
-
-		finalJoint.position = glm::lerp(joint0.position, joint1.position, delta);
-		finalJoint.orientation = glm::mix(joint0.orientation, joint1.orientation, delta);
-
-		// Build the bone matrix for GPU skinning.
-		finalMatrix = (glm::translate(glm::mat4(1.0f), finalJoint.position) * glm::toMat4(finalJoint.orientation))
-					  * this->joints[i].bind_pose_inverse;
+		finalpose.offset = glm::vec4(glm::lerp(joint0.position, joint1.position, delta), 0.0);
+		finalpose.orientation = glm::mix(joint0.orientation, joint1.orientation, delta);
+		finalpose.orientation *= this->joints[i].bind_orientation;
+		finalpose.rest = glm::vec4(this->joints[i].bind_position, 0.0);
 	}
-
-	return final_skeleton;
 }
 } // namespace tec

@@ -19,31 +19,30 @@ namespace tec {
 * \return The cleaned string
 */
 std::string CleanString(std::string str) {
-	while (str.find("(") != std::string::npos) {
-		str.replace(str.find("("), 1, "");
+	while (str.find_first_of('(') != std::string::npos) {
+		str.erase(str.find_first_of('('), 1);
 	}
-	while (str.find(")") != std::string::npos) {
-		str.replace(str.find(")"), 1, "");
+	while (str.find_first_of(')') != std::string::npos) {
+		str.erase(str.find_first_of(')'), 1);
 	}
-	while (str.find("\"") != std::string::npos) {
-		str.replace(str.find("\""), 1, "");
+	while (str.find_first_of('"') != std::string::npos) {
+		str.erase(str.find_first_of('"'), 1);
 	}
-	while (str.find("\'") != std::string::npos) {
-		str.replace(str.find("\'"), 1, "");
+	while (str.find_first_of('\'') != std::string::npos) {
+		str.erase(str.find_first_of('\''), 1);
 	}
 
 	return str;
 }
 
-void MD5Mesh::Joint::ComputeW() {
-	float t = 1.0f - (this->orientation[0] * this->orientation[0]) - (this->orientation[1] * this->orientation[1])
-			  - (this->orientation[2] * this->orientation[2]);
+void ComputeWNeg(glm::quat& q) {
+	glm::vec3 imaginary_part{q.x, q.y, q.z};
+	imaginary_part *= imaginary_part;
+	float t = 1.0f - imaginary_part.x - imaginary_part.y - imaginary_part.z;
 
-	if (t < 0.0f) {
-		this->orientation[3] = 0.0f;
-	}
-	else {
-		this->orientation[3] = -sqrt(t);
+	q.w = 0;
+	if (t > 0.0f) {
+		q.w = -sqrtf(t);
 	}
 }
 
@@ -59,22 +58,11 @@ void MD5Mesh::Joint::ComputeW() {
 */
 MD5Mesh::Joint ParseJoint(std::stringstream& ss) {
 	MD5Mesh::Joint j;
-	ss >> j.name;
-	ss >> j.parent;
-	ss >> j.position[0];
-	ss >> j.position[1];
-	ss >> j.position[2];
-	ss >> j.orientation[0];
-	ss >> j.orientation[1];
-	ss >> j.orientation[2];
-	j.ComputeW();
+	ss >> j.name >> j.parent;
+	ss >> j.position.x >> j.position.y >> j.position.z;
+	ss >> j.orientation.x >> j.orientation.y >> j.orientation.z;
 
-	glm::mat4x4 boneTranslation = glm::translate(glm::mat4(1.0f), j.position);
-	glm::mat4x4 boneRotation = glm::toMat4(j.orientation);
-
-	j.bind_pose = (boneTranslation * boneRotation);
-	j.bind_pose_inverse = glm::inverse(j.bind_pose);
-
+	ComputeWNeg(j.orientation);
 	return j;
 }
 
@@ -88,11 +76,7 @@ MD5Mesh::Joint ParseJoint(std::stringstream& ss) {
 MD5Mesh::Vertex ParseVertex(std::stringstream& ss) {
 	MD5Mesh::Vertex v;
 	int index;
-	ss >> index;
-	ss >> v.uv[0];
-	ss >> v.uv[1];
-	ss >> v.startWeight;
-	ss >> v.weight_count;
+	ss >> index >> v.uv.x >> v.uv.y >> v.startWeight >> v.weight_count;
 	return v;
 }
 
@@ -106,10 +90,7 @@ MD5Mesh::Vertex ParseVertex(std::stringstream& ss) {
 MD5Mesh::Triangle ParseTriangle(std::stringstream& ss) {
 	MD5Mesh::Triangle t{};
 	int index = 0;
-	ss >> index;
-	ss >> t.verts[0];
-	ss >> t.verts[1];
-	ss >> t.verts[2];
+	ss >> index >> t.verts[0] >> t.verts[1] >> t.verts[2];
 	return t;
 }
 
@@ -123,12 +104,7 @@ MD5Mesh::Triangle ParseTriangle(std::stringstream& ss) {
 MD5Mesh::Weight ParsesWeight(std::stringstream& ss) {
 	MD5Mesh::Weight w;
 	int index;
-	ss >> index;
-	ss >> w.joint;
-	ss >> w.bias;
-	ss >> w.position[0];
-	ss >> w.position[1];
-	ss >> w.position[2];
+	ss >> index >> w.joint >> w.bias >> w.position.x >> w.position.y >> w.position.z;
 	return w;
 }
 
@@ -282,12 +258,13 @@ void MD5Mesh::CalculateVertexPositions() {
 			for (std::uint8_t k = 0; k < vert.weight_count; ++k) {
 				auto weight_index = static_cast<std::size_t>(vert.startWeight) + static_cast<std::size_t>(k);
 				Weight& weight = int_mesh.weights[weight_index];
+				Joint& weight_joint = this->joints[weight.joint];
 
 				/* Calculate transformed vertex for this weight */
-				glm::vec3 wv = this->joints[weight.joint].orientation * weight.position;
+				glm::vec3 wv = weight_joint.orientation * (weight.position);
 
 				/* the sum of all weight->bias should be 1.0 */
-				vdata.position += (this->joints[weight.joint].position + wv) * weight.bias;
+				vdata.position += (weight_joint.position + wv) * weight.bias;
 				vweight.bone_indices[k] = static_cast<glm::u32>(weight.joint);
 				vweight.bone_weights[k] = weight.bias;
 			}

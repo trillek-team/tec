@@ -9,11 +9,13 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "filesystem.hpp"
+#include "md5mesh.hpp"
 #include "multiton.hpp"
 
 namespace tec {
 class MD5Mesh;
 class MD5Anim;
+struct AnimationBone;
 typedef Multiton<std::string, std::shared_ptr<MD5Anim>> AnimationMap;
 
 class MD5Anim final {
@@ -31,8 +33,8 @@ public:
 		int start_index{0};
 		glm::vec3 base_position{0.f, 0.f, 0.f};
 		glm::quat base_orientation{0.f, 0.f, 0.f, 1.f};
-		glm::mat4 bind_pose_inverse{0.f};
-		void ComputeW();
+		glm::vec3 bind_position{0.f, 0.f, 0.f};
+		glm::quat bind_orientation{0.f, 0.f, 0.f, 1.f};
 	};
 
 	struct BoundingBox {
@@ -41,15 +43,12 @@ public:
 	};
 
 	struct SkeletonJoint {
-		int parent;
 		glm::vec3 position{0.f, 0.f, 0.f};
 		glm::quat orientation{0.f, 0.f, 0.f, 1.f};
-		void ComputeW();
 	};
 
 	struct FrameSkeleton {
 		std::vector<SkeletonJoint> skeleton_joints;
-		std::vector<glm::mat4> bone_matrices;
 	};
 
 	struct Frame {
@@ -120,14 +119,18 @@ public:
 	bool CheckMesh(std::shared_ptr<MD5Mesh> mesh_file);
 
 	/**
-	* \brief Gets the interpolated FrameSkeleton between 2 frames at a given delta.
+	* \brief Gets the interpolated pose skeleton between 2 frames at a given delta.
 	*
-	* \param[in] size_t frame_index_start The starting frame index.
-	* \param[in] size_t frame_index_start The ending frame index.
-	* \param[in] float delta The change in time since the last call.
-	* \return FrameSkeleton The current FrameSkeleton for the given delta.
+	* \param[out] pose_out array of AnimationBone to store the interpolated pose in.
+	* \param[in] frame_index_start The starting frame index.
+	* \param[in] frame_index_start The ending frame index.
+	* \param[in] delta The change in time since the last call.
 	*/
-	FrameSkeleton InterpolateSkeletons(std::size_t frame_index_start, std::size_t frame_index_end, float delta);
+	void InterpolatePose(
+			std::vector<AnimationBone>& pose_out,
+			std::size_t frame_index_start,
+			std::size_t frame_index_end,
+			float delta);
 
 private:
 	FilePath path; // Relative filename
