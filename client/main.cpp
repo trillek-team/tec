@@ -102,7 +102,7 @@ int main(int argc, char* argv[]) {
 
 	const unsigned int window_width = game.config_script->environment.get_or("window_width", WINDOW_WIDTH);
 	const unsigned int window_height = game.config_script->environment.get_or("window_height", WINDOW_HEIGHT);
-	std::string window_title = "Trillek Engine 0.1";
+	std::string window_title = "Trillek Engine 0.14";
 
 	log->info("Initializing OpenGL...");
 	if (!os.InitializeWindow(window_width, window_height, window_title, 4, 0)) {

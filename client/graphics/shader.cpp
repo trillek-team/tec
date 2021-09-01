@@ -13,7 +13,7 @@
 namespace tec {
 
 static const std::map<std::string_view, GLint> engine_constants{
-		{"gCompositeMap", 0},
+		{"gCompositeMap", (GLint)GBuffer::TEXTURE_TYPE::TEXTURE_TYPE_LAST},
 		{"gPositionMap", (GLint)GBuffer::TEXTURE_TYPE::POSITION},
 		{"gNormalMap", (GLint)GBuffer::TEXTURE_TYPE::NORMAL},
 		{"gColorMap", (GLint)GBuffer::TEXTURE_TYPE::DIFFUSE},

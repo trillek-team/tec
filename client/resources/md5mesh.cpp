@@ -19,17 +19,22 @@ namespace tec {
 * \return The cleaned string
 */
 std::string CleanString(std::string str) {
-	while (str.find_first_of('(') != std::string::npos) {
-		str.erase(str.find_first_of('('), 1);
+	size_t where;
+	constexpr size_t npos = std::string::npos;
+	if (npos != (where = str.find_first_of("//"))) {
+		str.erase(where, npos); // everything after start of comment line
 	}
-	while (str.find_first_of(')') != std::string::npos) {
-		str.erase(str.find_first_of(')'), 1);
+	while (npos != (where = str.find_first_of('('))) {
+		str.erase(where, 1);
 	}
-	while (str.find_first_of('"') != std::string::npos) {
-		str.erase(str.find_first_of('"'), 1);
+	while (npos != (where = str.find_first_of(')'))) {
+		str.erase(where, 1);
 	}
-	while (str.find_first_of('\'') != std::string::npos) {
-		str.erase(str.find_first_of('\''), 1);
+	while (npos != (where = str.find_first_of('"'))) {
+		str.erase(where, 1);
+	}
+	while (npos != (where = str.find_first_of('\''))) {
+		str.erase(where, 1);
 	}
 
 	return str;
@@ -181,6 +186,7 @@ bool MD5Mesh::Parse() {
 		}
 		else if (identifier == "mesh") {
 			InternalMesh mesh;
+			int embedded_list = 0;
 			while (std::getline(f, line)) {
 				std::string line2 = CleanString(line);
 				ss.str(line2);
@@ -189,9 +195,16 @@ bool MD5Mesh::Parse() {
 
 				ss >> identifier;
 
-				if (identifier == "shader") {
+				if (embedded_list) {
+					// unlikely, but check anyways
+					if (line.find_first_of('{') != std::string::npos) {
+						embedded_list++;
+					}
+				}
+				else if (identifier == "shader") {
 					ss >> mesh.shader;
 					auto filename = base_path / mesh.shader;
+					_log->debug("[MD5Mesh] shader=\"{}\", file=\"{}\"", mesh.shader, filename.toString());
 					if (!TextureMap::Has(mesh.shader)) {
 						auto pixbuf = PixelBuffer::Create(mesh.shader, filename, true);
 						auto tex = std::make_shared<TextureObject>(pixbuf);
@@ -222,9 +235,17 @@ bool MD5Mesh::Parse() {
 				else if (identifier == "weight") {
 					mesh.weights.push_back(ParsesWeight(ss));
 				}
+				// check if the line is the start of another list!
+				else if (line.find_first_of('{') != std::string::npos) {
+					embedded_list++;
+				}
 				// Check if the line contained the closing brace. This is done after parsing
 				// as the line might have the ending brace on it.
-				if (line.find("}") != std::string::npos) {
+				if (line.find('}') != std::string::npos) {
+					if (embedded_list) { // check if this brace belongs to an inner list
+						embedded_list--;
+						continue;
+					}
 					this->meshes_internal.push_back(std::move(mesh));
 					break;
 				}
@@ -242,7 +263,7 @@ void MD5Mesh::CalculateVertexPositions() {
 			CreateMesh()->has_weight = true;
 		}
 	}
-
+	auto _log = spdlog::get("console_log");
 	for (std::size_t i = 0; i < this->meshes_internal.size(); ++i) {
 		Mesh* mesh = this->meshes[i];
 		InternalMesh& int_mesh = this->meshes_internal[i];
@@ -301,7 +322,7 @@ void MD5Mesh::CalculateVertexNormals() {
 			glm::vec3 v1 = int_mesh.verts[int_mesh.tris[j].verts[1]].position;
 			glm::vec3 v2 = int_mesh.verts[int_mesh.tris[j].verts[2]].position;
 
-			glm::vec3 normal = glm::cross(v2 - v0, v1 - v0);
+			glm::vec3 normal = glm::normalize(glm::cross(v2 - v0, v1 - v0));
 
 			int_mesh.verts[int_mesh.tris[j].verts[0]].normal += normal;
 			int_mesh.verts[int_mesh.tris[j].verts[1]].normal += normal;
@@ -347,6 +368,7 @@ void MD5Mesh::UpdateIndexList() {
 		slash = (slash == std::string::npos) ? 0 : (slash + 1); // skip past any slash
 		size_t dot = material_name.find_last_of(".");
 		material_name = material_name.substr(slash, dot - slash) + "_material";
+		spdlog::get("console_log")->debug("[MD5-Mat] name: '{}'", material_name);
 		if (objgroup->indices.size() < int_mesh.tris.size()) {
 			objgroup->indices.reserve(int_mesh.tris.size() * 3);
 		}
