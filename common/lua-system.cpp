@@ -116,7 +116,7 @@ void LuaSystem::ProcessEvents() {
 	EventQueue<ChatCommandEvent>::ProcessEventQueue();
 }
 
-void LuaSystem::On(std::shared_ptr<EntityCreated> data) {
+void LuaSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 	eid entity_id = data->entity.id();
 	for (int i = 0; i < data->entity.components_size(); ++i) {
 		const proto::Component& comp = data->entity.components(i);
@@ -179,9 +179,9 @@ std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
 	return script;
 }
 
-void LuaSystem::On(std::shared_ptr<EntityDestroyed> data) { LuaScriptMap::Remove(data->entity_id); }
+void LuaSystem::On(eid entity_id, std::shared_ptr<EntityDestroyed> data) { LuaScriptMap::Remove(entity_id); }
 
-void LuaSystem::On(std::shared_ptr<ChatCommandEvent> data) {
+void LuaSystem::On(eid, std::shared_ptr<ChatCommandEvent> data) {
 	this->CallFunctions("onChatCommand", data->command, data->args);
 }
 

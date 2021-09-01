@@ -43,8 +43,7 @@ void User::RemoveEntityFromWorld() {
 	{
 		if (this->entity_id != 0) {
 			std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
-			data->entity_id = this->entity_id;
-			EventSystem<EntityDestroyed>::Get()->Emit(data);
+			EventSystem<EntityDestroyed>::Get()->Emit(this->entity_id, data);
 			this->entity_id = 0;
 		}
 	}

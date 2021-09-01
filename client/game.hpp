@@ -62,10 +62,8 @@ private:
 
 	void ProcessEvents();
 
-	using EventQueue<KeyboardEvent>::On;
-	void On(std::shared_ptr<KeyboardEvent> data);
-	using EventQueue<MouseClickEvent>::On;
-	void On(std::shared_ptr<MouseClickEvent> data);
+	void On(eid, std::shared_ptr<KeyboardEvent> data) override;
+	void On(eid, std::shared_ptr<MouseClickEvent> data) override;
 
 	// Frames per second
 	unsigned int frames = 0;

@@ -44,12 +44,9 @@ public:
 
 	void DebugDraw();
 
-	using EventQueue<MouseBtnEvent>::On;
-	using EventQueue<EntityCreated>::On;
-	using EventQueue<EntityDestroyed>::On;
-	void On(std::shared_ptr<MouseBtnEvent> data);
-	void On(std::shared_ptr<EntityCreated> data);
-	void On(std::shared_ptr<EntityDestroyed> data);
+	void On(eid, std::shared_ptr<MouseBtnEvent> data) override;
+	void On(eid, std::shared_ptr<EntityCreated> data) override;
+	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
 
 	Position GetPosition(eid entity_id);
 	Orientation GetOrientation(eid entity_id);

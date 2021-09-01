@@ -34,12 +34,9 @@ public:
 
 	void SetCommandID(state_id_t _command_id) { this->command_id = _command_id; }
 
-	using EventQueue<EntityCreated>::On;
-	using EventQueue<EntityDestroyed>::On;
-	using EventQueue<NewGameStateEvent>::On;
-	virtual void On(std::shared_ptr<EntityCreated> data);
-	virtual void On(std::shared_ptr<EntityDestroyed> data);
-	virtual void On(std::shared_ptr<NewGameStateEvent> data);
+	virtual void On(eid, std::shared_ptr<EntityCreated> data) override;
+	virtual void On(eid, std::shared_ptr<EntityDestroyed> data) override;
+	virtual void On(eid, std::shared_ptr<NewGameStateEvent> data) override;
 
 	GameState& GetInterpolatedState() { return this->interpolated_state; }
 

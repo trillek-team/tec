@@ -54,14 +54,13 @@ public:
 			Event<T> e = std::move(this->read_event_queue->queue.front());
 			this->read_event_queue->queue.pop();
 
-			static_cast<EventQueue<T>*>(this)->On(e.data);
+			static_cast<EventQueue<T>*>(this)->On(e.entity_id, e.data);
 		}
 	}
 
 	void QueueEvent(Event<T>&& e) { (*write_event_queue).emplace(std::move(e)); }
 
 	virtual void On(const eid, std::shared_ptr<T>) {}
-	virtual void On(std::shared_ptr<T>) {}
 
 protected:
 	Queue<Event<T>>* read_event_queue;

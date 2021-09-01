@@ -56,10 +56,8 @@ public:
 
 	void ProcessEvents();
 
-	using EventQueue<EntityCreated>::On;
-	using EventQueue<EntityDestroyed>::On;
-	void On(std::shared_ptr<EntityCreated> data);
-	void On(std::shared_ptr<EntityDestroyed> data);
+	void On(eid, std::shared_ptr<EntityCreated> data) override;
+	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
 
 	system::UserAuthenticator& GetAuthenticator() { return this->authenticator; }
 

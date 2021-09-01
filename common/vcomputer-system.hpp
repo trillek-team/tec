@@ -131,16 +131,11 @@ public:
 	*/
 	void Update(double delta);
 
-	using EventQueue<KeyboardEvent>::On;
-	using EventQueue<MouseBtnEvent>::On;
-	using EventQueue<MouseClickEvent>::On;
-	using EventQueue<EntityCreated>::On;
-	using EventQueue<EntityDestroyed>::On;
-	void On(std::shared_ptr<KeyboardEvent> data);
-	void On(std::shared_ptr<MouseBtnEvent> data);
-	void On(std::shared_ptr<MouseClickEvent> data);
-	void On(std::shared_ptr<EntityCreated> data);
-	void On(std::shared_ptr<EntityDestroyed> data);
+	void On(eid, std::shared_ptr<KeyboardEvent> data) override;
+	void On(eid, std::shared_ptr<MouseBtnEvent> data) override;
+	void On(eid, std::shared_ptr<MouseClickEvent> data) override;
+	void On(eid, std::shared_ptr<EntityCreated> data) override;
+	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
 
 private:
 	std::shared_ptr<spdlog::logger> _log;

@@ -67,10 +67,8 @@ private:
 	std::map<std::string, std::tuple<std::function<void(const std::string&)>, std::string>>
 			commands; /// Storage of commands and help info
 
-	using EventQueue<WindowResizedEvent>::On;
-	using EventQueue<KeyboardEvent>::On;
-	void On(std::shared_ptr<WindowResizedEvent> data) override;
-	void On(std::shared_ptr<KeyboardEvent> data) override;
+	void On(eid, std::shared_ptr<WindowResizedEvent> data) override;
+	void On(eid, std::shared_ptr<KeyboardEvent> data) override;
 
 	std::function<void(const std::string&)> slash_handler;
 };

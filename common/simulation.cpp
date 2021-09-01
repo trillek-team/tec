@@ -76,27 +76,31 @@ void Simulation::AddController(Controller* controller) { this->controllers.push_
 
 void Simulation::RemoveController(Controller* controller) { this->controllers.remove(controller); }
 
-void Simulation::On(std::shared_ptr<KeyboardEvent> data) { this->event_list.keyboard_events.push_back(*data.get()); }
+void Simulation::On(eid, std::shared_ptr<KeyboardEvent> data) {
+	this->event_list.keyboard_events.push_back(*data.get());
+}
 
-void Simulation::On(std::shared_ptr<MouseBtnEvent> data) {
+void Simulation::On(eid, std::shared_ptr<MouseBtnEvent> data) {
 	this->event_list.mouse_button_events.push_back(*data.get());
 }
 
-void Simulation::On(std::shared_ptr<MouseMoveEvent> data) { this->event_list.mouse_move_events.push_back(*data.get()); }
+void Simulation::On(eid, std::shared_ptr<MouseMoveEvent> data) {
+	this->event_list.mouse_move_events.push_back(*data.get());
+}
 
-void Simulation::On(std::shared_ptr<MouseClickEvent> data) {
+void Simulation::On(eid, std::shared_ptr<MouseClickEvent> data) {
 	this->event_list.mouse_click_events.push_back(*data.get());
 }
 
-void Simulation::On(std::shared_ptr<ControllerAddedEvent> data) { AddController(data->controller.get()); }
+void Simulation::On(eid, std::shared_ptr<ControllerAddedEvent> data) { AddController(data->controller.get()); }
 
-void Simulation::On(std::shared_ptr<ControllerRemovedEvent> data) { RemoveController(data->controller.get()); }
+void Simulation::On(eid, std::shared_ptr<ControllerRemovedEvent> data) { RemoveController(data->controller.get()); }
 
 /// \brief This event is sent to indicate that focus had been captured by an entity
 /// it specifies which was captured: keyboard or mouse, if either of these parameters is true,
 /// then prevent normal processing of those events
 /// a controller implementing this should logically AND NOT these inputs with it's current settings
-void Simulation::On(std::shared_ptr<FocusCapturedEvent> data) {
+void Simulation::On(eid, std::shared_ptr<FocusCapturedEvent> data) {
 	for (Controller* controller : this->controllers) {
 		controller->ClearFocus(data->keyboard, data->mouse);
 	}
@@ -106,13 +110,13 @@ void Simulation::On(std::shared_ptr<FocusCapturedEvent> data) {
 /// it specifies which was blurred: keyboard or mouse, if either of these parameters is true,
 /// then restore normal processing of those events
 /// a controller implementing this should logically OR these inputs with it's current settings
-void Simulation::On(std::shared_ptr<FocusBlurEvent> data) {
+void Simulation::On(eid, std::shared_ptr<FocusBlurEvent> data) {
 	for (Controller* controller : this->controllers) {
 		controller->SetFocus(data->keyboard, data->mouse);
 	}
 }
 
-void Simulation::On(std::shared_ptr<ClientCommandsEvent> data) {
+void Simulation::On(eid, std::shared_ptr<ClientCommandsEvent> data) {
 	for (Controller* controller : this->controllers) {
 		if (static_cast<unsigned int>(controller->entity_id) == data->client_commands.id()) {
 			controller->ApplyClientCommands(data->client_commands);

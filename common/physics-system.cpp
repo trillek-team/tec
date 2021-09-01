@@ -368,21 +368,20 @@ void PhysicsSystem::RemoveRigidBody(eid entity_id) {
 	}
 }
 
-void PhysicsSystem::On(std::shared_ptr<MouseBtnEvent> data) {
+void PhysicsSystem::On(eid, std::shared_ptr<MouseBtnEvent> data) {
 	if (data->action == MouseBtnEvent::DOWN) {
 		if (this->last_entity_hit) {
 			std::shared_ptr<MouseClickEvent> mce_event = std::make_shared<MouseClickEvent>();
 			mce_event->button = data->button;
-			mce_event->entity_id = this->last_entity_hit;
 			mce_event->ray_distance = this->last_raydist;
 			mce_event->ray_hit_point_world =
 					glm::vec3(this->last_raypos.getX(), this->last_raypos.getY(), this->last_raypos.getZ());
-			EventSystem<MouseClickEvent>::Get()->Emit(mce_event);
+			EventSystem<MouseClickEvent>::Get()->Emit(this->last_entity_hit, mce_event);
 		}
 	}
 }
 
-void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
+void PhysicsSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 	eid entity_id = data->entity.id();
 	for (int i = 0; i < data->entity.components_size(); ++i) {
 		const proto::Component& comp = data->entity.components(i);
@@ -415,12 +414,12 @@ void PhysicsSystem::On(std::shared_ptr<EntityCreated> data) {
 	}
 }
 
-void PhysicsSystem::On(std::shared_ptr<EntityDestroyed> data) {
-	CollisionBodyMap::Remove(data->entity_id);
-	RemoveRigidBody(data->entity_id);
-	this->bodies.erase(data->entity_id); // There isn't a chance it will be re-added.
-	PositionMap::Remove(data->entity_id);
-	OrientationMap::Remove(data->entity_id);
+void PhysicsSystem::On(eid entity_id, std::shared_ptr<EntityDestroyed> data) {
+	CollisionBodyMap::Remove(entity_id);
+	RemoveRigidBody(entity_id);
+	this->bodies.erase(entity_id); // There isn't a chance it will be re-added.
+	PositionMap::Remove(entity_id);
+	OrientationMap::Remove(entity_id);
 }
 
 Position PhysicsSystem::GetPosition(eid entity_id) {

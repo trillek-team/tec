@@ -209,13 +209,13 @@ void Game::ProcessEvents() {
 	EventQueue<MouseClickEvent>::ProcessEventQueue();
 }
 
-void Game::On(std::shared_ptr<KeyboardEvent> data) {
+void Game::On(eid, std::shared_ptr<KeyboardEvent> data) {
 	if (data->action == KeyboardEvent::KEY_UP) {
 		this->lua_sys.CallFunctions("onKeyUp", data->key);
 	}
 }
 
-void Game::On(std::shared_ptr<MouseClickEvent> data) {
+void Game::On(eid, std::shared_ptr<MouseClickEvent> data) {
 	if (data->button == MouseBtnEvent::LEFT) {
 		this->placement.PlaceEntityInWorld(data->ray_hit_point_world);
 	}

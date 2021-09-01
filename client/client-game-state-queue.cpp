@@ -116,7 +116,9 @@ void ClientGameStateQueue::ProcessEventQueue() {
 	EventQueue<NewGameStateEvent>::ProcessEventQueue();
 }
 
-void ClientGameStateQueue::On(std::shared_ptr<NewGameStateEvent> data) { QueueServerState(std::move(data->new_state)); }
+void ClientGameStateQueue::On(eid, std::shared_ptr<NewGameStateEvent> data) {
+	QueueServerState(std::move(data->new_state));
+}
 
 void ClientGameStateQueue::QueueServerState(GameState&& new_state) {
 	if (new_state.state_id > this->last_server_state_id) {
@@ -184,7 +186,7 @@ void ClientGameStateQueue::UpdatePredictions(GameState& new_state) {
 	this->predictions.emplace(std::make_pair(this->command_id, predict_state));
 }
 
-void ClientGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
+void ClientGameStateQueue::On(eid, std::shared_ptr<EntityCreated> data) {
 	const proto::Entity& entity = data->entity;
 	eid entity_id = entity.id();
 	for (int i = 0; i < entity.components_size(); ++i) {
@@ -219,8 +221,7 @@ void ClientGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 	}
 }
 
-void ClientGameStateQueue::On(std::shared_ptr<EntityDestroyed> data) {
-	const eid entity_id = data->entity_id;
+void ClientGameStateQueue::On(eid entity_id, std::shared_ptr<EntityDestroyed> data) {
 	this->interpolated_state.positions.erase(entity_id);
 	this->base_state.positions.erase(entity_id);
 	this->interpolated_state.orientations.erase(entity_id);

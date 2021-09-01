@@ -33,12 +33,9 @@ public:
 	void Update(const double delta);
 	void ProcessEvents();
 
-	using EventQueue<EntityCreated>::On;
-	using EventQueue<EntityDestroyed>::On;
-	using EventQueue<ChatCommandEvent>::On;
-	void On(std::shared_ptr<EntityCreated> data);
-	void On(std::shared_ptr<EntityDestroyed> data);
-	void On(std::shared_ptr<ChatCommandEvent> data);
+	void On(eid, std::shared_ptr<EntityCreated> data) override;
+	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
+	void On(eid, std::shared_ptr<ChatCommandEvent> data) override;
 
 	void ExecuteString(std::string script_string);
 

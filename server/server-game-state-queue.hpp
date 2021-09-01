@@ -17,10 +17,8 @@ class ServerGameStateQueue : public EventQueue<EntityCreated>, public EventQueue
 public:
 	ServerGameStateQueue(ServerStats& s);
 
-	using EventQueue<EntityCreated>::On;
-	using EventQueue<EntityDestroyed>::On;
-	virtual void On(std::shared_ptr<EntityCreated> data);
-	virtual void On(std::shared_ptr<EntityDestroyed> data);
+	virtual void On(eid, std::shared_ptr<EntityCreated> data) override;
+	virtual void On(eid, std::shared_ptr<EntityDestroyed> data) override;
 
 	void ProcessEventQueue();
 

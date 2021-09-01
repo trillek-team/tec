@@ -236,36 +236,35 @@ std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id, std::weak_ptr<Mesh
 	return voxvol;
 }
 
-void VoxelVolume::On(std::shared_ptr<MouseClickEvent> data) {
+void VoxelVolume::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
+	if (entity_id != this->entity_id) {
+		return;
+	}
 	if (data->button == MouseBtnEvent::LEFT) {
-		if (data->entity_id == this->entity_id) {
-			const Position* pos = Entity(entity_id).Get<Position>();
-			const Orientation* orientation = Entity(entity_id).Get<Orientation>();
-			glm::mat4 model_view =
-					glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
-			glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
-			std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
-			local_coords.y += FLT_EPSILON * (std::signbit(local_coords.y) ? -1.0f : 0.0f);
-			std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
-			std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
+		const Position* pos = Entity(entity_id).Get<Position>();
+		const Orientation* orientation = Entity(entity_id).Get<Orientation>();
+		glm::mat4 model_view =
+				glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
+		glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
+		std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
+		local_coords.y += FLT_EPSILON * (std::signbit(local_coords.y) ? -1.0f : 0.0f);
+		std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
+		std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
 
-			AddVoxel(grid_y, grid_x, grid_z);
-		}
+		AddVoxel(grid_y, grid_x, grid_z);
 	}
 	else if (data->button == MouseBtnEvent::RIGHT) {
-		if (data->entity_id == this->entity_id) {
-			const Position* pos = Entity(entity_id).Get<Position>();
-			const Orientation* orientation = Entity(entity_id).Get<Orientation>();
-			glm::mat4 model_view =
-					glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
-			glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
-			std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
-			local_coords.y -= FLT_EPSILON * (std::signbit(local_coords.y) ? 0.0f : 1.0f);
-			std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
-			std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
+		const Position* pos = Entity(entity_id).Get<Position>();
+		const Orientation* orientation = Entity(entity_id).Get<Orientation>();
+		glm::mat4 model_view =
+				glm::inverse(glm::translate(glm::mat4(1.0), pos->value) * glm::mat4_cast(orientation->value));
+		glm::vec4 local_coords = model_view * glm::vec4(data->ray_hit_point_world, 1.0f);
+		std::int16_t grid_x = static_cast<std::int16_t>(floor(local_coords.x));
+		local_coords.y -= FLT_EPSILON * (std::signbit(local_coords.y) ? 0.0f : 1.0f);
+		std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
+		std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
 
-			RemoveVoxel(grid_y, grid_x, grid_z);
-		}
+		RemoveVoxel(grid_y, grid_x, grid_z);
 	}
 }
 } // namespace tec

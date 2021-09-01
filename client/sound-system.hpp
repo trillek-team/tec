@@ -88,10 +88,8 @@ public:
 
 	void Stop() { this->running = false; }
 
-	using EventQueue<EntityCreated>::On;
-	using EventQueue<EntityDestroyed>::On;
-	void On(std::shared_ptr<EntityCreated> data);
-	void On(std::shared_ptr<EntityDestroyed> data);
+	void On(eid, std::shared_ptr<EntityCreated> data) override;
+	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
 
 private:
 	std::atomic_bool running{true};
