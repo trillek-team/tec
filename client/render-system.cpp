@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <forward_list>
+#include <regex>
 #include <thread>
 
 #include <glm/ext.hpp>
@@ -210,9 +211,32 @@ void RenderSystem::Startup() {
 	_log->info("[RenderSystem] Startup complete.");
 }
 
+static std::vector<std::string> SplitString(std::string args, std::string deliminator = " ") {
+	auto regexz = std::regex(deliminator);
+	return {std::sregex_token_iterator(args.begin(), args.end(), regexz, -1), std::sregex_token_iterator()};
+}
+
 void RenderSystem::RegisterConsole(Console& console) {
 	console.AddConsoleCommand("rs_debug", "Toggle GBuffer debug render", [this](const std::string&) {
 		this->options.set_debug_gbuffer(!this->options.debug_gbuffer());
+	});
+	console.AddConsoleCommand("rs_anim", "Control animation: {entity} (play|stop)", [](const std::string& argstr) {
+		auto argv = SplitString(argstr);
+		eid entity_id = std::stoll(argv[0]);
+		if (!AnimationMap::Has(entity_id)) {
+			_log->error("[RSCommand] No such entity:{}", entity_id);
+			return;
+		}
+		auto anim = AnimationMap::Get(entity_id);
+		if (!anim) {
+			_log->error("[RSCommand] Bad animation:{}", entity_id);
+		}
+		if (argv[1] == "play") {
+			anim->Play(false);
+		}
+		else if (argv[1] == "stop") {
+			anim->Stop();
+		}
 	});
 }
 

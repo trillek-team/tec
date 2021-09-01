@@ -16,14 +16,28 @@ void Animation::UpdateAnimation(const double delta) {
 	if (this->frame_count < 1) {
 		return;
 	}
-
-	this->animation_time += delta;
-
-	while (this->animation_time > this->animation_duration) {
-		this->animation_time -= this->animation_duration;
+	if (play_rate == 0.0) {
+		return;
 	}
-	while (this->animation_time < 0.0f) {
-		this->animation_time += this->animation_duration;
+	this->animation_time += delta * play_rate;
+
+	if (this->animation_time > this->animation_duration) {
+		if (looping) {
+			this->animation_time -= this->animation_duration;
+		}
+		else {
+			this->animation_time = this->animation_duration;
+			play_rate = 0.0;
+		}
+	}
+	if (this->animation_time < 0.0f) {
+		if (looping) {
+			this->animation_time += this->animation_duration;
+		}
+		else {
+			this->animation_time = 0.0;
+			play_rate = 0.0;
+		}
 	}
 
 	// Figure out which frame we're on
@@ -61,24 +75,29 @@ void Animation::Out(proto::Component* target) {
 extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 void Animation::In(const proto::Component& source) {
 	const proto::Animation& comp = source.animation();
-	if (comp.has_animation_name()) {
-		this->animation_name = comp.animation_name();
-		if (!AnimationMap::Has(this->animation_name)) {
-			std::string ext = this->animation_name.substr(this->animation_name.find_last_of(".") + 1);
-			if (file_factories.find(ext) != file_factories.end()) {
-				file_factories[ext](this->animation_name);
-			}
-		}
-		const auto mesh_name = comp.mesh_name();
-		if (!MeshMap::Has(mesh_name)) {
-			std::string ext = mesh_name.substr(mesh_name.find_last_of(".") + 1);
-			if (file_factories.find(ext) != file_factories.end()) {
-				file_factories[ext](mesh_name);
-			}
-		}
-		const auto animation{AnimationMap::Get(this->animation_name)};
-		animation->CheckMesh(std::static_pointer_cast<MD5Mesh>(MeshMap::Get(mesh_name)));
-		this->SetAnimationFile(animation);
+	if (!comp.has_animation_name()) {
+		return;
 	}
+	if (comp.play()) {
+		this->play_rate = 1.0;
+	}
+	this->looping = comp.loop();
+	this->animation_name = comp.animation_name();
+	if (!AnimationMap::Has(this->animation_name)) {
+		std::string ext = this->animation_name.substr(this->animation_name.find_last_of(".") + 1);
+		if (file_factories.find(ext) != file_factories.end()) {
+			file_factories[ext](this->animation_name);
+		}
+	}
+	const auto mesh_name = comp.mesh_name();
+	if (!MeshMap::Has(mesh_name)) {
+		std::string ext = mesh_name.substr(mesh_name.find_last_of(".") + 1);
+		if (file_factories.find(ext) != file_factories.end()) {
+			file_factories[ext](mesh_name);
+		}
+	}
+	const auto animation{AnimationMap::Get(this->animation_name)};
+	animation->CheckMesh(std::static_pointer_cast<MD5Mesh>(MeshMap::Get(mesh_name)));
+	this->SetAnimationFile(animation);
 }
 } // namespace tec

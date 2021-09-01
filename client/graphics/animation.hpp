@@ -37,6 +37,15 @@ public:
 	*/
 	void SetAnimationFile(std::shared_ptr<MD5Anim> file);
 
+	void Play(bool from_start) {
+		play_rate = 1.0;
+		if (from_start) {
+			animation_time = 0.0;
+		}
+	}
+	void Stop() { play_rate = 0.0; }
+	void SetLoop(bool loop) { looping = loop; }
+
 	void Out(proto::Component* target);
 	void In(const proto::Component& source);
 
@@ -51,10 +60,12 @@ private:
 	std::size_t current_frame_index = 0;
 	std::size_t frame_count = 0;
 
-	double animation_time = 0.0f;
-	double animation_duration = 0.0f;
-	double frame_duration = 0.0f;
-	double frame_rate = 0.0f;
+	double animation_time{0.0};
+	double animation_duration{0.0};
+	double frame_duration{0.0};
+	double frame_rate{0.0};
+	double play_rate{1.0};
+	bool looping{true};
 };
 
 } // namespace tec

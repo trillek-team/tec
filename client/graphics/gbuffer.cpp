@@ -126,9 +126,9 @@ void GBuffer::FinalPass() const {
 	glDepthMask(GL_FALSE);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + this->num_color_textures);
 	glBindTexture(GL_TEXTURE_2D, this->final_texture);
-	for (unsigned int i = 1; i < this->num_color_textures; i++) {
+	for (unsigned int i = 0; i < this->num_color_textures; i++) {
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, this->color_textures[i]);
 	}

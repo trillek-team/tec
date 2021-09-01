@@ -191,7 +191,7 @@ bool PixelBuffer::Load(const FilePath& filename, bool gamma_space) {
 		this->blockptr.reset(data);
 		this->writelock.unlock();
 
-		spdlog::get("console_log")->trace("[Pixel-Buffer] Loaded image {}", filename.FileName());
+		spdlog::get("console_log")->debug("[Pixel-Buffer] Loaded image {}", filename.FileName());
 		return true;
 	}
 
