@@ -183,9 +183,9 @@ void Console::Draw(IMGUISystem*) {
 	}
 }
 
-void Console::On(std::shared_ptr<WindowResizedEvent>) { resize = true; }
+void Console::On(eid, std::shared_ptr<WindowResizedEvent>) { resize = true; }
 
-void Console::On(std::shared_ptr<KeyboardEvent> data) {
+void Console::On(eid, std::shared_ptr<KeyboardEvent> data) {
 	if (data->action == KeyboardEvent::KEY_DOWN && data->key == GLFW_KEY_ESCAPE) { // Toggles console
 		show = !show;
 	}

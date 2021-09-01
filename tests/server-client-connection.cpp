@@ -30,7 +30,7 @@ public:
 	ClientCommandReceptor() { last_event = promised_event.get_future(); }
 	void process() { EventQueue<ClientCommandsEvent>::ProcessEventQueue(); }
 	using EventQueue<ClientCommandsEvent>::On;
-	void On(std::shared_ptr<ClientCommandsEvent> data) override { promised_event.set_value(data); }
+	void On(eid, std::shared_ptr<ClientCommandsEvent> data) override { promised_event.set_value(data); }
 	std::promise<std::shared_ptr<ClientCommandsEvent>> promised_event;
 	std::future<std::shared_ptr<ClientCommandsEvent>> last_event;
 };

@@ -398,19 +398,19 @@ void IMGUISystem::UpdateDisplaySize() {
 	ImGui::GetIO().DisplaySize = ImVec2((float)this->framebuffer_width, (float)this->framebuffer_height);
 }
 
-void IMGUISystem::On(std::shared_ptr<WindowResizedEvent>) { this->UpdateDisplaySize(); }
+void IMGUISystem::On(eid, std::shared_ptr<WindowResizedEvent>) { this->UpdateDisplaySize(); }
 
-void IMGUISystem::On(std::shared_ptr<MouseMoveEvent> data) {
+void IMGUISystem::On(eid, std::shared_ptr<MouseMoveEvent> data) {
 	this->mouse_pos.x = static_cast<float>(data->new_x);
 	this->mouse_pos.y = static_cast<float>(data->new_y);
 }
 
-void IMGUISystem::On(std::shared_ptr<MouseScrollEvent> data) {
+void IMGUISystem::On(eid, std::shared_ptr<MouseScrollEvent> data) {
 	this->mouse_wheel.x = static_cast<float>(data->x_offset);
 	this->mouse_wheel.y = static_cast<float>(data->y_offset);
 }
 
-void IMGUISystem::On(std::shared_ptr<MouseBtnEvent> data) {
+void IMGUISystem::On(eid, std::shared_ptr<MouseBtnEvent> data) {
 	if (data->action == MouseBtnEvent::DOWN) {
 		this->mouse_pressed[data->button] = true;
 	}
@@ -423,7 +423,7 @@ void IMGUISystem::On(std::shared_ptr<MouseBtnEvent> data) {
 	}
 }
 
-void IMGUISystem::On(std::shared_ptr<KeyboardEvent> data) {
+void IMGUISystem::On(eid, std::shared_ptr<KeyboardEvent> data) {
 	auto& io = ImGui::GetIO();
 	if (data->action == KeyboardEvent::KEY_DOWN) {
 		io.KeysDown[data->key] = true;

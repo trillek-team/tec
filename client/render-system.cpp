@@ -561,14 +561,14 @@ void RenderSystem::SetupDefaultShaders(const gfx::RenderConfig& render_config) {
 	}
 }
 
-void RenderSystem::On(std::shared_ptr<WindowResizedEvent> data) {
+void RenderSystem::On(eid, std::shared_ptr<WindowResizedEvent> data) {
 	glm::ivec2 new_view(data->new_width, data->new_height);
 	SetViewportSize(glm::max(glm::ivec2(0), new_view));
 }
 
-void RenderSystem::On(std::shared_ptr<EntityDestroyed> data) { RenderableMap::Remove(data->entity_id); }
+void RenderSystem::On(eid entity_id, std::shared_ptr<EntityDestroyed> data) { RenderableMap::Remove(entity_id); }
 
-void RenderSystem::On(std::shared_ptr<EntityCreated> data) {
+void RenderSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 	eid entity_id = data->entity.id();
 	for (int i = 0; i < data->entity.components_size(); ++i) {
 		const proto::Component& comp = data->entity.components(i);

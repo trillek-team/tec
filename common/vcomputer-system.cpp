@@ -252,7 +252,7 @@ void VComputerSystem::TurnComptuerOff(const eid entity_id) {
 	}
 }
 
-void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
+void VComputerSystem::On(eid entity_id, std::shared_ptr<KeyboardEvent> data) {
 	ComputerKeyboard* keyboard_component = nullptr;
 	for (auto itr = KeyboardComponentMap::Begin(); itr != KeyboardComponentMap::End(); ++itr) {
 		if (itr->second->has_focus) {
@@ -274,9 +274,8 @@ void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 					keyboard_component->modifiers_state = gkeyboard::KEY_MODS::KEY_MOD_NONE;
 					KeyboardComponentMap::Get(this->active_entity)->has_focus = false;
 					std::shared_ptr<FocusBlurEvent> blur_data = std::make_shared<FocusBlurEvent>();
-					blur_data->entity_id = this->active_entity;
 					blur_data->keyboard = true;
-					EventSystem<FocusBlurEvent>::Get()->Emit(blur_data);
+					EventSystem<FocusBlurEvent>::Get()->Emit(this->active_entity, blur_data);
 					this->active_entity = -1;
 				}
 				break;
@@ -371,7 +370,7 @@ void VComputerSystem::On(std::shared_ptr<KeyboardEvent> data) {
 	}
 }
 
-void VComputerSystem::On(std::shared_ptr<MouseBtnEvent> data) {
+void VComputerSystem::On(eid entity_id, std::shared_ptr<MouseBtnEvent> data) {
 	if (data->action == MouseBtnEvent::DOWN && data->button == MouseBtnEvent::LEFT) {
 		for (auto keyboard_itr = KeyboardComponentMap::Begin(); keyboard_itr != KeyboardComponentMap::End();
 			 ++keyboard_itr) {
@@ -383,10 +382,10 @@ void VComputerSystem::On(std::shared_ptr<MouseBtnEvent> data) {
 	}
 }
 
-void VComputerSystem::On(std::shared_ptr<MouseClickEvent> data) {
+void VComputerSystem::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
 	if (data->button != MouseBtnEvent::LEFT)
 		return;
-	if (this->active_entity != data->entity_id) {
+	if (this->active_entity != entity_id) {
 		// Remove focus from the old keyboard
 		for (auto keyboard_itr = KeyboardComponentMap::Begin(); keyboard_itr != KeyboardComponentMap::End();
 			 ++keyboard_itr) {
@@ -398,17 +397,16 @@ void VComputerSystem::On(std::shared_ptr<MouseClickEvent> data) {
 	for (auto keyboard_itr = KeyboardComponentMap::Begin(); keyboard_itr != KeyboardComponentMap::End();
 		 ++keyboard_itr) {
 		// Add focus to the new keyboard and send notification out about the focus capture
-		if (keyboard_itr->first == data->entity_id) {
+		if (keyboard_itr->first == entity_id) {
 			this->active_entity = keyboard_itr->first;
 			keyboard_itr->second->has_focus = true;
 			std::shared_ptr<FocusCapturedEvent> focus_data = std::make_shared<FocusCapturedEvent>();
-			focus_data->entity_id = this->active_entity;
 			focus_data->keyboard = true;
-			EventSystem<FocusCapturedEvent>::Get()->Emit(focus_data);
+			EventSystem<FocusCapturedEvent>::Get()->Emit(this->active_entity, focus_data);
 		}
 	}
 }
-void VComputerSystem::On(std::shared_ptr<EntityCreated> data) {
+void VComputerSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 	eid entity_id = data->entity.id();
 	for (int i = 0; i < data->entity.components_size(); ++i) {
 		const proto::Component& comp = data->entity.components(i);
@@ -430,5 +428,7 @@ void VComputerSystem::On(std::shared_ptr<EntityCreated> data) {
 	}
 }
 
-void VComputerSystem::On(std::shared_ptr<EntityDestroyed> data) { ComputerComponentMap::Remove(data->entity_id); }
+void VComputerSystem::On(eid entity_id, std::shared_ptr<EntityDestroyed> data) {
+	ComputerComponentMap::Remove(entity_id);
+}
 } // namespace tec

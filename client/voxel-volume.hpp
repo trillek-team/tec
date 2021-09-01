@@ -59,8 +59,7 @@ public:
 	static std::weak_ptr<VoxelVolume>
 	Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 
-	using EventQueue<MouseClickEvent>::On;
-	void On(std::shared_ptr<MouseClickEvent> data);
+	void On(eid, std::shared_ptr<MouseClickEvent> data) override;
 
 private:
 	std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;

@@ -105,7 +105,7 @@ void SoundSystem::Update() {
 	}
 }
 
-void SoundSystem::On(std::shared_ptr<EntityCreated> data) {
+void SoundSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 	const proto::Entity& entity = data->entity;
 	eid entity_id = entity.id();
 	for (int i = 0; i < data->entity.components_size(); ++i) {
@@ -185,5 +185,5 @@ void SoundSystem::On(std::shared_ptr<EntityCreated> data) {
 		}
 	}
 }
-void SoundSystem::On(std::shared_ptr<EntityDestroyed> data) {}
+void SoundSystem::On(eid, std::shared_ptr<EntityDestroyed> data) {}
 } // namespace tec

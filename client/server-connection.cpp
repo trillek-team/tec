@@ -35,19 +35,18 @@ ServerConnection::ServerConnection(ServerStats& s) : socket(io_context), stats(s
 		eid entity_id = std::atoi(id_message.c_str());
 		_log->info("Entity {} left", entity_id);
 		std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
-		data->entity_id = entity_id;
-		EventSystem<EntityDestroyed>::Get()->Emit(data);
+		EventSystem<EntityDestroyed>::Get()->Emit(entity_id, data);
 	});
 	RegisterMessageHandler(MessageType::ENTITY_CREATE, [](MessageIn& message) {
 		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 		data->entity.ParseFromZeroCopyStream(&message);
 		EventSystem<EntityCreated>::Get()->Emit(data);
 	});
-	RegisterMessageHandler(MessageType::ENTITY_DESTROY, [this](MessageIn& message) {
+	RegisterMessageHandler(MessageType::ENTITY_DESTROY, [](MessageIn& message) {
 		std::string entity_id_message = message.ToString();
 		std::shared_ptr<EntityDestroyed> data = std::make_shared<EntityDestroyed>();
-		data->entity_id = std::atoi(entity_id_message.c_str());
-		EventSystem<EntityDestroyed>::Get()->Emit(data);
+		eid entity_id = std::atoi(entity_id_message.c_str());
+		EventSystem<EntityDestroyed>::Get()->Emit(entity_id, data);
 	});
 	RegisterMessageHandler(MessageType::WORLD_SENT, [this](MessageIn&) {
 		MessageOut ready_to_recv_msg(MessageType::CLIENT_READY_TO_RECEIVE);

@@ -9,7 +9,7 @@ void ServerGameStateQueue::ProcessEventQueue() {
 	EventQueue<EntityDestroyed>::ProcessEventQueue();
 }
 
-void ServerGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
+void ServerGameStateQueue::On(eid, std::shared_ptr<EntityCreated> data) {
 	const proto::Entity& entity = data->entity;
 	eid entity_id = entity.id();
 	for (int i = 0; i < entity.components_size(); ++i) {
@@ -41,8 +41,7 @@ void ServerGameStateQueue::On(std::shared_ptr<EntityCreated> data) {
 	}
 }
 
-void ServerGameStateQueue::On(std::shared_ptr<EntityDestroyed> data) {
-	const eid entity_id = data->entity_id;
+void ServerGameStateQueue::On(eid entity_id, std::shared_ptr<EntityDestroyed> data) {
 	this->base_state.positions.erase(entity_id);
 	this->base_state.orientations.erase(entity_id);
 	this->base_state.velocities.erase(entity_id);

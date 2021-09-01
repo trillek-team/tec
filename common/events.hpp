@@ -40,7 +40,6 @@ struct MouseScrollEvent {
 };
 
 struct MouseClickEvent {
-	eid entity_id{0};
 	MouseBtnEvent::MOUSE_BTN button;
 	glm::vec3 ray_hit_point_world{0.f, 0.f, 0.f};
 	double ray_distance;
@@ -59,9 +58,7 @@ struct EntityCreated {
 	proto::Entity entity;
 };
 
-struct EntityDestroyed {
-	eid entity_id{0};
-};
+struct EntityDestroyed {};
 
 struct ClientCommandsEvent {
 	proto::ClientCommands client_commands;
@@ -75,12 +72,10 @@ struct ControllerRemovedEvent {
 	std::shared_ptr<Controller> controller{nullptr};
 };
 struct FocusCapturedEvent {
-	eid entity_id;
 	bool keyboard;
 	bool mouse;
 };
 struct FocusBlurEvent {
-	eid entity_id;
 	bool keyboard;
 	bool mouse;
 };

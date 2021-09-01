@@ -92,12 +92,9 @@ private:
 	void DeactivateMaterial(const Material&, GLuint*);
 	void SetupDefaultShaders(const gfx::RenderConfig&);
 
-	using EventQueue<WindowResizedEvent>::On;
-	using EventQueue<EntityDestroyed>::On;
-	using EventQueue<EntityCreated>::On;
-	void On(std::shared_ptr<WindowResizedEvent> data);
-	void On(std::shared_ptr<EntityDestroyed> data);
-	void On(std::shared_ptr<EntityCreated> data);
+	void On(eid, std::shared_ptr<WindowResizedEvent> data) override;
+	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
+	void On(eid, std::shared_ptr<EntityCreated> data) override;
 	void UpdateRenderList(double delta);
 
 	glm::mat4 projection{0};

@@ -98,17 +98,22 @@ public:
 	* \return void
 	*/
 	void Emit(const eid entity_id, std::shared_ptr<T> data) {
-		if (this->subscribers.find(entity_id) != this->subscribers.end()) {
-			auto subscriber_list = this->subscribers.at(entity_id);
-			for (EventQueue<T>* subscriber : subscriber_list) {
-				subscriber->On(entity_id, data);
+		if (0 != entity_id) { // don't trigger events twice if someone specified zero
+			auto sub_iter = this->subscribers.find(entity_id);
+			if (sub_iter != this->subscribers.end()) {
+				auto subscriber_list = sub_iter->second;
+				for (EventQueue<T>* subscriber : subscriber_list) {
+					Event<T> e(entity_id, data);
+					subscriber->QueueEvent(std::move(e));
+				}
 			}
 		}
-
-		if (this->subscribers.find(0) != this->subscribers.end()) {
-			auto subscriber_list = this->subscribers.at(0);
+		auto sub_iter = this->subscribers.find(0);
+		if (sub_iter != this->subscribers.end()) {
+			auto subscriber_list = sub_iter->second;
 			for (EventQueue<T>* subscriber : subscriber_list) {
-				subscriber->On(entity_id, data);
+				Event<T> e(entity_id, data);
+				subscriber->QueueEvent(std::move(e));
 			}
 		}
 	}
@@ -119,15 +124,7 @@ public:
 	* \param const T* data The changed data.
 	* \return void
 	*/
-	void Emit(std::shared_ptr<T> data) {
-		if (this->subscribers.find(0) != this->subscribers.end()) {
-			auto subscriber_list = this->subscribers.at(0);
-			for (EventQueue<T>* subscriber : subscriber_list) {
-				Event<T> e(0, data);
-				subscriber->QueueEvent(std::move(e));
-			}
-		}
-	}
+	void Emit(std::shared_ptr<T> data) { Emit(0, data); }
 
 private:
 	std::map<eid, std::list<EventQueue<T>*>> subscribers;

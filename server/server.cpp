@@ -172,17 +172,17 @@ void Server::ProcessEvents() {
 	EventQueue<EntityDestroyed>::ProcessEventQueue();
 }
 
-void Server::On(std::shared_ptr<EntityCreated> data) {
+void Server::On(eid, std::shared_ptr<EntityCreated> data) {
 	this->entities[data->entity.id()] = data->entity;
 	MessageOut entity_create_msg(MessageType::ENTITY_CREATE);
 	data->entity.SerializeToZeroCopyStream(&entity_create_msg);
 	Deliver(entity_create_msg, false);
 }
 
-void Server::On(std::shared_ptr<EntityDestroyed> data) {
-	this->entities.erase(data->entity_id);
+void Server::On(eid entity_id, std::shared_ptr<EntityDestroyed> data) {
+	this->entities.erase(entity_id);
 	MessageOut entity_destroy_msg(MessageType::ENTITY_DESTROY);
-	entity_destroy_msg.FromString(std::to_string(data->entity_id));
+	entity_destroy_msg.FromString(std::to_string(entity_id));
 	Deliver(entity_destroy_msg, false);
 }
 

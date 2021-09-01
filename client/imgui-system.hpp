@@ -70,16 +70,11 @@ public:
 	static void RenderDrawLists(ImDrawData* draw_data);
 
 private:
-	using EventQueue<WindowResizedEvent>::On;
-	using EventQueue<MouseMoveEvent>::On;
-	using EventQueue<MouseScrollEvent>::On;
-	using EventQueue<MouseBtnEvent>::On;
-	using EventQueue<KeyboardEvent>::On;
-	void On(std::shared_ptr<WindowResizedEvent> data);
-	void On(std::shared_ptr<MouseMoveEvent> data);
-	void On(std::shared_ptr<MouseScrollEvent> data);
-	void On(std::shared_ptr<MouseBtnEvent> data);
-	void On(std::shared_ptr<KeyboardEvent> data);
+	void On(eid, std::shared_ptr<WindowResizedEvent> data) override;
+	void On(eid, std::shared_ptr<MouseMoveEvent> data) override;
+	void On(eid, std::shared_ptr<MouseScrollEvent> data) override;
+	void On(eid, std::shared_ptr<MouseBtnEvent> data) override;
+	void On(eid, std::shared_ptr<KeyboardEvent> data) override;
 
 	void UpdateDisplaySize();
 
