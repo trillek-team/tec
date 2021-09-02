@@ -1,6 +1,7 @@
 #include "string.hpp"
 
 #include <algorithm>
+#include <regex>
 
 #include <locale>
 #if !defined(__linux__)
@@ -65,6 +66,11 @@ std::wstring utf8_decode(const std::string& str) {
 	std::setlocale(LC_ALL, curLocale.c_str());
 	return result;
 #endif
+}
+
+std::vector<std::string> SplitString(std::string args, std::string deliminator) {
+	auto regexz = std::regex(deliminator);
+	return {std::sregex_token_iterator(args.begin(), args.end(), regexz, -1), std::sregex_token_iterator()};
 }
 
 } // namespace tec

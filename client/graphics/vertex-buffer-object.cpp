@@ -14,7 +14,7 @@ namespace vertex {
 struct AttribData {
 	GLuint channel;
 	GLuint count;
-	GLuint kind;
+	GLuint data_type;
 	GLuint normalize;
 	size_t offset;
 };
@@ -152,28 +152,30 @@ std::size_t VertexBufferObject::GetVertexGroupCount() const { return this->verte
 
 bool VertexBufferObject::IsDynamic() const { return !this->source_mesh.expired(); }
 
-void VertexBufferObject::Update() {
+bool VertexBufferObject::Update() {
 	std::shared_ptr<MeshFile> locked_ptr = this->source_mesh.lock();
+	bool updated = false;
 	if (locked_ptr) {
 		if (locked_ptr->IsDirty()) {
-			Load(locked_ptr);
+			updated = Load(locked_ptr);
 			locked_ptr->Validate();
 		}
 	}
+	return updated;
 }
 
-void VertexBufferObject::Load(std::shared_ptr<MeshFile> meshes) {
+bool VertexBufferObject::Load(std::shared_ptr<MeshFile> meshes) {
 	auto _log = spdlog::get("console_log");
 	if (!meshes) { // someone might want to know!
 		_log->error("VertexBufferObject::Load null MeshFile");
-		return;
+		return false;
 	}
 	this->source_mesh = meshes;
 	this->vertex_groups.clear();
 	const vertex::FormatDefinition* vertex_format = vertex::from_vftype[this->load_format];
 	if (!vertex_format) {
 		_log->error("FIXME: missing vertex::from_vftype[{}] in {}", this->load_format, __FILE__);
-		return;
+		return false;
 	}
 	const size_t stride = vertex_format->format_stride;
 	GLuint vert_offset{0};
@@ -191,7 +193,7 @@ void VertexBufferObject::Load(std::shared_ptr<MeshFile> meshes) {
 	}
 	if ((all_vertices_size == 0) || (all_indices_size == 0)) {
 		_log->error("VertexBufferObject::Load error: empty data: v:{}, i:{}", all_vertices_size, all_indices_size);
-		return;
+		return false;
 	}
 	_log->debug("[VBO]::Load mesh data: v:{}, i:{}", all_vertices_size, all_indices_size);
 
@@ -207,11 +209,18 @@ void VertexBufferObject::Load(std::shared_ptr<MeshFile> meshes) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->bufferobj[1]); // attach the ELEMENT_ARRAY to the VAO
 		// if this is the first time, we bind attributes
 		for (auto& attrib : vertex_format->info) {
-			if (attrib.channel == 5) // just always assumed to be integer bone indices
-				glVertexAttribIPointer(attrib.channel, attrib.count, attrib.kind, stride, (GLvoid*)attrib.offset);
-			else
+			if (attrib.channel == 5) { // just always assumed to be integer bone indices
+				glVertexAttribIPointer(attrib.channel, attrib.count, attrib.data_type, stride, (GLvoid*)attrib.offset);
+			}
+			else {
 				glVertexAttribPointer(
-						attrib.channel, attrib.count, attrib.kind, attrib.normalize, stride, (GLvoid*)attrib.offset);
+						attrib.channel,
+						attrib.count,
+						attrib.data_type,
+						attrib.normalize,
+						stride,
+						(GLvoid*)attrib.offset);
+			}
 			glEnableVertexAttribArray(attrib.channel);
 		}
 	}
@@ -224,16 +233,19 @@ void VertexBufferObject::Load(std::shared_ptr<MeshFile> meshes) {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, all_indices_size * sizeof(GLuint), nullptr, GL_STATIC_DRAW);
 		this->index_count = all_indices_size;
 	}
+	bool load_success = true;
 	GLuint mapping_bits = GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_BUFFER_BIT;
 	vert_buffer = (uint8_t*)glMapBufferRange(GL_ARRAY_BUFFER, 0, this->vertex_count * stride, mapping_bits);
 	if (!vert_buffer) {
 		_log->error("glMapBufferRange(GL_ARRAY_BUFFER) failed {}:{} - GL:{}", __FILE__, __LINE__, glGetError());
+		load_success = false;
 		goto error_leave;
 	}
 	index_buffer =
 			(GLuint*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, this->index_count * sizeof(GLuint), mapping_bits);
 	if (!index_buffer) {
 		_log->error("glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER) failed {}:{} - GL:{}", __FILE__, __LINE__, glGetError());
+		load_success = false;
 		goto error_leave;
 	}
 
@@ -285,6 +297,7 @@ error_leave:
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // all done
 	glBindVertexArray(0); // finished with vertex array
+	return load_success;
 }
 
 } // namespace tec

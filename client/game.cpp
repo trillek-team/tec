@@ -12,6 +12,7 @@
 #include "graphics/texture-object.hpp"
 #include "graphics/vertex-buffer-object.hpp"
 #include "graphics/view.hpp"
+#include "gui/console.hpp"
 #include "net-message.hpp"
 #include "resources/mesh.hpp"
 #include "resources/pixel-buffer.hpp"
@@ -76,6 +77,19 @@ void Game::Startup(Console& console) {
 	this->rs.SetViewportSize(glm::uvec2(window_width, window_height));
 	this->placement.SetMaxDistance(this->config_script->environment.get_or(
 			"max_placement_distance", manipulator::DEFAULT_MAX_PLACEMENT_DISTANCE));
+
+	console.AddConsoleCommand("voxel_edit", "Voxel editing: voxel_edit {on|off}", [this](const std::string& argstr) {
+		auto argv = SplitString(argstr);
+		if (argv.size() < 0) {
+			return;
+		}
+		if (argv[0] == "on") {
+			this->vox_sys.edit_allowed = true;
+		}
+		else if (argv[0] == "off") {
+			this->vox_sys.edit_allowed = false;
+		}
+	});
 }
 
 void Game::UpdateVComputerScreenTextures() {
@@ -126,6 +140,7 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	delta_accumulator += delta;
 	game_state_queue.ProcessEventQueue();
 	game_state_queue.Interpolate(delta);
+	vox_sys.Update(delta);
 
 	auto client_state = simulation.Simulate(delta, game_state_queue.GetInterpolatedState());
 	game_state_queue.UpdatePredictions(client_state);

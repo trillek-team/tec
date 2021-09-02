@@ -20,7 +20,6 @@ class MeshFile;
 struct Voxel {
 	enum NEIGHBORS { UP = 0, DOWN, LEFT, RIGHT, FRONT, BACK };
 	float color[3]{0.f, 0.f, 0.f};
-	std::weak_ptr<Voxel> neighbors[6];
 };
 
 class VoxelVolume;
@@ -28,9 +27,9 @@ typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVolumeMap;
 
 typedef Command<VoxelVolume> VoxelCommand;
 
-class VoxelVolume : public CommandQueue<VoxelVolume>, public EventQueue<MouseClickEvent> {
+class VoxelVolume : public CommandQueue<VoxelVolume> {
 public:
-	VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh);
+	VoxelVolume(std::weak_ptr<MeshFile> mesh);
 	~VoxelVolume();
 
 public:
@@ -59,23 +58,21 @@ public:
 	static std::weak_ptr<VoxelVolume>
 	Create(const eid entity_id, std::weak_ptr<MeshFile> mesh = std::weak_ptr<MeshFile>());
 
-	void On(eid, std::shared_ptr<MouseClickEvent> data) override;
-
 private:
 	std::unordered_map<std::int64_t, std::shared_ptr<Voxel>> voxels;
 	std::queue<std::int64_t> changed_queue; // Used to reduce update to just what has changed.
 	std::unordered_map<std::int64_t, std::size_t> vertex_index; // Used to update or remove voxels from the mesh.
 	std::weak_ptr<MeshFile> mesh;
-	eid entity_id;
 };
 
-class VoxelSystem {
+class VoxelSystem : public EventQueue<MouseClickEvent> {
 public:
-	void Update(double delta) {
-		for (auto itr = VoxelVolumeMap::Begin(); itr != VoxelVolumeMap::End(); ++itr) {
-			itr->second->Update(delta);
-		}
-	}
+	void Update(double delta);
+
+	void On(eid, std::shared_ptr<MouseClickEvent> data) override;
+
+	// TODO: the input scheme for this system conflicts with other systems, here's an easy way to toggle it ;)
+	bool edit_allowed{false};
 
 private:
 	typedef Multiton<eid, std::shared_ptr<VoxelVolume>> VoxelVolumeMap;

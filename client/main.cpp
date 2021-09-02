@@ -26,11 +26,6 @@
 #include "resources/vorbis-stream.hpp"
 #include "server-connection.hpp"
 
-std::vector<std::string> SplitString(std::string args, std::string deliminator = " ") {
-	auto regexz = std::regex(deliminator);
-	return {std::sregex_token_iterator(args.begin(), args.end(), regexz, -1), std::sregex_token_iterator()};
-}
-
 namespace tec {
 void RegisterFileFactories() {
 	AddFileFactory<MD5Mesh>();
@@ -171,7 +166,7 @@ int main(int argc, char* argv[]) {
 			"connect",
 			"connect [username][ip] : Connect to a server [ip] with the provided [username]",
 			[&connection](const std::string& args) {
-				std::vector<std::string> splitArgs = SplitString(args);
+				std::vector<std::string> splitArgs = tec::SplitString(args);
 				if (splitArgs.size() >= 2) {
 					connection.Connect(splitArgs[1]);
 					std::string username = splitArgs[0];
@@ -192,7 +187,7 @@ int main(int argc, char* argv[]) {
 
 		if (argument_break_offset < chat_command_message.size()) {
 			std::string command_args = chat_command_message.substr(argument_break_offset + 1);
-			data->args = SplitString(command_args);
+			data->args = tec::SplitString(command_args);
 		}
 		tec::EventSystem<tec::ChatCommandEvent>::Get()->Emit(data); // Handle command locally
 

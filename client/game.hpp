@@ -19,6 +19,7 @@
 #include "sound-system.hpp"
 #include "time-frame-metrics.hpp"
 #include "vcomputer-system.hpp"
+#include "voxel-volume.hpp"
 
 #include "manipulators/placement.hpp"
 
@@ -83,6 +84,7 @@ private:
 	VComputerSystem& vcs;
 	SoundSystem ss;
 	LuaSystem lua_sys;
+	VoxelSystem vox_sys;
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	state_id_t command_id = 0;

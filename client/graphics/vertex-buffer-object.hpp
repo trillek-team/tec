@@ -62,15 +62,15 @@ public:
 	/**
 	* Called to update dynamic vertex buffer object.
 	*/
-	void Update();
+	bool Update();
 
 	/**
 	* Loads a mesh into a vertex buffer object.
 	* note: calls Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices).
 	* \param std::shared_ptr<MeshFile> mesh The mesh to load into this VertexBufferObject.
-	* \return void
+	* \return true if the load was successful
 	*/
-	void Load(std::shared_ptr<MeshFile> mesh);
+	bool Load(std::shared_ptr<MeshFile> mesh);
 
 private:
 	vertex::FormatCode load_format;

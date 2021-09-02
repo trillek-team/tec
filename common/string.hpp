@@ -4,6 +4,7 @@
 */
 
 #include <string>
+#include <vector>
 
 namespace tec {
 
@@ -22,5 +23,7 @@ std::string utf8_encode(const std::wstring& wstr);
 	* \return std::wstring on unicode system encoding. Empty string if fails
 	*/
 std::wstring utf8_decode(const std::string& str);
+
+std::vector<std::string> SplitString(std::string args, std::string deliminator = " ");
 
 } // namespace tec
