@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <forward_list>
-#include <regex>
 #include <thread>
 
 #include <glm/ext.hpp>
@@ -209,11 +208,6 @@ void RenderSystem::Startup() {
 
 	this->SetupDefaultShaders(render_config);
 	_log->info("[RenderSystem] Startup complete.");
-}
-
-static std::vector<std::string> SplitString(std::string args, std::string deliminator = " ") {
-	auto regexz = std::regex(deliminator);
-	return {std::sregex_token_iterator(args.begin(), args.end(), regexz, -1), std::sregex_token_iterator()};
 }
 
 void RenderSystem::RegisterConsole(Console& console) {
@@ -683,7 +677,15 @@ void RenderSystem::UpdateRenderList(double delta) {
 		}
 
 		if (ri) {
-			ri->vbo->Update();
+			if (ri->vbo->Update()) {
+				// the mesh updated it's contents
+				std::size_t group_count = ri->vbo->GetVertexGroupCount();
+				ri->vertex_groups.clear();
+				ri->vertex_groups.reserve(group_count);
+				for (std::size_t i = 0; i < group_count; ++i) {
+					ri->vertex_groups.push_back(*ri->vbo->GetVertexGroup(i));
+				}
+			}
 			ri->model_position = position;
 			ri->model_scale = scale;
 			ri->model_quat = orientation;

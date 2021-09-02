@@ -4,6 +4,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <spdlog/spdlog.h>
 
 #include "components/transforms.hpp"
 #include "entity.hpp"
@@ -12,7 +13,7 @@
 #include "graphics/vertex-buffer-object.hpp"
 
 namespace tec {
-VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh) : mesh(mesh), entity_id(entity_id) {
+VoxelVolume::VoxelVolume(std::weak_ptr<MeshFile> mesh) : mesh(mesh) {
 	auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"), true);
 	auto tex = std::make_shared<TextureObject>(pixbuf);
 	TextureMap::Set("metal_wall", tex);
@@ -24,53 +25,12 @@ VoxelVolume::VoxelVolume(const eid entity_id, std::weak_ptr<MeshFile> mesh) : me
 VoxelVolume::~VoxelVolume() {}
 
 void VoxelVolume::AddVoxel(const std::int16_t y, const std::int16_t x, const std::int16_t z) {
-	Voxel v;
 	std::int64_t index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) + (static_cast<std::uint32_t>(x & 0xFFFF) << 16)
 						 + static_cast<std::uint16_t>(z & 0xFFFF);
 	this->changed_queue.push(index);
 
 	if (this->voxels.find(index) == this->voxels.end()) {
 		this->voxels[index] = std::make_shared<Voxel>();
-
-		// Since we are adding a voxel we must set the new voxels neighbors.
-		std::int64_t up_index, down_index, left_index, right_index, back_index, front_index;
-		up_index = (static_cast<std::uint64_t>((y + 1) & 0xFFFF) << 32) + (static_cast<std::uint32_t>(x & 0xFFFF) << 16)
-				   + static_cast<std::uint16_t>(z & 0xFFFF);
-		down_index = (static_cast<std::uint64_t>((y - 1) & 0xFFFF) << 32)
-					 + (static_cast<std::uint32_t>(x & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
-		left_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32)
-					 + (static_cast<std::uint32_t>((x - 1) & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
-		right_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32)
-					  + (static_cast<std::uint32_t>((x + 1) & 0xFFFF) << 16) + static_cast<std::uint16_t>(z & 0xFFFF);
-		front_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) + (static_cast<std::uint32_t>(x & 0xFFFF) << 16)
-					  + static_cast<std::uint16_t>((z - 1) & 0xFFFF);
-		back_index = (static_cast<std::uint64_t>(y & 0xFFFF) << 32) + (static_cast<std::uint32_t>(x & 0xFFFF) << 16)
-					 + static_cast<std::uint16_t>((z + 1) & 0xFFFF);
-
-		if (this->voxels.find(up_index) != this->voxels.end()) {
-			v.neighbors[Voxel::UP] = this->voxels[up_index];
-			this->voxels[up_index]->neighbors[Voxel::DOWN] = this->voxels[index];
-		}
-		if (this->voxels.find(down_index) != this->voxels.end()) {
-			v.neighbors[Voxel::DOWN] = this->voxels[down_index];
-			this->voxels[down_index]->neighbors[Voxel::UP] = this->voxels[index];
-		}
-		if (this->voxels.find(left_index) != this->voxels.end()) {
-			v.neighbors[Voxel::LEFT] = this->voxels[left_index];
-			this->voxels[left_index]->neighbors[Voxel::RIGHT] = this->voxels[index];
-		}
-		if (this->voxels.find(right_index) != this->voxels.end()) {
-			v.neighbors[Voxel::RIGHT] = this->voxels[right_index];
-			this->voxels[right_index]->neighbors[Voxel::LEFT] = this->voxels[index];
-		}
-		if (this->voxels.find(front_index) != this->voxels.end()) {
-			v.neighbors[Voxel::FRONT] = this->voxels[front_index];
-			this->voxels[front_index]->neighbors[Voxel::BACK] = this->voxels[index];
-		}
-		if (this->voxels.find(back_index) != this->voxels.end()) {
-			v.neighbors[Voxel::BACK] = this->voxels[back_index];
-			this->voxels[back_index]->neighbors[Voxel::FRONT] = this->voxels[index];
-		}
 	}
 }
 
@@ -80,14 +40,12 @@ void VoxelVolume::RemoveVoxel(const std::int16_t y, const std::int16_t x, const 
 	this->changed_queue.push(index);
 
 	if (this->voxels.find(index) != this->voxels.end()) {
-		std::weak_ptr<Voxel> v = this->voxels[index];
 		this->voxels.erase(index);
 	}
 }
 
 void VoxelVolume::Update(double) {
 	ProcessCommandQueue();
-	EventQueue<MouseClickEvent>::ProcessEventQueue();
 	UpdateMesh();
 }
 
@@ -136,6 +94,7 @@ void VoxelVolume::UpdateMesh() {
 		if (this->changed_queue.size() == 0) {
 			return;
 		}
+		spdlog::get("console_log")->debug("[Voxel] Updating mesh");
 		Mesh* _mesh;
 		if (m->GetMeshCount() > 0) {
 			_mesh = m->GetMesh(0);
@@ -231,15 +190,19 @@ std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id, const std::string 
 }
 
 std::weak_ptr<VoxelVolume> VoxelVolume::Create(eid entity_id, std::weak_ptr<MeshFile> mesh) {
-	auto voxvol = std::make_shared<VoxelVolume>(entity_id, mesh);
+	auto voxvol = std::make_shared<VoxelVolume>(mesh);
 	VoxelVolumeMap::Set(entity_id, voxvol);
 	return voxvol;
 }
 
-void VoxelVolume::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
-	if (entity_id != this->entity_id) {
+void VoxelSystem::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
+	if (!this->edit_allowed) {
 		return;
 	}
+	if (!VoxelVolumeMap::Has(entity_id)) {
+		return;
+	}
+	auto voxvol = VoxelVolumeMap::Get(entity_id);
 	if (data->button == MouseBtnEvent::LEFT) {
 		const Position* pos = Entity(entity_id).Get<Position>();
 		const Orientation* orientation = Entity(entity_id).Get<Orientation>();
@@ -251,7 +214,7 @@ void VoxelVolume::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
 		std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
 		std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
 
-		AddVoxel(grid_y, grid_x, grid_z);
+		voxvol->AddVoxel(grid_y, grid_x, grid_z);
 	}
 	else if (data->button == MouseBtnEvent::RIGHT) {
 		const Position* pos = Entity(entity_id).Get<Position>();
@@ -264,7 +227,15 @@ void VoxelVolume::On(eid entity_id, std::shared_ptr<MouseClickEvent> data) {
 		std::int16_t grid_y = static_cast<std::int16_t>(floor(local_coords.y));
 		std::int16_t grid_z = static_cast<std::int16_t>(floor(local_coords.z));
 
-		RemoveVoxel(grid_y, grid_x, grid_z);
+		voxvol->RemoveVoxel(grid_y, grid_x, grid_z);
 	}
 }
+
+void VoxelSystem::Update(double delta) {
+	EventQueue<MouseClickEvent>::ProcessEventQueue();
+	for (auto itr = VoxelVolumeMap::Begin(); itr != VoxelVolumeMap::End(); ++itr) {
+		itr->second->Update(delta);
+	}
+}
+
 } // namespace tec
