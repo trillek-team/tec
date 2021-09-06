@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 
+#include "file-factories.hpp"
 #include "resources/script-file.hpp"
 #include "tec-types.hpp"
 
@@ -41,20 +42,16 @@ void LuaScript::Out(proto::Component* target) {
 	comp->set_script_name(this->script_name);
 }
 
-extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
-
 void LuaScript::In(const proto::Component& source) {
 	const proto::LuaScript& comp = source.luascript();
 
 	if (comp.has_script_name()) {
 		this->script_name = comp.script_name();
-		if (!ScriptMap::Has(this->script_name)) {
-			std::string ext = this->script_name.substr(this->script_name.find_last_of(".") + 1);
-			if (file_factories.find(ext) != file_factories.end()) {
-				file_factories[ext](this->script_name);
-			}
+		this->script = GetResource<ScriptFile>(this->script_name);
+		if (!this->script) {
+			spdlog::get("console_log")->error("LuaScript::In: script is null: {}", this->script_name);
+			throw std::exception();
 		}
-		this->script = ScriptMap::Get(this->script_name);
 		this->ReloadScript();
 	}
 }

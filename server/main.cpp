@@ -64,10 +64,10 @@ int main() {
 	// use constant mode stepping, because we don't need interpolated states on the server
 	simulation.GetPhysicsSystem().SetSubstepping(0);
 
-	tec::FilePath save_directory = tec::FilePath::GetAssetPath("save");
+	tec::Path save_directory = tec::Path::GetAssetPath("save");
 
 	if (!save_directory.DirExists()) {
-		tec::FilePath::MkPath(save_directory);
+		tec::Path::MkPath(save_directory);
 	}
 
 	try {
@@ -77,7 +77,7 @@ int main() {
 		const auto lua_sys = server.GetLuaSystem();
 
 		tec::SaveGame save;
-		save.Load(tec::FilePath::GetAssetPath("save/save1.json"));
+		save.Load(tec::Path::GetAssetPath("save/save1.json"));
 		lua_sys->GetGlobalState()["save"] = &save;
 
 		auto& authenticator = server.GetAuthenticator();
@@ -85,7 +85,7 @@ int main() {
 		authenticator.SetDataSource(&user_list_data_source);
 
 		// Load test script
-		tec::FilePath fp = tec::FilePath::GetAssetPath("scripts/server-test.lua");
+		tec::Path fp = tec::Path::GetAssetPath("scripts/server-test.lua");
 		if (fp.FileExists()) {
 			lua_sys->LoadFile(fp);
 		}

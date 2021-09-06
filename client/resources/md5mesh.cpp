@@ -113,10 +113,10 @@ MD5Mesh::Weight ParsesWeight(std::stringstream& ss) {
 	return w;
 }
 
-std::shared_ptr<MD5Mesh> MD5Mesh::Create(const FilePath& fname) {
+std::shared_ptr<MD5Mesh> MD5Mesh::Create(const Path& fname) {
 	auto mesh = std::make_shared<MD5Mesh>();
 	mesh->SetFileName(fname);
-	mesh->SetName(fname.SubpathFrom("assets").toGenericString());
+	mesh->SetName(fname.Subpath(1).toString());
 
 	if (mesh->Parse()) {
 		mesh->CalculateVertexPositions();
@@ -139,15 +139,15 @@ bool MD5Mesh::Parse() {
 	}
 	auto base_path = this->path.BasePath();
 
-	std::ifstream f(this->path.GetNativePath(), std::ios::in);
-	if (!f.is_open()) {
+	auto f = this->path.OpenStream();
+	if (!f->is_open()) {
 		_log->error("[MD5Mesh] Error opening file {}", path.toString());
 		return false;
 	}
 	_log->debug("[MD5Mesh] Parsing file {}", path.toString());
 
 	std::string line;
-	while (std::getline(f, line)) {
+	while (std::getline(*f, line)) {
 		std::stringstream ss(line);
 		std::string identifier;
 
@@ -171,7 +171,7 @@ bool MD5Mesh::Parse() {
 			this->meshes_internal.reserve(nmeshes);
 		}
 		else if (identifier == "joints") {
-			while (std::getline(f, line)) {
+			while (std::getline(*f, line)) {
 				if (line.find("\"") != std::string::npos) {
 					ss.str(CleanString(line));
 					Joint joint(ParseJoint(ss));
@@ -187,7 +187,7 @@ bool MD5Mesh::Parse() {
 		else if (identifier == "mesh") {
 			InternalMesh mesh;
 			int embedded_list = 0;
-			while (std::getline(f, line)) {
+			while (std::getline(*f, line)) {
 				std::string line2 = CleanString(line);
 				ss.str(line2);
 				ss.clear();

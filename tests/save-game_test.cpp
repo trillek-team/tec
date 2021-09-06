@@ -6,8 +6,8 @@
 
 using namespace tec;
 
-const FilePath save_directory = FilePath::GetAssetPath("save_test_123456");
-const FilePath save_file_path = save_directory + "/save.json";
+const Path save_directory = Path::GetAssetPath("save_test_123456");
+const Path save_file_path = save_directory / "save.json";
 const std::string
 		contents("{\"users\":[{\"id\":\"user-1\",\"username\":\"John\"}], \"world\":{\"entityFileList\":[]}}");
 const eid entity_id = 1234;
@@ -15,7 +15,7 @@ const eid entity_id = 1234;
 class SaveGameTest : public ::testing::Test {
 protected:
 	void SetUp() override {
-		ASSERT_TRUE(FilePath::MkDir(save_directory)) << "save_directory: " << save_directory.toString();
+		ASSERT_TRUE(Path::MkDir(save_directory)) << "save_directory: " << save_directory.toString();
 		std::fstream output(save_file_path.GetNativePath(), std::ios::out);
 		ASSERT_TRUE(output.good());
 		output.write(contents.c_str(), contents.length());
@@ -24,7 +24,7 @@ protected:
 
 	void TearDown() override {
 		try {
-			std::filesystem::remove_all(save_directory.toString());
+			//std::filesystem::remove_all(save_directory.GetNativePath());
 		}
 		catch (std::filesystem::filesystem_error err) {
 			std::cout << "Failed to clean up - " << err.code() << ":" << err.what() << std::endl;

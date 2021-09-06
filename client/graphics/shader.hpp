@@ -61,13 +61,13 @@ public:
 	* Filenames should be something like:
 	* \code{.cpp}:
 	* auto shader_files = std::list < std::pair<Shader::ShaderType, std::string> > {
-	*	std::make_pair(Shader::VERTEX, FilePath("basic.vert")), std::make_pair(Shader::FRAGMENT,
-	*FilePath("./basic.frag")),
+	*	std::make_pair(Shader::VERTEX, Path("basic.vert")), std::make_pair(Shader::FRAGMENT,
+	*Path("./basic.frag")),
 	* };
 	* \return is a shared_ptr to the created Shader.
 	*/
 	static std::shared_ptr<Shader>
-	CreateFromFile(const std::string name, std::list<std::pair<gfx::ShaderType, tec::FilePath>> filenames);
+	CreateFromFile(const std::string name, std::list<std::pair<gfx::ShaderType, tec::Path>> filenames);
 
 	/**
 	* \brief Creates a Shader the provide source code stores it in ShaderMap under name.
@@ -101,11 +101,11 @@ public:
 	/**
 	* \brief Loads the specified ShaderType from file filename.
 	* \param const ShaderType type The type of shader that is being loaded i.e. VERTEX, FRAGMENT, etc.
-	* \param const FilePath filename The filename of the source file to load
+	* \param const Path filename The filename of the source file to load
 	* (relative to assets folder)
 	* \return void
 	*/
-	void LoadFromFile(const gfx::ShaderType type, const tec::FilePath& filename);
+	void LoadFromFile(const gfx::ShaderType type, const tec::Path& filename);
 
 	/**
 	* \brief Loads the specified ShaderType from the source string provided..

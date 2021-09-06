@@ -33,7 +33,7 @@ Game::Game(OS& _os, std::string config_file_name) :
 		stats(), os(_os), game_state_queue(this->stats), server_connection(this->stats),
 		ps(this->simulation.GetPhysicsSystem()), vcs(this->simulation.GetVComputerSystem()),
 		sound_thread([this]() { ss.Update(); }) {
-	this->config_script = this->lua_sys.LoadFile(FilePath::GetAssetPath(config_file_name));
+	this->config_script = this->lua_sys.LoadFile(Path::GetAssetPath(config_file_name));
 	this->server_connection.RegisterMessageHandler(MessageType::CLIENT_ID, [this](networking::MessageIn&) {
 		auto client_id = server_connection.GetClientID();
 		game_state_queue.SetClientID(client_id);

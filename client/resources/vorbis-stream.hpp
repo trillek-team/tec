@@ -56,7 +56,7 @@ public:
 	* \param[in] const std::vector<Property>& properties The creation properties for the
 	* resource. \return std::shared_ptr<VorbisStream> The created VorbisStream resource.
 	*/
-	static std::shared_ptr<VorbisStream> Create(const FilePath& filename);
+	static std::shared_ptr<VorbisStream> Create(const Path& filename);
 
 	const std::string GetName() const { return this->name; }
 	void SetName(const std::string& _name) { this->name = _name; }

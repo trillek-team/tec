@@ -47,13 +47,13 @@ LuaSystem::LuaSystem() {
 	this->lua.add_package_loader(
 			[this](sol::string_view package_name) -> sol::protected_function {
 				spdlog::get("console_log")->debug("request to load Lua package \"{}\"", package_name);
-				static FilePath scripts_base = FilePath::GetAssetsBasePath() / "scripts";
+				static Path scripts_base = Path::GetAssetPath("scripts");
 				std::string package_path(package_name.data(), package_name.size());
 				if (package_path.find_first_of('.') == std::string::npos) {
 					package_path.append(".lua");
 				}
 				// for now, we are going to look for a single lua file with by the same name as the package
-				FilePath package_script_path = scripts_base / package_path;
+				Path package_script_path = scripts_base / package_path;
 				std::string source;
 				if (!package_script_path.FileExists()) {
 					return sol::nil;
@@ -169,7 +169,7 @@ std::list<sol::protected_function> LuaSystem::GetAllFunctions(std::string functi
 	return functions;
 }
 
-std::shared_ptr<LuaScript> LuaSystem::LoadFile(FilePath filepath) {
+std::shared_ptr<LuaScript> LuaSystem::LoadFile(Path filepath) {
 	std::shared_ptr<LuaScript> script = std::make_shared<LuaScript>(ScriptFile::Create(filepath));
 	script->SetupEnvironment(&this->lua);
 	script->ReloadScript();

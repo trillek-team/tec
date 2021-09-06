@@ -22,9 +22,9 @@ namespace tec {
 */
 extern std::string CleanString(std::string str);
 
-std::shared_ptr<MD5Anim> MD5Anim::Create(const FilePath& fname) {
+std::shared_ptr<MD5Anim> MD5Anim::Create(const Path& fname) {
 	auto anim = std::make_shared<MD5Anim>();
-	anim->SetName(fname.SubpathFrom("assets").toGenericString());
+	anim->SetName(fname.Subpath(1).toString());
 	anim->SetFileName(fname);
 
 	if (anim->Parse()) {
@@ -47,15 +47,15 @@ bool MD5Anim::Parse() {
 		return false;
 	}
 
-	std::ifstream f(this->path.GetNativePath(), std::ios::in);
-	if (!f.is_open()) {
+	auto f = this->path.OpenStream();
+	if (!f->is_open()) {
 		_log->error("[MD5Anim] Error opening file {}", path.toString());
 		return false;
 	}
 
 	std::string line;
 	unsigned int num_components = 0;
-	while (std::getline(f, line)) {
+	while (std::getline(*f, line)) {
 		std::stringstream ss(line);
 		std::string identifier;
 
@@ -85,7 +85,7 @@ bool MD5Anim::Parse() {
 			ss >> num_components;
 		}
 		else if (identifier == "hierarchy") {
-			while (std::getline(f, line)) {
+			while (std::getline(*f, line)) {
 				if (line.find("\"") != std::string::npos) {
 					ss.str(CleanString(line));
 					Joint bone;
@@ -100,7 +100,7 @@ bool MD5Anim::Parse() {
 			}
 		}
 		else if (identifier == "bounds") {
-			while (std::getline(f, line)) {
+			while (std::getline(*f, line)) {
 				if ((line.find("(") != std::string::npos) && (line.find(")") != std::string::npos)) {
 					ss.str(CleanString(line));
 					BoundingBox bbox;
@@ -117,7 +117,7 @@ bool MD5Anim::Parse() {
 		}
 		else if (identifier == "baseframe") {
 			std::size_t index = 0;
-			while (std::getline(f, line)) {
+			while (std::getline(*f, line)) {
 				if ((line.find("(") != std::string::npos) && (line.find(")") != std::string::npos)) {
 					ss.str(CleanString(line));
 					auto& joint = this->joints[index];
@@ -140,7 +140,7 @@ bool MD5Anim::Parse() {
 			Frame frame;
 			ss >> frame.index;
 			unsigned int number = 0;
-			while (std::getline(f, line)) {
+			while (std::getline(*f, line)) {
 				ss.clear();
 				ss.str(line);
 				// Check if the line contained the closing brace. This is done after parsing

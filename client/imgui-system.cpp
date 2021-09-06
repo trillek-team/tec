@@ -30,8 +30,8 @@ IMGUISystem::IMGUISystem(GLFWwindow* _window) {
 	ImGui::CreateContext();
 	IMGUISystem::window = _window;
 	auto& io = ImGui::GetIO();
-	inifilename = (FilePath::GetUserSettingsPath() / "imgui.ini").toString();
-	logfilename = (FilePath::GetUserCachePath() / "imgui_log.txt").toString();
+	inifilename = (Path::GetUserSettingsPath() / "imgui.ini").toString();
+	logfilename = (Path::GetUserCachePath() / "imgui_log.txt").toString();
 	io.IniFilename = inifilename.c_str();
 #if defined(DEBUG) || defined(_DEBUG)
 	io.LogFilename = logfilename.c_str();

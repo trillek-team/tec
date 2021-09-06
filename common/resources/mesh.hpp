@@ -122,13 +122,7 @@ struct Mesh final {
 
 class MeshFile {
 public:
-	virtual ~MeshFile() {
-		for (Mesh* mesh : this->meshes) {
-			if (mesh) {
-				delete mesh;
-			}
-		}
-	}
+	virtual ~MeshFile();
 
 	/**
 	* \brief Creates a new mesh and adds it to this file.

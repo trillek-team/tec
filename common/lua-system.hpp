@@ -39,7 +39,7 @@ public:
 
 	void ExecuteString(std::string script_string);
 
-	std::shared_ptr<LuaScript> LoadFile(FilePath filepath);
+	std::shared_ptr<LuaScript> LoadFile(Path filepath);
 
 	sol::state& GetGlobalState() { return this->lua; }
 

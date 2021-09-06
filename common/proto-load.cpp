@@ -9,7 +9,7 @@
 
 namespace tec {
 
-std::string LoadAsString(const FilePath& fname) {
+std::string LoadAsString(const Path& fname) {
 	std::fstream input(fname.GetNativePath(), std::ios::in | std::ios::binary);
 	if (!input.good())
 		throw std::runtime_error("can't open ." + fname.toString());
@@ -23,7 +23,7 @@ std::string LoadAsString(const FilePath& fname) {
 	return in;
 }
 
-bool SaveFromString(const FilePath& fname, std::string contents) {
+bool SaveFromString(const Path& fname, std::string contents) {
 	std::fstream output(fname.GetNativePath(), std::ios::out);
 	if (!output.good())
 		throw std::runtime_error("can't open ." + fname.toString());
@@ -34,7 +34,7 @@ bool SaveFromString(const FilePath& fname, std::string contents) {
 }
 
 // Loads a given entity json file
-bool LoadProtoPack(const FilePath& fname, proto::Entity& entity) {
+bool LoadProtoPack(const Path& fname, proto::Entity& entity) {
 	auto _log = spdlog::get("console_log");
 	if (!fname.isValidPath() || !fname.FileExists()) {
 		_log->error("bad path or missing protopack file: {}", fname.toString());
@@ -51,7 +51,7 @@ bool LoadProtoPack(const FilePath& fname, proto::Entity& entity) {
 }
 
 // Loads a given json file into the system
-void ProtoLoadEntity(const FilePath& fname) {
+void ProtoLoadEntity(const Path& fname) {
 	std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 	if (LoadProtoPack(fname, data->entity)) {
 		EventSystem<EntityCreated>::Get()->Emit(data);
@@ -60,7 +60,7 @@ void ProtoLoadEntity(const FilePath& fname) {
 
 void ProtoLoad(std::string filename) {
 	auto _log = spdlog::get("console_log");
-	FilePath fname = FilePath::GetAssetPath(filename);
+	Path fname = Path::GetAssetPath(filename);
 	if (!fname.isValidPath() || !fname.FileExists()) {
 		_log->error("[ProtoLoad] Bad path or missing file: {}\n", fname.FileName());
 		return;
@@ -74,7 +74,7 @@ void ProtoLoad(std::string filename) {
 	}
 	_log->debug("[ProtoLoad] :\n {}", elist.DebugString());
 	for (int i = 0; i < elist.entity_file_list_size(); i++) {
-		FilePath entity_filename = FilePath::GetAssetPath(elist.entity_file_list(i));
+		Path entity_filename = Path::GetAssetPath(elist.entity_file_list(i));
 		ProtoLoadEntity(entity_filename);
 	}
 }
