@@ -23,8 +23,8 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | void | **[Printfln](/engine/Classes/classtec_1_1_console/#function-printfln)**(const char * cstr, ... ) |
 | virtual void | **[Draw](/engine/Classes/classtec_1_1_console/#function-draw)**([IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/) * ) override |
 | virtual bool | **[isCollapsed](/engine/Classes/classtec_1_1_console/#function-iscollapsed)**() const override |
-| void | **[AddConsoleCommand](/engine/Classes/classtec_1_1_console/#function-addconsolecommand)**(std::string name, std::string help, std::function< void(const char *)> && func) |
-| void | **[AddSlashHandler](/engine/Classes/classtec_1_1_console/#function-addslashhandler)**(std::function< void(const char *)> && func) |
+| void | **[AddConsoleCommand](/engine/Classes/classtec_1_1_console/#function-addconsolecommand)**(std::string name, std::string help, std::function< void(const std::string &)> && func) |
+| void | **[AddSlashHandler](/engine/Classes/classtec_1_1_console/#function-addslashhandler)**(std::function< void(const std::string &)> && func) |
 
 ## Additional inherited members
 
@@ -173,7 +173,7 @@ inline virtual bool isCollapsed() const override
 void AddConsoleCommand(
     std::string name,
     std::string help,
-    std::function< void(const char *)> && func
+    std::function< void(const std::string &)> && func
 )
 ```
 
@@ -192,7 +192,7 @@ Register a new command
 
 ```cpp
 void AddSlashHandler(
-    std::function< void(const char *)> && func
+    std::function< void(const std::string &)> && func
 )
 ```
 
@@ -207,4 +207,4 @@ Register a slash handler that handles all '/' commands
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

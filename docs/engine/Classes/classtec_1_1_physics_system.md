@@ -25,9 +25,9 @@ Inherits from [tec::CommandQueue< PhysicsSystem >](/engine/Classes/classtec_1_1_
 | double | **[GetLastRayDistance](/engine/Classes/classtec_1_1_physics_system/#function-getlastraydistance)**() const |
 | void | **[RaySetInvalid](/engine/Classes/classtec_1_1_physics_system/#function-raysetinvalid)**() |
 | void | **[DebugDraw](/engine/Classes/classtec_1_1_physics_system/#function-debugdraw)**() |
-| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**(std::shared_ptr< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
+| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_physics_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
 | [Position](/engine/Classes/structtec_1_1_position/) | **[GetPosition](/engine/Classes/classtec_1_1_physics_system/#function-getposition)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
 | [Orientation](/engine/Classes/structtec_1_1_orientation/) | **[GetOrientation](/engine/Classes/classtec_1_1_physics_system/#function-getorientation)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
 
@@ -199,8 +199,9 @@ void DebugDraw()
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< MouseBtnEvent > data
-)
+) override
 ```
 
 
@@ -211,8 +212,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityCreated > data
-)
+) override
 ```
 
 
@@ -223,8 +225,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< EntityDestroyed > data
-)
+) override
 ```
 
 
@@ -285,4 +288,4 @@ Set a rigid body's gravity to the world's gravity.
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

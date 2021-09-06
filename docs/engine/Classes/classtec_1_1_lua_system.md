@@ -18,9 +18,9 @@ Inherits from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_comm
 | | **[LuaSystem](/engine/Classes/classtec_1_1_lua_system/#function-luasystem)**() |
 | void | **[Update](/engine/Classes/classtec_1_1_lua_system/#function-update)**(const double delta) |
 | void | **[ProcessEvents](/engine/Classes/classtec_1_1_lua_system/#function-processevents)**() |
-| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**(std::shared_ptr< [ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/) > data) |
+| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/) > data) override |
 | void | **[ExecuteString](/engine/Classes/classtec_1_1_lua_system/#function-executestring)**(std::string script_string) |
 | std::shared_ptr< [LuaScript](/engine/Classes/structtec_1_1_lua_script/) > | **[LoadFile](/engine/Classes/classtec_1_1_lua_system/#function-loadfile)**([FilePath](/engine/Classes/classtec_1_1_file_path/) filepath) |
 | sol::state & | **[GetGlobalState](/engine/Classes/classtec_1_1_lua_system/#function-getglobalstate)**() |
@@ -126,8 +126,9 @@ void ProcessEvents()
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityCreated > data
-)
+) override
 ```
 
 
@@ -138,8 +139,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< EntityDestroyed > data
-)
+) override
 ```
 
 
@@ -150,8 +152,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< ChatCommandEvent > data
-)
+) override
 ```
 
 
@@ -196,4 +199,4 @@ inline void CallFunctions(
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

@@ -13,8 +13,8 @@ title: tec::GBuffer
 
 |                | Name           |
 | -------------- | -------------- |
-| enum class int | **[GBUFFER_TEXTURE_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-gbuffer_texture_type)** { GBUFFER_TEXTURE_TYPE_POSITION = 0, GBUFFER_TEXTURE_TYPE_DIFFUSE, GBUFFER_TEXTURE_TYPE_NORMAL} |
-| enum class| **[GBUFFER_DEPTH_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-gbuffer_depth_type)** { GBUFFER_DEPTH_TYPE_STENCIL} |
+| enum class int | **[TEXTURE_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-texture_type)** { POSITION = 0, DIFFUSE, NORMAL, EMISSION, TEXTURE_TYPE_LAST} |
+| enum class int | **[DEPTH_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-depth_type)** { DEPTH = (int)TEXTURE_TYPE::TEXTURE_TYPE_LAST, STENCIL} |
 
 ## Public Functions
 
@@ -24,7 +24,7 @@ title: tec::GBuffer
 | | **[~GBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-~gbuffer)**() |
 | void | **[AddColorAttachments](/engine/Classes/classtec_1_1_g_buffer/#function-addcolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
 | void | **[ResizeColorAttachments](/engine/Classes/classtec_1_1_g_buffer/#function-resizecolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
-| void | **[SetDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-setdepthattachment)**(GBUFFER_DEPTH_TYPE type, const unsigned int width, const unsigned int height) |
+| void | **[SetDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-setdepthattachment)**(DEPTH_TYPE type, const unsigned int width, const unsigned int height) |
 | void | **[ResizeDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-resizedepthattachment)**(const unsigned int width, const unsigned int height) |
 | bool | **[CheckCompletion](/engine/Classes/classtec_1_1_g_buffer/#function-checkcompletion)**() const |
 | void | **[StartFrame](/engine/Classes/classtec_1_1_g_buffer/#function-startframe)**() const |
@@ -40,26 +40,29 @@ title: tec::GBuffer
 | GLuint | **[GetColorTexture](/engine/Classes/classtec_1_1_g_buffer/#function-getcolortexture)**(unsigned short index) const |
 | void | **[EndGeometryPass](/engine/Classes/classtec_1_1_g_buffer/#function-endgeometrypass)**() |
 | void | **[StencilPass](/engine/Classes/classtec_1_1_g_buffer/#function-stencilpass)**() |
-| void | **[SetReadBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-setreadbuffer)**(GBUFFER_TEXTURE_TYPE TextureType) |
+| void | **[SetReadBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-setreadbuffer)**(TEXTURE_TYPE TextureType) |
 
 ## Public Types Documentation
 
-### enum GBUFFER_TEXTURE_TYPE
+### enum TEXTURE_TYPE
 
 | Enumerator | Value | Description |
 | ---------- | ----- | ----------- |
-| GBUFFER_TEXTURE_TYPE_POSITION | 0|   |
-| GBUFFER_TEXTURE_TYPE_DIFFUSE | |   |
-| GBUFFER_TEXTURE_TYPE_NORMAL | |   |
+| POSITION | 0|   |
+| DIFFUSE | |   |
+| NORMAL | |   |
+| EMISSION | |   |
+| TEXTURE_TYPE_LAST | |   |
 
 
 
 
-### enum GBUFFER_DEPTH_TYPE
+### enum DEPTH_TYPE
 
 | Enumerator | Value | Description |
 | ---------- | ----- | ----------- |
-| GBUFFER_DEPTH_TYPE_STENCIL | |   |
+| DEPTH | (int)TEXTURE_TYPE::TEXTURE_TYPE_LAST|   |
+| STENCIL | |   |
 
 
 
@@ -104,7 +107,7 @@ void ResizeColorAttachments(
 
 ```cpp
 void SetDepthAttachment(
-    GBUFFER_DEPTH_TYPE type,
+    DEPTH_TYPE type,
     const unsigned int width,
     const unsigned int height
 )
@@ -225,11 +228,11 @@ static void StencilPass()
 
 ```cpp
 static void SetReadBuffer(
-    GBUFFER_TEXTURE_TYPE TextureType
+    TEXTURE_TYPE TextureType
 )
 ```
 
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

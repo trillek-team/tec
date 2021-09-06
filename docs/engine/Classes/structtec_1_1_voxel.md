@@ -20,7 +20,6 @@ title: tec::Voxel
 |                | Name           |
 | -------------- | -------------- |
 | float | **[color](/engine/Classes/structtec_1_1_voxel/#variable-color)**  |
-| std::weak_ptr< [Voxel](/engine/Classes/structtec_1_1_voxel/) > | **[neighbors](/engine/Classes/structtec_1_1_voxel/#variable-neighbors)**  |
 
 ## Public Types Documentation
 
@@ -47,13 +46,6 @@ float color {0.f, 0.f, 0.f};
 ```
 
 
-### variable neighbors
-
-```cpp
-std::weak_ptr< Voxel > neighbors;
-```
-
-
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

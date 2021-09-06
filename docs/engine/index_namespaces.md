@@ -8,6 +8,7 @@ title: Namespaces
 
 
 
+* **namespace [fmt](/engine/Namespaces/namespacefmt/)** 
 * **namespace [google](/engine/Namespaces/namespacegoogle/)** 
     * **namespace [protobuf](/engine/Namespaces/namespacegoogle_1_1protobuf/)** 
         * **namespace [io](/engine/Namespaces/namespacegoogle_1_1protobuf_1_1io/)** 
@@ -21,10 +22,11 @@ title: Namespaces
     * **namespace [system](/engine/Namespaces/namespacetec_1_1system/)** 
     * **namespace [user](/engine/Namespaces/namespacetec_1_1user/)** 
     * **namespace [util](/engine/Namespaces/namespacetec_1_1util/)** 
+    * **namespace [vertex](/engine/Namespaces/namespacetec_1_1vertex/)** 
 * **namespace [trillek::computer](/engine/Namespaces/namespacetrillek_1_1computer/)** 
 
 
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

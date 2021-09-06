@@ -34,7 +34,7 @@ title: tec::MD5Anim
 | int | **[GetFrameRate](/engine/Classes/classtec_1_1_m_d5_anim/#function-getframerate)**() const<br>Returns the number of frame rate per second.  |
 | void | **[BuildFrameSkeleton](/engine/Classes/classtec_1_1_m_d5_anim/#function-buildframeskeleton)**(std::size_t frame_index)<br>Builds or rebuilds the [FrameSkeleton]() for a given frame index.  |
 | bool | **[CheckMesh](/engine/Classes/classtec_1_1_m_d5_anim/#function-checkmesh)**(std::shared_ptr< [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) > mesh_file)<br>Checks of a given mesh is valid for this animation.  |
-| [FrameSkeleton](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame_skeleton/) | **[InterpolateSkeletons](/engine/Classes/classtec_1_1_m_d5_anim/#function-interpolateskeletons)**(std::size_t frame_index_start, std::size_t frame_index_end, float delta)<br>Gets the interpolated [FrameSkeleton]() between 2 frames at a given delta.  |
+| void | **[InterpolatePose](/engine/Classes/classtec_1_1_m_d5_anim/#function-interpolatepose)**(std::vector< [AnimationBone](/engine/Classes/structtec_1_1_animation_bone/) > & pose_out, std::size_t frame_index_start, std::size_t frame_index_end, float delta)<br>Gets the interpolated pose skeleton between 2 frames at a given delta.  |
 | std::shared_ptr< [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) > | **[Create](/engine/Classes/classtec_1_1_m_d5_anim/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Returns a resource with the specified name.  |
 
 ## Public Functions Documentation
@@ -160,26 +160,26 @@ Checks of a given mesh is valid for this animation.
 
 **Return**: bool True if the mesh is compatible. 
 
-### function InterpolateSkeletons
+### function InterpolatePose
 
 ```cpp
-FrameSkeleton InterpolateSkeletons(
+void InterpolatePose(
+    std::vector< AnimationBone > & pose_out,
     std::size_t frame_index_start,
     std::size_t frame_index_end,
     float delta
 )
 ```
 
-Gets the interpolated [FrameSkeleton]() between 2 frames at a given delta. 
+Gets the interpolated pose skeleton between 2 frames at a given delta. 
 
 **Parameters**: 
 
-  * **size_t** frame_index_start The starting frame index. 
-  * **size_t** frame_index_start The ending frame index. 
-  * **float** delta The change in time since the last call. 
+  * **pose_out** array of [AnimationBone](/engine/Classes/structtec_1_1_animation_bone/) to store the interpolated pose in. 
+  * **frame_index_start** The starting frame index. 
+  * **frame_index_end** The ending frame index. 
+  * **delta** The change in time since the last call. 
 
-
-**Return**: [FrameSkeleton](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame_skeleton/) The current [FrameSkeleton](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame_skeleton/) for the given delta. 
 
 ### function Create
 
@@ -203,4 +203,4 @@ The only used initialization property is "filename".
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

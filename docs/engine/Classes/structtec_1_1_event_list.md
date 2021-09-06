@@ -14,9 +14,9 @@ title: tec::EventList
 |                | Name           |
 | -------------- | -------------- |
 | | **[EventList](/engine/Classes/structtec_1_1_event_list/#function-eventlist)**() |
-| | **[EventList](/engine/Classes/structtec_1_1_event_list/#function-eventlist)**(const [EventList](/engine/Classes/structtec_1_1_event_list/) & ) |
+| | **[EventList](/engine/Classes/structtec_1_1_event_list/#function-eventlist)**(const [EventList](/engine/Classes/structtec_1_1_event_list/) & ) =delete |
 | | **[EventList](/engine/Classes/structtec_1_1_event_list/#function-eventlist)**([EventList](/engine/Classes/structtec_1_1_event_list/) && other) |
-| [EventList](/engine/Classes/structtec_1_1_event_list/) & | **[operator=](/engine/Classes/structtec_1_1_event_list/#function-operator=)**(const [EventList](/engine/Classes/structtec_1_1_event_list/) & other) |
+| [EventList](/engine/Classes/structtec_1_1_event_list/) & | **[operator=](/engine/Classes/structtec_1_1_event_list/#function-operator=)**(const [EventList](/engine/Classes/structtec_1_1_event_list/) & other) =delete |
 | [EventList](/engine/Classes/structtec_1_1_event_list/) & | **[operator=](/engine/Classes/structtec_1_1_event_list/#function-operator=)**([EventList](/engine/Classes/structtec_1_1_event_list/) && other) |
 
 ## Public Attributes
@@ -42,7 +42,7 @@ inline EventList()
 ```cpp
 EventList(
     const EventList & 
-)
+) =delete
 ```
 
 
@@ -60,7 +60,7 @@ inline EventList(
 ```cpp
 EventList & operator=(
     const EventList & other
-)
+) =delete
 ```
 
 
@@ -105,4 +105,4 @@ std::list< MouseClickEvent > mouse_click_events;
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

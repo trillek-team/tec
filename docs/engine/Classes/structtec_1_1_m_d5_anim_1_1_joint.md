@@ -9,12 +9,6 @@ title: tec::MD5Anim::Joint
 
 
 
-## Public Functions
-
-|                | Name           |
-| -------------- | -------------- |
-| void | **[ComputeW](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#function-computew)**() |
-
 ## Public Attributes
 
 |                | Name           |
@@ -25,16 +19,8 @@ title: tec::MD5Anim::Joint
 | int | **[start_index](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-start_index)**  |
 | glm::vec3 | **[base_position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base_position)**  |
 | glm::quat | **[base_orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base_orientation)**  |
-| glm::mat4 | **[bind_pose_inverse](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind_pose_inverse)**  |
-
-## Public Functions Documentation
-
-### function ComputeW
-
-```cpp
-void ComputeW()
-```
-
+| glm::vec3 | **[bind_position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind_position)**  |
+| glm::quat | **[bind_orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind_orientation)**  |
 
 ## Public Attributes Documentation
 
@@ -80,13 +66,20 @@ glm::quat base_orientation {0.f, 0.f, 0.f, 1.f};
 ```
 
 
-### variable bind_pose_inverse
+### variable bind_position
 
 ```cpp
-glm::mat4 bind_pose_inverse {0.f};
+glm::vec3 bind_position {0.f, 0.f, 0.f};
+```
+
+
+### variable bind_orientation
+
+```cpp
+glm::quat bind_orientation {0.f, 0.f, 0.f, 1.f};
 ```
 
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

@@ -16,6 +16,7 @@ title: tec
 | **[tec::system](/engine/Namespaces/namespacetec_1_1system/)**  |
 | **[tec::user](/engine/Namespaces/namespacetec_1_1user/)**  |
 | **[tec::util](/engine/Namespaces/namespacetec_1_1util/)**  |
+| **[tec::vertex](/engine/Namespaces/namespacetec_1_1vertex/)**  |
 
 ## Classes
 
@@ -23,6 +24,7 @@ title: tec
 | -------------- | -------------- |
 | class | **[tec::ClientGameStateQueue](/engine/Classes/classtec_1_1_client_game_state_queue/)**  |
 | class | **[tec::Game](/engine/Classes/classtec_1_1_game/)**  |
+| struct | **[tec::AnimationBone](/engine/Classes/structtec_1_1_animation_bone/)**  |
 | class | **[tec::Animation](/engine/Classes/classtec_1_1_animation/)**  |
 | class | **[tec::GBuffer](/engine/Classes/classtec_1_1_g_buffer/)**  |
 | struct | **[tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)**  |
@@ -46,6 +48,8 @@ title: tec
 | class | **[tec::IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/)**  |
 | class | **[tec::OS](/engine/Classes/classtec_1_1_o_s/)**  |
 | class | **[tec::PhysicsDebugDrawer](/engine/Classes/classtec_1_1_physics_debug_drawer/)**  |
+| struct | **[tec::RenderItem](/engine/Classes/structtec_1_1_render_item/)**  |
+| class | **[tec::GLSymbol](/engine/Classes/classtec_1_1_g_l_symbol/)**  |
 | class | **[tec::RenderSystem](/engine/Classes/classtec_1_1_render_system/)**  |
 | class | **[tec::MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/)**  |
 | class | **[tec::MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/)**  |
@@ -102,7 +106,6 @@ title: tec
 | struct | **[tec::LuaClassList](/engine/Classes/structtec_1_1_lua_class_list/)**  |
 | class | **[tec::Multiton](/engine/Classes/classtec_1_1_multiton/)**  |
 | class | **[tec::PhysicsSystem](/engine/Classes/classtec_1_1_physics_system/)**  |
-| struct | **[tec::VertexData](/engine/Classes/structtec_1_1_vertex_data/)**  |
 | struct | **[tec::MaterialGroup](/engine/Classes/structtec_1_1_material_group/)**  |
 | struct | **[tec::ObjectGroup](/engine/Classes/structtec_1_1_object_group/)**  |
 | struct | **[tec::Mesh](/engine/Classes/structtec_1_1_mesh/)**  |
@@ -123,10 +126,11 @@ title: tec
 |                | Name           |
 | -------------- | -------------- |
 | enum| **[ENGINE_ENTITIES](/engine/Namespaces/namespacetec/#enum-engine_entities)** { MANIPULATOR = 1} |
-| enum class std::uint32_t | **[ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MONOCHROME = 0, MONOCHROME_A = 4, COLOR_RGB = 2, COLOR_RGBA = 6} |
+| enum class std::uint32_t | **[ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MODEFLAG_COLOR = 2, MODEFLAG_ALPHA = 4, MODEFLAG_GAMMA = 8, MONOCHROME = 0, MONOCHROME_A = MODEFLAG_ALPHA, COLOR_RGB = MODEFLAG_COLOR, COLOR_RGBA = MODEFLAG_COLOR | MODEFLAG_ALPHA, GAMMA_RGB = MODEFLAG_COLOR | MODEFLAG_GAMMA, GAMMA_RGBA = MODEFLAG_COLOR | MODEFLAG_GAMMA | MODEFLAG_ALPHA} |
 | enum class| **[AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource_state)** { PLAYING, PAUSED, STOPPED} |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > > | **[MaterialMap](/engine/Namespaces/namespacetec/#typedef-materialmap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > > | **[ShaderMap](/engine/Namespaces/namespacetec/#typedef-shadermap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::string > | **[ShaderIncludes](/engine/Namespaces/namespacetec/#typedef-shaderincludes)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > > | **[TextureMap](/engine/Namespaces/namespacetec/#typedef-texturemap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Renderable](/engine/Classes/structtec_1_1_renderable/) * > | **[RenderableMap](/engine/Namespaces/namespacetec/#typedef-renderablemap)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [PointLight](/engine/Classes/structtec_1_1_point_light/) * > | **[PointLightMap](/engine/Namespaces/namespacetec/#using-pointlightmap)**  |
@@ -164,11 +168,14 @@ title: tec
 | [Renderable](/engine/Classes/structtec_1_1_renderable/) * | **[GetRenderable](/engine/Namespaces/namespacetec/#function-getrenderable)**() |
 | void | **[ErrorCallback](/engine/Namespaces/namespacetec/#function-errorcallback)**(int error_no, const char * description) |
 | GLFWmonitor * | **[get_current_monitor](/engine/Namespaces/namespacetec/#function-get_current_monitor)**(GLFWwindow * window) |
+| void | **[ActivateTextureUnit](/engine/Namespaces/namespacetec/#function-activatetextureunit)**(const GLuint unit, const GLuint texture_name) |
 | std::string | **[CleanString](/engine/Namespaces/namespacetec/#function-cleanstring)**(std::string str)<br>Cleans an input string by removing certain grouping characters.  |
+| void | **[ComputeWNeg](/engine/Namespaces/namespacetec/#function-computewneg)**(glm::quat & q)<br>Compute the quaternion's W component on interval [-1, 0], MD5 style.  |
 | [MD5Mesh::Joint](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/) | **[ParseJoint](/engine/Namespaces/namespacetec/#function-parsejoint)**(std::stringstream & ss)<br>Parses a joint line.  |
 | [MD5Mesh::Vertex](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/) | **[ParseVertex](/engine/Namespaces/namespacetec/#function-parsevertex)**(std::stringstream & ss)<br>Parses a vertex line.  |
 | [MD5Mesh::Triangle](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_triangle/) | **[ParseTriangle](/engine/Namespaces/namespacetec/#function-parsetriangle)**(std::stringstream & ss)<br>Parses a triangle line.  |
 | [MD5Mesh::Weight](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_weight/) | **[ParsesWeight](/engine/Namespaces/namespacetec/#function-parsesweight)**(std::stringstream & ss)<br>Parses a weight line.  |
+| uint32_t | **[BytesForBitSize](/engine/Namespaces/namespacetec/#function-bytesforbitsize)**(uint32_t bits) |
 | std::string | **[VorbisErrorToString](/engine/Namespaces/namespacetec/#function-vorbiserrortostring)**(int error) |
 | void | **[alCheckError](/engine/Namespaces/namespacetec/#function-alcheckerror)**() |
 | [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetNextEntityId](/engine/Namespaces/namespacetec/#function-getnextentityid)**() |
@@ -194,6 +201,7 @@ title: tec
 | void | **[ProtoLoad](/engine/Namespaces/namespacetec/#function-protoload)**(std::string filename) |
 | std::string | **[utf8_encode](/engine/Namespaces/namespacetec/#function-utf8_encode)**(const std::wstring & wstr)<br>Convert a wide Unicode string to an UTF8 string.  |
 | std::wstring | **[utf8_decode](/engine/Namespaces/namespacetec/#function-utf8_decode)**(const std::string & str)<br>Convert an UTF8 string to a wide Unicode String.  |
+| std::vector< std::string > | **[SplitString](/engine/Namespaces/namespacetec/#function-splitstring)**(std::string args, std::string deliminator) |
 | template <class T \> <br>bool | **[IsBetween](/engine/Namespaces/namespacetec/#function-isbetween)**(T value, T lower, T upper)<br>User ID.  |
 | template <class TYPE \> <br>constexpr const char * | **[GetTypeName](/engine/Namespaces/namespacetec/#function-gettypename)**(void )<br>Returns the name of an component on compile time.  |
 | template <class TYPE \> <br>constexpr tid | **[GetTypeID](/engine/Namespaces/namespacetec/#function-gettypeid)**(void )<br>Returns the TypeID of a component on compile time.  |
@@ -223,11 +231,13 @@ title: tec
 |                | Name           |
 | -------------- | -------------- |
 | std::unordered_map< std::string, std::function< void(std::string)> > | **[file_factories](/engine/Namespaces/namespacetec/#variable-file_factories)**  |
+| const std::map< std::string_view, GLint > | **[engine_constants](/engine/Namespaces/namespacetec/#variable-engine_constants)**  |
+| char | **[connect_username](/engine/Namespaces/namespacetec/#variable-connect_username)**  |
 | std::string | **[inifilename](/engine/Namespaces/namespacetec/#variable-inifilename)**  |
 | std::string | **[logfilename](/engine/Namespaces/namespacetec/#variable-logfilename)**  |
-| glm::vec3 | **[FORWARD_VECTOR](/engine/Namespaces/namespacetec/#variable-forward_vector)**  |
-| glm::vec3 | **[UP_VECTOR](/engine/Namespaces/namespacetec/#variable-up_vector)**  |
-| glm::vec3 | **[RIGHT_VECTOR](/engine/Namespaces/namespacetec/#variable-right_vector)**  |
+| const glm::vec3 | **[FORWARD_VECTOR](/engine/Namespaces/namespacetec/#variable-forward_vector)**  |
+| const glm::vec3 | **[UP_VECTOR](/engine/Namespaces/namespacetec/#variable-up_vector)**  |
+| const glm::vec3 | **[RIGHT_VECTOR](/engine/Namespaces/namespacetec/#variable-right_vector)**  |
 | const char | **[UNIX_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-unix_path_separator)**  |
 | const char | **[WIN_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-win_path_separator)** <br>*NIX file system path separator  |
 | constexpr std::string_view | **[PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path_separator)**  |
@@ -264,10 +274,15 @@ String handling stuff
 | Enumerator | Value | Description |
 | ---------- | ----- | ----------- |
 | UNKNOWN_MODE | 0xffffffffu|   |
+| MODEFLAG_COLOR | 2|   |
+| MODEFLAG_ALPHA | 4|   |
+| MODEFLAG_GAMMA | 8|   |
 | MONOCHROME | 0|   |
-| MONOCHROME_A | 4|   |
-| COLOR_RGB | 2|   |
-| COLOR_RGBA | 6|   |
+| MONOCHROME_A | MODEFLAG_ALPHA|   |
+| COLOR_RGB | MODEFLAG_COLOR|   |
+| COLOR_RGBA | MODEFLAG_COLOR | MODEFLAG_ALPHA|   |
+| GAMMA_RGB | MODEFLAG_COLOR | MODEFLAG_GAMMA|   |
+| GAMMA_RGBA | MODEFLAG_COLOR | MODEFLAG_GAMMA | MODEFLAG_ALPHA|   |
 
 
 
@@ -294,6 +309,13 @@ typedef Multiton<std::string, std::shared_ptr<Material> > tec::MaterialMap;
 
 ```cpp
 typedef Multiton<std::string, std::shared_ptr<Shader> > tec::ShaderMap;
+```
+
+
+### typedef ShaderIncludes
+
+```cpp
+typedef Multiton<std::string, std::string> tec::ShaderIncludes;
 ```
 
 
@@ -531,6 +553,16 @@ GLFWmonitor * get_current_monitor(
 ```
 
 
+### function ActivateTextureUnit
+
+```cpp
+void ActivateTextureUnit(
+    const GLuint unit,
+    const GLuint texture_name
+)
+```
+
+
 ### function CleanString
 
 ```cpp
@@ -550,6 +582,18 @@ Cleans an input string by removing certain grouping characters.
 
 These characters include ", ', (, and ). 
 
+
+### function ComputeWNeg
+
+```cpp
+void ComputeWNeg(
+    glm::quat & q
+)
+```
+
+Compute the quaternion's W component on interval [-1, 0], MD5 style. 
+
+**Return**: void 
 
 ### function ParseJoint
 
@@ -629,6 +673,15 @@ Parses a weight line.
 **Return**: The parsed weight or a default one if the parsing failed. 
 
 weight weightIndex joint bias ( pos.x pos.y pos.z ) 
+
+
+### function BytesForBitSize
+
+```cpp
+static uint32_t BytesForBitSize(
+    uint32_t bits
+)
+```
 
 
 ### function VorbisErrorToString
@@ -898,6 +951,16 @@ Convert an UTF8 string to a wide Unicode String.
 
 **Return**: std::wstring on unicode system encoding. Empty string if fails 
 
+### function SplitString
+
+```cpp
+std::vector< std::string > SplitString(
+    std::string args,
+    std::string deliminator
+)
+```
+
+
 ### function IsBetween
 
 ```cpp
@@ -1130,6 +1193,34 @@ std::unordered_map< std::string, std::function< void(std::string)> > file_factor
 ```
 
 
+### variable engine_constants
+
+```cpp
+static const std::map< std::string_view, GLint > engine_constants {
+		{"gCompositeMap", (GLint)GBuffer::TEXTURE_TYPE::TEXTURE_TYPE_LAST},
+		{"gPositionMap", (GLint)GBuffer::TEXTURE_TYPE::POSITION},
+		{"gNormalMap", (GLint)GBuffer::TEXTURE_TYPE::NORMAL},
+		{"gColorMap", (GLint)GBuffer::TEXTURE_TYPE::DIFFUSE},
+		{"gEmissionMap", (GLint)GBuffer::TEXTURE_TYPE::EMISSION},
+		{"gDepthMap", (GLint)GBuffer::DEPTH_TYPE::DEPTH},
+		{"mColorMap", 0},
+		{"mSPMap", 1},
+		{"mNormalMap", 2},
+		{"mMap0", 0},
+		{"mMap1", 1},
+		{"mMap2", 2},
+		{"mMap3", 3},
+};
+```
+
+
+### variable connect_username
+
+```cpp
+static char connect_username {""};
+```
+
+
 ### variable inifilename
 
 ```cpp
@@ -1147,21 +1238,21 @@ std::string logfilename;
 ### variable FORWARD_VECTOR
 
 ```cpp
-static glm::vec3 FORWARD_VECTOR = {0.0f, 0.0f, -1.0f};
+static const glm::vec3 FORWARD_VECTOR = {0.0f, 0.0f, -1.0f};
 ```
 
 
 ### variable UP_VECTOR
 
 ```cpp
-static glm::vec3 UP_VECTOR = {0.0f, 1.0f, 0.0f};
+static const glm::vec3 UP_VECTOR = {0.0f, 1.0f, 0.0f};
 ```
 
 
 ### variable RIGHT_VECTOR
 
 ```cpp
-static glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
+static const glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
 ```
 
 
@@ -1230,4 +1321,4 @@ Maps on runtime the Type ID with the name.
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

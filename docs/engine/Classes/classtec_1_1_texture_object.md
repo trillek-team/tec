@@ -17,8 +17,8 @@ title: tec::TextureObject
 | | **[~TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-~textureobject)**() |
 | | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & image)<br>new texture instance from image  |
 | | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**(std::weak_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > pbp)<br>new texture instance from an image pointer  |
-| | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & ) |
-| [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & | **[operator=](/engine/Classes/classtec_1_1_texture_object/#function-operator=)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & ) |
+| | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & ) =delete |
+| [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & | **[operator=](/engine/Classes/classtec_1_1_texture_object/#function-operator=)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & ) =delete |
 | | **[TextureObject](/engine/Classes/classtec_1_1_texture_object/#function-textureobject)**([TextureObject](/engine/Classes/classtec_1_1_texture_object/) && other) |
 | [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & | **[operator=](/engine/Classes/classtec_1_1_texture_object/#function-operator=)**([TextureObject](/engine/Classes/classtec_1_1_texture_object/) && other) |
 | void | **[Destroy](/engine/Classes/classtec_1_1_texture_object/#function-destroy)**()<br>delete the underlaying GL texture  |
@@ -27,14 +27,6 @@ title: tec::TextureObject
 | void | **[Update](/engine/Classes/classtec_1_1_texture_object/#function-update)**() |
 | void | **[SetCompare](/engine/Classes/classtec_1_1_texture_object/#function-setcompare)**(bool c) |
 | void | **[Load](/engine/Classes/classtec_1_1_texture_object/#function-load)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & image)<br>create a texture from an image  |
-| void | **[Load](/engine/Classes/classtec_1_1_texture_object/#function-load)**(const uint8_t * image, GLuint width, GLuint height)<br>create a texture from raw image data  |
-| void | **[Generate](/engine/Classes/classtec_1_1_texture_object/#function-generate)**(GLuint width, GLuint height, bool usealpha)<br>create a blank texture RGB or RGBA format  |
-| void | **[GenerateDepth](/engine/Classes/classtec_1_1_texture_object/#function-generatedepth)**(GLuint width, GLuint height, bool stencil)<br>create a blank depth texture with or without stencil  |
-| void | **[GenerateStencil](/engine/Classes/classtec_1_1_texture_object/#function-generatestencil)**(GLuint width, GLuint height)<br>create a blank stencil texture  |
-| void | **[GenerateMultisample](/engine/Classes/classtec_1_1_texture_object/#function-generatemultisample)**(GLuint width, GLuint height, GLuint samples)<br>create a blank multi-sample texture RGB or RGBA format  |
-| void | **[GenerateMultisampleDepth](/engine/Classes/classtec_1_1_texture_object/#function-generatemultisampledepth)**(GLuint width, GLuint height, GLuint samples, bool stencil)<br>create a blank multi-sample depth texture with or without stencil  |
-| void | **[GenerateMultisampleStencil](/engine/Classes/classtec_1_1_texture_object/#function-generatemultisamplestencil)**(GLuint width, GLuint height, GLuint samples)<br>create a blank multi-sample stencil texture  |
-| bool | **[operator==](/engine/Classes/classtec_1_1_texture_object/#function-operator==)**(const [TextureObject](/engine/Classes/classtec_1_1_texture_object/) & other) |
 
 ## Protected Attributes
 
@@ -85,7 +77,7 @@ new texture instance from an image pointer
 ```cpp
 TextureObject(
     const TextureObject & 
-)
+) =delete
 ```
 
 
@@ -94,7 +86,7 @@ TextureObject(
 ```cpp
 TextureObject & operator=(
     const TextureObject & 
-)
+) =delete
 ```
 
 
@@ -172,99 +164,6 @@ void Load(
 
 create a texture from an image 
 
-### function Load
-
-```cpp
-void Load(
-    const uint8_t * image,
-    GLuint width,
-    GLuint height
-)
-```
-
-create a texture from raw image data 
-
-### function Generate
-
-```cpp
-void Generate(
-    GLuint width,
-    GLuint height,
-    bool usealpha
-)
-```
-
-create a blank texture RGB or RGBA format 
-
-### function GenerateDepth
-
-```cpp
-void GenerateDepth(
-    GLuint width,
-    GLuint height,
-    bool stencil
-)
-```
-
-create a blank depth texture with or without stencil 
-
-### function GenerateStencil
-
-```cpp
-void GenerateStencil(
-    GLuint width,
-    GLuint height
-)
-```
-
-create a blank stencil texture 
-
-### function GenerateMultisample
-
-```cpp
-void GenerateMultisample(
-    GLuint width,
-    GLuint height,
-    GLuint samples
-)
-```
-
-create a blank multi-sample texture RGB or RGBA format 
-
-### function GenerateMultisampleDepth
-
-```cpp
-void GenerateMultisampleDepth(
-    GLuint width,
-    GLuint height,
-    GLuint samples,
-    bool stencil
-)
-```
-
-create a blank multi-sample depth texture with or without stencil 
-
-### function GenerateMultisampleStencil
-
-```cpp
-void GenerateMultisampleStencil(
-    GLuint width,
-    GLuint height,
-    GLuint samples
-)
-```
-
-create a blank multi-sample stencil texture 
-
-### function operator==
-
-```cpp
-inline bool operator==(
-    const TextureObject & other
-)
-```
-
-
 ## Protected Attributes Documentation
 
 ### variable texture_id
@@ -290,4 +189,4 @@ std::weak_ptr< PixelBuffer > source_ptr;
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

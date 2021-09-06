@@ -13,19 +13,11 @@ title: tec::MouseClickEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_mouse_click_event/#variable-entity_id)**  |
 | MouseBtnEvent::MOUSE_BTN | **[button](/engine/Classes/structtec_1_1_mouse_click_event/#variable-button)**  |
 | glm::vec3 | **[ray_hit_point_world](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray_hit_point_world)**  |
 | double | **[ray_distance](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray_distance)**  |
 
 ## Public Attributes Documentation
-
-### variable entity_id
-
-```cpp
-eid entity_id {0};
-```
-
 
 ### variable button
 
@@ -50,4 +42,4 @@ double ray_distance;
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

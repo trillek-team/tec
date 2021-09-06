@@ -18,6 +18,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | | **[ServerConnectWindow](/engine/Classes/classtec_1_1_server_connect_window/#function-serverconnectwindow)**([ServerConnection](/engine/Classes/classtec_1_1networking_1_1_server_connection/) & server_connection) |
 | virtual void | **[Update](/engine/Classes/classtec_1_1_server_connect_window/#function-update)**(double ) override |
 | virtual void | **[Draw](/engine/Classes/classtec_1_1_server_connect_window/#function-draw)**([IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/) * gui) override |
+| void | **[SetUsername](/engine/Classes/classtec_1_1_server_connect_window/#function-setusername)**(const std::string & user) |
 
 ## Additional inherited members
 
@@ -79,6 +80,15 @@ virtual void Draw(
 **Reimplements**: [tec::AbstractWindow::Draw](/engine/Classes/classtec_1_1_abstract_window/#function-draw)
 
 
+### function SetUsername
+
+```cpp
+static void SetUsername(
+    const std::string & user
+)
+```
+
+
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

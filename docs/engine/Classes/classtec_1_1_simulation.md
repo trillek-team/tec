@@ -22,15 +22,15 @@ Inherits from [tec::CommandQueue< Simulation >](/engine/Classes/classtec_1_1_com
 | [VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/) & | **[GetVComputerSystem](/engine/Classes/classtec_1_1_simulation/#function-getvcomputersystem)**() |
 | void | **[AddController](/engine/Classes/classtec_1_1_simulation/#function-addcontroller)**([Controller](/engine/Classes/structtec_1_1_controller/) * controller) |
 | void | **[RemoveController](/engine/Classes/classtec_1_1_simulation/#function-removecontroller)**([Controller](/engine/Classes/structtec_1_1_controller/) * controller) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [MouseMoveEvent](/engine/Classes/structtec_1_1_mouse_move_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [MouseClickEvent](/engine/Classes/structtec_1_1_mouse_click_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [ClientCommandsEvent](/engine/Classes/structtec_1_1_client_commands_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [ControllerAddedEvent](/engine/Classes/structtec_1_1_controller_added_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [ControllerRemovedEvent](/engine/Classes/structtec_1_1_controller_removed_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [FocusCapturedEvent](/engine/Classes/structtec_1_1_focus_captured_event/) > data)<br>This event is sent to indicate that focus had been captured by an entity it specifies which was captured: keyboard or mouse, if either of these parameters is true, then prevent normal processing of those events a controller implementing this should logically AND NOT these inputs with it's current settings.  |
-| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**(std::shared_ptr< [FocusBlurEvent](/engine/Classes/structtec_1_1_focus_blur_event/) > data)<br>This event is sent to indicate that focus had been released (blur) from an owning entity it specifies which was blurred: keyboard or mouse, if either of these parameters is true, then restore normal processing of those events a controller implementing this should logically OR these inputs with it's current settings.  |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [MouseMoveEvent](/engine/Classes/structtec_1_1_mouse_move_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [MouseClickEvent](/engine/Classes/structtec_1_1_mouse_click_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [ClientCommandsEvent](/engine/Classes/structtec_1_1_client_commands_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [ControllerAddedEvent](/engine/Classes/structtec_1_1_controller_added_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [ControllerRemovedEvent](/engine/Classes/structtec_1_1_controller_removed_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [FocusCapturedEvent](/engine/Classes/structtec_1_1_focus_captured_event/) > data) override<br>This event is sent to indicate that focus had been captured by an entity it specifies which was captured: keyboard or mouse, if either of these parameters is true, then prevent normal processing of those events a controller implementing this should logically AND NOT these inputs with it's current settings.  |
+| virtual void | **[On](/engine/Classes/classtec_1_1_simulation/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [FocusBlurEvent](/engine/Classes/structtec_1_1_focus_blur_event/) > data) override<br>This event is sent to indicate that focus had been released (blur) from an owning entity it specifies which was blurred: keyboard or mouse, if either of these parameters is true, then restore normal processing of those events a controller implementing this should logically OR these inputs with it's current settings.  |
 
 ## Additional inherited members
 
@@ -267,8 +267,9 @@ void RemoveController(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< KeyboardEvent > data
-)
+) override
 ```
 
 
@@ -279,8 +280,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< MouseBtnEvent > data
-)
+) override
 ```
 
 
@@ -291,8 +293,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< MouseMoveEvent > data
-)
+) override
 ```
 
 
@@ -303,8 +306,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< MouseClickEvent > data
-)
+) override
 ```
 
 
@@ -315,8 +319,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< ClientCommandsEvent > data
-)
+) override
 ```
 
 
@@ -327,8 +332,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< ControllerAddedEvent > data
-)
+) override
 ```
 
 
@@ -339,8 +345,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< ControllerRemovedEvent > data
-)
+) override
 ```
 
 
@@ -351,8 +358,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< FocusCapturedEvent > data
-)
+) override
 ```
 
 This event is sent to indicate that focus had been captured by an entity it specifies which was captured: keyboard or mouse, if either of these parameters is true, then prevent normal processing of those events a controller implementing this should logically AND NOT these inputs with it's current settings. 
@@ -364,8 +372,9 @@ This event is sent to indicate that focus had been captured by an entity it spec
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< FocusBlurEvent > data
-)
+) override
 ```
 
 This event is sent to indicate that focus had been released (blur) from an owning entity it specifies which was blurred: keyboard or mouse, if either of these parameters is true, then restore normal processing of those events a controller implementing this should logically OR these inputs with it's current settings. 
@@ -375,4 +384,4 @@ This event is sent to indicate that focus had been released (blur) from an ownin
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

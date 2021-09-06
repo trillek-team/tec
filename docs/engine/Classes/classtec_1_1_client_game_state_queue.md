@@ -23,9 +23,9 @@ Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_ev
 | void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_client_game_state_queue/#function-processeventqueue)**() |
 | void | **[SetClientID](/engine/Classes/classtec_1_1_client_game_state_queue/#function-setclientid)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) _client_id) |
 | void | **[SetCommandID](/engine/Classes/classtec_1_1_client_game_state_queue/#function-setcommandid)**(state_id_t _command_id) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**(std::shared_ptr< [NewGameStateEvent](/engine/Classes/structtec_1_1_new_game_state_event/) > data) |
+| virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [NewGameStateEvent](/engine/Classes/structtec_1_1_new_game_state_event/) > data) override |
 | [GameState](/engine/Classes/structtec_1_1_game_state/) & | **[GetInterpolatedState](/engine/Classes/classtec_1_1_client_game_state_queue/#function-getinterpolatedstate)**() |
 | [GameState](/engine/Classes/structtec_1_1_game_state/) & | **[GetBaseState](/engine/Classes/classtec_1_1_client_game_state_queue/#function-getbasestate)**() |
 | void | **[SetBaseState](/engine/Classes/classtec_1_1_client_game_state_queue/#function-setbasestate)**([GameState](/engine/Classes/structtec_1_1_game_state/) && new_state) |
@@ -159,8 +159,9 @@ inline void SetCommandID(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityCreated > data
-)
+) override
 ```
 
 
@@ -171,8 +172,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< EntityDestroyed > data
-)
+) override
 ```
 
 
@@ -183,8 +185,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< NewGameStateEvent > data
-)
+) override
 ```
 
 
@@ -225,4 +228,4 @@ inline GameState * GetGameState(
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

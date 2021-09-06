@@ -21,7 +21,8 @@ title: tec::View
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::mat4 | **[view_matrix](/engine/Classes/structtec_1_1_view/#variable-view_matrix)**  |
+| glm::vec3 | **[view_pos](/engine/Classes/structtec_1_1_view/#variable-view_pos)**  |
+| glm::quat | **[view_quat](/engine/Classes/structtec_1_1_view/#variable-view_quat)**  |
 | bool | **[active](/engine/Classes/structtec_1_1_view/#variable-active)**  |
 
 ## Public Functions Documentation
@@ -55,10 +56,17 @@ inline void In(
 
 ## Public Attributes Documentation
 
-### variable view_matrix
+### variable view_pos
 
 ```cpp
-glm::mat4 view_matrix {0};
+glm::vec3 view_pos {0};
+```
+
+
+### variable view_quat
+
+```cpp
+glm::quat view_quat;
 ```
 
 
@@ -71,4 +79,4 @@ bool active = false;
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

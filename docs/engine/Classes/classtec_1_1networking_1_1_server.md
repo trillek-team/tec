@@ -27,8 +27,8 @@ Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_ev
 | const std::set< std::shared_ptr< [ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/) > > & | **[GetClients](/engine/Classes/classtec_1_1networking_1_1_server/#function-getclients)**() |
 | [LuaSystem](/engine/Classes/classtec_1_1_lua_system/) * | **[GetLuaSystem](/engine/Classes/classtec_1_1networking_1_1_server/#function-getluasystem)**() |
 | void | **[ProcessEvents](/engine/Classes/classtec_1_1networking_1_1_server/#function-processevents)**() |
-| virtual void | **[On](/engine/Classes/classtec_1_1networking_1_1_server/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1networking_1_1_server/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
+| virtual void | **[On](/engine/Classes/classtec_1_1networking_1_1_server/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1networking_1_1_server/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
 | [system::UserAuthenticator](/engine/Classes/classtec_1_1system_1_1_user_authenticator/) & | **[GetAuthenticator](/engine/Classes/classtec_1_1networking_1_1_server/#function-getauthenticator)**() |
 
 ## Public Attributes
@@ -186,8 +186,9 @@ void ProcessEvents()
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityCreated > data
-)
+) override
 ```
 
 
@@ -198,8 +199,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< EntityDestroyed > data
-)
+) override
 ```
 
 
@@ -235,4 +237,4 @@ friend class ClientConnection(
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

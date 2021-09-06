@@ -13,33 +13,23 @@ title: tec::VertexBufferObject
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-vertexbufferobject)**() |
-| | **[VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-vertexbufferobject)**(std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > mesh) |
+| | **[VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-vertexbufferobject)**(vertex::FormatCode _load_format) |
 | | **[~VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-~vertexbufferobject)**() |
 | void | **[Destroy](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-destroy)**()<br>Delete the underlying GL buffers.  |
-| const GLuint | **[GetVAO](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvao)**()<br>Get the ID of the vertex array object. note: this method is not const, since GL can modify the ID.  |
-| const GLuint | **[GetIBO](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getibo)**()<br>Get the ID of the index buffer object. note: this method is not const, since GL can modify the ID.  |
+| GLuint | **[GetVAO](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvao)**()<br>Get the ID of the vertex array object. note: this method is not const, since GL can modify the ID.  |
 | [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/) * | **[GetVertexGroup](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvertexgroup)**(const std::size_t vertex_group_number)<br>Gets the specified [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/).  |
 | std::size_t | **[GetVertexGroupCount](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvertexgroupcount)**() const<br>Gets the number of vertex groups store in the buffer.  |
 | bool | **[IsDynamic](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-isdynamic)**() const |
-| void | **[Update](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-update)**() |
-| void | **[Load](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-load)**(std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > mesh) |
-| void | **[Load](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-load)**(const std::vector< [VertexData](/engine/Classes/structtec_1_1_vertex_data/) > & verts, const std::vector< GLuint > & indices) |
+| bool | **[Update](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-update)**() |
+| bool | **[Load](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-load)**(std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > mesh) |
 
 ## Public Functions Documentation
 
 ### function VertexBufferObject
 
 ```cpp
-VertexBufferObject()
-```
-
-
-### function VertexBufferObject
-
-```cpp
 VertexBufferObject(
-    std::shared_ptr< MeshFile > mesh
+    vertex::FormatCode _load_format
 )
 ```
 
@@ -62,20 +52,10 @@ Delete the underlying GL buffers.
 ### function GetVAO
 
 ```cpp
-const GLuint GetVAO()
+inline GLuint GetVAO()
 ```
 
 Get the ID of the vertex array object. note: this method is not const, since GL can modify the ID. 
-
-**Return**: GLuint the GL texture ID. 
-
-### function GetIBO
-
-```cpp
-const GLuint GetIBO()
-```
-
-Get the ID of the index buffer object. note: this method is not const, since GL can modify the ID. 
 
 **Return**: GLuint the GL texture ID. 
 
@@ -118,7 +98,7 @@ bool IsDynamic() const
 ### function Update
 
 ```cpp
-void Update()
+bool Update()
 ```
 
 
@@ -128,7 +108,7 @@ Called to update dynamic vertex buffer object.
 ### function Load
 
 ```cpp
-void Load(
+bool Load(
     std::shared_ptr< MeshFile > mesh
 )
 ```
@@ -139,24 +119,11 @@ void Load(
   * **std::shared_ptr<MeshFile>** mesh The mesh to load into this [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/). 
 
 
-**Return**: void 
+**Return**: true if the load was successful 
 
-Loads a mesh into a vertex buffer object. note: calls [Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices)](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-load). 
-
-
-### function Load
-
-```cpp
-void Load(
-    const std::vector< VertexData > & verts,
-    const std::vector< GLuint > & indices
-)
-```
-
-
-Loads a set of vertex and index data into a vertex buffer object. 
+Loads a mesh into a vertex buffer object. note: calls Load(const std::vector<VertexData>& verts, const std::vector<GLuint>& indices). 
 
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

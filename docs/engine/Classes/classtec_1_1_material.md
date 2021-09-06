@@ -21,8 +21,12 @@ title: tec::Material
 | const GLenum | **[GetPolygonMode](/engine/Classes/classtec_1_1_material/#function-getpolygonmode)**()<br>Gets the PolygonMode of this material.  |
 | void | **[SetDrawElementsMode](/engine/Classes/classtec_1_1_material/#function-setdrawelementsmode)**(const GLenum mode)<br>Sets the DrawElements type used when this material is in use.  |
 | const GLenum | **[GetDrawElementsMode](/engine/Classes/classtec_1_1_material/#function-getdrawelementsmode)**() const<br>Gets the DrawElements mode of this material.  |
-| void | **[Activate](/engine/Classes/classtec_1_1_material/#function-activate)**()<br>Activates all the textures used by this material.  |
-| void | **[Deactivate](/engine/Classes/classtec_1_1_material/#function-deactivate)**()<br>Deactivates all the textures used by this material.  |
+
+## Friends
+
+|                | Name           |
+| -------------- | -------------- |
+| class | **[RenderSystem](/engine/Classes/classtec_1_1_material/#friend-rendersystem)**  |
 
 ## Public Functions Documentation
 
@@ -157,26 +161,17 @@ Gets the DrawElements mode of this material.
   * void 
 
 
-### function Activate
+## Friends
+
+### friend RenderSystem
 
 ```cpp
-void Activate()
+friend class RenderSystem(
+    RenderSystem 
+);
 ```
 
-Activates all the textures used by this material. 
-
-**Return**: void 
-
-### function Deactivate
-
-```cpp
-void Deactivate()
-```
-
-Deactivates all the textures used by this material. 
-
-**Return**: void 
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

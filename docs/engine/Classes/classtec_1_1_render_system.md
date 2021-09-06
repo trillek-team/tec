@@ -16,8 +16,11 @@ Inherits from [tec::CommandQueue< RenderSystem >](/engine/Classes/classtec_1_1_c
 |                | Name           |
 | -------------- | -------------- |
 | void | **[Startup](/engine/Classes/classtec_1_1_render_system/#function-startup)**() |
-| void | **[SetViewportSize](/engine/Classes/classtec_1_1_render_system/#function-setviewportsize)**(const unsigned int width, const unsigned int height) |
+| void | **[RegisterConsole](/engine/Classes/classtec_1_1_render_system/#function-registerconsole)**([Console](/engine/Classes/classtec_1_1_console/) & console) |
+| void | **[SetViewportSize](/engine/Classes/classtec_1_1_render_system/#function-setviewportsize)**(const glm::uvec2 & view_size) |
 | void | **[Update](/engine/Classes/classtec_1_1_render_system/#function-update)**(const double delta) |
+| bool | **[HasExtension](/engine/Classes/classtec_1_1_render_system/#function-hasextension)**(const std::string & x) const |
+| void | **[ErrorCheck](/engine/Classes/classtec_1_1_render_system/#function-errorcheck)**(const std::string_view what, size_t line, const std::string_view where ="RenderSystem", bool severe =false) |
 
 ## Additional inherited members
 
@@ -99,12 +102,20 @@ void Startup()
 ```
 
 
+### function RegisterConsole
+
+```cpp
+void RegisterConsole(
+    Console & console
+)
+```
+
+
 ### function SetViewportSize
 
 ```cpp
 void SetViewportSize(
-    const unsigned int width,
-    const unsigned int height
+    const glm::uvec2 & view_size
 )
 ```
 
@@ -118,6 +129,27 @@ void Update(
 ```
 
 
+### function HasExtension
+
+```cpp
+inline bool HasExtension(
+    const std::string & x
+) const
+```
+
+
+### function ErrorCheck
+
+```cpp
+static void ErrorCheck(
+    const std::string_view what,
+    size_t line,
+    const std::string_view where ="RenderSystem",
+    bool severe =false
+)
+```
+
+
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

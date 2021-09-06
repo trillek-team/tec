@@ -16,8 +16,8 @@ Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_ev
 |                | Name           |
 | -------------- | -------------- |
 | | **[ServerGameStateQueue](/engine/Classes/classtec_1_1_server_game_state_queue/#function-servergamestatequeue)**([ServerStats](/engine/Classes/classtec_1_1_server_stats/) & s) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_server_game_state_queue/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_server_game_state_queue/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
+| virtual void | **[On](/engine/Classes/classtec_1_1_server_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_server_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
 | void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_server_game_state_queue/#function-processeventqueue)**() |
 | [GameState](/engine/Classes/structtec_1_1_game_state/) & | **[GetBaseState](/engine/Classes/classtec_1_1_server_game_state_queue/#function-getbasestate)**() |
 | void | **[SetBaseState](/engine/Classes/classtec_1_1_server_game_state_queue/#function-setbasestate)**([GameState](/engine/Classes/structtec_1_1_game_state/) && new_state) |
@@ -78,8 +78,9 @@ ServerGameStateQueue(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityCreated > data
-)
+) override
 ```
 
 
@@ -90,8 +91,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< EntityDestroyed > data
-)
+) override
 ```
 
 
@@ -132,4 +134,4 @@ ServerStats & stats;
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

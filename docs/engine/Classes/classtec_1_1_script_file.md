@@ -15,8 +15,8 @@ title: tec::ScriptFile
 | -------------- | -------------- |
 | | **[ScriptFile](/engine/Classes/classtec_1_1_script_file/#function-scriptfile)**() =default |
 | bool | **[Load](/engine/Classes/classtec_1_1_script_file/#function-load)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & _filename)<br>Returns a resource with the specified name.  |
-| | **[ScriptFile](/engine/Classes/classtec_1_1_script_file/#function-scriptfile)**(const [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & ) |
-| [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & | **[operator=](/engine/Classes/classtec_1_1_script_file/#function-operator=)**(const [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & ) |
+| | **[ScriptFile](/engine/Classes/classtec_1_1_script_file/#function-scriptfile)**(const [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & ) =delete |
+| [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & | **[operator=](/engine/Classes/classtec_1_1_script_file/#function-operator=)**(const [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & ) =delete |
 | | **[ScriptFile](/engine/Classes/classtec_1_1_script_file/#function-scriptfile)**([ScriptFile](/engine/Classes/classtec_1_1_script_file/) && other) |
 | [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & | **[operator=](/engine/Classes/classtec_1_1_script_file/#function-operator=)**([ScriptFile](/engine/Classes/classtec_1_1_script_file/) && other) |
 | const std::string & | **[GetScript](/engine/Classes/classtec_1_1_script_file/#function-getscript)**() const<br>Returns a reference to the script text for reading.  |
@@ -69,7 +69,7 @@ Returns a resource with the specified name.
 ```cpp
 ScriptFile(
     const ScriptFile & 
-)
+) =delete
 ```
 
 
@@ -78,7 +78,7 @@ ScriptFile(
 ```cpp
 ScriptFile & operator=(
     const ScriptFile & 
-)
+) =delete
 ```
 
 
@@ -226,4 +226,4 @@ bool dirty {false};
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

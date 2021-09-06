@@ -16,11 +16,12 @@ Inherits from [tec::CommandQueue< SoundSystem >](/engine/Classes/classtec_1_1_co
 |                | Name           |
 | -------------- | -------------- |
 | | **[SoundSystem](/engine/Classes/classtec_1_1_sound_system/#function-soundsystem)**() |
+| | **[~SoundSystem](/engine/Classes/classtec_1_1_sound_system/#function-~soundsystem)**() |
 | void | **[Update](/engine/Classes/classtec_1_1_sound_system/#function-update)**() |
 | void | **[SetDelta](/engine/Classes/classtec_1_1_sound_system/#function-setdelta)**(const double _delta) |
 | void | **[Stop](/engine/Classes/classtec_1_1_sound_system/#function-stop)**() |
-| virtual void | **[On](/engine/Classes/classtec_1_1_sound_system/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_sound_system/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
+| virtual void | **[On](/engine/Classes/classtec_1_1_sound_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_sound_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
 
 ## Additional inherited members
 
@@ -85,6 +86,13 @@ SoundSystem()
 ```
 
 
+### function ~SoundSystem
+
+```cpp
+~SoundSystem()
+```
+
+
 ### function Update
 
 ```cpp
@@ -112,8 +120,9 @@ inline void Stop()
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityCreated > data
-)
+) override
 ```
 
 
@@ -124,8 +133,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityDestroyed > data
-)
+) override
 ```
 
 
@@ -134,4 +144,4 @@ virtual void On(
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

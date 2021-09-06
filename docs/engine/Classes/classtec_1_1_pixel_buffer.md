@@ -9,20 +9,26 @@ title: tec::PixelBuffer
 
 
 
+## Public Types
+
+|                | Name           |
+| -------------- | -------------- |
+| enum| **[FILTER_PREFERENCE](/engine/Classes/classtec_1_1_pixel_buffer/#enum-filter_preference)** { DEFAULT, NEAREST, LINEAR} |
+
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
 | | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**() =default |
-| bool | **[Load](/engine/Classes/classtec_1_1_pixel_buffer/#function-load)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename)<br>Returns a resource with the specified name.  |
-| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) |
-| [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) |
+| bool | **[Load](/engine/Classes/classtec_1_1_pixel_buffer/#function-load)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename, bool gamma_space =false)<br>Returns a resource with the specified name.  |
+| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) =delete |
+| [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) =delete |
 | | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**([PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) && rv) |
 | [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**([PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) && rv) |
-| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(std::uint32_t width, std::uint32_t height, std::uint32_t bitspersample, ImageColorMode mode)<br>Construct a new pixel buffer.  |
+| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(std::uint32_t width, std::uint32_t height, std::uint32_t bitsperchannel, ImageColorMode mode)<br>Construct a new pixel buffer.  |
 | bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf)<br>Create a copy of a pixel buffer.  |
-| bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf, std::uint32_t bitspersample, ImageColorMode mode)<br>Create a copy of a pixel buffer in a different format.  |
-| bool | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(uint32_t width, uint32_t height, uint32_t bitspersample, ImageColorMode mode)<br>Create a new pixel buffer, replacing the old buffer (if any).  |
+| bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf, std::uint32_t bitsperchannel, ImageColorMode mode)<br>Create a copy of a pixel buffer in a different format.  |
+| bool | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(uint32_t width, uint32_t height, uint32_t bitsperchannel, ImageColorMode mode)<br>Create a new pixel buffer, replacing the old buffer (if any).  |
 | bool | **[IsDirty](/engine/Classes/classtec_1_1_pixel_buffer/#function-isdirty)**() const |
 | void | **[Invalidate](/engine/Classes/classtec_1_1_pixel_buffer/#function-invalidate)**()<br>Mark dirty.  |
 | void | **[Validate](/engine/Classes/classtec_1_1_pixel_buffer/#function-validate)**()<br>Mark not dirty.  |
@@ -34,9 +40,11 @@ title: tec::PixelBuffer
 | std::uint32_t | **[Pitch](/engine/Classes/classtec_1_1_pixel_buffer/#function-pitch)**() const |
 | std::uint32_t | **[PixelSize](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelsize)**() const |
 | ImageColorMode | **[GetFormat](/engine/Classes/classtec_1_1_pixel_buffer/#function-getformat)**() const |
+| FILTER_PREFERENCE | **[GetFilter](/engine/Classes/classtec_1_1_pixel_buffer/#function-getfilter)**() const |
+| void | **[SetFilter](/engine/Classes/classtec_1_1_pixel_buffer/#function-setfilter)**(FILTER_PREFERENCE f) |
 | void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**() |
 | void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**(const char * ofile) |
-| std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(const std::string name, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename =[FilePath](/engine/Classes/classtec_1_1_file_path/)())<br>Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename.  |
+| std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(const std::string name, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename =[FilePath](/engine/Classes/classtec_1_1_file_path/)(), bool gamma_space =false)<br>Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename.  |
 
 ## Public Attributes
 
@@ -53,11 +61,25 @@ title: tec::PixelBuffer
 | std::int32_t | **[imageheight](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imageheight)**  |
 | std::uint32_t | **[bufferpitch](/engine/Classes/classtec_1_1_pixel_buffer/#variable-bufferpitch)** <br>number of bytes to move vertical 1 raster line  |
 | std::uint32_t | **[imagepixelsize](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagepixelsize)**  |
-| std::uint32_t | **[imagebitdepth](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagebitdepth)**  |
+| std::uint32_t | **[channelbitdepth](/engine/Classes/classtec_1_1_pixel_buffer/#variable-channelbitdepth)**  |
 | ImageColorMode | **[imagemode](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagemode)**  |
+| FILTER_PREFERENCE | **[imagefilter](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagefilter)**  |
 | bool | **[dirty](/engine/Classes/classtec_1_1_pixel_buffer/#variable-dirty)**  |
 | std::unique_ptr< std::uint8_t[]> | **[blockptr](/engine/Classes/classtec_1_1_pixel_buffer/#variable-blockptr)**  |
 | std::mutex | **[writelock](/engine/Classes/classtec_1_1_pixel_buffer/#variable-writelock)**  |
+
+## Public Types Documentation
+
+### enum FILTER_PREFERENCE
+
+| Enumerator | Value | Description |
+| ---------- | ----- | ----------- |
+| DEFAULT | |   |
+| NEAREST | |   |
+| LINEAR | |   |
+
+
+
 
 ## Public Functions Documentation
 
@@ -72,7 +94,8 @@ PixelBuffer() =default
 
 ```cpp
 bool Load(
-    const FilePath & filename
+    const FilePath & filename,
+    bool gamma_space =false
 )
 ```
 
@@ -90,7 +113,7 @@ Returns a resource with the specified name.
 ```cpp
 PixelBuffer(
     const PixelBuffer & 
-)
+) =delete
 ```
 
 
@@ -99,7 +122,7 @@ PixelBuffer(
 ```cpp
 PixelBuffer & operator=(
     const PixelBuffer & 
-)
+) =delete
 ```
 
 
@@ -127,7 +150,7 @@ PixelBuffer & operator=(
 PixelBuffer(
     std::uint32_t width,
     std::uint32_t height,
-    std::uint32_t bitspersample,
+    std::uint32_t bitsperchannel,
     ImageColorMode mode
 )
 ```
@@ -138,7 +161,7 @@ Construct a new pixel buffer.
 
   * **width** the width of the buffer in pixels 
   * **height** the height of the buffer in pixels 
-  * **bitspersample** the number of bits in a single channel, usually 8 
+  * **bitsperchannel** the number of bits in a single channel, usually 8 
   * **mode** greyscale (Monochrome) or color (RGB), and whether there is alpha or no alpha 
 
 
@@ -164,7 +187,7 @@ Create a copy of a pixel buffer.
 ```cpp
 bool CreateCopy(
     const PixelBuffer & pbuf,
-    std::uint32_t bitspersample,
+    std::uint32_t bitsperchannel,
     ImageColorMode mode
 )
 ```
@@ -174,7 +197,7 @@ Create a copy of a pixel buffer in a different format.
 **Parameters**: 
 
   * **pbuf** the pixel buffer to copy from 
-  * **bitspersample** the number of bits in a single channel, usually 8 
+  * **bitsperchannel** the number of bits in a single channel, usually 8 
   * **mode** greyscale (Monochrome) or color (RGB), and whether there is alpha or no alpha 
 
 
@@ -186,7 +209,7 @@ Create a copy of a pixel buffer in a different format.
 bool Create(
     uint32_t width,
     uint32_t height,
-    uint32_t bitspersample,
+    uint32_t bitsperchannel,
     ImageColorMode mode
 )
 ```
@@ -197,7 +220,7 @@ Create a new pixel buffer, replacing the old buffer (if any).
 
   * **width** the width of the buffer in pixels 
   * **height** the height of the buffer in pixels 
-  * **bitspersample** the number of bits in a single channel, usually 8 
+  * **bitsperchannel** the number of bits in a single channel, usually 8 
   * **mode** greyscale (Monochrome) or color (RGB), and whether there is alpha or no alpha 
 
 
@@ -285,6 +308,22 @@ inline ImageColorMode GetFormat() const
 ```
 
 
+### function GetFilter
+
+```cpp
+inline FILTER_PREFERENCE GetFilter() const
+```
+
+
+### function SetFilter
+
+```cpp
+inline void SetFilter(
+    FILTER_PREFERENCE f
+)
+```
+
+
 ### function PPMDebug
 
 ```cpp
@@ -306,7 +345,8 @@ void PPMDebug(
 ```cpp
 static std::shared_ptr< PixelBuffer > Create(
     const std::string name,
-    const FilePath & filename =FilePath()
+    const FilePath & filename =FilePath(),
+    bool gamma_space =false
 )
 ```
 
@@ -367,10 +407,10 @@ std::uint32_t imagepixelsize {0};
 ```
 
 
-### variable imagebitdepth
+### variable channelbitdepth
 
 ```cpp
-std::uint32_t imagebitdepth {0};
+std::uint32_t channelbitdepth {0};
 ```
 
 
@@ -378,6 +418,13 @@ std::uint32_t imagebitdepth {0};
 
 ```cpp
 ImageColorMode imagemode {ImageColorMode::MONOCHROME};
+```
+
+
+### variable imagefilter
+
+```cpp
+FILTER_PREFERENCE imagefilter {DEFAULT};
 ```
 
 
@@ -404,4 +451,4 @@ std::mutex writelock;
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

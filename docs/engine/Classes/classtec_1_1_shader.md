@@ -9,12 +9,6 @@ title: tec::Shader
 
 
 
-## Public Types
-
-|                | Name           |
-| -------------- | -------------- |
-| enum GLenum | **[ShaderType](/engine/Classes/classtec_1_1_shader/#enum-shadertype)** { VERTEX = GL_VERTEX_SHADER, FRAGMENT = GL_FRAGMENT_SHADER, GEOMETRY = GL_GEOMETRY_SHADER} |
-
 ## Public Functions
 
 |                | Name           |
@@ -25,21 +19,6 @@ title: tec::Shader
 | void | **[UnUse](/engine/Classes/classtec_1_1_shader/#function-unuse)**()<br>Unuses the shader program.  |
 | GLint | **[GetUniformLocation](/engine/Classes/classtec_1_1_shader/#function-getuniformlocation)**(const std::string name)<br>Returns the location of the specified uniform.  |
 | GLint | **[GetAttributeLocation](/engine/Classes/classtec_1_1_shader/#function-getattributelocation)**(const std::string name)<br>Returns the location of the specified attribute.  |
-| void | **[ActivateTextureUnit](/engine/Classes/classtec_1_1_shader/#function-activatetextureunit)**(const GLuint unit, const GLuint texture_name)<br>Activates the specified texture unit and bind the specified texture to it.  |
-| void | **[DeactivateTextureUnit](/engine/Classes/classtec_1_1_shader/#function-deactivatetextureunit)**(const GLuint unit)<br>Deactivates the specified texture unit by binding texture 0 to it.  |
-
-## Public Types Documentation
-
-### enum ShaderType
-
-| Enumerator | Value | Description |
-| ---------- | ----- | ----------- |
-| VERTEX | GL_VERTEX_SHADER|   |
-| FRAGMENT | GL_FRAGMENT_SHADER|   |
-| GEOMETRY | GL_GEOMETRY_SHADER|   |
-
-
-
 
 ## Public Functions Documentation
 
@@ -111,42 +90,6 @@ Returns the location of the specified attribute.
 
 **Return**: GLint The location of the requested attribute. 
 
-### function ActivateTextureUnit
-
-```cpp
-static void ActivateTextureUnit(
-    const GLuint unit,
-    const GLuint texture_name
-)
-```
-
-Activates the specified texture unit and bind the specified texture to it. 
-
-**Parameters**: 
-
-  * **const** GLuint unit The texture unit to activate. 
-  * **const** GLuint texture_name The GL name of the texture to bind. 
-
-
-**Return**: void 
-
-### function DeactivateTextureUnit
-
-```cpp
-static void DeactivateTextureUnit(
-    const GLuint unit
-)
-```
-
-Deactivates the specified texture unit by binding texture 0 to it. 
-
-**Parameters**: 
-
-  * **const** GLuint unit The texture unit to deactivate. 
-
-
-**Return**: void 
-
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

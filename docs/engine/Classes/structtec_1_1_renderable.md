@@ -13,7 +13,6 @@ title: tec::Renderable
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[Renderable](/engine/Classes/structtec_1_1_renderable/#function-renderable)**(std::shared_ptr< [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/) > buf, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > shader =nullptr) |
 | | **[Renderable](/engine/Classes/structtec_1_1_renderable/#function-renderable)**() |
 | void | **[Out](/engine/Classes/structtec_1_1_renderable/#function-out)**(proto::Component * target) |
 | void | **[In](/engine/Classes/structtec_1_1_renderable/#function-in)**(const proto::Component & source) |
@@ -22,27 +21,16 @@ title: tec::Renderable
 
 |                | Name           |
 | -------------- | -------------- |
-| std::set< [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/) * > | **[vertex_groups](/engine/Classes/structtec_1_1_renderable/#variable-vertex_groups)**  |
-| std::shared_ptr< [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/) > | **[buffer](/engine/Classes/structtec_1_1_renderable/#variable-buffer)**  |
+| std::shared_ptr< [RenderItem](/engine/Classes/structtec_1_1_render_item/) > | **[render_item](/engine/Classes/structtec_1_1_renderable/#variable-render_item)**  |
 | std::string | **[mesh_name](/engine/Classes/structtec_1_1_renderable/#variable-mesh_name)**  |
 | std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > | **[mesh](/engine/Classes/structtec_1_1_renderable/#variable-mesh)**  |
 | std::string | **[shader_name](/engine/Classes/structtec_1_1_renderable/#variable-shader_name)**  |
 | std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > | **[shader](/engine/Classes/structtec_1_1_renderable/#variable-shader)**  |
-| [Position](/engine/Classes/structtec_1_1_position/) | **[local_translation](/engine/Classes/structtec_1_1_renderable/#variable-local_translation)**  |
+| glm::vec3 | **[local_translation](/engine/Classes/structtec_1_1_renderable/#variable-local_translation)**  |
 | [Orientation](/engine/Classes/structtec_1_1_orientation/) | **[local_orientation](/engine/Classes/structtec_1_1_renderable/#variable-local_orientation)**  |
 | bool | **[hidden](/engine/Classes/structtec_1_1_renderable/#variable-hidden)**  |
 
 ## Public Functions Documentation
-
-### function Renderable
-
-```cpp
-Renderable(
-    std::shared_ptr< VertexBufferObject > buf,
-    std::shared_ptr< Shader > shader =nullptr
-)
-```
-
 
 ### function Renderable
 
@@ -71,17 +59,10 @@ void In(
 
 ## Public Attributes Documentation
 
-### variable vertex_groups
+### variable render_item
 
 ```cpp
-std::set< VertexGroup * > vertex_groups;
-```
-
-
-### variable buffer
-
-```cpp
-std::shared_ptr< VertexBufferObject > buffer;
+std::shared_ptr< RenderItem > render_item;
 ```
 
 
@@ -116,7 +97,7 @@ std::shared_ptr< Shader > shader;
 ### variable local_translation
 
 ```cpp
-Position local_translation;
+glm::vec3 local_translation;
 ```
 
 
@@ -136,4 +117,4 @@ bool hidden {false};
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

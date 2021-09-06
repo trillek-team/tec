@@ -17,7 +17,7 @@ Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_ev
 | -------------- | -------------- |
 | | **[Game](/engine/Classes/classtec_1_1_game/#function-game)**([OS](/engine/Classes/classtec_1_1_o_s/) & _os, std::string config_file_name ="scripts/config.lua") |
 | | **[~Game](/engine/Classes/classtec_1_1_game/#function-~game)**() |
-| void | **[Startup](/engine/Classes/classtec_1_1_game/#function-startup)**() |
+| void | **[Startup](/engine/Classes/classtec_1_1_game/#function-startup)**([Console](/engine/Classes/classtec_1_1_console/) & console) |
 | void | **[Update](/engine/Classes/classtec_1_1_game/#function-update)**(double delta, double mouse_x, double mouse_y, int window_width, int window_height) |
 | [ServerConnection](/engine/Classes/classtec_1_1networking_1_1_server_connection/) & | **[GetServerConnection](/engine/Classes/classtec_1_1_game/#function-getserverconnection)**() |
 | const [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetActiveEntity](/engine/Classes/classtec_1_1_game/#function-getactiveentity)**() const |
@@ -91,7 +91,9 @@ Game(
 ### function Startup
 
 ```cpp
-void Startup()
+void Startup(
+    Console & console
+)
 ```
 
 
@@ -161,4 +163,4 @@ TimeFrameMetrics tfm;
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

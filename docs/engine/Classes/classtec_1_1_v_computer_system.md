@@ -22,11 +22,11 @@ Inherits from [tec::CommandQueue< VComputerSystem >](/engine/Classes/classtec_1_
 | void | **[TurnComptuerOn](/engine/Classes/classtec_1_1_v_computer_system/#function-turncomptueron)**(const [eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id)<br>Turns specified the computer on.  |
 | void | **[TurnComptuerOff](/engine/Classes/classtec_1_1_v_computer_system/#function-turncomptueroff)**(const [eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id)<br>Turns specified the computer off.  |
 | void | **[Update](/engine/Classes/classtec_1_1_v_computer_system/#function-update)**(double delta)<br>Handle incoming events to update data.  |
-| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**(std::shared_ptr< [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**(std::shared_ptr< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**(std::shared_ptr< [MouseClickEvent](/engine/Classes/structtec_1_1_mouse_click_event/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**(std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) |
-| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**(std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) |
+| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [MouseClickEvent](/engine/Classes/structtec_1_1_mouse_click_event/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
+| virtual void | **[On](/engine/Classes/classtec_1_1_v_computer_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
 
 ## Additional inherited members
 
@@ -246,8 +246,9 @@ If event handling need some batch processing, a task list must be prepared and s
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< KeyboardEvent > data
-)
+) override
 ```
 
 
@@ -258,8 +259,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< MouseBtnEvent > data
-)
+) override
 ```
 
 
@@ -270,8 +272,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< MouseClickEvent > data
-)
+) override
 ```
 
 
@@ -282,8 +285,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid ,
     std::shared_ptr< EntityCreated > data
-)
+) override
 ```
 
 
@@ -294,8 +298,9 @@ virtual void On(
 
 ```cpp
 virtual void On(
+    eid entity_id,
     std::shared_ptr< EntityDestroyed > data
-)
+) override
 ```
 
 
@@ -304,4 +309,4 @@ virtual void On(
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

@@ -87,7 +87,8 @@ public:
 	* \param const FilePath filename The optional filename of the image to load.
 	* \return std::shared_ptr<PixelBuffer> The created PixelBuffer.
 	*/
-	static std::shared_ptr<PixelBuffer> Create(const std::string name, const FilePath& filename = FilePath(), bool gamma_space = false);
+	static std::shared_ptr<PixelBuffer>
+	Create(const std::string name, const FilePath& filename = FilePath(), bool gamma_space = false);
 
 	bool IsDirty() const;
 	/** \brief Mark dirty */

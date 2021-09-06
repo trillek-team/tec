@@ -8,6 +8,8 @@ title: Classes
 
 
 
+* **namespace [fmt](/engine/Namespaces/namespacefmt/)** 
+    * **struct [formatter< tec::GLSymbol >](/engine/Classes/structfmt_1_1formatter_3_01tec_1_1_g_l_symbol_01_4/)** 
 * **namespace [google](/engine/Namespaces/namespacegoogle/)** 
     * **namespace [protobuf](/engine/Namespaces/namespacegoogle_1_1protobuf/)** 
         * **namespace [io](/engine/Namespaces/namespacegoogle_1_1protobuf_1_1io/)** 
@@ -19,6 +21,7 @@ title: Classes
     * **class [AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)** 
     * **class [ActiveEntityTooltip](/engine/Classes/classtec_1_1_active_entity_tooltip/)** 
     * **class [Animation](/engine/Classes/classtec_1_1_animation/)** 
+    * **struct [AnimationBone](/engine/Classes/structtec_1_1_animation_bone/)** 
     * **struct [AudioSource](/engine/Classes/structtec_1_1_audio_source/)** 
     * **struct [BaseLight](/engine/Classes/structtec_1_1_base_light/)** 
     * **struct [ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/)** 
@@ -50,6 +53,7 @@ title: Classes
     * **struct [FocusBlurEvent](/engine/Classes/structtec_1_1_focus_blur_event/)** 
     * **struct [FocusCapturedEvent](/engine/Classes/structtec_1_1_focus_captured_event/)** 
     * **class [GBuffer](/engine/Classes/classtec_1_1_g_buffer/)** 
+    * **class [GLSymbol](/engine/Classes/classtec_1_1_g_l_symbol/)** 
     * **class [Game](/engine/Classes/classtec_1_1_game/)** 
     * **struct [GameState](/engine/Classes/structtec_1_1_game_state/)** 
     * **class [IMGUISystem](/engine/Classes/classtec_1_1_i_m_g_u_i_system/)** 
@@ -96,8 +100,8 @@ title: Classes
     * **struct [Position](/engine/Classes/structtec_1_1_position/)** 
     * **struct [PredictedClientState](/engine/Classes/structtec_1_1_predicted_client_state/)** 
     * **struct [Queue](/engine/Classes/structtec_1_1_queue/)** 
+    * **struct [RenderItem](/engine/Classes/structtec_1_1_render_item/)** 
     * **class [RenderSystem](/engine/Classes/classtec_1_1_render_system/)** 
-        * **struct [RenderItem](/engine/Classes/structtec_1_1_render_system_1_1_render_item/)** 
     * **struct [Renderable](/engine/Classes/structtec_1_1_renderable/)** 
     * **class [RingBuffer](/engine/Classes/classtec_1_1_ring_buffer/)** 
     * **class [SaveGame](/engine/Classes/classtec_1_1_save_game/)** 
@@ -119,7 +123,6 @@ title: Classes
     * **class [VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/)** 
     * **struct [Velocity](/engine/Classes/structtec_1_1_velocity/)** 
     * **class [VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/)** 
-    * **struct [VertexData](/engine/Classes/structtec_1_1_vertex_data/)** 
     * **struct [VertexGroup](/engine/Classes/structtec_1_1_vertex_group/)** 
     * **struct [View](/engine/Classes/structtec_1_1_view/)** 
     * **class [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/)** 
@@ -147,10 +150,22 @@ title: Classes
         * **class [User](/engine/Classes/classtec_1_1user_1_1_user/)** <br>Container used to store information about a logged in user. 
     * **namespace [util](/engine/Namespaces/namespacetec_1_1util/)** 
         * **class [DataSource](/engine/Classes/classtec_1_1util_1_1_data_source/)** 
+    * **namespace [vertex](/engine/Namespaces/namespacetec_1_1vertex/)** 
+        * **struct [AttribData](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/)** 
+        * **struct [ColorVertex](/engine/Classes/structtec_1_1vertex_1_1_color_vertex/)** 
+        * **struct [FormatDefine](/engine/Classes/structtec_1_1vertex_1_1_format_define/)** 
+        * **struct [FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)** <br>Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The convert() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format. 
+        * **struct [FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)** 
+        * **struct [FullVertex](/engine/Classes/structtec_1_1vertex_1_1_full_vertex/)** 
+        * **struct [LiteFullVertex](/engine/Classes/structtec_1_1vertex_1_1_lite_full_vertex/)** 
+        * **struct [PackWeightVertex](/engine/Classes/structtec_1_1vertex_1_1_pack_weight_vertex/)** 
+        * **struct [Vertex](/engine/Classes/structtec_1_1vertex_1_1_vertex/)** 
+        * **struct [WeightData](/engine/Classes/structtec_1_1vertex_1_1_weight_data/)** 
+        * **struct [WeightVertex](/engine/Classes/structtec_1_1vertex_1_1_weight_vertex/)** 
 * **namespace [trillek::computer](/engine/Namespaces/namespacetrillek_1_1computer/)** 
 
 
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC

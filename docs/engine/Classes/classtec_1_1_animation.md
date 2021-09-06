@@ -17,6 +17,9 @@ title: tec::Animation
 | | **[Animation](/engine/Classes/classtec_1_1_animation/#function-animation)**(std::shared_ptr< [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) > animation) |
 | void | **[UpdateAnimation](/engine/Classes/classtec_1_1_animation/#function-updateanimation)**(const double delta)<br>Updates the current animation based on a change in time.  |
 | void | **[SetAnimationFile](/engine/Classes/classtec_1_1_animation/#function-setanimationfile)**(std::shared_ptr< [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) > file)<br>Sets the animation file for this animation.  |
+| void | **[Play](/engine/Classes/classtec_1_1_animation/#function-play)**(bool from_start) |
+| void | **[Stop](/engine/Classes/classtec_1_1_animation/#function-stop)**() |
+| void | **[SetLoop](/engine/Classes/classtec_1_1_animation/#function-setloop)**(bool loop) |
 | void | **[Out](/engine/Classes/classtec_1_1_animation/#function-out)**(proto::Component * target) |
 | void | **[In](/engine/Classes/classtec_1_1_animation/#function-in)**(const proto::Component & source) |
 
@@ -81,6 +84,31 @@ Sets the animation file for this animation.
 This does a run for the first set of animation from frame 0 to 1 with time 0. 
 
 
+### function Play
+
+```cpp
+inline void Play(
+    bool from_start
+)
+```
+
+
+### function Stop
+
+```cpp
+inline void Stop()
+```
+
+
+### function SetLoop
+
+```cpp
+inline void SetLoop(
+    bool loop
+)
+```
+
+
 ### function Out
 
 ```cpp
@@ -112,4 +140,4 @@ friend class RenderSystem(
 
 -------------------------------
 
-Updated on  6 August 2021 at 01:15:52 UTC
+Updated on  6 September 2021 at 18:30:10 UTC
