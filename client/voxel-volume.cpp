@@ -14,10 +14,10 @@
 
 namespace tec {
 VoxelVolume::VoxelVolume(std::weak_ptr<MeshFile> mesh) : mesh(mesh) {
-	auto pixbuf = PixelBuffer::Create("metal_wall", FilePath::GetAssetPath("metal_wall.png"), true);
+	auto pixbuf = PixelBuffer::Create("metal_wall", Path::GetAssetPath("metal_wall.png"), true);
 	auto tex = std::make_shared<TextureObject>(pixbuf);
 	TextureMap::Set("metal_wall", tex);
-	pixbuf = PixelBuffer::Create("metal_wall_sp", FilePath::GetAssetPath("metal_wall_sp.png"));
+	pixbuf = PixelBuffer::Create("metal_wall_sp", Path::GetAssetPath("metal_wall_sp.png"));
 	tex = std::make_shared<TextureObject>(pixbuf);
 	TextureMap::Set("metal_wall_sp", tex);
 }

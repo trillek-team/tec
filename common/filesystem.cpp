@@ -5,6 +5,8 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <list>
+#include <regex>
 #include <sstream>
 
 #include <sys/stat.h>
@@ -21,10 +23,15 @@
 #include <unistd.h>
 
 #elif defined(WIN32)
+#ifndef UNICODE
+#define UNICODE 1
+#endif
 #include <Shlobj.h>
 #include <Windows.h>
 #include <comutil.h>
 #include <direct.h>
+#undef max
+#undef min
 
 #pragma comment(lib, "comsuppw")
 #endif
@@ -33,212 +40,109 @@
 #define PATH_MAX 1024 // same with Mac OS X's syslimits.h
 #endif
 
+#ifndef TEXT
+#define TEXT(a) a
+#endif
+
 namespace tec {
 
-const std::string app_name("trillek"); // TODO Ask to tec::OS for the app name ?
-const char UNIX_PATH_SEPARATOR = '/'; /// *NIX file system path separator
 const char WIN_PATH_SEPARATOR = '\\'; /// Windows file system path separator
 
-std::string FilePath::settings_folder = "";
-std::string FilePath::udata_folder = "";
-std::string FilePath::cache_folder = "";
+std::string Path::settings_folder = "";
+std::string Path::udata_folder = "";
+std::string Path::cache_folder = "";
 
-std::string FilePath::assets_base = "";
+std::string Path::assets_base = "";
 
-FilePath::FilePath() : path("") {}
+Path::Path() : device{}, path{} {}
 
-FilePath::FilePath(std::string& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
-	this->NormalizePath();
+Path::Path(const std::string& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
+	SetDevice();
+	NormalizePath();
 }
 
-FilePath::FilePath(const std::string_view& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
-	this->NormalizePath();
+Path::Path(const std::string_view& other) : path(other) {
+	SetDevice();
+	NormalizePath();
 }
 
-FilePath::FilePath(const std::wstring& other, std::size_t pos, std::size_t count) {
-	auto ustr = tec::utf8_encode(other);
-	this->path = ustr.substr(pos, count);
-	this->NormalizePath();
+Path::Path(std::string&& other) : path(other) {
+	SetDevice();
+	NormalizePath();
 }
 
-FilePath FilePath::GetUserSettingsPath() {
-	// Try to use cached value
-	if (!FilePath::settings_folder.empty()) {
-		return FilePath(FilePath::settings_folder);
-	}
-	FilePath ret;
+Path::Path(const std::wstring& other) {
+	path = tec::utf8_encode(other);
+	SetDevice();
+	NormalizePath();
+}
 
-#if defined(__APPLE__)
-	char* home = getenv("HOME");
-	ret = home;
-	ret /= "Library";
-	ret /= "Preferences";
-	ret /= app_name;
-	ret += PATH_SEPARATOR;
-
-#elif defined(__unix__)
-	char* home = getenv("XDG_CONFIG_HOME");
-	if (home == nullptr) {
-		home = getenv("HOME");
-		if (home == nullptr) {
-			return FilePath();
+void Path::SetDevice() {
+	const std::regex device_pattern("^[a-zA-Z]+:");
+	std::smatch m;
+	if (std::regex_search(path, m, device_pattern)) {
+		device = m[0];
+		size_t start = device.size();
+		if (path.size() > start) {
+			// make sure the path is absolute if it has a device
+			if (path[start] != PATH_CHAR) {
+				path[--start] = PATH_CHAR;
+			}
+			path.erase(0, start);
+		}
+		else {
+			path.assign(PATH_SEPARATOR);
 		}
 	}
-	ret = home;
-	ret /= ".config";
-	ret /= app_name;
-	ret += PATH_SEPARATOR;
+}
 
-#elif defined(WIN32)
-	LPWSTR wszPath = nullptr;
-
-	if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, nullptr, &wszPath))) {
-		return FilePath();
-	}
-
-	_bstr_t bstrPath(wszPath);
-	std::wstring wpath((wchar_t*)bstrPath);
-	ret = tec::utf8_encode(wpath);
-	CoTaskMemFree(wszPath);
-	ret /= app_name;
-	ret += PATH_SEPARATOR;
-
-#endif
-	FilePath::MkPath(ret);
-	FilePath::settings_folder = ret.toString();
-	return ret;
-
-} // End of GetUserSettingsPath
-
-FilePath FilePath::GetUserDataPath() {
-	// Try to use cached value
-	if (!FilePath::udata_folder.empty()) {
-		return FilePath(FilePath::udata_folder);
-	}
-
-#if defined(__unix__)
-	char* home = getenv("XDG_DATA_HOME");
-	if (home == nullptr) {
-		home = getenv("HOME");
-		if (home == nullptr) {
-			return FilePath();
-		}
-	}
-	FilePath ret(home);
-	ret /= ".local";
-	ret /= "share";
-	ret /= app_name;
-	ret += PATH_SEPARATOR;
-	FilePath::udata_folder = ret.toString();
-
-	FilePath::MkPath(ret);
-	return ret;
-#elif defined(WIN32) || defined(__APPLE__)
-	auto path = FilePath::GetUserSettingsPath();
-	if (path.empty()) {
-		return path;
-	}
-	path /= "data";
-	path += PATH_SEPARATOR;
-	FilePath::udata_folder = path.toString();
-
-	FilePath::MkPath(path);
-	return path;
-#else
-	return FilePath();
-#endif
-
-} // End of GetUserDataPath
-
-FilePath FilePath::GetUserCachePath() {
-	// Try to use cached value
-	if (!FilePath::cache_folder.empty()) {
-		return FilePath(FilePath::cache_folder);
-	}
-
-#if defined(__APPLE__)
-	auto path = GetUserSettingsPath();
-	if (path.empty()) {
-		return FilePath();
-	}
-	path /= "cache";
-	path += PATH_SEPARATOR;
-#elif defined(__unix__)
-	char* home = getenv("XDG_CACHE_HOME");
-	if (home == nullptr) {
-		home = getenv("HOME");
-		if (home == nullptr) {
-			return FilePath();
-		}
-	}
-	FilePath path(home);
-	path /= ".cache";
-	path /= app_name;
-	path += PATH_SEPARATOR;
-#elif defined(WIN32)
-	LPWSTR wszPath = nullptr;
-
-	if (!SUCCEEDED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &wszPath))) {
-		return FilePath();
-	}
-
-	_bstr_t bstrPath(wszPath);
-	std::wstring wpath((wchar_t*)bstrPath);
-	FilePath path(tec::utf8_encode(wpath));
-	CoTaskMemFree(wszPath);
-	path /= app_name;
-	path += PATH_SEPARATOR;
-
-#endif
-	FilePath::cache_folder = path.toString();
-	FilePath::MkPath(path);
-	return path;
-} // End of GetUserCachePath
-
-bool FilePath::DirExists() const {
+bool Path::DirExists() const {
 #if defined(WIN32)
-	struct _stat s;
+	WIN32_FIND_DATAW s;
 	auto wtmp = this->GetNativePath();
 
-	// Trailing slashes break _wstat
-	wchar_t* p = &wtmp[wcslen(&wtmp[0]) - 1];
-	if (*p == L'/' || *p == L'\\') {
-		*p = 0;
+	// Trailing slashes are not allowed
+	if (wtmp.size() && wtmp.back() == L'\\') {
+		wtmp.pop_back();
 	}
-	int err = _wstat((wchar_t*)wtmp.c_str(), &s);
+	HANDLE search = FindFirstFileW(wtmp.c_str(), &s);
+	if (search == INVALID_HANDLE_VALUE) {
+		return false;
+	}
+	FindClose(search);
+	return true;
 #else
 	struct stat s;
-	int err = stat(path.c_str(), &s);
-#endif
+	auto tmp = this->GetNativePath();
+	int err = stat(tmp.c_str(), &s);
 	// does not exist or error
 	// if  errno == ENOENT --> not exist
 	return -1 != err;
+#endif
 }
 
-bool FilePath::FileExists() const { return std::ifstream(this->GetNativePath()).good(); }
+bool Path::FileExists() const { return std::ifstream(this->GetNativePath()).good(); }
 
-bool FilePath::MkDir(const FilePath& path) {
+bool Path::MkDir(const Path& path) {
 	if (!path.isValidPath()) {
 		return false;
 	}
 #if defined(__unix__) || defined(__APPLE__)
 	int ret = mkdir(path.GetNativePath().c_str(), 0755);
-#else // Windows
-	int ret = _wmkdir(path.GetNativePath().c_str());
-#endif
 	return ret == 0 || errno == EEXIST;
+#else // Windows
+	int ret = CreateDirectoryW(path.GetNativePath().c_str(), NULL);
+	return ret || (GetLastError() == ERROR_ALREADY_EXISTS);
+#endif
 }
 
-bool FilePath::MkPath(const FilePath& path) {
-#if defined(WIN32)
-	if (path.path.size() <= 3 && std::isalpha(path.path.at(0))) { // 'X:\'
+bool Path::MkPath(const Path& path) {
+	if (path.path.size() <= 3 && std::isalpha(path.path[0])) { // 'X:\'
 		return true;
 	}
-#else
-	if (path.path.size() == 1 && path.path.at(0) == PATH_SEPARATOR_C) { // '\'
+	if (path.path.size() == 1 && path.path[0] == PATH_CHAR) { // '\'
 		return true;
 	}
-#endif
 
 	auto base = path.BasePath();
 	// Recursively create the path
@@ -249,15 +153,25 @@ bool FilePath::MkPath(const FilePath& path) {
 	return MkDir(path);
 }
 
-std::string FilePath::FileName() const {
-	std::size_t pos = path.find_last_of(FilePath::PATH_SEPARATOR_C);
+std::string Path::FileName() const {
+	std::size_t pos = path.find_last_of(Path::PATH_CHAR);
 	if (pos != std::string::npos) {
 		return std::string(path, pos + 1);
+	}
+	return path;
+}
+
+std::string Path::FileStem() const {
+	auto tmp = this->FileName();
+	if (!tmp.empty()) {
+		if (tmp.find(".") != std::string::npos) {
+			return tmp.substr(0, tmp.find_last_of("."));
+		}
 	}
 	return "";
 }
 
-std::string FilePath::FileExtension() const {
+std::string Path::FileExtension() const {
 	auto tmp = this->FileName();
 	if (!tmp.empty()) {
 		if (tmp.find(".") != std::string::npos) {
@@ -268,64 +182,49 @@ std::string FilePath::FileExtension() const {
 	return "";
 }
 
-FilePath FilePath::BasePath() const {
+Path Path::BasePath() const {
 	size_t len = path.size();
-#if defined(WIN32)
-	if (len <= 3 && std::isalpha(path.at(0))) { // 'X:\'
-		return FilePath(path);
+	if (!len) {
+		return Path();
 	}
-#else
-	if (len == 1 && path.at(0) == PATH_SEPARATOR_C) { // '\'
-		return FilePath(path);
+	if (path.back() == PATH_CHAR) {
+		len--;
 	}
-#endif
-
-	size_t pos = path.find_last_of(PATH_SEPARATOR_C);
-	if (pos == len - 1) {
-		// Path ended with a path separator
-		pos = path.find_last_of(PATH_SEPARATOR_C, path.size() - 2);
-	}
+	size_t pos = path.find_last_of(PATH_CHAR, len);
 	if (pos == std::string::npos) {
-		return FilePath();
+		return Path(std::string(), ".");
+	}
+	if (pos == 0) {
+		pos = 1; // we hit the root of absolute path
 	}
 
-	return FilePath(path, 0, pos + 1);
+	return Path(device, path.substr(0, pos));
 }
 
-bool FilePath::isAbsolutePath() const {
+bool Path::isAbsolutePath() const {
 	if (path.empty()) {
 		return false;
 	}
-#if defined(WIN32)
-	if (path.size() > 1) {
-		return std::isalpha(path.at(0)) && path.at(1) == ':';
-	}
-	return false;
-#else
-	return path.at(0) == PATH_SEPARATOR_C;
-#endif
+	return path[0] == PATH_CHAR;
 }
 
-FilePath FilePath::Subpath(size_t begin, size_t end) const {
-	FilePath ret;
+Path Path::Subpath(size_t begin, size_t end) const {
+	Path ret;
 	std::istringstream f(this->path);
 	std::string s;
 	size_t count = 0;
-#if defined(WIN32)
-	auto absoulte = this->isAbsolutePath();
-#endif
-	while (count < end && std::getline(f, s, PATH_SEPARATOR_C)) {
-		if (count >= begin && count < end) {
-#if defined(WIN32)
-			if (count == 0 && absoulte) {
-				ret = s;
-			}
-			else {
-				ret /= s;
-			}
-#else
+	if (begin == 0) {
+		ret.device = device;
+		if (this->isAbsolutePath()) {
+			ret.path = PATH_SEPARATOR;
+		}
+	}
+	while (count < end && std::getline(f, s, PATH_CHAR)) {
+		if (count == begin && begin > 0) {
+			ret = s;
+		}
+		else if (count >= begin && count < end) {
 			ret /= s;
-#endif
 		}
 		count++;
 	}
@@ -333,16 +232,21 @@ FilePath FilePath::Subpath(size_t begin, size_t end) const {
 	return ret;
 }
 
-FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
-	FilePath ret;
+Path Path::SubpathFrom(const std::string& needle, bool include) const {
+	Path ret;
 	std::istringstream f(this->path);
 	std::string s;
 	bool found = false;
 	bool first = true;
-	while (std::getline(f, s, PATH_SEPARATOR_C)) {
+	while (std::getline(f, s, PATH_CHAR)) {
 		if (found) {
-			ret = first ? s : ret / s;
-			first = false;
+			if (first) {
+				ret = s;
+				first = false;
+			}
+			else {
+				ret /= s;
+			}
 		}
 		else if (s.compare(needle) == 0) {
 			found = true;
@@ -355,166 +259,248 @@ FilePath FilePath::SubpathFrom(const std::string& needle, bool include) const {
 	return ret;
 }
 
-FilePath FilePath::GetProgramPath() {
-#if defined(__APPLE__)
-	char tmp[PATH_MAX];
-	uint32_t size = PATH_MAX;
-	if (_NSGetExecutablePath(tmp, &size) == 0) {
-		return FilePath(tmp);
+void Path::NormalizePath() {
+	if (path.empty()) {
+		return;
 	}
-	else {
-		// Too small buffer
-		char* tmp2 = new char[size]();
-		_NSGetExecutablePath(tmp2, &size);
-		return FilePath(tmp2);
+	std::replace(path.begin(), path.end(), WIN_PATH_SEPARATOR, PATH_CHAR);
+	// Prune duplicate path separators (like "///")
+	// and handle collapsing relative paths:
+	// "/foo/bar/../shaders/debug.vert" -> "/foo/shaders/debug.vert"
+	// "/foo/././shaders//debug.vert" -> "/foo/shaders/debug.vert"
+	std::istringstream f(this->path);
+	std::string s;
+	std::string last;
+	std::list<std::string> npath;
+	bool absolute = false;
+	bool leadslash = false;
+	if (path[0] == PATH_CHAR) {
+		// processed path must start with a "/"
+		absolute = true;
 	}
-#elif defined(__linux__)
-	char tmp[PATH_MAX];
-	int bytes = readlink("/proc/self/exe", tmp, PATH_MAX);
-	bytes = bytes < PATH_MAX - 1 ? bytes : PATH_MAX - 1;
-	if (bytes >= 0) {
-		tmp[bytes] = '\0';
+	if (path.size() > 1 && path.back() == PATH_CHAR) {
+		// processed path must end with a "/"
+		leadslash = true;
 	}
-
-	return FilePath(tmp);
-#elif defined(WIN32)
-	// LPWSTR buffer; //or wchar_t * buffer;
-	wchar_t buffer[MAX_PATH];
-	if (0 == GetModuleFileNameW(nullptr, buffer, MAX_PATH)) {
-		return FilePath();
-	}
-	std::wstring wstr(buffer);
-	return FilePath(wstr);
-#else
-	// Other *NIX have his proper API or changes on procfs
-	//  * Mac OS X: _NSGetExecutablePath() (man 3 dyld)
-	//  * Linux: readlink /proc/self/exe
-	//  * Solaris: getexecname()
-	//  * FreeBSD: sysctl CTL_KERN KERN_PROC KERN_PROC_PATHNAME -1
-	//  * FreeBSD if it has procfs: readlink /proc/curproc/file (FreeBSD doesn't have procfs by
-	//  default)
-	//  * NetBSD: readlink /proc/curproc/exe
-	//  * DragonFly BSD: readlink /proc/curproc/file
-#endif
-}
-
-void FilePath::NormalizePath() {
-#if defined(WIN32)
-	std::replace(path.begin(), path.end(), UNIX_PATH_SEPARATOR, WIN_PATH_SEPARATOR);
-#else
-	std::replace(path.begin(), path.end(), WIN_PATH_SEPARATOR, UNIX_PATH_SEPARATOR);
-	if (path.size() > 2 && std::isalpha(path.at(0)) && path.at(1) == ':') { // x: windows unit to remove
-		// This comparison it's safe on UTF-8 as isalpha would check [a-zA-Z] and Windows units
-		// are only letters
-		path.erase(0, 2);
-	}
-#endif
-	// Prune duplicate path separators (like "\\\\")
-	path.erase(
-			std::unique(
-					path.begin(),
-					path.end(),
-					[](const char& a, const char& b) { return a == PATH_SEPARATOR_C && b == PATH_SEPARATOR_C; }),
-			path.end());
-
-	// TODO handled relative path stuff like "\foo\bar\..\shaders\debug.vert"
-}
-
-bool FilePath::isValidPath() const {
-	if (!this->isAbsolutePath()) { // No contains drive, so check if is a valid relative path
-		// TODO improve this with <regex>
-		if (path.size() >= 3 && path.at(0) == '.'
-			&& (path.at(1) == PATH_SEPARATOR_C || (path.at(1) == '.' && path.at(2) == PATH_SEPARATOR_C))) {
-			return true;
+	while (std::getline(f, s, PATH_CHAR)) {
+		if (s.empty() || (s == ".")) {
+			continue; // prunes empty segments from duplicate separators
 		}
-		else {
-			return false;
+		while ((s.size() > 2) && (s.back() == '.')) {
+			s.pop_back(); // elements can't end with "." except the special . or ..
 		}
-	}
-	else {
-		return !empty();
-	}
-}
-
-FilePath::NFilePath FilePath::GetNativePath() const {
-#if defined(WIN32)
-	return tec::utf8_decode(path);
-#else
-	return path;
-#endif
-}
-
-std::string FilePath::toGenericString() const {
-	std::string ret(path);
-	std::replace(ret.begin(), ret.end(), WIN_PATH_SEPARATOR, UNIX_PATH_SEPARATOR);
-	return ret;
-}
-
-FilePath FilePath::GetAssetsBasePath() {
-	if (FilePath::assets_base.empty()) {
-		char cwd[FILENAME_MAX] = {0}; // Try to get current working directory (IE where the program was called)
-#if defined(WIN32)
-		if (!_getcwd(cwd, sizeof(cwd))) {
-#else
-		if (!getcwd(cwd, sizeof(cwd))) {
-#endif
-
-#if defined(WIN32)
-#pragma warning(push)
-#pragma warning(disable : 4996)
-#endif
-			std::strncpy(cwd, "./", 2); // Fall back to relative path if getcwd fails
-			cwd[2] = '\0';
-#if defined(WIN32)
-#pragma warning(pop)
-#endif
-		}
-		// Search for the assets folder
-		FilePath tmp(cwd);
-		tmp /= "assets/";
-		if (tmp.DirExists()) {
-			FilePath::assets_base = tmp.toString();
-		}
-		else {
-			tmp = FilePath::GetProgramPath().BasePath() / "assets/";
-			if (tmp.DirExists()) {
-				FilePath::assets_base = tmp.toString();
+		if (s == "..") {
+			if (!npath.empty()) {
+				npath.pop_back();
+				continue;
 			}
-			else {
-				tmp = tmp.BasePath().BasePath() / "share/assets/";
-				if (tmp.DirExists()) {
-					FilePath::assets_base = tmp.toString();
-				}
-				else {
-					tmp = FilePath::GetProgramPath().BasePath().BasePath() / ("share/" + app_name + "/assets/");
-					if (tmp.DirExists()) {
-						FilePath::assets_base = tmp.toString();
-					}
-				}
+			else if (absolute) { // can't backup past the root
+				continue;
 			}
 		}
-		// If assets_base is empty, then can't find the folder
+		npath.push_back(s);
 	}
+	path.clear(); // rebuild the path
+	if (absolute) {
+		path.push_back(PATH_CHAR);
+	}
+	else if (npath.empty()) { // relative path without elements is "."
+		path.push_back('.');
+		if (leadslash) {
+			path.push_back(PATH_CHAR);
+		}
+	}
+	if (!npath.empty()) {
+		path.append(npath.front());
+		npath.pop_front();
+		for (auto& element : npath) {
+			path.push_back(PATH_CHAR);
+			path.append(element);
+		}
+		if (leadslash) {
+			path.push_back(PATH_CHAR);
+		}
+	}
+}
 
-	return FilePath(FilePath::assets_base);
-} // namespace tec
+bool Path::isValidPath() const {
+	const std::regex special("^[^:>*?\"<|]+$");
+	if (empty()) {
+		return false;
+	}
+	return std::regex_match(path, special);
+}
 
-void FilePath::SetAssetsBasePath(FilePath new_base) { FilePath::assets_base = new_base.toString(); }
+Path::NFilePath Path::GetNativePath() const {
+	auto ldevice = device;
+	std::for_each(ldevice.begin(), ldevice.end(), [](char e) { return std::tolower(e); });
+	auto realpath = path;
+	if (ldevice.size() > 2) {
+		if (ldevice == "assets:") {
+			auto asset = Path::GetAssetsBasePath() / Path(path);
+			realpath = asset.path;
+			ldevice = asset.device;
+		}
+		else {
+			throw PathException(); // not implemented
+		}
+	}
+#if defined(WIN32)
+	std::wstring npath{L"\\\\?\\"};
+	if (ldevice.empty()) {
+		npath.clear();
+	}
+	else {
+		npath.resize(npath.size() + ldevice.size());
+		std::copy(ldevice.begin(), ldevice.end(), npath.begin() + 4);
+	}
+	npath.append(tec::utf8_decode(realpath));
+	std::replace(npath.begin(), npath.end(), PATH_CHAR, WIN_PATH_SEPARATOR);
+	return npath;
+#else
+	if (ldevice.size() > 0) {
+		throw PathException(); // not implemented on unix
+	}
+	return realpath;
+#endif
+}
 
-FilePath FilePath::GetAssetPath(const FilePath& asset) {
-	auto tmp = FilePath::GetAssetsBasePath();
+std::unique_ptr<FILE> Path::OpenFile(PATH_OPEN_FLAGS open_mode) const {
+	Path::NFilePath mode_str = TEXT("r");
+	bool seek_to_end = false;
+	if (open_mode & FS_READWRITE) {
+		if (!(open_mode & FS_CREATE) && !this->FileExists()) {
+			throw PathException();
+		}
+		mode_str = TEXT("r+");
+		if (open_mode & FS_CREATE) {
+			mode_str = TEXT("w+");
+			if (open_mode & FS_APPEND) {
+				mode_str = TEXT("a+");
+			}
+		}
+		else if (open_mode & FS_APPEND) {
+			seek_to_end = true;
+		}
+	}
+	else if (open_mode & (FS_CREATE | FS_APPEND)) {
+		throw PathException();
+	}
+	mode_str.push_back(TEXT('b'));
+	auto npath = this->GetNativePath();
+#if defined(WIN32)
+	FILE* file = _wfopen(npath.c_str(), mode_str.c_str());
+#else
+	FILE* file = fopen(npath.c_str(), mode_str.c_str());
+#endif
+	if (!file) { // didn't open file!
+		throw PathException();
+	}
+	if (file && seek_to_end) {
+		fseek(file, 0, SEEK_END);
+	}
+	// fopen returns a nullptr if it failed
+	return std::unique_ptr<FILE>(file);
+}
+
+std::unique_ptr<std::fstream> Path::OpenStream(PATH_OPEN_FLAGS open_mode) const {
+	std::ios_base::openmode mode = std::ios_base::in;
+	if (open_mode & FS_READWRITE) {
+		if (!(open_mode & FS_CREATE) && !this->FileExists()) {
+			throw PathException();
+		}
+		mode |= std::ios_base::out;
+		if (open_mode & FS_APPEND) {
+			mode |= std::ios_base::app | std::ios_base::ate;
+		}
+	}
+	else if (open_mode & (FS_CREATE | FS_APPEND)) {
+		throw PathException();
+	}
+	else if (!this->FileExists()) { // readonly, but the file doesn't exist
+		throw PathException();
+	}
+	mode |= std::ios_base::binary;
+	auto npath = this->GetNativePath();
+	return std::make_unique<std::fstream>(npath, mode);
+}
+
+void Path::LocateAssets() {
+	// Try to get current working directory (IE where the program was called)
+#if defined(WIN32)
+	constexpr wchar_t nullchar = 0;
+	std::wstring cwd;
+	cwd.resize(FILENAME_MAX);
+	if (!GetCurrentDirectoryW((DWORD)cwd.size(), cwd.data())) {
+#else
+	constexpr char nullchar = 0;
+	std::string cwd;
+	cwd.resize(FILENAME_MAX);
+	if (!getcwd(cwd.data(), cwd.size())) {
+#endif
+		// Fall back to relative path if getcwd fails
+		cwd[0] = '.';
+		cwd[1] = PATH_CHAR;
+		cwd[2] = '\0';
+	}
+	cwd.resize(std::min(cwd.find_first_of(nullchar), cwd.size()));
+	// Search for the assets folder
+	Path search(cwd);
+	search /= "assets/";
+	if (search.DirExists()) {
+		Path::assets_base = search.toString();
+		return;
+	}
+	Path program = Path::GetProgramPath().BasePath();
+	search = program / "assets/";
+	if (search.DirExists()) {
+		Path::assets_base = search.toString();
+		return;
+	}
+	search = program.BasePath() / "share/assets/";
+	if (search.DirExists()) {
+		Path::assets_base = search.toString();
+		return;
+	}
+	search = program.BasePath() / "share" / app_name / "assets/";
+	if (search.DirExists()) {
+		Path::assets_base = search.toString();
+		return;
+	}
+	search = program.BasePath().BasePath() / "assets/";
+	if (search.DirExists()) {
+		Path::assets_base = search.toString();
+		return;
+	}
+}
+
+Path Path::GetAssetsBasePath() {
+	if (Path::assets_base.empty()) {
+		Path::LocateAssets();
+		// If assets_base is still empty, then can't find the folder
+		if (Path::assets_base.empty()) {
+			throw PathException();
+		}
+	}
+	return Path(Path::assets_base);
+}
+
+void Path::SetAssetsBasePath(Path new_base) { Path::assets_base = new_base.toString(); }
+
+Path Path::GetAssetPath(const Path& asset) {
+	auto tmp = Path("assets:/");
 	tmp /= asset;
 	return tmp;
 }
 
-FilePath FilePath::GetAssetPath(const std::string& asset) {
-	auto tmp = FilePath::GetAssetsBasePath();
+Path Path::GetAssetPath(const std::string& asset) {
+	auto tmp = Path("assets:/");
 	tmp /= asset;
 	return tmp;
 }
 
-FilePath FilePath::GetAssetPath(const char* asset) {
-	auto tmp = FilePath::GetAssetsBasePath();
+Path Path::GetAssetPath(const char* asset) {
+	auto tmp = Path("assets:/");
 	tmp /= asset;
 	return tmp;
 }

@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
 
 	auto log = InitializeLogger(ParseLogLevel(argc, argv), console);
 
-	log->info(std::string("Asset path: ") + tec::FilePath::GetAssetsBasePath().toString());
+	log->info(std::string("Asset path: ") + tec::Path::GetAssetsBasePath().toString());
 
 	tec::Game game(os);
 

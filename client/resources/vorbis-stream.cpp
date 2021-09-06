@@ -93,15 +93,21 @@ inline std::string VorbisErrorToString(int error) {
 	}
 }
 
-std::shared_ptr<VorbisStream> VorbisStream::Create(const FilePath& filename) {
+std::shared_ptr<VorbisStream> VorbisStream::Create(const Path& filename) {
 	std::shared_ptr<VorbisStream> stream = std::make_shared<VorbisStream>();
-	// stream->SetFileName(fname);
-	stream->SetName(filename.SubpathFrom("assets").toGenericString());
+	stream->SetName(filename.Subpath(1).toString());
 
 	int error;
-	// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a fopen to FileSystem ?
-	// Als we not are doing path valid or file existence check
-	stream->stream = stb_vorbis_open_filename(filename.toString().c_str(), &error, nullptr);
+	std::unique_ptr<FILE> file;
+	try {
+		file = filename.OpenFile();
+	}
+	catch (PathException& e) {
+		spdlog::get("console_log")->warn("[Vorbis-Stream] Can't open file {}", filename.toString());
+		stream.reset();
+		return stream;
+	}
+	stream->stream = stb_vorbis_open_file(file.release(), TRUE, &error, nullptr);
 	if (stream->stream) {
 		stream->info = stb_vorbis_get_info(stream->stream);
 		if (stream->info.channels == 2) {

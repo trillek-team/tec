@@ -61,10 +61,10 @@ public:
 	* \brief Returns a resource with the specified name.
 	*
 	* The only used initialization property is "filename".
-	* \param[in] const FilePath& fname The filename of the MD5Anim resource
+	* \param[in] const Path& fname The filename of the MD5Anim resource
 	* \return std::shared_ptr<MD5Anim> The create MD5Anim resource.
 	*/
-	static std::shared_ptr<MD5Anim> Create(const FilePath& fname);
+	static std::shared_ptr<MD5Anim> Create(const Path& fname);
 
 	/**
 	* \brief Loads the MD5Anim file from disk and parses it.
@@ -80,9 +80,9 @@ public:
 	* \param[in] const std::string& fname The mesh filename.
 	* \return bool True if initialization finished with no errors.
 	*/
-	void SetFileName(const FilePath& fname) { this->path = fname; }
+	void SetFileName(const Path& fname) { this->path = fname; }
 
-	FilePath GetFileName() { return this->path; }
+	Path GetFileName() { return this->path; }
 
 	const std::string GetName() const { return this->name; }
 
@@ -133,7 +133,7 @@ public:
 			float delta);
 
 private:
-	FilePath path; // Relative filename
+	Path path; // Relative filename
 	std::string name;
 	std::vector<BoundingBox> bounds; // Bound box sizes for each join.
 	std::vector<Frame> frames;

@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include "file-factories.hpp"
 #include "resources/md5anim.hpp"
 #include "resources/md5mesh.hpp"
 
@@ -72,7 +73,6 @@ void Animation::Out(proto::Component* target) {
 	comp->set_animation_name(this->animation_name);
 }
 
-extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
 void Animation::In(const proto::Component& source) {
 	const proto::Animation& comp = source.animation();
 	if (!comp.has_animation_name()) {
@@ -83,21 +83,9 @@ void Animation::In(const proto::Component& source) {
 	}
 	this->looping = comp.loop();
 	this->animation_name = comp.animation_name();
-	if (!AnimationMap::Has(this->animation_name)) {
-		std::string ext = this->animation_name.substr(this->animation_name.find_last_of(".") + 1);
-		if (file_factories.find(ext) != file_factories.end()) {
-			file_factories[ext](this->animation_name);
-		}
-	}
 	const auto mesh_name = comp.mesh_name();
-	if (!MeshMap::Has(mesh_name)) {
-		std::string ext = mesh_name.substr(mesh_name.find_last_of(".") + 1);
-		if (file_factories.find(ext) != file_factories.end()) {
-			file_factories[ext](mesh_name);
-		}
-	}
-	const auto animation{AnimationMap::Get(this->animation_name)};
-	animation->CheckMesh(std::static_pointer_cast<MD5Mesh>(MeshMap::Get(mesh_name)));
+	const auto animation{GetResource<MD5Anim>(this->animation_name)};
+	animation->CheckMesh(std::static_pointer_cast<MD5Mesh>(GetResource<MeshFile>(mesh_name)));
 	this->SetAnimationFile(animation);
 }
 } // namespace tec

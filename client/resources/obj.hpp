@@ -55,10 +55,10 @@ public:
 	* \brief Returns a resource with the specified name.
 	*
 	* The only used initialization property is "filename".
-	* \param[in] const FilePath& fname The filename of the OBJ resource
+	* \param[in] const Path& fname The filename of the OBJ resource
 	* \return std::shared_ptr<OBJ> The created OBJ resource.
 	*/
-	static std::shared_ptr<OBJ> Create(const FilePath& fname);
+	static std::shared_ptr<OBJ> Create(const Path& fname);
 
 	/**
 	* \brief Loads the OBJ file from disk and parses it.
@@ -72,7 +72,7 @@ public:
 	*
 	* \return bool If the material was valid and loaded correctly.
 	*/
-	bool ParseMTL(const FilePath& fname);
+	bool ParseMTL(const Path& fname);
 
 	/**
 	* \brief Calculates the final vertex positions based on the bind-pose skeleton.
@@ -90,11 +90,11 @@ public:
 	* \param[in] const std::string& fname The mesh filename.
 	* \return bool True if initialization finished with no errors.
 	*/
-	void SetFileName(const FilePath& fname) { this->path = fname; }
+	void SetFileName(const Path& fname) { this->path = fname; }
 
 private:
 	std::vector<std::shared_ptr<OBJGroup>> vertexGroups;
-	FilePath path; // Path to OBJ file
+	Path path; // Path to OBJ file
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> uvs;

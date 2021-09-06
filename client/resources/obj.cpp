@@ -21,7 +21,7 @@ namespace tec {
 */
 extern std::string CleanString(std::string str);
 
-bool OBJ::ParseMTL(const FilePath& fname) {
+bool OBJ::ParseMTL(const Path& fname) {
 	auto _log = spdlog::get("console_log");
 	if (!fname.isValidPath() || !fname.FileExists()) {
 		_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", fname.toString());
@@ -30,8 +30,8 @@ bool OBJ::ParseMTL(const FilePath& fname) {
 	}
 	auto base_path = this->path.BasePath();
 
-	std::ifstream f(fname.GetNativePath(), std::ios::in);
-	if (!f.is_open()) {
+	auto f = fname.OpenStream();
+	if (!f->is_open()) {
 		_log->error("[OBJ] Error opening file {}", fname.toString());
 		return false;
 	}
@@ -39,7 +39,7 @@ bool OBJ::ParseMTL(const FilePath& fname) {
 	std::shared_ptr<MTL> currentMTL;
 
 	std::string line;
-	while (std::getline(f, line)) {
+	while (std::getline(*f, line)) {
 		std::stringstream ss(line);
 		std::string identifier;
 
@@ -126,11 +126,11 @@ bool OBJ::ParseMTL(const FilePath& fname) {
 	return true;
 }
 
-std::shared_ptr<OBJ> OBJ::Create(const FilePath& fname) {
+std::shared_ptr<OBJ> OBJ::Create(const Path& fname) {
 	auto obj = std::make_shared<OBJ>();
 	obj->SetFileName(fname);
 
-	obj->SetName(fname.SubpathFrom("assets").toGenericString());
+	obj->SetName(fname.Subpath(1).toString());
 
 	if (obj->Parse()) {
 		obj->PopulateMeshGroups();
@@ -153,15 +153,15 @@ bool OBJ::Parse() {
 	}
 	auto base_path = this->path.BasePath();
 
-	std::ifstream f(this->path.GetNativePath(), std::ios::in);
-	if (!f.is_open()) {
+	auto f = this->path.OpenStream();
+	if (!f->is_open()) {
 		_log->error("[OBJ] Error opening file {}", path.toString());
 		return false;
 	}
 	_log->debug("[OBJ] Parsing file {}", path.toString());
 
 	std::ostringstream oss;
-	oss << f.rdbuf();
+	oss << f->rdbuf();
 	std::string buffer = oss.str();
 
 	std::shared_ptr<OBJGroup> currentVGroup = std::make_shared<OBJGroup>();
@@ -372,12 +372,12 @@ void OBJ::PopulateMeshGroups() {
 			auto mat_itr = this->materials.find(face_group->mtl);
 			if (mat_itr != this->materials.end()) {
 				std::shared_ptr<MTL> material = mat_itr->second;
-				std::string material_name = material->diffuseMap;
-				size_t slash = material_name.find_last_of("/");
-				slash = (slash == std::string::npos) ? 0 : (slash + 1); // skip past any slash
-				size_t dot = material_name.find_last_of(".");
-				material_name = material_name.substr(slash, dot - slash) + "_material";
-				mat_group.material_name = material_name;
+				auto diffuse_file = Path(material->diffuseMap);
+				mat_group.material_name = diffuse_file.FileStem() + "_material";
+				spdlog::get("console_log")
+						->trace("[OBJ] Material group: Tex:{} -> Mat:{}",
+								material->diffuseMap,
+								mat_group.material_name);
 				mat_group.textures.push_back(material->diffuseMap);
 				diffuse_color = glm::vec4(material->kd, 1.0);
 			}

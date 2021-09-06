@@ -11,15 +11,15 @@ TEC_RegisterLuaType(tec, SaveGame) {
 		"SaveGame", sol::no_constructor,
 		/*"load", sol::overload(
 			sol::resolve<bool(std::string)>(&SaveGame::Load),
-			sol::resolve<bool(FilePath)>(&SaveGame::Load)
+			sol::resolve<bool(Path)>(&SaveGame::Load)
 		), */
 		"save", sol::overload(
 			sol::resolve<bool()>(&SaveGame::Save)/*,
-			sol::resolve<bool(FilePath)>(&SaveGame::Save)*/
+			sol::resolve<bool(Path)>(&SaveGame::Save)*/
 		),
 		"reload", sol::overload(
 			sol::resolve<bool()>(&SaveGame::Reload)/*,
-			sol::resolve<bool(FilePath)>(&SaveGame::Reload)*/
+			sol::resolve<bool(Path)>(&SaveGame::Reload)*/
 		),
 		"user_list", sol::readonly(&SaveGame::user_list)
 	);

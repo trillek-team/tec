@@ -59,10 +59,10 @@ public:
 	* \brief Returns a resource with the specified name.
 	*
 	* The only used initialization property is "filename".
-	* \param[in] const FilePath& fname The filename of the MD5Mesh resource
+	* \param[in] const Path& fname The filename of the MD5Mesh resource
 	* \return std::shared_ptr<MD5Mesh> The created MD5Mesh resource.
 	*/
-	static std::shared_ptr<MD5Mesh> Create(const FilePath& fname);
+	static std::shared_ptr<MD5Mesh> Create(const Path& fname);
 
 	/**
 	* \brief Loads the MD5Mesh file from disk and parses it.
@@ -105,14 +105,14 @@ public:
 	* \param[in] const std::string& fname The mesh filename.
 	* \return bool True if initialization finished with no errors.
 	*/
-	void SetFileName(const FilePath& fname) { this->path = fname; }
+	void SetFileName(const Path& fname) { this->path = fname; }
 
 	// Used for MD5Anim::CheckMesh().
 	friend class MD5Anim;
 
 private:
 	std::vector<InternalMesh> meshes_internal;
-	FilePath path; // Path to MD5Mesh file
+	Path path; // Path to MD5Mesh file
 	std::vector<Joint> joints;
 };
 } // namespace tec

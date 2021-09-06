@@ -93,7 +93,8 @@ void Computer::In(const proto::Component& source) {
 	}
 
 	std::string fname{comp.rom_file()};
-	int size = LoadROM(FilePath::GetAssetPath(fname).toString(), this->rom);
+	auto file = Path::GetAssetPath(fname).OpenStream();
+	int size = LoadROM(*file, this->rom);
 	if (size < 0) {
 		std::shared_ptr<spdlog::logger> _log = spdlog::get("console_log");
 		_log->error("An error occoured while reading file {}", fname);

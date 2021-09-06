@@ -99,7 +99,7 @@ void RenderSystem::Startup() {
 	ErrorCheck("Something went wrong when creating the context", __LINE__);
 
 	tec::gfx::RenderConfig render_config;
-	auto core_fname = FilePath::GetAssetPath("shaders/core.json");
+	auto core_fname = Path::GetAssetPath("shaders/core.json");
 	auto core_json = LoadAsString(core_fname);
 	auto status = google::protobuf::util::JsonStringToMessage(core_json, &render_config);
 	if (!status.ok()) {
@@ -148,14 +148,14 @@ void RenderSystem::Startup() {
 	// Reversed Z buffering for improved precision (maybe)
 	glClearDepth(0.0f);
 	glDepthFunc(GL_GREATER);
-	std::shared_ptr<OBJ> sphere = OBJ::Create(FilePath::GetAssetPath("/sphere/sphere.obj"));
+	std::shared_ptr<OBJ> sphere = OBJ::Create(Path::GetAssetPath("/sphere/sphere.obj"));
 	if (!sphere) {
 		_log->debug("[RenderSystem] Error loading sphere.obj.");
 	}
 	else {
 		this->sphere_vbo.Load(sphere);
 	}
-	std::shared_ptr<OBJ> quad = OBJ::Create(FilePath::GetAssetPath("/quad/quad.obj"));
+	std::shared_ptr<OBJ> quad = OBJ::Create(Path::GetAssetPath("/quad/quad.obj"));
 	if (!quad) {
 		_log->debug("[RenderSystem] Error loading quad.obj.");
 	}

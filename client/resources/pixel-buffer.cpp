@@ -142,7 +142,7 @@ bool PixelBuffer::Create(uint32_t width, uint32_t height, uint32_t bitsperchanne
 	return true;
 }
 
-std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string name, const FilePath& filename, bool gamma_space) {
+std::shared_ptr<PixelBuffer> PixelBuffer::Create(const std::string name, const Path& filename, bool gamma_space) {
 	auto pbuf = std::make_shared<PixelBuffer>();
 	PixelBufferMap::Set(name, pbuf);
 	if (!filename.empty()) {
@@ -165,12 +165,13 @@ const uint8_t* PixelBuffer::GetBlockBase() const {
 #define STB_IMAGE_IMPLEMENTATION
 #include "resources/stb_image.h"
 
-bool PixelBuffer::Load(const FilePath& filename, bool gamma_space) {
+bool PixelBuffer::Load(const Path& filename, bool gamma_space) {
 	int num_components;
 	unsigned char* data;
 	// FIXME Better to pass a FILE handler and use the native fopen / fopen_w. Perhaps add a
 	// fopen to FileSystem ? Also we not are doing path valid or file existence check
-	data = stbi_load(filename.toString().c_str(), &this->imagewidth, &this->imageheight, &num_components, 0);
+	auto file = filename.OpenFile();
+	data = stbi_load_from_file(file.get(), &this->imagewidth, &this->imageheight, &num_components, 0);
 	if (data) {
 		uint32_t channels = std::max(num_components, 0);
 		switch (channels) {
@@ -191,7 +192,7 @@ bool PixelBuffer::Load(const FilePath& filename, bool gamma_space) {
 		this->blockptr.reset(data);
 		this->writelock.unlock();
 
-		spdlog::get("console_log")->debug("[Pixel-Buffer] Loaded image {}", filename.FileName());
+		spdlog::get("console_log")->debug("[Pixel-Buffer] Loaded image {}", filename.toString());
 		return true;
 	}
 

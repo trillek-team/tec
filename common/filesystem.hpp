@@ -6,41 +6,58 @@
 #include "string.hpp"
 
 #include <algorithm>
+#include <fstream>
+#include <memory>
 #include <ostream>
+#include <stdio.h>
 #include <string>
 #include <string_view>
 
+// allow unique_ptr to manage FILE lifetime
+template <> struct std::default_delete<FILE> {
+	void operator()(FILE* file) { fclose(file); }
+};
+
 namespace tec {
 #if defined(WIN32)
-constexpr std::string_view PATH_SEPARATOR = "\\"; /// OS File system path separator
+constexpr std::string_view PATH_NATIVE_SEPARATOR = "\\"; /// OS File system path separator
 #else
-constexpr std::string_view PATH_SEPARATOR = "/"; /// OS File system path separator
+constexpr std::string_view PATH_NATIVE_SEPARATOR = "/"; /// OS File system path separator
 #endif
-class FilePath final {
+constexpr std::string_view PATH_SEPARATOR = "/"; /// tec Path separator
+
+const std::string_view app_name("trillek");
+
+class PathException : public std::exception {
+public:
+	const char* message;
+};
+
+enum PATH_OPEN_FLAGS {
+	FS_DEFAULT = 0,
+	FS_READONLY = 0,
+	FS_READWRITE = 1,
+	FS_CREATE = 2, // files are normally not created
+	FS_APPEND = 4, // append to the end of the file
+};
+
+class Path final {
 public:
 #if defined(WIN32)
-	const static char PATH_SEPARATOR_C = '\\'; /// OS File system path separator
+	constexpr static char PATH_NATIVE_CHAR = '\\'; /// OS File system path separator
 	typedef std::wstring NFilePath; /// Native string format for paths
 #else
-	const static char PATH_SEPARATOR_C = '/'; /// OS File system path separator
+	constexpr static char PATH_NATIVE_CHAR = '/'; /// OS File system path separator
 	typedef std::string NFilePath; /// Native string format for paths
 #endif
+	constexpr static char PATH_CHAR = '/'; /// tec Path separator
 
 	static const std::size_t npos = std::string::npos;
 
 	/**
 	* \brief Builds a empty path
 	*/
-	explicit FilePath();
-
-	/**
-	* \brief Builds a path from a string or substring
-	*
-	* \param other A string with a path
-	* \param pos Begin of the range to get a slice (default = 0)
-	* \param count How many bytes to grab from other (default = size of other)
-	*/
-	FilePath(std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
+	explicit Path();
 
 	/**
 	* \brief Builds a path from a string_view or substring there of
@@ -49,16 +66,27 @@ public:
 	* \param pos Begin of the range to get a slice (default = 0)
 	* \param count How many bytes to grab from other (default = size of other)
 	*/
-	FilePath(const std::string_view& other, std::size_t pos = 0, std::size_t count = std::string_view::npos);
+	explicit Path(const std::string_view& other);
 
 	/**
-	* \brief Builds a path from a wstring or substring
+	* \brief Builds a path from a string or substring
 	*
-	* \param other A wstring with a path
+	* \param other A string with a path
 	* \param pos Begin of the range to get a slice (default = 0)
 	* \param count How many bytes to grab from other (default = size of other)
 	*/
-	FilePath(const std::wstring& other, std::size_t pos = 0, std::size_t count = std::wstring::npos);
+	explicit Path(const std::string& other, std::size_t pos = 0, std::size_t count = std::string::npos);
+
+	explicit Path(std::string&& other);
+
+	template <size_t N> Path(const char (&other)[N]) : Path(std::string_view(other)) {}
+
+	/**
+	* \brief Builds a path from a wstring
+	*
+	* \param other A wstring containing a path
+	*/
+	explicit Path(const std::wstring& other);
 
 	/**
 	* \brief Returns the path to the User settings folder
@@ -70,7 +98,7 @@ public:
 	*
 	* \return string with the full path. Empty string if fails
 	*/
-	static FilePath GetUserSettingsPath();
+	static Path GetUserSettingsPath();
 
 	/**
 	* \brief Returns the path to the User persistent data folder (for save files, for example)
@@ -82,7 +110,7 @@ public:
 	*
 	* \return string with the full path. Empty string if fails
 	*/
-	static FilePath GetUserDataPath();
+	static Path GetUserDataPath();
 
 	/**
 	* \brief Returns the path to the User cache folder
@@ -94,7 +122,7 @@ public:
 	*
 	* \return string with the full path. Empty string if fails
 	*/
-	static FilePath GetUserCachePath();
+	static Path GetUserCachePath();
 
 	/**
 	* \brief Check if a directory exists
@@ -115,7 +143,7 @@ public:
 	*
 	* \return True if success or the dir exists
 	*/
-	static bool MkDir(const FilePath& path);
+	static bool MkDir(const Path& path);
 
 	/**
 	* \brief Try to create a full path
@@ -123,7 +151,7 @@ public:
 	* \param path Absolute path
 	* \return True if success.
 	*/
-	static bool MkPath(const FilePath& path);
+	static bool MkPath(const Path& path);
 
 	/**
 	* \brief Extract a filename from a path
@@ -131,6 +159,13 @@ public:
 	* \return Empty string if is an invalid path for a file
 	*/
 	std::string FileName() const;
+
+	/**
+	* \brief Extract a filename without the extension from a path to a file
+	*
+	* \return Empty string if is an invalid path for a file
+	*/
+	std::string FileStem() const;
 
 	/**
 	* \brief Extract a extension from a path to a file
@@ -146,7 +181,7 @@ public:
 	* If is a path of a directory, returns the path to the dir that contains the directory (like cd .. && pwd)
 	* \return Empty string if is an invalid path. Returned path would have the final slash
 	*/
-	FilePath BasePath() const;
+	Path BasePath() const;
 
 	/**
 	* \brief Is an absolute or relative path ?
@@ -157,15 +192,15 @@ public:
 	* \brief Return a subpath
 	*
 	* \param begin First element (each element is separated by a path separator)
-	* \param end Last element (default FilePath::npos)
+	* \param end Last element (default Path::npos)
 	*
 	* \code
-	* FilePath f("./assets/foo/bar/mesh.obj");
-	* f.Subpath(2, FilePath::npos); // ==> "/foo/bar/mesh.obj"
-	* f.Subpath(0, 2); // ==> "./assets/"
+	* Path f("assets/foo/bar/mesh.obj");
+	* f.Subpath(2, Path::npos); // ==> "bar/mesh.obj"
+	* f.Subpath(0, 2); // ==> "assets/foo"
 	* \endcode
 	*/
-	FilePath Subpath(std::size_t begin, std::size_t end = FilePath::npos) const;
+	Path Subpath(std::size_t begin, std::size_t end = Path::npos) const;
 
 	/**
 	* \brief Return a subpath
@@ -174,19 +209,19 @@ public:
 	* \param include Includes the needle element on the output ?
 	*
 	* \code
-	* FilePath f("./assets/foo/bar/mesh.obj");
-	* f.SubpathFrom(assets);       // ==> "/foo/bar/mesh.obj"
-	* f.SubpathFrom(assets, true); // ==> "/assets/foo/bar/mesh.obj"
+	* Path f("./assets/foo/bar/mesh.obj");
+	* f.SubpathFrom("assets");       // ==> "foo/bar/mesh.obj"
+	* f.SubpathFrom("assets", true); // ==> "assets/foo/bar/mesh.obj"
 	* \endcode
 	*/
-	FilePath SubpathFrom(const std::string& needle, bool include = false) const;
+	Path SubpathFrom(const std::string& needle, bool include = false) const;
 
 	/**
 	* \brief Try to obtain the full path to the program binary file
 	*
 	* \return string with the full path. Empty string if fails
 	*/
-	static FilePath GetProgramPath();
+	static Path GetProgramPath();
 
 	/**
 	* \brief Normalize path to the OS format
@@ -203,145 +238,130 @@ public:
 	bool isValidPath() const;
 
 	/**
+	* \brief Open this path as a C-style stream for C functions
+	* \param open_mode what access is required, default is readonly access to existing files
+	*/
+	std::unique_ptr<FILE> OpenFile(PATH_OPEN_FLAGS open_mode = FS_DEFAULT) const;
+
+	/**
+	* \brief Open this path as an iostream
+	* \param open_mode what access is required, default is readonly access to existing files
+	*/
+	std::unique_ptr<std::fstream> OpenStream(PATH_OPEN_FLAGS open_mode = FS_DEFAULT) const;
+
+	/**
 	* \brief Returns a path on the native OS encoding
 	*
 	* - Normalize path
-	* - return wstring on Windows
-	* - return string on *NIX
+	* - return wstring using \ on Windows
+	* - return string using / on *NIX
 	* \return native string of the path
 	*/
-	FilePath::NFilePath GetNativePath() const;
+	Path::NFilePath GetNativePath() const;
 
 	/**
-	* \brief Return the base directory where search the assets
-	*
-	* If isn't set, then would try to search a valid directory path, probing with this paths:
+	* \brief Attempts locate the assets directory
+	* This function will try to search for the first valid directory path, probing with this paths:
 	* - ./assets/
 	* - EXE_PATH/assets/
 	* - EXE_PATH/../assets/
 	* - EXE_PATH/../share/assets/
-	* Were EXE_PATH is the value returned by GetProgramPath()
-	* If find a valid path, then stores it for the future
+	* Were EXE_PATH is the value as returned by GetProgramPath()
+	* The first valid path is saved, and can then be read with GetAssetsBasePath()
 	*/
-	static FilePath GetAssetsBasePath();
+	static void LocateAssets();
+
+	/**
+	* \brief Return the base directory where to search for assets
+	*
+	* If isn't set, then it will first call LocateAssets()
+	*/
+	static Path GetAssetsBasePath();
 
 	/**
 	* \brief returns the full path to an asset
 	*
 	* \param asset Relative path to asset base folder that identify a asset file (for example "shaders/foo.vert")
 	*/
-	static FilePath GetAssetPath(const FilePath& asset);
+	static Path GetAssetPath(const Path& asset);
 
 	/**
 	* \brief returns the full path to an asset
 	*
 	* \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
 	*/
-	static FilePath GetAssetPath(const std::string& asset);
+	static Path GetAssetPath(const std::string& asset);
 
 	/**
 	* \brief returns the full path to an asset
 	*
 	* \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
 	*/
-	static FilePath GetAssetPath(const char* asset);
+	static Path GetAssetPath(const char* asset);
 
 	/**
 	* \brief Sets the base directory where search the assets
 	*/
-	static void SetAssetsBasePath(FilePath);
+	static void SetAssetsBasePath(Path);
 
 	/**
 	* \brief Returns the string representation of a path
 	*/
-	std::string toString() const { return this->path; }
+	std::string toString() const { return device + path; }
 
 	/**
-	* \brief Returns a generic string representation of a path (uses \ as path separator ALWAYS)
+	* \brief Return if this Path is empty
 	*/
-	std::string toGenericString() const;
+	bool empty() const { return device.empty() && path.empty(); }
 
-	/**
-	* \brief Return if this FilePath is empty
-	*/
-	bool empty() const { return this->path.empty(); }
-
-	FilePath& operator=(const FilePath& rhs) {
+	Path& operator=(const Path& rhs) {
+		this->device = rhs.device;
 		this->path = rhs.path; //Not necessary to normalize
 		return *this;
 	}
 
-	FilePath& operator=(const std::string& str) {
-		this->path = str;
-		this->NormalizePath();
+	Path& operator=(const std::string& str) {
+		path = str;
+		SetDevice();
+		NormalizePath();
 		return *this;
 	}
 
-	FilePath& operator=(const std::wstring& wstr) {
-		this->path = utf8_encode(wstr);
-		this->NormalizePath();
+	Path& operator=(const std::string&& str) {
+		path = std::move(str);
+		SetDevice();
+		NormalizePath();
 		return *this;
 	}
 
-	FilePath& operator=(const std::string_view& str) {
-		this->path = str;
-		this->NormalizePath();
+	Path& operator=(const std::wstring& wstr) {
+		path = utf8_encode(wstr);
+		SetDevice();
+		NormalizePath();
 		return *this;
 	}
 
-	FilePath& operator=(const char* str) {
-		this->path = std::string(str);
-		this->NormalizePath();
+	Path& operator=(const std::string_view& strv) {
+		path.assign(strv);
+		SetDevice();
+		NormalizePath();
 		return *this;
 	}
 
-	/**
-	* \brief Concatenate a path
-	*/
-	FilePath& operator+=(const FilePath& rhs) {
-		this->path += rhs.path;
-		this->NormalizePath();
-		return *this;
-	}
-
-	/**
-	* \brief Concatenate a path
-	*/
-	FilePath& operator+=(const char* lhs) {
-		this->operator+=(FilePath(std::string(lhs)));
-		return *this;
-	}
-
-	/**
-	* \brief Concatenate a path
-	*/
-	FilePath& operator+=(const std::string& lhs) {
-		this->operator+=(FilePath(lhs));
-		return *this;
-	}
-
-	/**
-	* \brief Concatenate a path
-	*/
-	FilePath& operator+=(const std::wstring& lhs) {
-		this->operator+=(FilePath(lhs));
-		return *this;
-	}
-
-	/**
-	* \brief Concatenate a path
-	*/
-	FilePath& operator+=(const std::string_view& lhs) {
-		this->operator+=(FilePath(lhs));
+	Path& operator=(const char* cstr) {
+		path.assign(cstr);
+		SetDevice();
+		NormalizePath();
 		return *this;
 	}
 
 	/**
 	* \brief Append a subdirectory or file
 	*/
-	FilePath& operator/=(const FilePath& rhs) {
+	Path& operator/=(const Path& rhs) {
 		if (path.empty()) {
-			if (rhs.empty() || rhs.path.front() != PATH_SEPARATOR_C) {
+			this->device = rhs.device;
+			if (rhs.empty() || rhs.path.front() != PATH_CHAR) {
 				this->path.append(PATH_SEPARATOR).append(rhs.path);
 			}
 			else {
@@ -349,7 +369,10 @@ public:
 			}
 		}
 		else {
-			if (path.back() != PATH_SEPARATOR_C && (rhs.empty() || rhs.path.front() != PATH_SEPARATOR_C)) {
+			if (!rhs.device.empty()) {
+				throw PathException();
+			}
+			if (path.back() != PATH_CHAR && (rhs.empty() || rhs.path.front() != PATH_CHAR)) {
 				this->path.append(PATH_SEPARATOR).append(rhs.path);
 			}
 			else {
@@ -363,29 +386,40 @@ public:
 	/**
 	* \brief Append a subdirectory or file
 	*/
-	FilePath& operator/=(const char* rhs) {
-		this->operator/=(FilePath(std::string(rhs)));
+	Path& operator/=(const std::string_view rhs) {
+		this->operator/=(Path(rhs));
 		return *this;
 	}
 
 	/**
 	* \brief Append a subdirectory or file
 	*/
-	FilePath& operator/=(const std::string& rhs) {
-		this->operator/=(FilePath(rhs));
+	Path& operator/=(const char* rhs) {
+		this->operator/=(Path(std::string(rhs)));
 		return *this;
 	}
 
 	/**
 	* \brief Append a subdirectory or file
 	*/
-	FilePath& operator/=(const std::wstring& rhs) {
-		this->operator/=(FilePath(rhs));
+	Path& operator/=(const std::string& rhs) {
+		this->operator/=(Path(rhs));
+		return *this;
+	}
+
+	/**
+	* \brief Append a subdirectory or file
+	*/
+	Path& operator/=(const std::wstring& rhs) {
+		this->operator/=(Path(rhs));
 		return *this;
 	}
 
 private:
+	std::string device;
 	std::string path; /// Stores path as an UTF8 string
+	void SetDevice();
+	Path(const std::string& _device, const std::string& _path) : device{_device}, path{_path} {}
 
 	// Cached paths
 	static std::string settings_folder;
@@ -397,60 +431,50 @@ private:
 }; // End of FileSystem
 
 /**
-* \brief Concatenate a path
+* \brief Append a subdirectory or file
 */
-inline FilePath operator+(const FilePath& lhs, const FilePath& rhs) { return FilePath(lhs) += rhs; }
-
-/**
-* \brief Concatenate a path
-*/
-inline FilePath operator+(const FilePath& lhs, const std::string& str) { return FilePath(lhs) += FilePath(str); }
-
-/**
-* \brief Concatenate a path
-*/
-inline FilePath operator+(const FilePath& lhs, const std::wstring& wstr) { return FilePath(lhs) += FilePath(wstr); }
-
-/**
-* \brief Concatenate a path
-*/
-inline FilePath operator+(const FilePath& lhs, const char* str) { return FilePath(lhs) += FilePath(std::string(str)); }
+inline Path operator/(const Path& lhs, const Path& rhs) { return Path(lhs) /= rhs; }
 
 /**
 * \brief Append a subdirectory or file
 */
-inline FilePath operator/(const FilePath& lhs, const FilePath& rhs) { return FilePath(lhs) /= rhs; }
+template <size_t N> inline Path operator/(const Path& lhs, const char (&cstr)[N]) {
+	return Path(lhs) /= Path(std::string(cstr, 0, N));
+}
 
 /**
 * \brief Append a subdirectory or file
 */
-inline FilePath operator/(const FilePath& lhs, const std::string& str) { return FilePath(lhs) /= FilePath(str); }
+inline Path operator/(const Path& lhs, const std::string_view strv) { return Path(lhs) /= Path(strv); }
 
 /**
 * \brief Append a subdirectory or file
 */
-inline FilePath operator/(const FilePath& lhs, const std::wstring& wstr) { return FilePath(lhs) /= FilePath(wstr); }
+inline Path operator/(const Path& lhs, std::string& str) { return Path(lhs) /= Path(str); }
 
 /**
 * \brief Append a subdirectory or file
 */
-inline FilePath operator/(const FilePath& lhs, const char* str) { return FilePath(lhs) /= FilePath(std::string(str)); }
+inline Path operator/(const Path& lhs, const std::wstring& wstr) { return Path(lhs) /= Path(wstr); }
 
 /**
 * \brief Output to a stream
 */
 template <typename charT, typename traits>
-std::basic_ostream<charT, traits>& operator<<(std::basic_ostream<charT, traits>& os, const FilePath& path) {
-	return os << path.toString();
+std::basic_ostream<charT, traits>& operator<<(std::basic_ostream<charT, traits>& os, const Path& path) {
+	auto tmp = path.toString();
+	return os << tmp.c_str();
 }
+
+template <> inline std::ostream& operator<<(std::ostream& os, const Path& path) { return os << path.toString(); }
 
 /**
 * \brief Input from a stream
 */
 template <typename charT, typename traits>
-std::basic_istream<charT, traits>& operator>>(std::basic_istream<charT, traits>& is, FilePath& path) {
+std::basic_istream<charT, traits>& operator>>(std::basic_istream<charT, traits>& is, Path& path) {
 	std::string tmp;
 	is >> tmp;
-	path = FilePath(tmp);
+	path = Path(tmp);
 }
 } // namespace tec

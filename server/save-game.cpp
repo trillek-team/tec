@@ -39,9 +39,9 @@ bool UserList::RemoveUser(uid id) {
 
 bool UserList::HasUser(uid id) { return this->GetUserItr(id) != this->users.end(); }
 
-bool SaveGame::Load(std::string _filename) { return this->Load(FilePath(_filename)); }
+bool SaveGame::Load(std::string _filename) { return this->Load(Path(_filename)); }
 
-bool SaveGame::Load(const FilePath _filepath) {
+bool SaveGame::Load(const Path _filepath) {
 	auto _log = spdlog::get("console_log");
 	this->filepath = _filepath;
 	if (!_filepath.FileExists()) {
@@ -62,11 +62,11 @@ bool SaveGame::Load(const FilePath _filepath) {
 
 bool SaveGame::Reload() { return this->Load(this->filepath); }
 
-bool SaveGame::Reload(const FilePath _filepath) { return this->Load(_filepath); }
+bool SaveGame::Reload(const Path _filepath) { return this->Load(_filepath); }
 
 bool SaveGame::Save() { return this->Save(this->filepath); }
 
-bool SaveGame::Save(const FilePath _filepath) {
+bool SaveGame::Save(const Path _filepath) {
 	auto _log = spdlog::get("console_log");
 	if (!_filepath.FileExists() || !_filepath.isValidPath()) {
 		_log->error("File does not exist or path is invalid: {}", _filepath.toString());
@@ -118,7 +118,7 @@ void SaveGame::LoadWorld() {
 	auto _log = spdlog::get("console_log");
 	auto world = this->save.world();
 	for (int i = 0; i < world.entity_file_list_size(); i++) {
-		FilePath entity_filename = FilePath::GetAssetPath(world.entity_file_list(i));
+		Path entity_filename = Path::GetAssetPath(world.entity_file_list(i));
 		if (entity_filename.isValidPath() && entity_filename.FileExists()) {
 			std::string json_string = LoadAsString(entity_filename);
 			proto::Entity entity;

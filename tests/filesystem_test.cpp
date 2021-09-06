@@ -11,188 +11,195 @@
 #include <cstring>
 #include <ctime>
 
-TEST(FilePath_class_test, Constructor) {
+TEST(Path_class_test, Constructor) {
 	using namespace tec;
 	// Construction from strings
-	std::string bad_path = "c:\\usr/share\\MyApp\\foo/bar.png";
-	FilePath fp1(bad_path);
-#if defined(WIN32)
-	ASSERT_EQ(fp1.toString(), "c:\\usr\\share\\MyApp\\foo\\bar.png");
-#else
-	ASSERT_EQ(fp1.toString(), "/usr/share/MyApp/foo/bar.png");
-#endif
-	FilePath fp2("c:/usr/local/share/");
-#if defined(WIN32)
-	ASSERT_EQ(fp2.toString(), "c:\\usr\\local\\share\\");
-#else
-	ASSERT_EQ(fp2.toString(), "/usr/local/share/");
-#endif
+	const std::string_view messy_path_sv = "c:\\usr/share\\MyApp\\foo/bar.png";
+	std::string messy_path_s{messy_path_sv};
+	ASSERT_EQ(Path(messy_path_sv).toString(), "c:/usr/share/MyApp/foo/bar.png");
+	ASSERT_EQ(Path(messy_path_s).toString(), "c:/usr/share/MyApp/foo/bar.png");
+	ASSERT_EQ(Path(std::move(messy_path_s)).toString(), "c:/usr/share/MyApp/foo/bar.png");
+	ASSERT_EQ(Path("c:/usr/local/share/").toString(), "c:/usr/local/share/");
+	ASSERT_EQ(Path("./usr/foo/bar/").toString(), "usr/foo/bar/");
+	ASSERT_EQ(Path("usr/././foo/bar/").toString(), "usr/foo/bar/");
+	ASSERT_EQ(Path("/usr/././foo/bar").toString(), "/usr/foo/bar");
+	ASSERT_EQ(Path(".").toString(), ".");
+	ASSERT_EQ(Path("/./").toString(), "/");
+	ASSERT_EQ(Path("/.").toString(), "/");
+	ASSERT_EQ(Path("./").toString(), "./");
+	ASSERT_EQ(Path("./.").toString(), ".");
+	ASSERT_EQ(Path("../").toString(), "../");
+	ASSERT_EQ(Path("/foo.").toString(), "/foo");
+	ASSERT_EQ(Path("/.foo.").toString(), "/.foo");
+	ASSERT_EQ(Path("/../.././bar").toString(), "/bar");
+	ASSERT_EQ(Path("usr/././.././foo/bar/").toString(), "foo/bar/");
+	ASSERT_EQ(Path("usr/././../../foo/bar/").toString(), "../foo/bar/");
 }
 
-TEST(FilePath_class_test, Operators) {
+TEST(Path_class_test, Operators) {
 	using namespace tec;
-	FilePath fp1("/usr/");
+	Path fp1("/usr/");
 	fp1 = "c:\\windows\\";
-#if defined(WIN32)
-	ASSERT_EQ(fp1.toString(), "c:\\windows\\");
-#else
-	ASSERT_EQ(fp1.toString(), "/windows/");
-#endif
+	ASSERT_EQ(fp1.toString(), "c:/windows/");
 
-	fp1 = FilePath("/usr/") + "local/";
-#if defined(WIN32)
-	ASSERT_EQ(fp1.toString(), "\\usr\\local\\");
-#else
+	fp1 = Path("/usr/") / "local/";
 	ASSERT_EQ(fp1.toString(), "/usr/local/");
-#endif
 
-	fp1 += "share";
-#if defined(WIN32)
-	ASSERT_EQ(fp1.toString(), "\\usr\\local\\share");
-#else
+	fp1 /= "share";
 	ASSERT_EQ(fp1.toString(), "/usr/local/share");
-#endif
 
-	fp1 /= "trillek";
-#if defined(WIN32)
-	ASSERT_EQ(fp1.toString(), "\\usr\\local\\share\\trillek");
-#else
-	ASSERT_EQ(fp1.toString(), "/usr/local/share/trillek");
-#endif
+	fp1 /= "/trillek/";
+	ASSERT_EQ(fp1.toString(), "/usr/local/share/trillek/");
 
-	fp1 += "/";
-	fp1 /= "assets";
-#if defined(WIN32)
-	ASSERT_EQ(fp1.toString(), "\\usr\\local\\share\\trillek\\assets");
-#else
+	fp1 /= "/assets";
 	ASSERT_EQ(fp1.toString(), "/usr/local/share/trillek/assets");
-#endif
+
+	Path fp2 = ((Path("/usr/") / Path("/local/")) / "share" / "\\trillek" / "/") / "assets";
+	ASSERT_EQ(fp2.toString(), "/usr/local/share/trillek/assets");
 }
 
-TEST(FilePath_class_test, Existence) {
+TEST(Path_class_test, Existence) {
 	using namespace tec;
 #if defined(WIN32)
-	ASSERT_TRUE(FilePath("c:\\windows\\").DirExists());
-	ASSERT_FALSE(FilePath("c:\\windows\\foor\\bar\\tardis\\").DirExists());
-	ASSERT_TRUE(FilePath("c:\\windows\\notepad.exe").FileExists());
-	ASSERT_FALSE(FilePath("c:\\windows\\notepad_caca.exe").FileExists());
+	ASSERT_TRUE(Path("c:\\Windows\\").DirExists());
+	ASSERT_FALSE(Path("c:\\Windows\\foor\\bar\\tardis\\").DirExists());
+	ASSERT_TRUE(Path("c:\\Windows\\notepad.exe").FileExists());
+	ASSERT_FALSE(Path("c:\\Windows\\notepad_caca.exe").FileExists());
 #else
-	ASSERT_TRUE(FilePath("/home/").DirExists());
-	ASSERT_FALSE(FilePath("/fake_folder/foo/bar/").DirExists());
-	ASSERT_TRUE(FilePath("/bin/bash").FileExists());
-	ASSERT_FALSE(FilePath("/bin/blablafoobar").FileExists());
+	ASSERT_TRUE(Path("/home/").DirExists());
+	ASSERT_FALSE(Path("/fake_folder/foo/bar/").DirExists());
+	ASSERT_TRUE(Path("/bin/false").FileExists());
+	ASSERT_FALSE(Path("/bin/blablafoobar").FileExists());
 #endif
 }
 
-TEST(FilePath_class_test, Empty) {
+TEST(Path_class_test, Empty) {
 	using namespace tec;
-	FilePath fp1("c:\\windows\\notepad.exe");
+	Path fp1("c:\\windows\\notepad.exe");
 	ASSERT_FALSE(fp1.empty());
 
-	FilePath fp2(""); // Invalid path
+	Path fp2(""); // Invalid path
 	ASSERT_TRUE(fp2.empty());
 }
 
-TEST(FilePath_class_test, IsAbsolute) {
+TEST(Path_class_test, Normalize) {
 	using namespace tec;
-	FilePath fp1("c:\\windows\\notepad.exe");
-	ASSERT_TRUE(fp1.isAbsolutePath());
-
-	FilePath fp2("../foo/bar/img.png"); // Relative path
-	ASSERT_FALSE(fp2.isAbsolutePath());
+	ASSERT_EQ(Path("./").toString(), "./");
 }
 
-TEST(FilePath_class_test, IsValid) {
+TEST(Path_class_test, IsAbsolute) {
 	using namespace tec;
-	FilePath fp1("c:\\windows\\notepad.exe");
-	ASSERT_TRUE(fp1.isValidPath());
+	ASSERT_TRUE(Path("c:\\windows\\notepad.exe").isAbsolutePath());
+	// this is a tricky one, it does not contain a device, but is considered absolute
+	ASSERT_TRUE(Path("\\windows\\notepad.exe").isAbsolutePath());
+	ASSERT_TRUE(Path("/windows/notepad.exe").isAbsolutePath());
 
-	FilePath fp2("../foo/bar/img.png"); // Relative path
-	ASSERT_TRUE(fp2.isValidPath());
-
-	FilePath fp3("./foo/bar/img.png"); // Relative path
-	ASSERT_TRUE(fp3.isValidPath());
-
-	FilePath fp4("K/bad$#/bar\\img.png"); // Bad Path
-	ASSERT_FALSE(fp4.isValidPath());
-
-	FilePath fp5(""); // Bad Path
-	ASSERT_FALSE(fp5.isValidPath());
-	;
+	// Relative paths
+	ASSERT_FALSE(Path("../foo/bar/img.png").isAbsolutePath());
+	ASSERT_FALSE(Path("foo\\bar\\img.png").isAbsolutePath());
+	ASSERT_FALSE(Path("./img.png").isAbsolutePath());
+	ASSERT_FALSE(Path("img.png").isAbsolutePath());
 }
 
-TEST(FilePath_class_test, BasePath) {
+TEST(Path_class_test, IsValid) {
 	using namespace tec;
-#if defined(WIN32)
-	FilePath fp1("c:\\windows\\notepad.exe");
-	ASSERT_EQ(fp1.BasePath().toString(), "c:\\windows\\");
-	ASSERT_EQ(fp1.BasePath().BasePath().toString(), "c:\\");
-#else
-	FilePath fp1("/usr/local/share/MyApp/foo.ini");
-	ASSERT_EQ(fp1.BasePath().toString(), "/usr/local/share/MyApp/");
-	ASSERT_EQ(fp1.BasePath().BasePath().toString(), "/usr/local/share/");
-#endif
+	// Absolute with windows device
+	ASSERT_TRUE(Path("c:\\windows\\notepad.exe").isValidPath());
+	// Absolute windows style
+	ASSERT_TRUE(Path("\\windows\\notepad.exe").isValidPath());
+	// Absolute unix style
+	ASSERT_TRUE(Path("/windows/notepad.exe").isValidPath());
+	// Relative path
+	ASSERT_TRUE(Path("../foo/bar/img.png").isValidPath());
+	// Relative path
+	ASSERT_TRUE(Path("./foo/bar/img.png").isValidPath());
+	// Strange Relative Path
+	// yes this is considered a valid path, just don't pass it as-is through a shell
+	ASSERT_TRUE(Path("K/ree$#/[bar ~=` %!@;#$%^&'()_+-]{}\\img.png").isValidPath());
+	// Bad Relative Path
+	// this path contains filesystem reserved symbols
+	// would not be valid in NTFS nor HFS, although the ext* filesystem would allow this
+	ASSERT_FALSE(Path("/file>bad").isValidPath());
+	ASSERT_FALSE(Path("/file<bad").isValidPath());
+	// outlier here is Windows, other systems consider ':' valid
+	EXPECT_FALSE(Path("\\:filebad").isValidPath());
+	EXPECT_FALSE(Path(":filebad").isValidPath());
+	EXPECT_FALSE(Path("::filebad").isValidPath());
+	EXPECT_FALSE(Path("f:il:ebad").isValidPath());
+	EXPECT_FALSE(Path("f:\\ilebad:").isValidPath());
+	ASSERT_TRUE(Path("f:").isValidPath());
+	ASSERT_TRUE(Path("f:\\ilegood").isValidPath());
+	ASSERT_FALSE(Path("/file*bad").isValidPath());
+	ASSERT_FALSE(Path("file*bad").isValidPath());
+	ASSERT_FALSE(Path("/file?bad").isValidPath());
+	ASSERT_FALSE(Path("file?bad").isValidPath());
+	ASSERT_FALSE(Path("/file\"bad").isValidPath());
+	ASSERT_FALSE(Path("file\"bad").isValidPath());
+	ASSERT_FALSE(Path("/file|bad").isValidPath());
+	ASSERT_FALSE(Path("file|bad").isValidPath());
+	// Empty is a bad path
+	ASSERT_FALSE(Path("").isValidPath());
+	// Relative path directly to a file
+	ASSERT_TRUE(Path("img.png").isValidPath());
+	// Relative path to a file without an extension
+	ASSERT_TRUE(Path("img").isValidPath());
 }
 
-TEST(FilePath_class_test, FileNameAndExtension) {
+TEST(Path_class_test, BasePath) {
+	using namespace tec;
+	Path fp1("c:\\windows\\notepad.exe");
+	ASSERT_EQ(fp1.BasePath().toString(), "c:/windows") << fp1;
+	ASSERT_EQ(fp1.BasePath().BasePath().toString(), "c:/") << fp1.BasePath();
+	ASSERT_EQ(fp1.BasePath().BasePath().BasePath().toString(), "c:/") << fp1.BasePath().BasePath().BasePath();
+
+	Path fp2("/usr/local/share/MyApp/foo.ini");
+	ASSERT_EQ(fp2.BasePath().toString(), "/usr/local/share/MyApp");
+	ASSERT_EQ(fp2.BasePath().BasePath().toString(), "/usr/local/share");
+}
+
+TEST(Path_class_test, FileNameAndExtension) {
 	using namespace tec;
 
-	FilePath fp1("c:\\windows\\notepad.exe");
+	Path fp1("c:\\windows\\notepad.exe");
 	ASSERT_EQ(fp1.FileName(), "notepad.exe");
+	ASSERT_EQ(fp1.FileStem(), "notepad");
 	ASSERT_EQ(fp1.FileExtension(), "exe");
+	ASSERT_EQ(Path("notepad.exe").FileName(), "notepad.exe");
+	ASSERT_EQ(Path("notepad.exe").FileStem(), "notepad");
+	ASSERT_EQ(Path("notepad.exe").FileExtension(), "exe");
 }
 
-TEST(FilePath_class_test, Subpath) {
+TEST(Path_class_test, Subpath) {
 	using namespace tec;
 
-#if defined(WIN32)
-	FilePath fp("c:\\usr/local/share/MyApp/foo.ini");
-	auto sub1 = fp.Subpath(0, 1);
-	auto sub2 = fp.Subpath(0, 2);
-	auto sub3 = fp.Subpath(3, 4);
-	auto sub4 = fp.Subpath(3);
-	ASSERT_EQ(sub1.toString(), "c:");
-	ASSERT_EQ(sub2.toString(), "c:\\usr");
-	ASSERT_EQ(sub3.toString(), "\\share");
-	ASSERT_EQ(sub4.toString(), "\\share\\MyApp\\foo.ini");
+	Path fp("c:/usr/local/share/MyApp/foo.ini");
+	ASSERT_EQ(fp.Subpath(0, 1).toString(), "c:/");
+	ASSERT_EQ(fp.Subpath(0, 2).toString(), "c:/usr");
+	// if we are not at the beginning of an absolute path, then we should have a relative path returned
+	ASSERT_EQ(fp.Subpath(3, 4).toString(), "share");
+	ASSERT_EQ(fp.Subpath(3).toString(), "share/MyApp/foo.ini");
+	ASSERT_EQ(Path("./assets/foo/bar/mesh.obj").Subpath(2, Path::npos).toString(), "bar/mesh.obj");
 
-	auto sub5 = fp.SubpathFrom("share", true);
-	ASSERT_EQ(sub5.toString(), "share\\MyApp\\foo.ini");
-	auto sub6 = fp.SubpathFrom("share");
-	ASSERT_EQ(sub6.toString(), "MyApp\\foo.ini");
-#else
-	FilePath fp("/usr/local/share/MyApp/foo.ini");
-	auto sub1 = fp.Subpath(0, 1);
-	auto sub2 = fp.Subpath(0, 2);
-	auto sub3 = fp.Subpath(3, 4);
-	auto sub4 = fp.Subpath(3);
-	ASSERT_EQ(sub1.toString(), "/");
-	ASSERT_EQ(sub2.toString(), "/usr");
-	ASSERT_EQ(sub3.toString(), "/share");
-	ASSERT_EQ(sub4.toString(), "/share/MyApp/foo.ini");
-
-	auto sub5 = fp.SubpathFrom("share", true);
-	ASSERT_EQ(sub5.toString(), "share/MyApp/foo.ini");
-	auto sub6 = fp.SubpathFrom("share");
-	ASSERT_EQ(sub6.toString(), "MyApp/foo.ini");
-#endif
+	ASSERT_EQ(fp.SubpathFrom("share", true).toString(), "share/MyApp/foo.ini");
+	ASSERT_EQ(fp.SubpathFrom("share").toString(), "MyApp/foo.ini");
+	ASSERT_EQ(fp.SubpathFrom("nowhere").toString(), "");
 }
 
-TEST(FilePath_class_test, GetProgramPath) {
+TEST(Path_class_test, GetProgramPath) {
 	using namespace tec;
-	auto where = FilePath::GetProgramPath();
+	auto where = Path::GetProgramPath();
 	ASSERT_FALSE(where.empty());
 	ASSERT_TRUE(where.isValidPath());
 	ASSERT_TRUE(where.isAbsolutePath());
 	std::cout << "I'm at " << where << "\n";
 }
 
-TEST(FilePath_class_test, GetUserPaths) {
+TEST(Path_class_test, GetUserPaths) {
 	using namespace tec;
 
-	auto settings = FilePath::GetUserSettingsPath();
-	auto user_data = FilePath::GetUserDataPath();
-	auto cache = FilePath::GetUserCachePath();
+	auto settings = Path::GetUserSettingsPath();
+	auto user_data = Path::GetUserDataPath();
+	auto cache = Path::GetUserCachePath();
 
 	ASSERT_FALSE(settings.empty());
 	ASSERT_TRUE(settings.isValidPath());
@@ -206,36 +213,35 @@ TEST(FilePath_class_test, GetUserPaths) {
 	ASSERT_TRUE(cache.isValidPath());
 	ASSERT_TRUE(cache.isAbsolutePath());
 
-	std::cout << FilePath::GetUserSettingsPath() << "\n";
-	std::cout << FilePath::GetUserDataPath() << "\n";
-	std::cout << FilePath::GetUserCachePath() << "\n";
+	std::cout << "Settings : " << Path::GetUserSettingsPath() << "\n";
+	std::cout << "User Data: " << Path::GetUserDataPath() << "\n";
+	std::cout << "Cache    : " << Path::GetUserCachePath() << "\n";
 }
 
-TEST(FilePath_class_test, CreateDir) {
+TEST(Path_class_test, CreateDir) {
 	using namespace tec;
 #if defined(WIN32)
-	auto fp = FilePath("c:/tmp/MyApp/blabla/foo");
-
+	auto fp = Path("c:/tmp/MyApp/blabla/foo");
 #else
-	auto fp = FilePath("/tmp/MyApp/blabla/foo");
+	auto fp = Path("/tmp/MyApp/blabla/foo");
 #endif
 
-	ASSERT_TRUE(FilePath::MkPath(fp));
+	ASSERT_TRUE(Path::MkPath(fp));
 	ASSERT_TRUE(fp.DirExists());
 }
 
-TEST(FilePath_class_test, AssetsPath) {
+TEST(Path_class_test, AssetsPath) {
 	using namespace tec;
-	auto fp = FilePath::GetAssetsBasePath();
-	std::cout << fp << "\n";
+	auto fp = Path::GetAssetsBasePath();
+	std::cout << "Assets: " << fp << "\n";
 
-	FilePath posible_path("./assets");
+	Path posible_path("./assets");
 	if (posible_path.DirExists()) {
 		ASSERT_FALSE(fp.empty());
 		ASSERT_TRUE(fp.isValidPath());
 
-		auto fp2 = FilePath::GetAssetPath("shaders/debug.vert"); // NOTE Rememeber to change this if debug.vert is moved
-		std::cout << fp2 << "\n";
+		auto fp2 = Path::GetAssetPath("shaders/core.json"); // This file is required to load all the shaders
+		std::cout << "Shaders path: " << fp2 << "\n";
 		ASSERT_TRUE(fp2.isValidPath());
 		ASSERT_TRUE(fp2.FileExists());
 	}

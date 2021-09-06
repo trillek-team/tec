@@ -37,10 +37,10 @@ public:
 	/**
 	* \brief Returns a resource with the specified name.
 	*
-	* \param[in] const FilePath filename The filename of the image file to load.
+	* \param[in] const Path filename The filename of the image file to load.
 	* \return bool True if initialization finished with no errors.
 	*/
-	bool Load(const FilePath& filename, bool gamma_space = false);
+	bool Load(const Path& filename, bool gamma_space = false);
 
 	PixelBuffer(const PixelBuffer&) = delete;
 	PixelBuffer& operator=(const PixelBuffer&) = delete;
@@ -84,11 +84,11 @@ public:
 	* PixelBufferMap under name.  It will optionally load a texture file
 	* with the given filename.
 	* \param const std::string name The name to store the PixelBuffer under.
-	* \param const FilePath filename The optional filename of the image to load.
+	* \param const Path filename The optional filename of the image to load.
 	* \return std::shared_ptr<PixelBuffer> The created PixelBuffer.
 	*/
 	static std::shared_ptr<PixelBuffer>
-	Create(const std::string name, const FilePath& filename = FilePath(), bool gamma_space = false);
+	Create(const std::string name, const Path& filename = Path(), bool gamma_space = false);
 
 	bool IsDirty() const;
 	/** \brief Mark dirty */

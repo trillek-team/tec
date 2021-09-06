@@ -41,7 +41,7 @@ void Shader::DeleteProgram() {
 	this->shaders.clear();
 }
 
-void Shader::LoadFromFile(const gfx::ShaderType type, const tec::FilePath& fname) {
+void Shader::LoadFromFile(const gfx::ShaderType type, const tec::Path& fname) {
 	auto _log = spdlog::get("console_log");
 	if (!fname.isValidPath()) {
 		_log->error("[Shader] Error loading shader: {} Invalid path: {}", fname.FileName(), fname.toString());
@@ -268,7 +268,7 @@ GLint Shader::GetAttributeLocation(const std::string name) {
 }
 
 std::shared_ptr<Shader>
-Shader::CreateFromFile(const std::string name, std::list<std::pair<gfx::ShaderType, FilePath>> filenames) {
+Shader::CreateFromFile(const std::string name, std::list<std::pair<gfx::ShaderType, Path>> filenames) {
 	auto s = std::make_shared<Shader>();
 	for (auto pair : filenames) {
 		s->LoadFromFile(pair.first, pair.second);
@@ -302,8 +302,8 @@ void Shader::LoadFromProto(const gfx::ShaderSource& source, gfx::ShaderType type
 		return;
 	}
 	switch (source.source_case()) {
-	case gfx::ShaderSource::kFile: LoadFromFile(type, FilePath::GetAssetPath("shaders") / source.file()); break;
-	case gfx::ShaderSource::kAbsFile: LoadFromFile(type, FilePath(source.abs_file())); break;
+	case gfx::ShaderSource::kFile: LoadFromFile(type, Path::GetAssetPath("shaders") / source.file()); break;
+	case gfx::ShaderSource::kAbsFile: LoadFromFile(type, Path(source.abs_file())); break;
 	case gfx::ShaderSource::kRaw: LoadFromString(type, source.raw(), "proto-" + std::to_string(type)); break;
 	case gfx::ShaderSource::kByName:
 		spdlog::get("console_log")->error("[Shader] LoadFromProto by_name not implemented");
@@ -352,10 +352,8 @@ void Shader::IncludeFromDef(const gfx::ShaderInclude& shader_inc) {
 	auto source = shader_inc.source();
 	std::string include_string;
 	switch (source.source_case()) {
-	case gfx::ShaderSource::kFile:
-		include_string = LoadAsString(FilePath::GetAssetPath("shaders") / source.file());
-		break;
-	case gfx::ShaderSource::kAbsFile: include_string = LoadAsString(FilePath(source.abs_file())); break;
+	case gfx::ShaderSource::kFile: include_string = LoadAsString(Path::GetAssetPath("shaders") / source.file()); break;
+	case gfx::ShaderSource::kAbsFile: include_string = LoadAsString(Path(source.abs_file())); break;
 	case gfx::ShaderSource::kRaw: include_string = source.raw(); break;
 	case gfx::ShaderSource::kByName: _log->error("[Shader] IncludeFromDef by_name not implemented"); break;
 	case gfx::ShaderSource::SOURCE_NOT_SET:

@@ -1,5 +1,6 @@
 #include "renderable.hpp"
 
+#include "file-factories.hpp"
 #include "resources/mesh.hpp"
 #include "shader.hpp"
 #include "vertex-buffer-object.hpp"
@@ -18,19 +19,11 @@ void Renderable::Out(proto::Component* target) {
 	this->local_orientation.Out(comp->mutable_orientation());
 }
 
-extern std::unordered_map<std::string, std::function<void(std::string)>> file_factories;
-
 void Renderable::In(const proto::Component& source) {
 	const proto::Renderable& comp = source.renderable();
 	if (comp.has_mesh_name()) {
 		this->mesh_name = comp.mesh_name();
-		if (!MeshMap::Has(this->mesh_name)) {
-			std::string ext = this->mesh_name.substr(this->mesh_name.find_last_of(".") + 1);
-			if (file_factories.find(ext) != file_factories.end()) {
-				file_factories[ext](this->mesh_name);
-			}
-		}
-		this->mesh = MeshMap::Get(this->mesh_name);
+		this->mesh = GetResource<MeshFile>(this->mesh_name);
 	}
 	if (comp.has_shader_name()) {
 		this->shader_name = comp.shader_name();

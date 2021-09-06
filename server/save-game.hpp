@@ -54,12 +54,12 @@ private:
 
 class SaveGame {
 public:
-	bool Load(const FilePath);
+	bool Load(const Path);
 	bool Load(std::string);
 	bool Reload();
-	bool Reload(const FilePath);
+	bool Reload(const Path);
 	bool Save();
-	bool Save(const FilePath);
+	bool Save(const Path);
 
 	UserList* GetUserList();
 
@@ -72,7 +72,7 @@ private:
 	void SaveWorld();
 
 	proto::SaveGame save;
-	FilePath filepath;
+	Path filepath;
 	UserList user_list;
 };
 } // namespace tec

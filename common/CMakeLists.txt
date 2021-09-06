@@ -31,7 +31,9 @@ endforeach()
 set(trillek-common_LIBRARY "tec" CACHE STRING "Name of the library with code common to both the client and the server")
 
 set(trillek-common_SOURCES
+	${trillek-common_SOURCE_DIR}/file-factories.cpp
 	${trillek-common_SOURCE_DIR}/filesystem.cpp
+	${trillek-common_SOURCE_DIR}/filesystem_platform.cpp
 	${trillek-common_SOURCE_DIR}/lua-system.cpp
 	${trillek-common_SOURCE_DIR}/net-message.cpp
 	${trillek-common_SOURCE_DIR}/physics-system.cpp
