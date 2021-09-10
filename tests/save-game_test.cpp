@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <fstream>
 #include <gtest/gtest.h>
 
@@ -24,10 +23,13 @@ protected:
 
 	void TearDown() override {
 		try {
-			//std::filesystem::remove_all(save_directory.GetNativePath());
+			Path::Listing(save_directory);
+			size_t n = Path::RemoveAll(save_directory);
+			EXPECT_EQ(n, 2);
+			Path::Listing(save_directory);
 		}
-		catch (std::filesystem::filesystem_error err) {
-			std::cout << "Failed to clean up - " << err.code() << ":" << err.what() << std::endl;
+		catch (tec::PathException& err) {
+			std::cout << "Failed to clean up:" << err.what() << std::endl;
 		}
 	}
 };

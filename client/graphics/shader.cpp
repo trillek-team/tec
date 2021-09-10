@@ -43,20 +43,20 @@ void Shader::DeleteProgram() {
 
 void Shader::LoadFromFile(const gfx::ShaderType type, const tec::Path& fname) {
 	auto _log = spdlog::get("console_log");
-	if (!fname.isValidPath()) {
-		_log->error("[Shader] Error loading shader: {} Invalid path: {}", fname.FileName(), fname.toString());
+	if (!fname) {
+		_log->error("[Shader] Load Error: Invalid path: {}", fname.toString());
 		return;
 	}
 	if (!fname.FileExists()) {
-		_log->error("[Shader] Error loading shader: {} File don't exists. Check assets folder", fname.FileName());
+		_log->error("[Shader] Load Error: File does not exist, Check assets folder: {}", fname.toString());
 		return;
 	}
-	std::ifstream fp(fname.GetNativePath(), std::ios_base::in);
-	if (!fp.is_open()) {
-		_log->error("[Shader] Error loading shader: {} File don't exists. Check open file.", fname.FileName());
+	auto fp = fname.OpenStream(); // TODO GetFileContent API?
+	if (!fp->is_open()) {
+		_log->error("[Shader] Load Error: Can not open file: {}", fname);
 		return;
 	}
-	std::string buffer(std::istreambuf_iterator<char>(fp), (std::istreambuf_iterator<char>()));
+	std::string buffer(std::istreambuf_iterator<char>(*fp), (std::istreambuf_iterator<char>()));
 	LoadFromString(type, buffer, fname.FileName());
 }
 

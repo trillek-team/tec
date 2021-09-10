@@ -29,8 +29,14 @@ constexpr std::string_view PATH_SEPARATOR = "/"; /// tec Path separator
 const std::string_view app_name("trillek");
 
 class PathException : public std::exception {
+protected:
+	std::string message;
+
 public:
-	const char* message;
+	PathException() : message{"PathException"} {}
+	PathException(const char* msg) : message{"PathException: "} { message.append(msg); }
+	PathException(const std::string& msg) : message{"PathException: "} { message.append(msg); }
+	virtual const char* what() const noexcept override { return message.c_str(); }
 };
 
 enum PATH_OPEN_FLAGS {
@@ -45,31 +51,32 @@ class Path final {
 public:
 #if defined(WIN32)
 	constexpr static char PATH_NATIVE_CHAR = '\\'; /// OS File system path separator
-	typedef std::wstring NFilePath; /// Native string format for paths
+	typedef std::wstring NativePath; /// Native string format for paths
 #else
 	constexpr static char PATH_NATIVE_CHAR = '/'; /// OS File system path separator
-	typedef std::string NFilePath; /// Native string format for paths
+	typedef std::string NativePath; /// Native string format for paths
 #endif
-	constexpr static char PATH_CHAR = '/'; /// tec Path separator
+	constexpr static char PATH_CHAR = '/'; /// The tec Path separator
 
+	/**
+	* \brief a value indicating "far as possible"
+	*/
 	static const std::size_t npos = std::string::npos;
 
 	/**
-	* \brief Builds a empty path
+	* \brief Builds an empty Path
 	*/
 	explicit Path();
 
 	/**
-	* \brief Builds a path from a string_view or substring there of
+	* \brief Builds a Path from a string_view or substring there of
 	*
 	* \param other A string_view with a path
-	* \param pos Begin of the range to get a slice (default = 0)
-	* \param count How many bytes to grab from other (default = size of other)
 	*/
 	explicit Path(const std::string_view& other);
 
 	/**
-	* \brief Builds a path from a string or substring
+	* \brief Builds a Path from a string or substring
 	*
 	* \param other A string with a path
 	* \param pos Begin of the range to get a slice (default = 0)
@@ -79,6 +86,9 @@ public:
 
 	explicit Path(std::string&& other);
 
+	/**
+	* \brief This template builds a Path from a string literal
+	*/
 	template <size_t N> Path(const char (&other)[N]) : Path(std::string_view(other)) {}
 
 	/**
@@ -91,100 +101,131 @@ public:
 	/**
 	* \brief Returns the path to the User settings folder
 	*
-	* Usually this paths are :
-	* *nix : /home/USER/.config/APPNAME/
-	* OSX  : /Users/USER/Library/Application Support/APPNAME/
-	* WIN  : C:\Users\USER\AppData\Roaming\APPNAME\
+	* Usually these paths are:
+	* - *nix : `/home/$USER/.config/APPNAME/`
+	* - OSX  : `/Users/$USER/Library/Application Support/APPNAME/`
+	* - WIN  : `%APPDATA%\APPNAME\` i.e. `C:\Users\%USERNAME%\AppData\Roaming\trillek\`
 	*
-	* \return string with the full path. Empty string if fails
+	* on *nix platforms, XDG_CONFIG_HOME will be respected if set.
+	* \return The full Path. Empty/invalid if it fails
 	*/
 	static Path GetUserSettingsPath();
 
 	/**
 	* \brief Returns the path to the User persistent data folder (for save files, for example)
 	*
-	* Usually this paths are :
-	* *nix : /home/USER/.local/share/APPNAME/
-	* OSX  : /Users/USER/Library/Application Support/APPNAME/data/
-	* WIN  : C:\Users\USER\AppData\Roaming\APPNAME\data\
+	* Usually these paths are:
+	* - *nix: `/home/$USER/.local/share/APPNAME/`
+	* - OS X: `/Users/$USER/Library/Application Support/APPNAME/data/`
+	* - WIN : `%APPDATA%\APPNAME\` i.e. `C:\Users\%USERNAME%\AppData\Roaming\trillek\data\`
 	*
-	* \return string with the full path. Empty string if fails
+	* on *nix platforms, XDG_DATA_HOME will be respected if set.
+	* \return The full Path. Empty/invalid if it fails
 	*/
 	static Path GetUserDataPath();
 
 	/**
 	* \brief Returns the path to the User cache folder
 	*
-	* Usually this paths are :
-	* *nix : /home/USER/.cache/APPNAME/
-	* OSX  : /Users/USER/Library/Application Support/APPNAME/cache/
-	* WIN  : C:\Users\USER\AppData\Local\APPNAME\
+	* Usually these paths are:
+	* - *nix: `/home/$USER/.cache/APPNAME/`
+	* - OS X: `/Users/$USER/Library/Application Support/APPNAME/cache/`
+	* - WIN : `%LOCALAPPDATA%\APPNAME\` i.e. `C:\Users\%USERNAME%\AppData\Local\trillek\`
 	*
-	* \return string with the full path. Empty string if fails
+	* on *nix platforms, XDG_CACHE_HOME will be respected if set.
+	* \return The full Path. Empty/invalid if it fails
 	*/
 	static Path GetUserCachePath();
 
 	/**
 	* \brief Check if a directory exists
 	*
-	* \return True if the directory exists
+	* \return true if the directory exists
 	*/
 	bool DirExists() const;
 
 	/**
 	* \brief Check if a file exists
 	*
-	* \return True if the directory exists
+	* \return true if the file exists and is accessible
 	*/
 	bool FileExists() const;
 
 	/**
-	* \brief Try to create a directory route
+	* \brief Try to create a directory
 	*
-	* \return True if success or the dir exists
+	* \return true if success or the dir exists
 	*/
 	static bool MkDir(const Path& path);
 
 	/**
-	* \brief Try to create a full path
+	* \brief Try to create the directory chain of a full path
 	*
-	* \param path Absolute path
+	* \param path Absolute Path
 	* \return True if success.
 	*/
 	static bool MkPath(const Path& path);
 
+	// show a debug file listing
+	static void Listing(const Path& path);
+
 	/**
-	* \brief Extract a filename from a path
+	* \brief Remove the file or directory at the given Path
+	* \param path The Path to delete, if it's a directory, it must be empty.
+	* This method will throw a tec::PathException if the file does not exist,
+	* if the path is a non-empty directory, or if access otherwise prevents removing the file
+	*/
+
+	static void Remove(const Path& path);
+	/**
+	* \brief Remove everything at the given Path
+	* \param path The Path to delete, this may be a file or directory.
+	* \return the number of items deleted
+	* This method will throw a tec::PathException if the path does not exist,
+	* or if permissions otherwise prevent removing any file.
+	*
+	* This function attempts to verify that it can delete all files before actually doing so,
+	* If any file fails the initial access checks, then no files or directories will be removed.
+	* This method will also not permit deleting certain kinds of special files.
+	*
+	* Note: do not depend on the access check.
+	* A set of files can pass the initial access check, but still fail to delete,
+	* in which case RemoveAll will throw an exception and an unspecified number of files could be removed.
+	*/
+	static size_t RemoveAll(const Path& path);
+
+	/**
+	* \brief Extract the filename from a Path
 	*
 	* \return Empty string if is an invalid path for a file
 	*/
 	std::string FileName() const;
 
 	/**
-	* \brief Extract a filename without the extension from a path to a file
+	* \brief Extract a filename without the extension from a Path to a file
 	*
 	* \return Empty string if is an invalid path for a file
 	*/
 	std::string FileStem() const;
 
 	/**
-	* \brief Extract a extension from a path to a file
+	* \brief Extract an extension from a Path to a file
 	*
-	* \return Empty string if isn't a file or not have extension
+	* \return Empty string if isn't a file or does not have an extension
 	*/
 	std::string FileExtension() const;
 
 	/**
 	* \brief Return base path of a full path
 	*
-	* If is a path of a file, returns the path to the dir that contains the file
-	* If is a path of a directory, returns the path to the dir that contains the directory (like cd .. && pwd)
-	* \return Empty string if is an invalid path. Returned path would have the final slash
+	* - If this is a path to a file, returns a Path to the directory that contains the file.
+	* - If this is a path to a directory, returns a Path to the containing directory (similar to `cd .. && pwd`)
+	* \return Containing Path or Empty if it was an invalid Path. Returned path will have a final slash
 	*/
 	Path BasePath() const;
 
 	/**
-	* \brief Is an absolute or relative path ?
+	* \brief Is this an absolute or relative Path?
 	*/
 	bool isAbsolutePath() const;
 
@@ -206,7 +247,7 @@ public:
 	* \brief Return a subpath
 	*
 	* \param needle path element to search
-	* \param include Includes the needle element on the output ?
+	* \param include true to include the needle element in the result
 	*
 	* \code
 	* Path f("./assets/foo/bar/mesh.obj");
@@ -219,100 +260,109 @@ public:
 	/**
 	* \brief Try to obtain the full path to the program binary file
 	*
-	* \return string with the full path. Empty string if fails
+	* \return Absolute Path to the current executable. Empty if this fails.
 	*/
 	static Path GetProgramPath();
 
 	/**
-	* \brief Normalize path to the OS format
+	* \brief Normalize this Path to the internal format
 	*
-	* - Convert slashes to the correct OS slash
-	* - Remove drive unit if is a *NIX OS
-	* \return normalized path
+	* - Converts separators to the generic format: `/`.
+	* - Removes duplicate separators.
+	* - Compacts all relative elements. i.e. `./thing` -> `thing`
+	* - Removes trailing dots: `thing...` -> `thing`. This is for compatibility with Windows APIs
+	* - Compacts upreferences, respecting the root. i.e. `/up/../../foo` -> `/foo`
 	*/
 	void NormalizePath();
 
 	/**
-	* \brief Check if the path is a valid absolute o relative path
-	*/
-	bool isValidPath() const;
-
-	/**
-	* \brief Open this path as a C-style stream for C functions
-	* \param open_mode what access is required, default is readonly access to existing files
+	* \brief Open the file at this path as a C-style stream for C functions
+	* \param open_mode what access is required, default is readonly access to existing files.
+	* Will throw a PathException if the file does not exist, or if the open_mode is invalid.
+	* \return a std::unique_ptr wrapped FILE pointer with a deleter for RAII.
 	*/
 	std::unique_ptr<FILE> OpenFile(PATH_OPEN_FLAGS open_mode = FS_DEFAULT) const;
 
 	/**
-	* \brief Open this path as an iostream
-	* \param open_mode what access is required, default is readonly access to existing files
+	* \brief Open the file at this Path as a std::fstream
+	* \param open_mode what access is required, default is readonly access to existing files.
+	* Will throw a PathException if the file does not exist, or if the open_mode is invalid.
+	* \return a pointer to a std::fstream.
 	*/
 	std::unique_ptr<std::fstream> OpenStream(PATH_OPEN_FLAGS open_mode = FS_DEFAULT) const;
 
 	/**
-	* \brief Returns a path on the native OS encoding
+	* \brief Returns a stringified path using the native OS encoding and representation.
 	*
-	* - Normalize path
 	* - return wstring using \ on Windows
 	* - return string using / on *NIX
+	* - throws PathException if this is a virtual path that can not be mapped to a native path.
 	* \return native string of the path
 	*/
-	Path::NFilePath GetNativePath() const;
+	Path::NativePath GetNativePath() const;
 
 	/**
 	* \brief Attempts locate the assets directory
-	* This function will try to search for the first valid directory path, probing with this paths:
+	* This function will try to search for the first valid directory, probing in this order:
 	* - ./assets/
 	* - EXE_PATH/assets/
 	* - EXE_PATH/../assets/
 	* - EXE_PATH/../share/assets/
-	* Were EXE_PATH is the value as returned by GetProgramPath()
-	* The first valid path is saved, and can then be read with GetAssetsBasePath()
+	*
+	* Were EXE_PATH is the value as returned by GetProgramPath().
+	* The first valid path is cached, and can then be later read with GetAssetsBasePath().
 	*/
 	static void LocateAssets();
 
 	/**
-	* \brief Return the base directory where to search for assets
+	* \brief Return the absolute Path to the assets directory
 	*
-	* If isn't set, then it will first call LocateAssets()
+	* - If this wasn't set, then it will first internally call LocateAssets()
+	* - If you intend to load an asset, use GetAssetPath() instead.
 	*/
 	static Path GetAssetsBasePath();
 
 	/**
-	* \brief returns the full path to an asset
+	* \brief returns an absolute Path to an asset, using the virtual assets root.
 	*
-	* \param asset Relative path to asset base folder that identify a asset file (for example "shaders/foo.vert")
+	* \param asset Relative Path to an asset file (for example "shaders/foo.vert")
 	*/
 	static Path GetAssetPath(const Path& asset);
 
 	/**
-	* \brief returns the full path to an asset
+	* \brief returns an absolute Path to an asset, using the virtual assets root.
 	*
-	* \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
+	* \param asset Path-like std::string that identifies an asset file (for example "shaders/foo.vert")
 	*/
 	static Path GetAssetPath(const std::string& asset);
 
 	/**
-	* \brief returns the full path to an asset
+	* \brief returns an absolute Path to an asset, using the virtual assets root.
 	*
-	* \param asset String path-like that identify a asset file (for example "shaders/foo.vert")
+	* \param asset Path-like c-string that identifies an asset file (for example "shaders/foo.vert")
 	*/
 	static Path GetAssetPath(const char* asset);
 
 	/**
-	* \brief Sets the base directory where search the assets
+	* \brief Sets the directory root in which to search for assets
+	* Calling this function while (or after) any assets are loading may have undesired results.
 	*/
 	static void SetAssetsBasePath(Path);
 
 	/**
-	* \brief Returns the string representation of a path
+	* \brief Returns the string representation of this Path
 	*/
 	std::string toString() const { return device + path; }
 
 	/**
-	* \brief Return if this Path is empty
+	* \return true if this Path is empty
 	*/
 	bool empty() const { return device.empty() && path.empty(); }
+
+	/**
+	* \return true if this Path is valid.
+	*/
+	operator bool() const { return !path.empty() && !(!device.empty() && device.back() == '*'); }
 
 	Path& operator=(const Path& rhs) {
 		this->device = rhs.device;
@@ -321,13 +371,15 @@ public:
 	}
 
 	Path& operator=(const std::string& str) {
+		device.clear();
 		path = str;
 		SetDevice();
 		NormalizePath();
 		return *this;
 	}
 
-	Path& operator=(const std::string&& str) {
+	Path& operator=(std::string&& str) {
+		device.clear();
 		path = std::move(str);
 		SetDevice();
 		NormalizePath();
@@ -335,6 +387,7 @@ public:
 	}
 
 	Path& operator=(const std::wstring& wstr) {
+		device.clear();
 		path = utf8_encode(wstr);
 		SetDevice();
 		NormalizePath();
@@ -342,18 +395,14 @@ public:
 	}
 
 	Path& operator=(const std::string_view& strv) {
+		device.clear();
 		path.assign(strv);
 		SetDevice();
 		NormalizePath();
 		return *this;
 	}
 
-	Path& operator=(const char* cstr) {
-		path.assign(cstr);
-		SetDevice();
-		NormalizePath();
-		return *this;
-	}
+	template <size_t N> Path& operator=(const char (&stra)[N]) { return (*this = std::string_view(stra)); }
 
 	/**
 	* \brief Append a subdirectory or file
@@ -370,7 +419,8 @@ public:
 		}
 		else {
 			if (!rhs.device.empty()) {
-				throw PathException();
+				// appending an invalid path or a path with a device is almost certainly bad
+				throw PathException("Append invalid");
 			}
 			if (path.back() != PATH_CHAR && (rhs.empty() || rhs.path.front() != PATH_CHAR)) {
 				this->path.append(PATH_SEPARATOR).append(rhs.path);
@@ -416,18 +466,41 @@ public:
 	}
 
 private:
+	/**
+	* \brief Stores the root device name.
+	* - Root devices are used to map files within the engine's virtual file system.
+	* - On Windows platforms, this will be where the drive letter is stored for native paths.
+	* - on *nix and OS X, the root device must always be unset for native paths.
+	*/
 	std::string device;
 	std::string path; /// Stores path as an UTF8 string
+	/**
+	* \brief Remove and save the device name from the path string if one exists.
+	* - A path with a root device will always be considered absolute, and made to start with a `/`
+	*/
 	void SetDevice();
+	/**
+	* \brief Internally build a Path from a device and path string.
+	*/
 	Path(const std::string& _device, const std::string& _path) : device{_device}, path{_path} {}
 
+	/**
+	* \brief Get the current working directory for this process
+	*/
+	static Path GetWorkingDir();
+
+	/**
+	* \brief Verify if we should be able to remove all items at a Path, without actually removing them
+	*/
+	static void CheckRemoveAll(const Path& path);
+	static size_t RemoveAll_Internal(const Path& path);
+
 	// Cached paths
-	static std::string settings_folder;
-	static std::string udata_folder;
-	static std::string cache_folder;
-
-	static std::string assets_base;
-
+	static Path settings_folder;
+	static Path udata_folder;
+	static Path cache_folder;
+	static Path assets_base;
+	static const Path invalid_path;
 }; // End of FileSystem
 
 /**

@@ -36,7 +36,7 @@ bool SaveFromString(const Path& fname, std::string contents) {
 // Loads a given entity json file
 bool LoadProtoPack(const Path& fname, proto::Entity& entity) {
 	auto _log = spdlog::get("console_log");
-	if (!fname.isValidPath() || !fname.FileExists()) {
+	if (!fname || !fname.FileExists()) {
 		_log->error("bad path or missing protopack file: {}", fname.toString());
 		return false;
 	}
@@ -61,7 +61,7 @@ void ProtoLoadEntity(const Path& fname) {
 void ProtoLoad(std::string filename) {
 	auto _log = spdlog::get("console_log");
 	Path fname = Path::GetAssetPath(filename);
-	if (!fname.isValidPath() || !fname.FileExists()) {
+	if (!fname || !fname.FileExists()) {
 		_log->error("[ProtoLoad] Bad path or missing file: {}\n", fname.FileName());
 		return;
 	}

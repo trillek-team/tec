@@ -17,7 +17,7 @@ std::shared_ptr<ScriptFile> ScriptFile::Create(const Path& fname) {
 
 bool ScriptFile::Load(const Path& _filename) {
 	auto _log = spdlog::get("console_log");
-	if (!_filename.isValidPath() || !_filename.FileExists()) {
+	if (!_filename || !_filename.FileExists()) {
 		_log->warn("[Script] Error loading scriptfile {}. Invalid path.", _filename.FileName());
 		return false;
 	}
