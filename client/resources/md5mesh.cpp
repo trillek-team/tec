@@ -116,7 +116,7 @@ MD5Mesh::Weight ParsesWeight(std::stringstream& ss) {
 std::shared_ptr<MD5Mesh> MD5Mesh::Create(const Path& fname) {
 	auto mesh = std::make_shared<MD5Mesh>();
 	mesh->SetFileName(fname);
-	mesh->SetName(fname.Subpath(1).toString());
+	mesh->SetName(fname.Relative().toString());
 
 	if (mesh->Parse()) {
 		mesh->CalculateVertexPositions();
@@ -125,7 +125,7 @@ std::shared_ptr<MD5Mesh> MD5Mesh::Create(const Path& fname) {
 		MeshMap::Set(mesh->GetName(), mesh);
 		return mesh;
 	}
-	spdlog::get("console_log")->warn("[MD5Mesh] Error parsing file {}", fname.toString());
+	spdlog::get("console_log")->warn("[MD5Mesh] Error parsing file {}", fname);
 
 	return nullptr;
 }
@@ -133,7 +133,7 @@ std::shared_ptr<MD5Mesh> MD5Mesh::Create(const Path& fname) {
 bool MD5Mesh::Parse() {
 	auto _log = spdlog::get("console_log");
 	if (!this->path || !this->path.FileExists()) {
-		_log->error("[MD5Mesh] Can't open the file {}. Invalid path or missing file.", path.toString());
+		_log->error("[MD5Mesh] Can't open the file {}. Invalid path or missing file.", path);
 		// Can't open the file!
 		return false;
 	}
@@ -141,10 +141,10 @@ bool MD5Mesh::Parse() {
 
 	auto f = this->path.OpenStream();
 	if (!f->is_open()) {
-		_log->error("[MD5Mesh] Error opening file {}", path.toString());
+		_log->error("[MD5Mesh] Error opening file {}", path);
 		return false;
 	}
-	_log->debug("[MD5Mesh] Parsing file {}", path.toString());
+	_log->debug("[MD5Mesh] Parsing file {}", path);
 
 	std::string line;
 	while (std::getline(*f, line)) {
@@ -204,7 +204,7 @@ bool MD5Mesh::Parse() {
 				else if (identifier == "shader") {
 					ss >> mesh.shader;
 					auto filename = base_path / mesh.shader;
-					_log->debug("[MD5Mesh] shader=\"{}\", file=\"{}\"", mesh.shader, filename.toString());
+					_log->debug("[MD5Mesh] shader=\"{}\", file=\"{}\"", mesh.shader, filename);
 					if (!TextureMap::Has(mesh.shader)) {
 						auto pixbuf = PixelBuffer::Create(mesh.shader, filename, true);
 						auto tex = std::make_shared<TextureObject>(pixbuf);
@@ -363,11 +363,7 @@ void MD5Mesh::UpdateIndexList() {
 			this->meshes[i]->object_groups.push_back(new ObjectGroup());
 		}
 		ObjectGroup* objgroup = this->meshes[i]->object_groups[0];
-		std::string material_name = int_mesh.shader;
-		size_t slash = material_name.find_last_of("/");
-		slash = (slash == std::string::npos) ? 0 : (slash + 1); // skip past any slash
-		size_t dot = material_name.find_last_of(".");
-		material_name = material_name.substr(slash, dot - slash) + "_material";
+		std::string material_name = Path(int_mesh.shader).FileStem() + "_material";
 		spdlog::get("console_log")->debug("[MD5-Mat] name: '{}'", material_name);
 		if (objgroup->indices.size() < int_mesh.tris.size()) {
 			objgroup->indices.reserve(int_mesh.tris.size() * 3);

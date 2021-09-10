@@ -47,13 +47,12 @@ LuaSystem::LuaSystem() {
 	this->lua.add_package_loader(
 			[this](sol::string_view package_name) -> sol::protected_function {
 				spdlog::get("console_log")->debug("request to load Lua package \"{}\"", package_name);
-				static Path scripts_base = Path::GetAssetPath("scripts");
 				std::string package_path(package_name.data(), package_name.size());
 				if (package_path.find_first_of('.') == std::string::npos) {
 					package_path.append(".lua");
 				}
 				// for now, we are going to look for a single lua file with by the same name as the package
-				Path package_script_path = scripts_base / package_path;
+				Path package_script_path = Path::scripts / package_path;
 				std::string source;
 				if (!package_script_path.FileExists()) {
 					return sol::nil;

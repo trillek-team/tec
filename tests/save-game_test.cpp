@@ -5,7 +5,7 @@
 
 using namespace tec;
 
-const Path save_directory = Path::GetAssetPath("save_test_123456");
+const Path save_directory = Path("assets:/save_test_123456");
 const Path save_file_path = save_directory / "save.json";
 const std::string
 		contents("{\"users\":[{\"id\":\"user-1\",\"username\":\"John\"}], \"world\":{\"entityFileList\":[]}}");
@@ -15,10 +15,10 @@ class SaveGameTest : public ::testing::Test {
 protected:
 	void SetUp() override {
 		ASSERT_TRUE(Path::MkDir(save_directory)) << "save_directory: " << save_directory.toString();
-		std::fstream output(save_file_path.GetNativePath(), std::ios::out);
-		ASSERT_TRUE(output.good());
-		output.write(contents.c_str(), contents.length());
-		output.close();
+		auto output = save_file_path.OpenStream(tec::FS_READWRITE | tec::FS_CREATE);
+		ASSERT_TRUE(output->good());
+		output->write(contents.data(), contents.length());
+		output->close();
 	}
 
 	void TearDown() override {

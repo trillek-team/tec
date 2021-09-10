@@ -6,6 +6,7 @@
 #include "string.hpp"
 
 #include <algorithm>
+#include <fmt/core.h>
 #include <fstream>
 #include <memory>
 #include <ostream>
@@ -39,13 +40,15 @@ public:
 	virtual const char* what() const noexcept override { return message.c_str(); }
 };
 
-enum PATH_OPEN_FLAGS {
+enum PATH_OPEN_FLAGS : int {
 	FS_DEFAULT = 0,
 	FS_READONLY = 0,
 	FS_READWRITE = 1,
 	FS_CREATE = 2, // files are normally not created
 	FS_APPEND = 4, // append to the end of the file
 };
+inline PATH_OPEN_FLAGS operator|(PATH_OPEN_FLAGS a, PATH_OPEN_FLAGS b) { return (PATH_OPEN_FLAGS)((int)a | (int)b); }
+inline PATH_OPEN_FLAGS operator+(PATH_OPEN_FLAGS a, PATH_OPEN_FLAGS b) { return (PATH_OPEN_FLAGS)((int)a | (int)b); }
 
 class Path final {
 public:
@@ -62,6 +65,10 @@ public:
 	* \brief a value indicating "far as possible"
 	*/
 	static const std::size_t npos = std::string::npos;
+
+	static const Path assets; /// The `assets:/` pseudo root
+	static const Path scripts; /// `assets:/scripts/` where to find scripts
+	static const Path shaders; /// `assets:/shaders/` where to find shaders
 
 	/**
 	* \brief Builds an empty Path
@@ -230,6 +237,13 @@ public:
 	bool isAbsolutePath() const;
 
 	/**
+	* \brief Get the relative part of an absolute path
+	* \return a relative path
+	* - If this path is already relative, this has no effect.
+	*/
+	Path Relative() const;
+
+	/**
 	* \brief Return a subpath
 	*
 	* \param begin First element (each element is separated by a path separator)
@@ -265,17 +279,6 @@ public:
 	static Path GetProgramPath();
 
 	/**
-	* \brief Normalize this Path to the internal format
-	*
-	* - Converts separators to the generic format: `/`.
-	* - Removes duplicate separators.
-	* - Compacts all relative elements. i.e. `./thing` -> `thing`
-	* - Removes trailing dots: `thing...` -> `thing`. This is for compatibility with Windows APIs
-	* - Compacts upreferences, respecting the root. i.e. `/up/../../foo` -> `/foo`
-	*/
-	void NormalizePath();
-
-	/**
 	* \brief Open the file at this path as a C-style stream for C functions
 	* \param open_mode what access is required, default is readonly access to existing files.
 	* Will throw a PathException if the file does not exist, or if the open_mode is invalid.
@@ -290,16 +293,6 @@ public:
 	* \return a pointer to a std::fstream.
 	*/
 	std::unique_ptr<std::fstream> OpenStream(PATH_OPEN_FLAGS open_mode = FS_DEFAULT) const;
-
-	/**
-	* \brief Returns a stringified path using the native OS encoding and representation.
-	*
-	* - return wstring using \ on Windows
-	* - return string using / on *NIX
-	* - throws PathException if this is a virtual path that can not be mapped to a native path.
-	* \return native string of the path
-	*/
-	Path::NativePath GetNativePath() const;
 
 	/**
 	* \brief Attempts locate the assets directory
@@ -318,30 +311,9 @@ public:
 	* \brief Return the absolute Path to the assets directory
 	*
 	* - If this wasn't set, then it will first internally call LocateAssets()
-	* - If you intend to load an asset, use GetAssetPath() instead.
+	* - If you intend to load an asset, use `Path::assets / foo` or `Path("assets:/foo.bar")`
 	*/
 	static Path GetAssetsBasePath();
-
-	/**
-	* \brief returns an absolute Path to an asset, using the virtual assets root.
-	*
-	* \param asset Relative Path to an asset file (for example "shaders/foo.vert")
-	*/
-	static Path GetAssetPath(const Path& asset);
-
-	/**
-	* \brief returns an absolute Path to an asset, using the virtual assets root.
-	*
-	* \param asset Path-like std::string that identifies an asset file (for example "shaders/foo.vert")
-	*/
-	static Path GetAssetPath(const std::string& asset);
-
-	/**
-	* \brief returns an absolute Path to an asset, using the virtual assets root.
-	*
-	* \param asset Path-like c-string that identifies an asset file (for example "shaders/foo.vert")
-	*/
-	static Path GetAssetPath(const char* asset);
 
 	/**
 	* \brief Sets the directory root in which to search for assets
@@ -474,15 +446,38 @@ private:
 	*/
 	std::string device;
 	std::string path; /// Stores path as an UTF8 string
+
+	/**
+	* \brief Internally build a Path from a device and path string.
+	*/
+	Path(const std::string& _device, const std::string& _path) : device{_device}, path{_path} {}
+
 	/**
 	* \brief Remove and save the device name from the path string if one exists.
 	* - A path with a root device will always be considered absolute, and made to start with a `/`
 	*/
 	void SetDevice();
+
 	/**
-	* \brief Internally build a Path from a device and path string.
+	* \brief Normalize this Path to the internal format
+	*
+	* - Converts separators to the generic format: `/`.
+	* - Removes duplicate separators.
+	* - Compacts all relative elements. i.e. `./thing` -> `thing`
+	* - Removes trailing dots: `thing...` -> `thing`. This is for compatibility with Windows APIs
+	* - Compacts upreferences, respecting the root. i.e. `/up/../../foo` -> `/foo`
 	*/
-	Path(const std::string& _device, const std::string& _path) : device{_device}, path{_path} {}
+	void NormalizePath();
+
+	/**
+	* \brief Returns a stringified path using the native OS encoding and representation.
+	*
+	* - return wstring using \ on Windows
+	* - return string using / on *NIX
+	* - throws PathException if this is a virtual path that can not be mapped to a native path.
+	* \return native string of the path
+	*/
+	Path::NativePath GetNativePath() const;
 
 	/**
 	* \brief Get the current working directory for this process
@@ -550,4 +545,63 @@ std::basic_istream<charT, traits>& operator>>(std::basic_istream<charT, traits>&
 	is >> tmp;
 	path = Path(tmp);
 }
+
 } // namespace tec
+
+/**
+* \brief fmtcore formatter for Paths for use with spdlog (or similar)
+* Examples
+* \code
+* Path p{"/root/foo.bar"};
+* log->info("-> {}", p);    // -> /root/foo.bar
+* log->info("-> {:f}", p);  // -> foo.bar
+* log->info("-> {:fx}", p); // -> foo
+* log->info("-> {:x}", p);  // -> bar
+* log->info("-> {:r}", p);  // -> root/foo.bar
+* log->info("-> {:qr}", p); // -> "root/foo.bar"
+* \endcode
+*/
+template <> struct fmt::formatter<tec::Path> {
+	bool filename = false;
+	bool fileex = false;
+	bool relative = false;
+	bool quote = false;
+	constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
+		auto it = ctx.begin(), end = ctx.end();
+		if (it != end && *it != '}') {
+			switch (*it) {
+			case 'f': filename = true; return ++it;
+			case 'x': fileex = true; return ++it;
+			case 'r': relative = true; return ++it;
+			case 'q': quote = true; return ++it;
+			default: static_assert("invalid Path format");
+			}
+		}
+		return it;
+	}
+	template <typename FormatContext> auto format(const tec::Path& p, FormatContext& ctx) -> decltype(ctx.out()) {
+		auto what = p;
+		if (relative) {
+			what = p.Relative();
+		}
+		std::string s;
+		if (filename) {
+			if (fileex) {
+				s = what.FileStem();
+			}
+			else {
+				s = what.FileName();
+			}
+		}
+		else if (fileex) {
+			s = what.FileExtension();
+		}
+		else {
+			s = what.toString();
+		}
+		if (quote) {
+			return format_to(ctx.out(), "\"{}\"", s);
+		}
+		return format_to(ctx.out(), "{}", s);
+	}
+};

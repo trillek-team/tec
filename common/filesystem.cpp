@@ -28,6 +28,10 @@ Path Path::cache_folder;
 Path Path::assets_base;
 const Path Path::invalid_path("*");
 
+const Path Path::assets{"assets:", "/"};
+const Path Path::scripts{"assets:", "/scripts/"};
+const Path Path::shaders{"assets:", "/shaders/"};
+
 Path::Path() : device{}, path{} {}
 
 Path::Path(const std::string& other, std::size_t pos, std::size_t count) : path(other, pos, count) {
@@ -139,6 +143,13 @@ bool Path::isAbsolutePath() const {
 		return false;
 	}
 	return path[0] == PATH_CHAR;
+}
+
+Path Path::Relative() const {
+	if (this->isAbsolutePath()) {
+		return Path("", path.substr(1));
+	}
+	return *this;
 }
 
 Path Path::Subpath(size_t begin, size_t end) const {
@@ -351,7 +362,7 @@ std::unique_ptr<std::fstream> Path::OpenStream(PATH_OPEN_FLAGS open_mode) const 
 		if (!(open_mode & FS_CREATE) && !this->FileExists()) {
 			throw PathException("File does not exist, FS_CREATE not specified");
 		}
-		mode |= std::ios_base::out;
+		mode = std::ios_base::out;
 		if (open_mode & FS_APPEND) {
 			mode |= std::ios_base::app | std::ios_base::ate;
 		}
@@ -372,28 +383,28 @@ void Path::LocateAssets() {
 	Path search = Path::GetWorkingDir();
 	search /= "assets/";
 	if (search.DirExists()) {
-		Path::assets_base = search.toString();
+		Path::assets_base = search;
 		return;
 	}
 	Path program = Path::GetProgramPath().BasePath();
 	search = program / "assets/";
 	if (search.DirExists()) {
-		Path::assets_base = search.toString();
+		Path::assets_base = search;
 		return;
 	}
 	search = program.BasePath() / "share/assets/";
 	if (search.DirExists()) {
-		Path::assets_base = search.toString();
+		Path::assets_base = search;
 		return;
 	}
 	search = program.BasePath() / "share" / app_name / "assets/";
 	if (search.DirExists()) {
-		Path::assets_base = search.toString();
+		Path::assets_base = search;
 		return;
 	}
 	search = program.BasePath().BasePath() / "assets/";
 	if (search.DirExists()) {
-		Path::assets_base = search.toString();
+		Path::assets_base = search;
 		return;
 	}
 }
@@ -409,24 +420,6 @@ Path Path::GetAssetsBasePath() {
 	return Path(Path::assets_base);
 }
 
-void Path::SetAssetsBasePath(Path new_base) { Path::assets_base = new_base.toString(); }
-
-Path Path::GetAssetPath(const Path& asset) {
-	auto tmp = Path("assets:/");
-	tmp /= asset;
-	return tmp;
-}
-
-Path Path::GetAssetPath(const std::string& asset) {
-	auto tmp = Path("assets:/");
-	tmp /= asset;
-	return tmp;
-}
-
-Path Path::GetAssetPath(const char* asset) {
-	auto tmp = Path("assets:/");
-	tmp /= asset;
-	return tmp;
-}
+void Path::SetAssetsBasePath(Path new_base) { Path::assets_base = new_base; }
 
 } // namespace tec

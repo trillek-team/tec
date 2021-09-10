@@ -29,7 +29,7 @@ template <typename T> void AddFileFactory() {
 			T::Create(path);
 		}
 		else {
-			T::Create(Path::GetAssetPath(fname));
+			T::Create(Path::assets / fname);
 		}
 	};
 }

@@ -42,7 +42,7 @@
 namespace tec {
 class VorbisStream {
 public:
-	VorbisStream(int buffer_size = 32768);
+	VorbisStream(unsigned buffer_size = 32768);
 	~VorbisStream();
 
 	std::size_t BufferStream(ALint buffer);
@@ -66,7 +66,7 @@ private:
 	stb_vorbis* stream{nullptr};
 	stb_vorbis_info info{};
 	ALenum format{};
-	int buffer_size{0};
+	unsigned buffer_size{0};
 	std::size_t totalSamplesLeft{0};
 	ALshort* sbuffer{nullptr};
 };

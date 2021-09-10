@@ -69,7 +69,7 @@ bool SaveGame::Save() { return this->Save(this->filepath); }
 bool SaveGame::Save(const Path _filepath) {
 	auto _log = spdlog::get("console_log");
 	if (!_filepath || !_filepath.FileExists()) {
-		_log->error("File does not exist or path is invalid: {}", _filepath.toString());
+		_log->error("File does not exist or path is invalid: {}", _filepath);
 		return false;
 	}
 	this->filepath = _filepath;
@@ -89,7 +89,7 @@ bool SaveGame::Save(const Path _filepath) {
 		return SaveFromString(_filepath, json_string);
 	}
 	catch (std::runtime_error& err) {
-		_log->error("Failed to save to file: {}", _filepath.FileName());
+		_log->error("Failed to save to file: {:f}", _filepath);
 		return false;
 	}
 }
@@ -118,7 +118,7 @@ void SaveGame::LoadWorld() {
 	auto _log = spdlog::get("console_log");
 	auto world = this->save.world();
 	for (int i = 0; i < world.entity_file_list_size(); i++) {
-		Path entity_filename = Path::GetAssetPath(world.entity_file_list(i));
+		Path entity_filename = Path::assets / world.entity_file_list(i);
 		if (entity_filename && entity_filename.FileExists()) {
 			std::string json_string = LoadAsString(entity_filename);
 			proto::Entity entity;
@@ -127,11 +127,11 @@ void SaveGame::LoadWorld() {
 				EventSystem<EntityCreated>::Get()->Emit(std::make_shared<EntityCreated>(EntityCreated{entity}));
 			}
 			else {
-				_log->error("Failed to parse entity data from file: {}", entity_filename.toString());
+				_log->error("Failed to parse entity data from file: {}", entity_filename);
 			}
 		}
 		else {
-			_log->error("File does not exist or path is invalid: {}", entity_filename.toString());
+			_log->error("File does not exist or path is invalid: {}", entity_filename);
 		}
 	}
 }

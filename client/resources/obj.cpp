@@ -24,7 +24,7 @@ extern std::string CleanString(std::string str);
 bool OBJ::ParseMTL(const Path& fname) {
 	auto _log = spdlog::get("console_log");
 	if (!fname || !fname.FileExists()) {
-		_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", fname.toString());
+		_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", fname);
 		// Can't open the file!
 		return false;
 	}
@@ -32,7 +32,7 @@ bool OBJ::ParseMTL(const Path& fname) {
 
 	auto f = fname.OpenStream();
 	if (!f->is_open()) {
-		_log->error("[OBJ] Error opening file {}", fname.toString());
+		_log->error("[OBJ] Error opening file {}", fname);
 		return false;
 	}
 
@@ -130,7 +130,7 @@ std::shared_ptr<OBJ> OBJ::Create(const Path& fname) {
 	auto obj = std::make_shared<OBJ>();
 	obj->SetFileName(fname);
 
-	obj->SetName(fname.Subpath(1).toString());
+	obj->SetName(fname.Relative().toString());
 
 	if (obj->Parse()) {
 		obj->PopulateMeshGroups();
@@ -140,14 +140,14 @@ std::shared_ptr<OBJ> OBJ::Create(const Path& fname) {
 		return obj;
 	}
 
-	spdlog::get("console_log")->warn("[OBJ] Error parsing file {}", fname.toString());
+	spdlog::get("console_log")->warn("[OBJ] Error parsing file {}", fname);
 	return nullptr;
 }
 
 bool OBJ::Parse() {
 	auto _log = spdlog::get("console_log");
 	if (!this->path || !this->path.FileExists()) {
-		_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", path.toString());
+		_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", path);
 		// Can't open the file!
 		return false;
 	}
@@ -155,10 +155,10 @@ bool OBJ::Parse() {
 
 	auto f = this->path.OpenStream();
 	if (!f->is_open()) {
-		_log->error("[OBJ] Error opening file {}", path.toString());
+		_log->error("[OBJ] Error opening file {}", path);
 		return false;
 	}
-	_log->debug("[OBJ] Parsing file {}", path.toString());
+	_log->debug("[OBJ] Parsing file {}", path);
 
 	std::ostringstream oss;
 	oss << f->rdbuf();
