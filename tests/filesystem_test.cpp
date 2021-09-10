@@ -41,16 +41,27 @@ TEST(Path_class_test, Operators) {
 	Path fp1("/usr/");
 	fp1 = "c:\\windows\\";
 	ASSERT_EQ(fp1.toString(), "c:/windows/");
+	fp1 = "empty";
+	ASSERT_EQ(fp1.toString(), "empty");
+	ASSERT_THROW(fp1 /= "empty?", PathException);
+	fp1 = "empty?";
+	try {
+		fp1 /= "?";
+	}
+	catch (PathException& e) {
+		std::cout << e.what() << '\n';
+	}
+	ASSERT_FALSE(fp1);
+	fp1 /= "stillbad";
+	ASSERT_FALSE(fp1);
 
 	fp1 = Path("/usr/") / "local/";
+	ASSERT_TRUE(fp1);
 	ASSERT_EQ(fp1.toString(), "/usr/local/");
-
 	fp1 /= "share";
 	ASSERT_EQ(fp1.toString(), "/usr/local/share");
-
 	fp1 /= "/trillek/";
 	ASSERT_EQ(fp1.toString(), "/usr/local/share/trillek/");
-
 	fp1 /= "/assets";
 	ASSERT_EQ(fp1.toString(), "/usr/local/share/trillek/assets");
 
@@ -68,7 +79,8 @@ TEST(Path_class_test, Existence) {
 #else
 	ASSERT_TRUE(Path("/home/").DirExists());
 	ASSERT_FALSE(Path("/fake_folder/foo/bar/").DirExists());
-	ASSERT_TRUE(Path("/bin/false").FileExists());
+	ASSERT_FALSE(Path("/bin/bash").DirExists());
+	ASSERT_TRUE(Path("/bin/bash").FileExists());
 	ASSERT_FALSE(Path("/bin/blablafoobar").FileExists());
 #endif
 }
@@ -90,7 +102,6 @@ TEST(Path_class_test, Normalize) {
 TEST(Path_class_test, IsAbsolute) {
 	using namespace tec;
 	ASSERT_TRUE(Path("c:\\windows\\notepad.exe").isAbsolutePath());
-	// this is a tricky one, it does not contain a device, but is considered absolute
 	ASSERT_TRUE(Path("\\windows\\notepad.exe").isAbsolutePath());
 	ASSERT_TRUE(Path("/windows/notepad.exe").isAbsolutePath());
 
@@ -104,45 +115,46 @@ TEST(Path_class_test, IsAbsolute) {
 TEST(Path_class_test, IsValid) {
 	using namespace tec;
 	// Absolute with windows device
-	ASSERT_TRUE(Path("c:\\windows\\notepad.exe").isValidPath());
+	ASSERT_TRUE(Path("c:\\windows\\notepad.exe"));
 	// Absolute windows style
-	ASSERT_TRUE(Path("\\windows\\notepad.exe").isValidPath());
+	ASSERT_TRUE(Path("\\windows\\notepad.exe"));
 	// Absolute unix style
-	ASSERT_TRUE(Path("/windows/notepad.exe").isValidPath());
+	ASSERT_TRUE(Path("/windows/notepad.exe"));
 	// Relative path
-	ASSERT_TRUE(Path("../foo/bar/img.png").isValidPath());
+	ASSERT_TRUE(Path("../foo/bar/img.png"));
 	// Relative path
-	ASSERT_TRUE(Path("./foo/bar/img.png").isValidPath());
+	ASSERT_TRUE(Path("./foo/bar/img.png"));
 	// Strange Relative Path
 	// yes this is considered a valid path, just don't pass it as-is through a shell
-	ASSERT_TRUE(Path("K/ree$#/[bar ~=` %!@;#$%^&'()_+-]{}\\img.png").isValidPath());
+	ASSERT_TRUE(Path("K/ree$#/[bar ~=` %!@;#$%^&'()_+-]{}\\img.png"));
 	// Bad Relative Path
 	// this path contains filesystem reserved symbols
 	// would not be valid in NTFS nor HFS, although the ext* filesystem would allow this
-	ASSERT_FALSE(Path("/file>bad").isValidPath());
-	ASSERT_FALSE(Path("/file<bad").isValidPath());
+	ASSERT_FALSE(Path("/file>bad"));
+	ASSERT_FALSE(Path("/file<bad"));
 	// outlier here is Windows, other systems consider ':' valid
-	EXPECT_FALSE(Path("\\:filebad").isValidPath());
-	EXPECT_FALSE(Path(":filebad").isValidPath());
-	EXPECT_FALSE(Path("::filebad").isValidPath());
-	EXPECT_FALSE(Path("f:il:ebad").isValidPath());
-	EXPECT_FALSE(Path("f:\\ilebad:").isValidPath());
-	ASSERT_TRUE(Path("f:").isValidPath());
-	ASSERT_TRUE(Path("f:\\ilegood").isValidPath());
-	ASSERT_FALSE(Path("/file*bad").isValidPath());
-	ASSERT_FALSE(Path("file*bad").isValidPath());
-	ASSERT_FALSE(Path("/file?bad").isValidPath());
-	ASSERT_FALSE(Path("file?bad").isValidPath());
-	ASSERT_FALSE(Path("/file\"bad").isValidPath());
-	ASSERT_FALSE(Path("file\"bad").isValidPath());
-	ASSERT_FALSE(Path("/file|bad").isValidPath());
-	ASSERT_FALSE(Path("file|bad").isValidPath());
+	EXPECT_FALSE(Path("\\:filebad"));
+	EXPECT_FALSE(Path(":filebad"));
+	EXPECT_FALSE(Path("::filebad"));
+	EXPECT_FALSE(Path("f:il:ebad"));
+	EXPECT_FALSE(Path("f:\\ilebad:"));
+	ASSERT_TRUE(Path("f:"));
+	ASSERT_TRUE(Path("f:\\ilegood"));
+	ASSERT_FALSE(Path("/file*bad"));
+	ASSERT_FALSE(Path("file*bad"));
+	ASSERT_FALSE(Path("/file?bad"));
+	ASSERT_FALSE(Path("file?bad"));
+	ASSERT_FALSE(Path("/file\"bad"));
+	ASSERT_FALSE(Path("file\"bad"));
+	ASSERT_FALSE(Path("/file|bad"));
+	ASSERT_FALSE(Path("file|bad"));
+	ASSERT_FALSE(Path("file\001bad"));
 	// Empty is a bad path
-	ASSERT_FALSE(Path("").isValidPath());
+	ASSERT_FALSE(Path(""));
 	// Relative path directly to a file
-	ASSERT_TRUE(Path("img.png").isValidPath());
+	ASSERT_TRUE(Path("img.png"));
 	// Relative path to a file without an extension
-	ASSERT_TRUE(Path("img").isValidPath());
+	ASSERT_TRUE(Path("img"));
 }
 
 TEST(Path_class_test, BasePath) {
@@ -189,7 +201,7 @@ TEST(Path_class_test, GetProgramPath) {
 	using namespace tec;
 	auto where = Path::GetProgramPath();
 	ASSERT_FALSE(where.empty());
-	ASSERT_TRUE(where.isValidPath());
+	ASSERT_TRUE(where) << "where=" << where.toString();
 	ASSERT_TRUE(where.isAbsolutePath());
 	std::cout << "I'm at " << where << "\n";
 }
@@ -202,15 +214,15 @@ TEST(Path_class_test, GetUserPaths) {
 	auto cache = Path::GetUserCachePath();
 
 	ASSERT_FALSE(settings.empty());
-	ASSERT_TRUE(settings.isValidPath());
+	ASSERT_TRUE(settings);
 	ASSERT_TRUE(settings.isAbsolutePath());
 
 	ASSERT_FALSE(user_data.empty());
-	ASSERT_TRUE(user_data.isValidPath());
+	ASSERT_TRUE(user_data);
 	ASSERT_TRUE(user_data.isAbsolutePath());
 
 	ASSERT_FALSE(cache.empty());
-	ASSERT_TRUE(cache.isValidPath());
+	ASSERT_TRUE(cache);
 	ASSERT_TRUE(cache.isAbsolutePath());
 
 	std::cout << "Settings : " << Path::GetUserSettingsPath() << "\n";
@@ -220,13 +232,10 @@ TEST(Path_class_test, GetUserPaths) {
 
 TEST(Path_class_test, CreateDir) {
 	using namespace tec;
-#if defined(WIN32)
-	auto fp = Path("c:/tmp/MyApp/blabla/foo");
-#else
-	auto fp = Path("/tmp/MyApp/blabla/foo");
-#endif
-
-	ASSERT_TRUE(Path::MkPath(fp));
+	auto fp = Path::GetProgramPath() / "../MyApp/blabla/foo";
+	ASSERT_TRUE(fp) << "fp=" << fp;
+	ASSERT_TRUE(fp.isAbsolutePath());
+	ASSERT_TRUE(Path::MkPath(fp)) << "fp=" << fp;
 	ASSERT_TRUE(fp.DirExists());
 }
 
@@ -235,14 +244,14 @@ TEST(Path_class_test, AssetsPath) {
 	auto fp = Path::GetAssetsBasePath();
 	std::cout << "Assets: " << fp << "\n";
 
-	Path posible_path("./assets");
+	Path posible_path("assets");
 	if (posible_path.DirExists()) {
 		ASSERT_FALSE(fp.empty());
-		ASSERT_TRUE(fp.isValidPath());
+		ASSERT_TRUE(fp);
 
 		auto fp2 = Path::GetAssetPath("shaders/core.json"); // This file is required to load all the shaders
 		std::cout << "Shaders path: " << fp2 << "\n";
-		ASSERT_TRUE(fp2.isValidPath());
+		ASSERT_TRUE(fp2);
 		ASSERT_TRUE(fp2.FileExists());
 	}
 	else {

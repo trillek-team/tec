@@ -23,7 +23,7 @@ extern std::string CleanString(std::string str);
 
 bool OBJ::ParseMTL(const Path& fname) {
 	auto _log = spdlog::get("console_log");
-	if (!fname.isValidPath() || !fname.FileExists()) {
+	if (!fname || !fname.FileExists()) {
 		_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", fname.toString());
 		// Can't open the file!
 		return false;
@@ -146,7 +146,7 @@ std::shared_ptr<OBJ> OBJ::Create(const Path& fname) {
 
 bool OBJ::Parse() {
 	auto _log = spdlog::get("console_log");
-	if (!this->path.isValidPath() || !this->path.FileExists()) {
+	if (!this->path || !this->path.FileExists()) {
 		_log->error("[OBJ] Can't open the file {}. Invalid path or missing file.", path.toString());
 		// Can't open the file!
 		return false;

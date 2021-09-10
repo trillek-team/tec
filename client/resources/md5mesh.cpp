@@ -132,7 +132,7 @@ std::shared_ptr<MD5Mesh> MD5Mesh::Create(const Path& fname) {
 
 bool MD5Mesh::Parse() {
 	auto _log = spdlog::get("console_log");
-	if (!this->path.isValidPath() || !this->path.FileExists()) {
+	if (!this->path || !this->path.FileExists()) {
 		_log->error("[MD5Mesh] Can't open the file {}. Invalid path or missing file.", path.toString());
 		// Can't open the file!
 		return false;

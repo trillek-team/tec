@@ -68,7 +68,7 @@ bool SaveGame::Save() { return this->Save(this->filepath); }
 
 bool SaveGame::Save(const Path _filepath) {
 	auto _log = spdlog::get("console_log");
-	if (!_filepath.FileExists() || !_filepath.isValidPath()) {
+	if (!_filepath || !_filepath.FileExists()) {
 		_log->error("File does not exist or path is invalid: {}", _filepath.toString());
 		return false;
 	}
@@ -119,7 +119,7 @@ void SaveGame::LoadWorld() {
 	auto world = this->save.world();
 	for (int i = 0; i < world.entity_file_list_size(); i++) {
 		Path entity_filename = Path::GetAssetPath(world.entity_file_list(i));
-		if (entity_filename.isValidPath() && entity_filename.FileExists()) {
+		if (entity_filename && entity_filename.FileExists()) {
 			std::string json_string = LoadAsString(entity_filename);
 			proto::Entity entity;
 			auto status = google::protobuf::util::JsonStringToMessage(json_string, &entity);
