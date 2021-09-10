@@ -10,7 +10,7 @@ std::shared_ptr<ScriptFile> ScriptFile::Create(const Path& fname) {
 		ScriptMap::Set(scriptfile->GetName(), scriptfile);
 		return scriptfile;
 	}
-	spdlog::get("console_log")->warn("[ScriptFile] Error loading script file {}", fname.toString());
+	spdlog::get("console_log")->warn("[ScriptFile] Error loading script file {}", fname);
 
 	return nullptr;
 }
@@ -18,12 +18,12 @@ std::shared_ptr<ScriptFile> ScriptFile::Create(const Path& fname) {
 bool ScriptFile::Load(const Path& _filename) {
 	auto _log = spdlog::get("console_log");
 	if (!_filename || !_filename.FileExists()) {
-		_log->warn("[Script] Error loading scriptfile {}. Invalid path.", _filename.FileName());
+		_log->warn("[Script] Error loading scriptfile {}. Invalid path.", _filename);
 		return false;
 	}
 	auto file = _filename.OpenStream();
 	if (!file->is_open()) {
-		_log->warn("[Script] Error loading scriptfile {}", _filename.FileName());
+		_log->warn("[Script] Error loading scriptfile {:f}", _filename);
 		return false;
 	}
 	file->seekg(0, std::ios::end);
@@ -31,10 +31,10 @@ bool ScriptFile::Load(const Path& _filename) {
 	file->seekg(0, std::ios::beg);
 
 	script = std::string((std::istreambuf_iterator<char>(*file)), std::istreambuf_iterator<char>());
-	_log->trace("[Script] Read script file {} of {} bytes", _filename.FileName(), script.length());
+	_log->trace("[Script] Read script file {:f} of {} bytes", _filename, script.length());
 	this->filename = _filename;
 
-	_log->debug("[Script] Loaded scriptfile {}", _filename.FileName());
+	_log->debug("[Script] Loaded scriptfile {:f}", _filename);
 	return true;
 }
 

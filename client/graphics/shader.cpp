@@ -44,11 +44,11 @@ void Shader::DeleteProgram() {
 void Shader::LoadFromFile(const gfx::ShaderType type, const tec::Path& fname) {
 	auto _log = spdlog::get("console_log");
 	if (!fname) {
-		_log->error("[Shader] Load Error: Invalid path: {}", fname.toString());
+		_log->error("[Shader] Load Error: Invalid path: {}", fname);
 		return;
 	}
 	if (!fname.FileExists()) {
-		_log->error("[Shader] Load Error: File does not exist, Check assets folder: {}", fname.toString());
+		_log->error("[Shader] Load Error: File does not exist, Check assets folder: {}", fname);
 		return;
 	}
 	auto fp = fname.OpenStream(); // TODO GetFileContent API?
@@ -302,7 +302,7 @@ void Shader::LoadFromProto(const gfx::ShaderSource& source, gfx::ShaderType type
 		return;
 	}
 	switch (source.source_case()) {
-	case gfx::ShaderSource::kFile: LoadFromFile(type, Path::GetAssetPath("shaders") / source.file()); break;
+	case gfx::ShaderSource::kFile: LoadFromFile(type, Path::shaders / source.file()); break;
 	case gfx::ShaderSource::kAbsFile: LoadFromFile(type, Path(source.abs_file())); break;
 	case gfx::ShaderSource::kRaw: LoadFromString(type, source.raw(), "proto-" + std::to_string(type)); break;
 	case gfx::ShaderSource::kByName:
@@ -352,7 +352,7 @@ void Shader::IncludeFromDef(const gfx::ShaderInclude& shader_inc) {
 	auto source = shader_inc.source();
 	std::string include_string;
 	switch (source.source_case()) {
-	case gfx::ShaderSource::kFile: include_string = LoadAsString(Path::GetAssetPath("shaders") / source.file()); break;
+	case gfx::ShaderSource::kFile: include_string = LoadAsString(Path::shaders / source.file()); break;
 	case gfx::ShaderSource::kAbsFile: include_string = LoadAsString(Path(source.abs_file())); break;
 	case gfx::ShaderSource::kRaw: include_string = source.raw(); break;
 	case gfx::ShaderSource::kByName: _log->error("[Shader] IncludeFromDef by_name not implemented"); break;

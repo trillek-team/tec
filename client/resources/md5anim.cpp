@@ -24,7 +24,7 @@ extern std::string CleanString(std::string str);
 
 std::shared_ptr<MD5Anim> MD5Anim::Create(const Path& fname) {
 	auto anim = std::make_shared<MD5Anim>();
-	anim->SetName(fname.Subpath(1).toString());
+	anim->SetName(fname.Relative().toString());
 	anim->SetFileName(fname);
 
 	if (anim->Parse()) {
@@ -35,21 +35,21 @@ std::shared_ptr<MD5Anim> MD5Anim::Create(const Path& fname) {
 		return anim;
 	}
 
-	spdlog::get("console_log")->warn("[MD5Anim] Error parsing file {}", fname.toString());
+	spdlog::get("console_log")->warn("[MD5Anim] Error parsing file {}", fname);
 	return nullptr;
 }
 
 bool MD5Anim::Parse() {
 	auto _log = spdlog::get("console_log");
 	if (!this->path || !this->path.FileExists()) {
-		_log->error("[MD5Anim] Can't open the file {}. Invalid path or missing file.", path.toString());
+		_log->error("[MD5Anim] Can't open the file {}. Invalid path or missing file.", path);
 		// Can't open the file!
 		return false;
 	}
 
 	auto f = this->path.OpenStream();
 	if (!f->is_open()) {
-		_log->error("[MD5Anim] Error opening file {}", path.toString());
+		_log->error("[MD5Anim] Error opening file {}", path);
 		return false;
 	}
 

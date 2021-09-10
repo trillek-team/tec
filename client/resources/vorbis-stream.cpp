@@ -36,7 +36,7 @@
 
 namespace tec {
 typedef Multiton<std::string, std::shared_ptr<VorbisStream>> SoundMap;
-VorbisStream::VorbisStream(int buffer_size) : buffer_size(buffer_size) {
+VorbisStream::VorbisStream(unsigned buffer_size) : buffer_size(buffer_size) {
 	this->sbuffer = new ALshort[this->buffer_size];
 }
 
@@ -94,8 +94,9 @@ inline std::string VorbisErrorToString(int error) {
 }
 
 std::shared_ptr<VorbisStream> VorbisStream::Create(const Path& filename) {
+	auto _log = spdlog::get("console_log");
 	std::shared_ptr<VorbisStream> stream = std::make_shared<VorbisStream>();
-	stream->SetName(filename.Subpath(1).toString());
+	stream->SetName(filename.Relative().toString());
 
 	int error;
 	std::unique_ptr<FILE> file;
@@ -103,7 +104,7 @@ std::shared_ptr<VorbisStream> VorbisStream::Create(const Path& filename) {
 		file = filename.OpenFile();
 	}
 	catch (PathException& e) {
-		spdlog::get("console_log")->warn("[Vorbis-Stream] Can't open file {}", filename.toString());
+		_log->warn("[Vorbis-Stream] Can't open file {}", filename);
 		stream.reset();
 		return stream;
 	}
@@ -120,11 +121,7 @@ std::shared_ptr<VorbisStream> VorbisStream::Create(const Path& filename) {
 		SoundMap::Set(stream->GetName(), stream);
 	}
 	else {
-		spdlog::get("console_log")
-				->warn("[Vorbis-Stream] Can't load file {} code {} : {}",
-					   filename.toString(),
-					   error,
-					   VorbisErrorToString(error));
+		_log->warn("[Vorbis-Stream] Can't load file {} code {} : {}", filename, error, VorbisErrorToString(error));
 		stream.reset();
 	}
 	return stream;

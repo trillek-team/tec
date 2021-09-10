@@ -93,7 +93,7 @@ void Computer::In(const proto::Component& source) {
 	}
 
 	std::string fname{comp.rom_file()};
-	auto file = Path::GetAssetPath(fname).OpenStream();
+	auto file = (Path::assets / fname).OpenStream();
 	int size = LoadROM(*file, this->rom);
 	if (size < 0) {
 		std::shared_ptr<spdlog::logger> _log = spdlog::get("console_log");

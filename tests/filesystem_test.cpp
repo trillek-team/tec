@@ -249,7 +249,7 @@ TEST(Path_class_test, AssetsPath) {
 		ASSERT_FALSE(fp.empty());
 		ASSERT_TRUE(fp);
 
-		auto fp2 = Path::GetAssetPath("shaders/core.json"); // This file is required to load all the shaders
+		auto fp2 = Path::shaders / "core.json"; // This file is required to load all the shaders
 		std::cout << "Shaders path: " << fp2 << "\n";
 		ASSERT_TRUE(fp2);
 		ASSERT_TRUE(fp2.FileExists());
