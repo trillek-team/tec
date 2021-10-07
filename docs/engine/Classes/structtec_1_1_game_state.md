@@ -28,8 +28,8 @@ title: tec::GameState
 | std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Position](/engine/Classes/structtec_1_1_position/) > | **[positions](/engine/Classes/structtec_1_1_game_state/#variable-positions)**  |
 | std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Orientation](/engine/Classes/structtec_1_1_orientation/) > | **[orientations](/engine/Classes/structtec_1_1_game_state/#variable-orientations)**  |
 | std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Velocity](/engine/Classes/structtec_1_1_velocity/) > | **[velocities](/engine/Classes/structtec_1_1_game_state/#variable-velocities)**  |
-| state_id_t | **[state_id](/engine/Classes/structtec_1_1_game_state/#variable-state_id)**  |
-| state_id_t | **[command_id](/engine/Classes/structtec_1_1_game_state/#variable-command_id)**  |
+| state_id_t | **[state_id](/engine/Classes/structtec_1_1_game_state/#variable-state-id)**  |
+| state_id_t | **[command_id](/engine/Classes/structtec_1_1_game_state/#variable-command-id)**  |
 | uint64_t | **[timestamp](/engine/Classes/structtec_1_1_game_state/#variable-timestamp)**  |
 
 ## Public Functions Documentation
@@ -141,4 +141,4 @@ uint64_t timestamp = 0;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

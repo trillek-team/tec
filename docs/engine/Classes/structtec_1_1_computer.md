@@ -23,8 +23,8 @@ title: tec::Computer
 |                | Name           |
 | -------------- | -------------- |
 | std::uint8_t * | **[rom](/engine/Classes/structtec_1_1_computer/#variable-rom)**  |
-| std::string | **[rom_name](/engine/Classes/structtec_1_1_computer/#variable-rom_name)**  |
-| std::size_t | **[rom_size](/engine/Classes/structtec_1_1_computer/#variable-rom_size)**  |
+| std::string | **[rom_name](/engine/Classes/structtec_1_1_computer/#variable-rom-name)**  |
+| std::size_t | **[rom_size](/engine/Classes/structtec_1_1_computer/#variable-rom-size)**  |
 | VComputer | **[vc](/engine/Classes/structtec_1_1_computer/#variable-vc)**  |
 | std::map< int, std::shared_ptr< [DeviceBase](/engine/Classes/structtec_1_1_device_base/) > > | **[devices](/engine/Classes/structtec_1_1_computer/#variable-devices)**  |
 
@@ -101,4 +101,4 @@ std::map< int, std::shared_ptr< DeviceBase > > devices;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

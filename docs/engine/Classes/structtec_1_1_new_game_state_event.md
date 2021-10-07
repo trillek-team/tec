@@ -13,7 +13,7 @@ title: tec::NewGameStateEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| [GameState](/engine/Classes/structtec_1_1_game_state/) | **[new_state](/engine/Classes/structtec_1_1_new_game_state_event/#variable-new_state)**  |
+| [GameState](/engine/Classes/structtec_1_1_game_state/) | **[new_state](/engine/Classes/structtec_1_1_new_game_state_event/#variable-new-state)**  |
 
 ## Public Attributes Documentation
 
@@ -26,4 +26,4 @@ GameState new_state;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

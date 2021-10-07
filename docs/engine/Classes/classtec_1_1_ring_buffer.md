@@ -16,12 +16,12 @@ title: tec::RingBuffer
 | const T & | **[operator[]](/engine/Classes/classtec_1_1_ring_buffer/#function-operator[])**(std::size_t pos) const |
 | T & | **[back](/engine/Classes/classtec_1_1_ring_buffer/#function-back)**() |
 | const T & | **[back](/engine/Classes/classtec_1_1_ring_buffer/#function-back)**() const |
-| void | **[pop_back](/engine/Classes/classtec_1_1_ring_buffer/#function-pop_back)**() |
-| void | **[push_front](/engine/Classes/classtec_1_1_ring_buffer/#function-push_front)**(const T & value) |
+| void | **[pop_back](/engine/Classes/classtec_1_1_ring_buffer/#function-pop-back)**() |
+| void | **[push_front](/engine/Classes/classtec_1_1_ring_buffer/#function-push-front)**(const T & value) |
 | bool | **[empty](/engine/Classes/classtec_1_1_ring_buffer/#function-empty)**() const |
 | bool | **[full](/engine/Classes/classtec_1_1_ring_buffer/#function-full)**() const |
 | std::size_t | **[size](/engine/Classes/classtec_1_1_ring_buffer/#function-size)**() const |
-| std::size_t | **[max_size](/engine/Classes/classtec_1_1_ring_buffer/#function-max_size)**() const |
+| std::size_t | **[max_size](/engine/Classes/classtec_1_1_ring_buffer/#function-max-size)**() const |
 | void | **[clear](/engine/Classes/classtec_1_1_ring_buffer/#function-clear)**() |
 
 ## Detailed Description
@@ -140,4 +140,4 @@ Removes all elements of the buffer
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

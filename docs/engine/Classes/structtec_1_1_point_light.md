@@ -28,7 +28,7 @@ Inherits from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 | float | **[linear](/engine/Classes/structtec_1_1_point_light/#variable-linear)**  |
 | float | **[exponential](/engine/Classes/structtec_1_1_point_light/#variable-exponential)**  |
 | struct tec::PointLight::@0 | **[Attenuation](/engine/Classes/structtec_1_1_point_light/#variable-attenuation)**  |
-| float | **[bounding_radius](/engine/Classes/structtec_1_1_point_light/#variable-bounding_radius)**  |
+| float | **[bounding_radius](/engine/Classes/structtec_1_1_point_light/#variable-bounding-radius)**  |
 
 ## Additional inherited members
 
@@ -43,8 +43,8 @@ Inherits from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 |                | Name           |
 | -------------- | -------------- |
 | glm::vec3 | **[color](/engine/Classes/structtec_1_1_base_light/#variable-color)**  |
-| float | **[ambient_intensity](/engine/Classes/structtec_1_1_base_light/#variable-ambient_intensity)**  |
-| float | **[diffuse_intensity](/engine/Classes/structtec_1_1_base_light/#variable-diffuse_intensity)**  |
+| float | **[ambient_intensity](/engine/Classes/structtec_1_1_base_light/#variable-ambient-intensity)**  |
+| float | **[diffuse_intensity](/engine/Classes/structtec_1_1_base_light/#variable-diffuse-intensity)**  |
 
 
 ## Public Functions Documentation
@@ -120,4 +120,4 @@ float bounding_radius {0.f};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

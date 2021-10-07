@@ -13,7 +13,7 @@ title: tec::MD5Anim::FrameSkeleton
 
 |                | Name           |
 | -------------- | -------------- |
-| std::vector< [SkeletonJoint](/engine/Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint/) > | **[skeleton_joints](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame_skeleton/#variable-skeleton_joints)**  |
+| std::vector< [SkeletonJoint](/engine/Classes/structtec_1_1_m_d5_anim_1_1_skeleton_joint/) > | **[skeleton_joints](/engine/Classes/structtec_1_1_m_d5_anim_1_1_frame_skeleton/#variable-skeleton-joints)**  |
 
 ## Public Attributes Documentation
 
@@ -26,4 +26,4 @@ std::vector< SkeletonJoint > skeleton_joints;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

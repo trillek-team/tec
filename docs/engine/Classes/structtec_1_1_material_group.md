@@ -15,7 +15,7 @@ title: tec::MaterialGroup
 | -------------- | -------------- |
 | std::size_t | **[start](/engine/Classes/structtec_1_1_material_group/#variable-start)**  |
 | std::size_t | **[count](/engine/Classes/structtec_1_1_material_group/#variable-count)**  |
-| std::string | **[material_name](/engine/Classes/structtec_1_1_material_group/#variable-material_name)**  |
+| std::string | **[material_name](/engine/Classes/structtec_1_1_material_group/#variable-material-name)**  |
 | std::list< std::string > | **[textures](/engine/Classes/structtec_1_1_material_group/#variable-textures)**  |
 
 ## Public Attributes Documentation
@@ -50,4 +50,4 @@ std::list< std::string > textures;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

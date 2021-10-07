@@ -13,12 +13,12 @@ title: tec::SaveGame
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[Load](/engine/Classes/classtec_1_1_save_game/#function-load)**(const FilePath) |
+| bool | **[Load](/engine/Classes/classtec_1_1_save_game/#function-load)**(const Path) |
 | bool | **[Load](/engine/Classes/classtec_1_1_save_game/#function-load)**(std::string _filename) |
 | bool | **[Reload](/engine/Classes/classtec_1_1_save_game/#function-reload)**() |
-| bool | **[Reload](/engine/Classes/classtec_1_1_save_game/#function-reload)**(const FilePath) |
+| bool | **[Reload](/engine/Classes/classtec_1_1_save_game/#function-reload)**(const Path) |
 | bool | **[Save](/engine/Classes/classtec_1_1_save_game/#function-save)**() |
-| bool | **[Save](/engine/Classes/classtec_1_1_save_game/#function-save)**(const FilePath) |
+| bool | **[Save](/engine/Classes/classtec_1_1_save_game/#function-save)**(const Path) |
 | [UserList](/engine/Classes/classtec_1_1_user_list/) * | **[GetUserList](/engine/Classes/classtec_1_1_save_game/#function-getuserlist)**() |
 | void | **[RegisterLuaType](/engine/Classes/classtec_1_1_save_game/#function-registerluatype)**(sol::state & ) |
 
@@ -28,7 +28,7 @@ title: tec::SaveGame
 
 ```cpp
 bool Load(
-    const FilePath
+    const Path
 )
 ```
 
@@ -53,7 +53,7 @@ bool Reload()
 
 ```cpp
 bool Reload(
-    const FilePath
+    const Path
 )
 ```
 
@@ -69,7 +69,7 @@ bool Save()
 
 ```cpp
 bool Save(
-    const FilePath
+    const Path
 )
 ```
 
@@ -92,4 +92,4 @@ static void RegisterLuaType(
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

@@ -27,9 +27,9 @@ Inherited by [tec::FPSController](/engine/Classes/structtec_1_1_f_p_s_controller
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_controller/#variable-entity_id)**  |
-| bool | **[keyboard_focus](/engine/Classes/structtec_1_1_controller/#variable-keyboard_focus)**  |
-| bool | **[mouse_focus](/engine/Classes/structtec_1_1_controller/#variable-mouse_focus)**  |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_controller/#variable-entity-id)**  |
+| bool | **[keyboard_focus](/engine/Classes/structtec_1_1_controller/#variable-keyboard-focus)**  |
+| bool | **[mouse_focus](/engine/Classes/structtec_1_1_controller/#variable-mouse-focus)**  |
 
 ## Public Functions Documentation
 
@@ -132,4 +132,4 @@ bool mouse_focus = true;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

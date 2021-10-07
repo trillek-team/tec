@@ -16,11 +16,11 @@ title: tec::MD5Anim::Joint
 | std::string | **[name](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-name)**  |
 | int | **[parent](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-parent)**  |
 | int | **[flags](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-flags)**  |
-| int | **[start_index](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-start_index)**  |
-| glm::vec3 | **[base_position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base_position)**  |
-| glm::quat | **[base_orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base_orientation)**  |
-| glm::vec3 | **[bind_position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind_position)**  |
-| glm::quat | **[bind_orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind_orientation)**  |
+| int | **[start_index](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-start-index)**  |
+| glm::vec3 | **[base_position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base-position)**  |
+| glm::quat | **[base_orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-base-orientation)**  |
+| glm::vec3 | **[bind_position](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind-position)**  |
+| glm::quat | **[bind_orientation](/engine/Classes/structtec_1_1_m_d5_anim_1_1_joint/#variable-bind-orientation)**  |
 
 ## Public Attributes Documentation
 
@@ -82,4 +82,4 @@ glm::quat bind_orientation {0.f, 0.f, 0.f, 1.f};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

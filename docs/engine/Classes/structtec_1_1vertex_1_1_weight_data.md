@@ -19,8 +19,8 @@ title: tec::vertex::WeightData
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec4 | **[bone_weights](/engine/Classes/structtec_1_1vertex_1_1_weight_data/#variable-bone_weights)**  |
-| glm::uvec4 | **[bone_indices](/engine/Classes/structtec_1_1vertex_1_1_weight_data/#variable-bone_indices)**  |
+| glm::vec4 | **[bone_weights](/engine/Classes/structtec_1_1vertex_1_1_weight_data/#variable-bone-weights)**  |
+| glm::uvec4 | **[bone_indices](/engine/Classes/structtec_1_1vertex_1_1_weight_data/#variable-bone-indices)**  |
 
 ## Public Functions Documentation
 
@@ -49,4 +49,4 @@ glm::uvec4 bone_indices {0, 0, 0, 0};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

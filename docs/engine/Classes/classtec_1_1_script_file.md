@@ -14,7 +14,7 @@ title: tec::ScriptFile
 |                | Name           |
 | -------------- | -------------- |
 | | **[ScriptFile](/engine/Classes/classtec_1_1_script_file/#function-scriptfile)**() =default |
-| bool | **[Load](/engine/Classes/classtec_1_1_script_file/#function-load)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & _filename)<br>Returns a resource with the specified name.  |
+| bool | **[Load](/engine/Classes/classtec_1_1_script_file/#function-load)**(const [Path](/engine/Classes/classtec_1_1_path/) & _filename)<br>Returns a resource with the specified name.  |
 | | **[ScriptFile](/engine/Classes/classtec_1_1_script_file/#function-scriptfile)**(const [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & ) =delete |
 | [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & | **[operator=](/engine/Classes/classtec_1_1_script_file/#function-operator=)**(const [ScriptFile](/engine/Classes/classtec_1_1_script_file/) & ) =delete |
 | | **[ScriptFile](/engine/Classes/classtec_1_1_script_file/#function-scriptfile)**([ScriptFile](/engine/Classes/classtec_1_1_script_file/) && other) |
@@ -26,8 +26,8 @@ title: tec::ScriptFile
 | bool | **[IsDirty](/engine/Classes/classtec_1_1_script_file/#function-isdirty)**() const |
 | void | **[Invalidate](/engine/Classes/classtec_1_1_script_file/#function-invalidate)**()<br>Mark dirty.  |
 | void | **[Validate](/engine/Classes/classtec_1_1_script_file/#function-validate)**()<br>Mark not dirty.  |
-| std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > | **[Create](/engine/Classes/classtec_1_1_script_file/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Returns a resource with the specified name.  |
-| std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > | **[Create](/engine/Classes/classtec_1_1_script_file/#function-create)**(const std::string name, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename =[FilePath](/engine/Classes/classtec_1_1_file_path/)())<br>Factory method that creates a Script and stores it in the ScriptMap under name. It will optionally load a script file with the given filename.  |
+| std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > | **[Create](/engine/Classes/classtec_1_1_script_file/#function-create)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Returns a resource with the specified name.  |
+| std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > | **[Create](/engine/Classes/classtec_1_1_script_file/#function-create)**(const std::string name, const [Path](/engine/Classes/classtec_1_1_path/) & filename =[Path](/engine/Classes/classtec_1_1_path/)())<br>Factory method that creates a Script and stores it in the ScriptMap under name. It will optionally load a script file with the given filename.  |
 
 ## Protected Attributes
 
@@ -35,7 +35,7 @@ title: tec::ScriptFile
 | -------------- | -------------- |
 | std::string | **[name](/engine/Classes/classtec_1_1_script_file/#variable-name)**  |
 | std::string | **[script](/engine/Classes/classtec_1_1_script_file/#variable-script)**  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[filename](/engine/Classes/classtec_1_1_script_file/#variable-filename)**  |
+| [Path](/engine/Classes/classtec_1_1_path/) | **[filename](/engine/Classes/classtec_1_1_script_file/#variable-filename)**  |
 | bool | **[dirty](/engine/Classes/classtec_1_1_script_file/#variable-dirty)**  |
 
 ## Public Functions Documentation
@@ -50,8 +50,8 @@ ScriptFile() =default
 ### function Load
 
 ```cpp
-inline bool Load(
-    const FilePath & _filename
+bool Load(
+    const Path & _filename
 )
 ```
 
@@ -59,7 +59,7 @@ Returns a resource with the specified name.
 
 **Parameters**: 
 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/) filename The filename of the image file to load. 
+  * **const** [Path](/engine/Classes/classtec_1_1_path/) filename The filename of the image file to load. 
 
 
 **Return**: bool True if initialization finished with no errors. 
@@ -158,8 +158,8 @@ Mark not dirty.
 ### function Create
 
 ```cpp
-static inline std::shared_ptr< ScriptFile > Create(
-    const FilePath & fname
+static std::shared_ptr< ScriptFile > Create(
+    const Path & fname
 )
 ```
 
@@ -180,7 +180,7 @@ The only used initialization property is "filename".
 ```cpp
 static inline std::shared_ptr< ScriptFile > Create(
     const std::string name,
-    const FilePath & filename =FilePath()
+    const Path & filename =Path()
 )
 ```
 
@@ -189,7 +189,7 @@ Factory method that creates a Script and stores it in the ScriptMap under name. 
 **Parameters**: 
 
   * **const** std::string name The name to store the [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) under. 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/) filename The optional filename of the script to load. 
+  * **const** [Path](/engine/Classes/classtec_1_1_path/) filename The optional filename of the script to load. 
 
 
 **Return**: std::shared_ptr<ScriptFile> The created [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/). 
@@ -213,7 +213,7 @@ std::string script;
 ### variable filename
 
 ```cpp
-FilePath filename;
+Path filename;
 ```
 
 
@@ -226,4 +226,4 @@ bool dirty {false};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

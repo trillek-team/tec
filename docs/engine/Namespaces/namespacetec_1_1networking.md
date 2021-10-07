@@ -26,16 +26,16 @@ title: tec::networking
 |                | Name           |
 | -------------- | -------------- |
 | enum int | **[MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype)** { SYNC, MULTI_PART, CLIENT_COMMAND, ENTITY_CREATE, ENTITY_DESTROY, CLIENT_JOIN, CLIENT_ID, CLIENT_LEAVE, GAME_STATE_UPDATE, CHAT_MESSAGE, CHAT_COMMAND, LOGIN, AUTHENTICATED, WORLD_SENT, CLIENT_READY_TO_RECEIVE} |
-| typedef std::chrono::milliseconds::rep | **[ping_time_t](/engine/Namespaces/namespacetec_1_1networking/#typedef-ping_time_t)**  |
+| typedef std::chrono::milliseconds::rep | **[ping_time_t](/engine/Namespaces/namespacetec_1_1networking/#typedef-ping-time-t)**  |
 
 ## Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| const std::string_view | **[SERVER_PORT](/engine/Namespaces/namespacetec_1_1networking/#variable-server_port)**  |
-| const std::string_view | **[LOCAL_HOST](/engine/Namespaces/namespacetec_1_1networking/#variable-local_host)**  |
-| const size_t | **[PING_HISTORY_SIZE](/engine/Namespaces/namespacetec_1_1networking/#variable-ping_history_size)**  |
-| const size_t | **[DELAY_HISTORY_SIZE](/engine/Namespaces/namespacetec_1_1networking/#variable-delay_history_size)**  |
+| const std::string_view | **[SERVER_PORT](/engine/Namespaces/namespacetec_1_1networking/#variable-server-port)**  |
+| const std::string_view | **[LOCAL_HOST](/engine/Namespaces/namespacetec_1_1networking/#variable-local-host)**  |
+| const size_t | **[PING_HISTORY_SIZE](/engine/Namespaces/namespacetec_1_1networking/#variable-ping-history-size)**  |
+| const size_t | **[DELAY_HISTORY_SIZE](/engine/Namespaces/namespacetec_1_1networking/#variable-delay-history-size)**  |
 | unsigned short | **[PORT](/engine/Namespaces/namespacetec_1_1networking/#variable-port)**  |
 
 ## Types Documentation
@@ -114,4 +114,4 @@ unsigned short PORT = 0xa10c;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

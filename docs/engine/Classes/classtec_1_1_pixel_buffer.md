@@ -13,14 +13,14 @@ title: tec::PixelBuffer
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[FILTER_PREFERENCE](/engine/Classes/classtec_1_1_pixel_buffer/#enum-filter_preference)** { DEFAULT, NEAREST, LINEAR} |
+| enum| **[FILTER_PREFERENCE](/engine/Classes/classtec_1_1_pixel_buffer/#enum-filter-preference)** { DEFAULT, NEAREST, LINEAR} |
 
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
 | | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**() =default |
-| bool | **[Load](/engine/Classes/classtec_1_1_pixel_buffer/#function-load)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename, bool gamma_space =false)<br>Returns a resource with the specified name.  |
+| bool | **[Load](/engine/Classes/classtec_1_1_pixel_buffer/#function-load)**(const [Path](/engine/Classes/classtec_1_1_path/) & filename, bool gamma_space =false)<br>Returns a resource with the specified name.  |
 | | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) =delete |
 | [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) =delete |
 | | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**([PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) && rv) |
@@ -44,14 +44,14 @@ title: tec::PixelBuffer
 | void | **[SetFilter](/engine/Classes/classtec_1_1_pixel_buffer/#function-setfilter)**(FILTER_PREFERENCE f) |
 | void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**() |
 | void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**(const char * ofile) |
-| std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(const std::string name, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename =[FilePath](/engine/Classes/classtec_1_1_file_path/)(), bool gamma_space =false)<br>Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename.  |
+| std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(const std::string name, const [Path](/engine/Classes/classtec_1_1_path/) & filename =[Path](/engine/Classes/classtec_1_1_path/)(), bool gamma_space =false)<br>Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename.  |
 
 ## Public Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::uint32_t | **[image_x](/engine/Classes/classtec_1_1_pixel_buffer/#variable-image_x)**  |
-| std::uint32_t | **[image_y](/engine/Classes/classtec_1_1_pixel_buffer/#variable-image_y)**  |
+| std::uint32_t | **[image_x](/engine/Classes/classtec_1_1_pixel_buffer/#variable-image-x)**  |
+| std::uint32_t | **[image_y](/engine/Classes/classtec_1_1_pixel_buffer/#variable-image-y)**  |
 
 ## Protected Attributes
 
@@ -94,7 +94,7 @@ PixelBuffer() =default
 
 ```cpp
 bool Load(
-    const FilePath & filename,
+    const Path & filename,
     bool gamma_space =false
 )
 ```
@@ -103,7 +103,7 @@ Returns a resource with the specified name.
 
 **Parameters**: 
 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/) filename The filename of the image file to load. 
+  * **const** [Path](/engine/Classes/classtec_1_1_path/) filename The filename of the image file to load. 
 
 
 **Return**: bool True if initialization finished with no errors. 
@@ -345,7 +345,7 @@ void PPMDebug(
 ```cpp
 static std::shared_ptr< PixelBuffer > Create(
     const std::string name,
-    const FilePath & filename =FilePath(),
+    const Path & filename =Path(),
     bool gamma_space =false
 )
 ```
@@ -355,7 +355,7 @@ Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_b
 **Parameters**: 
 
   * **const** std::string name The name to store the [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) under. 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/) filename The optional filename of the image to load. 
+  * **const** [Path](/engine/Classes/classtec_1_1_path/) filename The optional filename of the image to load. 
 
 
 **Return**: std::shared_ptr<PixelBuffer> The created [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/). 
@@ -451,4 +451,4 @@ std::mutex writelock;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

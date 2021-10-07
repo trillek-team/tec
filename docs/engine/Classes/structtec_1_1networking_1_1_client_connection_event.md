@@ -17,8 +17,8 @@ title: tec::networking::ClientConnectionEvent
 |                | Name           |
 | -------------- | -------------- |
 | void | **[RegisterLuaType](/engine/Classes/structtec_1_1networking_1_1_client_connection_event/#function-registerluatype)**(sol::state & ) |
-| void | **[from_endpoint](/engine/Classes/structtec_1_1networking_1_1_client_connection_event/#function-from_endpoint)**(const asio::ip::tcp::endpoint & endpoint)<br>load info from a TCP endpoint  |
-| void | **[from_endpoint](/engine/Classes/structtec_1_1networking_1_1_client_connection_event/#function-from_endpoint)**(const asio::ip::udp::endpoint & endpoint)<br>load info from a UDP endpoint  |
+| void | **[from_endpoint](/engine/Classes/structtec_1_1networking_1_1_client_connection_event/#function-from-endpoint)**(const asio::ip::tcp::endpoint & endpoint)<br>load info from a TCP endpoint  |
+| void | **[from_endpoint](/engine/Classes/structtec_1_1networking_1_1_client_connection_event/#function-from-endpoint)**(const asio::ip::udp::endpoint & endpoint)<br>load info from a UDP endpoint  |
 
 ## Public Attributes
 
@@ -117,4 +117,4 @@ std::string protocol;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

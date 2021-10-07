@@ -26,7 +26,7 @@ title: tec::Multiton
 
 |                | Name           |
 | -------------- | -------------- |
-| T | **[default_value](/engine/Classes/classtec_1_1_multiton/#variable-default_value)**  |
+| T | **[default_value](/engine/Classes/classtec_1_1_multiton/#variable-default-value)**  |
 | std::map< ID_T, T > | **[instances](/engine/Classes/classtec_1_1_multiton/#variable-instances)**  |
 
 ## Detailed Description
@@ -150,4 +150,4 @@ static std::map< ID_T, T > instances;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

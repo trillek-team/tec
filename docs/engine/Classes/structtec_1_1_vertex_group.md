@@ -14,9 +14,9 @@ title: tec::VertexGroup
 |                | Name           |
 | -------------- | -------------- |
 | std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > | **[material](/engine/Classes/structtec_1_1_vertex_group/#variable-material)**  |
-| GLuint | **[mesh_group_number](/engine/Classes/structtec_1_1_vertex_group/#variable-mesh_group_number)**  |
-| GLuint | **[index_count](/engine/Classes/structtec_1_1_vertex_group/#variable-index_count)**  |
-| GLuint | **[starting_offset](/engine/Classes/structtec_1_1_vertex_group/#variable-starting_offset)**  |
+| GLuint | **[mesh_group_number](/engine/Classes/structtec_1_1_vertex_group/#variable-mesh-group-number)**  |
+| GLuint | **[index_count](/engine/Classes/structtec_1_1_vertex_group/#variable-index-count)**  |
+| GLuint | **[starting_offset](/engine/Classes/structtec_1_1_vertex_group/#variable-starting-offset)**  |
 
 ## Public Attributes Documentation
 
@@ -50,4 +50,4 @@ GLuint starting_offset {0};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

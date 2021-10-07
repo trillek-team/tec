@@ -39,7 +39,7 @@ Inherited by [tec::MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/), [tec::OBJ]
 ### function ~MeshFile
 
 ```cpp
-inline virtual ~MeshFile()
+virtual ~MeshFile()
 ```
 
 
@@ -161,4 +161,4 @@ bool dirty {false};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

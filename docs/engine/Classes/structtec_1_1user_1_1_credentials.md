@@ -19,7 +19,7 @@ title: tec::user::Credentials
 
 |                | Name           |
 | -------------- | -------------- |
-| std::string | **[user_id](/engine/Classes/structtec_1_1user_1_1_credentials/#variable-user_id)**  |
+| std::string | **[user_id](/engine/Classes/structtec_1_1user_1_1_credentials/#variable-user-id)**  |
 | std::string | **[username](/engine/Classes/structtec_1_1user_1_1_credentials/#variable-username)**  |
 | std::string | **[password](/engine/Classes/structtec_1_1user_1_1_credentials/#variable-password)**  |
 
@@ -59,4 +59,4 @@ std::string password;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

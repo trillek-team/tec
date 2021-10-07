@@ -10,6 +10,7 @@ title: Classes
 
 * **namespace [fmt](/engine/Namespaces/namespacefmt/)** 
     * **struct [formatter< tec::GLSymbol >](/engine/Classes/structfmt_1_1formatter_3_01tec_1_1_g_l_symbol_01_4/)** 
+    * **struct [formatter< tec::Path >](/engine/Classes/structfmt_1_1formatter_3_01tec_1_1_path_01_4/)** <br>fmtcore formatter for Paths for use with spdlog (or similar) Examples 
 * **namespace [google](/engine/Namespaces/namespacegoogle/)** 
     * **namespace [protobuf](/engine/Namespaces/namespacegoogle_1_1protobuf/)** 
         * **namespace [io](/engine/Namespaces/namespacegoogle_1_1protobuf_1_1io/)** 
@@ -17,6 +18,7 @@ title: Classes
 * **namespace [spdlog](/engine/Namespaces/namespacespdlog/)** 
     * **namespace [sinks](/engine/Namespaces/namespacespdlog_1_1sinks/)** 
 * **namespace [std](/engine/Namespaces/namespacestd/)** 
+    * **struct [default_delete< FILE >](/engine/Classes/structstd_1_1default__delete_3_01_f_i_l_e_01_4/)** 
 * **namespace [tec](/engine/Namespaces/namespacetec/)** 
     * **class [AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)** 
     * **class [ActiveEntityTooltip](/engine/Classes/classtec_1_1_active_entity_tooltip/)** 
@@ -49,7 +51,6 @@ title: Classes
     * **class [EventSystem](/engine/Classes/classtec_1_1_event_system/)** 
     * **struct [FPSController](/engine/Classes/structtec_1_1_f_p_s_controller/)** 
     * **struct [FileDropEvent](/engine/Classes/structtec_1_1_file_drop_event/)** 
-    * **class [FilePath](/engine/Classes/classtec_1_1_file_path/)** <br>[OS](/engine/Classes/classtec_1_1_o_s/) File system path separator. 
     * **struct [FocusBlurEvent](/engine/Classes/structtec_1_1_focus_blur_event/)** 
     * **struct [FocusCapturedEvent](/engine/Classes/structtec_1_1_focus_captured_event/)** 
     * **class [GBuffer](/engine/Classes/classtec_1_1_g_buffer/)** 
@@ -92,6 +93,8 @@ title: Classes
     * **class [OS](/engine/Classes/classtec_1_1_o_s/)** 
     * **struct [ObjectGroup](/engine/Classes/structtec_1_1_object_group/)** 
     * **struct [Orientation](/engine/Classes/structtec_1_1_orientation/)** 
+    * **class [Path](/engine/Classes/classtec_1_1_path/)** 
+    * **class [PathException](/engine/Classes/classtec_1_1_path_exception/)** 
     * **class [PhysicsDebugDrawer](/engine/Classes/classtec_1_1_physics_debug_drawer/)** 
     * **class [PhysicsSystem](/engine/Classes/classtec_1_1_physics_system/)** 
     * **class [PingTimesWindow](/engine/Classes/classtec_1_1_ping_times_window/)** 
@@ -168,4 +171,4 @@ title: Classes
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

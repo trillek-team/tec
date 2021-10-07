@@ -24,10 +24,10 @@ title: tec::LuaScript
 
 |                | Name           |
 | -------------- | -------------- |
-| std::string | **[script_name](/engine/Classes/structtec_1_1_lua_script/#variable-script_name)**  |
+| std::string | **[script_name](/engine/Classes/structtec_1_1_lua_script/#variable-script-name)**  |
 | std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > | **[script](/engine/Classes/structtec_1_1_lua_script/#variable-script)**  |
 | sol::environment | **[environment](/engine/Classes/structtec_1_1_lua_script/#variable-environment)**  |
-| sol::state * | **[global_state](/engine/Classes/structtec_1_1_lua_script/#variable-global_state)**  |
+| sol::state * | **[global_state](/engine/Classes/structtec_1_1_lua_script/#variable-global-state)**  |
 
 ## Public Functions Documentation
 
@@ -113,4 +113,4 @@ sol::state * global_state = nullptr;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

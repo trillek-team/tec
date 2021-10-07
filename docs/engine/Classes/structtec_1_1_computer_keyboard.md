@@ -24,9 +24,9 @@ Inherits from [tec::DeviceBase](/engine/Classes/structtec_1_1_device_base/)
 
 |                | Name           |
 | -------------- | -------------- |
-| bool | **[has_focus](/engine/Classes/structtec_1_1_computer_keyboard/#variable-has_focus)**  |
-| int | **[last_keycode](/engine/Classes/structtec_1_1_computer_keyboard/#variable-last_keycode)**  |
-| int | **[modifiers_state](/engine/Classes/structtec_1_1_computer_keyboard/#variable-modifiers_state)**  |
+| bool | **[has_focus](/engine/Classes/structtec_1_1_computer_keyboard/#variable-has-focus)**  |
+| int | **[last_keycode](/engine/Classes/structtec_1_1_computer_keyboard/#variable-last-keycode)**  |
+| int | **[modifiers_state](/engine/Classes/structtec_1_1_computer_keyboard/#variable-modifiers-state)**  |
 
 ## Additional inherited members
 
@@ -102,4 +102,4 @@ int modifiers_state {0};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

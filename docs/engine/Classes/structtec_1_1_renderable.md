@@ -21,13 +21,13 @@ title: tec::Renderable
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [RenderItem](/engine/Classes/structtec_1_1_render_item/) > | **[render_item](/engine/Classes/structtec_1_1_renderable/#variable-render_item)**  |
-| std::string | **[mesh_name](/engine/Classes/structtec_1_1_renderable/#variable-mesh_name)**  |
+| std::shared_ptr< [RenderItem](/engine/Classes/structtec_1_1_render_item/) > | **[render_item](/engine/Classes/structtec_1_1_renderable/#variable-render-item)**  |
+| std::string | **[mesh_name](/engine/Classes/structtec_1_1_renderable/#variable-mesh-name)**  |
 | std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > | **[mesh](/engine/Classes/structtec_1_1_renderable/#variable-mesh)**  |
-| std::string | **[shader_name](/engine/Classes/structtec_1_1_renderable/#variable-shader_name)**  |
+| std::string | **[shader_name](/engine/Classes/structtec_1_1_renderable/#variable-shader-name)**  |
 | std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > | **[shader](/engine/Classes/structtec_1_1_renderable/#variable-shader)**  |
-| glm::vec3 | **[local_translation](/engine/Classes/structtec_1_1_renderable/#variable-local_translation)**  |
-| [Orientation](/engine/Classes/structtec_1_1_orientation/) | **[local_orientation](/engine/Classes/structtec_1_1_renderable/#variable-local_orientation)**  |
+| glm::vec3 | **[local_translation](/engine/Classes/structtec_1_1_renderable/#variable-local-translation)**  |
+| [Orientation](/engine/Classes/structtec_1_1_orientation/) | **[local_orientation](/engine/Classes/structtec_1_1_renderable/#variable-local-orientation)**  |
 | bool | **[hidden](/engine/Classes/structtec_1_1_renderable/#variable-hidden)**  |
 
 ## Public Functions Documentation
@@ -117,4 +117,4 @@ bool hidden {false};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

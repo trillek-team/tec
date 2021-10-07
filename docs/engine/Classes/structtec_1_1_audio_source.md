@@ -25,10 +25,10 @@ title: tec::AudioSource
 | ALuint | **[source](/engine/Classes/structtec_1_1_audio_source/#variable-source)**  |
 | ALuint | **[buffer](/engine/Classes/structtec_1_1_audio_source/#variable-buffer)**  |
 | bool | **[looping](/engine/Classes/structtec_1_1_audio_source/#variable-looping)**  |
-| std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[vorbis_stream](/engine/Classes/structtec_1_1_audio_source/#variable-vorbis_stream)**  |
-| AUDIOSOURCE_STATE | **[source_state](/engine/Classes/structtec_1_1_audio_source/#variable-source_state)**  |
+| std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[vorbis_stream](/engine/Classes/structtec_1_1_audio_source/#variable-vorbis-stream)**  |
+| AUDIOSOURCE_STATE | **[source_state](/engine/Classes/structtec_1_1_audio_source/#variable-source-state)**  |
 | int | **[gain](/engine/Classes/structtec_1_1_audio_source/#variable-gain)**  |
-| std::string | **[audio_name](/engine/Classes/structtec_1_1_audio_source/#variable-audio_name)**  |
+| std::string | **[audio_name](/engine/Classes/structtec_1_1_audio_source/#variable-audio-name)**  |
 
 ## Public Functions Documentation
 
@@ -120,4 +120,4 @@ std::string audio_name;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

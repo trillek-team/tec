@@ -21,8 +21,8 @@ title: tec::View
 
 |                | Name           |
 | -------------- | -------------- |
-| glm::vec3 | **[view_pos](/engine/Classes/structtec_1_1_view/#variable-view_pos)**  |
-| glm::quat | **[view_quat](/engine/Classes/structtec_1_1_view/#variable-view_quat)**  |
+| glm::vec3 | **[view_pos](/engine/Classes/structtec_1_1_view/#variable-view-pos)**  |
+| glm::quat | **[view_quat](/engine/Classes/structtec_1_1_view/#variable-view-quat)**  |
 | bool | **[active](/engine/Classes/structtec_1_1_view/#variable-active)**  |
 
 ## Public Functions Documentation
@@ -79,4 +79,4 @@ bool active = false;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

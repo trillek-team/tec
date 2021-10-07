@@ -13,7 +13,7 @@ title: tec::KeyboardEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[KEY_ACTION](/engine/Classes/structtec_1_1_keyboard_event/#enum-key_action)** { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR} |
+| enum| **[KEY_ACTION](/engine/Classes/structtec_1_1_keyboard_event/#enum-key-action)** { KEY_DOWN, KEY_UP, KEY_REPEAT, KEY_CHAR} |
 
 ## Public Attributes
 
@@ -70,4 +70,4 @@ int mods {0};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

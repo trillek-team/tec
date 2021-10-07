@@ -27,9 +27,9 @@ Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_ev
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [LuaScript](/engine/Classes/structtec_1_1_lua_script/) > | **[config_script](/engine/Classes/classtec_1_1_game/#variable-config_script)**  |
+| std::shared_ptr< [LuaScript](/engine/Classes/structtec_1_1_lua_script/) > | **[config_script](/engine/Classes/classtec_1_1_game/#variable-config-script)**  |
 | unsigned int | **[fps](/engine/Classes/classtec_1_1_game/#variable-fps)**  |
-| float | **[avg_frame_time](/engine/Classes/classtec_1_1_game/#variable-avg_frame_time)**  |
+| float | **[avg_frame_time](/engine/Classes/classtec_1_1_game/#variable-avg-frame-time)**  |
 | [TimeFrameMetrics](/engine/Classes/structtec_1_1_time_frame_metrics/) | **[tfm](/engine/Classes/classtec_1_1_game/#variable-tfm)**  |
 
 ## Additional inherited members
@@ -48,8 +48,8 @@ Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_ev
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read-event-queue)**  |
+| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write-event-queue)**  |
 
 **Public Functions inherited from [tec::EventQueue< MouseClickEvent >](/engine/Classes/classtec_1_1_event_queue/)**
 
@@ -65,8 +65,8 @@ Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_ev
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read-event-queue)**  |
+| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write-event-queue)**  |
 
 
 ## Public Functions Documentation
@@ -163,4 +163,4 @@ TimeFrameMetrics tfm;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

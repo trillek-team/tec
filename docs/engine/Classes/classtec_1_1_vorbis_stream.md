@@ -13,13 +13,13 @@ title: tec::VorbisStream
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/#function-vorbisstream)**(int buffer_size =32768) |
+| | **[VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/#function-vorbisstream)**(unsigned buffer_size =32768) |
 | | **[~VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/#function-~vorbisstream)**() |
 | std::size_t | **[BufferStream](/engine/Classes/classtec_1_1_vorbis_stream/#function-bufferstream)**(ALint buffer) |
 | void | **[Reset](/engine/Classes/classtec_1_1_vorbis_stream/#function-reset)**() |
 | const std::string | **[GetName](/engine/Classes/classtec_1_1_vorbis_stream/#function-getname)**() const |
 | void | **[SetName](/engine/Classes/classtec_1_1_vorbis_stream/#function-setname)**(const std::string & _name) |
-| std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[Create](/engine/Classes/classtec_1_1_vorbis_stream/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & filename)<br>Creates a [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) resource from the given filename.  |
+| std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[Create](/engine/Classes/classtec_1_1_vorbis_stream/#function-create)**(const [Path](/engine/Classes/classtec_1_1_path/) & filename)<br>Creates a [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) resource from the given filename.  |
 
 ## Public Functions Documentation
 
@@ -27,7 +27,7 @@ title: tec::VorbisStream
 
 ```cpp
 VorbisStream(
-    int buffer_size =32768
+    unsigned buffer_size =32768
 )
 ```
 
@@ -75,7 +75,7 @@ inline void SetName(
 
 ```cpp
 static std::shared_ptr< VorbisStream > Create(
-    const FilePath & filename
+    const Path & filename
 )
 ```
 
@@ -93,4 +93,4 @@ The only used initialization property is "filename".
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

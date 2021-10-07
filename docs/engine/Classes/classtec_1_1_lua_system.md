@@ -22,7 +22,7 @@ Inherits from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_comm
 | virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
 | virtual void | **[On](/engine/Classes/classtec_1_1_lua_system/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/) > data) override |
 | void | **[ExecuteString](/engine/Classes/classtec_1_1_lua_system/#function-executestring)**(std::string script_string) |
-| std::shared_ptr< [LuaScript](/engine/Classes/structtec_1_1_lua_script/) > | **[LoadFile](/engine/Classes/classtec_1_1_lua_system/#function-loadfile)**([FilePath](/engine/Classes/classtec_1_1_file_path/) filepath) |
+| std::shared_ptr< [LuaScript](/engine/Classes/structtec_1_1_lua_script/) > | **[LoadFile](/engine/Classes/classtec_1_1_lua_system/#function-loadfile)**([Path](/engine/Classes/classtec_1_1_path/) filepath) |
 | sol::state & | **[GetGlobalState](/engine/Classes/classtec_1_1_lua_system/#function-getglobalstate)**() |
 | template <typename... Args\> <br>void | **[CallFunctions](/engine/Classes/classtec_1_1_lua_system/#function-callfunctions)**(std::string function_name, Args &&... args) |
 
@@ -42,8 +42,8 @@ Inherits from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_comm
 
 |                | Name           |
 | -------------- | -------------- |
-| std::atomic< std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * > | **[global_command_queue](/engine/Classes/classtec_1_1_command_queue/#variable-global_command_queue)**  |
-| std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * | **[local_queue](/engine/Classes/classtec_1_1_command_queue/#variable-local_queue)**  |
+| std::atomic< std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * > | **[global_command_queue](/engine/Classes/classtec_1_1_command_queue/#variable-global-command-queue)**  |
+| std::queue< [Command](/engine/Classes/structtec_1_1_command/)< T > > * | **[local_queue](/engine/Classes/classtec_1_1_command_queue/#variable-local-queue)**  |
 
 **Public Functions inherited from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/)**
 
@@ -59,8 +59,8 @@ Inherits from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_comm
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read-event-queue)**  |
+| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write-event-queue)**  |
 
 **Public Functions inherited from [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)**
 
@@ -76,8 +76,8 @@ Inherits from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_comm
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read-event-queue)**  |
+| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write-event-queue)**  |
 
 **Public Functions inherited from [tec::EventQueue< ChatCommandEvent >](/engine/Classes/classtec_1_1_event_queue/)**
 
@@ -93,8 +93,8 @@ Inherits from [tec::CommandQueue< LuaSystem >](/engine/Classes/classtec_1_1_comm
 
 |                | Name           |
 | -------------- | -------------- |
-| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read_event_queue)**  |
-| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write_event_queue)**  |
+| [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * | **[read_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-read-event-queue)**  |
+| std::atomic< [Queue](/engine/Classes/structtec_1_1_queue/)< [Event](/engine/Classes/structtec_1_1_event/)< T > > * > | **[write_event_queue](/engine/Classes/classtec_1_1_event_queue/#variable-write-event-queue)**  |
 
 
 ## Public Functions Documentation
@@ -174,7 +174,7 @@ void ExecuteString(
 
 ```cpp
 std::shared_ptr< LuaScript > LoadFile(
-    FilePath filepath
+    Path filepath
 )
 ```
 
@@ -199,4 +199,4 @@ inline void CallFunctions(
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

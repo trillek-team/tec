@@ -25,12 +25,12 @@ Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) > | **[Create](/engine/Classes/classtec_1_1_m_d5_mesh/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Returns a resource with the specified name.  |
+| std::shared_ptr< [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) > | **[Create](/engine/Classes/classtec_1_1_m_d5_mesh/#function-create)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Returns a resource with the specified name.  |
 | bool | **[Parse](/engine/Classes/classtec_1_1_m_d5_mesh/#function-parse)**()<br>Loads the [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) file from disk and parses it.  |
 | void | **[CalculateVertexPositions](/engine/Classes/classtec_1_1_m_d5_mesh/#function-calculatevertexpositions)**()<br>Calculates the final vertex positions based on the bind-pose skeleton.  |
 | void | **[CalculateVertexNormals](/engine/Classes/classtec_1_1_m_d5_mesh/#function-calculatevertexnormals)**()<br>Calculates the vertex normals based on the bind-pose skeleton and mesh tris.  |
 | void | **[UpdateIndexList](/engine/Classes/classtec_1_1_m_d5_mesh/#function-updateindexlist)**()<br>Updates the meshgroups index list based from the loaded mesh groups.  |
-| void | **[SetFileName](/engine/Classes/classtec_1_1_m_d5_mesh/#function-setfilename)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Sets the mesh filename.  |
+| void | **[SetFileName](/engine/Classes/classtec_1_1_m_d5_mesh/#function-setfilename)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Sets the mesh filename.  |
 
 ## Friends
 
@@ -70,7 +70,7 @@ Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
 
 ```cpp
 static std::shared_ptr< MD5Mesh > Create(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -78,7 +78,7 @@ Returns a resource with the specified name.
 
 **Parameters**: 
 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/)& fname The filename of the [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) resource 
+  * **const** [Path](/engine/Classes/classtec_1_1_path/)& fname The filename of the [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) resource 
 
 
 **Return**: std::shared_ptr<MD5Mesh> The created [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) resource. 
@@ -139,7 +139,7 @@ There isn't a return as the processing will just do nothing if the parse data wa
 
 ```cpp
 inline void SetFileName(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -168,4 +168,4 @@ friend class MD5Anim(
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

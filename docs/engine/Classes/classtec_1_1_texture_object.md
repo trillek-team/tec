@@ -32,9 +32,9 @@ title: tec::TextureObject
 
 |                | Name           |
 | -------------- | -------------- |
-| GLuint | **[texture_id](/engine/Classes/classtec_1_1_texture_object/#variable-texture_id)**  |
+| GLuint | **[texture_id](/engine/Classes/classtec_1_1_texture_object/#variable-texture-id)**  |
 | bool | **[compare](/engine/Classes/classtec_1_1_texture_object/#variable-compare)**  |
-| std::weak_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[source_ptr](/engine/Classes/classtec_1_1_texture_object/#variable-source_ptr)**  |
+| std::weak_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[source_ptr](/engine/Classes/classtec_1_1_texture_object/#variable-source-ptr)**  |
 
 ## Public Functions Documentation
 
@@ -189,4 +189,4 @@ std::weak_ptr< PixelBuffer > source_ptr;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

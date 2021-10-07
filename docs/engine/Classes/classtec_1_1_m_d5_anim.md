@@ -26,8 +26,8 @@ title: tec::MD5Anim
 | | **[MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/#function-md5anim)**() =default |
 | | **[~MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/#function-~md5anim)**() =default |
 | bool | **[Parse](/engine/Classes/classtec_1_1_m_d5_anim/#function-parse)**()<br>Loads the [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) file from disk and parses it.  |
-| void | **[SetFileName](/engine/Classes/classtec_1_1_m_d5_anim/#function-setfilename)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Sets the animation filename.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[GetFileName](/engine/Classes/classtec_1_1_m_d5_anim/#function-getfilename)**() |
+| void | **[SetFileName](/engine/Classes/classtec_1_1_m_d5_anim/#function-setfilename)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Sets the animation filename.  |
+| [Path](/engine/Classes/classtec_1_1_path/) | **[GetFileName](/engine/Classes/classtec_1_1_m_d5_anim/#function-getfilename)**() |
 | const std::string | **[GetName](/engine/Classes/classtec_1_1_m_d5_anim/#function-getname)**() const |
 | void | **[SetName](/engine/Classes/classtec_1_1_m_d5_anim/#function-setname)**(const std::string & _name) |
 | std::size_t | **[GetFrameCount](/engine/Classes/classtec_1_1_m_d5_anim/#function-getframecount)**() const<br>Returns the number of animation frames.  |
@@ -35,7 +35,7 @@ title: tec::MD5Anim
 | void | **[BuildFrameSkeleton](/engine/Classes/classtec_1_1_m_d5_anim/#function-buildframeskeleton)**(std::size_t frame_index)<br>Builds or rebuilds the [FrameSkeleton]() for a given frame index.  |
 | bool | **[CheckMesh](/engine/Classes/classtec_1_1_m_d5_anim/#function-checkmesh)**(std::shared_ptr< [MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) > mesh_file)<br>Checks of a given mesh is valid for this animation.  |
 | void | **[InterpolatePose](/engine/Classes/classtec_1_1_m_d5_anim/#function-interpolatepose)**(std::vector< [AnimationBone](/engine/Classes/structtec_1_1_animation_bone/) > & pose_out, std::size_t frame_index_start, std::size_t frame_index_end, float delta)<br>Gets the interpolated pose skeleton between 2 frames at a given delta.  |
-| std::shared_ptr< [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) > | **[Create](/engine/Classes/classtec_1_1_m_d5_anim/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Returns a resource with the specified name.  |
+| std::shared_ptr< [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) > | **[Create](/engine/Classes/classtec_1_1_m_d5_anim/#function-create)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Returns a resource with the specified name.  |
 
 ## Public Functions Documentation
 
@@ -67,7 +67,7 @@ Loads the [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) file from disk and 
 
 ```cpp
 inline void SetFileName(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -86,7 +86,7 @@ This is just a shorthand function that can be called directly via script API.
 ### function GetFileName
 
 ```cpp
-inline FilePath GetFileName()
+inline Path GetFileName()
 ```
 
 
@@ -185,7 +185,7 @@ Gets the interpolated pose skeleton between 2 frames at a given delta.
 
 ```cpp
 static std::shared_ptr< MD5Anim > Create(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -193,7 +193,7 @@ Returns a resource with the specified name.
 
 **Parameters**: 
 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/)& fname The filename of the [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) resource 
+  * **const** [Path](/engine/Classes/classtec_1_1_path/)& fname The filename of the [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) resource 
 
 
 **Return**: std::shared_ptr<MD5Anim> The create [MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) resource. 
@@ -203,4 +203,4 @@ The only used initialization property is "filename".
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

@@ -24,7 +24,7 @@ std::string LoadAsString(const Path& fname) {
 }
 
 bool SaveFromString(const Path& fname, std::string contents) {
-	auto output=fname.OpenStream(FS_READWRITE | FS_CREATE);
+	auto output = fname.OpenStream(FS_READWRITE | FS_CREATE);
 	if (!output->good())
 		throw std::runtime_error("can't open: " + fname.toString());
 

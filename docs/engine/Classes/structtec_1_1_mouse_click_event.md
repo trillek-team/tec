@@ -14,8 +14,8 @@ title: tec::MouseClickEvent
 |                | Name           |
 | -------------- | -------------- |
 | MouseBtnEvent::MOUSE_BTN | **[button](/engine/Classes/structtec_1_1_mouse_click_event/#variable-button)**  |
-| glm::vec3 | **[ray_hit_point_world](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray_hit_point_world)**  |
-| double | **[ray_distance](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray_distance)**  |
+| glm::vec3 | **[ray_hit_point_world](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray-hit-point-world)**  |
+| double | **[ray_distance](/engine/Classes/structtec_1_1_mouse_click_event/#variable-ray-distance)**  |
 
 ## Public Attributes Documentation
 
@@ -42,4 +42,4 @@ double ray_distance;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

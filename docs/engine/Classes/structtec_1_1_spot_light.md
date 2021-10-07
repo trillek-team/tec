@@ -50,8 +50,8 @@ Inherits from [tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_
 |                | Name           |
 | -------------- | -------------- |
 | glm::vec3 | **[color](/engine/Classes/structtec_1_1_base_light/#variable-color)**  |
-| float | **[ambient_intensity](/engine/Classes/structtec_1_1_base_light/#variable-ambient_intensity)**  |
-| float | **[diffuse_intensity](/engine/Classes/structtec_1_1_base_light/#variable-diffuse_intensity)**  |
+| float | **[ambient_intensity](/engine/Classes/structtec_1_1_base_light/#variable-ambient-intensity)**  |
+| float | **[diffuse_intensity](/engine/Classes/structtec_1_1_base_light/#variable-diffuse-intensity)**  |
 
 
 ## Public Functions Documentation
@@ -74,4 +74,4 @@ float cutoff {0.f};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

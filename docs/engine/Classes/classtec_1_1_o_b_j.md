@@ -23,11 +23,11 @@ Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
 
 |                | Name           |
 | -------------- | -------------- |
-| std::shared_ptr< [OBJ](/engine/Classes/classtec_1_1_o_b_j/) > | **[Create](/engine/Classes/classtec_1_1_o_b_j/#function-create)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Returns a resource with the specified name.  |
+| std::shared_ptr< [OBJ](/engine/Classes/classtec_1_1_o_b_j/) > | **[Create](/engine/Classes/classtec_1_1_o_b_j/#function-create)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Returns a resource with the specified name.  |
 | bool | **[Parse](/engine/Classes/classtec_1_1_o_b_j/#function-parse)**()<br>Loads the [OBJ](/engine/Classes/classtec_1_1_o_b_j/) file from disk and parses it.  |
-| bool | **[ParseMTL](/engine/Classes/classtec_1_1_o_b_j/#function-parsemtl)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Loads the [MTL]() file from disk and parses it.  |
+| bool | **[ParseMTL](/engine/Classes/classtec_1_1_o_b_j/#function-parsemtl)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Loads the [MTL]() file from disk and parses it.  |
 | void | **[PopulateMeshGroups](/engine/Classes/classtec_1_1_o_b_j/#function-populatemeshgroups)**()<br>Calculates the final vertex positions based on the bind-pose skeleton.  |
-| void | **[SetFileName](/engine/Classes/classtec_1_1_o_b_j/#function-setfilename)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname)<br>Sets the mesh filename.  |
+| void | **[SetFileName](/engine/Classes/classtec_1_1_o_b_j/#function-setfilename)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname)<br>Sets the mesh filename.  |
 
 ## Additional inherited members
 
@@ -61,7 +61,7 @@ Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
 
 ```cpp
 static std::shared_ptr< OBJ > Create(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -69,7 +69,7 @@ Returns a resource with the specified name.
 
 **Parameters**: 
 
-  * **const** [FilePath](/engine/Classes/classtec_1_1_file_path/)& fname The filename of the [OBJ](/engine/Classes/classtec_1_1_o_b_j/) resource 
+  * **const** [Path](/engine/Classes/classtec_1_1_path/)& fname The filename of the [OBJ](/engine/Classes/classtec_1_1_o_b_j/) resource 
 
 
 **Return**: std::shared_ptr<OBJ> The created [OBJ](/engine/Classes/classtec_1_1_o_b_j/) resource. 
@@ -91,7 +91,7 @@ Loads the [OBJ](/engine/Classes/classtec_1_1_o_b_j/) file from disk and parses i
 
 ```cpp
 bool ParseMTL(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -116,7 +116,7 @@ There isn't a return as the processing will just do nothing if the parse data wa
 
 ```cpp
 inline void SetFileName(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -134,4 +134,4 @@ This is just a shorthand function that can be called directly via script API.
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

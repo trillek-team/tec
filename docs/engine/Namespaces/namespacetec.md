@@ -98,7 +98,8 @@ title: tec
 | struct | **[tec::FocusBlurEvent](/engine/Classes/structtec_1_1_focus_blur_event/)**  |
 | struct | **[tec::ChatCommandEvent](/engine/Classes/structtec_1_1_chat_command_event/)**  |
 | struct | **[tec::UserLoginEvent](/engine/Classes/structtec_1_1_user_login_event/)**  |
-| class | **[tec::FilePath](/engine/Classes/classtec_1_1_file_path/)** <br>[OS](/engine/Classes/classtec_1_1_o_s/) File system path separator.  |
+| class | **[tec::PathException](/engine/Classes/classtec_1_1_path_exception/)**  |
+| class | **[tec::Path](/engine/Classes/classtec_1_1_path/)**  |
 | struct | **[tec::GameState](/engine/Classes/structtec_1_1_game_state/)**  |
 | struct | **[tec::NewGameStateEvent](/engine/Classes/structtec_1_1_new_game_state_event/)**  |
 | struct | **[tec::EventList](/engine/Classes/structtec_1_1_event_list/)**  |
@@ -125,9 +126,10 @@ title: tec
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[ENGINE_ENTITIES](/engine/Namespaces/namespacetec/#enum-engine_entities)** { MANIPULATOR = 1} |
+| enum| **[ENGINE_ENTITIES](/engine/Namespaces/namespacetec/#enum-engine-entities)** { MANIPULATOR = 1} |
 | enum class std::uint32_t | **[ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MODEFLAG_COLOR = 2, MODEFLAG_ALPHA = 4, MODEFLAG_GAMMA = 8, MONOCHROME = 0, MONOCHROME_A = MODEFLAG_ALPHA, COLOR_RGB = MODEFLAG_COLOR, COLOR_RGBA = MODEFLAG_COLOR | MODEFLAG_ALPHA, GAMMA_RGB = MODEFLAG_COLOR | MODEFLAG_GAMMA, GAMMA_RGBA = MODEFLAG_COLOR | MODEFLAG_GAMMA | MODEFLAG_ALPHA} |
-| enum class| **[AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource_state)** { PLAYING, PAUSED, STOPPED} |
+| enum class| **[AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource-state)** { PLAYING, PAUSED, STOPPED} |
+| enum int | **[PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags)** { FS_DEFAULT = 0, FS_READONLY = 0, FS_READWRITE = 1, FS_CREATE = 2, FS_APPEND = 4} |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > > | **[MaterialMap](/engine/Namespaces/namespacetec/#typedef-materialmap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > > | **[ShaderMap](/engine/Namespaces/namespacetec/#typedef-shadermap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::string > | **[ShaderIncludes](/engine/Namespaces/namespacetec/#typedef-shaderincludes)**  |
@@ -149,8 +151,8 @@ title: tec
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), CollisionBody * > | **[CollisionBodyMap](/engine/Namespaces/namespacetec/#using-collisionbodymap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > > | **[MeshMap](/engine/Namespaces/namespacetec/#typedef-meshmap)**  |
 | typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [ScriptFile](/engine/Classes/classtec_1_1_script_file/) > > | **[ScriptMap](/engine/Namespaces/namespacetec/#typedef-scriptmap)**  |
-| using std::codecvt_utf8< wchar_t > | **[convert_utf8](/engine/Namespaces/namespacetec/#using-convert_utf8)**  |
-| typedef std::uint64_t | **[state_id_t](/engine/Namespaces/namespacetec/#typedef-state_id_t)**  |
+| using std::codecvt_utf8< wchar_t > | **[convert_utf8](/engine/Namespaces/namespacetec/#using-convert-utf8)**  |
+| typedef std::uint64_t | **[state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t)**  |
 | typedef std::int64_t | **[GUID](/engine/Namespaces/namespacetec/#typedef-guid)**  |
 | typedef std::int64_t | **[eid](/engine/Namespaces/namespacetec/#typedef-eid)** <br>Global Unique ID.  |
 | typedef std::uint32_t | **[tid](/engine/Namespaces/namespacetec/#typedef-tid)**  |
@@ -167,7 +169,7 @@ title: tec
 | void | **[BuildTestVoxelVolume](/engine/Namespaces/namespacetec/#function-buildtestvoxelvolume)**() |
 | [Renderable](/engine/Classes/structtec_1_1_renderable/) * | **[GetRenderable](/engine/Namespaces/namespacetec/#function-getrenderable)**() |
 | void | **[ErrorCallback](/engine/Namespaces/namespacetec/#function-errorcallback)**(int error_no, const char * description) |
-| GLFWmonitor * | **[get_current_monitor](/engine/Namespaces/namespacetec/#function-get_current_monitor)**(GLFWwindow * window) |
+| GLFWmonitor * | **[get_current_monitor](/engine/Namespaces/namespacetec/#function-get-current-monitor)**(GLFWwindow * window) |
 | void | **[ActivateTextureUnit](/engine/Namespaces/namespacetec/#function-activatetextureunit)**(const GLuint unit, const GLuint texture_name) |
 | std::string | **[CleanString](/engine/Namespaces/namespacetec/#function-cleanstring)**(std::string str)<br>Cleans an input string by removing certain grouping characters.  |
 | void | **[ComputeWNeg](/engine/Namespaces/namespacetec/#function-computewneg)**(glm::quat & q)<br>Compute the quaternion's W component on interval [-1, 0], MD5 style.  |
@@ -179,78 +181,78 @@ title: tec
 | std::string | **[VorbisErrorToString](/engine/Namespaces/namespacetec/#function-vorbiserrortostring)**(int error) |
 | void | **[alCheckError](/engine/Namespaces/namespacetec/#function-alcheckerror)**() |
 | [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetNextEntityId](/engine/Namespaces/namespacetec/#function-getnextentityid)**() |
-| | **[ATTRIBUTE_ALIGNED16](/engine/Namespaces/namespacetec/#function-attribute_aligned16)**(struct ) |
+| | **[ATTRIBUTE_ALIGNED16](/engine/Namespaces/namespacetec/#function-attribute-aligned16)**(struct ) |
+| void | **[InvokeFileFactory](/engine/Namespaces/namespacetec/#function-invokefilefactory)**(const std::string & file_name) |
+| template <typename T \> <br>std::shared_ptr< T > | **[GetResource](/engine/Namespaces/namespacetec/#function-getresource)**(const std::string & res_name) |
 | template <typename T \> <br>void | **[AddFileFactory](/engine/Namespaces/namespacetec/#function-addfilefactory)**() |
-| const std::string | **[app_name](/engine/Namespaces/namespacetec/#function-app_name)**("trillek" ) |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Concatenate a path.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::string & str)<br>Concatenate a path.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::wstring & wstr)<br>Concatenate a path.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const char * str)<br>Concatenate a path.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & rhs)<br>Append a subdirectory or file.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::string & str)<br>Append a subdirectory or file.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const std::wstring & wstr)<br>Append a subdirectory or file.  |
-| [FilePath](/engine/Classes/classtec_1_1_file_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & lhs, const char * str)<br>Append a subdirectory or file.  |
-| template <typename charT ,typename traits \> <br>std::basic_ostream< charT, traits > & | **[operator<<](/engine/Namespaces/namespacetec/#function-operator<<)**(std::basic_ostream< charT, traits > & os, const [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Output to a stream.  |
-| template <typename charT ,typename traits \> <br>std::basic_istream< charT, traits > & | **[operator>>](/engine/Namespaces/namespacetec/#function-operator>>)**(std::basic_istream< charT, traits > & is, [FilePath](/engine/Classes/classtec_1_1_file_path/) & path)<br>Input from a stream.  |
+| const std::string_view | **[app_name](/engine/Namespaces/namespacetec/#function-app-name)**("trillek" )<br>tec [Path]() separator  |
+| PATH_OPEN_FLAGS | **[operator|](/engine/Namespaces/namespacetec/#function-operator|)**(PATH_OPEN_FLAGS a, PATH_OPEN_FLAGS b) |
+| PATH_OPEN_FLAGS | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(PATH_OPEN_FLAGS a, PATH_OPEN_FLAGS b) |
+| [Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, const [Path](/engine/Classes/classtec_1_1_path/) & rhs)<br>Append a subdirectory or file.  |
+| template <size_t N\> <br>[Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, const char(&) cstr[N])<br>Append a subdirectory or file.  |
+| [Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, const std::string_view strv)<br>Append a subdirectory or file.  |
+| [Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, std::string & str)<br>Append a subdirectory or file.  |
+| [Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, const std::wstring & wstr)<br>Append a subdirectory or file.  |
+| template <typename charT ,typename traits \> <br>std::basic_ostream< charT, traits > & | **[operator<<](/engine/Namespaces/namespacetec/#function-operator<<)**(std::basic_ostream< charT, traits > & os, const [Path](/engine/Classes/classtec_1_1_path/) & path)<br>Output to a stream.  |
+| std::ostream & | **[operator<<](/engine/Namespaces/namespacetec/#function-operator<<)**(std::ostream & os, const [Path](/engine/Classes/classtec_1_1_path/) & path) |
+| template <typename charT ,typename traits \> <br>std::basic_istream< charT, traits > & | **[operator>>](/engine/Namespaces/namespacetec/#function-operator>>)**(std::basic_istream< charT, traits > & is, [Path](/engine/Classes/classtec_1_1_path/) & path)<br>Input from a stream.  |
 | int | **[LuaSystemPanicHandler](/engine/Namespaces/namespacetec/#function-luasystempanichandler)**(sol::optional< std::string > maybe_msg) |
 | glm::vec3 | **[GetRayDirection](/engine/Namespaces/namespacetec/#function-getraydirection)**(float mouse_x, float mouse_y, float screen_width, float screen_height, glm::mat4 view, glm::mat4 projection) |
-| std::string | **[LoadAsString](/engine/Namespaces/namespacetec/#function-loadasstring)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname) |
-| bool | **[SaveFromString](/engine/Namespaces/namespacetec/#function-savefromstring)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname, std::string contents) |
-| bool | **[LoadProtoPack](/engine/Namespaces/namespacetec/#function-loadprotopack)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname, proto::Entity & entity) |
-| void | **[ProtoLoadEntity](/engine/Namespaces/namespacetec/#function-protoloadentity)**(const [FilePath](/engine/Classes/classtec_1_1_file_path/) & fname) |
+| std::string | **[LoadAsString](/engine/Namespaces/namespacetec/#function-loadasstring)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname) |
+| bool | **[SaveFromString](/engine/Namespaces/namespacetec/#function-savefromstring)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname, std::string contents) |
+| bool | **[LoadProtoPack](/engine/Namespaces/namespacetec/#function-loadprotopack)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname, proto::Entity & entity) |
+| void | **[ProtoLoadEntity](/engine/Namespaces/namespacetec/#function-protoloadentity)**(const [Path](/engine/Classes/classtec_1_1_path/) & fname) |
 | void | **[ProtoLoad](/engine/Namespaces/namespacetec/#function-protoload)**(std::string filename) |
-| std::string | **[utf8_encode](/engine/Namespaces/namespacetec/#function-utf8_encode)**(const std::wstring & wstr)<br>Convert a wide Unicode string to an UTF8 string.  |
-| std::wstring | **[utf8_decode](/engine/Namespaces/namespacetec/#function-utf8_decode)**(const std::string & str)<br>Convert an UTF8 string to a wide Unicode String.  |
+| std::string | **[utf8_encode](/engine/Namespaces/namespacetec/#function-utf8-encode)**(const std::wstring & wstr)<br>Convert a wide Unicode string to an UTF8 string.  |
+| std::wstring | **[utf8_decode](/engine/Namespaces/namespacetec/#function-utf8-decode)**(const std::string & str)<br>Convert an UTF8 string to a wide Unicode String.  |
 | std::vector< std::string > | **[SplitString](/engine/Namespaces/namespacetec/#function-splitstring)**(std::string args, std::string deliminator) |
 | template <class T \> <br>bool | **[IsBetween](/engine/Namespaces/namespacetec/#function-isbetween)**(T value, T lower, T upper)<br>User ID.  |
 | template <class TYPE \> <br>constexpr const char * | **[GetTypeName](/engine/Namespaces/namespacetec/#function-gettypename)**(void )<br>Returns the name of an component on compile time.  |
 | template <class TYPE \> <br>constexpr tid | **[GetTypeID](/engine/Namespaces/namespacetec/#function-gettypeid)**(void )<br>Returns the TypeID of a component on compile time.  |
 | template <class TYPE \> <br>constexpr const char * | **[GetTypeEXT](/engine/Namespaces/namespacetec/#function-gettypeext)**(void )<br>Returns the name of a resource type on Compile time.  |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Renderable](/engine/Classes/structtec_1_1_renderable/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Position](/engine/Classes/structtec_1_1_position/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Orientation](/engine/Classes/structtec_1_1_orientation/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([View](/engine/Classes/structtec_1_1_view/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Animation](/engine/Classes/classtec_1_1_animation/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Scale](/engine/Classes/structtec_1_1_scale/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**(CollisionBody ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Velocity](/engine/Classes/structtec_1_1_velocity/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([AudioSource](/engine/Classes/structtec_1_1_audio_source/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([PointLight](/engine/Classes/structtec_1_1_point_light/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([DirectionalLight](/engine/Classes/structtec_1_1_directional_light/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([Computer](/engine/Classes/structtec_1_1_computer/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) ) |
-| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make_idtype)**([LuaScript](/engine/Classes/structtec_1_1_lua_script/) ) |
-| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) , "md5mesh" ) |
-| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) , "md5anim" ) |
-| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([OBJ](/engine/Classes/classtec_1_1_o_b_j/) , "obj" ) |
-| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) , "ogg" ) |
-| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make_exttype)**([ScriptFile](/engine/Classes/classtec_1_1_script_file/) , "lua" ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Renderable](/engine/Classes/structtec_1_1_renderable/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Position](/engine/Classes/structtec_1_1_position/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Orientation](/engine/Classes/structtec_1_1_orientation/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([View](/engine/Classes/structtec_1_1_view/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Animation](/engine/Classes/classtec_1_1_animation/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Scale](/engine/Classes/structtec_1_1_scale/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**(CollisionBody ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Velocity](/engine/Classes/structtec_1_1_velocity/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([AudioSource](/engine/Classes/structtec_1_1_audio_source/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([PointLight](/engine/Classes/structtec_1_1_point_light/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([DirectionalLight](/engine/Classes/structtec_1_1_directional_light/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Computer](/engine/Classes/structtec_1_1_computer/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) ) |
+| | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([LuaScript](/engine/Classes/structtec_1_1_lua_script/) ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/) , "md5mesh" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([MD5Anim](/engine/Classes/classtec_1_1_m_d5_anim/) , "md5anim" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([OBJ](/engine/Classes/classtec_1_1_o_b_j/) , "obj" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) , "ogg" ) |
+| | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([ScriptFile](/engine/Classes/classtec_1_1_script_file/) , "lua" ) |
 
 ## Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| std::unordered_map< std::string, std::function< void(std::string)> > | **[file_factories](/engine/Namespaces/namespacetec/#variable-file_factories)**  |
-| const std::map< std::string_view, GLint > | **[engine_constants](/engine/Namespaces/namespacetec/#variable-engine_constants)**  |
-| char | **[connect_username](/engine/Namespaces/namespacetec/#variable-connect_username)**  |
+| const std::map< std::string_view, GLint > | **[engine_constants](/engine/Namespaces/namespacetec/#variable-engine-constants)**  |
+| char | **[connect_username](/engine/Namespaces/namespacetec/#variable-connect-username)**  |
 | std::string | **[inifilename](/engine/Namespaces/namespacetec/#variable-inifilename)**  |
 | std::string | **[logfilename](/engine/Namespaces/namespacetec/#variable-logfilename)**  |
-| const glm::vec3 | **[FORWARD_VECTOR](/engine/Namespaces/namespacetec/#variable-forward_vector)**  |
-| const glm::vec3 | **[UP_VECTOR](/engine/Namespaces/namespacetec/#variable-up_vector)**  |
-| const glm::vec3 | **[RIGHT_VECTOR](/engine/Namespaces/namespacetec/#variable-right_vector)**  |
-| const char | **[UNIX_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-unix_path_separator)**  |
-| const char | **[WIN_PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-win_path_separator)** <br>*NIX file system path separator  |
-| constexpr std::string_view | **[PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path_separator)**  |
-| double | **[UPDATE_RATE](/engine/Namespaces/namespacetec/#variable-update_rate)**  |
-| double | **[TICKS_PER_SECOND](/engine/Namespaces/namespacetec/#variable-ticks_per_second)**  |
+| std::unordered_map< std::string, std::function< void(std::string)> > | **[file_factories](/engine/Namespaces/namespacetec/#variable-file-factories)**  |
+| const glm::vec3 | **[FORWARD_VECTOR](/engine/Namespaces/namespacetec/#variable-forward-vector)**  |
+| const glm::vec3 | **[UP_VECTOR](/engine/Namespaces/namespacetec/#variable-up-vector)**  |
+| const glm::vec3 | **[RIGHT_VECTOR](/engine/Namespaces/namespacetec/#variable-right-vector)**  |
+| const char | **[WIN_PATH_CHAR](/engine/Namespaces/namespacetec/#variable-win-path-char)**  |
+| constexpr std::string_view | **[PATH_NATIVE_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path-native-separator)**  |
+| constexpr std::string_view | **[PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path-separator)** <br>[OS]() File system path separator.  |
+| double | **[UPDATE_RATE](/engine/Namespaces/namespacetec/#variable-update-rate)**  |
+| double | **[TICKS_PER_SECOND](/engine/Namespaces/namespacetec/#variable-ticks-per-second)**  |
 | const std::unordered_map< tid, const char * > | **[TypeName](/engine/Namespaces/namespacetec/#variable-typename)** <br>Maps on runtime the Type ID with the name.  |
 
 ## Detailed Description
 
 
 Abstract base class for GUI windows
-
-[OS](/engine/Classes/classtec_1_1_o_s/) File system abstraction stuff
 
 Lua system
 
@@ -294,6 +296,19 @@ String handling stuff
 | PLAYING | |   |
 | PAUSED | |   |
 | STOPPED | |   |
+
+
+
+
+### enum PATH_OPEN_FLAGS
+
+| Enumerator | Value | Description |
+| ---------- | ----- | ----------- |
+| FS_DEFAULT | 0|   |
+| FS_READONLY | 0|   |
+| FS_READWRITE | 1|   |
+| FS_CREATE | 2|   |
+| FS_APPEND | 4|   |
 
 
 
@@ -716,6 +731,25 @@ ATTRIBUTE_ALIGNED16(
 ```
 
 
+### function InvokeFileFactory
+
+```cpp
+void InvokeFileFactory(
+    const std::string & file_name
+)
+```
+
+
+### function GetResource
+
+```cpp
+template <typename T >
+std::shared_ptr< T > GetResource(
+    const std::string & res_name
+)
+```
+
+
 ### function AddFileFactory
 
 ```cpp
@@ -727,95 +761,84 @@ void AddFileFactory()
 ### function app_name
 
 ```cpp
-const std::string app_name(
+const std::string_view app_name(
     "trillek" 
 )
 ```
 
+tec [Path]() separator 
 
-### function operator+
+### function operator|
 
 ```cpp
-inline FilePath operator+(
-    const FilePath & lhs,
-    const FilePath & rhs
+inline PATH_OPEN_FLAGS operator|(
+    PATH_OPEN_FLAGS a,
+    PATH_OPEN_FLAGS b
 )
 ```
 
-Concatenate a path. 
 
 ### function operator+
 
 ```cpp
-inline FilePath operator+(
-    const FilePath & lhs,
-    const std::string & str
+inline PATH_OPEN_FLAGS operator+(
+    PATH_OPEN_FLAGS a,
+    PATH_OPEN_FLAGS b
 )
 ```
 
-Concatenate a path. 
 
-### function operator+
+### function operator/
 
 ```cpp
-inline FilePath operator+(
-    const FilePath & lhs,
+inline Path operator/(
+    const Path & lhs,
+    const Path & rhs
+)
+```
+
+Append a subdirectory or file. 
+
+### function operator/
+
+```cpp
+template <size_t N>
+inline Path operator/(
+    const Path & lhs,
+    const char(&) cstr[N]
+)
+```
+
+Append a subdirectory or file. 
+
+### function operator/
+
+```cpp
+inline Path operator/(
+    const Path & lhs,
+    const std::string_view strv
+)
+```
+
+Append a subdirectory or file. 
+
+### function operator/
+
+```cpp
+inline Path operator/(
+    const Path & lhs,
+    std::string & str
+)
+```
+
+Append a subdirectory or file. 
+
+### function operator/
+
+```cpp
+inline Path operator/(
+    const Path & lhs,
     const std::wstring & wstr
-)
-```
-
-Concatenate a path. 
-
-### function operator+
-
-```cpp
-inline FilePath operator+(
-    const FilePath & lhs,
-    const char * str
-)
-```
-
-Concatenate a path. 
-
-### function operator/
-
-```cpp
-inline FilePath operator/(
-    const FilePath & lhs,
-    const FilePath & rhs
-)
-```
-
-Append a subdirectory or file. 
-
-### function operator/
-
-```cpp
-inline FilePath operator/(
-    const FilePath & lhs,
-    const std::string & str
-)
-```
-
-Append a subdirectory or file. 
-
-### function operator/
-
-```cpp
-inline FilePath operator/(
-    const FilePath & lhs,
-    const std::wstring & wstr
-)
-```
-
-Append a subdirectory or file. 
-
-### function operator/
-
-```cpp
-inline FilePath operator/(
-    const FilePath & lhs,
-    const char * str
 )
 ```
 
@@ -828,11 +851,21 @@ template <typename charT ,
 typename traits >
 std::basic_ostream< charT, traits > & operator<<(
     std::basic_ostream< charT, traits > & os,
-    const FilePath & path
+    const Path & path
 )
 ```
 
 Output to a stream. 
+
+### function operator<<
+
+```cpp
+inline std::ostream & operator<<(
+    std::ostream & os,
+    const Path & path
+)
+```
+
 
 ### function operator>>
 
@@ -841,7 +874,7 @@ template <typename charT ,
 typename traits >
 std::basic_istream< charT, traits > & operator>>(
     std::basic_istream< charT, traits > & is,
-    FilePath & path
+    Path & path
 )
 ```
 
@@ -874,7 +907,7 @@ glm::vec3 GetRayDirection(
 
 ```cpp
 std::string LoadAsString(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -883,7 +916,7 @@ std::string LoadAsString(
 
 ```cpp
 bool SaveFromString(
-    const FilePath & fname,
+    const Path & fname,
     std::string contents
 )
 ```
@@ -893,7 +926,7 @@ bool SaveFromString(
 
 ```cpp
 bool LoadProtoPack(
-    const FilePath & fname,
+    const Path & fname,
     proto::Entity & entity
 )
 ```
@@ -903,7 +936,7 @@ bool LoadProtoPack(
 
 ```cpp
 void ProtoLoadEntity(
-    const FilePath & fname
+    const Path & fname
 )
 ```
 
@@ -1186,13 +1219,6 @@ MAKE_EXTTYPE(
 
 ## Attributes Documentation
 
-### variable file_factories
-
-```cpp
-std::unordered_map< std::string, std::function< void(std::string)> > file_factories;
-```
-
-
 ### variable engine_constants
 
 ```cpp
@@ -1235,6 +1261,13 @@ std::string logfilename;
 ```
 
 
+### variable file_factories
+
+```cpp
+std::unordered_map< std::string, std::function< void(std::string)> > file_factories;
+```
+
+
 ### variable FORWARD_VECTOR
 
 ```cpp
@@ -1256,20 +1289,19 @@ static const glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
 ```
 
 
-### variable UNIX_PATH_SEPARATOR
+### variable WIN_PATH_CHAR
 
 ```cpp
-const char UNIX_PATH_SEPARATOR = '/';
+const char WIN_PATH_CHAR = '\\';
 ```
 
 
-### variable WIN_PATH_SEPARATOR
+### variable PATH_NATIVE_SEPARATOR
 
 ```cpp
-const char WIN_PATH_SEPARATOR = '\\';
+constexpr std::string_view PATH_NATIVE_SEPARATOR = "/";
 ```
 
-*NIX file system path separator 
 
 ### variable PATH_SEPARATOR
 
@@ -1277,6 +1309,7 @@ const char WIN_PATH_SEPARATOR = '\\';
 constexpr std::string_view PATH_SEPARATOR = "/";
 ```
 
+[OS]() File system path separator. 
 
 ### variable UPDATE_RATE
 
@@ -1297,21 +1330,21 @@ double TICKS_PER_SECOND = 60.0 * UPDATE_RATE;
 ```cpp
 const std::unordered_map< tid, const char * > TypeName = {
 		MAKE_MAPPAIR(void),
-		MAKE_MAPPAIR([Renderable](/engine/Classes/structtec_1_1_renderable/)),
-		MAKE_MAPPAIR([Position](/engine/Classes/structtec_1_1_position/)),
-		MAKE_MAPPAIR([Orientation](/engine/Classes/structtec_1_1_orientation/)),
-		MAKE_MAPPAIR([View](/engine/Classes/structtec_1_1_view/)),
-		MAKE_MAPPAIR([Animation](/engine/Classes/classtec_1_1_animation/)),
-		MAKE_MAPPAIR([Scale](/engine/Classes/structtec_1_1_scale/)),
+		MAKE_MAPPAIR(Renderable),
+		MAKE_MAPPAIR(Position),
+		MAKE_MAPPAIR(Orientation),
+		MAKE_MAPPAIR(View),
+		MAKE_MAPPAIR(Animation),
+		MAKE_MAPPAIR(Scale),
 		MAKE_MAPPAIR(CollisionBody),
-		MAKE_MAPPAIR([Velocity](/engine/Classes/structtec_1_1_velocity/)),
-		MAKE_MAPPAIR([AudioSource](/engine/Classes/structtec_1_1_audio_source/)),
-		MAKE_MAPPAIR([PointLight](/engine/Classes/structtec_1_1_point_light/)),
-		MAKE_MAPPAIR([DirectionalLight](/engine/Classes/structtec_1_1_directional_light/)),
+		MAKE_MAPPAIR(Velocity),
+		MAKE_MAPPAIR(AudioSource),
+		MAKE_MAPPAIR(PointLight),
+		MAKE_MAPPAIR(DirectionalLight),
 		
-		MAKE_MAPPAIR([VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/)),
-		MAKE_MAPPAIR([Computer](/engine/Classes/structtec_1_1_computer/)),
-		MAKE_MAPPAIR([LuaScript](/engine/Classes/structtec_1_1_lua_script/))};
+		MAKE_MAPPAIR(VoxelVolume),
+		MAKE_MAPPAIR(Computer),
+		MAKE_MAPPAIR(LuaScript)};
 ```
 
 Maps on runtime the Type ID with the name. 
@@ -1321,4 +1354,4 @@ Maps on runtime the Type ID with the name.
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

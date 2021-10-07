@@ -13,14 +13,14 @@ title: tec::TimeFrameMetrics
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[outside_game_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-outside_game_time)**  |
-| float | **[state_queue_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-state_queue_time)**  |
-| float | **[vcomputer_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-vcomputer_time)**  |
-| float | **[sound_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-sound_system_time)**  |
-| float | **[render_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-render_system_time)**  |
-| float | **[lua_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-lua_system_time)**  |
-| float | **[other_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-other_time)**  |
-| float | **[total_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-total_time)**  |
+| float | **[outside_game_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-outside-game-time)**  |
+| float | **[state_queue_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-state-queue-time)**  |
+| float | **[vcomputer_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-vcomputer-time)**  |
+| float | **[sound_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-sound-system-time)**  |
+| float | **[render_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-render-system-time)**  |
+| float | **[lua_system_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-lua-system-time)**  |
+| float | **[other_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-other-time)**  |
+| float | **[total_time](/engine/Classes/structtec_1_1_time_frame_metrics/#variable-total-time)**  |
 
 ## Public Attributes Documentation
 
@@ -82,4 +82,4 @@ float total_time;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

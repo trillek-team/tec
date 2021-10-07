@@ -13,8 +13,8 @@ title: tec::networking::MessagePool
 
 |                | Name           |
 | -------------- | -------------- |
-| typedef std::shared_ptr< [Message](/engine/Classes/classtec_1_1networking_1_1_message/) > | **[ptr_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-ptr_type)**  |
-| typedef std::list< ptr_type > | **[list_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-list_type)**  |
+| typedef std::shared_ptr< [Message](/engine/Classes/classtec_1_1networking_1_1_message/) > | **[ptr_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-ptr-type)**  |
+| typedef std::list< ptr_type > | **[list_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-list-type)**  |
 
 ## Public Functions
 
@@ -49,4 +49,4 @@ static inline ptr_type get()
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

@@ -20,7 +20,7 @@ title: tec::Event
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_event/#variable-entity_id)**  |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_event/#variable-entity-id)**  |
 | std::shared_ptr< T > | **[data](/engine/Classes/structtec_1_1_event/#variable-data)**  |
 
 ## Detailed Description
@@ -69,4 +69,4 @@ std::shared_ptr< T > data;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

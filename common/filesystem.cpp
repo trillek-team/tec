@@ -271,7 +271,6 @@ void Path::NormalizePath() {
 			path.push_back(PATH_CHAR);
 		}
 	}
-
 }
 
 Path::NativePath Path::GetNativePath() const {

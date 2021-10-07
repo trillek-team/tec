@@ -20,10 +20,10 @@ title: tec::Shape
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[half_extents](/engine/Classes/structtec_1_1_shape/#variable-half_extents)**  |
+| float | **[half_extents](/engine/Classes/structtec_1_1_shape/#variable-half-extents)**  |
 | float | **[radius](/engine/Classes/structtec_1_1_shape/#variable-radius)**  |
 | float | **[height](/engine/Classes/structtec_1_1_shape/#variable-height)**  |
-| proto::Shape::ShapeCase | **[shape_case](/engine/Classes/structtec_1_1_shape/#variable-shape_case)**  |
+| proto::Shape::ShapeCase | **[shape_case](/engine/Classes/structtec_1_1_shape/#variable-shape-case)**  |
 
 ## Public Functions Documentation
 
@@ -77,4 +77,4 @@ proto::Shape::ShapeCase shape_case;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

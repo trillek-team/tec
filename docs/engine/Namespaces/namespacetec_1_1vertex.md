@@ -33,7 +33,7 @@ title: tec::vertex
 
 |                | Name           |
 | -------------- | -------------- |
-| const [FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/) * | **[from_vftype](/engine/Namespaces/namespacetec_1_1vertex/#variable-from_vftype)**  |
+| const [FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/) * | **[from_vftype](/engine/Namespaces/namespacetec_1_1vertex/#variable-from-vftype)**  |
 
 ## Types Documentation
 
@@ -59,12 +59,12 @@ title: tec::vertex
 
 ```cpp
 const FormatDefinition * from_vftype {
-		&[FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)<[Vertex](/engine/Classes/structtec_1_1vertex_1_1_vertex/)>::define_format, 
-		&[FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)<[LiteFullVertex](/engine/Classes/structtec_1_1vertex_1_1_lite_full_vertex/)>::define_format, 
+		&FormatInfo<Vertex>::define_format, 
+		&FormatInfo<LiteFullVertex>::define_format, 
 		nullptr, 
-		&[FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)<[ColorVertex](/engine/Classes/structtec_1_1vertex_1_1_color_vertex/)>::define_format, 
+		&FormatInfo<ColorVertex>::define_format, 
 		nullptr, 
-		&[FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)<[FullVertex](/engine/Classes/structtec_1_1vertex_1_1_full_vertex/)>::define_format, 
+		&FormatInfo<FullVertex>::define_format, 
 };
 ```
 
@@ -74,4 +74,4 @@ const FormatDefinition * from_vftype {
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

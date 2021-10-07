@@ -41,7 +41,7 @@ Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window
 | float | **[alpha](/engine/Classes/classtec_1_1_abstract_window/#variable-alpha)**  |
 | bool | **[collapsed](/engine/Classes/classtec_1_1_abstract_window/#variable-collapsed)**  |
 | bool | **[show](/engine/Classes/classtec_1_1_abstract_window/#variable-show)** <br>Collapsed ?  |
-| std::string | **[window_name](/engine/Classes/classtec_1_1_abstract_window/#variable-window_name)** <br>Visible ?  |
+| std::string | **[window_name](/engine/Classes/classtec_1_1_abstract_window/#variable-window-name)** <br>Visible ?  |
 
 
 ## Public Functions Documentation
@@ -81,4 +81,4 @@ virtual void Draw(
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

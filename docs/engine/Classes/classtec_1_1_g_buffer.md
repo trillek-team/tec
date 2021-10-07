@@ -13,8 +13,8 @@ title: tec::GBuffer
 
 |                | Name           |
 | -------------- | -------------- |
-| enum class int | **[TEXTURE_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-texture_type)** { POSITION = 0, DIFFUSE, NORMAL, EMISSION, TEXTURE_TYPE_LAST} |
-| enum class int | **[DEPTH_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-depth_type)** { DEPTH = (int)TEXTURE_TYPE::TEXTURE_TYPE_LAST, STENCIL} |
+| enum class int | **[TEXTURE_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-texture-type)** { POSITION = 0, DIFFUSE, NORMAL, EMISSION, TEXTURE_TYPE_LAST} |
+| enum class int | **[DEPTH_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-depth-type)** { DEPTH = (int)TEXTURE_TYPE::TEXTURE_TYPE_LAST, STENCIL} |
 
 ## Public Functions
 
@@ -235,4 +235,4 @@ static void SetReadBuffer(
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

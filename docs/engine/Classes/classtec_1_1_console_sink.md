@@ -18,8 +18,8 @@ Inherits from spdlog::sinks::sink
 | | **[ConsoleSink](/engine/Classes/classtec_1_1_console_sink/#function-consolesink)**([Console](/engine/Classes/classtec_1_1_console/) & c) |
 | void | **[log](/engine/Classes/classtec_1_1_console_sink/#function-log)**(const spdlog::details::log_msg & msg) override |
 | void | **[flush](/engine/Classes/classtec_1_1_console_sink/#function-flush)**() override |
-| void | **[set_pattern](/engine/Classes/classtec_1_1_console_sink/#function-set_pattern)**(const std::string & pattern) |
-| void | **[set_formatter](/engine/Classes/classtec_1_1_console_sink/#function-set_formatter)**(std::unique_ptr< spdlog::formatter > sink_formatter) |
+| void | **[set_pattern](/engine/Classes/classtec_1_1_console_sink/#function-set-pattern)**(const std::string & pattern) |
+| void | **[set_formatter](/engine/Classes/classtec_1_1_console_sink/#function-set-formatter)**(std::unique_ptr< spdlog::formatter > sink_formatter) |
 
 ## Public Functions Documentation
 
@@ -68,4 +68,4 @@ inline void set_formatter(
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

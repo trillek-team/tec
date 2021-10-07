@@ -16,7 +16,7 @@ Inherited by [tec::vertex::FormatDefine< Q >](/engine/Classes/structtec_1_1verte
 
 |                | Name           |
 | -------------- | -------------- |
-| typedef std::function< void(void *dest, const [Mesh](/engine/Classes/structtec_1_1_mesh/) *source)> | **[func_t](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#typedef-func_t)**  |
+| typedef std::function< void(void *dest, const [Mesh](/engine/Classes/structtec_1_1_mesh/) *source)> | **[func_t](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#typedef-func-t)**  |
 
 ## Public Functions
 
@@ -28,7 +28,7 @@ Inherited by [tec::vertex::FormatDefine< Q >](/engine/Classes/structtec_1_1verte
 
 |                | Name           |
 | -------------- | -------------- |
-| const size_t | **[format_stride](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-format_stride)**  |
+| const size_t | **[format_stride](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-format-stride)**  |
 | const std::vector< [AttribData](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/) > | **[info](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-info)**  |
 | const func_t | **[convert](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-convert)**  |
 
@@ -81,4 +81,4 @@ const func_t convert;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

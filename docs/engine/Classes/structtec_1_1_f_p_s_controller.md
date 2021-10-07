@@ -30,17 +30,17 @@ Inherits from [tec::Controller](/engine/Classes/structtec_1_1_controller/)
 | -------------- | -------------- |
 | bool | **[forward](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-forward)**  |
 | bool | **[backward](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-backward)**  |
-| bool | **[right_strafe](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-right_strafe)**  |
-| bool | **[left_strafe](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-left_strafe)**  |
-| double | **[current_delta](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-current_delta)**  |
-| bool | **[mouse_look](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-mouse_look)**  |
+| bool | **[right_strafe](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-right-strafe)**  |
+| bool | **[left_strafe](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-left-strafe)**  |
+| double | **[current_delta](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-current-delta)**  |
+| bool | **[mouse_look](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-mouse-look)**  |
 | std::unique_ptr< [Orientation](/engine/Classes/structtec_1_1_orientation/) > | **[orientation](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-orientation)**  |
-| bool | **[KEY_A_FIRST](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_a_first)**  |
-| bool | **[KEY_W_FIRST](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_w_first)**  |
-| bool | **[KEY_W_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_w_down)**  |
-| bool | **[KEY_A_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_a_down)**  |
-| bool | **[KEY_S_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_s_down)**  |
-| bool | **[KEY_D_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key_d_down)**  |
+| bool | **[KEY_A_FIRST](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key-a-first)**  |
+| bool | **[KEY_W_FIRST](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key-w-first)**  |
+| bool | **[KEY_W_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key-w-down)**  |
+| bool | **[KEY_A_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key-a-down)**  |
+| bool | **[KEY_S_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key-s-down)**  |
+| bool | **[KEY_D_DOWN](/engine/Classes/structtec_1_1_f_p_s_controller/#variable-key-d-down)**  |
 
 ## Additional inherited members
 
@@ -57,9 +57,9 @@ Inherits from [tec::Controller](/engine/Classes/structtec_1_1_controller/)
 
 |                | Name           |
 | -------------- | -------------- |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_controller/#variable-entity_id)**  |
-| bool | **[keyboard_focus](/engine/Classes/structtec_1_1_controller/#variable-keyboard_focus)**  |
-| bool | **[mouse_focus](/engine/Classes/structtec_1_1_controller/#variable-mouse_focus)**  |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[entity_id](/engine/Classes/structtec_1_1_controller/#variable-entity-id)**  |
+| bool | **[keyboard_focus](/engine/Classes/structtec_1_1_controller/#variable-keyboard-focus)**  |
+| bool | **[mouse_focus](/engine/Classes/structtec_1_1_controller/#variable-mouse-focus)**  |
 
 
 ## Public Functions Documentation
@@ -241,4 +241,4 @@ bool KEY_D_DOWN {false};
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

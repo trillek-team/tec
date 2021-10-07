@@ -15,7 +15,7 @@ title: tec::vertex::AttribData
 | -------------- | -------------- |
 | GLuint | **[channel](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/#variable-channel)**  |
 | GLuint | **[count](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/#variable-count)**  |
-| GLuint | **[data_type](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/#variable-data_type)**  |
+| GLuint | **[data_type](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/#variable-data-type)**  |
 | GLuint | **[normalize](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/#variable-normalize)**  |
 | size_t | **[offset](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/#variable-offset)**  |
 
@@ -58,4 +58,4 @@ size_t offset;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000

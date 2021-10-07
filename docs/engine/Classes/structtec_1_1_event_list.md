@@ -23,10 +23,10 @@ title: tec::EventList
 
 |                | Name           |
 | -------------- | -------------- |
-| std::list< [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/) > | **[keyboard_events](/engine/Classes/structtec_1_1_event_list/#variable-keyboard_events)**  |
-| std::list< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > | **[mouse_button_events](/engine/Classes/structtec_1_1_event_list/#variable-mouse_button_events)**  |
-| std::list< [MouseMoveEvent](/engine/Classes/structtec_1_1_mouse_move_event/) > | **[mouse_move_events](/engine/Classes/structtec_1_1_event_list/#variable-mouse_move_events)**  |
-| std::list< [MouseClickEvent](/engine/Classes/structtec_1_1_mouse_click_event/) > | **[mouse_click_events](/engine/Classes/structtec_1_1_event_list/#variable-mouse_click_events)**  |
+| std::list< [KeyboardEvent](/engine/Classes/structtec_1_1_keyboard_event/) > | **[keyboard_events](/engine/Classes/structtec_1_1_event_list/#variable-keyboard-events)**  |
+| std::list< [MouseBtnEvent](/engine/Classes/structtec_1_1_mouse_btn_event/) > | **[mouse_button_events](/engine/Classes/structtec_1_1_event_list/#variable-mouse-button-events)**  |
+| std::list< [MouseMoveEvent](/engine/Classes/structtec_1_1_mouse_move_event/) > | **[mouse_move_events](/engine/Classes/structtec_1_1_event_list/#variable-mouse-move-events)**  |
+| std::list< [MouseClickEvent](/engine/Classes/structtec_1_1_mouse_click_event/) > | **[mouse_click_events](/engine/Classes/structtec_1_1_event_list/#variable-mouse-click-events)**  |
 
 ## Public Functions Documentation
 
@@ -105,4 +105,4 @@ std::list< MouseClickEvent > mouse_click_events;
 
 -------------------------------
 
-Updated on  6 September 2021 at 18:30:10 UTC
+Updated on 2021-10-07 at 17:59:29 +0000
