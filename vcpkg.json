@@ -17,5 +17,6 @@
 	"sol2",
 	"gtest"
   ],
-  "supports": "(windows & x86) | (windows & x64) | (linux & x64) | (osx & x64)"
+  "supports": "(windows & x86) | (windows & x64) | (linux & x64) | (osx & x64)",
+  "builtin-baseline": "5568f110b509a9fd90711978a7cb76bae75bb092"
 }
