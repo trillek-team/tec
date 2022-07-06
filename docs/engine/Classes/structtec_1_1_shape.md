@@ -20,7 +20,7 @@ title: tec::Shape
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[half_extents](/engine/Classes/structtec_1_1_shape/#variable-half-extents)**  |
+| float[3] | **[half_extents](/engine/Classes/structtec_1_1_shape/#variable-half-extents)**  |
 | float | **[radius](/engine/Classes/structtec_1_1_shape/#variable-radius)**  |
 | float | **[height](/engine/Classes/structtec_1_1_shape/#variable-height)**  |
 | proto::Shape::ShapeCase | **[shape_case](/engine/Classes/structtec_1_1_shape/#variable-shape-case)**  |
@@ -50,7 +50,7 @@ inline void In(
 ### variable half_extents
 
 ```cpp
-float half_extents;
+float[3] half_extents;
 ```
 
 
@@ -77,4 +77,4 @@ proto::Shape::ShapeCase shape_case;
 
 -------------------------------
 
-Updated on 2021-10-07 at 17:59:29 +0000
+Updated on 2022-07-06 at 04:15:07 +0000

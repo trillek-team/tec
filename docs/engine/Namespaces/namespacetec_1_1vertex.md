@@ -12,16 +12,16 @@ title: tec::vertex
 |                | Name           |
 | -------------- | -------------- |
 | struct | **[tec::vertex::AttribData](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/)**  |
-| struct | **[tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)** <br>Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The convert() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format.  |
+| struct | **[tec::vertex::ColorVertex](/engine/Classes/structtec_1_1vertex_1_1_color_vertex/)**  |
 | struct | **[tec::vertex::FormatDefine](/engine/Classes/structtec_1_1vertex_1_1_format_define/)**  |
+| struct | **[tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)** <br>Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The convert() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format.  |
 | struct | **[tec::vertex::FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)**  |
-| struct | **[tec::vertex::Vertex](/engine/Classes/structtec_1_1vertex_1_1_vertex/)**  |
+| struct | **[tec::vertex::FullVertex](/engine/Classes/structtec_1_1vertex_1_1_full_vertex/)**  |
 | struct | **[tec::vertex::LiteFullVertex](/engine/Classes/structtec_1_1vertex_1_1_lite_full_vertex/)**  |
+| struct | **[tec::vertex::PackWeightVertex](/engine/Classes/structtec_1_1vertex_1_1_pack_weight_vertex/)**  |
+| struct | **[tec::vertex::Vertex](/engine/Classes/structtec_1_1vertex_1_1_vertex/)**  |
 | struct | **[tec::vertex::WeightData](/engine/Classes/structtec_1_1vertex_1_1_weight_data/)**  |
 | struct | **[tec::vertex::WeightVertex](/engine/Classes/structtec_1_1vertex_1_1_weight_vertex/)**  |
-| struct | **[tec::vertex::ColorVertex](/engine/Classes/structtec_1_1vertex_1_1_color_vertex/)**  |
-| struct | **[tec::vertex::PackWeightVertex](/engine/Classes/structtec_1_1vertex_1_1_pack_weight_vertex/)**  |
-| struct | **[tec::vertex::FullVertex](/engine/Classes/structtec_1_1vertex_1_1_full_vertex/)**  |
 
 ## Types
 
@@ -33,7 +33,7 @@ title: tec::vertex
 
 |                | Name           |
 | -------------- | -------------- |
-| const [FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/) * | **[from_vftype](/engine/Namespaces/namespacetec_1_1vertex/#variable-from-vftype)**  |
+| const [FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/) *[] | **[from_vftype](/engine/Namespaces/namespacetec_1_1vertex/#variable-from-vftype)**  |
 
 ## Types Documentation
 
@@ -58,7 +58,7 @@ title: tec::vertex
 ### variable from_vftype
 
 ```cpp
-const FormatDefinition * from_vftype {
+const FormatDefinition *[] from_vftype {
 		&FormatInfo<Vertex>::define_format, 
 		&FormatInfo<LiteFullVertex>::define_format, 
 		nullptr, 
@@ -74,4 +74,4 @@ const FormatDefinition * from_vftype {
 
 -------------------------------
 
-Updated on 2021-10-07 at 17:59:29 +0000
+Updated on 2022-07-06 at 04:15:07 +0000

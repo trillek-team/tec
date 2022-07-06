@@ -68,8 +68,8 @@ title: tec::Path
 
 |                | Name           |
 | -------------- | -------------- |
-| constexpr static char | **[PATH_NATIVE_CHAR](/engine/Classes/classtec_1_1_path/#variable-path-native-char)**  |
-| constexpr static char | **[PATH_CHAR](/engine/Classes/classtec_1_1_path/#variable-path-char)** <br>Native string format for paths.  |
+| constexpr char | **[PATH_NATIVE_CHAR](/engine/Classes/classtec_1_1_path/#variable-path-native-char)**  |
+| constexpr char | **[PATH_CHAR](/engine/Classes/classtec_1_1_path/#variable-path-char)** <br>Native string format for paths.  |
 | const std::size_t | **[npos](/engine/Classes/classtec_1_1_path/#variable-npos)** <br>The tec [Path](/engine/Classes/classtec_1_1_path/) separator.  |
 | const [Path](/engine/Classes/classtec_1_1_path/) | **[assets](/engine/Classes/classtec_1_1_path/#variable-assets)**  |
 | const [Path](/engine/Classes/classtec_1_1_path/) | **[scripts](/engine/Classes/classtec_1_1_path/#variable-scripts)** <br>The `assets:/` pseudo root.  |
@@ -654,14 +654,14 @@ Sets the directory root in which to search for assets Calling this function whil
 ### variable PATH_NATIVE_CHAR
 
 ```cpp
-static constexpr static char PATH_NATIVE_CHAR = '/';
+static constexpr char PATH_NATIVE_CHAR = '/';
 ```
 
 
 ### variable PATH_CHAR
 
 ```cpp
-static constexpr static char PATH_CHAR = '/';
+static constexpr char PATH_CHAR = '/';
 ```
 
 Native string format for paths. 
@@ -702,4 +702,4 @@ static const Path shaders {"assets:", "/shaders/"};
 
 -------------------------------
 
-Updated on 2021-10-07 at 17:59:29 +0000
+Updated on 2022-07-06 at 04:15:07 +0000

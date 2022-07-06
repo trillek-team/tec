@@ -23,7 +23,7 @@ title: tec::AudioSource
 |                | Name           |
 | -------------- | -------------- |
 | ALuint | **[source](/engine/Classes/structtec_1_1_audio_source/#variable-source)**  |
-| ALuint | **[buffer](/engine/Classes/structtec_1_1_audio_source/#variable-buffer)**  |
+| ALuint[2] | **[buffer](/engine/Classes/structtec_1_1_audio_source/#variable-buffer)**  |
 | bool | **[looping](/engine/Classes/structtec_1_1_audio_source/#variable-looping)**  |
 | std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[vorbis_stream](/engine/Classes/structtec_1_1_audio_source/#variable-vorbis-stream)**  |
 | AUDIOSOURCE_STATE | **[source_state](/engine/Classes/structtec_1_1_audio_source/#variable-source-state)**  |
@@ -79,7 +79,7 @@ ALuint source {0};
 ### variable buffer
 
 ```cpp
-ALuint buffer {0, 0};
+ALuint[2] buffer {0, 0};
 ```
 
 
@@ -120,4 +120,4 @@ std::string audio_name;
 
 -------------------------------
 
-Updated on 2021-10-07 at 17:59:29 +0000
+Updated on 2022-07-06 at 04:15:07 +0000

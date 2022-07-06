@@ -19,7 +19,7 @@ title: tec::Voxel
 
 |                | Name           |
 | -------------- | -------------- |
-| float | **[color](/engine/Classes/structtec_1_1_voxel/#variable-color)**  |
+| float[3] | **[color](/engine/Classes/structtec_1_1_voxel/#variable-color)**  |
 
 ## Public Types Documentation
 
@@ -42,10 +42,10 @@ title: tec::Voxel
 ### variable color
 
 ```cpp
-float color {0.f, 0.f, 0.f};
+float[3] color {0.f, 0.f, 0.f};
 ```
 
 
 -------------------------------
 
-Updated on 2021-10-07 at 17:59:29 +0000
+Updated on 2022-07-06 at 04:15:07 +0000
