@@ -1,22 +1,22 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
-  "name": "trillek",
-  "version": "0.13",
-  "dependencies": [
-	"asio",
-	"bullet3",
-	"glew",
-	"glfw3",
-	"glm",
-	"lua",
-	"openal-soft",
-	"protobuf",
-	"zlib",
-	"imgui",
-	"spdlog",
-	"sol2",
-	"gtest"
-  ],
-  "supports": "(windows & x86) | (windows & x64) | (linux & x64) | (osx & x64)",
-  "builtin-baseline": "5568f110b509a9fd90711978a7cb76bae75bb092"
+	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+	"name": "trillek",
+	"version": "0.13",
+	"dependencies": [
+		"asio",
+		"bullet3",
+		"glew",
+		"glfw3",
+		"glm",
+		"lua",
+		"openal-soft",
+		"protobuf",
+		"zlib",
+		"imgui",
+		"spdlog",
+		"sol2",
+		"gtest"
+	],
+	"supports": "(windows & x86) | (windows & x64) | (linux & x64) | (osx & x64)",
+	"builtin-baseline": "cef0b3ec767df6e83806899fe9525f6cf8d7bc91"
 }

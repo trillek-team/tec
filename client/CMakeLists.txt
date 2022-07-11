@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.19)
 project(trillek-client)
 
 find_package(OpenGL REQUIRED)

@@ -600,8 +600,8 @@ template <> struct fmt::formatter<tec::Path> {
 			s = what.toString();
 		}
 		if (quote) {
-			return format_to(ctx.out(), "\"{}\"", s);
+			return fmt::format_to(ctx.out(), "\"{}\"", s);
 		}
-		return format_to(ctx.out(), "{}", s);
+		return fmt::format_to(ctx.out(), "{}", s);
 	}
 };
