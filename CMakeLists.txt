@@ -8,7 +8,6 @@ option(BUILD_DOCS "Build documentation" OFF)
 
 # TODO: Perhaps add -pedantic -Wall -Wextra -Werror?
 list(APPEND CMAKE_MODULE_PATH ${trillek_SOURCE_DIR}/deps)
-set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-DASIO_STANDALONE)

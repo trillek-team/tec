@@ -1,0 +1,7 @@
+{
+	"files.associations": {
+		"*.proto": "proto3",
+		"*.txt": "cmake",
+		"*.inc": "cpp"
+	}
+}
