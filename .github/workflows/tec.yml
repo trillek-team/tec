@@ -42,7 +42,7 @@ jobs:
       buildDir: "${{ github.workspace }}/build"
       BUILD_PRESET: release
       CONFIG_PRESET: ninja-multi-vcpkg
-      VCPKG_COMMIT_ID: cef0b3ec767df6e83806899fe9525f6cf8d7bc91
+      VCPKG_COMMIT_ID: 98f8d00e89fb6a8019c2045cfa1edbe9d92d3405
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}
     steps:
       - uses: actions/checkout@v2
