@@ -5,6 +5,9 @@
 
 #include <spdlog/spdlog.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "resources/stb_image.h"
+
 namespace tec {
 
 static uint32_t BytesForBitSize(uint32_t bits) { return ((bits / 8) + ((bits & 0x7u) ? 1 : 0)); }
@@ -161,9 +164,6 @@ const uint8_t* PixelBuffer::GetBlockBase() const {
 	}
 	return nullptr;
 }
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "resources/stb_image.h"
 
 bool PixelBuffer::Load(const Path& filename, bool gamma_space) {
 	int num_components;
