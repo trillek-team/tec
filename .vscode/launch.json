@@ -9,7 +9,7 @@
 			"request": "launch",
 			"program": "${command:cmake.launchTargetPath}",
 			"externalConsole": true,
-			"name": "trillek-client.exe (client\\Debug\\trillek-client.exe)",
+			"name": "Run Trillek Target",
 			"cwd": "${workspaceFolder}",
 			"stopAtEntry": false
 		}

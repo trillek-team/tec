@@ -20,6 +20,15 @@
 			}
 		},
 		{
+			"name": "ninja-multi-vcpkg-ci",
+			"displayName": "Ninja Multi-Config CI (e.g. github actions)",
+			"inherits": "ninja-multi-vcpkg",
+			"cacheVariables": {
+				"BUILD_TESTS": true,
+				"BUILD_DOCS": true
+			}
+		},
+		{
 			"name": "ninja-multi-docs",
 			"displayName": "Ninja Multi-Config docs",
 			"inherits": "ninja-multi-vcpkg",
@@ -51,11 +60,12 @@
 			"configuration": "Release"
 		},
 		{
-			"name": "verbose-build",
-			"displayName": "Verbose Build",
-			"description": "Passes -v to Ninja",
-			"configurePreset": "ninja-multi-vcpkg",
-			"nativeToolOptions": ["-v"]
+			"name": "ninja-multi-vcpkg-ci-debug",
+			"inherits": "ninja-multi-vcpkg-debug"
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci-release",
+			"inherits": "ninja-multi-vcpkg-release"
 		},
 		{
 			"name": "ninja-multi-docs",
@@ -87,6 +97,22 @@
 			"name": "ninja-multi-vcpkg-release",
 			"configuration": "Release",
 			"inherits": "test-base"
+		},
+		{
+			"name": "test-base-ci",
+			"hidden": true,
+			"inherits": "test-base",
+			"configurePreset": "ninja-multi-vcpkg-ci"
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci-debug",
+			"configuration": "Debug",
+			"inherits": "test-base-ci"
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci-release",
+			"configuration": "Release",
+			"inherits": "test-base-ci"
 		}
 	]
 }

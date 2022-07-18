@@ -41,7 +41,7 @@ jobs:
     env:
       buildDir: "${{ github.workspace }}/build"
       BUILD_PRESET: release
-      CONFIG_PRESET: ninja-multi-vcpkg
+      CONFIG_PRESET: ninja-multi-vcpkg-ci
       VCPKG_COMMIT_ID: 98f8d00e89fb6a8019c2045cfa1edbe9d92d3405
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}
     steps:
@@ -70,7 +70,7 @@ jobs:
         with:
           configurePreset: ${{ env.CONFIG_PRESET }}
           buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
-          #testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
+          testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
       - name: Upload the build artifact
         uses: actions/upload-artifact@v2
         with:
