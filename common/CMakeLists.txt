@@ -70,7 +70,7 @@ else ()
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
 endif ()
 
-target_compile_features(${trillek-common_LIBRARY} PUBLIC cxx_std_20)
+target_compile_features(${trillek-common_LIBRARY} PUBLIC cxx_std_17)
 
 target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES} sol2
 	protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite spdlog::spdlog VCOMPUTER_STATIC)
