@@ -42,30 +42,36 @@
 			"name": "ninja-multi-vcpkg-debug",
 			"configurePreset": "ninja-multi-vcpkg",
 			"displayName": "Build ninja-multi-vcpkg-debug",
-			"description": "Build ninja-multi-vcpkg Debug configuration",
+			"description": "Build Debug configuration",
 			"configuration": "Debug"
 		},
 		{
 			"name": "ninja-multi-vcpkg-release-dbginfo",
 			"configurePreset": "ninja-multi-vcpkg",
 			"displayName": "Build ninja-multi-vcpkg-release-dbginfo",
-			"description": "Build ninja-multi-vcpkg RelWithDebInfo configuration",
+			"description": "Build RelWithDebInfo configuration",
 			"configuration": "RelWithDebInfo"
 		},
 		{
 			"name": "ninja-multi-vcpkg-release",
 			"configurePreset": "ninja-multi-vcpkg",
 			"displayName": "Build ninja-multi-vcpkg-release",
-			"description": "Build ninja-multi-vcpkg Release configuration",
+			"description": "Build Release configuration",
 			"configuration": "Release"
 		},
 		{
 			"name": "ninja-multi-vcpkg-ci-debug",
-			"inherits": "ninja-multi-vcpkg-debug"
+			"configurePreset": "ninja-multi-vcpkg-ci",
+			"displayName": "Build ninja-multi-vcpkg-ci-debug",
+			"description": "Build CI Debug configuration",
+			"configuration": "Debug"
 		},
 		{
 			"name": "ninja-multi-vcpkg-ci-release",
-			"inherits": "ninja-multi-vcpkg-release"
+			"configurePreset": "ninja-multi-vcpkg-ci",
+			"displayName": "Build ninja-multi-vcpkg-ci-release",
+			"description": "Build CI Release configuration",
+			"configuration": "Release"
 		},
 		{
 			"name": "ninja-multi-docs",
