@@ -10,7 +10,7 @@ Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on b
 ## Requirements
 TEC requires cmake 3.19, a c++17 compatible compiler, and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua, Bullet, Dear ImGui, sol3, Spdlog and OpenAL.
 
-The libraries are automatically installed when using CMake and VCPKG manifest mode.
+The libraries are automatically installed when using CMake and VCPKG [manifest mode](https://vcpkg.readthedocs.io/en/latest/users/manifests/).
 
 # Quick Start
 ## OS Specific first steps
@@ -21,7 +21,7 @@ Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/Comma
 
 If `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help
 ### Linux
-Install the following. This is a pretty extensice list and may be more than needed
+Install the following. This is a pretty extensive list and may be more than needed
 
 `build-essentials pkg-config tar curl zip unzip gdb libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
 
@@ -37,7 +37,7 @@ Install the following. This is a pretty extensice list and may be more than need
 6. Run CMake
    1. CLI
       1. `cmake --preset=ninja-multi-vcpkg`
-      2. `cmake --build --preset=BUILD_PRESERT` see [presets](#presets)
+      2. `cmake --build --preset=BUILD_PRESET` see [presets](#presets)
    2. GUI - This will only configure the project. CLI steps or Open in an editor are more useful.
       1. Set the source folder
       2. Run Configure
@@ -45,9 +45,6 @@ Install the following. This is a pretty extensice list and may be more than need
          2. Select Specify toolchain file for cross compiling
          3. The file input should be filled in, but if not point it to `$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake`
       3. Run Generate
-
-### Debugging in Visual Studio
-In the project properties for `trillek-client` change the `Debugging`->`Working Directory` to `$(SolutionDir)..\`.
 
 # In depth
 ## Build Tool Dependencies:
