@@ -1,5 +1,5 @@
 # Trillek Engine C
-| Github actions | RTFD docs |
+| Github actions | RTD docs |
 |-------|-----------|
 |[![Trillek Engine CI](https://github.com/trillek-team/tec/actions/workflows/tec.yml/badge.svg)](https://github.com/trillek-team/tec/actions/workflows/tec.yml)|[![Documentation Status](https://readthedocs.org/projects/project-trillek/badge/?version=latest)](https://project-trillek.readthedocs.io/?badge=latest)|
 
@@ -40,7 +40,7 @@ Install the following. This is a pretty extensive list and may be more than need
       2. `cmake --build --preset=BUILD_PRESET` see [presets](#presets)
    2. GUI - This will only configure the project. CLI steps or Open in an editor are more useful.
       1. Set the source folder
-      2. Set the builds folder. The presets default to `builds/CONFIG_NAME` e.g. `builds/msvc/`
+      2. Set the build folder. The presets default to `builds/CONFIG_NAME` e.g. `builds/msvc/`
       3. Run Configure
          1. Pick the Ninja Multi-config generator
          2. Select Specify toolchain file for cross compiling
