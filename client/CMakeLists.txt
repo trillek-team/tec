@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.19)
 project(trillek-client)
 
 find_package(OpenGL REQUIRED)
@@ -10,7 +10,6 @@ find_package(imgui CONFIG REQUIRED)
 include_directories(${trillek_SOURCE_DIR})
 include_directories(SYSTEM ${BULLET_INCLUDE_DIR})
 include_directories(SYSTEM ${trillek-proto-INCLUDE_DIR})
-include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
 include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 include_directories(${trillek-client_SOURCE_DIR})
 
@@ -86,6 +85,7 @@ add_executable(${trillek-client_PROGRAM}
 
 if (MSVC)
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS /W4)
+	set_property(TARGET ${trillek-client_PROGRAM} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 else ()
 	set_property(TARGET ${trillek-client_PROGRAM} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
 endif ()

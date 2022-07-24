@@ -18,7 +18,6 @@ namespace vertex {
 
 // 32 bytes, common rendering data.
 struct Vertex {
-	Vertex() = default;
 	glm::vec3 position{0.f, 0.f, 0.f};
 	glm::vec3 normal{0.f, 0.f, 0.f};
 	glm::vec2 uv{0.f, 0.f};

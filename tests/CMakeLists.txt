@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.19)
 
 enable_testing()
-find_package(GTest MODULE REQUIRED)
+include(Dart)
+find_package(GTest CONFIG REQUIRED)
+include(GoogleTest)
 find_package(protobuf CONFIG REQUIRED)
 find_package(Bullet REQUIRED)
 find_package(Lua REQUIRED)
@@ -38,5 +40,5 @@ add_executable(${trillek-test_PROGRAM}
 	${trillek-client_SOURCES}
 )
 target_link_libraries(${trillek-test_PROGRAM} PRIVATE ${OPENGL_gl_LIBRARY} ${X11_LIBRARIES} ${OSX_LIBRARIES}
-	GTest::GTest GTest::Main GLEW::GLEW OpenAL::OpenAL glfw imgui::imgui ${trillek-common_LIBRARY} VCOMPUTER_STATIC)
-gtest_discover_tests(${trillek-test_PROGRAM})
+	GTest::gtest GTest::gtest_main GLEW::GLEW OpenAL::OpenAL glfw imgui::imgui ${trillek-common_LIBRARY} VCOMPUTER_STATIC)
+gtest_discover_tests(${trillek-test_PROGRAM} WORKING_DIRECTORY ${CMAKE_HOME_DIRECTORY})

@@ -153,11 +153,19 @@ bool MD5Anim::Parse() {
 					if (number > num_components) {
 						return false;
 					}
+					int nextChar = ss.peek();
+					if (nextChar == '\r' || nextChar == '\n') {
+						break;
+					}
 					float temp;
 					ss >> temp;
 					frame.parameters.push_back(temp);
 					++number;
 				}
+			}
+			// Check if frame block is missing paramters.
+			if (number > num_components) {
+				return false;
 			}
 			this->frames.push_back(std::move(frame));
 		}

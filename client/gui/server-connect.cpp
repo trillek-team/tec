@@ -27,7 +27,7 @@ void ServerConnectWindow::Draw(IMGUISystem* gui) {
 
 		ImGui::TextUnformatted("Username");
 		ImGui::SameLine();
-		ImGui::InputText("", connect_username, IM_ARRAYSIZE(connect_username), ImGuiInputTextFlags_CharsNoBlank);
+		ImGui::InputText("##", connect_username, IM_ARRAYSIZE(connect_username), ImGuiInputTextFlags_CharsNoBlank);
 
 		static int octets[4] = {127, 0, 0, 1};
 

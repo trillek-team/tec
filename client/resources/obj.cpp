@@ -144,6 +144,10 @@ std::shared_ptr<OBJ> OBJ::Create(const Path& fname) {
 	return nullptr;
 }
 
+std::size_t find_first_eol(std::string_view buffer, std::size_t offset = 0) {
+	return std::min(buffer.find('\n', offset), buffer.find('\r', offset));
+}
+
 bool OBJ::Parse() {
 	auto _log = spdlog::get("console_log");
 	if (!this->path || !this->path.FileExists()) {
@@ -175,12 +179,12 @@ bool OBJ::Parse() {
 	unsigned int vertex_count = 0, normal_count = 0, uv_count = 0;
 	std::string line;
 	std::size_t start = 0U;
-	std::size_t end = buffer.find('\n');
+	std::size_t end = find_first_eol(buffer);
 	std::string identifier;
 	while (end != std::string::npos) {
 		line = buffer.substr(start, end - start);
 		start = end + 1;
-		end = buffer.find('\n', start);
+		end = find_first_eol(buffer, start);
 
 		identifier = line.substr(0, line.find(' '));
 		if (identifier == "mtllib") {
@@ -211,14 +215,14 @@ bool OBJ::Parse() {
 	this->uvs.reserve(uv_count);
 
 	start = 0U;
-	end = buffer.find('\n');
+	end = find_first_eol(buffer);
 	identifier = "";
 	std::stringstream face_ss;
 	std::stringstream ss;
 	while (end != std::string::npos) {
 		line = buffer.substr(start, end - start);
 		start = end + 1;
-		end = buffer.find('\n', start);
+		end = find_first_eol(buffer, start);
 		ss.clear();
 		ss.str(line);
 

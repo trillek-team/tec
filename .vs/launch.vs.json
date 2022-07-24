@@ -1,0 +1,27 @@
+{
+	"version": "0.2.1",
+	"defaults": {},
+	"configurations": [
+		{
+			"type": "default",
+			"project": "CMakeLists.txt",
+			"projectTarget": "trillek-client.exe (client\\Debug\\trillek-client.exe)",
+			"name": "trillek-client.exe (client\\Debug\\trillek-client.exe)",
+			"currentDir": "${workspaceRoot}"
+		},
+		{
+			"type": "default",
+			"project": "CMakeLists.txt",
+			"projectTarget": "trillek-server.exe (server\\Debug\\trillek-server.exe)",
+			"name": "trillek-server.exe (server\\Debug\\trillek-server.exe)",
+			"currentDir": "${workspaceRoot}"
+		},
+		{
+			"type": "default",
+			"project": "CMakeLists.txt",
+			"projectTarget": "tests.exe (tests\\Debug\\tests.exe)",
+			"name": "tests.exe (tests\\Debug\\tests.exe)",
+			"currentDir": "${workspaceRoot}"
+		}
+	]
+}

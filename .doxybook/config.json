@@ -1,8 +1,9 @@
 {
-  "baseUrl": "/engine/",
-  "indexInFolders": false,
-  "linkSuffix": "/",
-  "mainPageInRoot": true,
-  "mainPageName": "index",
-  "foldersToGenerate": ["classes", "pages", "namespaces"]
+	"baseUrl": "/engine/",
+	"indexInFolders": false,
+	"linkSuffix": "/",
+	"mainPageInRoot": true,
+	"mainPageName": "index",
+	"collapse_navigation": true,
+	"foldersToGenerate": ["classes", "pages", "namespaces"]
 }

@@ -85,7 +85,8 @@ void Animation::In(const proto::Component& source) {
 	this->animation_name = comp.animation_name();
 	const auto mesh_name = comp.mesh_name();
 	const auto animation{GetResource<MD5Anim>(this->animation_name)};
-	animation->CheckMesh(std::static_pointer_cast<MD5Mesh>(GetResource<MeshFile>(mesh_name)));
-	this->SetAnimationFile(animation);
+	if (animation && animation->CheckMesh(std::static_pointer_cast<MD5Mesh>(GetResource<MeshFile>(mesh_name)))) {
+		this->SetAnimationFile(animation);
+	}
 }
 } // namespace tec

@@ -1,0 +1,124 @@
+{
+	"version": 3,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 19,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "ninja-multi-vcpkg",
+			"displayName": "Ninja Multi-Config",
+			"description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations with x64",
+			"binaryDir": "${sourceDir}/builds/${presetName}",
+			"generator": "Ninja Multi-Config",
+			"cacheVariables": {
+				"CMAKE_TOOLCHAIN_FILE": {
+					"type": "FILEPATH",
+					"value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+				}
+			}
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci",
+			"displayName": "Ninja Multi-Config CI (e.g. github actions)",
+			"inherits": "ninja-multi-vcpkg",
+			"cacheVariables": {
+				"BUILD_TESTS": true,
+				"BUILD_DOCS": true
+			}
+		},
+		{
+			"name": "ninja-multi-docs",
+			"displayName": "Ninja Multi-Config docs",
+			"inherits": "ninja-multi-vcpkg",
+			"cacheVariables": {
+				"BUILD_DOCS": true
+			}
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "ninja-multi-vcpkg-debug",
+			"configurePreset": "ninja-multi-vcpkg",
+			"displayName": "Build ninja-multi-vcpkg-debug",
+			"description": "Build Debug configuration",
+			"configuration": "Debug"
+		},
+		{
+			"name": "ninja-multi-vcpkg-release-dbginfo",
+			"configurePreset": "ninja-multi-vcpkg",
+			"displayName": "Build ninja-multi-vcpkg-release-dbginfo",
+			"description": "Build RelWithDebInfo configuration",
+			"configuration": "RelWithDebInfo"
+		},
+		{
+			"name": "ninja-multi-vcpkg-release",
+			"configurePreset": "ninja-multi-vcpkg",
+			"displayName": "Build ninja-multi-vcpkg-release",
+			"description": "Build Release configuration",
+			"configuration": "Release"
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci-debug",
+			"configurePreset": "ninja-multi-vcpkg-ci",
+			"displayName": "Build ninja-multi-vcpkg-ci-debug",
+			"description": "Build CI Debug configuration",
+			"configuration": "Debug"
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci-release",
+			"configurePreset": "ninja-multi-vcpkg-ci",
+			"displayName": "Build ninja-multi-vcpkg-ci-release",
+			"description": "Build CI Release configuration",
+			"configuration": "Release"
+		},
+		{
+			"name": "ninja-multi-docs",
+			"configurePreset": "ninja-multi-docs",
+			"displayName": "Build ninja-multi-docs",
+			"configuration": "Release",
+			"targets": ["doxygen", "doxybook", "mkdocs"]
+		}
+	],
+	"testPresets": [
+		{
+			"name": "test-base",
+			"hidden": true,
+			"configurePreset": "ninja-multi-vcpkg",
+			"description": "Enable output on failure",
+			"output": {
+				"outputOnFailure": true
+			},
+			"execution": {
+				"noTestsAction": "error"
+			}
+		},
+		{
+			"name": "ninja-multi-vcpkg-debug",
+			"configuration": "Debug",
+			"inherits": "test-base"
+		},
+		{
+			"name": "ninja-multi-vcpkg-release",
+			"configuration": "Release",
+			"inherits": "test-base"
+		},
+		{
+			"name": "test-base-ci",
+			"hidden": true,
+			"inherits": "test-base",
+			"configurePreset": "ninja-multi-vcpkg-ci"
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci-debug",
+			"configuration": "Debug",
+			"inherits": "test-base-ci"
+		},
+		{
+			"name": "ninja-multi-vcpkg-ci-release",
+			"configuration": "Release",
+			"inherits": "test-base-ci"
+		}
+	]
+}

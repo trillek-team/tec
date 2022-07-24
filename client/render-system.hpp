@@ -124,6 +124,6 @@ template <> struct fmt::formatter<tec::GLSymbol> {
 		return it;
 	}
 	template <typename FormatContext> auto format(const tec::GLSymbol& p, FormatContext& ctx) -> decltype(ctx.out()) {
-		return format_to(ctx.out(), "{}", p.name);
+		return fmt::format_to(ctx.out(), "{}", p.name);
 	}
 };

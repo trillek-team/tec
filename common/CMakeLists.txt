@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.19)
 project(trillek-common)
 
 set(trillek-proto-INCLUDE_DIR ${trillek_BINARY_DIR}/common PARENT_SCOPE) # <-- Protobuf files go here
@@ -12,7 +12,6 @@ find_package(sol2 CONFIG REQUIRED)
 
 include_directories(SYSTEM ${trillek_BINARY_DIR}/common)
 include_directories(SYSTEM ${BULLET_INCLUDE_DIR})
-include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/selene/include)
 include_directories(SYSTEM ${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 
 set(trillek-common_PROTOCOLS
@@ -70,5 +69,7 @@ else ()
 	set_property(TARGET ${trillek-common_LIBRARY} APPEND_STRING PROPERTY COMPILE_FLAGS -Wall)
 endif ()
 
-target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES} sol2::sol2
+target_compile_features(${trillek-common_LIBRARY} PUBLIC cxx_std_17)
+
+target_link_libraries(${trillek-common_LIBRARY} ${BULLET_LIBRARIES} ${LUA_LIBRARIES}
 	protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite spdlog::spdlog VCOMPUTER_STATIC)
