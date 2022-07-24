@@ -31,7 +31,7 @@ Install the following. This is a pretty extensive list and may be more than need
 3. `VCPKG_ROOT` must be set a an environment variable, to wherever VCPKG was cloned to
 4. Run `$(VCPKG_ROOT)/bootstrap-vcpkg.[bat|sh]` to setup vcpkg. Use the correct extension for your OS.
    1. [OPTIONAL] `$(VCPKG_ROOT)/./vcpkg integrate install`
-5. Open the folder in an editor OR see step 5
+5. Open the folder in an editor OR see step 6
    1. [Visual Studio](https://docs.microsoft.com/en-us/cpp/build/cmake-presets-vs?view=msvc-170)
    2. [CLion](https://www.jetbrains.com/help/clion/cmake-presets.html)
 6. Run CMake
@@ -40,11 +40,13 @@ Install the following. This is a pretty extensive list and may be more than need
       2. `cmake --build --preset=BUILD_PRESET` see [presets](#presets)
    2. GUI - This will only configure the project. CLI steps or Open in an editor are more useful.
       1. Set the source folder
-      2. Run Configure
+      2. Set the builds folder. The presets default to `builds/CONFIG_NAME` e.g. `builds/msvc/`
+      3. Run Configure
          1. Pick the Ninja Multi-config generator
          2. Select Specify toolchain file for cross compiling
          3. The file input should be filled in, but if not point it to `$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake`
-      3. Run Generate
+      4. Run Generate
+      5. Open generated solution and build the project(s)
 
 # In depth
 ## Build Tool Dependencies:
@@ -85,13 +87,13 @@ Install the following. This is a pretty extensive list and may be more than need
 Documentation is done via Doxygen for C++ code and supplementary docs must be maintained for the Lua API in `docs/`.
 
 Engine documentation is generated with the with the `ninja-multi-docs` build config `doxygen` target, and is then
-ed convert to markdown via `doxybook2` with the `ninja-multi-docs` build config `doxybook` target.
+converted to markdown via `doxybook2` with the `ninja-multi-docs` build config `doxybook` target.
 
 All documentation is converted to mkdocs format with the `ninja-multi-docs` build config `mkdocs` target, and then
 readthedocs hosts the mkdocs files.
 
 Doxygen and mkdocs files **are not** committed, but can be generated locally for consumption/validation. Doxybook
-generated docs and all other docs in `docs/` **are** committed.
+generated engine docs and all other docs in `docs/` **are** committed.
 
 ## Documentation Dependencies
 * [doxygen](https://www.doxygen.nl/) 1.9.4
