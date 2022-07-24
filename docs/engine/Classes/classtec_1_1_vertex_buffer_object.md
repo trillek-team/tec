@@ -9,11 +9,14 @@ title: tec::VertexBufferObject
 
 
 
+
+`#include <vertex-buffer-object.hpp>`
+
 ## Public Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| | **[VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-vertexbufferobject)**(vertex::FormatCode _load_format) |
+| | **[VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-vertexbufferobject)**([vertex::FormatCode](/engine/Namespaces/namespacetec_1_1vertex/#enum-formatcode) _load_format) |
 | | **[~VertexBufferObject](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-~vertexbufferobject)**() |
 | void | **[Destroy](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-destroy)**()<br>Delete the underlying GL buffers.  |
 | GLuint | **[GetVAO](/engine/Classes/classtec_1_1_vertex_buffer_object/#function-getvao)**()<br>Get the ID of the vertex array object. note: this method is not const, since GL can modify the ID.  |
@@ -126,4 +129,4 @@ Loads a mesh into a vertex buffer object. note: calls Load(const std::vector<Ver
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

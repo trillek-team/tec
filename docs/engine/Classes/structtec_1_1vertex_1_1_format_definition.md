@@ -8,7 +8,7 @@ summary: Holds relevent data to process and bind vertex data via glVertexAttrib*
 
 
 
-Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The convert() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format. 
+Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The [convert()]() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format. 
 
 Inherited by [tec::vertex::FormatDefine< Q >](/engine/Classes/structtec_1_1vertex_1_1_format_define/), [tec::vertex::FormatDefine< T >](/engine/Classes/structtec_1_1vertex_1_1_format_define/)
 
@@ -22,7 +22,7 @@ Inherited by [tec::vertex::FormatDefine< Q >](/engine/Classes/structtec_1_1verte
 
 |                | Name           |
 | -------------- | -------------- |
-| template <typename C ,typename... A\> <br>| **[FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#function-formatdefinition)**(const C * , func_t f, A &&... a) |
+| template <typename C ,typename... A\> <br>| **[FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#function-formatdefinition)**(const C * , [func_t](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#typedef-func-t) f, A &&... a) |
 
 ## Public Attributes
 
@@ -30,7 +30,7 @@ Inherited by [tec::vertex::FormatDefine< Q >](/engine/Classes/structtec_1_1verte
 | -------------- | -------------- |
 | const size_t | **[format_stride](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-format-stride)**  |
 | const std::vector< [AttribData](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/) > | **[info](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-info)**  |
-| const func_t | **[convert](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-convert)**  |
+| const [func_t](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#typedef-func-t) | **[convert](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-convert)**  |
 
 ## Public Types Documentation
 
@@ -81,4 +81,4 @@ const func_t convert;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

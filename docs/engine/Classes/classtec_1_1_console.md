@@ -9,6 +9,9 @@ title: tec::Console
 
 
 
+
+`#include <console.hpp>`
+
 Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/), [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< WindowResizedEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -207,4 +210,4 @@ Register a slash handler that handles all '/' commands
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

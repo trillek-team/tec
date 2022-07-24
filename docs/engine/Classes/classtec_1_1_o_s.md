@@ -9,6 +9,9 @@ title: tec::OS
 
 
 
+
+`#include <os.hpp>`
+
 Inherits from [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -470,4 +473,4 @@ static void RegisterLuaType(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

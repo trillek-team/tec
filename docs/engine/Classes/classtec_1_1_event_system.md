@@ -9,6 +9,9 @@ title: tec::EventSystem
 
  [More...](#detailed-description)
 
+
+`#include <event-system.hpp>`
+
 ## Public Functions
 
 |                | Name           |
@@ -155,4 +158,4 @@ Emits an event to all subscribers listening for events for any entity_id.
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

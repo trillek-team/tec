@@ -9,6 +9,9 @@ title: tec::KeyboardEvent
 
 
 
+
+`#include <events.hpp>`
+
 ## Public Types
 
 |                | Name           |
@@ -21,7 +24,7 @@ title: tec::KeyboardEvent
 | -------------- | -------------- |
 | int | **[key](/engine/Classes/structtec_1_1_keyboard_event/#variable-key)**  |
 | int | **[scancode](/engine/Classes/structtec_1_1_keyboard_event/#variable-scancode)**  |
-| KEY_ACTION | **[action](/engine/Classes/structtec_1_1_keyboard_event/#variable-action)**  |
+| [KEY_ACTION](/engine/Classes/structtec_1_1_keyboard_event/#enum-key-action) | **[action](/engine/Classes/structtec_1_1_keyboard_event/#variable-action)**  |
 | int | **[mods](/engine/Classes/structtec_1_1_keyboard_event/#variable-mods)**  |
 
 ## Public Types Documentation
@@ -70,4 +73,4 @@ int mods {0};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

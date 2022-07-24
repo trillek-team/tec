@@ -9,6 +9,9 @@ title: tec::ServerStats
 
 
 
+
+`#include <server-stats.hpp>`
+
 ## Public Attributes
 
 |                | Name           |
@@ -16,8 +19,8 @@ title: tec::ServerStats
 | uint64_t | **[estimated_server_time](/engine/Classes/classtec_1_1_server_stats/#variable-estimated-server-time)**  |
 | uint64_t | **[last_state_time](/engine/Classes/classtec_1_1_server_stats/#variable-last-state-time)**  |
 | size_t | **[server_state_count](/engine/Classes/classtec_1_1_server_stats/#variable-server-state-count)**  |
-| state_id_t | **[current_command_id](/engine/Classes/classtec_1_1_server_stats/#variable-current-command-id)**  |
-| state_id_t | **[current_acked_id](/engine/Classes/classtec_1_1_server_stats/#variable-current-acked-id)**  |
+| [state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) | **[current_command_id](/engine/Classes/classtec_1_1_server_stats/#variable-current-command-id)**  |
+| [state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) | **[current_acked_id](/engine/Classes/classtec_1_1_server_stats/#variable-current-acked-id)**  |
 | glm::vec3 | **[server_position](/engine/Classes/classtec_1_1_server_stats/#variable-server-position)**  |
 | glm::vec3 | **[server_position_next](/engine/Classes/classtec_1_1_server_stats/#variable-server-position-next)**  |
 | glm::vec3 | **[client_position](/engine/Classes/classtec_1_1_server_stats/#variable-client-position)**  |
@@ -114,4 +117,4 @@ size_t estimated_delay_count;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

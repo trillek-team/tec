@@ -9,6 +9,9 @@ title: tec::Simulation
 
 
 
+
+`#include <simulation.hpp>`
+
 Inherits from [tec::CommandQueue< Simulation >](/engine/Classes/classtec_1_1_command_queue/), [tec::EventQueue< KeyboardEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseBtnEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseMoveEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< MouseClickEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< ClientCommandsEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< ControllerAddedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< ControllerRemovedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< FocusCapturedEvent >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< FocusBlurEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -384,4 +387,4 @@ This event is sent to indicate that focus had been released (blur) from an ownin
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

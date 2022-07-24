@@ -9,6 +9,9 @@ title: tec::BaseLight
 
 
 
+
+`#include <lights.hpp>`
+
 Inherited by [tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_light/), [tec::PointLight](/engine/Classes/structtec_1_1_point_light/)
 
 ## Public Functions
@@ -59,4 +62,4 @@ float diffuse_intensity {0.2f};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

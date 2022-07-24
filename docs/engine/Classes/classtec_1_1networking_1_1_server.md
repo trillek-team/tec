@@ -9,6 +9,9 @@ title: tec::networking::Server
 
 
 
+
+`#include <server.hpp>`
+
 Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -237,4 +240,4 @@ friend class ClientConnection(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

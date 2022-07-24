@@ -9,6 +9,9 @@ title: tec::VoxelSystem
 
 
 
+
+`#include <voxel-volume.hpp>`
+
 Inherits from [tec::EventQueue< MouseClickEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -79,4 +82,4 @@ bool edit_allowed {false};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

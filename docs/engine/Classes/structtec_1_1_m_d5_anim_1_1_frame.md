@@ -9,6 +9,9 @@ title: tec::MD5Anim::Frame
 
 
 
+
+`#include <md5anim.hpp>`
+
 ## Public Attributes
 
 |                | Name           |
@@ -42,4 +45,4 @@ FrameSkeleton skeleton;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

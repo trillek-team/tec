@@ -9,6 +9,9 @@ title: tec::MD5Mesh
 
 
 
+
+`#include <md5mesh.hpp>`
+
 Inherits from [tec::MeshFile](/engine/Classes/classtec_1_1_mesh_file/)
 
 ## Public Classes
@@ -168,4 +171,4 @@ friend class MD5Anim(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

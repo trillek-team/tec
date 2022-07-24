@@ -14,7 +14,7 @@ title: tec::vertex
 | struct | **[tec::vertex::AttribData](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/)**  |
 | struct | **[tec::vertex::ColorVertex](/engine/Classes/structtec_1_1vertex_1_1_color_vertex/)**  |
 | struct | **[tec::vertex::FormatDefine](/engine/Classes/structtec_1_1vertex_1_1_format_define/)**  |
-| struct | **[tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)** <br>Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The convert() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format.  |
+| struct | **[tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)** <br>Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The [convert()]() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format.  |
 | struct | **[tec::vertex::FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)**  |
 | struct | **[tec::vertex::FullVertex](/engine/Classes/structtec_1_1vertex_1_1_full_vertex/)**  |
 | struct | **[tec::vertex::LiteFullVertex](/engine/Classes/structtec_1_1vertex_1_1_lite_full_vertex/)**  |
@@ -74,4 +74,4 @@ const FormatDefinition *[] from_vftype {
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

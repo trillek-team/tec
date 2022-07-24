@@ -9,6 +9,9 @@ title: tec::RenderItem
 
 
 
+
+`#include <render-system.hpp>`
+
 ## Public Attributes
 
 |                | Name           |
@@ -82,4 +85,4 @@ Animation * animation {nullptr};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

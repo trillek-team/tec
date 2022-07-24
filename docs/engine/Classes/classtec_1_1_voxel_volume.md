@@ -9,6 +9,9 @@ title: tec::VoxelVolume
 
 
 
+
+`#include <voxel-volume.hpp>`
+
 Inherits from [tec::CommandQueue< VoxelVolume >](/engine/Classes/classtec_1_1_command_queue/)
 
 ## Public Functions
@@ -140,4 +143,4 @@ static std::weak_ptr< VoxelVolume > Create(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

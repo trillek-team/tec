@@ -9,6 +9,9 @@ title: tec::ClientGameStateQueue
 
 
 
+
+`#include <client-game-state-queue.hpp>`
+
 Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< EntityDestroyed >](/engine/Classes/classtec_1_1_event_queue/), [tec::EventQueue< NewGameStateEvent >](/engine/Classes/classtec_1_1_event_queue/)
 
 ## Public Functions
@@ -22,7 +25,7 @@ Inherits from [tec::EventQueue< EntityCreated >](/engine/Classes/classtec_1_1_ev
 | void | **[CheckPredictionResult](/engine/Classes/classtec_1_1_client_game_state_queue/#function-checkpredictionresult)**([GameState](/engine/Classes/structtec_1_1_game_state/) & new_state) |
 | void | **[ProcessEventQueue](/engine/Classes/classtec_1_1_client_game_state_queue/#function-processeventqueue)**() |
 | void | **[SetClientID](/engine/Classes/classtec_1_1_client_game_state_queue/#function-setclientid)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) _client_id) |
-| void | **[SetCommandID](/engine/Classes/classtec_1_1_client_game_state_queue/#function-setcommandid)**(state_id_t _command_id) |
+| void | **[SetCommandID](/engine/Classes/classtec_1_1_client_game_state_queue/#function-setcommandid)**([state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) _command_id) |
 | virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [EntityCreated](/engine/Classes/structtec_1_1_entity_created/) > data) override |
 | virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id, std::shared_ptr< [EntityDestroyed](/engine/Classes/structtec_1_1_entity_destroyed/) > data) override |
 | virtual void | **[On](/engine/Classes/classtec_1_1_client_game_state_queue/#function-on)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) , std::shared_ptr< [NewGameStateEvent](/engine/Classes/structtec_1_1_new_game_state_event/) > data) override |
@@ -228,4 +231,4 @@ inline GameState * GetGameState(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

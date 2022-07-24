@@ -9,6 +9,9 @@ title: tec::networking::ServerConnection
 
 
 
+
+`#include <server-connection.hpp>`
+
 ## Public Types
 
 |                | Name           |
@@ -20,21 +23,21 @@ title: tec::networking::ServerConnection
 |                | Name           |
 | -------------- | -------------- |
 | | **[ServerConnection](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-serverconnection)**([ServerStats](/engine/Classes/classtec_1_1_server_stats/) & s) |
-| bool | **[Connect](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-connect)**(std::string_view ip =LOCAL_HOST) |
+| bool | **[Connect](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-connect)**(std::string_view ip =[LOCAL_HOST](/engine/Namespaces/namespacetec_1_1networking/#variable-local-host)) |
 | void | **[Disconnect](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-disconnect)**() |
 | void | **[Stop](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-stop)**() |
 | void | **[StartDispatch](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-startdispatch)**() |
 | void | **[StartSync](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-startsync)**() |
 | void | **[SendChatMessage](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-sendchatmessage)**(std::string message) |
-| void | **[Send](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-send)**(MessagePool::ptr_type msg) |
+| void | **[Send](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-send)**([MessagePool::ptr_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-ptr-type) msg) |
 | void | **[Send](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-send)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) & msg) |
 | void | **[Send](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-send)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && msg) |
-| state_id_t | **[GetLastRecvStateID](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getlastrecvstateid)**() |
-| std::list< ping_time_t > | **[GetRecentPings](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getrecentpings)**() |
-| ping_time_t | **[GetAveragePing](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getaverageping)**() |
-| ping_time_t | **[GetEstimatedDelay](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getestimateddelay)**() |
+| [state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) | **[GetLastRecvStateID](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getlastrecvstateid)**() |
+| std::list< [ping_time_t](/engine/Namespaces/namespacetec_1_1networking/#typedef-ping-time-t) > | **[GetRecentPings](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getrecentpings)**() |
+| [ping_time_t](/engine/Namespaces/namespacetec_1_1networking/#typedef-ping-time-t) | **[GetAveragePing](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getaverageping)**() |
+| [ping_time_t](/engine/Namespaces/namespacetec_1_1networking/#typedef-ping-time-t) | **[GetEstimatedDelay](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getestimateddelay)**() |
 | [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetClientID](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getclientid)**() |
-| void | **[RegisterMessageHandler](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-registermessagehandler)**(MessageType type, messageHandlerFunc handler) |
+| void | **[RegisterMessageHandler](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-registermessagehandler)**([MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) type, [messageHandlerFunc](/engine/Classes/classtec_1_1networking_1_1_server_connection/#typedef-messagehandlerfunc) handler) |
 | void | **[RegisterConnectFunc](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-registerconnectfunc)**(std::function< void()> func) |
 | size_t | **[GetPartialMessageCount](/engine/Classes/classtec_1_1networking_1_1_server_connection/#function-getpartialmessagecount)**() const |
 
@@ -209,4 +212,4 @@ ServerStats & stats;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

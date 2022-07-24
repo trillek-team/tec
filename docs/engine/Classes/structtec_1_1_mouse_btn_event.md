@@ -9,6 +9,9 @@ title: tec::MouseBtnEvent
 
 
 
+
+`#include <events.hpp>`
+
 ## Public Types
 
 |                | Name           |
@@ -20,8 +23,8 @@ title: tec::MouseBtnEvent
 
 |                | Name           |
 | -------------- | -------------- |
-| MOUSE_BTN_ACTION | **[action](/engine/Classes/structtec_1_1_mouse_btn_event/#variable-action)**  |
-| MOUSE_BTN | **[button](/engine/Classes/structtec_1_1_mouse_btn_event/#variable-button)**  |
+| [MOUSE_BTN_ACTION](/engine/Classes/structtec_1_1_mouse_btn_event/#enum-mouse-btn-action) | **[action](/engine/Classes/structtec_1_1_mouse_btn_event/#variable-action)**  |
+| [MOUSE_BTN](/engine/Classes/structtec_1_1_mouse_btn_event/#enum-mouse-btn) | **[button](/engine/Classes/structtec_1_1_mouse_btn_event/#variable-button)**  |
 
 ## Public Types Documentation
 
@@ -64,4 +67,4 @@ MOUSE_BTN button;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

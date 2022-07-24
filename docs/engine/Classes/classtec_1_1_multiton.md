@@ -9,6 +9,9 @@ title: tec::Multiton
 
  [More...](#detailed-description)
 
+
+`#include <multiton.hpp>`
+
 ## Public Functions
 
 |                | Name           |
@@ -150,4 +153,4 @@ static std::map< ID_T, T > instances;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

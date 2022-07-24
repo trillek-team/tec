@@ -9,6 +9,9 @@ title: tec::PointLight
 
 
 
+
+`#include <lights.hpp>`
+
 Inherits from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 
 ## Public Functions
@@ -27,7 +30,7 @@ Inherits from [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 | float | **[constant](/engine/Classes/structtec_1_1_point_light/#variable-constant)**  |
 | float | **[linear](/engine/Classes/structtec_1_1_point_light/#variable-linear)**  |
 | float | **[exponential](/engine/Classes/structtec_1_1_point_light/#variable-exponential)**  |
-| struct tec::PointLight::@0 | **[Attenuation](/engine/Classes/structtec_1_1_point_light/#variable-attenuation)**  |
+| struct tec::PointLight::@2 | **[Attenuation](/engine/Classes/structtec_1_1_point_light/#variable-attenuation)**  |
 | float | **[bounding_radius](/engine/Classes/structtec_1_1_point_light/#variable-bounding-radius)**  |
 
 ## Additional inherited members
@@ -107,7 +110,7 @@ float exponential {0.3f};
 ### variable Attenuation
 
 ```cpp
-struct tec::PointLight::@0 Attenuation;
+struct tec::PointLight::@2 Attenuation;
 ```
 
 
@@ -120,4 +123,4 @@ float bounding_radius {0.f};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

@@ -157,7 +157,7 @@ title: Classes
         * **struct [AttribData](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/)** 
         * **struct [ColorVertex](/engine/Classes/structtec_1_1vertex_1_1_color_vertex/)** 
         * **struct [FormatDefine](/engine/Classes/structtec_1_1vertex_1_1_format_define/)** 
-        * **struct [FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)** <br>Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The convert() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format. 
+        * **struct [FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)** <br>Holds relevent data to process and bind vertex data via glVertexAttrib*Pointer calls The [convert()]() function loads data from a [Mesh](/engine/Classes/structtec_1_1_mesh/) into the described format. 
         * **struct [FormatInfo](/engine/Classes/structtec_1_1vertex_1_1_format_info/)** 
         * **struct [FullVertex](/engine/Classes/structtec_1_1vertex_1_1_full_vertex/)** 
         * **struct [LiteFullVertex](/engine/Classes/structtec_1_1vertex_1_1_lite_full_vertex/)** 
@@ -171,4 +171,4 @@ title: Classes
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

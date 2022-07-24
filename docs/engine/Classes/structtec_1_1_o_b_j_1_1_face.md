@@ -9,6 +9,9 @@ title: tec::OBJ::Face
 
 
 
+
+`#include <obj.hpp>`
+
 ## Public Attributes
 
 |                | Name           |
@@ -42,4 +45,4 @@ unsigned int[3] norm {0, 0, 0};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

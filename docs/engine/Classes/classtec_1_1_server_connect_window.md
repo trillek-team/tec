@@ -9,6 +9,9 @@ title: tec::ServerConnectWindow
 
 
 
+
+`#include <server-connect.hpp>`
+
 Inherits from [tec::AbstractWindow](/engine/Classes/classtec_1_1_abstract_window/)
 
 ## Public Functions
@@ -91,4 +94,4 @@ static void SetUsername(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

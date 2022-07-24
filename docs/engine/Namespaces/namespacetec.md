@@ -126,24 +126,10 @@ title: tec
 
 |                | Name           |
 | -------------- | -------------- |
+| enum int | **[PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags)** { FS_DEFAULT = 0, FS_READONLY = 0, FS_READWRITE = 1, FS_CREATE = 2, FS_APPEND = 4} |
 | enum| **[ENGINE_ENTITIES](/engine/Namespaces/namespacetec/#enum-engine-entities)** { MANIPULATOR = 1} |
 | enum class std::uint32_t | **[ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode)** { UNKNOWN_MODE = 0xffffffffu, MODEFLAG_COLOR = 2, MODEFLAG_ALPHA = 4, MODEFLAG_GAMMA = 8, MONOCHROME = 0, MONOCHROME_A = MODEFLAG_ALPHA, COLOR_RGB = MODEFLAG_COLOR, COLOR_RGBA = MODEFLAG_COLOR | MODEFLAG_ALPHA, GAMMA_RGB = MODEFLAG_COLOR | MODEFLAG_GAMMA, GAMMA_RGBA = MODEFLAG_COLOR | MODEFLAG_GAMMA | MODEFLAG_ALPHA} |
 | enum class| **[AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource-state)** { PLAYING, PAUSED, STOPPED} |
-| enum int | **[PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags)** { FS_DEFAULT = 0, FS_READONLY = 0, FS_READWRITE = 1, FS_CREATE = 2, FS_APPEND = 4} |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > > | **[MaterialMap](/engine/Namespaces/namespacetec/#typedef-materialmap)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > > | **[ShaderMap](/engine/Namespaces/namespacetec/#typedef-shadermap)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::string > | **[ShaderIncludes](/engine/Namespaces/namespacetec/#typedef-shaderincludes)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > > | **[TextureMap](/engine/Namespaces/namespacetec/#typedef-texturemap)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Renderable](/engine/Classes/structtec_1_1_renderable/) * > | **[RenderableMap](/engine/Namespaces/namespacetec/#typedef-renderablemap)**  |
-| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [PointLight](/engine/Classes/structtec_1_1_point_light/) * > | **[PointLightMap](/engine/Namespaces/namespacetec/#using-pointlightmap)**  |
-| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [DirectionalLight](/engine/Classes/structtec_1_1_directional_light/) * > | **[DirectionalLightMap](/engine/Namespaces/namespacetec/#using-directionallightmap)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Animation](/engine/Classes/classtec_1_1_animation/) * > | **[AnimationMap](/engine/Namespaces/namespacetec/#typedef-animationmap)**  |
-| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Scale](/engine/Classes/structtec_1_1_scale/) * > | **[ScaleMap](/engine/Namespaces/namespacetec/#using-scalemap)**  |
-| typedef [Command](/engine/Classes/structtec_1_1_command/)< [RenderSystem](/engine/Classes/classtec_1_1_render_system/) > | **[RenderCommand](/engine/Namespaces/namespacetec/#typedef-rendercommand)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > > | **[PixelBufferMap](/engine/Namespaces/namespacetec/#typedef-pixelbuffermap)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > > | **[SoundMap](/engine/Namespaces/namespacetec/#typedef-soundmap)**  |
-| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), std::shared_ptr< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > > | **[VoxelVolumeMap](/engine/Namespaces/namespacetec/#typedef-voxelvolumemap)**  |
-| typedef [Command](/engine/Classes/structtec_1_1_command/)< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > | **[VoxelCommand](/engine/Namespaces/namespacetec/#typedef-voxelcommand)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Position](/engine/Classes/structtec_1_1_position/) * > | **[PositionMap](/engine/Namespaces/namespacetec/#using-positionmap)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Orientation](/engine/Classes/structtec_1_1_orientation/) * > | **[OrientationMap](/engine/Namespaces/namespacetec/#using-orientationmap)**  |
 | using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [LuaScript](/engine/Classes/structtec_1_1_lua_script/) * > | **[LuaScriptMap](/engine/Namespaces/namespacetec/#using-luascriptmap)**  |
@@ -158,36 +144,32 @@ title: tec
 | typedef std::uint32_t | **[tid](/engine/Namespaces/namespacetec/#typedef-tid)**  |
 | typedef std::string | **[uid](/engine/Namespaces/namespacetec/#typedef-uid)** <br>Type ID.  |
 | typedef [Command](/engine/Classes/structtec_1_1_command/)< [VComputerSystem](/engine/Classes/classtec_1_1_v_computer_system/) > | **[VComputerCommand](/engine/Namespaces/namespacetec/#typedef-vcomputercommand)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Material](/engine/Classes/classtec_1_1_material/) > > | **[MaterialMap](/engine/Namespaces/namespacetec/#typedef-materialmap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [Shader](/engine/Classes/classtec_1_1_shader/) > > | **[ShaderMap](/engine/Namespaces/namespacetec/#typedef-shadermap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::string > | **[ShaderIncludes](/engine/Namespaces/namespacetec/#typedef-shaderincludes)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [TextureObject](/engine/Classes/classtec_1_1_texture_object/) > > | **[TextureMap](/engine/Namespaces/namespacetec/#typedef-texturemap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Renderable](/engine/Classes/structtec_1_1_renderable/) * > | **[RenderableMap](/engine/Namespaces/namespacetec/#typedef-renderablemap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [PointLight](/engine/Classes/structtec_1_1_point_light/) * > | **[PointLightMap](/engine/Namespaces/namespacetec/#using-pointlightmap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [DirectionalLight](/engine/Classes/structtec_1_1_directional_light/) * > | **[DirectionalLightMap](/engine/Namespaces/namespacetec/#using-directionallightmap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Animation](/engine/Classes/classtec_1_1_animation/) * > | **[AnimationMap](/engine/Namespaces/namespacetec/#typedef-animationmap)**  |
+| using [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Scale](/engine/Classes/structtec_1_1_scale/) * > | **[ScaleMap](/engine/Namespaces/namespacetec/#using-scalemap)**  |
+| typedef [Command](/engine/Classes/structtec_1_1_command/)< [RenderSystem](/engine/Classes/classtec_1_1_render_system/) > | **[RenderCommand](/engine/Namespaces/namespacetec/#typedef-rendercommand)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > > | **[PixelBufferMap](/engine/Namespaces/namespacetec/#typedef-pixelbuffermap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< std::string, std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > > | **[SoundMap](/engine/Namespaces/namespacetec/#typedef-soundmap)**  |
+| typedef [Multiton](/engine/Classes/classtec_1_1_multiton/)< [eid](/engine/Namespaces/namespacetec/#typedef-eid), std::shared_ptr< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > > | **[VoxelVolumeMap](/engine/Namespaces/namespacetec/#typedef-voxelvolumemap)**  |
+| typedef [Command](/engine/Classes/structtec_1_1_command/)< [VoxelVolume](/engine/Classes/classtec_1_1_voxel_volume/) > | **[VoxelCommand](/engine/Namespaces/namespacetec/#typedef-voxelcommand)**  |
 
 ## Functions
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[CreateManipulatorEntity](/engine/Namespaces/namespacetec/#function-createmanipulatorentity)**() |
-| void | **[CreateEngineEntities](/engine/Namespaces/namespacetec/#function-createengineentities)**() |
-| void | **[RegisterFileFactories](/engine/Namespaces/namespacetec/#function-registerfilefactories)**() |
-| void | **[BuildTestVoxelVolume](/engine/Namespaces/namespacetec/#function-buildtestvoxelvolume)**() |
-| [Renderable](/engine/Classes/structtec_1_1_renderable/) * | **[GetRenderable](/engine/Namespaces/namespacetec/#function-getrenderable)**() |
-| void | **[ErrorCallback](/engine/Namespaces/namespacetec/#function-errorcallback)**(int error_no, const char * description) |
-| GLFWmonitor * | **[get_current_monitor](/engine/Namespaces/namespacetec/#function-get-current-monitor)**(GLFWwindow * window) |
-| void | **[ActivateTextureUnit](/engine/Namespaces/namespacetec/#function-activatetextureunit)**(const GLuint unit, const GLuint texture_name) |
-| std::string | **[CleanString](/engine/Namespaces/namespacetec/#function-cleanstring)**(std::string str)<br>Cleans an input string by removing certain grouping characters.  |
-| void | **[ComputeWNeg](/engine/Namespaces/namespacetec/#function-computewneg)**(glm::quat & q)<br>Compute the quaternion's W component on interval [-1, 0], MD5 style.  |
-| [MD5Mesh::Joint](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/) | **[ParseJoint](/engine/Namespaces/namespacetec/#function-parsejoint)**(std::stringstream & ss)<br>Parses a joint line.  |
-| [MD5Mesh::Vertex](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/) | **[ParseVertex](/engine/Namespaces/namespacetec/#function-parsevertex)**(std::stringstream & ss)<br>Parses a vertex line.  |
-| [MD5Mesh::Triangle](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_triangle/) | **[ParseTriangle](/engine/Namespaces/namespacetec/#function-parsetriangle)**(std::stringstream & ss)<br>Parses a triangle line.  |
-| [MD5Mesh::Weight](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_weight/) | **[ParsesWeight](/engine/Namespaces/namespacetec/#function-parsesweight)**(std::stringstream & ss)<br>Parses a weight line.  |
-| uint32_t | **[BytesForBitSize](/engine/Namespaces/namespacetec/#function-bytesforbitsize)**(uint32_t bits) |
-| std::string | **[VorbisErrorToString](/engine/Namespaces/namespacetec/#function-vorbiserrortostring)**(int error) |
-| void | **[alCheckError](/engine/Namespaces/namespacetec/#function-alcheckerror)**() |
-| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetNextEntityId](/engine/Namespaces/namespacetec/#function-getnextentityid)**() |
 | | **[ATTRIBUTE_ALIGNED16](/engine/Namespaces/namespacetec/#function-attribute-aligned16)**(struct ) |
 | void | **[InvokeFileFactory](/engine/Namespaces/namespacetec/#function-invokefilefactory)**(const std::string & file_name) |
 | template <typename T \> <br>std::shared_ptr< T > | **[GetResource](/engine/Namespaces/namespacetec/#function-getresource)**(const std::string & res_name) |
 | template <typename T \> <br>void | **[AddFileFactory](/engine/Namespaces/namespacetec/#function-addfilefactory)**() |
 | const std::string_view | **[app_name](/engine/Namespaces/namespacetec/#function-app-name)**("trillek" )<br>tec [Path]() separator  |
-| PATH_OPEN_FLAGS | **[operator|](/engine/Namespaces/namespacetec/#function-operator|)**(PATH_OPEN_FLAGS a, PATH_OPEN_FLAGS b) |
-| PATH_OPEN_FLAGS | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**(PATH_OPEN_FLAGS a, PATH_OPEN_FLAGS b) |
+| [PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) | **[operator|](/engine/Namespaces/namespacetec/#function-operator|)**([PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) a, [PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) b) |
+| [PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) | **[operator+](/engine/Namespaces/namespacetec/#function-operator+)**([PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) a, [PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) b) |
 | [Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, const [Path](/engine/Classes/classtec_1_1_path/) & rhs)<br>Append a subdirectory or file.  |
 | template <size_t N\> <br>[Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, const char(&) cstr[N])<br>Append a subdirectory or file.  |
 | [Path](/engine/Classes/classtec_1_1_path/) | **[operator/](/engine/Namespaces/namespacetec/#function-operator/)**(const [Path](/engine/Classes/classtec_1_1_path/) & lhs, const std::string_view strv)<br>Append a subdirectory or file.  |
@@ -208,7 +190,7 @@ title: tec
 | std::vector< std::string > | **[SplitString](/engine/Namespaces/namespacetec/#function-splitstring)**(std::string args, std::string deliminator) |
 | template <class T \> <br>bool | **[IsBetween](/engine/Namespaces/namespacetec/#function-isbetween)**(T value, T lower, T upper)<br>User ID.  |
 | template <class TYPE \> <br>constexpr const char * | **[GetTypeName](/engine/Namespaces/namespacetec/#function-gettypename)**(void )<br>Returns the name of an component on compile time.  |
-| template <class TYPE \> <br>constexpr tid | **[GetTypeID](/engine/Namespaces/namespacetec/#function-gettypeid)**(void )<br>Returns the TypeID of a component on compile time.  |
+| template <class TYPE \> <br>constexpr [tid](/engine/Namespaces/namespacetec/#typedef-tid) | **[GetTypeID](/engine/Namespaces/namespacetec/#function-gettypeid)**(void )<br>Returns the TypeID of a component on compile time.  |
 | template <class TYPE \> <br>constexpr const char * | **[GetTypeEXT](/engine/Namespaces/namespacetec/#function-gettypeext)**(void )<br>Returns the name of a resource type on Compile time.  |
 | | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Renderable](/engine/Classes/structtec_1_1_renderable/) ) |
 | | **[MAKE_IDTYPE](/engine/Namespaces/namespacetec/#function-make-idtype)**([Position](/engine/Classes/structtec_1_1_position/) ) |
@@ -229,38 +211,70 @@ title: tec
 | | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([OBJ](/engine/Classes/classtec_1_1_o_b_j/) , "obj" ) |
 | | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) , "ogg" ) |
 | | **[MAKE_EXTTYPE](/engine/Namespaces/namespacetec/#function-make-exttype)**([ScriptFile](/engine/Classes/classtec_1_1_script_file/) , "lua" ) |
+| void | **[CreateManipulatorEntity](/engine/Namespaces/namespacetec/#function-createmanipulatorentity)**() |
+| void | **[CreateEngineEntities](/engine/Namespaces/namespacetec/#function-createengineentities)**() |
+| void | **[RegisterFileFactories](/engine/Namespaces/namespacetec/#function-registerfilefactories)**() |
+| void | **[BuildTestVoxelVolume](/engine/Namespaces/namespacetec/#function-buildtestvoxelvolume)**() |
+| [Renderable](/engine/Classes/structtec_1_1_renderable/) * | **[GetRenderable](/engine/Namespaces/namespacetec/#function-getrenderable)**() |
+| void | **[ErrorCallback](/engine/Namespaces/namespacetec/#function-errorcallback)**(int error_no, const char * description) |
+| GLFWmonitor * | **[get_current_monitor](/engine/Namespaces/namespacetec/#function-get-current-monitor)**(GLFWwindow * window) |
+| void | **[ActivateTextureUnit](/engine/Namespaces/namespacetec/#function-activatetextureunit)**(const GLuint unit, const GLuint texture_name) |
+| std::string | **[CleanString](/engine/Namespaces/namespacetec/#function-cleanstring)**(std::string str)<br>Cleans an input string by removing certain grouping characters.  |
+| void | **[ComputeWNeg](/engine/Namespaces/namespacetec/#function-computewneg)**(glm::quat & q)<br>Compute the quaternion's W component on interval [-1, 0], MD5 style.  |
+| [MD5Mesh::Joint](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_joint/) | **[ParseJoint](/engine/Namespaces/namespacetec/#function-parsejoint)**(std::stringstream & ss)<br>Parses a joint line.  |
+| [MD5Mesh::Vertex](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_vertex/) | **[ParseVertex](/engine/Namespaces/namespacetec/#function-parsevertex)**(std::stringstream & ss)<br>Parses a vertex line.  |
+| [MD5Mesh::Triangle](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_triangle/) | **[ParseTriangle](/engine/Namespaces/namespacetec/#function-parsetriangle)**(std::stringstream & ss)<br>Parses a triangle line.  |
+| [MD5Mesh::Weight](/engine/Classes/structtec_1_1_m_d5_mesh_1_1_weight/) | **[ParsesWeight](/engine/Namespaces/namespacetec/#function-parsesweight)**(std::stringstream & ss)<br>Parses a weight line.  |
+| std::size_t | **[find_first_eol](/engine/Namespaces/namespacetec/#function-find-first-eol)**(std::string_view buffer, std::size_t offset =0) |
+| uint32_t | **[BytesForBitSize](/engine/Namespaces/namespacetec/#function-bytesforbitsize)**(uint32_t bits) |
+| std::string | **[VorbisErrorToString](/engine/Namespaces/namespacetec/#function-vorbiserrortostring)**(int error) |
+| void | **[alCheckError](/engine/Namespaces/namespacetec/#function-alcheckerror)**() |
+| [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetNextEntityId](/engine/Namespaces/namespacetec/#function-getnextentityid)**() |
 
 ## Attributes
 
 |                | Name           |
 | -------------- | -------------- |
-| const std::map< std::string_view, GLint > | **[engine_constants](/engine/Namespaces/namespacetec/#variable-engine-constants)**  |
-| char[64] | **[connect_username](/engine/Namespaces/namespacetec/#variable-connect-username)**  |
-| std::string | **[inifilename](/engine/Namespaces/namespacetec/#variable-inifilename)**  |
-| std::string | **[logfilename](/engine/Namespaces/namespacetec/#variable-logfilename)**  |
-| std::unordered_map< std::string, std::function< void(std::string)> > | **[file_factories](/engine/Namespaces/namespacetec/#variable-file-factories)**  |
 | const glm::vec3 | **[FORWARD_VECTOR](/engine/Namespaces/namespacetec/#variable-forward-vector)**  |
 | const glm::vec3 | **[UP_VECTOR](/engine/Namespaces/namespacetec/#variable-up-vector)**  |
 | const glm::vec3 | **[RIGHT_VECTOR](/engine/Namespaces/namespacetec/#variable-right-vector)**  |
+| std::unordered_map< std::string, std::function< void(std::string)> > | **[file_factories](/engine/Namespaces/namespacetec/#variable-file-factories)**  |
 | const char | **[WIN_PATH_CHAR](/engine/Namespaces/namespacetec/#variable-win-path-char)**  |
 | constexpr std::string_view | **[PATH_NATIVE_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path-native-separator)**  |
 | constexpr std::string_view | **[PATH_SEPARATOR](/engine/Namespaces/namespacetec/#variable-path-separator)** <br>[OS]() File system path separator.  |
 | double | **[UPDATE_RATE](/engine/Namespaces/namespacetec/#variable-update-rate)**  |
 | double | **[TICKS_PER_SECOND](/engine/Namespaces/namespacetec/#variable-ticks-per-second)**  |
-| const std::unordered_map< tid, const char * > | **[TypeName](/engine/Namespaces/namespacetec/#variable-typename)** <br>Maps on runtime the Type ID with the name.  |
+| const std::unordered_map< [tid](/engine/Namespaces/namespacetec/#typedef-tid), const char * > | **[TypeName](/engine/Namespaces/namespacetec/#variable-typename)** <br>Maps on runtime the Type ID with the name.  |
+| const std::map< std::string_view, GLint > | **[engine_constants](/engine/Namespaces/namespacetec/#variable-engine-constants)**  |
+| char[64] | **[connect_username](/engine/Namespaces/namespacetec/#variable-connect-username)**  |
+| std::string | **[inifilename](/engine/Namespaces/namespacetec/#variable-inifilename)**  |
+| std::string | **[logfilename](/engine/Namespaces/namespacetec/#variable-logfilename)**  |
 
 ## Detailed Description
 
-
-Abstract base class for GUI windows
 
 Lua system
 
 Ring buffer implementation
 
-String handling stuff 
+String handling stuff
+
+Abstract base class for GUI windows 
 
 ## Types Documentation
+
+### enum PATH_OPEN_FLAGS
+
+| Enumerator | Value | Description |
+| ---------- | ----- | ----------- |
+| FS_DEFAULT | 0|   |
+| FS_READONLY | 0|   |
+| FS_READWRITE | 1|   |
+| FS_CREATE | 2|   |
+| FS_APPEND | 4|   |
+
+
+
 
 ### enum ENGINE_ENTITIES
 
@@ -298,117 +312,6 @@ String handling stuff
 | STOPPED | |   |
 
 
-
-
-### enum PATH_OPEN_FLAGS
-
-| Enumerator | Value | Description |
-| ---------- | ----- | ----------- |
-| FS_DEFAULT | 0|   |
-| FS_READONLY | 0|   |
-| FS_READWRITE | 1|   |
-| FS_CREATE | 2|   |
-| FS_APPEND | 4|   |
-
-
-
-
-### typedef MaterialMap
-
-```cpp
-typedef Multiton<std::string, std::shared_ptr<Material> > tec::MaterialMap;
-```
-
-
-### typedef ShaderMap
-
-```cpp
-typedef Multiton<std::string, std::shared_ptr<Shader> > tec::ShaderMap;
-```
-
-
-### typedef ShaderIncludes
-
-```cpp
-typedef Multiton<std::string, std::string> tec::ShaderIncludes;
-```
-
-
-### typedef TextureMap
-
-```cpp
-typedef Multiton<std::string, std::shared_ptr<TextureObject> > tec::TextureMap;
-```
-
-
-### typedef RenderableMap
-
-```cpp
-typedef Multiton< eid, Renderable * > tec::RenderableMap;
-```
-
-
-### using PointLightMap
-
-```cpp
-using tec::PointLightMap = typedef Multiton<eid, PointLight*>;
-```
-
-
-### using DirectionalLightMap
-
-```cpp
-using tec::DirectionalLightMap = typedef Multiton<eid, DirectionalLight*>;
-```
-
-
-### typedef AnimationMap
-
-```cpp
-typedef Multiton< std::string, std::shared_ptr< MD5Anim > > tec::AnimationMap;
-```
-
-
-### using ScaleMap
-
-```cpp
-using tec::ScaleMap = typedef Multiton<eid, Scale*>;
-```
-
-
-### typedef RenderCommand
-
-```cpp
-typedef Command<RenderSystem> tec::RenderCommand;
-```
-
-
-### typedef PixelBufferMap
-
-```cpp
-typedef Multiton<std::string, std::shared_ptr<PixelBuffer> > tec::PixelBufferMap;
-```
-
-
-### typedef SoundMap
-
-```cpp
-typedef Multiton< std::string, std::shared_ptr< VorbisStream > > tec::SoundMap;
-```
-
-
-### typedef VoxelVolumeMap
-
-```cpp
-typedef Multiton<eid, std::shared_ptr<VoxelVolume> > tec::VoxelVolumeMap;
-```
-
-
-### typedef VoxelCommand
-
-```cpp
-typedef Command<VoxelVolume> tec::VoxelCommand;
-```
 
 
 ### using PositionMap
@@ -511,216 +414,106 @@ typedef Command<VComputerSystem> tec::VComputerCommand;
 ```
 
 
+### typedef MaterialMap
+
+```cpp
+typedef Multiton<std::string, std::shared_ptr<Material> > tec::MaterialMap;
+```
+
+
+### typedef ShaderMap
+
+```cpp
+typedef Multiton<std::string, std::shared_ptr<Shader> > tec::ShaderMap;
+```
+
+
+### typedef ShaderIncludes
+
+```cpp
+typedef Multiton<std::string, std::string> tec::ShaderIncludes;
+```
+
+
+### typedef TextureMap
+
+```cpp
+typedef Multiton<std::string, std::shared_ptr<TextureObject> > tec::TextureMap;
+```
+
+
+### typedef RenderableMap
+
+```cpp
+typedef Multiton< eid, Renderable * > tec::RenderableMap;
+```
+
+
+### using PointLightMap
+
+```cpp
+using tec::PointLightMap = typedef Multiton<eid, PointLight*>;
+```
+
+
+### using DirectionalLightMap
+
+```cpp
+using tec::DirectionalLightMap = typedef Multiton<eid, DirectionalLight*>;
+```
+
+
+### typedef AnimationMap
+
+```cpp
+typedef Multiton< std::string, std::shared_ptr< MD5Anim > > tec::AnimationMap;
+```
+
+
+### using ScaleMap
+
+```cpp
+using tec::ScaleMap = typedef Multiton<eid, Scale*>;
+```
+
+
+### typedef RenderCommand
+
+```cpp
+typedef Command<RenderSystem> tec::RenderCommand;
+```
+
+
+### typedef PixelBufferMap
+
+```cpp
+typedef Multiton<std::string, std::shared_ptr<PixelBuffer> > tec::PixelBufferMap;
+```
+
+
+### typedef SoundMap
+
+```cpp
+typedef Multiton< std::string, std::shared_ptr< VorbisStream > > tec::SoundMap;
+```
+
+
+### typedef VoxelVolumeMap
+
+```cpp
+typedef Multiton<eid, std::shared_ptr<VoxelVolume> > tec::VoxelVolumeMap;
+```
+
+
+### typedef VoxelCommand
+
+```cpp
+typedef Command<VoxelVolume> tec::VoxelCommand;
+```
+
+
 
 ## Functions Documentation
-
-### function CreateManipulatorEntity
-
-```cpp
-void CreateManipulatorEntity()
-```
-
-
-### function CreateEngineEntities
-
-```cpp
-void CreateEngineEntities()
-```
-
-
-### function RegisterFileFactories
-
-```cpp
-void RegisterFileFactories()
-```
-
-
-### function BuildTestVoxelVolume
-
-```cpp
-void BuildTestVoxelVolume()
-```
-
-
-### function GetRenderable
-
-```cpp
-Renderable * GetRenderable()
-```
-
-
-### function ErrorCallback
-
-```cpp
-static void ErrorCallback(
-    int error_no,
-    const char * description
-)
-```
-
-
-### function get_current_monitor
-
-```cpp
-GLFWmonitor * get_current_monitor(
-    GLFWwindow * window
-)
-```
-
-
-### function ActivateTextureUnit
-
-```cpp
-void ActivateTextureUnit(
-    const GLuint unit,
-    const GLuint texture_name
-)
-```
-
-
-### function CleanString
-
-```cpp
-std::string CleanString(
-    std::string str
-)
-```
-
-Cleans an input string by removing certain grouping characters. 
-
-**Parameters**: 
-
-  * **std::string** str The string to clean. 
-
-
-**Return**: The cleaned string 
-
-These characters include ", ', (, and ). 
-
-
-### function ComputeWNeg
-
-```cpp
-void ComputeWNeg(
-    glm::quat & q
-)
-```
-
-Compute the quaternion's W component on interval [-1, 0], MD5 style. 
-
-**Return**: void 
-
-### function ParseJoint
-
-```cpp
-MD5Mesh::Joint ParseJoint(
-    std::stringstream & ss
-)
-```
-
-Parses a joint line. 
-
-**Parameters**: 
-
-  * **std::stringstream&** ss The stream that contains the joint to parse. 
-
-
-**Return**: The parsed joint or a default one if the parsing failed. 
-
-joints { "name" parent(pos.x pos.y pos.z) (orient.x orient.y orient.z) ... } 
-
-
-### function ParseVertex
-
-```cpp
-MD5Mesh::Vertex ParseVertex(
-    std::stringstream & ss
-)
-```
-
-Parses a vertex line. 
-
-**Parameters**: 
-
-  * **std::stringstream&** ss The stream that contains the vertex to parse. 
-
-
-**Return**: The parsed vertex or a default one if the parsing failed. 
-
-vert vertIndex ( s t ) startWeight countWeight 
-
-
-### function ParseTriangle
-
-```cpp
-MD5Mesh::Triangle ParseTriangle(
-    std::stringstream & ss
-)
-```
-
-Parses a triangle line. 
-
-**Parameters**: 
-
-  * **std::stringstream&** ss The stream that contains the triangle to parse. 
-
-
-**Return**: The parsed triangle or a default one if the parsing failed. 
-
-tri triIndex vertIndex[0] vertIndex[1] vertIndex[2] 
-
-
-### function ParsesWeight
-
-```cpp
-MD5Mesh::Weight ParsesWeight(
-    std::stringstream & ss
-)
-```
-
-Parses a weight line. 
-
-**Parameters**: 
-
-  * **std::stringstream&** ss The stream that contains the weight to parse. 
-
-
-**Return**: The parsed weight or a default one if the parsing failed. 
-
-weight weightIndex joint bias ( pos.x pos.y pos.z ) 
-
-
-### function BytesForBitSize
-
-```cpp
-static uint32_t BytesForBitSize(
-    uint32_t bits
-)
-```
-
-
-### function VorbisErrorToString
-
-```cpp
-inline std::string VorbisErrorToString(
-    int error
-)
-```
-
-
-### function alCheckError
-
-```cpp
-inline void alCheckError()
-```
-
-
-### function GetNextEntityId
-
-```cpp
-eid GetNextEntityId()
-```
-
 
 ### function ATTRIBUTE_ALIGNED16
 
@@ -1216,57 +1009,226 @@ MAKE_EXTTYPE(
 ```
 
 
+### function CreateManipulatorEntity
+
+```cpp
+void CreateManipulatorEntity()
+```
+
+
+### function CreateEngineEntities
+
+```cpp
+void CreateEngineEntities()
+```
+
+
+### function RegisterFileFactories
+
+```cpp
+void RegisterFileFactories()
+```
+
+
+### function BuildTestVoxelVolume
+
+```cpp
+void BuildTestVoxelVolume()
+```
+
+
+### function GetRenderable
+
+```cpp
+Renderable * GetRenderable()
+```
+
+
+### function ErrorCallback
+
+```cpp
+static void ErrorCallback(
+    int error_no,
+    const char * description
+)
+```
+
+
+### function get_current_monitor
+
+```cpp
+GLFWmonitor * get_current_monitor(
+    GLFWwindow * window
+)
+```
+
+
+### function ActivateTextureUnit
+
+```cpp
+void ActivateTextureUnit(
+    const GLuint unit,
+    const GLuint texture_name
+)
+```
+
+
+### function CleanString
+
+```cpp
+std::string CleanString(
+    std::string str
+)
+```
+
+Cleans an input string by removing certain grouping characters. 
+
+**Parameters**: 
+
+  * **std::string** str The string to clean. 
+
+
+**Return**: The cleaned string 
+
+These characters include ", ', (, and ). 
+
+
+### function ComputeWNeg
+
+```cpp
+void ComputeWNeg(
+    glm::quat & q
+)
+```
+
+Compute the quaternion's W component on interval [-1, 0], MD5 style. 
+
+**Return**: void 
+
+### function ParseJoint
+
+```cpp
+MD5Mesh::Joint ParseJoint(
+    std::stringstream & ss
+)
+```
+
+Parses a joint line. 
+
+**Parameters**: 
+
+  * **std::stringstream&** ss The stream that contains the joint to parse. 
+
+
+**Return**: The parsed joint or a default one if the parsing failed. 
+
+joints { "name" parent(pos.x pos.y pos.z) (orient.x orient.y orient.z) ... } 
+
+
+### function ParseVertex
+
+```cpp
+MD5Mesh::Vertex ParseVertex(
+    std::stringstream & ss
+)
+```
+
+Parses a vertex line. 
+
+**Parameters**: 
+
+  * **std::stringstream&** ss The stream that contains the vertex to parse. 
+
+
+**Return**: The parsed vertex or a default one if the parsing failed. 
+
+vert vertIndex ( s t ) startWeight countWeight 
+
+
+### function ParseTriangle
+
+```cpp
+MD5Mesh::Triangle ParseTriangle(
+    std::stringstream & ss
+)
+```
+
+Parses a triangle line. 
+
+**Parameters**: 
+
+  * **std::stringstream&** ss The stream that contains the triangle to parse. 
+
+
+**Return**: The parsed triangle or a default one if the parsing failed. 
+
+tri triIndex vertIndex[0] vertIndex[1] vertIndex[2] 
+
+
+### function ParsesWeight
+
+```cpp
+MD5Mesh::Weight ParsesWeight(
+    std::stringstream & ss
+)
+```
+
+Parses a weight line. 
+
+**Parameters**: 
+
+  * **std::stringstream&** ss The stream that contains the weight to parse. 
+
+
+**Return**: The parsed weight or a default one if the parsing failed. 
+
+weight weightIndex joint bias ( pos.x pos.y pos.z ) 
+
+
+### function find_first_eol
+
+```cpp
+std::size_t find_first_eol(
+    std::string_view buffer,
+    std::size_t offset =0
+)
+```
+
+
+### function BytesForBitSize
+
+```cpp
+static uint32_t BytesForBitSize(
+    uint32_t bits
+)
+```
+
+
+### function VorbisErrorToString
+
+```cpp
+inline std::string VorbisErrorToString(
+    int error
+)
+```
+
+
+### function alCheckError
+
+```cpp
+inline void alCheckError()
+```
+
+
+### function GetNextEntityId
+
+```cpp
+eid GetNextEntityId()
+```
+
+
 
 ## Attributes Documentation
-
-### variable engine_constants
-
-```cpp
-static const std::map< std::string_view, GLint > engine_constants {
-		{"gCompositeMap", (GLint)GBuffer::TEXTURE_TYPE::TEXTURE_TYPE_LAST},
-		{"gPositionMap", (GLint)GBuffer::TEXTURE_TYPE::POSITION},
-		{"gNormalMap", (GLint)GBuffer::TEXTURE_TYPE::NORMAL},
-		{"gColorMap", (GLint)GBuffer::TEXTURE_TYPE::DIFFUSE},
-		{"gEmissionMap", (GLint)GBuffer::TEXTURE_TYPE::EMISSION},
-		{"gDepthMap", (GLint)GBuffer::DEPTH_TYPE::DEPTH},
-		{"mColorMap", 0},
-		{"mSPMap", 1},
-		{"mNormalMap", 2},
-		{"mMap0", 0},
-		{"mMap1", 1},
-		{"mMap2", 2},
-		{"mMap3", 3},
-};
-```
-
-
-### variable connect_username
-
-```cpp
-static char[64] connect_username {""};
-```
-
-
-### variable inifilename
-
-```cpp
-std::string inifilename;
-```
-
-
-### variable logfilename
-
-```cpp
-std::string logfilename;
-```
-
-
-### variable file_factories
-
-```cpp
-std::unordered_map< std::string, std::function< void(std::string)> > file_factories;
-```
-
 
 ### variable FORWARD_VECTOR
 
@@ -1286,6 +1248,13 @@ static const glm::vec3 UP_VECTOR = {0.0f, 1.0f, 0.0f};
 
 ```cpp
 static const glm::vec3 RIGHT_VECTOR = {1.0f, 0.0f, 0.0f};
+```
+
+
+### variable file_factories
+
+```cpp
+std::unordered_map< std::string, std::function< void(std::string)> > file_factories;
 ```
 
 
@@ -1349,9 +1318,51 @@ const std::unordered_map< tid, const char * > TypeName = {
 
 Maps on runtime the Type ID with the name. 
 
+### variable engine_constants
+
+```cpp
+static const std::map< std::string_view, GLint > engine_constants {
+		{"gCompositeMap", (GLint)GBuffer::TEXTURE_TYPE::TEXTURE_TYPE_LAST},
+		{"gPositionMap", (GLint)GBuffer::TEXTURE_TYPE::POSITION},
+		{"gNormalMap", (GLint)GBuffer::TEXTURE_TYPE::NORMAL},
+		{"gColorMap", (GLint)GBuffer::TEXTURE_TYPE::DIFFUSE},
+		{"gEmissionMap", (GLint)GBuffer::TEXTURE_TYPE::EMISSION},
+		{"gDepthMap", (GLint)GBuffer::DEPTH_TYPE::DEPTH},
+		{"mColorMap", 0},
+		{"mSPMap", 1},
+		{"mNormalMap", 2},
+		{"mMap0", 0},
+		{"mMap1", 1},
+		{"mMap2", 2},
+		{"mMap3", 3},
+};
+```
+
+
+### variable connect_username
+
+```cpp
+static char[64] connect_username {""};
+```
+
+
+### variable inifilename
+
+```cpp
+std::string inifilename;
+```
+
+
+### variable logfilename
+
+```cpp
+std::string logfilename;
+```
+
+
 
 
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

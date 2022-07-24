@@ -9,6 +9,9 @@ title: tec::MeshFile
 
 
 
+
+`#include <mesh.hpp>`
+
 Inherited by [tec::MD5Mesh](/engine/Classes/classtec_1_1_m_d5_mesh/), [tec::OBJ](/engine/Classes/classtec_1_1_o_b_j/)
 
 ## Public Functions
@@ -161,4 +164,4 @@ bool dirty {false};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

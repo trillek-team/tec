@@ -9,6 +9,9 @@ title: tec::PixelBuffer
 
 
 
+
+`#include <pixel-buffer.hpp>`
+
 ## Public Types
 
 |                | Name           |
@@ -25,10 +28,10 @@ title: tec::PixelBuffer
 | [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & ) =delete |
 | | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**([PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) && rv) |
 | [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & | **[operator=](/engine/Classes/classtec_1_1_pixel_buffer/#function-operator=)**([PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) && rv) |
-| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(std::uint32_t width, std::uint32_t height, std::uint32_t bitsperchannel, ImageColorMode mode)<br>Construct a new pixel buffer.  |
+| | **[PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelbuffer)**(std::uint32_t width, std::uint32_t height, std::uint32_t bitsperchannel, [ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode) mode)<br>Construct a new pixel buffer.  |
 | bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf)<br>Create a copy of a pixel buffer.  |
-| bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf, std::uint32_t bitsperchannel, ImageColorMode mode)<br>Create a copy of a pixel buffer in a different format.  |
-| bool | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(uint32_t width, uint32_t height, uint32_t bitsperchannel, ImageColorMode mode)<br>Create a new pixel buffer, replacing the old buffer (if any).  |
+| bool | **[CreateCopy](/engine/Classes/classtec_1_1_pixel_buffer/#function-createcopy)**(const [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) & pbuf, std::uint32_t bitsperchannel, [ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode) mode)<br>Create a copy of a pixel buffer in a different format.  |
+| bool | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(uint32_t width, uint32_t height, uint32_t bitsperchannel, [ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode) mode)<br>Create a new pixel buffer, replacing the old buffer (if any).  |
 | bool | **[IsDirty](/engine/Classes/classtec_1_1_pixel_buffer/#function-isdirty)**() const |
 | void | **[Invalidate](/engine/Classes/classtec_1_1_pixel_buffer/#function-invalidate)**()<br>Mark dirty.  |
 | void | **[Validate](/engine/Classes/classtec_1_1_pixel_buffer/#function-validate)**()<br>Mark not dirty.  |
@@ -39,9 +42,9 @@ title: tec::PixelBuffer
 | std::uint32_t | **[Height](/engine/Classes/classtec_1_1_pixel_buffer/#function-height)**() const |
 | std::uint32_t | **[Pitch](/engine/Classes/classtec_1_1_pixel_buffer/#function-pitch)**() const |
 | std::uint32_t | **[PixelSize](/engine/Classes/classtec_1_1_pixel_buffer/#function-pixelsize)**() const |
-| ImageColorMode | **[GetFormat](/engine/Classes/classtec_1_1_pixel_buffer/#function-getformat)**() const |
-| FILTER_PREFERENCE | **[GetFilter](/engine/Classes/classtec_1_1_pixel_buffer/#function-getfilter)**() const |
-| void | **[SetFilter](/engine/Classes/classtec_1_1_pixel_buffer/#function-setfilter)**(FILTER_PREFERENCE f) |
+| [ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode) | **[GetFormat](/engine/Classes/classtec_1_1_pixel_buffer/#function-getformat)**() const |
+| [FILTER_PREFERENCE](/engine/Classes/classtec_1_1_pixel_buffer/#enum-filter-preference) | **[GetFilter](/engine/Classes/classtec_1_1_pixel_buffer/#function-getfilter)**() const |
+| void | **[SetFilter](/engine/Classes/classtec_1_1_pixel_buffer/#function-setfilter)**([FILTER_PREFERENCE](/engine/Classes/classtec_1_1_pixel_buffer/#enum-filter-preference) f) |
 | void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**() |
 | void | **[PPMDebug](/engine/Classes/classtec_1_1_pixel_buffer/#function-ppmdebug)**(const char * ofile) |
 | std::shared_ptr< [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) > | **[Create](/engine/Classes/classtec_1_1_pixel_buffer/#function-create)**(const std::string name, const [Path](/engine/Classes/classtec_1_1_path/) & filename =[Path](/engine/Classes/classtec_1_1_path/)(), bool gamma_space =false)<br>Factory method that creates a [PixelBuffer](/engine/Classes/classtec_1_1_pixel_buffer/) and stores it in the PixelBufferMap under name. It will optionally load a texture file with the given filename.  |
@@ -62,8 +65,8 @@ title: tec::PixelBuffer
 | std::uint32_t | **[bufferpitch](/engine/Classes/classtec_1_1_pixel_buffer/#variable-bufferpitch)** <br>number of bytes to move vertical 1 raster line  |
 | std::uint32_t | **[imagepixelsize](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagepixelsize)**  |
 | std::uint32_t | **[channelbitdepth](/engine/Classes/classtec_1_1_pixel_buffer/#variable-channelbitdepth)**  |
-| ImageColorMode | **[imagemode](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagemode)**  |
-| FILTER_PREFERENCE | **[imagefilter](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagefilter)**  |
+| [ImageColorMode](/engine/Namespaces/namespacetec/#enum-imagecolormode) | **[imagemode](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagemode)**  |
+| [FILTER_PREFERENCE](/engine/Classes/classtec_1_1_pixel_buffer/#enum-filter-preference) | **[imagefilter](/engine/Classes/classtec_1_1_pixel_buffer/#variable-imagefilter)**  |
 | bool | **[dirty](/engine/Classes/classtec_1_1_pixel_buffer/#variable-dirty)**  |
 | std::unique_ptr< std::uint8_t[]> | **[blockptr](/engine/Classes/classtec_1_1_pixel_buffer/#variable-blockptr)**  |
 | std::mutex | **[writelock](/engine/Classes/classtec_1_1_pixel_buffer/#variable-writelock)**  |
@@ -451,4 +454,4 @@ std::mutex writelock;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

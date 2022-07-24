@@ -9,6 +9,9 @@ title: tec::PhysicsDebugDrawer
 
 
 
+
+`#include <physics-debug-drawer.hpp>`
+
 Inherits from btIDebugDraw
 
 ## Public Functions
@@ -113,4 +116,4 @@ void UpdateVertexBuffer()
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

@@ -9,6 +9,9 @@ title: fmt::formatter< tec::GLSymbol >
 
 
 
+
+`#include <render-system.hpp>`
+
 ## Public Functions
 
 |                | Name           |
@@ -40,4 +43,4 @@ inline auto format(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

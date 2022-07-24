@@ -9,6 +9,9 @@ title: tec::EventList
 
 
 
+
+`#include <game-state.hpp>`
+
 ## Public Functions
 
 |                | Name           |
@@ -105,4 +108,4 @@ std::list< MouseClickEvent > mouse_click_events;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

@@ -9,6 +9,9 @@ title: tec::AbstractWindow
 
 
 
+
+`#include <abs_window.hpp>`
+
 Inherited by [tec::ActiveEntityTooltip](/engine/Classes/classtec_1_1_active_entity_tooltip/), [tec::Console](/engine/Classes/classtec_1_1_console/), [tec::DebugInfo](/engine/Classes/classtec_1_1_debug_info/), [tec::PingTimesWindow](/engine/Classes/classtec_1_1_ping_times_window/), [tec::ServerConnectWindow](/engine/Classes/classtec_1_1_server_connect_window/)
 
 ## Public Functions
@@ -156,4 +159,4 @@ Visible ?
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

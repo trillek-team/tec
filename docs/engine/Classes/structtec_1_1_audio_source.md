@@ -9,6 +9,9 @@ title: tec::AudioSource
 
 
 
+
+`#include <sound-system.hpp>`
+
 ## Public Functions
 
 |                | Name           |
@@ -26,7 +29,7 @@ title: tec::AudioSource
 | ALuint[2] | **[buffer](/engine/Classes/structtec_1_1_audio_source/#variable-buffer)**  |
 | bool | **[looping](/engine/Classes/structtec_1_1_audio_source/#variable-looping)**  |
 | std::shared_ptr< [VorbisStream](/engine/Classes/classtec_1_1_vorbis_stream/) > | **[vorbis_stream](/engine/Classes/structtec_1_1_audio_source/#variable-vorbis-stream)**  |
-| AUDIOSOURCE_STATE | **[source_state](/engine/Classes/structtec_1_1_audio_source/#variable-source-state)**  |
+| [AUDIOSOURCE_STATE](/engine/Namespaces/namespacetec/#enum-audiosource-state) | **[source_state](/engine/Classes/structtec_1_1_audio_source/#variable-source-state)**  |
 | int | **[gain](/engine/Classes/structtec_1_1_audio_source/#variable-gain)**  |
 | std::string | **[audio_name](/engine/Classes/structtec_1_1_audio_source/#variable-audio-name)**  |
 
@@ -120,4 +123,4 @@ std::string audio_name;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

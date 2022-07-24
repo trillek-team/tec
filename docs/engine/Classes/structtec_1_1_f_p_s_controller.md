@@ -9,6 +9,9 @@ title: tec::FPSController
 
 
 
+
+`#include <fps-controller.hpp>`
+
 Inherits from [tec::Controller](/engine/Classes/structtec_1_1_controller/)
 
 ## Public Functions
@@ -241,4 +244,4 @@ bool KEY_D_DOWN {false};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

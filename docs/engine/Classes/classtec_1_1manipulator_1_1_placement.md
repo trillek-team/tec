@@ -17,7 +17,7 @@ Manipulator used to place objects in the world. Can have a mesh assigned to prov
 
 |                | Name           |
 | -------------- | -------------- |
-| void | **[SetMaxDistance](/engine/Classes/classtec_1_1manipulator_1_1_placement/#function-setmaxdistance)**(float _max_distance =DEFAULT_MAX_PLACEMENT_DISTANCE) |
+| void | **[SetMaxDistance](/engine/Classes/classtec_1_1manipulator_1_1_placement/#function-setmaxdistance)**(float _max_distance =[DEFAULT_MAX_PLACEMENT_DISTANCE](/engine/Namespaces/namespacetec_1_1manipulator/#variable-default-max-placement-distance)) |
 | void | **[SetMesh](/engine/Classes/classtec_1_1manipulator_1_1_placement/#function-setmesh)**(const std::shared_ptr< [MeshFile](/engine/Classes/classtec_1_1_mesh_file/) > _mesh)<br>Set the mesh used to represent the placement in the world.  |
 | void | **[SetMesh](/engine/Classes/classtec_1_1manipulator_1_1_placement/#function-setmesh)**(const std::string mesh_name)<br>Set the mesh used to represent the placement in the world.  |
 | void | **[ClearMesh](/engine/Classes/classtec_1_1manipulator_1_1_placement/#function-clearmesh)**()<br>Clear the mesh, effectively not longer rendering the placement.  |
@@ -117,4 +117,4 @@ static void RegisterLuaType(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

@@ -9,6 +9,9 @@ title: tec::SpotLight
 
 
 
+
+`#include <lights.hpp>`
+
 Inherits from [tec::DirectionalLight](/engine/Classes/structtec_1_1_directional_light/), [tec::BaseLight](/engine/Classes/structtec_1_1_base_light/)
 
 ## Public Functions
@@ -74,4 +77,4 @@ float cutoff {0.f};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

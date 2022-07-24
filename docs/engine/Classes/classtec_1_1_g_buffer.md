@@ -9,6 +9,9 @@ title: tec::GBuffer
 
 
 
+
+`#include <gbuffer.hpp>`
+
 ## Public Types
 
 |                | Name           |
@@ -24,7 +27,7 @@ title: tec::GBuffer
 | | **[~GBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-~gbuffer)**() |
 | void | **[AddColorAttachments](/engine/Classes/classtec_1_1_g_buffer/#function-addcolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
 | void | **[ResizeColorAttachments](/engine/Classes/classtec_1_1_g_buffer/#function-resizecolorattachments)**(const unsigned int window_width, const unsigned int window_height) |
-| void | **[SetDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-setdepthattachment)**(DEPTH_TYPE type, const unsigned int width, const unsigned int height) |
+| void | **[SetDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-setdepthattachment)**([DEPTH_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-depth-type) type, const unsigned int width, const unsigned int height) |
 | void | **[ResizeDepthAttachment](/engine/Classes/classtec_1_1_g_buffer/#function-resizedepthattachment)**(const unsigned int width, const unsigned int height) |
 | bool | **[CheckCompletion](/engine/Classes/classtec_1_1_g_buffer/#function-checkcompletion)**() const |
 | void | **[StartFrame](/engine/Classes/classtec_1_1_g_buffer/#function-startframe)**() const |
@@ -40,7 +43,7 @@ title: tec::GBuffer
 | GLuint | **[GetColorTexture](/engine/Classes/classtec_1_1_g_buffer/#function-getcolortexture)**(unsigned short index) const |
 | void | **[EndGeometryPass](/engine/Classes/classtec_1_1_g_buffer/#function-endgeometrypass)**() |
 | void | **[StencilPass](/engine/Classes/classtec_1_1_g_buffer/#function-stencilpass)**() |
-| void | **[SetReadBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-setreadbuffer)**(TEXTURE_TYPE TextureType) |
+| void | **[SetReadBuffer](/engine/Classes/classtec_1_1_g_buffer/#function-setreadbuffer)**([TEXTURE_TYPE](/engine/Classes/classtec_1_1_g_buffer/#enum-texture-type) TextureType) |
 
 ## Public Types Documentation
 
@@ -235,4 +238,4 @@ static void SetReadBuffer(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

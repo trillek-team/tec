@@ -15,7 +15,7 @@ Inherits from [tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1verte
 
 |                | Name           |
 | -------------- | -------------- |
-| template <typename... A\> <br>| **[FormatDefine](/engine/Classes/structtec_1_1vertex_1_1_format_define/#function-formatdefine)**(func_t f, A &&... a) |
+| template <typename... A\> <br>| **[FormatDefine](/engine/Classes/structtec_1_1vertex_1_1_format_define/#function-formatdefine)**([func_t](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#typedef-func-t) f, A &&... a) |
 
 ## Additional inherited members
 
@@ -29,7 +29,7 @@ Inherits from [tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1verte
 
 |                | Name           |
 | -------------- | -------------- |
-| template <typename C ,typename... A\> <br>| **[FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#function-formatdefinition)**(const C * , func_t f, A &&... a) |
+| template <typename C ,typename... A\> <br>| **[FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#function-formatdefinition)**(const C * , [func_t](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#typedef-func-t) f, A &&... a) |
 
 **Public Attributes inherited from [tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1vertex_1_1_format_definition/)**
 
@@ -37,7 +37,7 @@ Inherits from [tec::vertex::FormatDefinition](/engine/Classes/structtec_1_1verte
 | -------------- | -------------- |
 | const size_t | **[format_stride](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-format-stride)**  |
 | const std::vector< [AttribData](/engine/Classes/structtec_1_1vertex_1_1_attrib_data/) > | **[info](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-info)**  |
-| const func_t | **[convert](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-convert)**  |
+| const [func_t](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#typedef-func-t) | **[convert](/engine/Classes/structtec_1_1vertex_1_1_format_definition/#variable-convert)**  |
 
 
 ## Detailed Description
@@ -62,4 +62,4 @@ inline FormatDefine(
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

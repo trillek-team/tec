@@ -9,6 +9,9 @@ title: tec::networking::ClientConnection
 
 
 
+
+`#include <client-connection.hpp>`
+
 Inherits from std::enable_shared_from_this< ClientConnection >
 
 ## Public Functions
@@ -20,7 +23,7 @@ Inherits from std::enable_shared_from_this< ClientConnection >
 | | **[~ClientConnection](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-~clientconnection)**() |
 | void | **[StartRead](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-startread)**() |
 | void | **[Shutdown](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-shutdown)**() |
-| void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**(MessagePool::ptr_type msg) |
+| void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**([MessagePool::ptr_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-ptr-type) msg) |
 | void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) & msg) |
 | void | **[QueueWrite](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-queuewrite)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && msg) |
 | [eid](/engine/Namespaces/namespacetec/#typedef-eid) | **[GetID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getid)**() |
@@ -28,10 +31,10 @@ Inherits from std::enable_shared_from_this< ClientConnection >
 | void | **[OnJoinWorld](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onjoinworld)**() |
 | void | **[OnLeaveWorld](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onleaveworld)**() |
 | void | **[OnOtherLeaveWorld](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-onotherleaveworld)**([eid](/engine/Namespaces/namespacetec/#typedef-eid) entity_id) |
-| void | **[ConfirmStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-confirmstateid)**(state_id_t state_id) |
-| state_id_t | **[GetLastConfirmedStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getlastconfirmedstateid)**() |
+| void | **[ConfirmStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-confirmstateid)**([state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) state_id) |
+| [state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) | **[GetLastConfirmedStateID](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getlastconfirmedstateid)**() |
 | void | **[UpdateGameState](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-updategamestate)**(const [GameState](/engine/Classes/structtec_1_1_game_state/) & full_state) |
-| [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) | **[PrepareGameStateUpdateMessage](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-preparegamestateupdatemessage)**(state_id_t current_state_id, uint64_t current_timestamp) |
+| [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) | **[PrepareGameStateUpdateMessage](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-preparegamestateupdatemessage)**([state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) current_state_id, uint64_t current_timestamp) |
 | size_t | **[GetPartialMessageCount](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-getpartialmessagecount)**() const |
 | bool | **[ReadyToReceive](/engine/Classes/classtec_1_1networking_1_1_client_connection/#function-readytoreceive)**() const |
 
@@ -193,4 +196,4 @@ inline bool ReadyToReceive() const
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

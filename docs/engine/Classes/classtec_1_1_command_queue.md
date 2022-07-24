@@ -9,6 +9,9 @@ title: tec::CommandQueue
 
  [More...](#detailed-description)
 
+
+`#include <command-queue.hpp>`
+
 ## Public Functions
 
 |                | Name           |
@@ -92,4 +95,4 @@ std::queue< Command< T > > * local_queue;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

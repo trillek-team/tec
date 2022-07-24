@@ -9,6 +9,9 @@ title: tec::networking::MessageIn
 
 
 
+
+`#include <net-message.hpp>`
+
 Inherits from google::protobuf::io::ZeroCopyInputStream
 
 ## Public Functions
@@ -16,19 +19,19 @@ Inherits from google::protobuf::io::ZeroCopyInputStream
 |                | Name           |
 | -------------- | -------------- |
 | | **[MessageIn](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-messagein)**() |
-| | **[MessageIn](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-messagein)**(MessageType msg_type) |
+| | **[MessageIn](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-messagein)**([MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) msg_type) |
 | void | **[ReadBuffer](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-readbuffer)**(void * body, size_t length) |
 | void | **[ReadString](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-readstring)**(std::string & body) |
 | std::string | **[ToString](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-tostring)**() |
-| void | **[SetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-setmessagetype)**(MessageType value) |
+| void | **[SetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-setmessagetype)**([MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) value) |
 | void | **[SetMessageID](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-setmessageid)**(uint32_t value) |
-| MessageType | **[GetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-getmessagetype)**() const |
+| [MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) | **[GetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-getmessagetype)**() const |
 | uint32_t | **[GetMessageID](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-getmessageid)**() const |
 | bool | **[IsEmpty](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-isempty)**() const |
 | size_t | **[GetSize](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-getsize)**() const |
-| bool | **[PushMessage](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-pushmessage)**(MessagePool::ptr_type msg) |
+| bool | **[PushMessage](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-pushmessage)**([MessagePool::ptr_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-ptr-type) msg) |
 | bool | **[DecodeMessages](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-decodemessages)**() |
-| bool | **[AssignMessages](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-assignmessages)**(MessagePool::list_type msgs) |
+| bool | **[AssignMessages](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-assignmessages)**([MessagePool::list_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-list-type) msgs) |
 | [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) | **[ToOut](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-toout)**() const |
 | void | **[Reset](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-reset)**() |
 | virtual bool | **[Next](/engine/Classes/classtec_1_1networking_1_1_message_in/#function-next)**(const void ** data, int * size) |
@@ -202,4 +205,4 @@ inline virtual int64_t ByteCount() const
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

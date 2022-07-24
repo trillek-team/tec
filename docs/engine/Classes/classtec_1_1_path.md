@@ -9,6 +9,9 @@ title: tec::Path
 
 
 
+
+`#include <filesystem.hpp>`
+
 ## Public Types
 
 |                | Name           |
@@ -35,8 +38,8 @@ title: tec::Path
 | [Path](/engine/Classes/classtec_1_1_path/) | **[Relative](/engine/Classes/classtec_1_1_path/#function-relative)**() const<br>Get the relative part of an absolute path.  |
 | [Path](/engine/Classes/classtec_1_1_path/) | **[Subpath](/engine/Classes/classtec_1_1_path/#function-subpath)**(std::size_t begin, std::size_t end =[Path::npos](/engine/Classes/classtec_1_1_path/#variable-npos)) const<br>Return a subpath.  |
 | [Path](/engine/Classes/classtec_1_1_path/) | **[SubpathFrom](/engine/Classes/classtec_1_1_path/#function-subpathfrom)**(const std::string & needle, bool include =false) const<br>Return a subpath.  |
-| std::unique_ptr< FILE > | **[OpenFile](/engine/Classes/classtec_1_1_path/#function-openfile)**(PATH_OPEN_FLAGS open_mode =FS_DEFAULT) const<br>Open the file at this path as a C-style stream for C functions.  |
-| std::unique_ptr< std::fstream > | **[OpenStream](/engine/Classes/classtec_1_1_path/#function-openstream)**(PATH_OPEN_FLAGS open_mode =FS_DEFAULT) const<br>Open the file at this [Path](/engine/Classes/classtec_1_1_path/) as a std::fstream.  |
+| std::unique_ptr< FILE > | **[OpenFile](/engine/Classes/classtec_1_1_path/#function-openfile)**([PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) open_mode =[FS_DEFAULT](/engine/Namespaces/namespacetec/#enumvalue-fs-default)) const<br>Open the file at this path as a C-style stream for C functions.  |
+| std::unique_ptr< std::fstream > | **[OpenStream](/engine/Classes/classtec_1_1_path/#function-openstream)**([PATH_OPEN_FLAGS](/engine/Namespaces/namespacetec/#enum-path-open-flags) open_mode =[FS_DEFAULT](/engine/Namespaces/namespacetec/#enumvalue-fs-default)) const<br>Open the file at this [Path](/engine/Classes/classtec_1_1_path/) as a std::fstream.  |
 | std::string | **[toString](/engine/Classes/classtec_1_1_path/#function-tostring)**() const<br>Returns the string representation of this [Path](/engine/Classes/classtec_1_1_path/).  |
 | bool | **[empty](/engine/Classes/classtec_1_1_path/#function-empty)**() const |
 | | **[operator bool](/engine/Classes/classtec_1_1_path/#function-operator-bool)**() const |
@@ -636,7 +639,7 @@ Return the absolute [Path](/engine/Classes/classtec_1_1_path/) to the assets dir
 
 
 * If this wasn't set, then it will first internally call [LocateAssets()](/engine/Classes/classtec_1_1_path/#function-locateassets)
-* If you intend to load an asset, use `Path::assets / foo` or `[Path](/engine/Classes/classtec_1_1_path/)("assets:/foo.bar")`
+* If you intend to load an asset, use `[Path::assets](/engine/Classes/classtec_1_1_path/#variable-assets) / foo` or `[Path](/engine/Classes/classtec_1_1_path/)("assets:/foo.bar")`
 
 
 ### function SetAssetsBasePath
@@ -702,4 +705,4 @@ static const Path shaders {"assets:", "/shaders/"};
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

@@ -9,12 +9,15 @@ title: tec::networking::Message
 
 
 
+
+`#include <net-message.hpp>`
+
 ## Public Types
 
 |                | Name           |
 | -------------- | -------------- |
-| enum| **[@2](/engine/Classes/classtec_1_1networking_1_1_message/#enum-@2)** { header_length = 16} |
-| enum| **[@3](/engine/Classes/classtec_1_1networking_1_1_message/#enum-@3)** { max_body_length = 1024} |
+| enum| **[@0](/engine/Classes/classtec_1_1networking_1_1_message/#enum-@0)** { header_length = 16} |
+| enum| **[@1](/engine/Classes/classtec_1_1networking_1_1_message/#enum-@1)** { max_body_length = 1024} |
 | typedef const [Message](/engine/Classes/classtec_1_1networking_1_1_message/) * | **[cptr_type](/engine/Classes/classtec_1_1networking_1_1_message/#typedef-cptr-type)**  |
 
 ## Public Functions
@@ -33,8 +36,8 @@ title: tec::networking::Message
 | std::size_t | **[GetBodyLength](/engine/Classes/classtec_1_1networking_1_1_message/#function-getbodylength)**() const |
 | void | **[SetSequence](/engine/Classes/classtec_1_1networking_1_1_message/#function-setsequence)**(uint32_t value) |
 | uint32_t | **[GetSequence](/engine/Classes/classtec_1_1networking_1_1_message/#function-getsequence)**() const |
-| void | **[SetMessageType](/engine/Classes/classtec_1_1networking_1_1_message/#function-setmessagetype)**(MessageType value) |
-| MessageType | **[GetMessageType](/engine/Classes/classtec_1_1networking_1_1_message/#function-getmessagetype)**() const |
+| void | **[SetMessageType](/engine/Classes/classtec_1_1networking_1_1_message/#function-setmessagetype)**([MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) value) |
+| [MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) | **[GetMessageType](/engine/Classes/classtec_1_1networking_1_1_message/#function-getmessagetype)**() const |
 | void | **[SetMessageID](/engine/Classes/classtec_1_1networking_1_1_message/#function-setmessageid)**(uint32_t value) |
 | uint32_t | **[GetMessageID](/engine/Classes/classtec_1_1networking_1_1_message/#function-getmessageid)**() const |
 | void | **[SetBodyLength](/engine/Classes/classtec_1_1networking_1_1_message/#function-setbodylength)**(std::size_t new_length) |
@@ -43,7 +46,7 @@ title: tec::networking::Message
 
 ## Public Types Documentation
 
-### enum @2
+### enum @0
 
 | Enumerator | Value | Description |
 | ---------- | ----- | ----------- |
@@ -52,7 +55,7 @@ title: tec::networking::Message
 
 
 
-### enum @3
+### enum @1
 
 | Enumerator | Value | Description |
 | ---------- | ----- | ----------- |
@@ -213,4 +216,4 @@ inline void encode_header()
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

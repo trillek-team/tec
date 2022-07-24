@@ -9,6 +9,9 @@ title: tec::DeviceBase
 
 
 
+
+`#include <vcomputer-system.hpp>`
+
 Inherited by [tec::ComputerKeyboard](/engine/Classes/structtec_1_1_computer_keyboard/), [tec::ComputerScreen](/engine/Classes/structtec_1_1_computer_screen/)
 
 ## Public Functions
@@ -61,4 +64,4 @@ std::shared_ptr< Device > device;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

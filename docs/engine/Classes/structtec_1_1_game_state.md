@@ -9,6 +9,9 @@ title: tec::GameState
 
 
 
+
+`#include <game-state.hpp>`
+
 ## Public Functions
 
 |                | Name           |
@@ -28,8 +31,8 @@ title: tec::GameState
 | std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Position](/engine/Classes/structtec_1_1_position/) > | **[positions](/engine/Classes/structtec_1_1_game_state/#variable-positions)**  |
 | std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Orientation](/engine/Classes/structtec_1_1_orientation/) > | **[orientations](/engine/Classes/structtec_1_1_game_state/#variable-orientations)**  |
 | std::unordered_map< [eid](/engine/Namespaces/namespacetec/#typedef-eid), [Velocity](/engine/Classes/structtec_1_1_velocity/) > | **[velocities](/engine/Classes/structtec_1_1_game_state/#variable-velocities)**  |
-| state_id_t | **[state_id](/engine/Classes/structtec_1_1_game_state/#variable-state-id)**  |
-| state_id_t | **[command_id](/engine/Classes/structtec_1_1_game_state/#variable-command-id)**  |
+| [state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) | **[state_id](/engine/Classes/structtec_1_1_game_state/#variable-state-id)**  |
+| [state_id_t](/engine/Namespaces/namespacetec/#typedef-state-id-t) | **[command_id](/engine/Classes/structtec_1_1_game_state/#variable-command-id)**  |
 | uint64_t | **[timestamp](/engine/Classes/structtec_1_1_game_state/#variable-timestamp)**  |
 
 ## Public Functions Documentation
@@ -141,4 +144,4 @@ uint64_t timestamp = 0;
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000

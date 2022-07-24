@@ -9,6 +9,9 @@ title: tec::networking::MessageOut
 
 
 
+
+`#include <net-message.hpp>`
+
 Inherits from google::protobuf::io::ZeroCopyOutputStream
 
 ## Public Functions
@@ -16,17 +19,17 @@ Inherits from google::protobuf::io::ZeroCopyOutputStream
 |                | Name           |
 | -------------- | -------------- |
 | | **[MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-messageout)**() |
-| | **[MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-messageout)**(MessageType msg_type) |
+| | **[MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-messageout)**([MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) msg_type) |
 | | **[MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-messageout)**(const [MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) & other) |
 | | **[MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-messageout)**([MessageOut](/engine/Classes/classtec_1_1networking_1_1_message_out/) && other) |
 | void | **[FromBuffer](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-frombuffer)**(const void * body, size_t length) |
 | void | **[FromString](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-fromstring)**(const std::string & body) |
-| void | **[SetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-setmessagetype)**(MessageType value) |
+| void | **[SetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-setmessagetype)**([MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) value) |
 | void | **[SetMessageID](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-setmessageid)**(uint32_t value) |
-| MessageType | **[GetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-getmessagetype)**() const |
+| [MessageType](/engine/Namespaces/namespacetec_1_1networking/#enum-messagetype) | **[GetMessageType](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-getmessagetype)**() const |
 | uint32_t | **[GetMessageID](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-getmessageid)**() const |
 | bool | **[IsEmpty](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-isempty)**() const |
-| MessagePool::list_type | **[GetMessages](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-getmessages)**() |
+| [MessagePool::list_type](/engine/Classes/classtec_1_1networking_1_1_message_pool/#typedef-list-type) | **[GetMessages](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-getmessages)**() |
 | virtual bool | **[Next](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-next)**(void ** data, int * size) |
 | virtual void | **[BackUp](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-backup)**(int count) |
 | virtual int64_t | **[ByteCount](/engine/Classes/classtec_1_1networking_1_1_message_out/#function-bytecount)**() const |
@@ -179,4 +182,4 @@ inline virtual bool AllowsAliasing() const
 
 -------------------------------
 
-Updated on 2022-07-06 at 04:15:07 +0000
+Updated on 2022-07-24 at 19:27:35 +0000
