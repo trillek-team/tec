@@ -33,7 +33,16 @@ add_interface_lib(
 		resources/obj.cpp
 		resources/vorbis-stream.cpp
 		resources/pixel-buffer.cpp)
-link_client_libs(TARGET ${trillek-client_LIBRARY_NAME})
+
+find_package(GLEW REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(OpenAL CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+
+set(CLIENT_LINK_LIBS glfw GLEW::GLEW OpenAL::OpenAL imgui::imgui)
+
+target_link_libraries(${trillek-client_LIBRARY_NAME} INTERFACE ${CLIENT_LINK_LIBS} ${ADDITIONAL_GL_LIBS})
+link_opengl_libs(${trillek-client_LIBRARY_NAME})
 
 set(trillek-client_PROGRAM_NAME "trillek-client")
 add_program(

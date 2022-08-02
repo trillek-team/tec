@@ -17,8 +17,15 @@ protobuf_generate_cpp(trillek-common_GENSOURCES trillek-common_GENHEADERS ${tril
 set(trillek-common_LIBRARY_NAME "tec")
 set(trillek-common_LIBRARY_NAME ${trillek-common_LIBRARY_NAME} PARENT_SCOPE)
 add_library(${trillek-common_LIBRARY_NAME} STATIC ${trillek-common_GENSOURCES} ${trillek-common_PROTOCOLS})
-link_common_libs(TARGET ${trillek-common_LIBRARY_NAME})
-set_warning_flag(TARGET ${trillek-common_LIBRARY_NAME})
+
+find_package(Lua REQUIRED)
+find_package(Bullet CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(sol2 CONFIG REQUIRED)
+find_package(asio CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
+
+set(COMMON_LINK_LIBS ${BULLET_LIBRARIES} ${LUA_LIBRARIES} protobuf::libprotobuf spdlog::spdlog asio::asio glm::glm)
 
 file(GLOB_RECURSE trillek-common_HEADERS LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
 
@@ -26,9 +33,10 @@ target_include_directories(
 	${trillek-common_LIBRARY_NAME}
 	PUBLIC 
 		${CMAKE_CURRENT_BINARY_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}
 		${trillek_SOURCE_DIR}/deps/trillek-vcomputer/include)
 target_compile_features(${trillek-common_LIBRARY_NAME} PUBLIC cxx_std_17)
-target_link_libraries(${trillek-common_LIBRARY_NAME} PUBLIC VCOMPUTER_STATIC)
+target_link_libraries(${trillek-common_LIBRARY_NAME} PUBLIC VCOMPUTER_STATIC ${COMMON_LINK_LIBS})
 target_sources(${trillek-common_LIBRARY_NAME}
 	PUBLIC
 		file-factories.cpp
