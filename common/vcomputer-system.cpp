@@ -253,7 +253,7 @@ void VComputerSystem::TurnComptuerOff(const eid entity_id) {
 	}
 }
 
-void VComputerSystem::On(eid entity_id, std::shared_ptr<KeyboardEvent> data) {
+void VComputerSystem::On(eid, std::shared_ptr<KeyboardEvent> data) {
 	ComputerKeyboard* keyboard_component = nullptr;
 	for (auto itr = KeyboardComponentMap::Begin(); itr != KeyboardComponentMap::End(); ++itr) {
 		if (itr->second->has_focus) {
@@ -371,7 +371,7 @@ void VComputerSystem::On(eid entity_id, std::shared_ptr<KeyboardEvent> data) {
 	}
 }
 
-void VComputerSystem::On(eid entity_id, std::shared_ptr<MouseBtnEvent> data) {
+void VComputerSystem::On(eid, std::shared_ptr<MouseBtnEvent> data) {
 	if (data->action == MouseBtnEvent::DOWN && data->button == MouseBtnEvent::LEFT) {
 		for (auto keyboard_itr = KeyboardComponentMap::Begin(); keyboard_itr != KeyboardComponentMap::End();
 			 ++keyboard_itr) {

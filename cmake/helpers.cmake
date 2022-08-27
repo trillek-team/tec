@@ -1,13 +1,13 @@
 function(setup_compiler)
 	set(isMSVC "$<CXX_COMPILER_ID:MSVC>")
-	set(isWin32 "$<PLATFORM_ID:Windows>")
 	set(isCLANG "$<CXX_COMPILER_ID:Clang>")
+	set(isWin32 "$<PLATFORM_ID:Windows>")
 
-	set(msvcFlags "/W4 /WX /wd4125 /experimental:external /external:anglebrackets /external:W0 ")
-	add_compile_options("$<${isMSVC}: $<${isCLANG}:/EHsc> ${msvcFlags}, -Wall>")
+	set(msvcFlags /W4 /experimental:external /external:anglebrackets /external:W0)
+	add_compile_options("$<IF:${isMSVC},${msvcFlags},-Wall>")
 
-	set(msvcDefines "PROTOBUF_USE_DLLS _CRT_SECURE_NO_WARNINGS _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS _WIN32_WINNT=0x0601 WIN32_LEAN_AND_MEAN")
-	add_compile_definitions("$<${isMSVC}: ${msvcDefines}> $<${isWin32}: WIN32>")
+	set(msvcDefines "PROTOBUF_USE_DLLS;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_WIN32_WINNT=0x0601;WIN32_LEAN_AND_MEAN")
+	add_compile_definitions("$<${isMSVC}:${msvcDefines}>" "$<${isWin32}:WIN32>")
 endfunction()
 
 # Used by IDEs to nicely view header files
@@ -33,7 +33,7 @@ function(add_program)
 	add_executable(${ADD_PROGRAM_TARGET} ${ADD_PROGRAM_FILE_LIST})
 	
 	target_include_directories(${ADD_PROGRAM_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-	target_link_libraries(${ADD_PROGRAM_TARGET} PUBLIC ${trillek-common_LIBRARY_NAME} ${ADD_PROGRAM_LINK_LIBS})
+	target_link_libraries(${ADD_PROGRAM_TARGET} PUBLIC ${COMMON_LIB_NAME} ${ADD_PROGRAM_LINK_LIBS})
 	target_compile_features(${ADD_PROGRAM_TARGET} PUBLIC cxx_std_17)
 
 	if (MSVC)
@@ -45,10 +45,7 @@ function(add_interface_lib)
 	cmake_parse_arguments("ADD_INTERFACE_LIB" "" "TARGET" "FILE_LIST" ${ARGN})
 	add_library(${ADD_INTERFACE_LIB_TARGET} INTERFACE)
 	file(GLOB_RECURSE CURRENT_SOURCE_DIR_HEADERS LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
-	target_sources(${ADD_INTERFACE_LIB_TARGET}
-		PUBLIC
-		${ADD_INTERFACE_LIB_FILE_LIST}
-		PUBLIC FILE_SET HEADERS FILES ${CURRENT_SOURCE_DIR_HEADERS}
-	)
+	target_sources(${ADD_INTERFACE_LIB_TARGET} PUBLIC ${ADD_INTERFACE_LIB_FILE_LIST} ${CURRENT_SOURCE_DIR_HEADERS})
+	target_include_directories(${ADD_INTERFACE_LIB_TARGET} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 	target_compile_features(${ADD_INTERFACE_LIB_TARGET} INTERFACE cxx_std_17)
 endfunction()

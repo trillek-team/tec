@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.19)
 project(trillek-client)
 
-set(trillek-client_LIBRARY_NAME "client_lib")
-set(trillek-client_LIBRARY_NAME ${trillek-client_LIBRARY_NAME} PARENT_SCOPE)
+set(CLIENT_LIB_NAME "client_lib")
+set(CLIENT_LIB_NAME ${CLIENT_LIB_NAME} PARENT_SCOPE)
 add_interface_lib(
-	TARGET ${trillek-client_LIBRARY_NAME} 
+	TARGET ${CLIENT_LIB_NAME} 
 	FILE_LIST
 		game.cpp
 		imgui-system.cpp
@@ -39,13 +39,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenAL CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
-set(CLIENT_LINK_LIBS glfw GLEW::GLEW OpenAL::OpenAL imgui::imgui)
+target_link_libraries(${CLIENT_LIB_NAME} INTERFACE glfw GLEW::GLEW OpenAL::OpenAL imgui::imgui)
+link_opengl_libs(${CLIENT_LIB_NAME})
 
-target_link_libraries(${trillek-client_LIBRARY_NAME} INTERFACE ${CLIENT_LINK_LIBS} ${ADDITIONAL_GL_LIBS})
-link_opengl_libs(${trillek-client_LIBRARY_NAME})
-
-set(trillek-client_PROGRAM_NAME "trillek-client")
-add_program(
-	TARGET ${trillek-client_PROGRAM_NAME}
-	FILE_LIST main.cpp
-	LINK_LIBS PUBLIC ${trillek-client_LIBRARY_NAME})
+add_program(TARGET "trillek-client" FILE_LIST main.cpp LINK_LIBS PUBLIC ${CLIENT_LIB_NAME})

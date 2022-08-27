@@ -78,7 +78,7 @@
 			"configurePreset": "ninja-multi-docs",
 			"displayName": "Build ninja-multi-docs",
 			"configuration": "Release",
-			"targets": ["doxygen", "doxybook", "mkdocs"]
+			"targets": [ "doxygen", "doxybook", "mkdocs" ]
 		}
 	],
 	"testPresets": [

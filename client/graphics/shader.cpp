@@ -193,12 +193,13 @@ bool Shader::Build(const std::string& name) {
 	glGetProgramiv(this->program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &active_attrib_max);
 	std::string max_read;
 	max_read.resize(std::max(active_uniform_max, active_attrib_max));
+	const GLsizei max_read_size = static_cast<GLsizei>(max_read.size());
 
 	for (GLint index = 0; index < active_uniforms; index++) {
 		GLsizei written;
 		GLint uniform_size;
 		GLenum sym_type;
-		glGetActiveUniform(this->program, index, max_read.size(), &written, &uniform_size, &sym_type, max_read.data());
+		glGetActiveUniform(this->program, index, max_read_size, &written, &uniform_size, &sym_type, max_read.data());
 		std::string uniform_name = max_read.substr(0, max_read.find_first_of('\0'));
 		std::string s_type{GLSymbol::Get(sym_type).name};
 		GLint uniform_loc = this->GetUniformLocation(uniform_name);
@@ -215,7 +216,7 @@ bool Shader::Build(const std::string& name) {
 		GLsizei written;
 		GLint attrib_size;
 		GLenum sym_type;
-		glGetActiveAttrib(this->program, index, max_read.size(), &written, &attrib_size, &sym_type, max_read.data());
+		glGetActiveAttrib(this->program, index, max_read_size, &written, &attrib_size, &sym_type, max_read.data());
 		std::string attrib_name = max_read.substr(0, max_read.find_first_of('\0'));
 		std::string s_type{GLSymbol::Get(sym_type).name};
 		GLint attrib_loc = this->GetAttributeLocation(attrib_name);

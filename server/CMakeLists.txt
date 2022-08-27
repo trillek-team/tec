@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.19)
 project(trillek-server)
 
-set(trillek-server_LIBRARY_NAME "server_lib")
-set(trillek-server_LIBRARY_NAME ${trillek-server_LIBRARY_NAME} PARENT_SCOPE)
+set(SERVER_LIB_NAME "server_lib")
+set(SERVER_LIB_NAME ${SERVER_LIB_NAME} PARENT_SCOPE)
 add_interface_lib(
-	TARGET ${trillek-server_LIBRARY_NAME}
+	TARGET ${SERVER_LIB_NAME}
 	FILE_LIST
 		client-connection.cpp
 		lua-types.cpp
@@ -14,12 +14,8 @@ add_interface_lib(
 		user/user.cpp)
 
 if (WIN32)
-	set(trillek-server_PROGRAM_NAME "trillek-server")
+	set(SERVER_NAME "trillek-server")
 else ()
-	set(trillek-server_PROGRAM_NAME "trillek-serverd")
+	set(SERVER_NAME "trillek-serverd")
 endif ()
-add_program(
-	TARGET ${trillek-server_PROGRAM_NAME}
-	FILE_LIST main.cpp
-	LINK_LIBS PUBLIC ${trillek-server_LIBRARY_NAME})
-
+add_program(TARGET ${SERVER_NAME} FILE_LIST main.cpp LINK_LIBS PUBLIC ${SERVER_LIB_NAME})

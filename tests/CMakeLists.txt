@@ -16,8 +16,8 @@ add_program(
 		user_test.cpp
 	LINK_LIBS PRIVATE
 		GTest::gtest GTest::gtest_main
-		${trillek-client_LIBRARY_NAME}
-		${trillek-server_LIBRARY_NAME})
+		${CLIENT_LIB_NAME}
+		${SERVER_LIB_NAME})
 
 target_include_directories(${trillek-test_PROGRAM_NAME} PUBLIC ${CMAKE_HOME_DIRECTORY})
 
