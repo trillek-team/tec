@@ -625,7 +625,7 @@ Path Path::GetProgramPath() {
 	// nSize -> number of *characters* (not bytes) in buffer.
 	// return -> length of copied string, not including nul char.
 	// truncated names will return nSize with GetLastError() == ERROR_INSUFFICIENT_BUFFER
-	DWORD set_size = wstr.size();
+	DWORD set_size = static_cast<DWORD>(wstr.size());
 	while ((wstr.size() == set_size) && (set_size <= 0x8000)) {
 		wstr.resize(GetModuleFileNameW(nullptr, wstr.data(), set_size));
 		if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {

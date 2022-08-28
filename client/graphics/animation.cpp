@@ -42,12 +42,12 @@ void Animation::UpdateAnimation(const double delta) {
 	}
 
 	// Figure out which frame we're on
-	double frame_number = this->animation_time * this->frame_rate;
-	std::size_t frame_index0 = static_cast<std::size_t>(floor(frame_number)) % frame_count;
-	std::size_t frame_index1 = static_cast<std::size_t>(ceil(frame_number)) % frame_count;
+	const double frame_number = this->animation_time * this->frame_rate;
+	const std::size_t frame_index0 = static_cast<std::size_t>(floor(frame_number)) % frame_count;
+	const std::size_t frame_index1 = static_cast<std::size_t>(ceil(frame_number)) % frame_count;
 	this->current_frame_index = frame_index0;
 
-	float fInterpolate = glm::fract(frame_number);
+	const float fInterpolate = static_cast<float>(glm::fract(frame_number));
 
 	if (this->animation_file) {
 		this->animation_file->InterpolatePose(this->bone_transforms, frame_index0, frame_index1, fInterpolate);

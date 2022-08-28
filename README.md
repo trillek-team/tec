@@ -23,7 +23,7 @@ If `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHead
 ### Linux
 Install the following. This is a pretty extensive list and may be more than needed
 
-`build-essentials pkg-config tar curl zip unzip gdb libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
+`build-essential pkg-config tar curl zip unzip gdb libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev`
 
 ## Build Steps
 1. Install [CMake](https://cmake.org/download/)
@@ -56,7 +56,7 @@ Install the following. This is a pretty extensive list and may be more than need
 
 ## Linux / WSL Dependencies
 * `gcc10 g++10` or `clang-13`
-* `build-essentials pkg-config tar curl zip unzip gdb`
+* `build-essential pkg-config tar curl zip unzip gdb`
 * `libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full`
 
 ## Supported editor(s)

@@ -14,7 +14,7 @@
 #define GLFW_EXPOSE_NATIVE_NSGL 1
 #include <GLFW/glfw3native.h>
 // We can't just include objc/runtime.h and objc/message.h because glfw is too forward thinking for its own good.
-typedef void* SEL;
+typedef struct objc_selector* SEL;
 extern "C" id objc_msgSend(id self, SEL op, ...);
 extern "C" SEL sel_getUid(const char* str);
 #endif
