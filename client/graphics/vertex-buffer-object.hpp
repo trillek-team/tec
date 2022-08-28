@@ -4,11 +4,7 @@
 #include <memory>
 #include <vector>
 
-#ifndef __APPLE__
-#include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#endif
+#include <glad/glad.h>
 
 #include <resources/mesh.hpp>
 

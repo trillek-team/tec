@@ -5,12 +5,7 @@
 #include <set>
 #include <unordered_set>
 
-#ifndef __APPLE__
-#include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#endif
-
+#include <glad/glad.h>
 #include <fmt/core.h>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/vec3.hpp>

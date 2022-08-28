@@ -81,7 +81,7 @@ void TextureObject::Load(const PixelBuffer& image) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 #ifndef __APPLE__
 		// GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, 16.0f);
 #endif
 		RenderSystem::ErrorCheck("Error setting texture parameters", __LINE__, "TextureObject");
 		_log->trace(
@@ -112,7 +112,7 @@ void TextureObject::Generate(GLuint width, GLuint height, bool usealpha) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 #ifndef __APPLE__
 		// GL_TEXTURE_MAX_ANISOTROPY_EXT is not defined on osx
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, 16.0f);
 #endif
 		RenderSystem::ErrorCheck("Error setting texture parameters", __LINE__, "TextureObject");
 	}

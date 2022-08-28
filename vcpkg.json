@@ -5,7 +5,7 @@
 	"dependencies": [
 		"asio",
 		"bullet3",
-		"glew",
+		"glad",
 		"glfw3",
 		"glm",
 		"lua",
@@ -18,5 +18,5 @@
 		"gtest"
 	],
 	"supports": "(windows & x86) | (windows & x64) | (linux & x64) | (osx & x64)",
-	"builtin-baseline": "acc3bcf76b84ae5041c86ab55fe138ae7b8255c7" 
+	"builtin-baseline": "acc3bcf76b84ae5041c86ab55fe138ae7b8255c7"
 }

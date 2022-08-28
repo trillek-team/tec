@@ -1,10 +1,6 @@
 #pragma once
 
-#ifndef __APPLE__
-#include <GL/glew.h>
-#else
-#include <OpenGL/gl3.h>
-#endif
+#include <glad/glad.h>
 
 // Based off http://ogldev.atspace.co.uk/www/tutorial35/tutorial35.html
 

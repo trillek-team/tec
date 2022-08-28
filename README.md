@@ -8,7 +8,7 @@ Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on b
 ![Discord Shield](https://discordapp.com/api/guilds/671106829853523969/widget.png?style=shield)
 
 ## Requirements
-TEC requires cmake 3.19, a c++17 compatible compiler, and a few libraries GLFW3, GLM, ASIO, Protobuf, GLEW, Lua, Bullet, Dear ImGui, sol3, Spdlog and OpenAL.
+TEC requires cmake 3.19, a c++17 compatible compiler, and a few libraries GLFW3, GLM, ASIO, Protobuf, GLAD, Lua, Bullet, Dear ImGui, sol3, Spdlog and OpenAL.
 
 The libraries are automatically installed when using CMake and VCPKG [manifest mode](https://vcpkg.readthedocs.io/en/latest/users/manifests/).
 
