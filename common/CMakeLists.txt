@@ -33,13 +33,13 @@ find_package(glm CONFIG REQUIRED)
 target_link_libraries(
 	${COMMON_LIB_NAME}
 	PUBLIC
-		VCOMPUTER_STATIC
-		${BULLET_LIBRARIES}
+		BulletSoftBody BulletDynamics BulletCollision Bullet3Common LinearMath
 		${LUA_LIBRARIES}
 		protobuf::libprotobuf
 		spdlog::spdlog
 		asio::asio
-		glm::glm)
+		glm::glm
+		VCOMPUTER_STATIC)
 
 file(GLOB_RECURSE COMMON_HEADERS LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
 target_sources(
