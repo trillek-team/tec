@@ -82,14 +82,11 @@ bool OS::InitializeWindow(
 
 	// attach the context
 	glfwMakeContextCurrent(this->window);
-
-#ifndef __APPLE__
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK) {
-		l->critical("[OS] Can initialize glew");
+	
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		l->critical("[OS] Can initialize glad");
 		return false;
 	}
-#endif
 
 	// check the context version
 	std::string glcx_version((char*)glGetString(GL_VERSION));

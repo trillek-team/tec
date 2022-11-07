@@ -5,15 +5,7 @@
 #include <set>
 #include <string>
 
-#ifdef __APPLE__
-#define GLFW_INCLUDE_GLCOREARB
-#else
-#include <GL/glew.h>
-#ifndef __unix
-#include <GL/wglew.h>
-#endif
-#endif
-
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 

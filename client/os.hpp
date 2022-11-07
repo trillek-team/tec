@@ -1,16 +1,6 @@
 #pragma once
 
-#ifndef __APPLE__
-#include <GL/glew.h>
-#endif
-
-#ifdef WIN32
-#include <GL/wglew.h>
-#endif
-
-#ifdef __APPLE__
-#define GLFW_INCLUDE_GLCOREARB
-#endif
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <chrono>
