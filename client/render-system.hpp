@@ -36,9 +36,9 @@ struct EntityDestroyed;
 struct EntityCreated;
 
 struct RenderItem {
-	glm::vec3 model_position;
-	glm::vec3 model_scale;
-	glm::quat model_quat;
+	glm::vec3 model_position{};
+	glm::vec3 model_scale{};
+	glm::quat model_quat{};
 	std::vector<VertexGroup> vertex_groups;
 	std::shared_ptr<VertexBufferObject> vbo;
 	MeshFile* mesh_at_set{nullptr}; // used only for equality testing, does not own an object
@@ -52,7 +52,7 @@ public:
 	std::string name;
 };
 
-class RenderSystem :
+class RenderSystem final :
 		public CommandQueue<RenderSystem>,
 		public EventQueue<WindowResizedEvent>,
 		public EventQueue<EntityDestroyed>,
@@ -62,17 +62,13 @@ public:
 
 	void RegisterConsole(Console& console);
 
-	void SetViewportSize(const glm::uvec2& view_size);
+	void SetViewportSize(const glm::uvec2& _view_size);
 
-	void Update(const double delta);
+	void Update(double delta);
 
 	bool HasExtension(const std::string& x) const { return extensions.find(x) != extensions.cend(); }
 
-	static void ErrorCheck(
-			const std::string_view what,
-			size_t line,
-			const std::string_view where = "RenderSystem",
-			bool severe = false);
+	static void ErrorCheck(std::string_view what, size_t line, std::string_view where = "RenderSystem");
 
 private:
 	static std::shared_ptr<spdlog::logger> _log;
@@ -83,9 +79,9 @@ private:
 	void FinalPass();
 	void RenderGbuffer();
 
-	void ActivateMaterial(const Material&);
-	void DeactivateMaterial(const Material&, GLuint*);
-	void SetupDefaultShaders(const gfx::RenderConfig&);
+	static void ActivateMaterial(const Material&);
+	static void DeactivateMaterial(const Material&, const GLuint*);
+	static void SetupDefaultShaders(const gfx::RenderConfig&);
 
 	void On(eid, std::shared_ptr<WindowResizedEvent> data) override;
 	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
@@ -95,7 +91,7 @@ private:
 	glm::mat4 projection{0};
 	View* current_view{nullptr};
 	glm::uvec2 view_size{1024, 768};
-	glm::vec2 inv_view_size;
+	glm::vec2 inv_view_size{};
 	std::shared_ptr<Shader> default_shader;
 	gfx::RenderOptions options;
 	gfx::ShaderSet active_shaders;
@@ -112,13 +108,14 @@ private:
 } // namespace tec
 
 template <> struct fmt::formatter<tec::GLSymbol> {
-	constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
-		auto it = ctx.begin(), end = ctx.end();
-		if (it != end && *it != '}')
-			static_assert("invalid format");
+	static constexpr auto parse(const format_parse_context& ctx) -> decltype(ctx.begin()) {
+		const auto it = ctx.begin();
+		if (const auto end = ctx.end(); it != end && *it != '}')
+			static_assert(R"(invalid format)");
 		return it;
 	}
-	template <typename FormatContext> auto format(const tec::GLSymbol& p, FormatContext& ctx) -> decltype(ctx.out()) {
+	template <typename FormatContext>
+	static auto format(const tec::GLSymbol& p, FormatContext& ctx) -> decltype(ctx.out()) {
 		return fmt::format_to(ctx.out(), "{}", p.name);
 	}
 };
