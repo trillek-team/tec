@@ -5,19 +5,23 @@
 #include <thread>
 
 #include <glm/ext.hpp>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <spdlog/spdlog.h>
 
 #include <google/protobuf/util/json_util.h>
 
 #include "components/transforms.hpp"
-#include "entity.hpp"
 #include "events.hpp"
 #include "graphics/animation.hpp"
+#include "graphics/gl-symbol.hpp"
 #include "graphics/lights.hpp"
 #include "graphics/material.hpp"
+#include "graphics/passes/debug-pass.hpp"
+#include "graphics/passes/dir-light-pass.hpp"
+#include "graphics/passes/final-pass.hpp"
+#include "graphics/passes/geometry-pass.hpp"
+#include "graphics/passes/point-light-pass.hpp"
+#include "graphics/render-list.hpp"
 #include "graphics/renderable.hpp"
 #include "graphics/shader.hpp"
 #include "graphics/texture-object.hpp"
@@ -25,8 +29,6 @@
 #include "gui/console.hpp"
 #include "multiton.hpp"
 #include "proto-load.hpp"
-#include "resources/mesh.hpp"
-#include "resources/obj.hpp"
 #include "resources/pixel-buffer.hpp"
 
 #ifdef min
@@ -44,52 +46,6 @@ using AnimationMap = Multiton<eid, Animation*>;
 using ScaleMap = Multiton<eid, Scale*>;
 
 std::shared_ptr<spdlog::logger> RenderSystem::_log;
-
-const GLSymbol& GLSymbol::Get(GLenum which) {
-	static const std::map<GLenum, GLSymbol> symbolic_gl_types{
-			// error codes
-			{GL_NO_ERROR, {"GL_NO_ERROR"}},
-			{GL_INVALID_ENUM, {"GL_INVALID_ENUM"}},
-			{GL_INVALID_VALUE, {"GL_INVALID_VALUE"}},
-			{GL_INVALID_OPERATION, {"GL_INVALID_OPERATION"}},
-			{GL_INVALID_FRAMEBUFFER_OPERATION, {"GL_INVALID_FRAMEBUFFER_OPERATION"}},
-			{GL_OUT_OF_MEMORY, {"GL_OUT_OF_MEMORY"}},
-			// image formats
-			{GL_DEPTH_COMPONENT, {"GL_DEPTH_COMPONENT"}},
-			{GL_DEPTH_STENCIL, {"GL_DEPTH_STENCIL"}},
-			{GL_RED, {"GL_RED"}},
-			{GL_RG, {"GL_RG"}},
-			{GL_RGB, {"GL_RGB"}},
-			{GL_RGBA, {"GL_RGBA"}},
-			{GL_SRGB, {"GL_SRGB"}},
-			{GL_SRGB_ALPHA, {"GL_SRGB_ALPHA"}},
-			{GL_SRGB8_ALPHA8, {"GL_SRGB8_ALPHA8"}},
-			// shader types
-			{GL_FLOAT, {"float"}},
-			{GL_FLOAT_VEC2, {"vec2"}},
-			{GL_FLOAT_VEC3, {"vec3"}},
-			{GL_FLOAT_VEC4, {"vec4"}},
-			{GL_INT, {"int"}},
-			{GL_INT_VEC2, {"ivec2"}},
-			{GL_INT_VEC3, {"ivec3"}},
-			{GL_INT_VEC4, {"ivec4"}},
-			{GL_SAMPLER_1D, {"sampler1D"}},
-			{GL_SAMPLER_2D, {"sampler2D"}},
-			{GL_SAMPLER_3D, {"sampler3D"}},
-			{GL_SAMPLER_2D_SHADOW, {"sampler2DShadow"}},
-			{GL_SAMPLER_CUBE_SHADOW, {"samplerCubeShadow"}},
-			{GL_SAMPLER_2D_ARRAY, {"sampler2DArray"}},
-			{GL_UNSIGNED_INT, {"uint"}},
-			{GL_FLOAT_MAT4, {"mat4x4"}},
-	};
-	static std::forward_list<std::string> unknown_gl_strings;
-	static std::map<GLenum, GLSymbol> unknown_gl_types;
-	if (const auto sym_itr = symbolic_gl_types.find(which); sym_itr != symbolic_gl_types.cend()) {
-		return sym_itr->second;
-	}
-	unknown_gl_strings.push_front(std::to_string(which));
-	return unknown_gl_types.emplace(std::make_pair(which, GLSymbol{unknown_gl_strings.front()})).first->second;
-}
 
 void RenderSystem::Startup() {
 	_log = spdlog::get("console_log");
@@ -146,25 +102,34 @@ void RenderSystem::Startup() {
 	// Reversed Z buffering for improved precision (maybe)
 	glClearDepth(0.0);
 	glDepthFunc(GL_GREATER);
-	if (auto sphere = OBJ::Create(Path("assets:/sphere/sphere.obj")); !sphere) {
-		_log->debug("[RenderSystem] Error loading sphere.obj.");
-	}
-	else {
-		this->sphere_vbo.Load(sphere);
-	}
-	if (auto quad = OBJ::Create(Path("assets:/quad/quad.obj")); !quad) {
+
+	if (const auto quad = OBJ::Create(Path("assets:/quad/quad.obj")); !quad) {
 		_log->debug("[RenderSystem] Error loading quad.obj.");
 	}
 	else {
-		this->quad_vbo.Load(quad);
+		quad_vbo.Load(quad);
 	}
 
-	this->inv_view_size.x = 1.0f / static_cast<float>(this->view_size.x);
-	this->inv_view_size.y = 1.0f / static_cast<float>(this->view_size.y);
-	this->light_gbuffer.AddColorAttachments(this->view_size.x, this->view_size.y);
-	this->light_gbuffer.SetDepthAttachment(GBuffer::DEPTH_TYPE::DEPTH, this->view_size.x, this->view_size.y);
+	this->render_passes.push_back(std::make_shared<graphics::pass::GeometryPass>());
+	this->render_passes.push_back(std::make_shared<graphics::pass::PointLightPass>());
+	this->render_passes.push_back(std::make_shared<graphics::pass::DirLightPass>());
+	this->render_passes.push_back(std::make_shared<graphics::pass::FinalPass>());
+
+	if (options.debug_gbuffer()) {
+		this->render_passes.push_back(std::make_shared<graphics::pass::DebugPass>());
+	}
+
+	glm::uvec2 view_size{1024, 768};
+	const auto viewport = glm::max(glm::uvec2(1), view_size);
+	this->light_gbuffer.AddColorAttachments(view_size.x, view_size.y);
+	this->light_gbuffer.SetDepthAttachment(GBuffer::DEPTH_TYPE::DEPTH, view_size.x, view_size.y);
 	if (!this->light_gbuffer.CheckCompletion()) {
 		_log->error("[RenderSystem] Failed to create Light GBuffer.");
+	}
+
+	const glm::vec2 inv_view_size = 1.0f / glm::vec2(viewport);
+	for (const auto& pass : this->render_passes) {
+		pass->SetInvViewSize(inv_view_size);
 	}
 
 	constexpr uint32_t checker_size = 64;
@@ -230,27 +195,31 @@ void RenderSystem::RegisterConsole(Console& console) {
 	});
 }
 
-void RenderSystem::SetViewportSize(const glm::uvec2& _view_size) {
-	const auto viewport = glm::max(glm::uvec2(1), _view_size);
-	this->view_size = viewport;
-	this->inv_view_size = 1.0f / glm::vec2(viewport);
+void RenderSystem::SetViewportSize(const glm::uvec2& view_size) {
+	const auto viewport = glm::max(glm::uvec2(1), view_size);
 	float aspect_ratio = static_cast<float>(viewport.x) / static_cast<float>(viewport.y);
 	if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 		aspect_ratio = 4.0f / 3.0f;
 	}
 
-	this->projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10000.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10000.0f);
 	// convert the projection to reverse depth with infinite far plane
-	this->projection[2][2] = 0.0f;
-	this->projection[3][2] = 0.1f;
+	projection[2][2] = 0.0f;
+	projection[3][2] = 0.1f;
 	this->light_gbuffer.ResizeColorAttachments(viewport.x, viewport.y);
 	this->light_gbuffer.ResizeDepthAttachment(viewport.x, viewport.y);
 	glViewport(0, 0, viewport.x, viewport.y);
+
+	const glm::vec2 inv_view_size = 1.0f / glm::vec2(viewport);
+	for (const auto& pass : this->render_passes) {
+		pass->SetInvViewSize(inv_view_size);
+		pass->SetProjection(projection);
+	}
 }
 
 void RenderSystem::ErrorCheck(const std::string_view what, size_t line, const std::string_view where) {
 	if (const GLenum err = glGetError()) {
-		_log->log(spdlog::level::debug, "[{}:{}] {}. Error={}", where, line, what, GLSymbol::Get(err));
+		_log->log(spdlog::level::debug, "[{}:{}] {}. Error={}", where, line, what, graphics::GLSymbol::Get(err));
 	}
 }
 
@@ -261,23 +230,20 @@ void RenderSystem::Update(const double delta) {
 	EventQueue<EntityDestroyed>::ProcessEventQueue();
 
 	ErrorCheck("Preframe", __LINE__);
-	UpdateRenderList(delta);
+	this->render_item_list.UpdateRenderList(delta);
 	this->light_gbuffer.StartFrame();
 	ErrorCheck("StartFrame", __LINE__);
 
-	GeometryPass();
-	ErrorCheck("GeometryPass", __LINE__);
+	const auto current_view = this->render_item_list.GetCurrentView().value_or(View{true});
+	const auto& render_items = this->render_item_list.GetRenderItems();
 
-	this->light_gbuffer.BeginLightPass();
-	BeginPointLightPass();
-	DirectionalLightPass();
-
-	ErrorCheck("*LightPass", __LINE__);
-
-	FinalPass();
-	if (options.debug_gbuffer()) {
-		RenderGbuffer();
+	for (const auto& pass : this->render_passes) {
+		pass->Prepare(this->light_gbuffer);
+		pass->Run(this->active_shaders, current_view, render_items);
+		pass->Complete(this->light_gbuffer);
+		ErrorCheck(pass->GetPassName(), __LINE__);
 	}
+
 	ErrorCheck("Postframe", __LINE__);
 }
 
@@ -300,235 +266,6 @@ void RenderSystem::DeactivateMaterial(const Material& material, const GLuint* de
 	}
 }
 
-void RenderSystem::GeometryPass() {
-	this->light_gbuffer.BeginGeometryPass();
-
-	glm::vec3 camera_pos;
-	glm::quat camera_quat;
-	{
-		if (const View* view = this->current_view) {
-			camera_pos = view->view_pos;
-			camera_quat = view->view_quat;
-		}
-	}
-
-	const GLuint def_textures[]{TextureMap::Get("default")->GetID(), TextureMap::Get("default_sp")->GetID()};
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, def_textures[0]);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, def_textures[1]);
-	const std::shared_ptr<Shader> def_shader = ShaderMap::Get(active_shaders.visual());
-	def_shader->Use();
-	glUniform3fv(def_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
-	glUniform4fv(def_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(camera_quat));
-	glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-	struct uniform_locs {
-		GLint model_pos;
-		GLint model_scale;
-		GLint model_quat;
-		GLint bones;
-		GLint animated;
-		GLint vertex_group;
-	};
-	uniform_locs def_locs{
-			def_shader->GetUniformLocation("model_position"),
-			def_shader->GetUniformLocation("model_scale"),
-			def_shader->GetUniformLocation("model_quat"),
-			def_shader->GetUniformLocation("animated"),
-			def_shader->GetUniformLocation("animation_matrix"),
-			-1};
-	uniform_locs spec_locs{0, 0, 0, 0, 0};
-	const uniform_locs* use_locs = &def_locs;
-	for (auto [_shader, _render_item] : this->render_item_list) {
-		// Check if we need to use a specific shader and set it up.
-		if (_shader) {
-			def_shader->UnUse();
-			_shader->Use();
-			glUniform3fv(_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
-			glUniform4fv(_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(camera_quat));
-			glUniformMatrix4fv(
-					_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-			spec_locs.model_pos = _shader->GetUniformLocation("model_position");
-			spec_locs.model_scale = _shader->GetUniformLocation("model_scale");
-			spec_locs.model_quat = _shader->GetUniformLocation("model_quat");
-			spec_locs.bones = _shader->GetUniformLocation("animation_bones[0]");
-			spec_locs.animated = _shader->GetUniformLocation("animated");
-			spec_locs.vertex_group = _shader->GetUniformLocation("vertex_group");
-			use_locs = &spec_locs;
-		}
-		for (const auto render_item : _render_item) {
-			glBindVertexArray(render_item->vbo->GetVAO());
-			glUniform1i(use_locs->animated, render_item->animated ? 1 : 0);
-
-			if (render_item->animated && use_locs->bones != -1) {
-				auto& bones = render_item->animation->bone_transforms;
-				glUniformMatrix3x4fv(use_locs->bones, bones.size(), GL_FALSE, glm::value_ptr(bones[0].orientation));
-			}
-			GLint vertex_group_number = 0;
-			for (auto& [material, mesh_group_number, index_count, starting_offset] : render_item->vertex_groups) {
-				glPolygonMode(GL_FRONT_AND_BACK, material->GetPolygonMode());
-				ActivateMaterial(*material);
-				if (use_locs->vertex_group != -1) {
-					glUniform1i(use_locs->vertex_group, vertex_group_number++);
-				}
-				//glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(render_item->model_matrix));
-				glUniform3fv(use_locs->model_pos, 1, glm::value_ptr(render_item->model_position));
-				glUniform3fv(use_locs->model_scale, 1, glm::value_ptr(render_item->model_scale));
-				glUniform4fv(use_locs->model_quat, 1, glm::value_ptr(render_item->model_quat));
-				glDrawElements(
-						material->GetDrawElementsMode(),
-						static_cast<GLsizei>(index_count),
-						GL_UNSIGNED_INT,
-						(GLvoid*)(starting_offset * sizeof(GLuint)));
-				DeactivateMaterial(*material, def_textures);
-			}
-		}
-		// If we used a special shader set things back to the deferred shader.
-		if (_shader) {
-			_shader->UnUse();
-			def_shader->Use();
-			use_locs = &def_locs;
-		}
-	}
-	def_shader->UnUse();
-	glBindVertexArray(0);
-	this->light_gbuffer.EndGeometryPass();
-}
-
-void RenderSystem::BeginPointLightPass() {
-	glm::vec3 camera_pos;
-	glm::quat camera_quat;
-	{
-		if (const View* view = this->current_view) {
-			camera_pos = view->view_pos;
-			camera_quat = view->view_quat;
-		}
-	}
-
-	const std::shared_ptr<Shader> def_pl_shader = ShaderMap::Get(active_shaders.pointlight());
-	def_pl_shader->Use();
-	glUniform3fv(def_pl_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
-	glUniform4fv(def_pl_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(camera_quat));
-	glUniformMatrix4fv(def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-	glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
-	const GLint model_index = def_pl_shader->GetUniformLocation("model");
-	const GLint color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
-	const GLint ambient_intensity_index = def_pl_shader->GetUniformLocation("gPointLight.Base.AmbientIntensity");
-	const GLint diffuse_intensity_index = def_pl_shader->GetUniformLocation("gPointLight.Base.DiffuseIntensity");
-	const GLint atten_constant_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Constant");
-	const GLint atten_linear_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Linear");
-	const GLint atten_exp_index = def_pl_shader->GetUniformLocation("gPointLight.Atten.Exp");
-
-	glBindVertexArray(this->sphere_vbo.GetVAO());
-
-	const auto index_count{static_cast<GLsizei>(this->sphere_vbo.GetVertexGroup(0)->index_count)};
-
-	this->light_gbuffer.BeginLightPass();
-	this->light_gbuffer.BeginPointLightPass();
-	def_pl_shader->Use();
-
-	for (auto itr = PointLightMap::Begin(); itr != PointLightMap::End(); ++itr) {
-		const eid entity_id = itr->first;
-		PointLight* light = itr->second;
-
-		glm::vec3 position;
-		if (Multiton<eid, Position*>::Has(entity_id)) {
-			position = Multiton<eid, Position*>::Get(entity_id)->value;
-		}
-
-		light->UpdateBoundingRadius();
-		glm::mat4 transform_matrix =
-				glm::scale(glm::translate(glm::mat4(1.0), position), glm::vec3(light->bounding_radius));
-
-		glUniformMatrix4fv(model_index, 1, GL_FALSE, glm::value_ptr(transform_matrix));
-		glUniform3f(color_index, light->color.x, light->color.y, light->color.z);
-		glUniform1f(ambient_intensity_index, light->ambient_intensity);
-		glUniform1f(diffuse_intensity_index, light->diffuse_intensity);
-		glUniform1f(atten_constant_index, light->Attenuation.constant);
-		glUniform1f(atten_linear_index, light->Attenuation.linear);
-		glUniform1f(atten_exp_index, light->Attenuation.exponential);
-		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-	}
-	// these would go in the loop for stencil lights
-	this->light_gbuffer.EndPointLightPass();
-	def_pl_shader->UnUse();
-
-	glBindVertexArray(0);
-}
-
-void RenderSystem::DirectionalLightPass() {
-	this->light_gbuffer.BeginDirLightPass();
-	const std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get(active_shaders.dirlight());
-	def_dl_shader->Use();
-
-	glm::vec3 camera_pos;
-	{
-		if (const View* view = this->current_view) {
-			camera_pos = view->view_pos;
-		}
-	}
-	glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
-	glUniform3fv(def_dl_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(camera_pos));
-	const GLint Color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
-	const GLint AmbientIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.AmbientIntensity");
-	const GLint DiffuseIntensity_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.DiffuseIntensity");
-	const GLint direction_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Direction");
-
-	glBindVertexArray(this->quad_vbo.GetVAO());
-
-	const auto index_count{static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count)};
-
-	for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
-		const DirectionalLight* light = itr->second;
-
-		glUniform3f(Color_index, light->color.x, light->color.y, light->color.z);
-		glUniform1f(AmbientIntensity_index, light->ambient_intensity);
-		glUniform1f(DiffuseIntensity_index, light->diffuse_intensity);
-		glUniform3f(direction_index, light->direction.x, light->direction.y, light->direction.z);
-
-		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-	}
-	def_dl_shader->UnUse();
-	glBindVertexArray(0);
-}
-
-void RenderSystem::FinalPass() {
-	this->light_gbuffer.FinalPass();
-	const std::shared_ptr<Shader> post_shader = ShaderMap::Get(active_shaders.postprocess());
-	post_shader->Use();
-	glUniform2f(post_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
-
-	glBindVertexArray(this->quad_vbo.GetVAO());
-	const auto index_count{static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count)};
-	glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-	glBindVertexArray(0);
-
-	post_shader->UnUse();
-}
-
-void RenderSystem::RenderGbuffer() {
-	this->light_gbuffer.BindForRendering();
-	glDisable(GL_BLEND);
-	glActiveTexture(GL_TEXTURE0 + static_cast<int>(GBuffer::DEPTH_TYPE::DEPTH));
-	glBindSampler(static_cast<int>(GBuffer::DEPTH_TYPE::DEPTH), 0);
-	glBindTexture(GL_TEXTURE_2D, this->light_gbuffer.GetDepthTexture());
-	glDrawBuffer(GL_BACK);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-	glBindVertexArray(this->quad_vbo.GetVAO());
-
-	const std::shared_ptr<Shader> def_db_shader = ShaderMap::Get(active_shaders.gbufdebug());
-	def_db_shader->Use();
-
-	glUniform2f(def_db_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
-
-	const auto index_count{static_cast<GLsizei>(this->quad_vbo.GetVertexGroup(0)->index_count)};
-	glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
-
-	def_db_shader->UnUse();
-	glBindVertexArray(0);
-}
-
 void RenderSystem::SetupDefaultShaders(const gfx::RenderConfig& render_config) {
 	for (auto& shader_inc : render_config.includes()) {
 		Shader::IncludeFromDef(shader_inc);
@@ -543,7 +280,13 @@ void RenderSystem::On(eid, std::shared_ptr<WindowResizedEvent> data) {
 	SetViewportSize(glm::max(glm::ivec2(0), new_view));
 }
 
-void RenderSystem::On(const eid entity_id, std::shared_ptr<EntityDestroyed> data) { RenderableMap::Remove(entity_id); }
+void RenderSystem::On(const eid entity_id, std::shared_ptr<EntityDestroyed> data) {
+	RenderableMap::Remove(entity_id);
+	PointLightMap::Remove(entity_id);
+	DirectionalLightMap::Remove(entity_id);
+	AnimationMap::Remove(entity_id);
+	ScaleMap::Remove(entity_id);
+}
 
 void RenderSystem::On(eid, const std::shared_ptr<EntityCreated> data) {
 	const eid entity_id = data->entity.id();
@@ -585,123 +328,6 @@ void RenderSystem::On(eid, const std::shared_ptr<EntityCreated> data) {
 			break;
 		}
 		default: break;
-		}
-	}
-}
-
-void RenderSystem::UpdateRenderList(double delta) {
-	this->render_item_list.clear();
-
-	if (!this->default_shader) {
-		this->default_shader = ShaderMap::Get("debug");
-	}
-
-	// Loop through each renderable and update its model matrix.
-	for (auto itr = RenderableMap::Begin(); itr != RenderableMap::End(); ++itr) {
-		eid entity_id = itr->first;
-		Renderable* renderable = itr->second;
-		if (renderable->hidden) {
-			continue;
-		}
-		Entity entity(entity_id);
-		auto [_position, _orientation, _scale, _animation] = entity.GetList<Position, Orientation, Scale, Animation>();
-		glm::vec3 position = renderable->local_translation;
-		if (_position) {
-			position += _position->value;
-		}
-		glm::quat orientation = renderable->local_orientation.value;
-		if (_orientation) {
-			orientation *= _orientation->value;
-		}
-		glm::vec3 scale(1.0);
-		if (_scale) {
-			scale = _scale->value;
-		}
-
-		auto& mesh = renderable->mesh;
-		auto& ri = renderable->render_item;
-		if (!mesh && ri) {
-			renderable->render_item.reset();
-			ri.reset();
-		}
-		if (mesh && (!ri || ri->mesh_at_set != mesh.get())) {
-			auto buffer_itr = mesh_buffers.find(mesh);
-			std::shared_ptr<VertexBufferObject> buffer;
-			if (buffer_itr == mesh_buffers.cend()) {
-				buffer = std::make_shared<VertexBufferObject>(vertex::VF_FULL);
-				buffer->Load(mesh);
-				mesh_buffers[mesh] = buffer;
-			}
-			else {
-				buffer = buffer_itr->second;
-			}
-			std::size_t group_count = buffer->GetVertexGroupCount();
-			if (group_count > 0) {
-				if (!ri) {
-					ri = std::make_shared<RenderItem>();
-				}
-				else {
-					ri->vertex_groups.clear();
-				}
-				ri->vbo = buffer;
-				ri->vertex_groups.reserve(group_count);
-				ri->mesh_at_set = mesh.get();
-				for (std::size_t i = 0; i < group_count; ++i) {
-					ri->vertex_groups.push_back(*buffer->GetVertexGroup(i));
-				}
-				renderable->render_item = ri;
-			}
-			else {
-				_log->warn("[RenderSystem] empty mesh on Renderable [{}]", entity_id);
-				renderable->render_item.reset();
-				ri.reset();
-			}
-		}
-
-		if (ri) {
-			if (ri->vbo->Update()) {
-				// the mesh updated it's contents
-				std::size_t group_count = ri->vbo->GetVertexGroupCount();
-				ri->vertex_groups.clear();
-				ri->vertex_groups.reserve(group_count);
-				for (std::size_t i = 0; i < group_count; ++i) {
-					ri->vertex_groups.push_back(*ri->vbo->GetVertexGroup(i));
-				}
-			}
-			ri->model_position = position;
-			ri->model_scale = scale;
-			ri->model_quat = orientation;
-
-			if (_animation) {
-				const_cast<Animation*>(_animation)->UpdateAnimation(delta);
-				if (!_animation->bone_transforms.empty()) {
-					ri->animated = true;
-					ri->animation = const_cast<Animation*>(_animation);
-				}
-			}
-			this->render_item_list[renderable->shader].insert(ri.get());
-		}
-	}
-
-	for (auto itr = Multiton<eid, View*>::Begin(); itr != Multiton<eid, View*>::End(); ++itr) {
-		eid entity_id = itr->first;
-		View* view = itr->second;
-
-		Entity entity(entity_id);
-		auto [_position, _orientation] = entity.GetList<Position, Orientation>();
-		glm::vec3 position;
-		if (_position) {
-			position = _position->value;
-		}
-		glm::quat orientation;
-		if (_orientation) {
-			orientation = _orientation->value;
-		}
-
-		view->view_pos = -position;
-		view->view_quat = glm::inverse(orientation);
-		if (view->active) {
-			this->current_view = view;
 		}
 	}
 }

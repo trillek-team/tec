@@ -49,6 +49,10 @@ public:
 	void Out(proto::Component* target);
 	void In(const proto::Component& source);
 
+	bool HasBoneTransforms() const { return !bone_transforms.empty(); }
+
+	const auto& GetBoneTransforms() { return this->bone_transforms; }
+
 	friend class RenderSystem;
 
 private:
