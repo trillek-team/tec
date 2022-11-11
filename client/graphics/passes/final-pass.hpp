@@ -1,7 +1,6 @@
 #pragma once
 
 #include "render-pass.hpp"
-#include "resources/obj.hpp"
 
 #include <memory>
 
@@ -19,8 +18,8 @@ public:
 
 		const auto& quad_vbo = RenderSystem::quad_vbo;
 
-		glBindVertexArray(quad_vbo.GetVAO());
-		const auto index_count{static_cast<GLsizei>(quad_vbo.GetVertexGroupIndexCount(0))};
+		glBindVertexArray(quad_vbo->GetVAO());
+		const auto index_count{static_cast<GLsizei>(quad_vbo->GetVertexGroupIndexCount(0))};
 		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
 

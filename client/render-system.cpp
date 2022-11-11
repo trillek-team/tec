@@ -107,7 +107,8 @@ void RenderSystem::Startup() {
 		_log->debug("[RenderSystem] Error loading quad.obj.");
 	}
 	else {
-		quad_vbo.Load(quad);
+		quad_vbo = std::make_unique<VertexBufferObject>(vertex::VF_BASE);
+		quad_vbo->Load(quad);
 	}
 
 	this->render_passes.push_back(std::make_shared<graphics::pass::GeometryPass>());

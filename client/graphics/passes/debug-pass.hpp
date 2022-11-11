@@ -23,14 +23,14 @@ public:
 
 		const auto& quad_vbo = RenderSystem::quad_vbo;
 
-		glBindVertexArray(quad_vbo.GetVAO());
+		glBindVertexArray(quad_vbo->GetVAO());
 
 		const std::shared_ptr<Shader> def_db_shader = ShaderMap::Get(default_shaders.gbufdebug());
 		def_db_shader->Use();
 
 		glUniform2f(def_db_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
 
-		const auto index_count{static_cast<GLsizei>(quad_vbo.GetVertexGroupIndexCount(0))};
+		const auto index_count{static_cast<GLsizei>(quad_vbo->GetVertexGroupIndexCount(0))};
 		glDrawElements(GL_TRIANGLES, index_count, GL_UNSIGNED_INT, nullptr);
 
 		def_db_shader->UnUse();

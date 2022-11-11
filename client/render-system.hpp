@@ -49,7 +49,7 @@ public:
 
 	static void DeactivateMaterial(const Material&, const GLuint*);
 
-	inline static VertexBufferObject quad_vbo{vertex::VF_BASE};
+	inline static std::unique_ptr<VertexBufferObject> quad_vbo;
 
 private:
 	static std::shared_ptr<spdlog::logger> _log;

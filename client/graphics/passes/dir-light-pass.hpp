@@ -1,7 +1,6 @@
 #pragma once
 
 #include "render-pass.hpp"
-#include "resources/obj.hpp"
 
 #include <memory>
 
@@ -27,9 +26,9 @@ public:
 
 		const auto& quad_vbo = RenderSystem::quad_vbo;
 
-		glBindVertexArray(quad_vbo.GetVAO());
+		glBindVertexArray(quad_vbo->GetVAO());
 
-		const auto index_count{static_cast<GLsizei>(quad_vbo.GetVertexGroupIndexCount(0))};
+		const auto index_count{static_cast<GLsizei>(quad_vbo->GetVertexGroupIndexCount(0))};
 
 		for (auto itr = DirectionalLightMap::Begin(); itr != DirectionalLightMap::End(); ++itr) {
 			const DirectionalLight* light = itr->second;
