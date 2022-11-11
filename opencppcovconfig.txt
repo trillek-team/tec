@@ -6,3 +6,4 @@ excluded_modules=*.dll
 excluded_modules=ctest
 excluded_sources=builds
 excluded_sources=tests
+cover_children=true
