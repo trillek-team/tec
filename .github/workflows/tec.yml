@@ -44,6 +44,7 @@ jobs:
       CONFIG_PRESET: ninja-multi-vcpkg-ci
       VCPKG_COMMIT_ID: acc3bcf76b84ae5041c86ab55fe138ae7b8255c7
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}
+	  GENERATE_COVERAGE: ${{ matrix.os }} == 'windows-latest' && ${{ matrix.arch }} == 'x64'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -71,6 +72,24 @@ jobs:
           configurePreset: ${{ env.CONFIG_PRESET }}
           buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
           testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
+      - name: Setup OpenCppCoverage and add to PATH
+        if: env.GENERATE_COVERAGE
+        id: setup_opencppcoverage
+        run: |
+          choco install OpenCppCoverage -y
+          echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+      - name: Generate Report
+        if: env.GENERATE_COVERAGE
+        id: generate_test_report
+        shell: cmd
+        run: OpenCppCoverage.exe --quiet --config_file .\opencppcovconfig.txt --cover_children --export_type cobertura:coverage.xml -- ctest.exe --preset ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
+      - name: Upload Report to Codecov
+        if: env.GENERATE_COVERAGE
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: true
+          functionalities: fix
       - name: Upload the build artifact
         uses: actions/upload-artifact@v2
         with:

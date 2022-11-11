@@ -1,0 +1,8 @@
+sources=client
+sources=server
+sources=tests
+sources=common
+excluded_modules=*.dll
+excluded_modules=ctest
+excluded_sources=builds
+excluded_sources=tests
