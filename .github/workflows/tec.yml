@@ -93,7 +93,7 @@ jobs:
       BUILD_PRESET: debug
       CONFIG_PRESET: ninja-multi-vcpkg-ci
       VCPKG_COMMIT_ID: acc3bcf76b84ae5041c86ab55fe138ae7b8255c7
-      VCPKG_DEFAULT_TRIPLET: windows-latest-x64
+      VCPKG_DEFAULT_TRIPLET: x64-windows
     steps:
       - uses: actions/checkout@v2
         with:
