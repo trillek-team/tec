@@ -86,30 +86,40 @@ jobs:
         env:
           CLIENT_BUILD_DIR: ${{ github.workspace }}/builds/${{ env.CONFIG_PRESET }}/client/Release
           SERVER_BUILD_DIR: ${{ github.workspace }}/builds/${{ env.CONFIG_PRESET }}/server/Release
+  coverage:
+    runs-on: windows-latest
+    env:
+      buildDir: "${{ github.workspace }}/build"
+      BUILD_PRESET: debug
+      CONFIG_PRESET: ninja-multi-vcpkg-ci
+      VCPKG_COMMIT_ID: acc3bcf76b84ae5041c86ab55fe138ae7b8255c7
+      VCPKG_DEFAULT_TRIPLET: windows-latest-x64
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: lukka/get-cmake@latest
+      - name: Restore artifacts, or run vcpkg, build and cache artifacts
+        uses: lukka/run-vcpkg@v10
+        with:
+          appendedCacheKey: ${{ env.VCPKG_DEFAULT_TRIPLET }}
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
       - name: Configure cmake and build
-        if: matrix.os == 'windows-latest' && matrix.arch == 'x64'
         uses: lukka/run-cmake@v10
         with:
           configurePreset: ${{ env.CONFIG_PRESET }}
           buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
           testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
-        env:
-          BUILD_PRESET: debug
       - name: Setup OpenCppCoverage and add to PATH
-        if: matrix.os == 'windows-latest' && matrix.arch == 'x64'
         id: setup_opencppcoverage
         run: |
           choco install OpenCppCoverage -y
           echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
       - name: Generate Report
-        if: matrix.os == 'windows-latest' && matrix.arch == 'x64'
         id: generate_test_report
         shell: cmd
         run: OpenCppCoverage.exe --quiet --config_file opencppcovconfig.txt --export_type cobertura:coverage.xml -- ctest.exe --preset ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
-        env:
-          BUILD_PRESET: debug
       - name: Upload Report to Codecov
-        if: matrix.os == 'windows-latest' && matrix.arch == 'x64'
         uses: codecov/codecov-action@v3
         with:
           files: ./coverage.xml
