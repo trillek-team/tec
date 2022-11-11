@@ -44,7 +44,7 @@ jobs:
       CONFIG_PRESET: ninja-multi-vcpkg-ci
       VCPKG_COMMIT_ID: acc3bcf76b84ae5041c86ab55fe138ae7b8255c7
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}
-	  GENERATE_COVERAGE: ${{ matrix.os }} == 'windows-latest' && ${{ matrix.arch }} == 'x64'
+      GENERATE_COVERAGE: ${{ matrix.os }} == 'windows-latest' && ${{ matrix.arch }} == 'x64'
     steps:
       - uses: actions/checkout@v2
         with:
