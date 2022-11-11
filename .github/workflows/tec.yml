@@ -73,19 +73,19 @@ jobs:
           buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
           testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
       - name: Setup OpenCppCoverage and add to PATH
-        if: env.GENERATE_COVERAGE
+        if: env.GENERATE_COVERAGE == true
         id: setup_opencppcoverage
         run: |
           choco install OpenCppCoverage -y
           echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
       - name: Generate Report
-        if: env.GENERATE_COVERAGE
+        if: env.GENERATE_COVERAGE == true
         id: generate_test_report
         shell: cmd
-        run: OpenCppCoverage.exe --quiet --config_file .\opencppcovconfig.txt --cover_children --export_type cobertura:coverage.xml -- ctest.exe --preset ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
+        run: OpenCppCoverage.exe --quiet --config_file opencppcovconfig.txt --cover_children --export_type cobertura:coverage.xml -- ctest.exe --preset ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
       - name: Upload Report to Codecov
-        if: env.GENERATE_COVERAGE
-        uses: codecov/codecov-action@v2
+        if: env.GENERATE_COVERAGE == true
+        uses: codecov/codecov-action@v3
         with:
           files: ./coverage.xml
           fail_ci_if_error: true
