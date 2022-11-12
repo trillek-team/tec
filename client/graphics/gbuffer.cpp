@@ -96,7 +96,7 @@ void GBuffer::StencilPass() {
 	glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 }
 
-void GBuffer::BeginLightPass() const {
+void GBuffer::BeginLightPass() {
 	glDrawBuffer(GL_COLOR_ATTACHMENT4);
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -111,7 +111,7 @@ void GBuffer::BeginLightPass() const {
 	}
 }
 
-void GBuffer::BeginDirLightPass() const { glStencilFunc(GL_ALWAYS, 0, 0); }
+void GBuffer::BeginDirLightPass() { glStencilFunc(GL_ALWAYS, 0, 0); }
 
 void GBuffer::BeginPointLightPass() const {}
 
@@ -119,7 +119,7 @@ void GBuffer::EndPointLightPass() const {
 	// glDisable(GL_BLEND);
 }
 
-void GBuffer::FinalPass() const {
+void GBuffer::FinalPass() {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	this->BindForRendering();
 	glReadBuffer(GL_COLOR_ATTACHMENT4);

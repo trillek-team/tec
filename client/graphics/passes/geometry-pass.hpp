@@ -18,8 +18,12 @@ struct UniformLocations {
 class GeometryPass final : public RenderPass {
 public:
 	GeometryPass() : RenderPass("GeometryPass") {}
-	void Prepare(const GBuffer& gbuffer) override { gbuffer.BeginGeometryPass(); }
-	void Run(const gfx::ShaderSet& default_shaders, const View& view, const RenderItems& render_items) override {
+	void Prepare(GBuffer& gbuffer) override { gbuffer.BeginGeometryPass(); }
+	void
+	Run(const gfx::ShaderSet& default_shaders,
+		const Viewport& viewport,
+		const View& view,
+		const RenderItems& render_items) override {
 		const GLuint def_textures[]{TextureMap::Get("default")->GetID(), TextureMap::Get("default_sp")->GetID()};
 
 		glActiveTexture(GL_TEXTURE0);
@@ -32,7 +36,8 @@ public:
 
 		glUniform3fv(def_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(view.view_pos));
 		glUniform4fv(def_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(view.view_quat));
-		glUniformMatrix4fv(def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
+		glUniformMatrix4fv(
+				def_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(viewport.projection));
 		const UniformLocations default_shader_locations{
 				def_shader->GetUniformLocation("model_position"),
 				def_shader->GetUniformLocation("model_scale"),
@@ -50,7 +55,7 @@ public:
 				glUniform3fv(_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(view.view_pos));
 				glUniform4fv(_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(view.view_quat));
 				glUniformMatrix4fv(
-						_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
+						_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(viewport.projection));
 				model_pos = _shader->GetUniformLocation("model_position");
 				model_scale = _shader->GetUniformLocation("model_scale");
 				model_quat = _shader->GetUniformLocation("model_quat");
@@ -98,6 +103,6 @@ public:
 		def_shader->UnUse();
 		glBindVertexArray(0);
 	}
-	void Complete(const GBuffer& gbuffer) override { gbuffer.EndGeometryPass(); }
+	void Complete(GBuffer& gbuffer) override { gbuffer.EndGeometryPass(); }
 };
 } // namespace tec::graphics::pass

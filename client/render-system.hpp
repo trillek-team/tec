@@ -11,6 +11,7 @@
 #include "graphics/passes/render-pass.hpp"
 #include "graphics/render-list.hpp"
 #include "graphics/vertex-buffer-object.hpp"
+#include "graphics/viewport.hpp"
 #include "tec-types.hpp"
 
 namespace spdlog {
@@ -53,8 +54,9 @@ public:
 
 private:
 	static std::shared_ptr<spdlog::logger> _log;
-	
+
 	static void SetupDefaultShaders(const gfx::RenderConfig&);
+	void UpdateViewport(const glm::uvec2& view_size);
 
 	void On(eid, std::shared_ptr<WindowResizedEvent> data) override;
 	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
@@ -69,5 +71,6 @@ private:
 	std::unordered_set<std::string> extensions;
 	graphics::RenderItemList render_item_list;
 	std::vector<std::shared_ptr<graphics::pass::RenderPass>> render_passes;
+	graphics::Viewport viewport{};
 };
 } // namespace tec

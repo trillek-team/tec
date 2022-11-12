@@ -30,14 +30,14 @@ public:
 
 	static void StencilPass();
 
-	void BeginLightPass() const;
+	void BeginLightPass();
 
-	void BeginDirLightPass() const;
+	void BeginDirLightPass();
 
 	void BeginPointLightPass() const;
 	void EndPointLightPass() const;
 
-	void FinalPass() const;
+	void FinalPass();
 
 	void BindForWriting() const;
 	void BindForRendering() const;

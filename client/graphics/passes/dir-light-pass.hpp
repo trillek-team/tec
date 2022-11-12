@@ -9,13 +9,15 @@ using DirectionalLightMap = Multiton<eid, DirectionalLight*>;
 
 class DirLightPass final : public RenderPass {
 public:
-	DirLightPass() : RenderPass("DirLightPass"){}
-	void Prepare(const GBuffer& gbuffer) override { gbuffer.BeginDirLightPass(); }
-	void Run(const gfx::ShaderSet& default_shaders, const View& view, const RenderItems&) override {
+	DirLightPass() : RenderPass("DirLightPass") {}
+	void Prepare(GBuffer& gbuffer) override { gbuffer.BeginDirLightPass(); }
+	void Run(const gfx::ShaderSet& default_shaders, const Viewport& viewport, const View& view, const RenderItems&)
+			override {
 		const std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get(default_shaders.dirlight());
 		def_dl_shader->Use();
-		
-		glUniform2f(def_dl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
+
+		glUniform2f(
+				def_dl_shader->GetUniformLocation("gScreenSize"), viewport.inv_view_size.x, viewport.inv_view_size.y);
 		glUniform3fv(def_dl_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(view.view_pos));
 		const GLint color_index = def_dl_shader->GetUniformLocation("gDirectionalLight.Base.Color");
 		const GLint ambient_intensity_index =
@@ -43,6 +45,6 @@ public:
 		def_dl_shader->UnUse();
 		glBindVertexArray(0);
 	}
-	void Complete(const GBuffer& gbuffer) override { gbuffer.EndPointLightPass(); }
+	void Complete(GBuffer& gbuffer) override { gbuffer.EndPointLightPass(); }
 };
 } // namespace tec::graphics::pass

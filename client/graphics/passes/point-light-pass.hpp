@@ -18,19 +18,21 @@ public:
 			this->sphere_vbo.Load(sphere);
 		}
 	}
-	void Prepare(const GBuffer& gbuffer) override {
+	void Prepare(GBuffer& gbuffer) override {
 		gbuffer.BeginLightPass();
 		gbuffer.BeginPointLightPass();
 	}
-	void Run(const gfx::ShaderSet& default_shaders, const View& view, const RenderItems&) override {
+	void Run(const gfx::ShaderSet& default_shaders, const Viewport& viewport, const View& view, const RenderItems&)
+			override {
 		const std::shared_ptr<Shader> def_pl_shader = ShaderMap::Get(default_shaders.pointlight());
 
 		def_pl_shader->Use();
 		glUniform3fv(def_pl_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(view.view_pos));
 		glUniform4fv(def_pl_shader->GetUniformLocation("view_quat"), 1, glm::value_ptr(view.view_quat));
 		glUniformMatrix4fv(
-				def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(this->projection));
-		glUniform2f(def_pl_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
+				def_pl_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(viewport.projection));
+		glUniform2f(
+				def_pl_shader->GetUniformLocation("gScreenSize"), viewport.inv_view_size.x, viewport.inv_view_size.y);
 		const GLint model_index = def_pl_shader->GetUniformLocation("model");
 		const GLint color_index = def_pl_shader->GetUniformLocation("gPointLight.Base.Color");
 		const GLint ambient_intensity_index = def_pl_shader->GetUniformLocation("gPointLight.Base.AmbientIntensity");
@@ -66,7 +68,7 @@ public:
 		glBindVertexArray(0);
 		def_pl_shader->UnUse();
 	}
-	void Complete(const GBuffer& gbuffer) override { gbuffer.EndPointLightPass(); }
+	void Complete(GBuffer& gbuffer) override { gbuffer.EndPointLightPass(); }
 
 private:
 	VertexBufferObject sphere_vbo{vertex::VF_BASE};

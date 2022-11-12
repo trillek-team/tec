@@ -9,12 +9,13 @@ namespace tec::graphics::pass {
 class FinalPass final : public RenderPass {
 public:
 	FinalPass() : RenderPass("FinalPass") {}
-	void Prepare(const GBuffer& gbuffer) override { gbuffer.FinalPass(); }
-	void Run(const gfx::ShaderSet& default_shaders, const View&, const RenderItems&) override {
+	void Prepare(GBuffer& gbuffer) override { gbuffer.FinalPass(); }
+	void
+	Run(const gfx::ShaderSet& default_shaders, const Viewport& viewport, const View&, const RenderItems&) override {
 		const std::shared_ptr<Shader> post_shader = ShaderMap::Get(default_shaders.postprocess());
 
 		post_shader->Use();
-		glUniform2f(post_shader->GetUniformLocation("gScreenSize"), this->inv_view_size.x, this->inv_view_size.y);
+		glUniform2f(post_shader->GetUniformLocation("gScreenSize"), viewport.inv_view_size.x, viewport.inv_view_size.y);
 
 		const auto& quad_vbo = RenderSystem::quad_vbo;
 
@@ -25,6 +26,6 @@ public:
 
 		post_shader->UnUse();
 	}
-	void Complete(const GBuffer&) override { }
+	void Complete(GBuffer&) override {}
 };
 } // namespace tec::graphics::pass

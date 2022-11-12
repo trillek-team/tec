@@ -120,17 +120,11 @@ void RenderSystem::Startup() {
 		this->render_passes.push_back(std::make_shared<graphics::pass::DebugPass>());
 	}
 
-	glm::uvec2 view_size{1024, 768};
-	const auto viewport = glm::max(glm::uvec2(1), view_size);
-	this->light_gbuffer.AddColorAttachments(view_size.x, view_size.y);
-	this->light_gbuffer.SetDepthAttachment(GBuffer::DEPTH_TYPE::DEPTH, view_size.x, view_size.y);
+	UpdateViewport({1024, 768});
+	this->light_gbuffer.AddColorAttachments(viewport.view_size.x, viewport.view_size.y);
+	this->light_gbuffer.SetDepthAttachment(GBuffer::DEPTH_TYPE::DEPTH, viewport.view_size.x, viewport.view_size.y);
 	if (!this->light_gbuffer.CheckCompletion()) {
 		_log->error("[RenderSystem] Failed to create Light GBuffer.");
-	}
-
-	const glm::vec2 inv_view_size = 1.0f / glm::vec2(viewport);
-	for (const auto& pass : this->render_passes) {
-		pass->SetInvViewSize(inv_view_size);
 	}
 
 	constexpr uint32_t checker_size = 64;
@@ -196,26 +190,25 @@ void RenderSystem::RegisterConsole(Console& console) {
 	});
 }
 
-void RenderSystem::SetViewportSize(const glm::uvec2& view_size) {
-	const auto viewport = glm::max(glm::uvec2(1), view_size);
-	float aspect_ratio = static_cast<float>(viewport.x) / static_cast<float>(viewport.y);
+void RenderSystem::UpdateViewport(const glm::uvec2& view_size) {
+	viewport.view_size = glm::max(glm::uvec2(1), view_size);
+	viewport.inv_view_size = 1.0f / glm::vec2(viewport.view_size);
+	float aspect_ratio = static_cast<float>(viewport.view_size.x) / static_cast<float>(viewport.view_size.y);
 	if ((aspect_ratio < 1.0f) || std::isnan(aspect_ratio)) {
 		aspect_ratio = 4.0f / 3.0f;
 	}
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10000.0f);
+	viewport.projection = glm::perspective(glm::radians(45.0f), aspect_ratio, 0.1f, 10000.0f);
 	// convert the projection to reverse depth with infinite far plane
-	projection[2][2] = 0.0f;
-	projection[3][2] = 0.1f;
-	this->light_gbuffer.ResizeColorAttachments(viewport.x, viewport.y);
-	this->light_gbuffer.ResizeDepthAttachment(viewport.x, viewport.y);
-	glViewport(0, 0, viewport.x, viewport.y);
+	viewport.projection[2][2] = 0.0f;
+	viewport.projection[3][2] = 0.1f;
+}
 
-	const glm::vec2 inv_view_size = 1.0f / glm::vec2(viewport);
-	for (const auto& pass : this->render_passes) {
-		pass->SetInvViewSize(inv_view_size);
-		pass->SetProjection(projection);
-	}
+void RenderSystem::SetViewportSize(const glm::uvec2& view_size) {
+	this->UpdateViewport(view_size);
+	this->light_gbuffer.ResizeColorAttachments(viewport.view_size.x, viewport.view_size.y);
+	this->light_gbuffer.ResizeDepthAttachment(viewport.view_size.x, viewport.view_size.y);
+	glViewport(0, 0, viewport.view_size.x, viewport.view_size.y);
 }
 
 void RenderSystem::ErrorCheck(const std::string_view what, size_t line, const std::string_view where) {
@@ -240,7 +233,7 @@ void RenderSystem::Update(const double delta) {
 
 	for (const auto& pass : this->render_passes) {
 		pass->Prepare(this->light_gbuffer);
-		pass->Run(this->active_shaders, current_view, render_items);
+		pass->Run(this->active_shaders, viewport, current_view, render_items);
 		pass->Complete(this->light_gbuffer);
 		ErrorCheck(pass->GetPassName(), __LINE__);
 	}
