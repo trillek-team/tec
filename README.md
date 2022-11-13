@@ -27,7 +27,7 @@ Install the following. This is a pretty extensive list and may be more than need
 
 ## Build Steps
 1. Install [CMake](https://cmake.org/download/)
-2. Install [VCPK](git clone https://github.com/Microsoft/vcpkg.git) - `git clone https://github.com/Microsoft/vcpkg.git`
+2. Install [VCPK](https://github.com/Microsoft/vcpkg.git) - `git clone https://github.com/Microsoft/vcpkg.git`
 3. `VCPKG_ROOT` must be set a an environment variable, to wherever VCPKG was cloned to
 4. Run `$(VCPKG_ROOT)/bootstrap-vcpkg.[bat|sh]` to setup vcpkg. Use the correct extension for your OS.
    1. [OPTIONAL] `$(VCPKG_ROOT)/./vcpkg integrate install`
