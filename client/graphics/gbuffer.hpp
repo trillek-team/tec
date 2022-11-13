@@ -34,10 +34,10 @@ public:
 
 	void BeginDirLightPass();
 
-	void BeginPointLightPass();
-	void EndPointLightPass();
+	void BeginPointLightPass() const;
+	void EndPointLightPass() const;
 
-	void FinalPass() const;
+	void FinalPass();
 
 	void BindForWriting() const;
 	void BindForRendering() const;

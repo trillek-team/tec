@@ -8,7 +8,7 @@ namespace tec {
 struct View {
 	View(bool active = false) : active(active) {}
 	glm::vec3 view_pos{0};
-	glm::quat view_quat;
+	glm::quat view_quat{};
 	bool active = false;
 
 	void Out(proto::Component* target) {
