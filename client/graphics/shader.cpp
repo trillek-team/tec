@@ -7,6 +7,7 @@
 #include <spdlog/spdlog.h>
 
 #include "gbuffer.hpp"
+#include "gl-symbol.hpp"
 #include "proto-load.hpp"
 #include "render-system.hpp"
 
@@ -201,7 +202,7 @@ bool Shader::Build(const std::string& name) {
 		GLenum sym_type;
 		glGetActiveUniform(this->program, index, max_read_size, &written, &uniform_size, &sym_type, max_read.data());
 		std::string uniform_name = max_read.substr(0, max_read.find_first_of('\0'));
-		std::string s_type{GLSymbol::Get(sym_type).name};
+		std::string s_type{graphics::GLSymbol::Get(sym_type).name};
 		GLint uniform_loc = this->GetUniformLocation(uniform_name);
 		_log->trace("[Shader] {}/uniform: {}: {} {}: {}", name, uniform_loc, uniform_size, s_type, uniform_name);
 		if (sym_type == GL_SAMPLER_2D) {
@@ -218,7 +219,7 @@ bool Shader::Build(const std::string& name) {
 		GLenum sym_type;
 		glGetActiveAttrib(this->program, index, max_read_size, &written, &attrib_size, &sym_type, max_read.data());
 		std::string attrib_name = max_read.substr(0, max_read.find_first_of('\0'));
-		std::string s_type{GLSymbol::Get(sym_type).name};
+		std::string s_type{graphics::GLSymbol::Get(sym_type).name};
 		GLint attrib_loc = this->GetAttributeLocation(attrib_name);
 		_log->trace("[Shader] {}/attrib: {}: {} {}: {}", name, attrib_loc, attrib_size, s_type, attrib_name);
 	}

@@ -35,7 +35,7 @@ public:
 	* note: this method is not const, since GL can modify the ID
 	* \return GLuint the GL texture ID.
 	*/
-	GLuint GetVAO() { return this->vao; }
+	GLuint GetVAO() const { return this->vao; }
 
 	/**
 	* \brief Gets the specified VertexGroup.
@@ -43,6 +43,8 @@ public:
 	* \return VertexGroup& The specified VertexGroup.
 	*/
 	VertexGroup* GetVertexGroup(const std::size_t vertex_group_number);
+
+	GLuint GetVertexGroupIndexCount(const std::size_t index) const { return this->vertex_groups.at(index).index_count; }
 
 	/**
 	* \brief Gets the number of vertex groups store in the buffer.

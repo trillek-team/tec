@@ -113,13 +113,13 @@ void GBuffer::BeginLightPass() {
 
 void GBuffer::BeginDirLightPass() { glStencilFunc(GL_ALWAYS, 0, 0); }
 
-void GBuffer::BeginPointLightPass() {}
+void GBuffer::BeginPointLightPass() const {}
 
-void GBuffer::EndPointLightPass() {
+void GBuffer::EndPointLightPass() const {
 	// glDisable(GL_BLEND);
 }
 
-void GBuffer::FinalPass() const {
+void GBuffer::FinalPass() {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	this->BindForRendering();
 	glReadBuffer(GL_COLOR_ATTACHMENT4);

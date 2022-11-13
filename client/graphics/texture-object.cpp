@@ -1,4 +1,6 @@
 #include "texture-object.hpp"
+
+#include "gl-symbol.hpp"
 #include "render-system.hpp"
 
 #include <spdlog/spdlog.h>
@@ -88,8 +90,8 @@ void TextureObject::Load(const PixelBuffer& image) {
 				"[TextureObject] Allocate {}x{} in {} from {}",
 				image.Width(),
 				image.Height(),
-				GLSymbol::Get(format.to),
-				GLSymbol::Get(format.from));
+				graphics::GLSymbol::Get(format.to),
+				graphics::GLSymbol::Get(format.from));
 	}
 	else {
 		glBindTexture(GL_TEXTURE_2D, this->texture_id);
