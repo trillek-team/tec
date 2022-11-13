@@ -11,9 +11,8 @@ class DirLightPass final : public RenderPass {
 public:
 	DirLightPass() : RenderPass("DirLightPass") {}
 	void Prepare(GBuffer& gbuffer) override { gbuffer.BeginDirLightPass(); }
-	void Run(const gfx::ShaderSet& default_shaders, const Viewport& viewport, const View& view, const RenderItems&)
-			override {
-		const std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get(default_shaders.dirlight());
+	void Run(const gfx::ShaderSet& shaders, const Viewport& viewport, const View& view, const RenderItems&) override {
+		const std::shared_ptr<Shader> def_dl_shader = ShaderMap::Get(shaders.dirlight());
 		def_dl_shader->Use();
 
 		glUniform2f(

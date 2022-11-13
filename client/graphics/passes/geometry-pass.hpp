@@ -19,11 +19,8 @@ class GeometryPass final : public RenderPass {
 public:
 	GeometryPass() : RenderPass("GeometryPass") {}
 	void Prepare(GBuffer& gbuffer) override { gbuffer.BeginGeometryPass(); }
-	void
-	Run(const gfx::ShaderSet& default_shaders,
-		const Viewport& viewport,
-		const View& view,
-		const RenderItems& render_items) override {
+	void Run(const gfx::ShaderSet& shaders, const Viewport& viewport, const View& view, const RenderItems& render_items)
+			override {
 		const GLuint def_textures[]{TextureMap::Get("default")->GetID(), TextureMap::Get("default_sp")->GetID()};
 
 		glActiveTexture(GL_TEXTURE0);
@@ -31,7 +28,7 @@ public:
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, def_textures[1]);
 
-		const std::shared_ptr<Shader> def_shader = ShaderMap::Get(default_shaders.visual());
+		const std::shared_ptr<Shader> def_shader = ShaderMap::Get(shaders.visual());
 		def_shader->Use();
 
 		glUniform3fv(def_shader->GetUniformLocation("view_pos"), 1, glm::value_ptr(view.view_pos));

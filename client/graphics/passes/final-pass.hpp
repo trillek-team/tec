@@ -10,9 +10,8 @@ class FinalPass final : public RenderPass {
 public:
 	FinalPass() : RenderPass("FinalPass") {}
 	void Prepare(GBuffer& gbuffer) override { gbuffer.FinalPass(); }
-	void
-	Run(const gfx::ShaderSet& default_shaders, const Viewport& viewport, const View&, const RenderItems&) override {
-		const std::shared_ptr<Shader> post_shader = ShaderMap::Get(default_shaders.postprocess());
+	void Run(const gfx::ShaderSet& shaders, const Viewport& viewport, const View&, const RenderItems&) override {
+		const std::shared_ptr<Shader> post_shader = ShaderMap::Get(shaders.postprocess());
 
 		post_shader->Use();
 		glUniform2f(post_shader->GetUniformLocation("gScreenSize"), viewport.inv_view_size.x, viewport.inv_view_size.y);

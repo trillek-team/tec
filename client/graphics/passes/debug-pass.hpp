@@ -16,8 +16,7 @@ public:
 		glBindSampler(static_cast<int>(GBuffer::DEPTH_TYPE::DEPTH), 0);
 		glBindTexture(GL_TEXTURE_2D, gbuffer.GetDepthTexture());
 	}
-	void
-	Run(const gfx::ShaderSet& default_shaders, const Viewport& viewport, const View&, const RenderItems&) override {
+	void Run(const gfx::ShaderSet& shaders, const Viewport& viewport, const View&, const RenderItems&) override {
 		glDisable(GL_BLEND);
 		glDrawBuffer(GL_BACK);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -26,7 +25,7 @@ public:
 
 		glBindVertexArray(quad_vbo->GetVAO());
 
-		const std::shared_ptr<Shader> def_db_shader = ShaderMap::Get(default_shaders.gbufdebug());
+		const std::shared_ptr<Shader> def_db_shader = ShaderMap::Get(shaders.gbufdebug());
 		def_db_shader->Use();
 
 		glUniform2f(
