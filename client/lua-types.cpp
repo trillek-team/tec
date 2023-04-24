@@ -7,7 +7,7 @@ TEC_RegisterLuaType(tec::manipulator, Placement) {
 	// clang-format off
 	state.new_usertype<Placement>(
 		"Placement", sol::no_constructor,
-		"set_mesh", sol::resolve<void(std::string)>(&Placement::SetMesh),
+		"set_mesh", sol::resolve<void(const std::string&)>(&Placement::SetMesh),
 		"clear_mesh", &Placement::ClearMesh
 	);
 	// clang-format on

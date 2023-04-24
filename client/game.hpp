@@ -40,7 +40,7 @@ public:
 
 	void Startup(Console&);
 
-	void Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height);
+	void Update(double delta);
 
 	ServerConnection& GetServerConnection() { return this->server_connection; }
 

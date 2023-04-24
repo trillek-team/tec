@@ -130,7 +130,7 @@ float Game::GetElapsedTime() {
 	return static_cast<float>(elapsed_time);
 }
 
-void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
+void Game::Update(const double delta) {
 	this->ProcessEvents();
 	// Elapsed time spend outside game loop
 	tfm.outside_game_time = GetElapsedTime();
@@ -185,27 +185,27 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	}
 
 	if (this->player_camera != nullptr) {
+		const int window_width = os.GetWindowWidth();
+		const int window_height = os.GetWindowHeight();
+		double mouse_x, mouse_y;
 		if (this->player_camera->mouse_look) {
 			os.EnableMouseLock(); // TODO: create event to change to mouse look
-			this->active_entity = ps.RayCastMousePick(
-					this->server_connection.GetClientID(),
-					static_cast<float>(window_width) / 2.0f,
-					static_cast<float>(window_height) / 2.0f,
-					static_cast<float>(window_width),
-					static_cast<float>(window_height));
-			auto intersection = ps.GetLastRayPos();
-			auto player_position = ps.GetPosition(player_entity_id);
+			mouse_x = static_cast<double>(window_width) / 2.0;
+			mouse_y = static_cast<double>(window_height) / 2.0;
+			const auto intersection = ps.GetLastRayPos();
+			const auto player_position = ps.GetPosition(player_entity_id);
 			placement.SetRayIntersectionPoint(player_position.value, intersection);
 		}
 		else {
 			os.DisableMouseLock(); // TODO: create event to change from mouse look
-			this->active_entity = ps.RayCastMousePick(
-					this->server_connection.GetClientID(),
-					mouse_x,
-					mouse_y,
-					static_cast<float>(window_width),
-					static_cast<float>(window_height));
+			OS::GetMousePosition(&mouse_x, &mouse_y);
 		}
+		this->active_entity = ps.RayCastMousePick(
+				this->server_connection.GetClientID(),
+				mouse_x,
+				mouse_y,
+				static_cast<float>(window_width),
+				static_cast<float>(window_height));
 	}
 	tfm.other_time = GetElapsedTime();
 	// clang-format off
