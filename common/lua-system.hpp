@@ -37,9 +37,9 @@ public:
 	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
 	void On(eid, std::shared_ptr<ChatCommandEvent> data) override;
 
-	void ExecuteString(std::string script_string);
+	void ExecuteString(const std::string& script_string);
 
-	std::shared_ptr<LuaScript> LoadFile(Path filepath);
+	std::shared_ptr<LuaScript> LoadFile(const Path& filepath);
 
 	sol::state& GetGlobalState() { return this->lua; }
 
@@ -53,7 +53,7 @@ private:
 	sol::state lua;
 	std::list<LuaScript> scripts;
 
-	std::list<sol::protected_function> GetAllFunctions(std::string);
+	std::list<sol::protected_function> GetAllFunctions(const std::string&);
 
 	friend LuaClassList;
 	static LuaClassList* lua_userclasses;

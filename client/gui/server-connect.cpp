@@ -117,11 +117,11 @@ void PingTimesWindow::Draw(IMGUISystem*) {
 	}
 	ImGui::Text("State Delay: %05" PRId64 " ms", connection_stats.estimated_delay);
 	ImGui::Text(
-			"States:% 2" PRIu64 "  Cmd In-flight:% 2" PRIu64,
+			"States:%2" PRIu64 "  Cmd In-flight:%2" PRIu64,
 			connection_stats.server_state_count,
 			connection_stats.current_command_id - connection_stats.current_acked_id);
 	ImGui::Text(
-			"   Cmd: % 9" PRIu64 " Ack: % 9" PRIu64,
+			"   Cmd: %9" PRIu64 " Ack: %9" PRIu64,
 			connection_stats.current_command_id,
 			connection_stats.current_acked_id);
 	glm::vec3 pos = connection_stats.client_position;

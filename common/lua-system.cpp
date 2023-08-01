@@ -122,7 +122,7 @@ void LuaSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 		switch (comp.component_case()) {
 		case proto::Component::kLuaScript:
 		{
-			LuaScript* script = new LuaScript();
+			auto* script = new LuaScript();
 			script->SetupEnvironment(&this->lua);
 			script->In(comp);
 			LuaScriptMap::Set(entity_id, script);
@@ -147,7 +147,7 @@ void LuaSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 	}
 }
 
-std::list<sol::protected_function> LuaSystem::GetAllFunctions(std::string function_name) {
+std::list<sol::protected_function> LuaSystem::GetAllFunctions(const std::string& function_name) {
 	std::list<sol::protected_function> functions;
 	// global state functions
 	if (this->lua[function_name].valid()) {
@@ -168,7 +168,7 @@ std::list<sol::protected_function> LuaSystem::GetAllFunctions(std::string functi
 	return functions;
 }
 
-std::shared_ptr<LuaScript> LuaSystem::LoadFile(Path filepath) {
+std::shared_ptr<LuaScript> LuaSystem::LoadFile(const Path& filepath) {
 	std::shared_ptr<LuaScript> script = std::make_shared<LuaScript>(ScriptFile::Create(filepath));
 	script->SetupEnvironment(&this->lua);
 	script->ReloadScript();
@@ -184,7 +184,7 @@ void LuaSystem::On(eid, std::shared_ptr<ChatCommandEvent> data) {
 	this->CallFunctions("onChatCommand", data->command, data->args);
 }
 
-void LuaSystem::ExecuteString(std::string script_string) { this->lua.script(script_string); }
+void LuaSystem::ExecuteString(const std::string& script_string) { this->lua.script(script_string); }
 
 LuaClassList* LuaSystem::lua_userclasses = nullptr;
 

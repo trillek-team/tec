@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <ranges>
 #include <spdlog/spdlog.h>
 #include <utility>
 
