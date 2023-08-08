@@ -4,7 +4,7 @@ project(trillek-client)
 set(CLIENT_LIB_NAME "client_lib")
 set(CLIENT_LIB_NAME ${CLIENT_LIB_NAME} PARENT_SCOPE)
 add_interface_lib(
-	TARGET ${CLIENT_LIB_NAME} 
+	TARGET ${CLIENT_LIB_NAME}
 	FILE_LIST
 		game.cpp
 		imgui-system.cpp

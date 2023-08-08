@@ -4,7 +4,7 @@
 |[![Trillek Engine CI](https://github.com/trillek-team/tec/actions/workflows/tec.yml/badge.svg)](https://github.com/trillek-team/tec/actions/workflows/tec.yml)|[![Documentation Status](https://readthedocs.org/projects/project-trillek/badge/?version=latest)](https://project-trillek.readthedocs.io/?badge=latest)|
 
 ## Support
-Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on building and usage.  
+Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on building and usage.
 ![Discord Shield](https://discordapp.com/api/guilds/671106829853523969/widget.png?style=shield)
 
 ## Requirements
@@ -17,7 +17,7 @@ The libraries are automatically installed when using CMake and VCPKG [manifest m
 ### Windows
 *Potentially* Download and install oalinst.zip [OpenAL installer](http://openal.org/downloads/) and install it.
 ### MacOS
-Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /` 
+Prior to 11.0.1, run (NOT TESTED): `sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /`
 
 If `bootstrap-vcpkg` fails see [here](https://donatstudios.com/MojaveMissingHeaderFiles) for more help
 ### Linux
@@ -71,7 +71,7 @@ Install the following. This is a pretty extensive list and may be more than need
 # Presets
 ## Config:
 * `ninja-multi-vcpkg` - Ninja multi-build config preset that references the vcpkg toolchain file relative to the `VCPKG_ROOT`
-  
+
 ## Build:
 * `ninja-multi-vcpkg-debug` - Debug configuration build preset that uses the `ninja-multi-vcpkg` config
 * `ninja-multi-vcpkg-release-dbginfo` - Release with debug info configuration build preset that uses the `ninja-multi-vcpkg` config
@@ -109,7 +109,7 @@ To generate the python requirements for mkdocs to be used by readthedoc run `pip
 ## Documentation Targets
 The following targets can be built when the CMake build preset is set to `ninja-multi-docs`
 
-* doxygen - Generates full doxygen docs in `doxygen/` 
+* doxygen - Generates full doxygen docs in `doxygen/`
 * doxybook - Generates markdown versions of doxygen docs and places them in `docs/engine/`
 * mkdocs - Generates mkdocs from `docs/` in places them `mkdocs/`
 
@@ -119,9 +119,9 @@ To preview the mkdocs docs locally visit run `mkdocs serve`, in the project root
 # Clang Format
 The follow docker script will setup a docker container that will run clang format.
 `docker build -t clang-format-lint github.com/DoozyX/clang-format-lint-action`
-### Windows
+## Windows
 Run the following on windows to format all source files in the src dir
 `docker run -it --rm --workdir /src -v ${pwd}:/src clang-format-lint --clang-format-executable /clang-format/clang-format11 -r -i true .`
-### Linux
+## Linux
 Run the following on windows to format all source files in the src dir
 `docker run -it --rm --workdir /src -v $(pwd):/src clang-format-lint --clang-format-executable /clang-format/clang-format11 -r -i true .`
