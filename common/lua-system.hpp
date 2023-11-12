@@ -3,7 +3,6 @@
  * Lua system
  */
 
-#include <limits>
 #include <sol/sol.hpp>
 #include <spdlog/spdlog.h>
 
@@ -22,7 +21,7 @@ struct ChatCommandEvent;
 
 struct LuaClassList;
 
-class LuaSystem :
+class LuaSystem final :
 		public CommandQueue<LuaSystem>,
 		public EventQueue<EntityCreated>,
 		public EventQueue<EntityDestroyed>,
@@ -30,7 +29,7 @@ class LuaSystem :
 public:
 	LuaSystem();
 
-	void Update(const double delta);
+	void Update(double delta);
 	void ProcessEvents();
 
 	void On(eid, std::shared_ptr<EntityCreated> data) override;
@@ -43,7 +42,7 @@ public:
 
 	sol::state& GetGlobalState() { return this->lua; }
 
-	template <typename... Args> void CallFunctions(std::string function_name, Args&&... args) {
+	template <typename... Args> void CallFunctions(const std::string& function_name, Args&&... args) {
 		for (auto& fn : GetAllFunctions(function_name)) {
 			fn(args...);
 		}
@@ -63,7 +62,7 @@ private:
 struct LuaClassList {
 	std::function<void(sol::state&)> load;
 	LuaClassList* next;
-	LuaClassList(std::function<void(sol::state&)> load_fn) : load(load_fn), next(nullptr) {
+	explicit LuaClassList(std::function<void(sol::state&)> load_fn) : load(std::move(load_fn)), next(nullptr) {
 		this->next = LuaSystem::lua_userclasses;
 		LuaSystem::lua_userclasses = this;
 	}
