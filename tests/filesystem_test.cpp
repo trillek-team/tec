@@ -14,7 +14,7 @@
 TEST(Path_class_test, Constructor) {
 	using namespace tec;
 	// Construction from strings
-	const std::string_view messy_path_sv = "c:\\usr/share\\MyApp\\foo/bar.png";
+	constexpr std::string_view messy_path_sv = R"(c:\usr/share\MyApp\foo/bar.png)";
 	std::string messy_path_s{messy_path_sv};
 	ASSERT_EQ(Path(messy_path_sv).toString(), "c:/usr/share/MyApp/foo/bar.png");
 	ASSERT_EQ(Path(messy_path_s).toString(), "c:/usr/share/MyApp/foo/bar.png");
