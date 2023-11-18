@@ -1,10 +1,8 @@
+#include "net-message.hpp"
 
 #include <spdlog/spdlog.h>
 
-#include "net-message.hpp"
-
-namespace tec {
-namespace networking {
+namespace tec::networking {
 
 void MessageOut::FromBuffer(const void* body, size_t length) {
 	size_t remain = length;
@@ -20,7 +18,7 @@ void MessageOut::FromBuffer(const void* body, size_t length) {
 		if (buffer_size <= 0) {
 			continue;
 		}
-		if (buffer_size <= remain) {
+		if (static_cast<size_t>(buffer_size) <= remain) {
 			memcpy(buffer, body_ptr + offset, buffer_size);
 			remain -= buffer_size;
 			offset += buffer_size;
@@ -71,7 +69,7 @@ void MessageOut::BackUp(int count) {
 		return;
 	}
 	Message* msg = message_list.back().get();
-	if (count > msg->GetBodyLength()) {
+	if (static_cast<size_t>(count) > msg->GetBodyLength()) {
 		return;
 	}
 	msg->SetBodyLength(msg->GetBodyLength() - count);
@@ -205,7 +203,7 @@ bool MessageIn::Next(const void** data, int* size) {
 }
 
 void MessageIn::BackUp(int count) {
-	if (count <= read_offset) {
+	if (count >= 0 && static_cast<size_t>(count) <= read_offset) {
 		read_offset -= count;
 	}
 }
@@ -229,5 +227,5 @@ bool MessageIn::Skip(int count) {
 	return true;
 }
 
-} // namespace networking
-} // namespace tec
+} // namespace tec::networking
+
