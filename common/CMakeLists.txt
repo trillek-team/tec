@@ -14,12 +14,14 @@ protobuf_generate_cpp(PROTOGEN_SOURCES PROTOGEN_HEADERS ${PROTO_FILES})
 
 set(COMMON_LIB_NAME "tec")
 set(COMMON_LIB_NAME ${COMMON_LIB_NAME} PARENT_SCOPE)
-add_library(${COMMON_LIB_NAME} STATIC ${PROTOGEN_SOURCES} ${PROTO_FILES})
+
+file(GLOB_RECURSE COMMON_HEADERS LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
+add_library(${COMMON_LIB_NAME} STATIC ${PROTOGEN_SOURCES} ${PROTO_FILES} ${COMMON_HEADERS})
 target_compile_features(${COMMON_LIB_NAME} PUBLIC cxx_std_17)
 
 target_include_directories(
 	${COMMON_LIB_NAME}
-	PUBLIC 
+	PUBLIC
 		${CMAKE_CURRENT_BINARY_DIR}
 		${CMAKE_CURRENT_SOURCE_DIR}
 		${CMAKE_SOURCE_DIR}/deps/trillek-vcomputer/include)
@@ -40,8 +42,6 @@ target_link_libraries(
 		asio::asio
 		glm::glm
 		VCOMPUTER_STATIC)
-
-file(GLOB_RECURSE COMMON_HEADERS LIST_DIRECTORIES false ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
 target_sources(
 	${COMMON_LIB_NAME}
 	PUBLIC
@@ -61,7 +61,14 @@ target_sources(
 		components/transforms.cpp
 		controllers/fps-controller.cpp
 		resources/mesh.cpp
-		resources/script-file.cpp
-		${COMMON_HEADERS})
+		resources/script-file.cpp)
 
 set_source_group_property(FILE_LIST ${PROTO_FILES} GROUP_NAME Proto)
+
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS ${COMMON_LIB_NAME} VCOMPUTER_STATIC EXPORT CommonConfig
+    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+
+export(TARGETS ${COMMON_LIB_NAME} VCOMPUTER_STATIC FILE CommonConfig.cmake)

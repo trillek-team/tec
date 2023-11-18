@@ -13,11 +13,33 @@ namespace tec {
 // TODO: Create Controller system that calls update on all controller
 // instances.
 struct Controller {
-	Controller(eid entity_id) : entity_id(entity_id) {}
+	explicit Controller(const eid entity_id) : entity_id(entity_id) {}
+	Controller(const Controller& other) = default;
 
-	virtual void Update(double, GameState&, EventList&) {}
+	Controller(Controller&& other) noexcept :
+			entity_id(other.entity_id), keyboard_focus(other.keyboard_focus), mouse_focus(other.mouse_focus) {}
+
+	Controller& operator=(const Controller& other) {
+		if (this == &other)
+			return *this;
+		entity_id = other.entity_id;
+		keyboard_focus = other.keyboard_focus;
+		mouse_focus = other.mouse_focus;
+		return *this;
+	}
+
+	Controller& operator=(Controller&& other) noexcept {
+		if (this == &other)
+			return *this;
+		entity_id = other.entity_id;
+		keyboard_focus = other.keyboard_focus;
+		mouse_focus = other.mouse_focus;
+		return *this;
+	}
 
 	virtual ~Controller() = default;
+
+	virtual void Update(double, GameState&, EventList&) {}
 
 	virtual proto::ClientCommands GetClientCommands() = 0;
 
@@ -43,8 +65,67 @@ struct Controller {
 // TODO: Remove this class as it is only for testing and should really be
 // implemented in script.
 struct FPSController : public Controller {
-	FPSController(const eid entity_id) : Controller(entity_id) {}
-	virtual ~FPSController() = default;
+	FPSController(const eid _entity_id) : Controller(_entity_id) {}
+	~FPSController() override = default;
+
+	FPSController(const FPSController& other) =	default;
+
+	FPSController(FPSController&& other) noexcept :
+		Controller(std::move(other)),
+		forward(other.forward),
+		backward(other.backward),
+		right_strafe(other.right_strafe),
+		left_strafe(other.left_strafe),
+		current_delta(other.current_delta),
+		mouse_look(other.mouse_look),
+		orientation(other.orientation),
+		KEY_A_FIRST(other.KEY_A_FIRST),
+		KEY_W_FIRST(other.KEY_W_FIRST),
+		KEY_W_DOWN(other.KEY_W_DOWN),
+		KEY_A_DOWN(other.KEY_A_DOWN),
+		KEY_S_DOWN(other.KEY_S_DOWN),
+		KEY_D_DOWN(other.KEY_D_DOWN) {
+	}
+
+	FPSController& operator=(const FPSController& other) {
+		if (this == &other)
+			return *this;
+		Controller::operator =(other);
+		forward = other.forward;
+		backward = other.backward;
+		right_strafe = other.right_strafe;
+		left_strafe = other.left_strafe;
+		current_delta = other.current_delta;
+		mouse_look = other.mouse_look;
+		orientation = other.orientation;
+		KEY_A_FIRST = other.KEY_A_FIRST;
+		KEY_W_FIRST = other.KEY_W_FIRST;
+		KEY_W_DOWN = other.KEY_W_DOWN;
+		KEY_A_DOWN = other.KEY_A_DOWN;
+		KEY_S_DOWN = other.KEY_S_DOWN;
+		KEY_D_DOWN = other.KEY_D_DOWN;
+		return *this;
+	}
+
+	FPSController& operator=(FPSController&& other) noexcept {
+		if (this == &other)
+			return *this;
+		forward = other.forward;
+		backward = other.backward;
+		right_strafe = other.right_strafe;
+		left_strafe = other.left_strafe;
+		current_delta = other.current_delta;
+		mouse_look = other.mouse_look;
+		orientation = other.orientation;
+		KEY_A_FIRST = other.KEY_A_FIRST;
+		KEY_W_FIRST = other.KEY_W_FIRST;
+		KEY_W_DOWN = other.KEY_W_DOWN;
+		KEY_A_DOWN = other.KEY_A_DOWN;
+		KEY_S_DOWN = other.KEY_S_DOWN;
+		KEY_D_DOWN = other.KEY_D_DOWN;
+		Controller::operator=(std::move(other));
+		return *this;
+	}
 
 	void Handle(const KeyboardEvent& data, const GameState& state);
 	void Handle(const MouseBtnEvent& data, const GameState& state);
@@ -62,7 +143,7 @@ struct FPSController : public Controller {
 	double current_delta{0.0};
 	bool mouse_look{false};
 
-	std::unique_ptr<Orientation> orientation;
+	Orientation orientation;
 
 	// These tell us which was pressed first.
 	bool KEY_A_FIRST{false};

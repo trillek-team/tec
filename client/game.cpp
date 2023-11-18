@@ -14,8 +14,9 @@
 #include "graphics/view.hpp"
 #include "gui/console.hpp"
 #include "net-message.hpp"
-#include "resources/mesh.hpp"
 #include "resources/pixel-buffer.hpp"
+
+constexpr double COMMAND_RATE = 1.0 / 30.0;
 
 namespace tec {
 using networking::MessageType;
@@ -41,7 +42,7 @@ Game::Game(OS& _os, std::string config_file_name) :
 		this->player_camera = std::make_shared<FPSController>(client_id);
 		Entity(client_id).Add<View>(true);
 		this->player_entity_id = client_id;
-		auto cae_event = std::make_shared<ControllerAddedEvent>();
+		const auto cae_event = std::make_shared<ControllerAddedEvent>();
 		cae_event->controller = this->player_camera;
 		EventSystem<ControllerAddedEvent>::Get()->Emit(cae_event);
 	});
@@ -78,18 +79,19 @@ void Game::Startup(Console& console) {
 	this->placement.SetMaxDistance(this->config_script->environment.get_or(
 			"max_placement_distance", manipulator::DEFAULT_MAX_PLACEMENT_DISTANCE));
 
-	console.AddConsoleCommand("voxel_edit", "Voxel editing: voxel_edit {on|off}", [this](const std::string& argstr) {
-		auto argv = SplitString(argstr);
-		if (argv.size() < 0) {
-			return;
-		}
-		if (argv[0] == "on") {
-			this->vox_sys.edit_allowed = true;
-		}
-		else if (argv[0] == "off") {
-			this->vox_sys.edit_allowed = false;
-		}
-	});
+	console.AddConsoleCommand(
+			"voxel_edit", "Voxel editing: voxel_edit {on|off}", [&](const std::string& command_args) {
+				const auto argv = SplitString(command_args);
+				if (argv.empty()) {
+					return;
+				}
+				if (argv[0] == "on") {
+					vox_sys.edit_allowed = true;
+				}
+				else if (argv[0] == "off") {
+					vox_sys.edit_allowed = false;
+				}
+			});
 }
 
 void Game::UpdateVComputerScreenTextures() {
@@ -97,26 +99,24 @@ void Game::UpdateVComputerScreenTextures() {
 	static PixelBuffer local_pbuffer(320, 240, 8, ImageColorMode::COLOR_RGBA);
 
 	for (auto itr = ComputerComponentMap::Begin(); itr != ComputerComponentMap::End(); ++itr) {
-		auto comp = *itr;
-		std::shared_ptr<ComputerScreen> comp_screen = std::static_pointer_cast<ComputerScreen>(comp.second->devices[5]);
+		const auto [entity_id, computer_component] = *itr;
+		const std::shared_ptr<ComputerScreen> comp_screen =
+				std::static_pointer_cast<ComputerScreen>(computer_component->devices[5]);
 		std::static_pointer_cast<tda::TDADev>(comp_screen->device)->DumpScreen(screen);
-		std::lock_guard<std::mutex> lock(local_pbuffer.GetWritelock());
-		tda::TDAtoRGBATexture(screen, (std::uint32_t*)local_pbuffer.GetBlockBase());
+		std::lock_guard lock(local_pbuffer.GetWritelock());
+		TDAtoRGBATexture(screen, (std::uint32_t*)local_pbuffer.GetBlockBase());
 		if (comp_screen->texture) {
 			comp_screen->texture->Load(local_pbuffer);
 		}
 		else {
-			Entity screen_entity(comp.first);
-			if (screen_entity.Has<Renderable>()) {
-				const auto* ren = screen_entity.Get<Renderable>();
-				if (ren->render_item) {
-					if (ren->render_item->vertex_groups.size() > 0) {
-						auto texture_instance = std::make_shared<TextureObject>(local_pbuffer);
-						auto material = Material::Create(std::to_string(comp.first) + "_screen");
-						material->AddTexture(texture_instance);
-						ren->render_item->vertex_groups[0].material = material;
-						comp_screen->texture = texture_instance;
-					}
+			if (Entity screen_entity(entity_id); screen_entity.Has<Renderable>()) {
+				if (const auto* ren = screen_entity.Get<Renderable>();
+					ren->render_item && !ren->render_item->vertex_groups.empty()) {
+					const auto texture_instance = std::make_shared<TextureObject>(local_pbuffer);
+					comp_screen->texture = texture_instance;
+					const auto material = Material::Create(std::to_string(entity_id) + "_screen");
+					material->AddTexture(texture_instance);
+					ren->render_item->vertex_groups[0].material = material;
 				}
 			}
 		}
@@ -124,19 +124,16 @@ void Game::UpdateVComputerScreenTextures() {
 }
 
 float Game::GetElapsedTime() {
-	double new_time = os.GetTime();
-	double elapsed_time = new_time - this->last_time;
+	const double new_time = os.GetTime();
+	const double elapsed_time = new_time - this->last_time;
 	this->last_time = new_time;
 	return static_cast<float>(elapsed_time);
 }
 
-void Game::Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height) {
+void Game::Update(const double delta) {
 	this->ProcessEvents();
 	// Elapsed time spend outside game loop
 	tfm.outside_game_time = GetElapsedTime();
-
-	// TODO: a better representation of commands so we can send them less often
-	const double COMMAND_RATE = 1.0 / 30.0;
 	delta_accumulator += delta;
 	game_state_queue.ProcessEventQueue();
 	game_state_queue.Interpolate(delta);
@@ -185,27 +182,27 @@ void Game::Update(double delta, double mouse_x, double mouse_y, int window_width
 	}
 
 	if (this->player_camera != nullptr) {
+		const int window_width = os.GetWindowWidth();
+		const int window_height = os.GetWindowHeight();
+		double mouse_x, mouse_y;
 		if (this->player_camera->mouse_look) {
 			os.EnableMouseLock(); // TODO: create event to change to mouse look
-			this->active_entity = ps.RayCastMousePick(
-					this->server_connection.GetClientID(),
-					static_cast<float>(window_width) / 2.0f,
-					static_cast<float>(window_height) / 2.0f,
-					static_cast<float>(window_width),
-					static_cast<float>(window_height));
-			auto intersection = ps.GetLastRayPos();
-			auto player_position = ps.GetPosition(player_entity_id);
+			mouse_x = static_cast<double>(window_width) / 2.0;
+			mouse_y = static_cast<double>(window_height) / 2.0;
+			const auto intersection = ps.GetLastRayPos();
+			const auto player_position = ps.GetPosition(player_entity_id);
 			placement.SetRayIntersectionPoint(player_position.value, intersection);
 		}
 		else {
 			os.DisableMouseLock(); // TODO: create event to change from mouse look
-			this->active_entity = ps.RayCastMousePick(
-					this->server_connection.GetClientID(),
-					mouse_x,
-					mouse_y,
-					static_cast<float>(window_width),
-					static_cast<float>(window_height));
+			OS::GetMousePosition(&mouse_x, &mouse_y);
 		}
+		this->active_entity = ps.RayCastMousePick(
+				this->server_connection.GetClientID(),
+				mouse_x,
+				mouse_y,
+				static_cast<float>(window_width),
+				static_cast<float>(window_height));
 	}
 	tfm.other_time = GetElapsedTime();
 	// clang-format off

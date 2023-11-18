@@ -15,40 +15,25 @@ namespace tec::graphics {
 using RenderableMap = Multiton<eid, Renderable*>;
 using RenderItems = std::map<std::shared_ptr<Shader>, std::set<RenderItem*>>;
 
+const std::string DEFAULT_SHADER_NAME = "deferred";
+
 class RenderItemList {
 public:
 	void SetDefaultShader(std::shared_ptr<Shader> _default_shader) {
 		this->default_shader = std::move(_default_shader);
 	}
-	void UpdateRenderList(double delta) {
+	void UpdateRenderList(const double delta) {
 		static auto _log = spdlog::get("console_log");
-		RenderItemList render_item_list;
+		this->render_items.clear();
 
-		if (auto& fallback_shader = this->default_shader; !fallback_shader) {
-			fallback_shader = ShaderMap::Get("debug");
+		if (!this->default_shader) {
+			this->default_shader = ShaderMap::Get(DEFAULT_SHADER_NAME);
 		}
 
 		// Loop through each renderable and update its model matrix.
-		for (auto itr = RenderableMap::Begin(); itr != RenderableMap::End(); ++itr) {
-			eid entity_id = itr->first;
-			Renderable* renderable = itr->second;
+		for (auto& [entity_id, renderable] : RenderableMap::Instances()) {
 			if (renderable->hidden) {
 				continue;
-			}
-			Entity entity(entity_id);
-			auto [_position, _orientation, _scale, _animation] =
-					entity.GetList<Position, Orientation, Scale, Animation>();
-			glm::vec3 position = renderable->local_translation;
-			if (_position) {
-				position += _position->value;
-			}
-			glm::quat orientation = renderable->local_orientation.value;
-			if (_orientation) {
-				orientation *= _orientation->value;
-			}
-			glm::vec3 scale(1.0);
-			if (_scale) {
-				scale = _scale->value;
 			}
 
 			auto& mesh = renderable->mesh;
@@ -68,7 +53,7 @@ public:
 				else {
 					buffer = buffer_itr->second;
 				}
-				if (std::size_t group_count = buffer->GetVertexGroupCount(); group_count > 0) {
+				if (const std::size_t group_count = buffer->GetVertexGroupCount(); group_count > 0) {
 					if (!ri) {
 						ri = std::make_shared<RenderItem>();
 					}
@@ -93,16 +78,27 @@ public:
 			if (ri) {
 				if (ri->vbo->Update()) {
 					// the mesh updated it's contents
-					std::size_t group_count = ri->vbo->GetVertexGroupCount();
+					const std::size_t group_count = ri->vbo->GetVertexGroupCount();
 					ri->vertex_groups.clear();
 					ri->vertex_groups.reserve(group_count);
 					for (std::size_t i = 0; i < group_count; ++i) {
 						ri->vertex_groups.push_back(*ri->vbo->GetVertexGroup(i));
 					}
 				}
-				ri->model_position = position;
-				ri->model_scale = scale;
-				ri->model_quat = orientation;
+				auto [_position, _orientation, _scale, _animation] =
+						Entity(entity_id).GetList<Position, Orientation, Scale, Animation>();
+				ri->model_position = renderable->local_translation;
+				if (_position) {
+					ri->model_position += _position->value;
+				}
+				ri->model_quat = renderable->local_orientation.value;
+				if (_orientation) {
+					ri->model_quat *= _orientation->value;
+				}
+				ri->model_scale = glm::vec3{1.0};
+				if (_scale) {
+					ri->model_scale = _scale->value;
+				}
 
 				if (_animation) {
 					const_cast<Animation*>(_animation)->UpdateAnimation(delta);
@@ -111,26 +107,22 @@ public:
 						ri->animation = const_cast<Animation*>(_animation);
 					}
 				}
+				if (!renderable->shader) {
+					renderable->shader = default_shader;
+					renderable->shader_name = DEFAULT_SHADER_NAME;
+				}
 				this->render_items[renderable->shader].insert(ri.get());
 			}
 		}
 
-		for (auto itr = Multiton<eid, View*>::Begin(); itr != Multiton<eid, View*>::End(); ++itr) {
-			auto& [entity_id, view] = *itr;
-
-			Entity entity(entity_id);
-			auto [_position, _orientation] = entity.GetList<Position, Orientation>();
-			glm::vec3 position;
+		for (auto& [entity_id, view] : Multiton<eid, View*>::Instances()) {
+			auto [_position, _orientation] = Entity(entity_id).GetList<Position, Orientation>();
 			if (_position) {
-				position = _position->value;
+				view->view_pos = -_position->value;
 			}
-			glm::quat orientation;
 			if (_orientation) {
-				orientation = _orientation->value;
+				view->view_quat = glm::inverse(_orientation->value);
 			}
-
-			view->view_pos = -position;
-			view->view_quat = glm::inverse(orientation);
 			if (view->active) {
 				this->current_view = *view;
 			}
@@ -138,12 +130,12 @@ public:
 	}
 
 	RenderItems& GetRenderItems() { return this->render_items; }
-	std::optional<View> GetCurrentView() const { return this->current_view; }
+	[[nodiscard]] std::optional<View> GetCurrentView() const { return this->current_view; }
 
 private:
-	std::map<std::shared_ptr<MeshFile>, std::shared_ptr<VertexBufferObject>> mesh_buffers;
-	RenderItems render_items;
+	std::map<std::shared_ptr<MeshFile>, std::shared_ptr<VertexBufferObject>> mesh_buffers{};
+	RenderItems render_items{};
 	std::shared_ptr<Shader> default_shader;
-	std::optional<View> current_view;
+	std::optional<View> current_view{};
 };
 } // namespace tec::graphics

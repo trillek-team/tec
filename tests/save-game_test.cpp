@@ -9,7 +9,6 @@ const Path save_directory = Path("assets:/save_test_123456");
 const Path save_file_path = save_directory / "save.json";
 const std::string
 		contents("{\"users\":[{\"id\":\"user-1\",\"username\":\"John\"}], \"world\":{\"entityFileList\":[]}}");
-const eid entity_id = 1234;
 
 class SaveGameTest : public ::testing::Test {
 protected:
@@ -81,7 +80,6 @@ TEST(UserList_class_test, AddUser) {
 
 TEST(UserList_class_test, UserExists) {
 	UserList user_list;
-	auto users = user_list.GetUsers();
 	uid user_id = "user-1";
 	User user;
 	user.SetUserId(user_id);
@@ -114,7 +112,6 @@ TEST(UserList_class_test, RemoveUser) {
 TEST(UserList_class_test, UpdateUser) {
 	UserList user_list;
 	uid user_id = "user-1";
-	auto users = user_list.GetUsers();
 	{
 		User user;
 		user.SetUserId(user_id);

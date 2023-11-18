@@ -2,7 +2,7 @@
 
 #include <asio/buffer.hpp>
 #include <cinttypes>
-#include <cstdlib>
+#include <cstddef>
 #include <google/protobuf/io/zero_copy_stream.h>
 #include <list>
 #include <memory>

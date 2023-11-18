@@ -28,7 +28,7 @@ ATTRIBUTE_ALIGNED16(struct) CollisionBody {
 			return *this;
 		}
 
-		void getWorldTransform(btTransform& worldTrans) const { worldTrans = this->transform; }
+		void getWorldTransform(btTransform& worldTrans) const override { worldTrans = this->transform; }
 
 		void setWorldTransform(const btTransform& worldTrans) override {
 			this->transform_updated = true;
