@@ -6,7 +6,6 @@ using namespace tec::user;
 
 const uid user_id = "TEST-1";
 const uid user_name = "TestUser";
-const eid entity_id = 1234;
 
 TEST(UserClassTest, Constructor) { User user; }
 

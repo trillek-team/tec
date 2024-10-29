@@ -29,7 +29,7 @@ public:
 	// sets a different substep limit, if zero, then update delta must be a constant
 	void SetSubstepping(int substep) { simulation_substeps = substep; }
 
-	std::set<eid> Update(const double delta, const GameState& state);
+	std::set<eid> Update(double delta, const GameState& state);
 
 	eid RayCastMousePick(
 			eid source_entity,
@@ -38,7 +38,7 @@ public:
 			float screen_width = 1.0f,
 			float screen_height = 1.0f);
 	eid RayCastIgnore(eid source_entity, eid ignore_entity);
-	glm::vec3 GetLastRayPos() const { return glm::vec3(last_raypos.getX(), last_raypos.getY(), last_raypos.getZ()); }
+	glm::vec3 GetLastRayPos() const { return {last_raypos.getX(), last_raypos.getY(), last_raypos.getZ()}; }
 	double GetLastRayDistance() const { return last_raydist; }
 	void RaySetInvalid() { last_rayvalid = false; }
 
@@ -57,13 +57,13 @@ protected:
 	* \param const unsigned int entity_id The entity ID of the rigid body.
 	* \param btVector3 f The rigid body's new gravity.
 	*/
-	void SetGravity(const unsigned int entity_id, const btVector3& f);
+	void SetGravity(unsigned int entity_id, const btVector3& f);
 
 	/** \brief Set a rigid body's gravity to the world's gravity.
 	*
 	* \param const unsigned int entity_id The entity ID of the rigid body.
 	*/
-	void SetNormalGravity(const unsigned int entity_id);
+	void SetNormalGravity(unsigned int entity_id);
 
 private:
 	bool AddRigidBody(CollisionBody* collision_body);

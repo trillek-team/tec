@@ -36,21 +36,11 @@ PhysicsSystem::PhysicsSystem() {
 }
 
 PhysicsSystem::~PhysicsSystem() {
-	if (this->dynamicsWorld != nullptr) {
-		delete this->dynamicsWorld;
-	}
-	if (this->solver != nullptr) {
-		delete this->solver;
-	}
-	if (this->collisionConfiguration != nullptr) {
-		delete this->collisionConfiguration;
-	}
-	if (this->dispatcher != nullptr) {
-		delete this->dispatcher;
-	}
-	if (this->broadphase != nullptr) {
-		delete this->broadphase;
-	}
+	delete this->dynamicsWorld;
+	delete this->solver;
+	delete this->collisionConfiguration;
+	delete this->dispatcher;
+	delete this->broadphase;
 }
 
 std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) {
@@ -124,7 +114,7 @@ std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) 
 				body->setAngularFactor(btVector3(0.0, 0, 0.0));
 			}
 
-			// snap the body to it's position when we add it
+			// snap the body to its position when we add it
 			body->setWorldTransform(collidable->motion_state.transform);
 			collidable->in_world = true;
 			this->dynamicsWorld->addRigidBody(body);
@@ -203,7 +193,7 @@ eid PhysicsSystem::RayCastMousePick(
 	this->last_rayvalid = false;
 	this->last_entity_hit = 0;
 
-	CollisionBody* body = static_cast<CollisionBody*>(body_iter->second->getUserPointer());
+	auto* body = static_cast<CollisionBody*>(body_iter->second->getUserPointer());
 	auto pos = body->motion_state.transform.getOrigin();
 	glm::vec3 position(pos.x(), pos.y(), pos.z());
 	auto rot = body->motion_state.transform.getRotation();
@@ -238,8 +228,7 @@ eid PhysicsSystem::RayCastMousePick(
 		for (int i = 0; i < collision_object_count; i++) {
 			eid entity = 0;
 			double frc = ray_result_callback.m_hitFractions.at(i);
-			const CollisionBody* colbody =
-					(const CollisionBody*)ray_result_callback.m_collisionObjects.at(i)->getUserPointer();
+			const auto* colbody = (const CollisionBody*)ray_result_callback.m_collisionObjects.at(i)->getUserPointer();
 			if (!colbody) {
 				continue;
 			}
@@ -286,7 +275,7 @@ eid PhysicsSystem::RayCastIgnore(eid source_entity, eid ignore_entity) {
 		for (int i = 0; i < mx; i++) {
 			eid entity = 0;
 			double frc = cr.m_hitFractions.at(i);
-			const CollisionBody* coll = (const CollisionBody*)cr.m_collisionObjects.at(i)->getUserPointer();
+			const auto* coll = (const CollisionBody*)cr.m_collisionObjects.at(i)->getUserPointer();
 			if (!coll)
 				continue;
 			entity = coll->entity_id;
@@ -349,10 +338,6 @@ bool PhysicsSystem::AddRigidBody(CollisionBody* collision_body) {
 			collision_body->mass, &collision_body->motion_state, collision_body->shape.get(), fallInertia);
 	auto body = new btRigidBody(fallRigidBodyCI);
 
-	if (!body) {
-		return false;
-	}
-
 	this->bodies[entity_id] = body;
 
 	body->setUserPointer(collision_body);
@@ -388,7 +373,7 @@ void PhysicsSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 		switch (comp.component_case()) {
 		case proto::Component::kCollisionBody:
 		{
-			CollisionBody* collision_body = new CollisionBody();
+			auto* collision_body = new CollisionBody();
 			collision_body->In(comp);
 			CollisionBodyMap::Set(entity_id, collision_body);
 			collision_body->entity_id = entity_id;
@@ -397,18 +382,18 @@ void PhysicsSystem::On(eid, std::shared_ptr<EntityCreated> data) {
 		}
 		case proto::Component::kPosition:
 		{
-			Position* position = new Position();
+			auto* position = new Position();
 			position->In(comp);
 			Multiton<eid, Position*>::Set(entity_id, position);
 			break;
 		}
 		case proto::Component::kOrientation:
 		{
-			Orientation* orientation = new Orientation();
+			auto* orientation = new Orientation();
 			orientation->In(comp);
 			Multiton<eid, Orientation*>::Set(entity_id, orientation);
 			break;
-		};
+		}
 		default: break;
 		}
 	}

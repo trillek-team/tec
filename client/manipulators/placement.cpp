@@ -17,18 +17,17 @@ namespace manipulator {
 
 void Placement::SetMaxDistance(float _max_distance) { this->max_distance = _max_distance; }
 
-void Placement::SetMesh(const std::shared_ptr<MeshFile> _mesh) {
-	auto renderable = GetRenderable();
-	if (renderable) {
+void Placement::SetMesh(const std::shared_ptr<MeshFile>& _mesh) {
+	if (const auto renderable = GetRenderable()) {
 		renderable->mesh = _mesh;
 		this->mesh = _mesh;
 	}
 }
 
-void Placement::SetMesh(const std::string mesh_name) {
+void Placement::SetMesh(const std::string& mesh_name) {
 	if (!MeshMap::Has(mesh_name)) {
-		std::string ext = mesh_name.substr(mesh_name.find_last_of(".") + 1);
-		if (file_factories.find(ext) != file_factories.end()) {
+		if (const std::string ext = mesh_name.substr(mesh_name.find_last_of('.') + 1);
+			file_factories.find(ext) != file_factories.end()) {
 			file_factories[ext](mesh_name);
 		}
 	}
@@ -36,23 +35,21 @@ void Placement::SetMesh(const std::string mesh_name) {
 }
 
 void Placement::ClearMesh() {
-	auto renderable = GetRenderable();
-	if (renderable) {
+	if (const auto& renderable = GetRenderable()) {
 		renderable->mesh.reset();
 		this->mesh.reset();
 	}
 }
 
 void Placement::SetRayIntersectionPoint(const glm::vec3 start, const glm::vec3 intersection) {
-	auto renderable = GetRenderable();
-	float distance = glm::distance(start, intersection);
-	glm::vec3 direction = glm::normalize(intersection - start);
+	const auto& renderable = GetRenderable();
+	const float distance = glm::distance(start, intersection);
+	const glm::vec3 direction = glm::normalize(intersection - start);
 	renderable->local_translation = start + direction * std::min<float>(distance, this->max_distance);
 }
 
 void Placement::PlaceEntityInWorld(glm::vec3 _position) {
 	if (this->mesh) {
-
 		static eid starting_entity_id = 20000;
 		proto::Entity entity;
 		entity.set_id(starting_entity_id++);

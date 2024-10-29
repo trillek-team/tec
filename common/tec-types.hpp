@@ -23,7 +23,7 @@ typedef std::uint64_t state_id_t;
 
 typedef std::int64_t GUID; /// Global Unique ID
 
-typedef std::int64_t eid; /// Entity ID
+typedef std::uint64_t eid; /// Entity ID
 #define PRI_EID PRId64
 
 typedef std::uint32_t tid; /// Type ID

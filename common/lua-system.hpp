@@ -3,7 +3,6 @@
  * Lua system
  */
 
-#include <limits>
 #include <sol/sol.hpp>
 #include <spdlog/spdlog.h>
 
@@ -22,7 +21,7 @@ struct ChatCommandEvent;
 
 struct LuaClassList;
 
-class LuaSystem :
+class LuaSystem final :
 		public CommandQueue<LuaSystem>,
 		public EventQueue<EntityCreated>,
 		public EventQueue<EntityDestroyed>,
@@ -30,20 +29,20 @@ class LuaSystem :
 public:
 	LuaSystem();
 
-	void Update(const double delta);
+	void Update(double delta);
 	void ProcessEvents();
 
 	void On(eid, std::shared_ptr<EntityCreated> data) override;
 	void On(eid, std::shared_ptr<EntityDestroyed> data) override;
 	void On(eid, std::shared_ptr<ChatCommandEvent> data) override;
 
-	void ExecuteString(std::string script_string);
+	void ExecuteString(const std::string& script_string);
 
-	std::shared_ptr<LuaScript> LoadFile(Path filepath);
+	std::shared_ptr<LuaScript> LoadFile(const Path& filepath);
 
 	sol::state& GetGlobalState() { return this->lua; }
 
-	template <typename... Args> void CallFunctions(std::string function_name, Args&&... args) {
+	template <typename... Args> void CallFunctions(const std::string& function_name, Args&&... args) {
 		for (auto& fn : GetAllFunctions(function_name)) {
 			fn(args...);
 		}
@@ -53,7 +52,7 @@ private:
 	sol::state lua;
 	std::list<LuaScript> scripts;
 
-	std::list<sol::protected_function> GetAllFunctions(std::string);
+	std::list<sol::protected_function> GetAllFunctions(const std::string&);
 
 	friend LuaClassList;
 	static LuaClassList* lua_userclasses;
@@ -63,7 +62,7 @@ private:
 struct LuaClassList {
 	std::function<void(sol::state&)> load;
 	LuaClassList* next;
-	LuaClassList(std::function<void(sol::state&)> load_fn) : load(load_fn), next(nullptr) {
+	explicit LuaClassList(std::function<void(sol::state&)> load_fn) : load(std::move(load_fn)), next(nullptr) {
 		this->next = LuaSystem::lua_userclasses;
 		LuaSystem::lua_userclasses = this;
 	}

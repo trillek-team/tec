@@ -54,7 +54,7 @@ static std::string GetLongTestString(size_t num_messages, bool variant = false) 
 	while (teststring.size() < (Message::max_body_length * num_messages)) {
 		teststring.append(testdata);
 	}
-	return std::move(teststring);
+	return teststring;
 }
 
 static void MessageListContentEqual(MessagePool::list_type& list_a, MessagePool::list_type& list_b) {

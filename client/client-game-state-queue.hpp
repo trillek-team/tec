@@ -12,7 +12,6 @@
 #include "tec-types.hpp"
 
 namespace tec {
-
 class ClientGameStateQueue :
 		public EventQueue<EntityCreated>,
 		public EventQueue<EntityDestroyed>,
