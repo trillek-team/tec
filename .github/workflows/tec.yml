@@ -72,7 +72,7 @@ jobs:
           buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
           testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
       - name: Upload the build artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: "trillek-${{ matrix.os }}"
           path: |
