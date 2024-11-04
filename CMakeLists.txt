@@ -14,6 +14,8 @@ set(BUILD_TESTS_VCOMPUTER FALSE CACHE BOOL "Build Trillek VCOMPUTER tests")
 include(cmake/helpers.cmake)
 include(cmake/link_helpers.cmake)
 
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
+
 add_subdirectory(deps/trillek-vcomputer ${trillek_BINARY_DIR}/deps/trillek-vcomputer)
 
 setup_compiler()

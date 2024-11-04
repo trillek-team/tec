@@ -72,7 +72,7 @@ void RenderSystem::Startup() {
 		case gfx::ShaderSet::kDefault: active_shaders.MergeFrom(shader_set); break;
 		case gfx::ShaderSet::CONDITION_NOT_SET: break;
 		default:
-			_log->error("[RenderSystem] Config shader_set has unknown condition: {}", shader_set.condition_case());
+			_log->error("[RenderSystem] Config shader_set has unknown condition: {}", (int)shader_set.condition_case());
 			break;
 		}
 	}

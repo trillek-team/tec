@@ -579,7 +579,7 @@ template <> struct fmt::formatter<tec::Path> {
 		}
 		return it;
 	}
-	template <typename FormatContext> auto format(const tec::Path& p, FormatContext& ctx) -> decltype(ctx.out()) {
+	template <typename FormatContext> auto format(const tec::Path& p, FormatContext& ctx) const -> decltype(ctx.out()) {
 		auto what = p;
 		if (relative) {
 			what = p.Relative();
