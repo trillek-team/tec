@@ -116,6 +116,7 @@ jobs:
           files: ./coverage.xml
           fail_ci_if_error: true
           functionalities: fix
+          token: ${{ secrets.CODECOV_TOKEN }}
   prepublish:
     runs-on: ubuntu-latest
     needs: build
