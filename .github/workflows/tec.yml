@@ -45,7 +45,7 @@ jobs:
       VCPKG_COMMIT_ID: 10b7a178346f3f0abef60cecd5130e295afd8da4
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - uses: lukka/get-cmake@latest
@@ -55,9 +55,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
       - name: Restore artifacts, or run vcpkg, build and cache artifacts
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v11
         with:
-          appendedCacheKey: ${{ env.VCPKG_DEFAULT_TRIPLET }}
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
       - name: Configure cmake and build
         uses: lukka/run-cmake@v10
@@ -89,21 +88,19 @@ jobs:
       VCPKG_COMMIT_ID: 10b7a178346f3f0abef60cecd5130e295afd8da4
       VCPKG_DEFAULT_TRIPLET: x64-windows
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - uses: lukka/get-cmake@latest
       - name: Restore artifacts, or run vcpkg, build and cache artifacts
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v11
         with:
-          appendedCacheKey: ${{ env.VCPKG_DEFAULT_TRIPLET }}
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
       - name: Configure cmake and build
         uses: lukka/run-cmake@v10
         with:
           configurePreset: ${{ env.CONFIG_PRESET }}
           buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
-          testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
       - name: Setup OpenCppCoverage and add to PATH
         id: setup_opencppcoverage
         run: |
@@ -114,7 +111,7 @@ jobs:
         shell: cmd
         run: OpenCppCoverage.exe --quiet --config_file opencppcovconfig.txt --export_type cobertura:coverage.xml -- ctest.exe --preset ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
       - name: Upload Report to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           fail_ci_if_error: true
@@ -156,7 +153,7 @@ jobs:
     name: Upload Release Asset(s)
     steps:
       - name: Download a single artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: "trillek-${{ matrix.os }}"
       - name: Package release
