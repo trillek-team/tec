@@ -58,9 +58,7 @@ IMGUISystem::IMGUISystem(GLFWwindow* _window) {
 
 	io.SetClipboardTextFn = SetClipboardText;
 	io.GetClipboardTextFn = GetClipboardText;
-#ifdef _MSC_VER
-	io.ImeWindowHandle = glfwGetWin32Window(IMGUISystem::window);
-#endif
+
 	this->UpdateDisplaySize();
 
 	if (!IMGUISystem::font_texture) {
