@@ -65,7 +65,7 @@ auto ParseLogLevel(int argc, char* argv[]) {
 
 /**
  * \brief Finds an approximate aspect ratio
- * Adapated from
+ * Adapted from
  * https://www.geeksforgeeks.org/convert-given-decimal-number-into-an-irreducible-fraction/ Could be
  * further enhanced to compare values against a known set of ratios to find the best match \return
  * std:string The aspect ratio in the form of "A:B"

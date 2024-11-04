@@ -16,7 +16,7 @@ jobs:
             windows-latest,
             windows-2019,
             ubuntu-latest,
-            ubuntu-18.04,
+            ubuntu-20.04,
             macOS-latest,
           ]
         arch: [x86, x64]
@@ -27,14 +27,14 @@ jobs:
             vcpkgTripletOs: windows
           - os: ubuntu-latest
             vcpkgTripletOs: linux
-          - os: ubuntu-18.04
+          - os: ubuntu-20.04
             vcpkgTripletOs: linux
           - os: macOS-latest
             vcpkgTripletOs: osx
         exclude:
           - os: ubuntu-latest
             arch: x86
-          - os: ubuntu-18.04
+          - os: ubuntu-20.04
             arch: x86
           - os: macOS-latest
             arch: x86
@@ -54,12 +54,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-      - name: Set gcc-9 on Ubuntu16.04
-        uses: lukka/set-shell-env@v1
-        if: contains( matrix.os, 'ubuntu-16.04')
-        with:
-          CC: gcc-9
-          CXX: g++-9
       - name: Restore artifacts, or run vcpkg, build and cache artifacts
         uses: lukka/run-vcpkg@v10
         with:
@@ -92,7 +86,7 @@ jobs:
       buildDir: "${{ github.workspace }}/build"
       BUILD_PRESET: debug
       CONFIG_PRESET: ninja-multi-vcpkg-ci
-      VCPKG_COMMIT_ID: acc3bcf76b84ae5041c86ab55fe138ae7b8255c7
+      VCPKG_COMMIT_ID: 10b7a178346f3f0abef60cecd5130e295afd8da4
       VCPKG_DEFAULT_TRIPLET: x64-windows
     steps:
       - uses: actions/checkout@v2
@@ -153,8 +147,8 @@ jobs:
           [
             windows-latest,
             windows-2016,
-            ubuntu-18.04,
-            ubuntu-16.04,
+            ubuntu-latest,
+            ubuntu-20.04,
             macOS-latest,
           ]
         arch: [x64]
