@@ -4,6 +4,13 @@ on:
   pull_request:
   push:
     tags: [v*]
+    branches:
+      - master
+
+# Add concurrency group to cancel in-progress runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true 
 
 jobs:
   build:
