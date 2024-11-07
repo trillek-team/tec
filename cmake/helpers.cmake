@@ -7,7 +7,7 @@ function (setup_compiler)
 	add_compile_options("$<IF:${isMSVC},${msvcFlags},-Wall>")
 
 	set(msvcDefines
-			"PROTOBUF_USE_DLLS;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_WIN32_WINNT=0x0601;WIN32_LEAN_AND_MEAN"
+		"PROTOBUF_USE_DLLS;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;_WIN32_WINNT=0x0601;WIN32_LEAN_AND_MEAN"
 	)
 	add_compile_definitions("$<${isMSVC}:${msvcDefines}>" "$<${isWin32}:WIN32>")
 endfunction ()
@@ -23,7 +23,10 @@ function (set_source_group_property)
 	endif ()
 
 	if (SET_SOURCE_GROUP_PROPERTY_FILE_LIST)
-		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX ${GROUP_NAME} FILES ${SET_SOURCE_GROUP_PROPERTY_FILE_LIST})
+		source_group(
+			TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX ${GROUP_NAME}
+			FILES ${SET_SOURCE_GROUP_PROPERTY_FILE_LIST}
+		)
 		set_property(SOURCE ${SET_SOURCE_GROUP_PROPERTY_FILE_LIST} PROPERTY HEADER_FILE_ONLY true)
 	endif ()
 endfunction ()

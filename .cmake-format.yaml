@@ -30,7 +30,7 @@ format:
     line_width: 120
     _help_tab_size:
         - How many spaces to tab for indent
-    tab_size: 2
+    tab_size: 8
     _help_use_tabchars:
         - If true, lines are indented using tab characters (utf-8
         - 0x09) instead of <tab_size> space characters (utf-8 0x20).
@@ -46,7 +46,7 @@ format:
         - "`round-up` fractional indentation is replaced with a single"
         - tab character (utf-8 0x09) effectively shifting the column
         - to the next tabstop
-    fractional_tab_policy: use-space
+    fractional_tab_policy: round-up
     _help_max_subgroups_hwrap:
         - If an argument group contains more than this many sub-groups
         - (parg or kwarg groups) then force it to a vertical layout.

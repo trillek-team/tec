@@ -12,8 +12,8 @@ function (link_opengl_libs)
 				set(OSX_LIBRARIES "/usr/lib/libobjc.dylib")
 			endif (DARWIN_VERSION LESS 20)
 
-			# Rather wonderfully, Apple decided to mark every single fucking OpenGL function as deprecated because they have
-			# 'deprecated' OpenGL. Brilliant!
+			# Rather wonderfully, Apple decided to mark every single fucking OpenGL function as deprecated
+			# because they have 'deprecated' OpenGL. Brilliant!
 			add_definitions(-DGL_SILENCE_DEPRECATION)
 		elseif (UNIX AND NOT APPLE)
 			find_package(X11 REQUIRED)
