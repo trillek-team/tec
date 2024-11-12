@@ -37,7 +37,7 @@ function (add_program)
 
 	add_executable(${ADD_PROGRAM_TARGET} ${ADD_PROGRAM_FILE_LIST})
 
-  target_include_directories(${ADD_PROGRAM_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+	target_include_directories(${ADD_PROGRAM_TARGET} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 	target_link_libraries(${ADD_PROGRAM_TARGET} PUBLIC ${COMMON_LIB_NAME} ${ADD_PROGRAM_LINK_LIBS})
 	target_compile_features(${ADD_PROGRAM_TARGET} PUBLIC cxx_std_17)
 
