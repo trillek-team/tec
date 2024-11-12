@@ -1,7 +1,7 @@
 # Trillek Engine C
-| Github actions | RTD docs |
-|-------|-----------|
-|[![Trillek Engine CI](https://github.com/trillek-team/tec/actions/workflows/tec.yml/badge.svg)](https://github.com/trillek-team/tec/actions/workflows/tec.yml)|[![Documentation Status](https://readthedocs.org/projects/project-trillek/badge/?version=latest)](https://project-trillek.readthedocs.io/?badge=latest)|
+| Github actions | RTD docs | Code Coverage |
+|-------|-------|-------|
+|[![Trillek Engine CI](https://github.com/trillek-team/tec/actions/workflows/tec.yml/badge.svg)](https://github.com/trillek-team/tec/actions/workflows/tec.yml)|[![Documentation Status](https://readthedocs.org/projects/project-trillek/badge/?version=latest)](https://project-trillek.readthedocs.io/?badge=latest)|[![codecov](https://codecov.io/gh/trillek-team/tec/branch/master/graph/badge.svg?token=ikZxlqltAW)](https://codecov.io/gh/trillek-team/tec)|
 
 ## Support
 Head onto our [Discord](https://discord.gg/HM8hhbGSjd) for extended support on building and usage.

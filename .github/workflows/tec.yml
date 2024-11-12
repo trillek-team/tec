@@ -4,6 +4,13 @@ on:
   pull_request:
   push:
     tags: [v*]
+    branches:
+      - master
+
+# Add concurrency group to cancel in-progress runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true 
 
 jobs:
   build:
@@ -42,10 +49,10 @@ jobs:
       buildDir: "${{ github.workspace }}/build"
       BUILD_PRESET: release
       CONFIG_PRESET: ninja-multi-vcpkg-ci
-      VCPKG_COMMIT_ID: acc3bcf76b84ae5041c86ab55fe138ae7b8255c7
+      VCPKG_COMMIT_ID: 10b7a178346f3f0abef60cecd5130e295afd8da4
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.arch }}-${{ matrix.vcpkgTripletOs }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - uses: lukka/get-cmake@latest
@@ -54,16 +61,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install libgl1-mesa-dev xorg-dev libglu1-mesa-dev libxinerama-dev libxcursor-dev p7zip-full -y
-      - name: Set gcc-9 on Ubuntu16.04
-        uses: lukka/set-shell-env@v1
-        if: contains( matrix.os, 'ubuntu-16.04')
-        with:
-          CC: gcc-9
-          CXX: g++-9
       - name: Restore artifacts, or run vcpkg, build and cache artifacts
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@v11
         with:
-          appendedCacheKey: ${{ env.VCPKG_DEFAULT_TRIPLET }}
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
       - name: Configure cmake and build
         uses: lukka/run-cmake@v10
@@ -72,7 +72,7 @@ jobs:
           buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
           testPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
       - name: Upload the build artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: "trillek-${{ matrix.os }}"
           path: |
@@ -86,6 +86,44 @@ jobs:
         env:
           CLIENT_BUILD_DIR: ${{ github.workspace }}/builds/${{ env.CONFIG_PRESET }}/client/Release
           SERVER_BUILD_DIR: ${{ github.workspace }}/builds/${{ env.CONFIG_PRESET }}/server/Release
+  coverage:
+    runs-on: windows-latest
+    env:
+      buildDir: "${{ github.workspace }}/build"
+      BUILD_PRESET: debug
+      CONFIG_PRESET: ninja-multi-vcpkg-ci
+      VCPKG_COMMIT_ID: 10b7a178346f3f0abef60cecd5130e295afd8da4
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: lukka/get-cmake@latest
+      - name: Restore artifacts, or run vcpkg, build and cache artifacts
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
+      - name: Configure cmake and build
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: ${{ env.CONFIG_PRESET }}
+          buildPreset: ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
+      - name: Setup OpenCppCoverage and add to PATH
+        id: setup_opencppcoverage
+        run: |
+          choco install OpenCppCoverage -y
+          echo "C:\Program Files\OpenCppCoverage" >> $env:GITHUB_PATH
+      - name: Generate Report
+        id: generate_test_report
+        shell: cmd
+        run: OpenCppCoverage.exe --quiet --config_file opencppcovconfig.txt --export_type cobertura:coverage.xml -- ctest.exe --preset ${{ env.CONFIG_PRESET }}-${{ env.BUILD_PRESET }}
+      - name: Upload Report to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: true
+          functionalities: fix
+          token: ${{ secrets.CODECOV_TOKEN }}
   prepublish:
     runs-on: ubuntu-latest
     needs: build
@@ -114,8 +152,8 @@ jobs:
           [
             windows-latest,
             windows-2016,
-            ubuntu-18.04,
-            ubuntu-16.04,
+            ubuntu-latest,
+            ubuntu-20.04,
             macOS-latest,
           ]
         arch: [x64]
@@ -123,7 +161,7 @@ jobs:
     name: Upload Release Asset(s)
     steps:
       - name: Download a single artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: "trillek-${{ matrix.os }}"
       - name: Package release

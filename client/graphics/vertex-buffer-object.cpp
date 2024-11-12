@@ -174,7 +174,7 @@ bool VertexBufferObject::Load(std::shared_ptr<MeshFile> meshes) {
 	this->vertex_groups.clear();
 	const vertex::FormatDefinition* vertex_format = vertex::from_vftype[this->load_format];
 	if (!vertex_format) {
-		_log->error("FIXME: missing vertex::from_vftype[{}] in {}", this->load_format, __FILE__);
+		_log->error("FIXME: missing vertex::from_vftype[{}] in {}", (int)this->load_format, __FILE__);
 		return false;
 	}
 	const size_t stride = vertex_format->format_stride;
