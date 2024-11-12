@@ -7,7 +7,7 @@ set(CLIENT_LIB_NAME ${CLIENT_LIB_NAME} PARENT_SCOPE)
 add_interface_lib(
 	TARGET
 	${CLIENT_LIB_NAME}
-  FILE_LIST
+	FILE_LIST
 	game.cpp
 	imgui-system.cpp
 	client-game-state-queue.cpp
