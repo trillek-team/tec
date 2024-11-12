@@ -23,7 +23,7 @@ public:
 	*
 	* \param[in] const std::shared_ptr<MeshFile> mesh MeshFile to render in the world.
 	*/
-	void SetMesh(const std::shared_ptr<MeshFile> _mesh);
+	void SetMesh(const std::shared_ptr<MeshFile>&);
 
 	/**
 	* \brief Set the mesh used to represent the placement in the world.
@@ -33,7 +33,7 @@ public:
 	*
 	* \param[in] const std::string mesh_name Name of the mesh file to load.
 	*/
-	void SetMesh(const std::string mesh_name);
+	void SetMesh(const std::string&);
 
 	/**
 	* \brief Clear the mesh, effectively not longer rendering the placement.
@@ -50,9 +50,9 @@ public:
 	* \param[in] const glm::vec3 start Starting point for the ray, usually the center of the screen.
 	* \param[in] const glm::vec3 intersection Intersection point of the ray with the physics world.
 	*/
-	void SetRayIntersectionPoint(const glm::vec3 start, const glm::vec3 intersection);
+	void SetRayIntersectionPoint(const glm::vec3, const glm::vec3);
 
-	void PlaceEntityInWorld(glm::vec3 _position);
+	void PlaceEntityInWorld(glm::vec3);
 
 	static void RegisterLuaType(sol::state&);
 

@@ -40,7 +40,7 @@ public:
 
 	void Startup(Console&);
 
-	void Update(double delta, double mouse_x, double mouse_y, int window_width, int window_height);
+	void Update(double delta);
 
 	ServerConnection& GetServerConnection() { return this->server_connection; }
 
@@ -51,10 +51,10 @@ public:
 	std::shared_ptr<LuaScript> config_script;
 
 	// Frames per second
-	unsigned int fps;
-	float avg_frame_time;
+	unsigned int fps{};
+	float avg_frame_time{};
 
-	TimeFrameMetrics tfm;
+	TimeFrameMetrics tfm{};
 
 private:
 	static void UpdateVComputerScreenTextures();
@@ -88,8 +88,8 @@ private:
 
 	double delta_accumulator = 0.0; // Accumulated deltas since the last update was sent.
 	state_id_t command_id = 0;
-	eid active_entity{-1};
-	eid player_entity_id{-1};
+	eid active_entity{0};
+	eid player_entity_id{0};
 	std::shared_ptr<tec::FPSController> player_camera{nullptr};
 
 	std::thread sound_thread;

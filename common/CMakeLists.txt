@@ -64,3 +64,11 @@ target_include_directories(
 					${CMAKE_SOURCE_DIR}/deps/trillek-vcomputer/include
 )
 set_source_group_property(FILE_LIST ${PROTO_FILES} GROUP_NAME Proto)
+
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS ${COMMON_LIB_NAME} VCOMPUTER_STATIC EXPORT CommonConfig
+    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+
+export(TARGETS ${COMMON_LIB_NAME} VCOMPUTER_STATIC FILE CommonConfig.cmake)

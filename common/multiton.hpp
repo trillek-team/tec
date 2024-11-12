@@ -71,6 +71,8 @@ public:
 	*/
 	static void Remove(const ID_T id) { instances.erase(id); }
 
+	static const std::map<ID_T, T>& Instances() { return instances; }
+
 protected:
 	static T default_value; // Default instance.
 
