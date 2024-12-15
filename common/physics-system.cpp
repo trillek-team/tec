@@ -121,18 +121,6 @@ std::set<eid> PhysicsSystem::Update(const double delta, const GameState& state) 
 		}
 		else {
 			btTransform& body_transform = body->getWorldTransform();
-			// simulation motion estimation lite
-			// on the server, this doesn't really do anything
-			// on the client however, this smooths out the motion between the local estimation and server state
-			// this provides a crude but effective error correction until a better one is added ;)
-			if (body_transform.getOrigin().distance(collidable->motion_state.transform.getOrigin()) > 0.01) {
-				// FIXME there is a race condition outside of PhysicsSystem, where the position of the entity
-				// is momentarily at origin (0,0,0) during entity creation (affects server)
-				body->translate(0.5 * (collidable->motion_state.transform.getOrigin() - body_transform.getOrigin()));
-				// use this to snap back to the current state, it's unpleasent without any form of restitution
-				//body_transform.setOrigin(collidable->motion_state.transform.getOrigin());
-			}
-			// for now, just always update the orientation
 			body_transform.setBasis(collidable->motion_state.transform.getBasis());
 		}
 

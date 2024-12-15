@@ -125,31 +125,4 @@ struct NewGameStateEvent {
 	GameState new_state;
 };
 
-struct EventList {
-	std::list<KeyboardEvent> keyboard_events;
-	std::list<MouseBtnEvent> mouse_button_events;
-	std::list<MouseMoveEvent> mouse_move_events;
-	std::list<MouseClickEvent> mouse_click_events;
-
-	EventList() {}
-
-	EventList(const EventList&) = delete;
-	EventList(EventList&& other) noexcept {
-		this->keyboard_events = std::move(other.keyboard_events);
-		this->mouse_button_events = std::move(other.mouse_button_events);
-		this->mouse_move_events = std::move(other.mouse_move_events);
-		this->mouse_click_events = std::move(other.mouse_click_events);
-	}
-
-	EventList& operator=(const EventList& other) = delete;
-	EventList& operator=(EventList&& other) noexcept {
-		if (this != &other) {
-			this->keyboard_events = std::move(other.keyboard_events);
-			this->mouse_button_events = std::move(other.mouse_button_events);
-			this->mouse_move_events = std::move(other.mouse_move_events);
-			this->mouse_click_events = std::move(other.mouse_click_events);
-		}
-		return *this;
-	}
-};
 } // namespace tec

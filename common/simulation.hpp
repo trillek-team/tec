@@ -6,6 +6,7 @@
 #include <queue>
 #include <thread>
 
+#include "event-list.hpp"
 #include "event-queue.hpp"
 #include "physics-system.hpp"
 #include "vcomputer-system.hpp"

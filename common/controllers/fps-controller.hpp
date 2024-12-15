@@ -4,6 +4,7 @@
 
 #include <commands.pb.h>
 
+#include "event-list.hpp"
 #include "events.hpp"
 #include "game-state.hpp"
 #include "tec-types.hpp"
@@ -68,29 +69,19 @@ struct FPSController : public Controller {
 	FPSController(const eid _entity_id) : Controller(_entity_id) {}
 	~FPSController() override = default;
 
-	FPSController(const FPSController& other) =	default;
+	FPSController(const FPSController& other) = default;
 
 	FPSController(FPSController&& other) noexcept :
-		Controller(std::move(other)),
-		forward(other.forward),
-		backward(other.backward),
-		right_strafe(other.right_strafe),
-		left_strafe(other.left_strafe),
-		current_delta(other.current_delta),
-		mouse_look(other.mouse_look),
-		orientation(other.orientation),
-		KEY_A_FIRST(other.KEY_A_FIRST),
-		KEY_W_FIRST(other.KEY_W_FIRST),
-		KEY_W_DOWN(other.KEY_W_DOWN),
-		KEY_A_DOWN(other.KEY_A_DOWN),
-		KEY_S_DOWN(other.KEY_S_DOWN),
-		KEY_D_DOWN(other.KEY_D_DOWN) {
-	}
+			Controller(std::move(other)), forward(other.forward), backward(other.backward),
+			right_strafe(other.right_strafe), left_strafe(other.left_strafe), current_delta(other.current_delta),
+			mouse_look(other.mouse_look), orientation(other.orientation), KEY_A_FIRST(other.KEY_A_FIRST),
+			KEY_W_FIRST(other.KEY_W_FIRST), KEY_W_DOWN(other.KEY_W_DOWN), KEY_A_DOWN(other.KEY_A_DOWN),
+			KEY_S_DOWN(other.KEY_S_DOWN), KEY_D_DOWN(other.KEY_D_DOWN) {}
 
 	FPSController& operator=(const FPSController& other) {
 		if (this == &other)
 			return *this;
-		Controller::operator =(other);
+		Controller::operator=(other);
 		forward = other.forward;
 		backward = other.backward;
 		right_strafe = other.right_strafe;

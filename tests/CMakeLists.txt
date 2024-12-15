@@ -8,6 +8,7 @@ add_program(
 	TARGET
 	${trillek-test_PROGRAM_NAME}
 	FILE_LIST
+	event-list-test.cpp
 	filesystem_test.cpp
 	net-message_test.cpp
 	save-game_test.cpp
