@@ -177,4 +177,26 @@ void LuaSystem::ExecuteString(const std::string& script_string) { this->lua.scri
 
 LuaClassList* LuaSystem::lua_userclasses = nullptr;
 
+void LuaSystem::HandlePlayerJoin(const std::string& ip, const std::string& identifier) {
+	this->CallFunctions("onPlayerJoin", ip, identifier);
+}
+
+void LuaSystem::HandlePlayerLeave(const std::string& identifier) { this->CallFunctions("onPlayerLeave", identifier); }
+
+void LuaSystem::HandlePlayerInteraction(const std::string& identifier, int entity_id, const std::string& interaction_type) {
+	this->CallFunctions("onPlayerInteraction", identifier, entity_id, interaction_type);
+}
+
+void LuaSystem::HandleEntitySpawning(int entity_id) {
+	this->CallFunctions("onEntitySpawning", entity_id);
+}
+
+void LuaSystem::Teleport(const std::string& identifier, int x, int y, int z) {
+	this->CallFunctions("onTeleport", identifier, x, y, z);
+}
+
+void LuaSystem::Kick(const std::string& identifier) {
+	this->CallFunctions("onKick", identifier);
+}
+
 } // namespace tec
