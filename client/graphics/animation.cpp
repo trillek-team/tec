@@ -89,4 +89,28 @@ void Animation::In(const proto::Component& source) {
 		this->SetAnimationFile(animation);
 	}
 }
+
+void Animation::PlayOnce() {
+	play_rate = 1.0;
+	looping = false;
+}
+
+void Animation::Pause() {
+	play_rate = 0.0;
+}
+
+void Animation::Stop() {
+	play_rate = 0.0;
+	animation_time = 0.0;
+}
+
+void Animation::Play() {
+	play_rate = 1.0;
+	looping = true;
+}
+
+void Animation::Reset() {
+	animation_time = 0.0;
+}
+
 } // namespace tec
