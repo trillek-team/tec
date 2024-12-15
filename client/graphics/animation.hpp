@@ -37,14 +37,17 @@ public:
 	*/
 	void SetAnimationFile(std::shared_ptr<MD5Anim> file);
 
-	void Play(bool from_start) {
-		play_rate = 1.0;
-		if (from_start) {
-			animation_time = 0.0;
-		}
-	}
-	void Stop() { play_rate = 0.0; }
+	void Play();
+
+	void Stop();
+
 	void SetLoop(bool loop) { looping = loop; }
+
+	void PlayOnce();
+
+	void Pause();
+
+	void Reset();
 
 	void Out(proto::Component* target);
 	void In(const proto::Component& source);

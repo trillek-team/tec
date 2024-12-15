@@ -182,7 +182,7 @@ void RenderSystem::RegisterConsole(Console& console) {
 			_log->error("[RSCommand] Bad animation:{}", entity_id);
 		}
 		if (argv[1] == "play") {
-			anim->Play(false);
+			anim->Play();
 		}
 		else if (argv[1] == "stop") {
 			anim->Stop();
