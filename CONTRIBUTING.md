@@ -5,8 +5,11 @@
 1. Fork the repository.
 2. Create a new branch for your feature or bugfix.
 3. Make your changes.
-4. Submit a pull request (PR).
-5. Rebase your branch to master and merge.
+4. Run tests locally to ensure everything works.
+5. Update documentation if necessary.
+6. Write effective commit messages.
+7. Submit a pull request (PR).
+8. Rebase your branch to master and merge.
 
 For more details, see the [Contribution Flow Guide](https://github.com/trillek-team/tec/wiki/Contribution-Flow-Guide).
 
@@ -16,10 +19,11 @@ For more details, see the [Contribution Flow Guide](https://github.com/trillek-t
 
 ## What Makes a Good Issue
 
-- A clear and concise description of the problem or feature request.
-- Steps to reproduce the problem, if applicable.
-- Any relevant screenshots or logs.
-- Information about your environment (OS, version, etc.).
+- Provide a clear and concise description of the problem or feature request.
+- Include steps to reproduce the problem, if applicable.
+- Attach any relevant screenshots or logs.
+- Provide information about your environment (OS, version, etc.).
+- Avoid common mistakes such as vague descriptions or missing information.
 
 ## Release Schedule
 
@@ -37,32 +41,11 @@ For more detailed information and guidelines, please refer to our [wiki](https:/
 - Indentation and Bracing: Follow the guidelines in the [Coding Standards Indentation and Bracing](https://github.com/trillek-team/tec/wiki/Coding-Standards-Indentation-and-Bracing) page.
 - Naming: Follow the guidelines in the [Coding Standards Naming](https://github.com/trillek-team/tec/wiki/Coding-Standards-Naming) page.
 
-## Checklist for Submitting a PR
-
-- [ ] Fork the repository.
-- [ ] Create a new branch for your feature or bugfix.
-- [ ] Make your changes.
-- [ ] Run tests locally to ensure everything works.
-- [ ] Update documentation if necessary.
-- [ ] Write effective commit messages.
-- [ ] Submit a pull request (PR).
-- [ ] Rebase your branch to master and merge.
-
 ## Labels for Issues
 
 - Use labels like "good first issue" and "help wanted" to indicate issues suitable for new contributors or those seeking help.
 
-## Guidelines for Writing Good Issues and Pull Requests
-
-### Writing Good Issues
-
-- Provide a clear and concise description of the problem or feature request.
-- Include steps to reproduce the problem, if applicable.
-- Attach any relevant screenshots or logs.
-- Provide information about your environment (OS, version, etc.).
-- Avoid common mistakes such as vague descriptions or missing information.
-
-### Writing Good Pull Requests
+## Writing Good Pull Requests
 
 - Provide a clear and concise description of the changes.
 - Reference any related issues or pull requests.
