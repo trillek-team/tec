@@ -48,6 +48,13 @@ public:
 		}
 	}
 
+	void HandlePlayerJoin(const std::string& ip, const std::string& identifier);
+	void HandlePlayerLeave(const std::string& identifier);
+	void HandlePlayerInteraction(const std::string& identifier, int entity_id, const std::string& interaction_type);
+	void HandleEntitySpawning(int entity_id);
+	void Teleport(const std::string& identifier, int x, int y, int z);
+	void Kick(const std::string& identifier);
+
 private:
 	sol::state lua;
 	std::list<LuaScript> scripts;

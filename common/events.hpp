@@ -125,4 +125,14 @@ struct UserLoginEvent {
 		return user_login;
 	}
 };
+
+struct PlayerInteractionEvent {
+	std::string identifier;
+	int entity_id;
+	std::string interaction_type;
+	PlayerInteractionEvent() = default;
+	PlayerInteractionEvent(const std::string& identifier, int entity_id, const std::string& interaction_type)
+		: identifier(identifier), entity_id(entity_id), interaction_type(interaction_type) {}
+};
+
 } // namespace tec

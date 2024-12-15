@@ -59,6 +59,8 @@ public:
 
 	bool ReadyToReceive() const { return this->ready_to_recv_states; }
 
+	void Kick(const std::string& identifier);
+
 private:
 	void read_header();
 

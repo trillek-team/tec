@@ -1,4 +1,3 @@
-
 #include "lua-system.hpp"
 
 #include "client-connection.hpp"
@@ -76,7 +75,8 @@ TEC_RegisterLuaType(tec::networking, ClientConnection) {
 	// clang-format off
 	state.new_usertype<ClientConnection>(
 		"ClientConnection", sol::no_constructor,
-		"user", &ClientConnection::user
+		"user", &ClientConnection::user,
+		"Kick", &ClientConnection::Kick
 	);
 	// clang-format on
 }
