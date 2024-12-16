@@ -104,7 +104,7 @@ std::shared_ptr<VorbisStream> VorbisStream::Create(const Path& filename) {
 		file = filename.OpenFile();
 	}
 	catch (PathException& e) {
-		_log->warn("[Vorbis-Stream] Can't open file {}", filename);
+		_log->warn("[Vorbis-Stream] Can't open file {} ({})", filename, e.what());
 		stream.reset();
 		return stream;
 	}

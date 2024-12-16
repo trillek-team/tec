@@ -89,7 +89,7 @@ bool SaveGame::Save(const Path _filepath) {
 		return SaveFromString(_filepath, json_string);
 	}
 	catch (std::runtime_error& err) {
-		_log->error("Failed to save to file: {:f}", _filepath);
+		_log->error("Failed to save to file: {:f} ({})", _filepath, err.what());
 		return false;
 	}
 }

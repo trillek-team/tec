@@ -82,7 +82,7 @@ bool OS::InitializeWindow(
 
 	// attach the context
 	glfwMakeContextCurrent(this->window);
-	
+
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		l->critical("[OS] Can initialize glad");
 		return false;
@@ -166,7 +166,7 @@ bool OS::InitializeWindow(
 	glfwSetCharCallback(this->window, &OS::CharacterEventCallback);
 	glfwSetMouseButtonCallback(this->window, &OS::MouseButtonEventCallback);
 	glfwSetScrollCallback(this->window, &OS::MouseScrollEventCallback);
-	glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
+	//glfwSetWindowFocusCallback(this->window, &OS::WindowFocusChangeCallback);
 	glfwSetDropCallback(this->window, &OS::FileDropCallback);
 
 	glfwGetCursorPos(this->window, &this->old_mouse_x, &this->old_mouse_y);

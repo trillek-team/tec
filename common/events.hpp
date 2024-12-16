@@ -18,6 +18,10 @@ struct KeyboardEvent {
 	int scancode{0};
 	KEY_ACTION action;
 	int mods{0};
+
+	bool operator==(const KeyboardEvent& other) const {
+		return key == other.key && scancode == other.scancode && action == other.action && mods == other.mods;
+	}
 };
 
 struct MouseBtnEvent {
@@ -25,6 +29,8 @@ struct MouseBtnEvent {
 	enum MOUSE_BTN { LEFT, RIGHT, MIDDLE };
 	MOUSE_BTN_ACTION action;
 	MOUSE_BTN button;
+
+	bool operator==(const MouseBtnEvent& other) const { return action == other.action && button == other.button; }
 };
 
 /** Mouse change of position event */
@@ -32,6 +38,11 @@ struct MouseMoveEvent {
 	double norm_x{0.0}, norm_y{0.0}; /// Resolution independent new x, y (0-1) from upper-left to lower-right.
 	int old_x{0}, old_y{0}; /// Client space old x, y.
 	int new_x{0}, new_y{0}; /// Client space new x, y.
+
+	bool operator==(const MouseMoveEvent& other) const {
+		return norm_x == other.norm_x && norm_y == other.norm_y && old_x == other.old_x && old_y == other.old_y
+			   && new_x == other.new_x && new_y == other.new_y;
+	}
 };
 
 /** Mouse wheel event */
@@ -43,6 +54,11 @@ struct MouseClickEvent {
 	MouseBtnEvent::MOUSE_BTN button;
 	glm::vec3 ray_hit_point_world{0.f, 0.f, 0.f};
 	double ray_distance;
+
+	bool operator==(const MouseClickEvent& other) const {
+		return button == other.button && ray_hit_point_world == other.ray_hit_point_world
+			   && ray_distance == other.ray_distance;
+	}
 };
 
 struct WindowResizedEvent {
