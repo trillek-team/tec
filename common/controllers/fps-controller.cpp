@@ -18,12 +18,8 @@ void FPSController::Update(const double delta, GameState& state, EventList& comm
 		Handle(mouse_button_event, state);
 	}
 	if (mouse_focus) {
-		this->orientation = state.orientations[entity_id];
 		for (const MouseMoveEvent& mouse_move_event : commands.mouse_move_events) {
 			Handle(mouse_move_event, state);
-		}
-		if (state.orientations.find(entity_id) != state.orientations.end()) {
-			state.orientations[entity_id] = this->orientation;
 		}
 	}
 
@@ -46,7 +42,8 @@ void FPSController::Update(const double delta, GameState& state, EventList& comm
 		strafe_direction = 1;
 		this->right_strafe = true;
 	}
-	
+
+	state.orientations[entity_id] = this->orientation;
 	state.velocities[entity_id].linear =
 			glm::vec4(this->orientation.value * glm::vec3(5.0 * strafe_direction, 0.0, 7.5 * forward_direction), 1.0);
 }
@@ -176,7 +173,7 @@ void FPSController::Handle(const MouseMoveEvent& data, const GameState&) {
 	}
 
 	const float rotation_speed = -8.0f * static_cast<float>(this->current_delta);
-	
+
 	if (std::abs(change_x) > FLT_EPSILON) {
 		const glm::quat rot_x = glm::angleAxis(glm::radians(change_x * rotation_speed), UP_VECTOR);
 		this->orientation = rot_x * this->orientation.value;

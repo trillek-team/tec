@@ -29,6 +29,10 @@ void User::AddEntityToWorld() {
 		std::shared_ptr<EntityCreated> data = std::make_shared<EntityCreated>();
 		entity.Out<Position, Orientation, Velocity, CollisionBody>(data->entity);
 		data->entity.set_id(this->entity_id);
+		auto renderable = data->entity.add_components()->mutable_renderable();
+		renderable->set_mesh_name("bot/botplay.obj");
+		renderable->set_shader_name("deferred");
+		renderable->mutable_position()->set_z(0.5f);
 		EventSystem<EntityCreated>::Get()->Emit(data);
 	}
 	{

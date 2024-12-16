@@ -336,9 +336,7 @@ MessageOut ClientConnection::PrepareGameStateUpdateMessage(state_id_t current_st
 	return update_message;
 }
 
-void ClientConnection::Kick(const std::string& identifier) {
-	this->server->GetLuaSystem()->Kick(identifier);
-}
+void ClientConnection::Kick(const std::string& identifier) { this->server->GetLuaSystem()->Kick(identifier); }
 
 } // namespace networking
 } // namespace tec
