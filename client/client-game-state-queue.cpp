@@ -48,8 +48,10 @@ void ClientGameStateQueue::Interpolate(const double delta_time) {
 			auto itr = this->predictions.find(this->command_id);
 			if (itr != this->predictions.end()) {
 				this->base_state.positions[this->client_id] = itr->second.positions[this->client_id];
+				this->base_state.orientations[this->client_id] = itr->second.orientations[this->client_id];
 				this->base_state.velocities[this->client_id] = itr->second.velocities[this->client_id];
 				this->interpolated_state.positions[this->client_id] = itr->second.positions[this->client_id];
+				this->interpolated_state.orientations[this->client_id] = itr->second.orientations[this->client_id];
 				this->interpolated_state.velocities[this->client_id] = itr->second.velocities[this->client_id];
 			}
 		}
