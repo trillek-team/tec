@@ -32,8 +32,10 @@ class IMGUISystem :
 	typedef Command<IMGUISystem> GUICommand;
 
 public:
-	IMGUISystem(GLFWwindow* window);
+	IMGUISystem();
 	~IMGUISystem();
+
+	void Initialize(GLFWwindow* window); // Add initialization method
 
 	void CreateGUI();
 

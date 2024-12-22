@@ -26,8 +26,9 @@ GLuint IMGUISystem::font_texture = 0;
 std::string inifilename;
 std::string logfilename;
 
-IMGUISystem::IMGUISystem(GLFWwindow* _window) {
-	ImGui::CreateContext();
+IMGUISystem::IMGUISystem() { ImGui::CreateContext(); }
+
+void IMGUISystem::Initialize(GLFWwindow* _window) {
 	IMGUISystem::window = _window;
 	auto& io = ImGui::GetIO();
 	inifilename = (Path::GetUserSettingsPath() / "imgui.ini").toString();
@@ -241,7 +242,7 @@ void IMGUISystem::CreateDeviceObjects() {
 	glEnableVertexAttribArray(IMGUISystem::uv_attribute_location);
 	glEnableVertexAttribArray(IMGUISystem::color_attribute_location);
 
-#define OFFSETOF(TYPE, ELEMENT) ((std::size_t) & (((TYPE*)0)->ELEMENT))
+#define OFFSETOF(TYPE, ELEMENT) ((std::size_t)&(((TYPE*)0)->ELEMENT))
 	glVertexAttribPointer(
 			IMGUISystem::position_attribute_location,
 			2,

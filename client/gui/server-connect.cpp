@@ -74,10 +74,6 @@ void ServerConnectWindow::Draw(IMGUISystem* gui) {
 				this->server_connection.Send(msg);
 			});
 			this->server_connection.Connect(ip.str());
-			auto hide_login_window = std::bind(&IMGUISystem::HideWindow, gui, window_name);
-			this->server_connection.RegisterMessageHandler(
-					tec::networking::MessageType::AUTHENTICATED,
-					[hide_login_window](tec::networking::MessageIn&) { hide_login_window(); });
 		}
 		ImGui::End();
 		ImGui::SetWindowSize("Connect to Server", ImVec2(0, 0));
