@@ -79,19 +79,18 @@ void Game::Startup(Console& console) {
 	this->placement.SetMaxDistance(this->config_script->environment.get_or(
 			"max_placement_distance", manipulator::DEFAULT_MAX_PLACEMENT_DISTANCE));
 
-	console.AddConsoleCommand(
-			"voxel_edit", "Voxel editing: voxel_edit {on|off}", [&](const std::string& command_args) {
-				const auto argv = SplitString(command_args);
-				if (argv.empty()) {
-					return;
-				}
-				if (argv[0] == "on") {
-					vox_sys.edit_allowed = true;
-				}
-				else if (argv[0] == "off") {
-					vox_sys.edit_allowed = false;
-				}
-			});
+	console.AddConsoleCommand("voxel_edit", "Voxel editing: voxel_edit {on|off}", [&](const std::string& command_args) {
+		const auto argv = SplitString(command_args);
+		if (argv.empty()) {
+			return;
+		}
+		if (argv[0] == "on") {
+			vox_sys.edit_allowed = true;
+		}
+		else if (argv[0] == "off") {
+			vox_sys.edit_allowed = false;
+		}
+	});
 }
 
 void Game::UpdateVComputerScreenTextures() {
@@ -219,6 +218,7 @@ void Game::Update(const double delta) {
 void Game::ProcessEvents() {
 	EventQueue<KeyboardEvent>::ProcessEventQueue();
 	EventQueue<MouseClickEvent>::ProcessEventQueue();
+	EventQueue<ChatCommandEvent>::ProcessEventQueue();
 }
 
 void Game::On(eid, std::shared_ptr<KeyboardEvent> data) {
@@ -232,4 +232,12 @@ void Game::On(eid, std::shared_ptr<MouseClickEvent> data) {
 		this->placement.PlaceEntityInWorld(data->ray_hit_point_world);
 	}
 }
+
+void Game::On(eid, std::shared_ptr<ChatCommandEvent> event) {
+	if (event->command == "lua") {
+		std::string lua_command = event->args.empty() ? "" : event->args[0];
+		this->lua_sys.ExecuteString(lua_command);
+	}
+}
+
 } // namespace tec

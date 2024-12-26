@@ -78,7 +78,10 @@ bool SaveGame::Save(const Path _filepath) {
 
 	std::string json_string;
 
-	auto status = google::protobuf::util::MessageToJsonString(this->save, &json_string);
+	google::protobuf::util::JsonPrintOptions print_options;
+	print_options.add_whitespace = true;
+
+	auto status = google::protobuf::util::MessageToJsonString(this->save, &json_string, print_options);
 
 	if (!status.ok()) {
 		_log->error("Failed to serialize save data {}", status.ToString());

@@ -8,7 +8,7 @@
 			"type": "cppvsdbg",
 			"request": "launch",
 			"program": "${command:cmake.launchTargetPath}",
-			"externalConsole": true,
+			"console": "integratedTerminal",
 			"name": "Run Trillek Target",
 			"cwd": "${workspaceFolder}",
 			"stopAtEntry": false
