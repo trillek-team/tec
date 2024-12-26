@@ -8,6 +8,7 @@
 	"configurePresets": [
 		{
 			"name": "ninja-multi-vcpkg",
+			"hidden": true,
 			"displayName": "Ninja Multi-Config",
 			"description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations with x64",
 			"binaryDir": "${sourceDir}/builds/${presetName}",
@@ -16,11 +17,30 @@
 		},
 		{
 			"name": "ninja-multi-vcpkg-ci",
+			"hidden": true,
 			"displayName": "Ninja Multi-Config CI (e.g. github actions)",
 			"inherits": "ninja-multi-vcpkg",
 			"cacheVariables": {
 				"BUILD_TESTS": true,
 				"BUILD_DOCS": true
+			}
+		},
+		{
+			"name": "ninja-multi-vcpkg-msvc",
+			"displayName": "Ninja Multi-Config MSVC",
+			"inherits": "ninja-multi-vcpkg-ci",
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "cl.exe",
+				"CMAKE_CXX_COMPILER": "cl.exe"
+			}
+		},
+		{
+			"name": "ninja-multi-vcpkg-clang",
+			"displayName": "Ninja Multi-Config Clang",
+			"inherits": "ninja-multi-vcpkg-ci",
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "clang.exe",
+				"CMAKE_CXX_COMPILER": "clang++.exe"
 			}
 		},
 		{
