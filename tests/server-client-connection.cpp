@@ -53,10 +53,7 @@ TEST(ServerClientCommunications, TCPConnection) {
 	tec::networking::Server server(endpoint);
 	tec::SaveGame save; // need a SaveGame object with Users to test logins
 	auto lua_sys = server.GetLuaSystem();
-	tec::SaveGame::RegisterLuaType(lua_sys->GetGlobalState());
-	tec::UserList::RegisterLuaType(lua_sys->GetGlobalState());
-	tec::User::RegisterLuaType(lua_sys->GetGlobalState());
-	tec::networking::ClientConnection::RegisterLuaType(lua_sys->GetGlobalState());
+	// Lua types are automatically registered via TEC_RegisterLuaType macro in server/lua-types.cpp
 	lua_sys->GetGlobalState()["save"] = &save; // provide a pointer
 
 	// add a fake user to test login
