@@ -51,10 +51,11 @@ Game::Game(OS& _os, std::string config_file_name) :
 
 	CreateEngineEntities();
 
-	{
-		auto& lua_state = this->lua_sys.GetGlobalState();
-		lua_state["placement_manipulator"] = &this->placement;
-	}
+	// Register instance data using the centralized callback system
+	this->lua_sys.RegisterInstanceCallback([this](sol::state& lua) {
+		lua["placement_manipulator"] = &this->placement;
+	});
+	this->lua_sys.ExecuteInstanceCallbacks();
 }
 
 Game::~Game() {

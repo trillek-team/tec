@@ -154,7 +154,11 @@ int main(int argc, char* argv[]) {
 			});
 
 	tec::LuaSystem* lua_sys = game.GetLuaSystem();
-	lua_sys->GetGlobalState().set("OS", &os); // register instance
+	// Register instance data using the centralized callback system
+	lua_sys->RegisterInstanceCallback([&os](sol::state& lua) {
+		lua.set("OS", &os);
+	});
+	lua_sys->ExecuteInstanceCallbacks();
 
 	tec::RegisterFileFactories();
 	tec::BuildTestVoxelVolume();

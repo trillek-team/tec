@@ -199,4 +199,14 @@ void LuaSystem::Kick(const std::string& identifier) {
 	this->CallFunctions("onKick", identifier);
 }
 
+void LuaSystem::RegisterInstanceCallback(std::function<void(sol::state&)> callback) {
+	instance_callbacks.push_back(std::move(callback));
+}
+
+void LuaSystem::ExecuteInstanceCallbacks() {
+	for (const auto& callback : instance_callbacks) {
+		callback(this->lua);
+	}
+}
+
 } // namespace tec

@@ -78,7 +78,12 @@ int main() {
 
 		tec::SaveGame save;
 		save.Load(tec::Path("assets:/save/save1.json"));
-		lua_sys->GetGlobalState()["save"] = &save;
+		
+		// Register instance data using the centralized callback system
+		lua_sys->RegisterInstanceCallback([&save](sol::state& lua) {
+			lua["save"] = &save;
+		});
+		lua_sys->ExecuteInstanceCallbacks();
 
 		auto& authenticator = server.GetAuthenticator();
 		auto user_list_data_source = tec::UserListDataSource(*save.GetUserList());

@@ -55,9 +55,16 @@ public:
 	void Teleport(const std::string& identifier, int x, int y, int z);
 	void Kick(const std::string& identifier);
 
+	// Register a callback function to register instance data when LuaSystem is initialized
+	void RegisterInstanceCallback(std::function<void(sol::state&)> callback);
+	
+	// Execute all registered instance callbacks (call this after registering all callbacks)
+	void ExecuteInstanceCallbacks();
+
 private:
 	sol::state lua;
 	std::list<LuaScript> scripts;
+	std::vector<std::function<void(sol::state&)>> instance_callbacks;
 
 	std::list<sol::protected_function> GetAllFunctions(const std::string&);
 

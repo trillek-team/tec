@@ -54,7 +54,11 @@ TEST(ServerClientCommunications, TCPConnection) {
 	tec::SaveGame save; // need a SaveGame object with Users to test logins
 	auto lua_sys = server.GetLuaSystem();
 	// Lua types are automatically registered via TEC_RegisterLuaType macro in server/lua-types.cpp
-	lua_sys->GetGlobalState()["save"] = &save; // provide a pointer
+	// Register instance data using the centralized callback system
+	lua_sys->RegisterInstanceCallback([&save](sol::state& lua) {
+		lua["save"] = &save;
+	});
+	lua_sys->ExecuteInstanceCallbacks();
 
 	// add a fake user to test login
 	auto test_user = save.GetUserList()->CreateUser("login-test-user");
