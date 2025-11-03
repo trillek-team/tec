@@ -8,6 +8,7 @@ add_interface_lib(
 	TARGET
 	${CLIENT_LIB_NAME}
 	FILE_LIST
+	client-app.cpp
 	game.cpp
 	imgui-system.cpp
 	client-game-state-queue.cpp
