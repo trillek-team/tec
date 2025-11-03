@@ -142,6 +142,7 @@ int main(int argc, char* argv[]) {
 		log->info("Auto-connecting to localhost as '{}'", default_username);
 		
 		// Register handlers before connecting to avoid race condition
+		// Capture default_username by value for async safety (prevents future modifications from affecting the login)
 		connection.RegisterConnectFunc([&connection, default_username, &log]() {
 			tec::proto::UserLogin user_login;
 			user_login.set_username(default_username);
