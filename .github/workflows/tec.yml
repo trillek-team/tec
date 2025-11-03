@@ -23,8 +23,8 @@ jobs:
             windows-latest,
             windows-2019,
             ubuntu-latest,
-            ubuntu-20.04,
-            macOS-latest,
+            ubuntu-22.04,
+            macOS-latest-large,
           ]
         arch: [x86, x64]
         include:
@@ -36,14 +36,14 @@ jobs:
             vcpkgTripletOs: linux
           - os: ubuntu-20.04
             vcpkgTripletOs: linux
-          - os: macOS-latest
+          - os: macOS-latest-large
             vcpkgTripletOs: osx
         exclude:
           - os: ubuntu-latest
             arch: x86
           - os: ubuntu-20.04
             arch: x86
-          - os: macOS-latest
+          - os: macOS-latest-large
             arch: x86
     env:
       buildDir: "${{ github.workspace }}/build"
@@ -154,7 +154,7 @@ jobs:
             windows-2016,
             ubuntu-latest,
             ubuntu-20.04,
-            macOS-latest,
+            macOS-latest-large,
           ]
         arch: [x64]
     if: startsWith(github.ref, 'refs/tags/v')
