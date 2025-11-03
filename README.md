@@ -83,6 +83,24 @@ Install the following. This is a pretty extensive list and may be more than need
 * `ninja-multi-vcpkg-debug` - Debug configuration test preset
 * `ninja-multi-vcpkg-release` - Release configuration test preset
 
+# Configuration
+The client can be configured using a Lua configuration file at `assets/scripts/config.lua`. If the file doesn't exist, default values will be used.
+
+## Auto-Connect for Local Development
+For local development, you can enable automatic connection to a local server by setting the following in your config file:
+
+```lua
+-- Window settings
+window_width = 1024
+window_height = 768
+
+-- Auto-connect settings (for local development)
+auto_connect = true
+default_username = "player"
+```
+
+When `auto_connect` is enabled and `default_username` is set, the client will automatically connect to `localhost` on startup, eliminating the need to manually enter credentials each time. If auto-connect fails, the connection window will be shown as normal.
+
 # Documentation
 Documentation is done via Doxygen for C++ code and supplementary docs must be maintained for the Lua API in `docs/`.
 

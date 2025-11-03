@@ -133,7 +133,40 @@ int main(int argc, char* argv[]) {
 	gui.AddWindowDrawFunction(server_connect_window.GetWindowName(), [&server_connect_window, &gui]() {
 		server_connect_window.Draw(&gui);
 	});
-	gui.ShowWindow(server_connect_window.GetWindowName());
+	
+	// Check for auto-connect configuration
+	bool auto_connect = game.config_script->environment.get_or("auto_connect", false);
+	std::string default_username = game.config_script->environment.get_or("default_username", std::string(""));
+	
+	if (auto_connect && !default_username.empty()) {
+		log->info("Auto-connecting to localhost as '{}'", default_username);
+		connection.RegisterConnectFunc([&connection, default_username, &log]() {
+			tec::proto::UserLogin user_login;
+			user_login.set_username(default_username);
+			user_login.set_password("");
+			tec::networking::MessageOut msg(tec::networking::LOGIN);
+			user_login.SerializeToZeroCopyStream(&msg);
+			connection.Send(msg);
+			log->info("Auto-login sent for user '{}'", default_username);
+		});
+		if (connection.Connect(tec::networking::LOCAL_HOST)) {
+			// Hide the connect window on successful AUTHENTICATED message
+			std::string window_name = server_connect_window.GetWindowName();
+			connection.RegisterMessageHandler(
+					tec::networking::MessageType::AUTHENTICATED,
+					[&gui, window_name, &log](tec::networking::MessageIn&) { 
+						log->info("Auto-connect authentication successful");
+						gui.HideWindow(window_name);
+					});
+		} else {
+			log->warn("Auto-connect failed, showing connect window");
+			gui.ShowWindow(server_connect_window.GetWindowName());
+		}
+	} else {
+		// Show connect window normally if auto-connect is disabled
+		gui.ShowWindow(server_connect_window.GetWindowName());
+	}
+	
 	gui.AddWindowDrawFunction(
 			ping_times_window.GetWindowName(), [&ping_times_window, &gui]() { ping_times_window.Draw(&gui); });
 	gui.AddWindowDrawFunction(console.GetWindowName(), [&console, &gui]() { console.Draw(&gui); });
