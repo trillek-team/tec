@@ -24,7 +24,7 @@ jobs:
             windows-2022,
             ubuntu-latest,
             ubuntu-22.04,
-            macOS-latest-large,
+            macos-latest-large,
           ]
         arch: [x86, x64]
         include:
@@ -34,16 +34,16 @@ jobs:
             vcpkgTripletOs: windows
           - os: ubuntu-latest
             vcpkgTripletOs: linux
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             vcpkgTripletOs: linux
-          - os: macOS-latest-large
+          - os: macos-latest-large
             vcpkgTripletOs: osx
         exclude:
           - os: ubuntu-latest
             arch: x86
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             arch: x86
-          - os: macOS-latest-large
+          - os: macos-latest-large
             arch: x86
     env:
       buildDir: "${{ github.workspace }}/build"
@@ -74,7 +74,7 @@ jobs:
       - name: Upload the build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: "trillek-${{ matrix.os }}"
+          name: "trillek-${{ matrix.os }}-${{ matrix.arch }}"
           path: |
             assets/
             ${{ env.CLIENT_BUILD_DIR }}/trillek-client
@@ -153,8 +153,8 @@ jobs:
             windows-latest,
             windows-2016,
             ubuntu-latest,
-            ubuntu-20.04,
-            macOS-latest-large,
+            ubuntu-22.04,
+            macos-latest-large,
           ]
         arch: [x64]
     if: startsWith(github.ref, 'refs/tags/v')
@@ -163,12 +163,12 @@ jobs:
       - name: Download a single artifact
         uses: actions/download-artifact@v4
         with:
-          name: "trillek-${{ matrix.os }}"
+          name: "trillek-${{ matrix.os }}-${{ matrix.arch }}"
       - name: Package release
         run: |
-          zip --junk-paths -r -u  trillek-${{ matrix.os }}.zip build/client
-          zip --junk-paths -r -u  trillek-${{ matrix.os }}.zip build/server
-          zip -r -u trillek-${{ matrix.os }}.zip assets/
+          zip --junk-paths -r -u  trillek-${{ matrix.os }}-${{ matrix.arch }}.zip build/client
+          zip --junk-paths -r -u  trillek-${{ matrix.os }}-${{ matrix.arch }}.zip build/server
+          zip -r -u trillek-${{ matrix.os }}-${{ matrix.arch }}.zip assets/
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
