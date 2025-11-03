@@ -37,25 +37,6 @@ IMGUISystem::IMGUISystem(GLFWwindow* _window) {
 	io.LogFilename = logfilename.c_str();
 #endif
 
-	// Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
-	io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
-	io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
-	io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
-	io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
-	io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
-	io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
-	io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
-	io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
-	io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
-	io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
-	io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
-	io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
-	io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
-	io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
-	io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
-	io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
-	io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
-
 	io.SetClipboardTextFn = SetClipboardText;
 	io.GetClipboardTextFn = GetClipboardText;
 
@@ -64,6 +45,9 @@ IMGUISystem::IMGUISystem(GLFWwindow* _window) {
 	if (!IMGUISystem::font_texture) {
 		CreateDeviceObjects();
 	}
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init();
 }
 
 IMGUISystem::~IMGUISystem() {
@@ -92,6 +76,8 @@ IMGUISystem::~IMGUISystem() {
 		ImGui::GetIO().Fonts->TexID = 0;
 		font_texture = 0;
 	}
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 }
 
@@ -282,7 +268,7 @@ void IMGUISystem::CreateDeviceObjects() {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
 	// Store our identifier
-	io.Fonts->TexID = (void*)(intptr_t)font_texture;
+	io.Fonts->TexID = font_texture;
 
 	// Cleanup (don't clear the input data if you want to append new fonts later)
 	io.Fonts->ClearInputData();
@@ -424,10 +410,10 @@ void IMGUISystem::On(eid, std::shared_ptr<MouseBtnEvent> data) {
 void IMGUISystem::On(eid, std::shared_ptr<KeyboardEvent> data) {
 	auto& io = ImGui::GetIO();
 	if (data->action == KeyboardEvent::KEY_DOWN) {
-		io.KeysDown[data->key] = true;
+		io.KeysData[data->key].Down = true;
 	}
 	else if (data->action == KeyboardEvent::KEY_UP) {
-		io.KeysDown[data->key] = false;
+		io.KeysData[data->key].Down = false;
 	}
 
 	if (data->action == KeyboardEvent::KEY_CHAR) {
@@ -438,8 +424,8 @@ void IMGUISystem::On(eid, std::shared_ptr<KeyboardEvent> data) {
 	}
 
 	(void)data->mods; // Modifiers are not reliable across systems
-	io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-	io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-	io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+	io.KeyCtrl = io.KeysData[GLFW_KEY_LEFT_CONTROL].Down || io.KeysData[GLFW_KEY_RIGHT_CONTROL].Down;
+	io.KeyShift = io.KeysData[GLFW_KEY_LEFT_SHIFT].Down || io.KeysData[GLFW_KEY_RIGHT_SHIFT].Down;
+	io.KeyAlt = io.KeysData[GLFW_KEY_LEFT_ALT].Down || io.KeysData[GLFW_KEY_RIGHT_ALT].Down;
 }
 } // end namespace tec
