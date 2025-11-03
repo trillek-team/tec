@@ -12,11 +12,14 @@
     "openal-soft",
     "protobuf",
     "zlib",
-    "imgui",
+    {
+		"name": "imgui",
+		"features":["glfw-binding","opengl3-binding"]
+	},
     "spdlog",
     "sol2",
     "gtest"
   ],
   "supports": "(windows & x86) | (windows & x64) | (linux & x64) | (osx & x64)",
-  "builtin-baseline": "10b7a178346f3f0abef60cecd5130e295afd8da4"
+  "builtin-baseline": "dd3097e305afa53f7b4312371f62058d2e665320"
 }

@@ -22,6 +22,8 @@
 
 namespace tec {
 
+void BuildTestVoxelVolume();
+
 namespace {
 
 void RegisterFileFactories() {
