@@ -140,6 +140,8 @@ int main(int argc, char* argv[]) {
 	
 	if (auto_connect && !default_username.empty()) {
 		log->info("Auto-connecting to localhost as '{}'", default_username);
+		
+		// Register handlers before connecting to avoid race condition
 		connection.RegisterConnectFunc([&connection, default_username, &log]() {
 			tec::proto::UserLogin user_login;
 			user_login.set_username(default_username);
@@ -149,16 +151,17 @@ int main(int argc, char* argv[]) {
 			connection.Send(msg);
 			log->info("Auto-login sent for user '{}'", default_username);
 		});
-		if (connection.Connect(tec::networking::LOCAL_HOST)) {
-			// Hide the connect window on successful AUTHENTICATED message
-			std::string window_name = server_connect_window.GetWindowName();
-			connection.RegisterMessageHandler(
-					tec::networking::MessageType::AUTHENTICATED,
-					[&gui, window_name, &log](tec::networking::MessageIn&) { 
-						log->info("Auto-connect authentication successful");
-						gui.HideWindow(window_name);
-					});
-		} else {
+		
+		// Hide the connect window on successful AUTHENTICATED message
+		std::string window_name = server_connect_window.GetWindowName();
+		connection.RegisterMessageHandler(
+				tec::networking::MessageType::AUTHENTICATED,
+				[&gui, window_name, &log](tec::networking::MessageIn&) { 
+					log->info("Auto-connect authentication successful");
+					gui.HideWindow(window_name);
+				});
+		
+		if (!connection.Connect(tec::networking::LOCAL_HOST)) {
 			log->warn("Auto-connect failed, showing connect window");
 			gui.ShowWindow(server_connect_window.GetWindowName());
 		}
