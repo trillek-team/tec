@@ -121,7 +121,11 @@ int main(int argc, char* argv[]) {
 	tec::ServerConnectWindow server_connect_window(connection);
 	tec::PingTimesWindow ping_times_window(connection);
 	tec::DebugInfo debug_info_window(game);
-	tec::ServerConnectWindow::SetUsername(game.config_script->environment.get_or("default_username", std::string("")));
+	
+	// Read configuration once for use in both GUI and auto-connect
+	std::string default_username = game.config_script->environment.get_or("default_username", std::string(""));
+	bool auto_connect = game.config_script->environment.get_or("auto_connect", false);
+	tec::ServerConnectWindow::SetUsername(default_username);
 
 	console.AddConsoleCommand("msg", "msg : Send a message to all clients.", [&connection](const std::string& message) {
 		connection.SendChatMessage(message);
@@ -133,10 +137,6 @@ int main(int argc, char* argv[]) {
 	gui.AddWindowDrawFunction(server_connect_window.GetWindowName(), [&server_connect_window, &gui]() {
 		server_connect_window.Draw(&gui);
 	});
-	
-	// Check for auto-connect configuration
-	bool auto_connect = game.config_script->environment.get_or("auto_connect", false);
-	std::string default_username = game.config_script->environment.get_or("default_username", std::string(""));
 	
 	if (auto_connect && !default_username.empty()) {
 		log->info("Auto-connecting to localhost as '{}'", default_username);
@@ -153,6 +153,7 @@ int main(int argc, char* argv[]) {
 		});
 		
 		// Hide the connect window on successful AUTHENTICATED message
+		// Capture window_name by value to ensure it remains valid for the async handler
 		std::string window_name = server_connect_window.GetWindowName();
 		connection.RegisterMessageHandler(
 				tec::networking::MessageType::AUTHENTICATED,
