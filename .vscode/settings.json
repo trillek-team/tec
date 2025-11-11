@@ -3,5 +3,9 @@
 		"*.proto": "proto3",
 		"*.txt": "cmake",
 		"*.inc": "cpp"
-	}
+	},
+	"C_Cpp.caseSensitiveFileSupport": "enabled",
+	"C_Cpp.errorSquiggles": "enabled",
+	"C_Cpp.default.cppStandard": "c++20",
+	"C_Cpp.default.cStandard": "c17"
 }

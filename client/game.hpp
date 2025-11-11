@@ -32,7 +32,7 @@ using networking::ServerConnection;
 
 enum ENGINE_ENTITIES { MANIPULATOR = 1 };
 
-class Game : public EventQueue<KeyboardEvent>, public EventQueue<MouseClickEvent> {
+class Game : public EventQueue<KeyboardEvent>, public EventQueue<MouseClickEvent>, public EventQueue<ChatCommandEvent> {
 public:
 	Game(OS& _os, std::string config_file_name = "scripts/config.lua");
 
@@ -65,6 +65,7 @@ private:
 
 	void On(eid, std::shared_ptr<KeyboardEvent> data) override;
 	void On(eid, std::shared_ptr<MouseClickEvent> data) override;
+	void On(eid, std::shared_ptr<ChatCommandEvent> event) override;
 
 	// Frames per second
 	unsigned int frames = 0;
